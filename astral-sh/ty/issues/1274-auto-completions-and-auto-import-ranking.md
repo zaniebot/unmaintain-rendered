@@ -1,0 +1,657 @@
+---
+number: 1274
+title: Auto completions and auto import ranking heuristics
+type: issue
+state: closed
+author: sharkdp
+labels:
+  - server
+  - completions
+assignees: []
+created_at: 2025-09-29T09:14:40Z
+updated_at: 2026-01-09T14:55:33Z
+url: https://github.com/astral-sh/ty/issues/1274
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Auto completions and auto import ranking heuristics
+
+---
+
+_Issue opened by @sharkdp on 2025-09-29 09:14_
+
+I have been using the auto completions and auto import features for a while now, and I keep noticing things that could be changed to improve the user experience. So I thought I'd open a new ticket to collect them.
+
+FYI: @BurntSushi 
+
+---
+
+_Label `server` added by @sharkdp on 2025-09-29 09:14_
+
+---
+
+_Renamed from "Auto import ranking heuristics" to "Auto completions ranking heuristics" by @sharkdp on 2025-09-29 09:15_
+
+---
+
+_Comment by @sharkdp on 2025-09-29 09:16_
+
+`ty_extensions` should probably be ranked lower than stdlib. This is especially annoying for `reveal_type`, which I probably use much more than our users, but it's still annoying that `reveal_protocol_interface` is suggested first:
+
+<img width="656" height="349" alt="Image" src="https://github.com/user-attachments/assets/b1baec99-db2a-40d3-9808-f643a8ab16df" />
+
+---
+
+_Comment by @sharkdp on 2025-09-29 09:17_
+
+I was typing out an example snippet in the playground today, and was very surprised that I got this diagnostic:
+
+```
+Variable of type `TypeVar` is not allowed in a type expression (invalid-type-form) [Ln 5, Col 10]
+```
+
+Turns out I accidentally selected the first auto-import completion for `TypeVar`, which comes from `ast`, and not from typing:
+
+<img width="766" height="279" alt="Image" src="https://github.com/user-attachments/assets/b9d38287-7f48-488d-9efa-3a5b195dc79f" />
+
+This heuristic is potentially a bit more controversial, but I would argue that `typing` imports should be higher up in the completions compared to `ast`? At least in this specific case.
+
+
+A related case happens when completing `cast`, where `ctypes.cast` is currently preferred over `typing.cast`:
+
+<img width="618" height="147" alt="Image" src="https://github.com/user-attachments/assets/6582dbd8-fcc1-4835-bac8-018a118e3aba" />
+
+---
+
+_Renamed from "Auto completions ranking heuristics" to "Auto completions and auto import ranking heuristics" by @sharkdp on 2025-09-29 09:23_
+
+---
+
+_Comment by @sharkdp on 2025-09-29 09:26_
+
+The whole `_typeshed._type_checker_internals` module could probably be hidden from completions:
+
+<img width="670" height="247" alt="Image" src="https://github.com/user-attachments/assets/7f46a81b-1170-4e12-a123-968ec1c8a9ed" />
+
+---
+
+_Comment by @AlexWaygood on 2025-09-29 09:30_
+
+Symbols already in scope should probably take priority over those that would require an import:
+
+<img width="1172" height="754" alt="Image" src="https://github.com/user-attachments/assets/d0363a30-1329-4c59-a947-c6780ce634ff" />
+
+---
+
+_Comment by @sharkdp on 2025-09-30 13:40_
+
+I found this surprising. This seems to suggest that it would complete `TypedDict` for me and add the necessary `from typing import …, TypedDict` import:
+
+<img width="646" height="362" alt="Image" src="https://github.com/user-attachments/assets/887f8daa-bf08-4e19-b81c-5f0d95f8165c" />
+
+What happens instead is that it completes to the qualified form (because we also have a `import typing`):
+
+<img width="352" height="178" alt="Image" src="https://github.com/user-attachments/assets/0ec173dd-deda-44a9-a68b-9bda6912d71c" />
+
+I think it should either do the former, or somehow indicate to me that it's going to insert `typing.TypedDict`, instead of showing this grayed-out "import typing" hint.
+
+---
+
+_Label `completions` added by @AlexWaygood on 2025-09-30 15:48_
+
+---
+
+_Comment by @BurntSushi on 2025-10-02 12:47_
+
+All great suggestions that I agree with so far! Thank you!
+
+---
+
+_Assigned to @BurntSushi by @BurntSushi on 2025-10-02 12:47_
+
+---
+
+_Comment by @sharkdp on 2025-10-31 12:10_
+
+Local variables should probably always be prioritized. Consider a case like the following, which happened for Alex yesterday, and completely independently for me just now. If you just try to type the body of this function and hit enter, due to the fact that completions are so fast, you will end up with `re.X` after you hit enter.
+
+https://play.ty.dev/cb24b189-4227-4016-85b7-37fee353fc5f
+
+<img width="832" height="419" alt="Image" src="https://github.com/user-attachments/assets/d16e2d17-1a64-4cf2-9cca-0fc7a6e4b7ed" />
+
+<img width="399" height="146" alt="Image" src="https://github.com/user-attachments/assets/4aca9a46-f0af-4b3a-ba8f-4156763c5832" />
+
+---
+
+_Comment by @BurntSushi on 2025-10-31 12:18_
+
+Yeah ranking based on the "size" of the scope is definitely something on my radar.
+
+---
+
+_Comment by @BurntSushi on 2025-10-31 12:24_
+
+@sharkdp Looping back around to this:
+
+> I think it should either do the former, or somehow indicate to me that it's going to insert `typing.TypedDict`, instead of showing this grayed-out "import typing" hint.
+
+Right, in this case, since there is already an `import typing`, the "add import" logic is trying to be clever and reuse that import automatically. I feel like this is what I would want it to do _most_ of the time, given that there is already an `import typing` statement. However, in your case, you _also_ have a `from typing import SomethingElse`. So in theory, the heuristic could be adapted to prefer the unqualified import if there's already both. I'm not sure how well that heuristic would work.
+
+In the latter case, do you have any suggestions? From my perspective, the greyed `import typing` hint is exactly what happened in this case right? Or would you prefer to see the label `typing.TypedDict` instead of just `TypedDict` _along_ with the `import typing` hint? It feels a little redundant. Or something else entirely?
+
+---
+
+_Comment by @sharkdp on 2025-10-31 12:28_
+
+> So in theory, the heuristic could be adapted to prefer the unqualified import if there's already both. I'm not sure how well that heuristic would work.
+
+That seems reasonable to me?
+
+> From my perspective, the greyed `import typing` hint is exactly what happened in this case right? Or would you prefer to see the label `typing.TypedDict` instead of just `TypedDict` _along_ with the `import typing` hint? It feels a little redundant. Or something else entirely?
+
+Since there is a `import typing` already, I think just showing the fully qualified `typing.TypedDict` name in the completion drop-down *without* the gray `import typing` would be what I expect? 
+
+---
+
+_Comment by @BurntSushi on 2025-10-31 13:07_
+
+@sharkdp Gotya. That makes sense to me!
+
+---
+
+_Comment by @AlexWaygood on 2025-11-11 13:51_
+
+I just had auto-import complete `class Foo(Pro<CURSOR>` with `asyncio.protocols.Protocol` for me:
+
+```py
+from asyncio.protocols import Protocol
+class Foo(Protocol)
+```
+
+that not what I wanted or expected... I was hoping to use `typing.Protocol` 😆 I wonder if symbols that could be imported from top-level modules should be prioritised over symbols that can only be imported from submodules?
+
+Although `asyncio.protocols.Protocol` can also be accessed as `asyncio.Protocol` due to the `from .protocols import *` in `asyncio/__init__.pyi` in typeshed, so I guess once auto-import gets smarter about re-exports that heuristic wouldn't help much here. Possibly this is just another example of @sharkdp's proposed heuristic in https://github.com/astral-sh/ty/issues/1274#issuecomment-3345884227 where we'd just arbitrarily favour the `typing` module over other stdlib modules.
+
+---
+
+_Comment by @sharkdp on 2025-11-11 14:11_
+
+> where we'd just arbitrarily favour the `typing` module over other stdlib modules
+
+I can't find the reference anymore, but I argued elsewhere that this should be based on real-world usage. For example, here is a quick and dirty way to measure the frequency of stdlib imports across the mypy_primer ecosystem:
+
+Get a list of stdlib modules:
+```bash
+▶ cut -d: -f1 crates/ty_vendored/vendor/typeshed/stdlib/VERSIONS | rg -v '#' | xargs echo | sed -e 's/ /|/g' -e 's/\./\\./g'
+```
+
+Then use the resulting regex to run this across the ecosystem:
+```
+▶ rg '^import (__future__|…|zoneinfo)\b' --only-matching --no-filename | sort | uniq -c | sort -nr | head -n40
+   6370 import os
+   6308 import logging
+   6045 import sys
+   3285 import re
+   2200 import json
+   2159 import asyncio
+   1939 import typing
+   1904 import unittest
+   1783 import time
+   1691 import warnings
+   1182 import datetime
+   1114 import subprocess
+   1050 import functools
+    987 import contextlib
+    962 import argparse
+    909 import shutil
+    840 import itertools
+    816 import threading
+    809 import math
+    800 import tempfile
+    792 import io
+    692 import inspect
+    688 import pathlib
+    676 import copy
+    668 import textwrap
+    622 import collections
+    611 import random
+    608 import dataclasses
+    543 import importlib
+    502 import socket
+    483 import types
+    433 import operator
+    425 import uuid
+    392 import pickle
+    387 import enum
+    384 import platform
+    370 import traceback
+    363 import urllib
+    325 import codecs
+    319 import abc
+
+▶ rg 'from (__future__|…|zoneinfo) import' --only-matching --no-filename | sort | uniq -c | sort -nr | head -n20
+  29560 from typing import
+  16719 from __future__ import
+   7903 from collections.abc import
+   3893 from datetime import
+   3187 from typing_extensions import
+   3077 from pathlib import
+   2850 from dataclasses import
+   2165 from functools import
+   1837 from collections import
+   1278 from contextlib import
+   1212 from unittest import
+   1186 from enum import
+   1051 from types import
+    889 from itertools import
+    851 from io import
+    846 from abc import
+    719 from textwrap import
+    578 from uuid import
+    531 from http import
+    514 from _typeshed import
+```
+
+---
+
+_Comment by @AlexWaygood on 2025-11-11 14:16_
+
+> I can't find the reference anymore, but I argued elsewhere that this should be based on real-world usage.
+
+That does sound like a good idea. But a better corpus here would probably be something like the top 5,000 PyPI packages rather than the mypy_primer selection (which is quite biased towards projects that use type annotations, and therefore are probably more likely to use the `typing` module). Our users may be more interested in our LSP features than our type-checking features, which means they might not use anything from the `typing` module (and might have diagnostics switched off entirely!).
+
+There exists scripts out there to download and analyze the top 5,000 PyPI packages, but I can't remember who wrote them... but I could ask around
+
+---
+
+_Comment by @AlexWaygood on 2025-11-12 19:16_
+
+> There exists scripts out there to download and analyze the top 5,000 PyPI packages, but I can't remember who wrote them... but I could ask around
+
+here's how to easily download the top 5,000 PyPI packages: https://hugovk.dev/blog/2022/how-to-search-5000-python-projects/
+
+---
+
+_Comment by @sharkdp on 2025-11-13 14:32_
+
+Here's the full analysis across 116 million lines of Python source code (top 5k packages on PyPI). I think this is ample evidence to support the heuristic that `typing` should be at the top, at least for `from …` completions. If we want to somehow use this data as a basis for the ordering, see the attached CSV.
+
+<img width="989" height="889" alt="Image" src="https://github.com/user-attachments/assets/92b594c1-e37b-45eb-ae4c-0604c982cd0e" />
+
+<details>
+
+<summary>CSV with the full <code>import</code> analysis dataset</summary>
+
+```csv
+module,import_count,from_import_count,total_count
+typing,17776,211404,229180
+__future__,26,110247,110273
+re,52202,1201,53403
+sys,51544,1222,52766
+os,42952,2360,45312
+datetime,9057,27215,36272
+json,30145,1363,31508
+warnings,20375,10203,30578
+pprint,23828,6324,30152
+logging,27974,1804,29778
+dataclasses,3500,23081,26581
+unittest,11956,6029,17985
+collections,5717,11704,17421
+pathlib,2530,12951,15481
+functools,5568,8656,14224
+time,11146,1693,12839
+io,4750,6833,11583
+inspect,5513,5990,11503
+builtins,7261,3474,10735
+enum,2647,8055,10702
+abc,4410,5146,9556
+asyncio,8436,725,9161
+copy,5583,3441,9024
+contextlib,3430,5184,8614
+itertools,3894,3397,7291
+math,5778,1430,7208
+types,2150,4538,6688
+threading,4564,1521,6085
+uuid,4022,1959,5981
+subprocess,5084,804,5888
+tempfile,4601,925,5526
+importlib,3395,1486,4881
+ctypes,3811,921,4732
+argparse,3914,774,4688
+urllib,4030,643,4673
+shutil,4120,469,4589
+random,3863,680,4543
+pickle,3854,173,4027
+base64,2879,719,3598
+textwrap,1953,1362,3315
+socket,2637,648,3285
+traceback,2837,235,3072
+hashlib,2357,652,3009
+platform,2706,182,2888
+operator,1651,948,2599
+struct,2187,313,2500
+decimal,815,1462,2277
+http,544,1598,2142
+codecs,1920,192,2112
+ssl,1225,469,1694
+string,1308,365,1673
+ast,1346,239,1585
+glob,1145,357,1502
+weakref,1117,362,1479
+multiprocessing,970,488,1458
+errno,1290,110,1400
+signal,1225,95,1320
+binascii,710,539,1249
+gc,1038,20,1058
+queue,524,523,1047
+numbers,549,471,1020
+zipfile,703,312,1015
+xml,869,15,884
+shlex,765,74,839
+email,625,98,723
+gzip,631,81,712
+pkgutil,300,404,704
+csv,674,25,699
+atexit,696,2,698
+concurrent,517,143,660
+stat,569,78,647
+contextvars,252,378,630
+array,418,208,626
+doctest,583,26,609
+fnmatch,411,177,588
+tarfile,544,38,582
+ipaddress,330,245,575
+zlib,509,53,562
+calendar,476,82,558
+configparser,292,222,514
+html,305,167,472
+posixpath,411,58,469
+sysconfig,405,58,463
+mimetypes,424,37,461
+unicodedata,383,52,435
+zoneinfo,109,317,426
+optparse,192,227,419
+locale,377,20,397
+hmac,345,42,387
+_codecs,1,378,379
+_socket,56,310,366
+getpass,275,90,365
+difflib,250,115,365
+sqlite3,300,59,359
+secrets,301,46,347
+select,307,34,341
+gettext,49,284,333
+tkinter,191,130,321
+timeit,139,146,285
+bisect,156,120,276
+fcntl,222,35,257
+tokenize,181,63,244
+fractions,42,199,241
+tomllib,217,22,239
+heapq,142,92,234
+webbrowser,202,1,203
+_thread,122,72,194
+msvcrt,177,9,186
+keyword,127,49,176
+bz2,157,19,176
+_multibytecodec,168,1,169
+pdb,144,18,162
+termios,141,13,154
+mmap,127,27,154
+getopt,142,11,153
+resource,122,28,150
+dis,127,18,145
+linecache,118,22,140
+statistics,90,44,134
+socketserver,97,35,132
+pwd,121,9,130
+winreg,110,15,125
+filecmp,103,18,121
+selectors,99,16,115
+_collections_abc,10,104,114
+runpy,97,14,111
+lzma,94,15,109
+cProfile,94,13,107
+site,96,11,107
+_winapi,69,28,97
+_multiprocessing,39,58,97
+ntpath,80,15,95
+_ctypes,12,78,90
+copyreg,76,12,88
+_ssl,20,68,88
+_ast,29,58,87
+code,57,24,81
+pydoc,64,13,77
+annotationlib,14,62,76
+readline,73,1,74
+pstats,67,7,74
+faulthandler,72,1,73
+curses,55,13,68
+_io,38,30,68
+pty,61,6,67
+xmlrpc,60,7,67
+grp,61,6,67
+colorsys,43,23,66
+reprlib,34,31,65
+sre_constants,31,34,65
+marshal,55,6,61
+tty,58,3,61
+tracemalloc,48,12,60
+token,37,22,59
+smtplib,46,9,55
+ftplib,30,21,51
+wsgiref,33,18,51
+venv,36,14,50
+py_compile,37,10,47
+zipimport,31,15,46
+_asyncio,3,41,44
+cmd,30,13,43
+cmath,25,16,41
+opcode,28,13,41
+profile,29,10,39
+wave,39,0,39
+plistlib,33,4,37
+_curses,5,32,37
+genericpath,1,36,37
+dbm,21,15,36
+_sqlite3,1,35,36
+_csv,4,30,34
+fileinput,28,5,33
+_tkinter,32,0,32
+shelve,32,0,32
+_operator,1,31,32
+this,31,0,31
+netrc,14,14,28
+_hashlib,2,25,27
+rlcompleter,20,7,27
+_posixsubprocess,27,0,27
+bdb,16,11,27
+encodings,20,6,26
+_frozen_importlib_external,4,22,26
+pyexpat,7,19,26
+sre_parse,16,9,25
+_frozen_importlib,7,18,25
+_decimal,0,25,25
+_imp,13,11,24
+compression,7,17,24
+syslog,20,1,21
+_zstd,7,14,21
+posix,10,11,21
+_locale,0,21,21
+_interpreters,11,9,20
+_pickle,5,15,20
+_weakref,3,17,20
+compileall,15,4,19
+_weakrefset,1,18,19
+_posixshmem,18,0,18
+nturl2path,2,13,15
+stringprep,11,4,15
+codeop,6,9,15
+_interpqueues,2,12,14
+_markupbase,4,9,13
+_json,2,11,13
+_osx_support,12,0,12
+mailbox,10,2,12
+graphlib,5,7,12
+pickletools,8,3,11
+nt,6,5,11
+_lzma,2,7,9
+_random,9,0,9
+imaplib,9,0,9
+_struct,1,7,8
+_pyio,3,5,8
+_warnings,0,8,8
+_tracemalloc,0,8,8
+_bisect,0,8,8
+_sitebuiltins,7,0,7
+sre_compile,7,0,7
+_lsprof,7,0,7
+sched,4,3,7
+trace,7,0,7
+_datetime,1,6,7
+_queue,0,7,7
+_blake2,0,7,7
+_gdbm,0,7,7
+_dbm,0,7,7
+_contextvars,0,7,7
+_heapq,0,7,7
+_bz2,0,7,7
+_stat,0,7,7
+_curses_panel,0,7,7
+_md5,6,0,6
+idlelib,3,2,5
+_overlapped,4,1,5
+_string,3,2,5
+zipapp,5,0,5
+quopri,2,3,5
+_strptime,4,0,4
+turtle,2,2,4
+symtable,4,0,4
+_pyrepl,3,1,4
+_threading_local,1,2,3
+modulefinder,3,0,3
+_functools,3,0,3
+_collections,0,3,3
+_aix_support,0,3,3
+_scproxy,0,2,2
+_types,0,2,2
+winsound,1,0,1
+_compat_pickle,1,0,1
+_opcode,1,0,1
+_colorize,1,0,1
+_sha1,1,0,1
+tabnanny,1,0,1
+_py_abc,1,0,1
+_tokenize,1,0,1
+_sre,1,0,1
+_signal,0,1,1
+_remote_debugging,0,1,1
+pyclbr,0,1,1
+pydoc_data,0,1,1
+```
+
+</details>
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2025-11-14 08:08_
+
+---
+
+_Comment by @BurntSushi on 2025-11-14 13:06_
+
+As another data point here, pylance seems to sometimes suggest `typing` over other options, but not always. It suggests `typing` first for `Protocol`, `TextIO` and `OrderedDict`. But it suggests `ast` first for `Set` and `TypeVar`.
+
+https://github.com/user-attachments/assets/ef6dbcb0-ac31-46dd-b5d6-2c4c48af938e
+
+---
+
+_Comment by @AlexWaygood on 2025-11-14 13:11_
+
+`typing.Set` is deprecated, so it makes sense to me to suggest `ast.Set` over `typing.Set` (you can just use `set` on all non-end-of-life Python versions at this point).
+
+`typing.TypeVar` is deprecated as well, I _guess_ -- you're encouraged to use PEP-695 syntax if you're targeting Python 3.12 or newer. But most code still wants to support Python 3.10 and Python 3.11, and PEP-695 syntax can't be parsed on those versions.
+
+---
+
+_Comment by @BurntSushi on 2025-11-14 13:22_
+
+Yeah I used `TypeVar` because @sharkdp specifically mentioned it here: https://github.com/astral-sh/ty/issues/1274#issuecomment-3345884227
+
+`TypeVar` [isn't mentioned as deprecated](https://docs.python.org/3/library/typing.html#typing.TypeVar), but I guess it does say:
+
+> The following classes should not be used directly as annotations. Their intended purpose is to be building blocks for creating generic types and type aliases. These objects can be created through special syntax ([type parameter lists](https://docs.python.org/3/reference/compound_stmts.html#type-params) and the [type](https://docs.python.org/3/reference/simple_stmts.html#type) statement). For compatibility with Python 3.11 and earlier, they can also be created without the dedicated syntax, as documented below.
+
+So maybe `TypeVar` needs special treatment or something?
+
+---
+
+_Comment by @AlexWaygood on 2025-11-14 13:27_
+
+Yeah, I've made a few edits to the typing.py docs in the past to really emphasise the "‼️‼️ Deprecated ‼️‼️" nature of the legacy aliases like `typing.Set`. There's no reason for anybody to use them anymore. But that just doesn't apply for `TypeVar`: for most users, it's still probably not possible to use the _new_ syntax. So I don't have the appetite to emphasise the deprecation in the typing docs anymore than we already do 😄
+
+---
+
+_Comment by @Yura52 on 2025-12-17 13:11_
+
+Hi! There is a chance that the following issues are already reported, but sharing them just in case (`ty==0.0.2`).
+
+(1) When typing `torch` before importing the module, the relevant package is not ranked first:
+
+<img width="902" height="499" alt="Image" src="https://github.com/user-attachments/assets/dc99030d-24ba-4d32-9172-ab30eeca3cb1" />
+
+(2) When accessing an existing attribute, it is not ranked first:
+
+<img width="1162" height="360" alt="Image" src="https://github.com/user-attachments/assets/abbe72c0-22c7-4aba-8b52-f9fa558f5654" />
+
+---
+
+_Comment by @BurntSushi on 2025-12-17 14:20_
+
+@Yura52 Thank you for sharing!
+
+For the first one, I think https://github.com/astral-sh/ty/issues/1857 should probably cover that (I added a note specifically about your case).
+
+For the second one, can you say more? It looks like there is an attribute named `wei` which precisely matches what has been typed.
+
+---
+
+_Comment by @Yura52 on 2025-12-17 15:12_
+
+@BurntSushi Regarding the second one, here is a better example:
+
+<img width="1010" height="272" alt="Image" src="https://github.com/user-attachments/assets/4ae51d84-66f9-4a35-83a5-6f6cf5510bb6" />
+
+My guess is that the redefined `__getattr__` of `torch.nn.Module` is what confuses `ty`. A somewhat related in spirit (not sure if related technically) issue is https://github.com/astral-sh/ty/issues/1460
+
+---
+
+_Comment by @AndBoyS on 2025-12-18 09:14_
+
+Symbols from local source code should be prioritized over third-party libraries and maybe builtins (if symbol is not found in current scope, check for symbols from project code first)
+Also, I miss popular imports like `import numpy as np`, `import pandas as pd`. Having an option to add custom ones would be even better, though I'm not sure how interesting that will be to other users
+
+
+---
+
+_Comment by @AlexWaygood on 2025-12-18 13:37_
+
+> Also, I miss popular imports like `import numpy as np`, `import pandas as pd`. Having an option to add custom ones would be even better, though I'm not sure how interesting that will be to other users
+
+It would be nice if Ruff and ty could be consistent on this. Ruff has a list of common import conventions [here](https://github.com/astral-sh/ruff/blob/8d32ad1cab7b78675e8fe56740013d61e315142c/crates/ruff_linter/src/rules/flake8_import_conventions/settings.rs#L12-L29), which can be customised using the `tool.ruff.lint.flake8-import-conventions.aliases` and `tool.ruff.lint.flake8-import-conventions.extend-aliases` configuration settings.
+
+I'm not sure if we want to offer this as a configuration setting or not, but we should at least consider moving Ruff's default list of import conventions to a location where it can be reused by ty
+
+---
+
+_Removed from milestone `Stable` by @MichaReiser on 2025-12-31 16:34_
+
+---
+
+_Added to milestone `Pre-stable 1` by @MichaReiser on 2025-12-31 16:34_
+
+---
+
+_Closed by @BurntSushi on 2026-01-09 14:55_
+
+---

@@ -1,0 +1,113 @@
+---
+number: 921
+title: "No call signature checking for implicit calls to `__eq__` or `__ne__` methods"
+type: issue
+state: open
+author: MatthewMckee4
+labels:
+  - help wanted
+assignees: []
+created_at: 2025-07-31T18:28:55Z
+updated_at: 2026-01-09T19:22:10Z
+url: https://github.com/astral-sh/ty/issues/921
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# No call signature checking for implicit calls to `__eq__` or `__ne__` methods
+
+---
+
+_Issue opened by @MatthewMckee4 on 2025-07-31 18:28_
+
+Currently, we don't emit any diagnostics here.
+
+I believe these should be unsupported operator errors, that we don't emit
+
+```py
+class A:
+    __eq__ = None
+
+
+reveal_type(A() == A()) # revealed: bool
+
+
+class B:
+    def __eq__(self, other: int) -> bool:
+        return True
+
+
+reveal_type(B() == "a") # revealed: bool
+```
+
+https://github.com/astral-sh/ruff/pull/19666 mentions some of these issues.
+
+I believe the main issue is from https://github.com/astral-sh/ruff/blob/a3f28baab4fc085e1448484be23df7036d13191d/crates/ty_python_semantic/src/types/infer.rs#L8070-L8074
+
+---
+
+_Label `help wanted` added by @carljm on 2025-08-05 02:20_
+
+---
+
+_Comment by @carljm on 2026-01-09 02:12_
+
+Hmm, looking at this again, I think there should be Liskov violations on `__eq__ = None` and `def __eq__(...` lines, and I'm not sure we should emit unsupported operator errors. `object` has `def __eq__(self, value: object, /) -> bool: ...`, so we should assume all objects support that much, and error on any attempt to define a class that does not.
+
+(We do now emit a Liskov violation on the method override in `B`; we don't yet on `__eq__ = None` in `A`, but I think that's just a known limitation in our current Liskov checks?)
+
+Closing this, but also pinging @AlexWaygood to check if I'm off-base here :)
+
+---
+
+_Closed by @carljm on 2026-01-09 02:12_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-09 13:43_
+
+I think there's still more to do here aside from the missing part of our Liskov implementation (which is tracked in https://github.com/astral-sh/ty/issues/2156). Consider this example: https://play.ty.dev/94ac813c-4047-4e9f-b559-e00bd31a4247. Even once we've fully implemented the Liskov Substitution Principle, the user won't get any diagnostics about the Liskov violation in the `Foo` class, because it's from a third-party package, and third-party packages aren't checked for typing violations. But we have more than enough information to warn the user nonetheless that the `==` operation will fail, and it behooves us in general to emulate the semantics at runtime, and the interpreter at runtime will actually try to call the `__eq__` attribute on the `Foo` class. So I think that ideally we would emit a diagnostic at the location of the `==` operation as well as at the location of the `__eq__` definition.
+
+And we don't seem to do call-signature checking of `__eq__` methods at all at the moment? We emit a Liskov diagnostic here, but no `unsupported-operator` diagnostic at the location of the `==` operation itself.
+
+```py
+from dataclasses import dataclass
+
+@dataclass
+class Foo:
+    x: int
+
+    def __eq__(self, other: Foo) -> bool:
+        return self.x == other.x
+
+class Bar: ...
+
+Foo(42) == Bar()
+```
+
+That's inconsistent with how we treat all other implicit dunder calls, where we would generally check the call signature entirely independently to any concern about whether the Liskov principle had been violated:
+
+```py
+from typing import Sequence
+
+class Foo(Sequence[int]):
+    # invalid-method-override emitted here
+    def __getitem__(self, index: str) -> int:
+        raise NotImplementedError
+
+# But `invalid-argument-type` still emitted here, independently!
+Foo()[42]
+```
+
+---
+
+_Reopened by @AlexWaygood on 2026-01-09 13:43_
+
+---
+
+_Renamed from "Improve unsupported operator diagnostics" to "No call signature checking for implicit calls to `__eq__` or `__ne__` methods" by @AlexWaygood on 2026-01-09 13:44_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-09 19:22_
+
+---

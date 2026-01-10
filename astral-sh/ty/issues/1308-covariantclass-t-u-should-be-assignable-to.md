@@ -1,0 +1,144 @@
+---
+number: 1308
+title: "`CovariantClass[T | U]` should be assignable to `CovariantClass[T] | CovariantClass[U]`"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - bug
+  - type properties
+assignees: []
+created_at: 2025-10-04T17:54:41Z
+updated_at: 2026-01-09T19:34:24Z
+url: https://github.com/astral-sh/ty/issues/1308
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# `CovariantClass[T | U]` should be assignable to `CovariantClass[T] | CovariantClass[U]`
+
+---
+
+_Issue opened by @AlexWaygood on 2025-10-04 17:54_
+
+### Summary
+
+On `main` we have this behaviour:
+
+```py
+from typing import reveal_type
+from ty_extensions import is_subtype_of
+
+class Covariant[T]:
+    def get(self) -> T:
+        raise NotImplementedError
+
+# revealed: `ConstraintSet[never]`
+reveal_type(is_subtype_of(Covariant[int | str], Covariant[str] | Covariant[int]))
+```
+
+This is incorrect: due to covariance, the types `Covariant[int | str]` and `Covariant[str] | Covariant[int]` are actually equivalent types.
+
+Possibly we could fix this by ensuring that (for covariant and bivariant types) we always eagerly explode unions when creating specialized generics. So, similar to the way the type  `T & (U | V)` can never exist in our type representation (we would always represent the type as `(T & U) | (T & V)`, we would never permit the type `Covariant[int | str]` to exist in our internal representation (it would always be represented internally as `Covariant[str] | Covariant[int]`).
+
+The same issue exists for tuples (https://github.com/astral-sh/ty/issues/493 tracks that)
+
+### Version
+
+_No response_
+
+---
+
+_Label `bug` added by @AlexWaygood on 2025-10-04 17:54_
+
+---
+
+_Label `type properties` added by @AlexWaygood on 2025-10-04 17:54_
+
+---
+
+_Comment by @Wizzerinus on 2025-10-05 14:54_
+
+Note that this is only true if you do not use a backward constraint inference, i.e.
+```py
+@dataclass(frozen=True)
+class Covariant[T]:
+  first: T
+  second: T
+
+def thing(x: Covariant[int | str]):
+  if isinstance(x.first, int):
+    assert_type(x.second, int)   # this assertion must fail, despite the type suggested to be used internally allowing for this assertion
+```
+
+---
+
+_Comment by @carljm on 2026-01-09 03:05_
+
+I think @Wizzerinus' point is really broader than it is stated -- regardless of whether we do backwards constraint inference or not, the equivalence proposed here is not sound. The type `Covariant[int | str]` is not equivalent to `Covariant[int] | Covariant[str]`, because (given the definition of `Covariant` from @Wizzerinus ) an object with `first: int` and `second: str` is an inhabitant of `Covariant[int | str]`, but it is not an inhabitant of either `Covariant[int]` nor `Covariant[str]`.
+
+Similarly, in the OP example, an object which sometimes returns `int` and sometimes returns `str` from its `get` method (in other words, has `def get(self) -> int | str`) would inhabit `Covariant[int | str]`, but neither `Covariant[int]` nor `Covariant[str]`.
+
+Closing as not planned -- @AlexWaygood feel free to reopen if I'm missing something!
+
+---
+
+_Closed by @carljm on 2026-01-09 03:05_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-09 13:31_
+
+I had to work this out a bit more fully to get it straight in my head, but yes, I think you're correct here. The equivalence and subtyping relationships I proposed in the OP do not hold:
+
+```py
+from typing import reveal_type, Protocol
+from ty_extensions import is_subtype_of
+
+class CovariantProtocol[T](Protocol):
+    def get1(self) -> T: ...
+    def get2(self) -> T: ...
+
+class A:
+    def get1(self) -> int:
+        return 42
+    
+    def get2(self) -> str:
+        return "42"
+
+# We seek to prove or refute the hypotheses that for a covariant type `C`:
+# - C[int | str] == C[int] | C[str]
+# - C[int | str] <: C[int] | C[str]
+#
+# `A` in the above example is a subtype of `CovariantProtocol[int | str]`,
+# but it is not a subtype of `CovariantProtocol[int]` or `CovariantProtocol[str]`.
+# This means that `CovariantProtocol[int | str]` cannot be considered equivalent to
+# `CovariantProtocol[int] | CovariantProtocol[str]`, since for any union `U`,
+# `T <: U` only holds true if `T` is a subtype of one or more elements in `U`.
+#
+# Equivalence therefore is disproven, but what about subtyping?
+# `T` is a subtype of `S` if there is no possible runtime inhabitant of `T`
+# that would not also inhabit `S`. Here again, the above example disproves this.
+# `A` inhabits `CovariantProtocol[int | str]`, but it does not inhabit
+# `CovariantProtocol[int]` or `CovariantProtocol[str]`, therefore does not
+# inhabit `CovariantProtocol[int] | CovariantProtocol[str]`. 
+```
+
+Something I'm still not quite clear on, though, is: what makes tuples special? Why does https://github.com/astral-sh/ty/issues/493 (based on the equivalence rules laid out in https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules) still hold true, despite the fact that it is not generally true for immutable covariant types?
+
+---
+
+_Comment by @carljm on 2026-01-09 19:32_
+
+I think in this case our knowledge of the runtime details of tuples allows us to make stronger guarantees. In particular, we know (outside of the type system) that for a given type parameter of a (non-variadic) tuple type, it corresponds to exactly one (immutable) value stored in the tuple: there is no way for a `tuple[int | str]` to contain both an int and a str, both typed as `int | str`.
+
+That makes the `tuple[int | str] == tuple[int] | tuple[str]` equivalence safe. But as far as the type system is concerned, this is something we just have to define as a special case, because it is not generally true for all covariant generics.
+
+It's also worth noting that #493 cannot apply to variadic tuples: `tuple[int | str, ...]` is not equivalent to `tuple[int, ...] | tuple[str, ...]`, because `(1, "foo")` inhabits the first type, but not the second. Variadic tuples (like most generic types) do not have the "type argument corresponds to precisely one immutable value" property.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-09 19:34_
+
+thank you! That makes sense to me.
+
+---

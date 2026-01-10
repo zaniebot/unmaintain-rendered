@@ -1,0 +1,82 @@
+---
+number: 1220
+title: "`Callable` not validated properly as a base class"
+type: issue
+state: closed
+author: KotlinIsland
+labels:
+  - wish
+  - runtime semantics
+  - typing semantics
+assignees: []
+created_at: 2025-09-20T15:11:50Z
+updated_at: 2026-01-09T20:39:48Z
+url: https://github.com/astral-sh/ty/issues/1220
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# `Callable` not validated properly as a base class
+
+---
+
+_Issue opened by @KotlinIsland on 2025-09-20 15:11_
+
+### Summary
+
+```py
+from collections.abc import Callable
+
+class A(Callable[int]):  # no error
+    pass
+```
+
+### Version
+
+_No response_
+
+---
+
+_Label `wish` added by @AlexWaygood on 2025-09-22 12:48_
+
+---
+
+_Label `runtime semantics` added by @AlexWaygood on 2025-09-22 12:48_
+
+---
+
+_Label `typing semantics` added by @AlexWaygood on 2025-09-22 12:48_
+
+---
+
+_Added to milestone `Z post-stable` by @carljm on 2025-11-15 01:58_
+
+---
+
+_Removed from milestone `Z post-stable` by @carljm on 2025-11-18 16:10_
+
+---
+
+_Comment by @MichaReiser on 2026-01-09 08:41_
+
+I believe this is now resolved. 
+
+```py
+from collections.abc import Callable
+
+class A(Callable[[], int]):  # no error
+    pass
+```
+
+raises 
+
+```
+    Unsupported class base with type `<typing.Callable special-form '() -> int'>` (unsupported-base) [Ln 3, Col 9]
+```
+
+https://play.ty.dev/d96e5710-3566-4f49-8872-416eee15c31a
+
+---
+
+_Closed by @carljm on 2026-01-09 20:39_
+
+---

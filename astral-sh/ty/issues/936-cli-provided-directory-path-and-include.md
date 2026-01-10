@@ -1,0 +1,237 @@
+---
+number: 936
+title: CLI provided directory path and include
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - cli
+  - configuration
+  - needs-decision
+assignees: []
+created_at: 2025-08-05T07:42:12Z
+updated_at: 2026-01-09T09:37:41Z
+url: https://github.com/astral-sh/ty/issues/936
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# CLI provided directory path and include
+
+---
+
+_Issue opened by @MichaReiser on 2025-08-05 07:42_
+
+### Summary
+
+```
+dir1/
+└─ test.py
+dir2/
+└─ test.py
+```
+
+`pyproject.toml`:
+
+```toml
+[tool.ty.src]
+include = ["dir1"]
+```
+
+```
+> ty check dir1 -v
+INFO Indexed 1 file(s) in 0.005s
+All checks passed!
+
+> ty check dir2 -v 
+INFO Indexed 0 file(s) in 0.005s
+WARN No python files found under the given path(s)
+All checks passed!
+
+> ty check dir2/test.py -v
+INFO Indexed 1 file(s) in 0.003s
+All checks passed!
+```
+
+
+i would expect ty check dir2 -v to index 1 file (dir2/test.py)
+when i remove the config from pyproject.toml it behaves as expected
+
+### Version
+
+_No response_
+
+---
+
+_Label `cli` added by @MichaReiser on 2025-08-05 07:42_
+
+---
+
+_Label `configuration` added by @MichaReiser on 2025-08-05 07:42_
+
+---
+
+_Comment by @leandrobbraga on 2025-08-05 09:35_
+
+I was having a look at this and it seems that every file was going through this function here:
+https://github.com/astral-sh/ruff/blob/main/crates/ty_project/src/walk.rs#L74-L84
+```rust
+    pub(crate) fn is_file_included(
+        &self,
+        path: &SystemPath,
+        mode: GlobFilterCheckMode,
+    ) -> IncludeResult {
+        match self.match_included_paths(path, mode) {
+            None => IncludeResult::NotIncluded,
+            Some(CheckPathMatch::Partial) => self.src_filter.is_file_included(path, mode),
+            Some(CheckPathMatch::Full) => IncludeResult::Included,
+        }
+    }
+```
+
+https://github.com/astral-sh/ruff/blob/main/crates/ty_project/src/walk.rs#L34-L59
+```rust
+    fn match_included_paths(
+        &self,
+        path: &SystemPath,
+        mode: GlobFilterCheckMode,
+    ) -> Option<CheckPathMatch> {
+        match mode {
+            GlobFilterCheckMode::TopDown => Some(CheckPathMatch::Partial),
+            GlobFilterCheckMode::Adhoc => {
+                self.included_paths
+                    .iter()
+                    .filter_map(|included_path| {
+                        if let Ok(relative_path) = path.strip_prefix(included_path) {
+                            // Exact matches are always included
+                            if relative_path.as_str().is_empty() {
+                                Some(CheckPathMatch::Full)
+                            } else {
+                                Some(CheckPathMatch::Partial)
+                            }
+                        } else {
+                            None
+                        }
+                    })
+                    .max()
+            }
+        }
+    }
+```
+
+https://github.com/astral-sh/ruff/blob/main/crates/ty_project/src/glob.rs#L48-L61
+```rust
+    pub(crate) fn is_file_included(
+        &self,
+        path: &SystemPath,
+        mode: GlobFilterCheckMode,
+    ) -> IncludeResult {
+        if self.exclude.match_file(path, mode) {
+            IncludeResult::Excluded
+        } else if self.include.match_file(path) {
+            IncludeResult::Included
+        } else {
+            IncludeResult::NotIncluded
+        }
+    }
+}
+```
+It seems that the walk always uses `GlobFilterCheckMode::TopDown` which results in `CheckPathMatch::Partial` which always check for includes and excludes, so the `test.py` ends being classified as `NotIncluded`.
+
+The comments mentions that explicitly provided paths should always be included, but I believe it only works for the explicitly declared path, not it sub files and folders.
+
+---
+
+_Comment by @MichaReiser on 2025-08-05 09:58_
+
+that analysis makes sense. It's also not entirely clear if we want the behavior described above. E.g it becomes more ambiguous with non directory includes, e.g. `["**/lib.py"]`. Should  `dir2/main.py` be included or not (probably not?)
+
+---
+
+_Comment by @leandrobbraga on 2025-08-07 23:24_
+
+What do you think about implementing the following behavior?
+
+# Option 1
+
+**Ignore includes/excludes from pyproject.toml:**
+- When the user explicitly provides specific paths as arguments (e.g., `ty check dir2`, `ty check src/file.py`)
+
+**Use includes/excludes from pyproject.toml:**
+- When no explicit paths are provided and the tool needs to discover files automatically (e.g., `ty check` with no arguments)
+- When the user provides `--project` and points to a specific project
+
+The drawback is that it might be surprising to ignore includes/excludes if the user provides a path containing a pyproject.toml file (e.g., `ty check project_folder` or `ty check .` while PWD is a project). As an alternative we might consider the following rules:
+
+# Option 2
+
+**Ignore includes/excludes from pyproject.toml:**
+- When the user explicitly provides specific files (`ty check src/file.py`)
+- When the user explicitly provides a folder that does not contain a pyproject.toml file (e.g., `ty check dir1/`)
+
+**Use includes/excludes from pyproject.toml:**
+- When no explicit paths are provided and the tool needs to discover files automatically (e.g., `ty check` with no arguments)
+- When the user provides `--project` and points to a specific project (e.g., `ty check --project my_project`)
+- When the user provides a folder that contains a pyproject.toml file (e.g., `ty check .`)
+
+
+---
+
+_Comment by @MichaReiser on 2025-08-08 07:43_
+
+Thanks for coming up with those options.
+
+I don't think we should always ignore `include` and `exclude` if a path's provided. That prevents users from e.g. excluding all jupyter notebooks or directories they don't care about. It would also result in ty traversing into `.git` directories (and `.venv`, `node_modules`) which is unlikely what users want. That's why I think Option 1 isn't viable.
+
+
+The other reason why I don't think it's feasible to ignore `include` and `exclude` (which applies to both options) is that you can write `ty check app --exclude "**/*.ipynb"`. We can't just ignore the second argument. 
+
+That's why I'm still leaning towards adding an implicit `dir/**/*` include if the user runs `check dir` 
+
+---
+
+_Comment by @leandrobbraga on 2025-08-08 10:04_
+
+I see what you mean, it makes sense to me 
+
+---
+
+_Comment by @MichaReiser on 2025-08-10 13:46_
+
+The ecosystem results in https://github.com/astral-sh/ruff/pull/19841#issuecomment-3170656463 are interesting. `streamlit` has `lib/streamlit` in the [include configuration](https://github.com/streamlit/streamlit/blob/6951eef787318ff8b0cc0ec08180842895167136/ty.toml#L19-L20). That means, running `ty check lib` only checks the `streamlit` folder, which matches my expectation. 
+
+However, running `ty check lib/tests` checks no files, which I at least find confusing. However, it also matches Ruff's behavior, as @leandrobbraga pointed out on their PR. 
+
+Users can use a negative exclude to get the desired behavior, but it's not very obvious: 
+
+```toml
+[src]
+exclude = ["lib/*", "!lib/streamline"]
+```
+
+and it gets pretty verbose when including multiple folders per level
+
+---
+
+_Comment by @MichaReiser on 2025-12-31 15:30_
+
+We should make a decision on this before stable based on feedback. But I currently aren't convinced that we should change anything (we haven't received more feedback on this, suggesting that what we have is intuitive)
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2025-12-31 15:30_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-12-31 15:31_
+
+---
+
+_Comment by @MichaReiser on 2026-01-09 09:37_
+
+I'll close this for now, given that we haven't received any other feedback that this is confusing. If you come across this issue and do find the existing behavior confusing, please open a new issue
+
+---
+
+_Closed by @MichaReiser on 2026-01-09 09:37_
+
+---

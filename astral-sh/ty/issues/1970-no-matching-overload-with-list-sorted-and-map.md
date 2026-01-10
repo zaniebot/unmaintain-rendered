@@ -1,0 +1,160 @@
+---
+number: 1970
+title: "`no-matching-overload` with list/sorted and `map`/`filter`"
+type: issue
+state: open
+author: AA-Turner
+labels:
+  - generics
+assignees: []
+created_at: 2025-12-17T01:59:33Z
+updated_at: 2026-01-09T15:29:27Z
+url: https://github.com/astral-sh/ty/issues/1970
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# `no-matching-overload` with list/sorted and `map`/`filter`
+
+---
+
+_Issue opened by @AA-Turner on 2025-12-17 01:59_
+
+### Summary
+
+Error is new in ty 0.0.2, not present in 0.0.1a35. Seems to occur when `map` / `filter` are put into `list`/`sorted`. Oddly, the first error goes away when directly returning the function call instead of using the temp variable.
+
+A
+
+Playground link: https://play.ty.dev/10c125c1-9480-475a-a076-861ade84c805
+
+Reproducer:
+
+```python
+import re
+from collections.abc import Iterable
+from typing import Any
+
+def func(obj: Any) -> list[str | Any]:
+    if isinstance(obj, (list, tuple, set, frozenset)):
+        lst = sorted(map(func, obj), key=str) # No overload of function `sorted` matches arguments (no-matching-overload) [Ln 7, Col 15]
+        return lst
+    return [obj]
+
+def patfilter(names: Iterable[str], pat: str) -> list[str]:
+    match = re.compile(pat).match
+    return list(filter(match, names))  # No overload of function `__new__` matches arguments (no-matching-overload) [Ln 13, Col 17]
+```
+
+Original output:
+
+```
+error[no-matching-overload]: No overload of function `sorted` matches arguments
+  --> sphinx\util\_serialise.py:49:16
+   |
+47 |     if isinstance(obj, (list, tuple, set, frozenset)):
+48 |         # Convert to a sorted list
+49 |         return sorted(map(_stable_str_prep, obj), key=str)
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+50 |     if isinstance(obj, (type, types.FunctionType)):
+51 |         # The default repr() of functions includes the ID, which is not ideal.
+   |
+info: First overload defined here
+    --> stdlib\builtins.pyi:4312:5
+     |
+4311 |   @overload
+4312 |   def sorted(
+     |  _____^
+4313 | |     iterable: Iterable[SupportsRichComparisonT], /, *, key: None = None, reverse: bool = False
+4314 | | ) -> list[SupportsRichComparisonT]:
+     | |__________________________________^
+4315 |       """Return a new list containing all items from the iterable in ascending order.
+     |
+info: Possible overloads for function `sorted`:
+info:   (iterable: Iterable[SupportsRichComparisonT@sorted], *, /, key: None = None, reverse: bool = False) -> list[SupportsRichComparisonT@sorted]
+info:   (iterable: Iterable[_T@sorted], *, /, key: (_T@sorted, /) -> SupportsDunderLT[Any] | SupportsDunderGT[Any], reverse: bool = False) -> list[_T@sorted]
+info: rule `no-matching-overload` is enabled by default
+
+error[no-matching-overload]: No overload of function `__new__` matches arguments
+   --> sphinx\util\matching.py:112:17
+    |
+110 |         _pat_cache[pat] = re.compile(_translate_pattern(pat))
+111 |     match = _pat_cache[pat].match
+112 |     return list(filter(match, names))
+    |                 ^^^^^^^^^^^^^^^^^^^^
+    |
+info: First overload defined here
+    --> stdlib\builtins.pyi:3623:9
+     |
+3622 |     @overload
+3623 |     def __new__(cls, function: None, iterable: Iterable[_T | None], /) -> Self: ...
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3624 |     @overload
+3625 |     def __new__(cls, function: Callable[[_S], TypeGuard[_T]], iterable: Iterable[_S], /) -> Self: ...
+     |
+info: Possible overloads for function `__new__`:
+info:   (cls, function: None, iterable: Iterable[_T@filter | None], /) -> Self@__new__
+info:   (cls, function: (_S@__new__, /) -> @Todo, iterable: Iterable[_S@__new__], /) -> Self@__new__
+info:   (cls, function: (_S@__new__, /) -> TypeIs[_T@filter], iterable: Iterable[_S@__new__], /) -> Self@__new__
+info:   (cls, function: (_T@filter, /) -> Any, iterable: Iterable[_T@filter], /) -> Self@__new__
+info: rule `no-matching-overload` is enabled by default
+
+Found 2 diagnostics
+```
+
+
+### Version
+
+ty 0.0.2 (42835578d 2025-12-16)
+
+---
+
+_Label `generics` added by @AlexWaygood on 2025-12-17 07:39_
+
+---
+
+_Comment by @mnannan-t on 2025-12-17 09:36_
+
+I got a similar issue in `0.0.2` so posting in a comment rather than creating a new issue for the moment .
+I don't know if it's 100% the same thing but it looks related to `overload` and was not present 0.0.1a35 but is in 0.0.2.
+
+https://play.ty.dev/774b7ff6-b62c-4aa6-a8fe-4669261aa0de
+
+```  python
+import re
+
+
+def main():
+    string_list = ['abc12345', 'def67890']
+    sorted_markers_with_key = sorted(string_list, key=len)
+    # Type checker error on this line
+    _ = '|'.join(re.escape(marker) for marker in sorted_markers_with_key)
+
+    sorted_markers_without_key = sorted(string_list, reverse=True)
+    _ = '|'.join(re.escape(marker) for marker in sorted_markers_without_key)
+
+```
+
+```
+Argument to function `escape` is incorrect: Argument type `Unknown | Sized` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr` (invalid-argument-type) [Ln 8, Col 28]
+```
+Adding `key` breaks the typing and typing looks to be inferred from the `key` rather than the iterable.
+
+---
+
+_Added to milestone `M1` by @carljm on 2025-12-23 21:20_
+
+---
+
+_Renamed from "ty 0.0.2: `no-matching-overload` with list/sorted and `map`/`filter`" to "`no-matching-overload` with list/sorted and `map`/`filter`" by @carljm on 2025-12-23 21:20_
+
+---
+
+_Comment by @carljm on 2025-12-23 21:21_
+
+Yes, the common factor in these cases looks like solving a generic call where the same typevar appears twice, once inside a `Callable` type and also elsewhere in the signature.
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2026-01-09 15:29_
+
+---

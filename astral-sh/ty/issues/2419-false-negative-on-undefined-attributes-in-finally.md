@@ -1,0 +1,114 @@
+---
+number: 2419
+title: "False negative on undefined attributes in `finally` block"
+type: issue
+state: closed
+author: lihu-zhong
+labels: []
+assignees: []
+created_at: 2026-01-09T16:56:08Z
+updated_at: 2026-01-09T17:22:06Z
+url: https://github.com/astral-sh/ty/issues/2419
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# False negative on undefined attributes in `finally` block
+
+---
+
+_Issue opened by @lihu-zhong on 2026-01-09 16:56_
+
+### Summary
+
+Observed behavior:
+
+```python
+def example() -> None:
+    input_path = "foo"
+
+    try:
+        raise RuntimeError
+
+    except RuntimeError:
+        return
+
+    finally:
+        input_path.asdfasdf()
+```
+
+```bash
+$ uv run ty --version
+ty 0.0.10
+$ uv run ty check test.py 
+All checks passed!
+$ uv run mypy test.py 
+test.py:11: error: "str" has no attribute "asdfasdf"  [attr-defined]
+Found 1 error in 1 file (checked 1 source file)
+$ uv run pyright test.py 
+test.py
+  test.py:11:20 - error: Cannot access attribute "asdfasdf" for class "Literal['foo']"
+    Attribute "asdfasdf" is unknown (reportAttributeAccessIssue)
+1 error, 0 warnings, 0 informations
+```
+
+Expected behavior:
+`ty` should raise an `unresolved-attribute` error, similar to the behavior of other major type checkers
+
+Other notes:
+Interestingly, modifying the `except` block to `pass` instead of `return` causes `ty` to catch it correctly:
+
+```python
+def example() -> None:
+    input_path = "foo"
+
+    try:
+        raise RuntimeError
+
+    except RuntimeError:
+        pass
+
+    finally:
+        input_path.asdfasdf()
+```
+
+```bash
+$ uv run ty check test.py 
+error[unresolved-attribute]: Object of type `Literal["foo"]` has no attribute `asdfasdf`
+  --> test.py:11:9
+   |
+10 |     finally:
+11 |         input_path.asdfasdf()
+   |         ^^^^^^^^^^^^^^^^^^^
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+```
+
+### Version
+
+ty 0.0.10
+
+---
+
+_Comment by @AlexWaygood on 2026-01-09 17:08_
+
+I believe this may be a duplicate of https://github.com/astral-sh/ty/issues/233
+
+---
+
+_Comment by @lihu-zhong on 2026-01-09 17:16_
+
+That seems likely! Sorry I missed that issue when searching the issues.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-09 17:22_
+
+no problem!
+
+---
+
+_Closed by @AlexWaygood on 2026-01-09 17:22_
+
+---

@@ -1,0 +1,162 @@
+---
+number: 2150
+title: Docstrings for reexported functions do not fall back to implementation definition
+type: issue
+state: open
+author: Jammf
+labels:
+  - server
+assignees: []
+created_at: 2025-12-21T20:27:46Z
+updated_at: 2026-01-09T11:16:24Z
+url: https://github.com/astral-sh/ty/issues/2150
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Docstrings for reexported functions do not fall back to implementation definition
+
+---
+
+_Issue opened by @Jammf on 2025-12-21 20:27_
+
+### Summary
+
+When hovering a reexported function from a module with a `.pyi` stub file, the docstring from the stub file definition is (correctly) shown instead of the implementation docstring. However, if the stub definition does not have a docstring, then the docstring is missing on hover instead of falling back to the implementation docstring.
+
+```python
+## a/b.py
+def foo() -> None:
+    """Implementation docstring"""
+    pass
+
+def bar() -> None:
+    """Implementation docstring"""
+    pass
+
+
+## a/__init__.pyi
+def foo() -> None: 
+    """Stub docstring"""
+    ...
+
+def bar() -> None: 
+    ...
+
+
+## a/__init__.py
+from .b import foo as foo
+from .b import bar as bar
+
+
+## main.py
+from a import foo  # Stub docstring
+from a import bar  # <missing docstring>
+```
+
+This is in contrast to the following example that works as expected, when the stub file `a/__init__.pyi` is renamed to `a/b.pyi`:
+
+```python
+## a/b.py
+def foo() -> None:
+    """Implementation docstring"""
+    pass
+
+def bar() -> None:
+    """Implementation docstring"""
+    pass
+
+
+## a/b.pyi          <-- Renamed
+def foo() -> None: 
+    """Stub docstring"""
+    ...
+
+def bar() -> None: 
+    ...
+
+
+## a/__init__.py
+from .b import foo as foo
+from .b import bar as bar
+
+
+## main.py
+from a import foo  # Stub docstring
+from a import bar  # Implementation docstring
+```
+
+Playground link: https://play.ty.dev/74d4d6ee-8ced-41da-b0c6-bf8167f510ae
+
+Possibly related: https://github.com/astral-sh/ty/issues/788#issuecomment-3175228024
+
+### Version
+
+ty 0.0.5 (d37b7dbd9 2025-12-20)
+
+---
+
+_Label `server` added by @AlexWaygood on 2025-12-21 20:29_
+
+---
+
+_Comment by @Jammf on 2025-12-21 21:12_
+
+Module-level attributes seem to have a similar issue, except in their case even a `.pyi` for the implementation file doesn't fall back correctly when stub docstring is omitted:
+
+```python
+## a/b.py
+FOO = 3
+"""Implementation docstring"""
+
+BAR = 4
+"""Implementation docstring"""
+
+
+## a/b.pyi 
+FOO: int
+"""Stub docstring"""
+
+BAR: int
+
+
+## main.py
+from a.b import FOO  # Stub docstring
+from a.b import BAR  # MISSING docstring!
+```
+
+https://play.ty.dev/dae79e23-d61b-4d23-8962-f9b9e67a60da
+
+
+---
+
+_Comment by @MichaReiser on 2025-12-22 12:26_
+
+Thanks. There's a related issue where we want to show the docstring of the overriden function if the override doesn't have a docstring.
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2025-12-22 12:26_
+
+---
+
+_Comment by @Gankra on 2026-01-09 04:28_
+
+I was going to say this is going to be tricky but actually our stub-mapping logic is so stringly typed I think it actually handles this well. The place where it falls short is I think we aren't applying "resolve aliases" logic -- we probably end up succesfully grabbing the Definition that the `import` defines, but don't chase it further to get the actual function:
+
+https://github.com/astral-sh/ruff/blob/f9f7a6901bc78f7429c6b2393d747350ac704f33/crates/ty_python_semantic/src/types/ide_support.rs#L1281-L1283
+
+---
+
+_Comment by @Gankra on 2026-01-09 04:41_
+
+This *might* be a good-first-issue but I think Micha would have a better intuition on that (I think the thing that needs to be done is conceptually simple and we do it elsewhere, I'm not certain how trivial it is to actually make the code do that).
+
+---
+
+_Comment by @MichaReiser on 2026-01-09 11:16_
+
+Feels a bit tough for a good first issue, but maybe help wanted. 
+
+We may still need a separate approach to handle `@override`
+
+---

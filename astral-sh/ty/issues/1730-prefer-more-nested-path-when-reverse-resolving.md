@@ -1,0 +1,79 @@
+---
+number: 1730
+title: Prefer more-nested path when reverse-resolving file to module name and search paths overlap
+type: issue
+state: open
+author: carljm
+labels:
+  - imports
+assignees: []
+created_at: 2025-12-02T19:42:48Z
+updated_at: 2026-01-09T09:45:58Z
+url: https://github.com/astral-sh/ty/issues/1730
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Prefer more-nested path when reverse-resolving file to module name and search paths overlap
+
+---
+
+_Issue opened by @carljm on 2025-12-02 19:42_
+
+Sometimes we might have overlapping search paths, where the outer path (say `.`) is a higher-priority search path than the inner path (say `./src`). If a file inside `./src` (say `./src/foo/bar.py`) does `from . import baz`, we currently reverse-resolve the module name of `./src/foo/bar.py` as `src.foo.bar` (rather than `foo.bar`) and then import `./src/foo/baz.py` as the module name `src.foo.baz`.
+
+It would be better if we always preferred the inner, or more precise, matching search path instead. So `./src/foo/bar.py` would then reverse-resolve to the module name `foo.bar` (instead of `src.foo.bar`), even though `.` comes before `./src` in the search paths. And then our relative import would import `foo.baz` instead of `src.foo.baz`.
+
+See https://github.com/astral-sh/ty/issues/1682#issuecomment-3603223786 for more on how this relates to runtime behavior.
+            
+
+---
+
+_Added to milestone `Stable` by @carljm on 2025-12-02 19:43_
+
+---
+
+_Comment by @Gankra on 2025-12-02 21:26_
+
+This is something I had mulled a few times, and if it's not abjectly wrong for unpleasant historical reasons, I definitely agree this is what we should prefer. On paper all that this requires is changing `file_to_module` so that `search_paths.find_map()` is instead `search_paths.filter_map().min_by(path.len())`.
+
+However I got skittish about how that might interact once you pass the absolute module to `resolve_module` and the search paths haven't actually been reordered (didn't think about it hard enough to come up with a concrete example).
+
+I'm also a bit fuzzy on the interaction with desperate module resolution -- almost by definition desperate module resolution will produce a shorter path than normal module resolution, but that doesn't mean it should be preferred?
+
+---
+
+_Comment by @carljm on 2025-12-03 01:14_
+
+I think this doesn't need to consider desperate resolution. This is to better handle the case of nested explicit search paths (whether both explicit paths are from `environment.roots`, eg the default case of `.` and `./src`, or if the nested one is e.g. from an editable-installed subproject in a workspace), while desperate resolution handles the case where something that maybe should be a nested search path wasn't discovered/specified as one upfront at all. The two are thus complementary, and also well-aligned because with this fix we'll end up preferring the more-nested path in both cases, whether we are falling back to desperate resolution, or have nested explicit paths.
+
+---
+
+_Comment by @Gankra on 2025-12-03 18:03_
+
+I cleaned up the workspace tests that motivated this issue a bit and include an editables and extra-paths variation of the problem:
+
+* https://github.com/astral-sh/ruff/pull/21745/
+
+With some subsequent fixups I did, the ordering you propose now works perfectly, while the reverse ordering which editables have(!!!!) is still broken in a subtle and complex way that desperate resolution can't actually handle. So the change described here is well-motivated.
+
+The problem is that one is a namespace package and the other is a regular package, and we act inconsistently when we can see both of those and the namespace package comes first. We can resolve `a.subnamespace.realmod` (`from .realmod`) but not `a.subnamespace` (`from .`).
+
+This dodges desperate resolution because `file_to_module` successfully resolves `.<self>` to `a.subnamespace.whatever` which we can then use to compute the absolute form of `.` (`a.subnamespace`).  When we then append `realmod` to it, that once again successfully resolves. However when we try to resolve `a.subnamespace` on its own we somehow realize "hey wait something's wrong" and refuse to resolve it. Desperate resolution can't do anything about it because we've already locked in the module name `a.subnamespace` instead of `subnamespace`.
+
+---
+
+_Comment by @carljm on 2025-12-03 22:34_
+
+I think the root cause of that weird behavior is #1749 (which I just filed, after exploring that scenario)
+
+---
+
+_Label `imports` added by @carljm on 2025-12-03 22:34_
+
+---
+
+_Comment by @MichaReiser on 2026-01-09 09:45_
+
+I also came across this yesterday and was surprised that this isn't causing more mischief. 
+
+---

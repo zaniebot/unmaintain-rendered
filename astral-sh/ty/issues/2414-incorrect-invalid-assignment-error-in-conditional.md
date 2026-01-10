@@ -1,0 +1,81 @@
+---
+number: 2414
+title: "Incorrect invalid-assignment Error in Conditional with Never Function call and Type | None Variable"
+type: issue
+state: closed
+author: jelle-it
+labels: []
+assignees: []
+created_at: 2026-01-09T12:53:25Z
+updated_at: 2026-01-09T13:01:59Z
+url: https://github.com/astral-sh/ty/issues/2414
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Incorrect invalid-assignment Error in Conditional with Never Function call and Type | None Variable
+
+---
+
+_Issue opened by @jelle-it on 2026-01-09 12:53_
+
+### Summary
+
+I'm encountering an incorrect `invalid-assignment` error when a variable is set by a function that returns `Type | None` and a function returning `Never` is called in the `if variable is None` clause.
+I've noticed that a function returning `Never` breaks the flow, even though the use of `raise` or `return` achieves the desired outcome.
+
+This is probably related to #690, but It might be a bug on its own, as it is unexpected behavior and not missing behavior.
+
+```python
+from typing import Never
+
+def get_dict_or_none() -> dict | None:
+    return None
+
+def raise_error() -> Never:
+    raise ValueError()
+
+def working():
+    a: dict[str, str] | None = get_dict_or_none()
+    if not a:
+        raise ValueError()
+    a["foo"] = "bar"
+
+def working_too():
+    a: dict[str, str] | None = None
+    if not a:
+        raise ValueError()
+    a["foo"] = "bar"
+
+def also_working():
+    a: dict[str, str] | None = None
+    if not a:
+        raise_error()
+    a["foo"] = "bar"
+
+def not_working():
+    a = get_dict_or_none()
+    if not a:
+        raise_error()
+    a["foo"] = "bar" # <-- Cannot assign to a subscript on an object of type `None`(invalid-assignment)
+```
+https://play.ty.dev/6bc9e459-6317-40c6-9762-370d7c2e7c18
+
+I would expect the `also_working` to have the same behavior as the `not_working` function, as the only difference is how the variable is set.
+
+NoReturn = Never
+
+### Version
+
+ty 0.0.10 (d18902cdc 2026-01-07)
+
+---
+
+_Comment by @AlexWaygood on 2026-01-09 13:01_
+
+Thanks! This has the same root cause as #690, so while the symptom might be slightly different I'm inclined to close this to focus discussion in a single issue. The fix will be the same :-)
+
+---
+
+_Closed by @AlexWaygood on 2026-01-09 13:01_
+
+---

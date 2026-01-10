@@ -1,0 +1,36 @@
+---
+number: 2411
+title: Semantic highlighting in stringified annotations
+type: issue
+state: open
+author: MichaReiser
+labels:
+  - server
+assignees: []
+created_at: 2026-01-09T09:32:00Z
+updated_at: 2026-01-09T14:45:39Z
+url: https://github.com/astral-sh/ty/issues/2411
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Semantic highlighting in stringified annotations
+
+---
+
+_Issue opened by @MichaReiser on 2026-01-09 09:32_
+
+_No description provided._
+
+---
+
+_Added to milestone `Pre-stable 1` by @MichaReiser on 2026-01-09 09:32_
+
+---
+
+_Label `server` added by @MichaReiser on 2026-01-09 09:32_
+
+---
+
+_Assigned to @Gankra by @Gankra on 2026-01-09 14:45_
+
+---

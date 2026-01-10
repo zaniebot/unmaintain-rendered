@@ -1,0 +1,65 @@
+---
+number: 1251
+title: "Solve `T` to `Never` for `*args: T` where no arguments are passed for `*args`"
+type: issue
+state: open
+author: KotlinIsland
+labels:
+  - generics
+assignees: []
+created_at: 2025-09-25T03:28:29Z
+updated_at: 2026-01-09T02:57:50Z
+url: https://github.com/astral-sh/ty/issues/1251
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Solve `T` to `Never` for `*args: T` where no arguments are passed for `*args`
+
+---
+
+_Issue opened by @KotlinIsland on 2025-09-25 03:28_
+
+### Summary
+
+```py
+def f[A, B](a: A, *b: B) -> list[A | B]:
+    return [a, *b]
+
+result = f(1) # list[Literal[1] | Unknown]
+```
+
+here the `Unknown` should be removed (i'm pretty sure). this is consistent with basedpyright and mypy
+
+### Version
+
+_No response_
+
+---
+
+_Comment by @AlexWaygood on 2025-09-25 12:39_
+
+`Literal[1] | Unknown` cannot be simplified to `Literal[1]`. I think the way to ensure that `list[Literal[1]` (or `list[int]`) is inferred here, without the `Unknown`, is to solve the `B` type variable to `Never` in the context of the call `f(1)`. `Literal[1] | Never` simplifies to `Literal[1]`, and `int | Never` simplifies to `int`.
+
+---
+
+_Renamed from "collapse `Unkown` for unresolved typevar in generic all when in a union" to "collapse `Unknown` for unresolved typevar in generic all when in a union" by @AlexWaygood on 2025-09-25 13:09_
+
+---
+
+_Comment by @KotlinIsland on 2025-09-25 13:35_
+
+sure, i think we are saying the same thing :)
+
+---
+
+_Renamed from "collapse `Unknown` for unresolved typevar in generic all when in a union" to "Solve `T` to `Never` for `*args: T` where no arguments are passed for `*args`" by @AlexWaygood on 2025-09-25 13:41_
+
+---
+
+_Label `generics` added by @AlexWaygood on 2025-09-25 15:14_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-09 02:57_
+
+---

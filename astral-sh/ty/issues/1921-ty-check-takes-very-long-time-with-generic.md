@@ -1,0 +1,119 @@
+---
+number: 1921
+title: ty check takes very long time with generic protocols
+type: issue
+state: open
+author: n-gao
+labels:
+  - performance
+  - generics
+  - Protocols
+assignees: []
+created_at: 2025-12-16T11:59:05Z
+updated_at: 2026-01-09T13:44:03Z
+url: https://github.com/astral-sh/ty/issues/1921
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# ty check takes very long time with generic protocols
+
+---
+
+_Issue opened by @n-gao on 2025-12-16 11:59_
+
+### Summary
+
+This is a follow up to #1874.
+
+I cannot pin point exactly what causes this issue but the following code takes a very long time to check
+```py
+from __future__ import annotations
+from typing import Any, Callable, Protocol
+
+
+class M[R](Protocol):
+    def __call__(self, r: R, /) -> R: ...
+
+
+class A[S, R](Protocol):
+    def get(self, s: S) -> R: ...
+    def set(self, s: S, r: R) -> S: ...
+    def bind(self, s: S) -> B[S, R]: ...
+    def merge[R2](self, other: A[S, R2]) -> A[S, tuple[R, R2]]: ...
+    def nest[U](self, inner: A[R, U]) -> A[S, U]: ...
+    def at(self, idx: Any) -> A[S, R]: ...
+    def apply(self, s: S, modifier: M[R]) -> S: ...
+
+
+class B[S, R](Protocol):
+    def focus[R2](self, where: Callable[[R], R2]) -> B[S, R2]: ...
+    def get(self, s: S) -> R: ...
+    def set(self, s: S, r: R) -> S: ...
+    def apply(self, s: S, modifier: M[R]) -> S: ...
+    def at(self, idx: Any) -> B[S, R]: ...
+    def merge[R2](self, other: A[S, R2]) -> B[S, tuple[R, R2]]: ...
+
+
+class Impl[S, R](A[S, R]):
+    def apply(self, s: S, modifier: M[R]) -> S:
+        return self.set(s, modifier(self.get(s)))
+
+```
+Output:
+```
+time uv run ty check ./test.py
+All checks passed!
+uv run ty check ./test.py  3.06s user 0.19s system 97% cpu 3.349 total
+```
+Removing the `apply` function from the definition of `Impl` results in a huge speedup:
+```
+time uv run ty check ./test.py
+All checks passed!
+uv run ty check ./test.py  0.02s user 0.02s system 39% cpu 0.122 total
+```
+
+For our whole codebase this slowdown makes `ty` unusable as it freezes. This was a minimal example where I could narrow the slower type checking times.
+
+### Version
+
+ty 0.0.1-alpha.35 (3188a56be 2025-12-16)
+
+---
+
+_Renamed from "ty check takes very long time with generics" to "ty check takes very long time with generic protocols" by @n-gao on 2025-12-16 12:00_
+
+---
+
+_Label `performance` added by @AlexWaygood on 2025-12-16 12:02_
+
+---
+
+_Label `generics` added by @AlexWaygood on 2025-12-16 12:02_
+
+---
+
+_Label `Protocols` added by @AlexWaygood on 2025-12-16 12:02_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2025-12-16 16:31_
+
+---
+
+_Comment by @carljm on 2025-12-16 16:31_
+
+Thanks for the report and minimized example! We'll take a look.
+
+---
+
+_Removed from milestone `Stable` by @carljm on 2026-01-08 23:57_
+
+---
+
+_Added to milestone `Pre-stable 1` by @carljm on 2026-01-08 23:57_
+
+---
+
+_Assigned to @dcreager by @dcreager on 2026-01-09 13:44_
+
+---

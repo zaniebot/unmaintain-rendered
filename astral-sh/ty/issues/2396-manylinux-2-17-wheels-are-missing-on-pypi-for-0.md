@@ -1,0 +1,68 @@
+---
+number: 2396
+title: manylinux 2.17 wheels are missing on pypi for 0.10.0
+type: issue
+state: closed
+author: GhislainC
+labels:
+  - question
+assignees: []
+created_at: 2026-01-08T15:26:44Z
+updated_at: 2026-01-09T21:19:22Z
+url: https://github.com/astral-sh/ty/issues/2396
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# manylinux 2.17 wheels are missing on pypi for 0.10.0
+
+---
+
+_Issue opened by @GhislainC on 2026-01-08 15:26_
+
+### Question
+
+Hello,
+
+It seems from 0.9.0 to 0.10.0, the manylinux wheels builded with libc 2.17 has been replaced by 2.24 ones. Is this normal? 
+
+**0.9.0 :** 
+
+<img width="886" height="424" alt="Image" src="https://github.com/user-attachments/assets/a1eb24f7-c7b0-43e7-a2a9-4af7f2525c01" />
+
+**0.10.0 :** 
+
+<img width="857" height="405" alt="Image" src="https://github.com/user-attachments/assets/51395628-440f-4bda-be03-e5d2b465e180" />
+
+I am on a constrained environment (both OS and internet access) and I can only rely on already packaged wheels (cannot build locally if there is external dependencies like rust for example) 
+
+Thanks
+
+### Version
+
+0.10.0
+
+---
+
+_Label `question` added by @GhislainC on 2026-01-08 15:26_
+
+---
+
+_Comment by @MichaReiser on 2026-01-08 15:29_
+
+Sorry for this. They should be restored with https://github.com/astral-sh/ty/pull/2393
+
+---
+
+_Comment by @charliermarsh on 2026-01-09 21:19_
+
+Fixed in v0.0.11.
+
+---
+
+_Closed by @charliermarsh on 2026-01-09 21:19_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2026-01-09 21:19_
+
+---

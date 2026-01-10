@@ -1,0 +1,178 @@
+---
+number: 1237
+title: Union normalization performance
+type: issue
+state: closed
+author: ibraheemdev
+labels:
+  - performance
+assignees: []
+created_at: 2025-09-22T22:29:58Z
+updated_at: 2026-01-09T00:01:26Z
+url: https://github.com/astral-sh/ty/issues/1237
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Union normalization performance
+
+---
+
+_Issue opened by @ibraheemdev on 2025-09-22 22:29_
+
+The new collection literal inference is running into problems with the performance of [union type normalization](https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types.rs#L10230). Aggressive literal promotion helps avoid generating large unions, but sometime it is unavoidable. For example, [this dictionary in `mitmproxy`](https://github.com/mitmproxy/mitmproxy/blob/main/test/mitmproxy/io/test_tnetstring.py#L12), or [this list in CPython](https://github.com/python/cpython/blob/main/Lib/test/test_ast/snippets.py#L391).
+
+I'm not sure if there's potential to improve the performance of normalization itself, or if we should fallback to a wider type if the union of the element types grows too large. It does feel like there's some exponential behavior here that should be avoidable, as the issue arises for unions that [are only ~10 elements large](https://github.com/astral-sh/ruff/pull/20360#discussion_r2350263162).
+
+---
+
+_Label `performance` added by @ibraheemdev on 2025-09-22 22:29_
+
+---
+
+_Comment by @ibraheemdev on 2025-09-22 23:12_
+
+Trying to gather some examples. This file seems to run just fine:
+```py
+X = [
+    [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[b'hello']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+]
+```
+But this one hangs in debug mode:
+```py
+X = [
+    [0.1],
+    [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[b'hello']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+]
+```
+
+Both of these seem to run fine in release mode though, maybe we should run mypy-primer in release mode? The [issue here](https://github.com/astral-sh/ruff/pull/20360#discussion_r2350263162) was still present in release mode, but I'm not able to reproduce it anymore except by disabling function literal promotion: it seems to run fine if the functions are replaced with class instances, which is strange.
+
+Checking [the list literal in CPython](https://github.com/python/cpython/blob/main/Lib/test/test_ast/snippets.py#L391) still takes ~5 seconds in release mode. https://github.com/astral-sh/ruff/pull/20477 brings that down to ~1.5s, so that may be a potential path forward.
+
+---
+
+_Comment by @carljm on 2025-09-23 00:13_
+
+I expect https://github.com/astral-sh/ruff/pull/20477/files should help a lot here, as it memoizes subtype checks, and most of the cost of union normalization is subtype checks. (The rest should be type equivalence checks, which we could also try to memoize.) Unfortunately that change currently seems to trigger some non-deterministic deadlock in multi-threaded Salsa fixpoint iteration.
+
+I think it would really be useful to know, in the smaller examples, where the exponential blow-up comes from. It is expected that union normalization is O(n^2), because we compare every new element to each existing element. But it seems like that doesn't fully account for the blow-up we see. I wonder if just taking that 10-element function literal example and printing every equivalence and subtype check would reveal where the blow-up is.
+
+The strange thing about the function literal type example is that function literal types are singletons, so subtype and equivalence checks should be extremely simple for them.
+
+---
+
+_Comment by @dcreager on 2025-09-23 12:53_
+
+> The strange thing about the function literal type example is that function literal types are singletons, so subtype and equivalence checks should be extremely simple for them.
+
+For subtyping (but not assignability), we're currently [checking if the normalization of the function types are equal](https://github.com/astral-sh/ruff/blob/edb920b4d5079e28f39a909e0c4c2d8b4b11dc7a/crates/ty_python_semantic/src/types/function.rs#L961-L967) before checking the identity of the function literal and their signatures.
+
+
+---
+
+_Comment by @ibraheemdev on 2025-09-23 18:00_
+
+This file takes ~15s to type-check with function literal promotion disabled, in release mode. Caching `is_subtype_of` brings that down to ~1.5s, and further caching `is_equivalent_to` brings that down to ~0.15s.
+
+```py
+from typing import reveal_type
+
+def fun1(): ...
+def fun2(): ...
+def fun3(): ...
+def fun4(): ...
+def fun5(): ...
+def fun6(): ...
+def fun7(): ...
+def fun8(): ...
+def fun9(): ...
+
+X = [
+    [fun1, 1],
+    [fun2, 1],
+    [fun3, 1],
+    [fun4, 1],
+    [fun5, 1],
+    [fun6, 1],
+    [fun7, 1],
+    [fun8, 1],
+    [fun9, 1],
+]
+
+def f[T](x: Iterable[T]): ...
+
+f(X)
+```
+
+There's definitely some exponential behavior here, we end up performing ~270M calls to `is_subtype_of`/`is_equivalent_to` for a list of 9 elements, from ~130M for 8 elements.
+
+However, I don't see the same exponential growth in terms of the elements of the CPython list, that one is still polynomial, so the exponential explosion may be specific to function literals (which is no longer a problem now that we perform eager promotion, at least for collection literals), and something to do with the specific signature of `f`.
+
+---
+
+_Comment by @AlexWaygood on 2025-10-06 14:31_
+
+All the examples here seem to have greatly improved following recent changes to our union simplification. I expect our union simplification is still at least quadratic in the worst case -- and I expect that we will still want to implement heuristics where we abort union building, instead falling back to `Unknown` or similar, in some cases with catastrophically huge unions. But ISTM that the pressure is off here to make immediate changes to improve our union simplification performance.
+
+The two big recent changes to union simplification were https://github.com/astral-sh/ruff/pull/20650 and https://github.com/astral-sh/ruff/pull/20602.
+
+---
+
+> But this one hangs in debug mode:
+> 
+> ```py
+> X = [
+>     [0.1],
+>     [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[b'hello']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+> ]
+> ```
+
+This is no longer the case on `main`.
+
+> Checking [the list literal in CPython](https://github.com/python/cpython/blob/main/Lib/test/test_ast/snippets.py?rgh-link-date=2025-09-22T23%3A12%3A39.000Z#L391) still takes ~5 seconds in release mode. [astral-sh/ruff#20477](https://github.com/astral-sh/ruff/pull/20477) brings that down to ~1.5s, so that may be a potential path forward.
+
+On `main`, checking the `Lib/test/test_ast` directory in CPython still takes ~6s for me in debug mode, but is now down to <1s for me in release mode on `main`.
+
+> ```py
+> from typing import reveal_type
+> 
+> def fun1(): ...
+> def fun2(): ...
+> def fun3(): ...
+> def fun4(): ...
+> def fun5(): ...
+> def fun6(): ...
+> def fun7(): ...
+> def fun8(): ...
+> def fun9(): ...
+> 
+> X = [
+>     [fun1, 1],
+>     [fun2, 1],
+>     [fun3, 1],
+>     [fun4, 1],
+>     [fun5, 1],
+>     [fun6, 1],
+>     [fun7, 1],
+>     [fun8, 1],
+>     [fun9, 1],
+> ]
+> 
+> def f[T](x: Iterable[T]): ...
+> 
+> f(X)
+> ```
+
+This snippet now type-checks nearly instantaneously for me on `main` in both debug and release mode.
+
+---
+
+_Comment by @carljm on 2026-01-09 00:01_
+
+I'm going to close this issue, as the reported cases all seem to perform well now. There are of course still likely optimizations to be made, but I'm not sure this issue is tracking anything specific anymore.
+
+---
+
+_Closed by @carljm on 2026-01-09 00:01_
+
+---

@@ -1,0 +1,73 @@
+---
+number: 2408
+title: False negative with bound type variable
+type: issue
+state: open
+author: hauntsaninja
+labels:
+  - bug
+  - generics
+  - callables
+assignees: []
+created_at: 2026-01-09T05:22:31Z
+updated_at: 2026-01-09T20:48:05Z
+url: https://github.com/astral-sh/ty/issues/2408
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# False negative with bound type variable
+
+---
+
+_Issue opened by @hauntsaninja on 2026-01-09 05:22_
+
+### Summary
+
+```python
+from typing import *
+
+class Base: ...
+
+BaseT = TypeVar("BaseT", bound=Base)
+
+def f(x: Callable[[], BaseT]) -> BaseT:
+    return x()
+
+class Unrelated: ...
+
+def make_unrelated() -> Unrelated:
+    return Unrelated()
+
+f(Unrelated)  # should error
+f(make_unrelated)  # should error
+```
+
+I have a PR https://github.com/astral-sh/ruff/pull/19946 that solves this, but is not mergeable. Filing this as a way of tracking this false negative, in case my PR never makes it
+
+### Version
+
+_No response_
+
+---
+
+_Label `bug` added by @AlexWaygood on 2026-01-09 10:24_
+
+---
+
+_Label `generics` added by @AlexWaygood on 2026-01-09 10:24_
+
+---
+
+_Label `callables` added by @AlexWaygood on 2026-01-09 10:24_
+
+---
+
+_Added to milestone `Stable` by @AlexWaygood on 2026-01-09 10:24_
+
+---
+
+_Comment by @carljm on 2026-01-09 20:48_
+
+Thanks! It seems like https://github.com/astral-sh/ruff/pull/19946 should not be needed to solve this, so there's another bug to be identified here.
+
+---

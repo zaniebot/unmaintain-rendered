@@ -1,0 +1,116 @@
+---
+number: 1475
+title: Narrowing of constrained typevar discards constraint static type generic information
+type: issue
+state: open
+author: MeGaGiGaGon
+labels:
+  - bug
+  - narrowing
+  - generics
+assignees: []
+created_at: 2025-11-04T00:19:54Z
+updated_at: 2026-01-09T20:52:52Z
+url: https://github.com/astral-sh/ty/issues/1475
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Narrowing of constrained typevar discards constraint static type generic information
+
+---
+
+_Issue opened by @MeGaGiGaGon on 2025-11-04 00:19_
+
+### Summary
+
+While reading https://github.com/astral-sh/ruff/pull/21172 , I wanted to try using the changes that PR made, but found a bug. With this code:
+
+https://play.ty.dev/a370a55d-5dc3-4da3-aa4b-62a0553b9c16
+```py
+from typing import reveal_type
+
+
+def foo[T: (list[int], None)](x: T) -> T:
+    match x:
+        case list():
+            reveal_type(x)  # Revealed type: `Top[list[Unknown]]`
+    if isinstance(x, list):
+        reveal_type(x)  # Revealed type: `Top[list[Unknown]]`
+    return x
+```
+
+The two `x`s should be narrowed to `list[int]`, not `Top[list[Unknown]]`. From what I understand reading https://github.com/astral-sh/ruff/pull/21172 , the code now converts the constraint to the union of the top of it's members in the narrowing, so `T` becomes `Top[list[int]] | Top[None]`, but since `list[int]` is a fully static type, `Top[list[int]]` should just be `list[int]`. So it looks like the generic information is getting discarded somewhere along the way.
+
+Edit:
+
+I did some messing around with ty versions, and I found some interesting things:
+In <=alpha.21 both reveal `T@foo & list[Unknown]`
+In alpha.22 - alpha.25 only the `isinstance` gives `Top[list[Unknown]]`, the match is still `T@foo & list[Unknown]`
+In the playground (and presumably in the future alpha.26) the above behavior happens.
+
+So it looks like this is not a new issue, at least for `isinstance` narrowing.
+
+### Version
+
+playground (3c8fb6876)
+
+---
+
+_Label `narrowing` added by @AlexWaygood on 2025-11-04 04:32_
+
+---
+
+_Label `generics` added by @AlexWaygood on 2025-11-04 04:32_
+
+---
+
+_Label `bug` added by @carljm on 2025-11-05 21:36_
+
+---
+
+_Comment by @carljm on 2026-01-09 03:23_
+
+I think the issue here is really only with constrained typevars; at least I can't construct a problematic version with an upper-bound typevar. Retitling the issue accordingly.
+
+---
+
+_Renamed from "TypeVar bound/constraint narrowing discards bound/constraint static type generic information" to "Narrowing of constrained typevar discards constraint static type generic information" by @carljm on 2026-01-09 03:24_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-09 03:24_
+
+---
+
+_Comment by @MeGaGiGaGon on 2026-01-09 07:28_
+
+The reason I included bound as well as constrained is that if you manually convert the constraint into a union bound, you still see the same issue where the list looses it's generic information:
+https://play.ty.dev/df5c452a-25ff-4587-8eb9-38d22e66ad7e
+```py
+from typing import reveal_type
+
+
+def foo[T: list[int] | None](x: T) -> T:
+    match x:
+        case list():
+            reveal_type(x)  # Revealed type: `T@foo & Top[list[Unknown]]`
+    if isinstance(x, list):
+        reveal_type(x)  # Revealed type: `T@foo & Top[list[Unknown]]`
+    return x
+```
+
+---
+
+_Comment by @carljm on 2026-01-09 20:50_
+
+@MeGaGiGaGon I don't see any loss of information in that last example. We still have the type `T@foo`, with its upper bound, and that is intersected with "must be some kind of list". I don't think we want to simplify this intersection to `list[int]`, because then if you tried e.g. `return x` inside one of the narrowed blocks, you'd get an error. So I don't think this intersection can or should simplify further, and I don't see any bug there.
+
+The OP example with constrained typevar looks buggy to me, because it does simplify to just `Top[list[Unknown]]`, and we lose the typevar entirely. That's clearly wrong.
+
+---
+
+_Comment by @carljm on 2026-01-09 20:52_
+
+Maybe we should simplify `T@foo & Top[list[Unknown]]` to `T@foo & list[int]` in the upper-bound case? I think that would be safe -- but it seems like a separate issue to me from what is happening in the constrained typevar case.
+
+---

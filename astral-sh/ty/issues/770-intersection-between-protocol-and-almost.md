@@ -1,0 +1,288 @@
+---
+number: 770
+title: Intersection between Protocol and almost overlapping class is simplified incorrectly
+type: issue
+state: open
+author: JelleZijlstra
+labels:
+  - bug
+  - set-theoretic types
+  - Protocols
+assignees: []
+created_at: 2025-07-06T23:34:32Z
+updated_at: 2026-01-09T22:16:20Z
+url: https://github.com/astral-sh/ty/issues/770
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Intersection between Protocol and almost overlapping class is simplified incorrectly
+
+---
+
+_Issue opened by @JelleZijlstra on 2025-07-06 23:34_
+
+### Summary
+
+In the below example, ty incorrectly simplifies a Protocol out of an intersection when it almost (but not quite) is the same as a nominal class.
+
+https://play.ty.dev/9b0ac32c-9200-4558-8269-6e3f3bea1837
+
+```python
+from typing import Protocol
+from ty_extensions import Intersection, Not
+
+class Proto(Protocol):
+    def meth(self) -> int: ...
+
+class X:
+    def meth(self) -> int | str: return 42
+
+def f(x: Intersection[X, Proto]):
+    reveal_type(x)  # X (expect X & Proto)
+    reveal_type(x.meth())  # int | str (expect int)
+```
+
+This can also lead to incorrect type inference without explicit Intersection types (https://play.ty.dev/6185eec9-9e29-49f6-b0ef-b817844fedb5):
+
+```python
+from typing import Protocol
+
+class Proto(Protocol):
+    def meth(self) -> int: ...
+
+class X:
+    def meth(self) -> int | str: return 42
+
+def f(x: Proto):
+    if isinstance(x, X):
+        reveal_type(x)  # X
+        reveal_type(x.meth())  # int | str
+```
+
+### Version
+
+_No response_
+
+---
+
+_Label `set-theoretic types` added by @dhruvmanila on 2025-07-07 04:16_
+
+---
+
+_Label `Protocols` added by @dhruvmanila on 2025-07-07 04:16_
+
+---
+
+_Comment by @JelleZijlstra on 2025-07-24 02:48_
+
+Another sample that might have the same root cause:
+
+```python
+from typing import Protocol
+from ty_extensions import Intersection
+
+class P1(Protocol):
+    a: int
+
+class P2(Protocol):
+    a: str
+
+def f(x: Intersection[P1, P2]):
+    reveal_type(x)  # Revealed type: `P1`
+```
+
+I'm open to argument about what the right behavior for `P1 & P2` here should be, either `Never` or a Protocol with `a: Never`. But it's definitely not the same type as `P1`.
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:10_
+
+---
+
+_Comment by @AlexWaygood on 2025-10-06 16:46_
+
+> ```py
+> from typing import Protocol
+> from ty_extensions import Intersection, Not
+> 
+> class Proto(Protocol):
+>     def meth(self) -> int: ...
+> 
+> class X:
+>     def meth(self) -> int | str: return 42
+> 
+> def f(x: Intersection[X, Proto]):
+>     reveal_type(x)  # X (expect X & Proto)
+>     reveal_type(x.meth())  # int | str (expect int)
+> ```
+
+The first `reveal_type` call here now reveals `X & Proto`, as expected. The second one, however, now reveals `Never`, which seems even worse than before.
+
+I believe that this is because we're distributing across the intersection to infer the attribute access. The type of `.meth` on instances of `X` is one bound-method type, the type of `.meth` on instances of `Proto` is another bound-method type, and the intersection of those two bound-method types is `Never` (since bound-method types are nominal types in our model). We'll need to fix this by special-casing attribute access on `Protocol` instances for (at least) methods, so that we infer it as resolving to a `Callable` type rather than a bound-method type.
+
+---
+
+_Label `bug` added by @AlexWaygood on 2025-10-06 16:48_
+
+---
+
+_Comment by @AlexWaygood on 2025-10-08 12:08_
+
+Oh, actually the `reveal_type(x.meth)` call isn't related to protocols -- it's a deeper bug than that. I can reproduce it with nominal types, too:
+
+```py
+class A:
+    def method(self, x: int) -> None: ...
+
+class B:
+    def method(self, x: int) -> None: ...
+
+def _(x: A):
+    if isinstance(x, B):
+        reveal_type(x.method)  # revealed: Never
+```
+
+This does seem like another bug that might be fixed if we represented bound methods internally as `types.MethodType & <some Callable type>` rather than using a custom `Type::BoundMethod` variant
+
+---
+
+_Comment by @AlexWaygood on 2025-10-08 14:58_
+
+> This does seem like another bug that might be fixed if we represented bound methods internally as `types.MethodType & <some Callable type>` rather than using a custom `Type::BoundMethod` variant
+
+Well, except that you can also reproduce the same bug using our `Type::Function` variant, not just using our `Type::BoundMethod` variant:
+
+```py
+class A:
+    def method(self, x: int) -> None: ...
+
+class B:
+    def method(self, x: int) -> None: ...
+
+def _(x: type[A]):
+    if issubclass(x, B):
+        reveal_type(x.method)  # revealed: Never
+```
+
+---
+
+_Comment by @sharkdp on 2025-10-08 15:02_
+
+When we access members on intersections, we build the intersection of all members. Here, the members are individual function literals (singleton types), so their intersection is empty, which is why we get `Never` (I have not tested this, but I think that is what happens).
+
+If we want that intersection to be non-empty, we would probably have to upcast those function literals to callable types?
+
+---
+
+_Comment by @AlexWaygood on 2025-10-08 15:08_
+
+> When we access members on intersections, we build the intersection of all members. Here, the members are individual function literals (singleton types), so their intersection is empty, which is why we get `Never` (I have not tested this, but I think that is what happens).
+
+Yes, that's correct, I believe (I said so in https://github.com/astral-sh/ty/issues/770#issuecomment-3372784796 ;)
+
+I think the intersection should definitely be non-empty, because I can think of lots of Liskov-compliant possible classes that could have both `A` and `B` in their MROs!
+
+> If we want that intersection to be non-empty, we would probably have to upcast those function literals to callable types?
+
+I suppose so, but when should this upcasting happen? On any access of a method from an external scope? That would be quite a big change, and undo a lot of the benefit of having a `Type::Function` variant to begin with
+
+---
+
+_Comment by @sharkdp on 2025-10-08 15:17_
+
+> I think the intersection should definitely be non-empty, because I can think of lots of Liskov-compliant possible classes that could have both `A` and `B` in their MROs!
+
+Are there really? `A.method` and `B.method` could be completely unrelated functions (they have a return type of `None` in your example, but imagine that they have different side effects). How could a subclass of `A` and `B` possibly be a substitution for both of these behaviors? What is `(A & B).method()` supposed to be?
+
+---
+
+_Comment by @AlexWaygood on 2025-10-08 15:20_
+
+> Are there really? `A.method` and `B.method` could be completely unrelated functions (they have a return type of `None` in your example, but imagine that they have different side effects). How could a subclass of `A` and `B` possibly be a substitution for both of these behaviors? What is `(A & B).method()` supposed to be?
+
+But the same argument could be applied to say that any method being overridden on a subclass is possibly unsound. It's true that this _is_ possibly unsound even if the subclass method's signature is a subtype of the superclass method's signature, of course, but allowing a subclass to override a method on the superclass is nonetheless usually permitted by Python type checkers (and type checkers for other, similar languages)!
+
+Anyway -- mypy, pyright and pyrefly all have no objections to this:
+
+```py
+class A:
+    def method(self, x: int) -> None: ...
+
+class B:
+    def method(self, x: int) -> None: ...
+
+class C(A, B): ...
+```
+
+For this:
+
+```py
+class A:
+    def method(self, x: int) -> None: ...
+
+class B:
+    def method(self, x: int) -> None: ...
+
+def f(x: type[A]):
+    if issubclass(x, B):
+        reveal_type(x.method)
+```
+
+Pyright says:
+
+```
+Type of "x.method" is "(self: <subclass of A and B>, x: int) -> None"
+```
+
+Mypy says:
+
+```
+main.py:9: note: Revealed type is "def (self: __main__.A, x: builtins.int)"
+```
+
+And pyrefly says
+
+```
+INFO sandbox.py:9:20-30: revealed type: Unknown [reveal-type]
+ERROR sandbox.py:9:21-29: TODO: Expr::attr_infer_for_type attribute base undefined for type: type[Never] (trying to access method) [missing-attribute]
+```
+
+---
+
+_Comment by @carljm on 2025-10-08 16:23_
+
+I think the question of what side effects the function body has, is outside the type system. The type system cares only about the signature.
+
+I think our inference of singleton function or bound-method types when accessed off nominal-instance or subclass-of types is simply wrong and needs to be fixed. The nominal-instance type `A` includes instances of `A` and all subclasses of `A`. That means it is wrong to say that `instance_of_a.method` is a singleton bound-method type, unless either `A` or `A.method` is marked as final. Similarly, `type[A]` includes subclasses of `A`, so `subclass_of_A.method` cannot be a singleton function literal type.
+
+Accessing methods as attributes of class-literal types can still correctly return a function literal.
+
+One unfortunate side effect of making the above fix is that we will lose go-to-definition on most methods. To avoid this regression, we may need to allow callable types to optionally carry a "most precise known" source definition (or definitions?), which is not "part of the type" in terms of type relations but can be used for go-to-definition.
+
+---
+
+_Comment by @AlexWaygood on 2025-10-08 18:53_
+
+> One unfortunate side effect of making the above fix is that we will lose go-to-definition on most methods. To avoid this regression, we may need to allow callable types to optionally carry a "most precise known" source definition (or definitions?), which is not "part of the type" in terms of type relations but can be used for go-to-definition.
+
+which is possibly the opposite direction to what https://github.com/astral-sh/ty/issues/1086 was proposing?
+
+---
+
+_Added to milestone `GA` by @AlexWaygood on 2025-10-17 09:51_
+
+---
+
+_Removed from milestone `Stable` by @carljm on 2026-01-08 19:43_
+
+---
+
+_Added to milestone `Pre-stable 1` by @carljm on 2026-01-08 19:43_
+
+---
+
+_Comment by @carljm on 2026-01-09 22:16_
+
+I opened #2428 to specifically track the issue with wrongly inferring singleton bound-method and function literal types from attribute access.
+
+---

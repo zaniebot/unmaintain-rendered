@@ -1,0 +1,172 @@
+---
+number: 688
+title: "`invalid-return-type` false positive on constrained generic"
+type: issue
+state: open
+author: gusutabopb
+labels:
+  - generics
+assignees: []
+created_at: 2025-06-21T05:11:09Z
+updated_at: 2026-01-09T13:46:07Z
+url: https://github.com/astral-sh/ty/issues/688
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# `invalid-return-type` false positive on constrained generic
+
+---
+
+_Issue opened by @gusutabopb on 2025-06-21 05:11_
+
+### Summary
+
+Similar to #621, but doesn't involve narrowing/`isinstance` checks:
+
+```python
+import polars as pl
+
+def with_column_x[T: pl.DataFrame | pl.LazyFrame](df: T) -> T:
+    return df.with_columns(pl.lit(True).alias("x"))
+```
+
+Both `DataFrame` and `LazyFrame` classes have a `with_columns` method that returns an object of the same type, so the above should be valid. However, `ty` complains about it:
+
+```
+Return type does not match returned value: expected `T`, found `DataFrame | LazyFrame`
+```
+
+ty doesn't complain about the following generic-less variations:
+
+```python
+# Variation 1
+def with_column_x(df: pl.DataFrame | pl.LazyFrame) -> pl.DataFrame | pl.LazyFrame:
+    return df.with_columns(pl.lit(True).alias("x"))
+```
+
+```python
+# Variation 2
+type Frame = pl.DataFrame | pl.LazyFrame
+
+def with_column_x(df: Frame) -> Frame:
+    return df.with_columns(pl.lit(True).alias("x"))
+```
+
+The generic-less variations however don't communicate that the return type will be exactly the same as the input type, so they have a slightly different meaning.
+
+
+### Version
+
+ty 0.0.1-alpha.11 (1ae703836 2025-06-17)
+
+---
+
+_Comment by @carljm on 2025-06-21 20:33_
+
+The issue title here says "constrained generic", but the code example shows a union upper bound, which is different from a constrained typevar.
+
+I don't think allowing the code as shown would be sound, since `DataFrame.with_columns` is annotated to return `DataFrame`. Consider that there could be a subclass of `DataFrame`, let's call it `DataFrameSub`, which doesn't override `DataFrame.with_columns`, so `DataFrameSub.with_columns` also returns `DataFrame`. An instance of `DataFrameSub` is a valid argument to `with_column_x` (it is a subtype of `DataFrame | LazyFrame`), but the return type of such a call should also be `DataFrameSub`, and at runtime it would be `DataFrame` instead.
+
+Using a constrained typevar `T: (pl.DataFrame, pl.LazyFrame)` should make this sound, because then the typevar can be solved only to one of those two precise types, not a subtype.
+
+Also, even with the bound typevar, if `DataFrame.with_columns` and `LazyFrame.with_columns` both returned `typing.Self`, that should also make this valid. (Because then the result of a call to `DataFrameSub.with_columns()` would be a `DataFrameSub`).
+
+To use simpler self-contained examples, this code corresponds to the example given above, and should be an error:
+
+```py
+from __future__ import annotations
+
+class A:
+    def method(self) -> A:
+        return self
+
+class B:
+    def method(self) -> B:
+        return self
+
+def f[T: A | B](x: T) -> T:
+    return x.method()  # error, `A | B` is not assignable to `T`
+```
+
+This code using a constrained typevar should be valid:
+
+```py
+from __future__ import annotations
+
+class A:
+    def method(self) -> A:
+        return self
+
+class B:
+    def method(self) -> B:
+        return self
+
+def f[T: (A, B)](x: T) -> T:
+    return x.method()
+```
+
+And this code with `Self` return types and a bound typevar should also be valid:
+
+```py
+from __future__ import annotations
+from typing import Self
+
+class A:
+    def method(self) -> Self:
+        return self
+
+class B:
+    def method(self) -> Self:
+        return self
+
+def f[T: A | B](x: T) -> T:
+    return x.method()
+```
+
+Currently ty does not allow any of these, and we should allow the latter two. Mypy and pyright both correctly allow the latter two, but not the first.
+
+---
+
+_Label `generics` added by @carljm on 2025-06-21 20:34_
+
+---
+
+_Comment by @gusutabopb on 2025-06-26 05:59_
+
+> Using a constrained typevar T: (pl.DataFrame, pl.LazyFrame) should make this sound, because then the typevar can be solved only to one of those two precise types, not a subtype.
+
+Sorry, that's what my original example should've been. I mixed up type union and type constraint syntax.
+
+
+> This code using a constrained typevar should be valid:
+>```python
+> from __future__ import annotations
+> 
+> class A:
+>     def method(self) -> A:
+>         return self
+> 
+> class B:
+>     def method(self) -> B:
+>         return self
+> 
+> def f[T: (A, B)](x: T) -> T:
+>     return x.method() #
+>```
+
+Good to know. This is what my case boils down to.
+
+
+---
+
+_Renamed from "`invalid-return-type` false positive on constrained generic with type union" to "`invalid-return-type` false positive on constrained generic" by @carljm on 2025-06-26 16:45_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2025-11-14 15:16_
+
+---
+
+_Assigned to @dcreager by @dcreager on 2026-01-09 13:46_
+
+---

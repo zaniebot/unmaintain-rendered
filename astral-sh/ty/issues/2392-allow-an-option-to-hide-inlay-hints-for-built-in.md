@@ -1,0 +1,88 @@
+---
+number: 2392
+title: Allow an option to hide inlay hints for built-in functions
+type: issue
+state: open
+author: justinchuby
+labels:
+  - configuration
+  - server
+assignees: []
+created_at: 2026-01-08T02:59:38Z
+updated_at: 2026-01-09T01:12:21Z
+url: https://github.com/astral-sh/ty/issues/2392
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# Allow an option to hide inlay hints for built-in functions
+
+---
+
+_Issue opened by @justinchuby on 2026-01-08 02:59_
+
+When `Call Argument Names` is on, calls like `enumerate()` or `str()` will have argument names displayed, which can make the source code noisy. It would be nice to have an option to selectively disable hints for built-in functions (and perhaps user specified packages).
+
+---
+
+_Label `configuration` added by @dhruvmanila on 2026-01-08 06:53_
+
+---
+
+_Label `server` added by @dhruvmanila on 2026-01-08 06:53_
+
+---
+
+_Comment by @MichaReiser on 2026-01-08 08:30_
+
+Thanks for opening this issue.
+
+Is the reasoning here that users are more familiar with builtins/specific packages so that they don't need inlays? Or are there specific inlays you've found to be too verbose? Is it specifrically one-argument functions?
+
+---
+
+_Comment by @justinchuby on 2026-01-08 16:24_
+
+> Is the reasoning here that users are more familiar with builtins/specific packages so that they don't need inlays? Or are there specific inlays you've found to be too verbose? Is it specifically one-argument functions?
+
+I think all are true. For example:
+
+<img width="1509" height="640" alt="Image" src="https://github.com/user-attachments/assets/485bae82-74c8-4ae7-8efb-f970296cf761" />
+
+1. One-argument functions `enumerate`, `str` become too verbose
+2. It is true that people may be more familiar with some packages that they don't need this hint, but they would for other packages
+3. Generally it may even be ok to hide the name for the first argument (e.g. `textwrap.indent`)
+
+---
+
+_Comment by @justinchuby on 2026-01-08 16:24_
+
+Interestingly there is no hint for `len()`
+
+---
+
+_Comment by @MichaReiser on 2026-01-08 17:29_
+
+I'm curious to hear @Gankra perspective on this. I can see the argument that inlays for one argument functions are less useful because it's unlikely that you would confuse them. 
+
+---
+
+_Comment by @Gankra on 2026-01-08 17:37_
+
+My first thought is that the most offensive results here are single-argument functions, we could consider a heuristic that omits them for those.
+
+---
+
+_Comment by @Gankra on 2026-01-08 17:39_
+
+`indent` on the other hand is more borderline. Like I kinda like seeing `prefix=` but `text=` is a bit less helpful.
+
+---
+
+_Comment by @carljm on 2026-01-09 01:12_
+
+> Interestingly there is no hint for `len()`
+
+I think this is because `len()` is defined in typeshed as having a positional-only argument (that is, the type checker will complain if you even tried to pass its argument by keyword, so we're not going to show an inlay hint that implies you could), where e.g. `enumerate()` constructor has positional-or-keyword arguments.
+
+
+---

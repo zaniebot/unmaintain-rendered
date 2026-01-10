@@ -1,0 +1,727 @@
+---
+number: 136
+title: prefer more precise declared type over gradual inferred type, or vice versa
+type: issue
+state: open
+author: carljm
+labels: []
+assignees: []
+created_at: 2025-04-06T18:43:23Z
+updated_at: 2026-01-09T15:28:53Z
+url: https://github.com/astral-sh/ty/issues/136
+synced_at: 2026-01-10T01:48:23Z
+---
+
+# prefer more precise declared type over gradual inferred type, or vice versa
+
+---
+
+_Issue opened by @carljm on 2025-04-06 18:43_
+
+In a case like this:
+
+```py
+from typing import Any
+
+def f(x: Any):
+    y: str = x
+    reveal_type(y)
+```
+
+We currently reveal Any because we prefer inferred over declared type. But in this case that's counter productive because our inferred type is just Any. 
+
+One policy we could use here is that if the declared type is assignable to the inferred type, that suggests it is at least as precise, and we should prefer it.
+
+---
+
+_Comment by @sharkdp on 2025-04-09 07:27_
+
+> if the declared type is assignable to the inferred type, that suggests it is at least as precise
+
+Thinking about this again, that's obviously not true. If the types are reversed (declared type is `Any`, inferred type is `str`), they are also assignable.
+
+I reopened this ticket because I found the following problem, which is somewhat reversed. Now the declared type is *less* precise, but that's exactly the intention of the author:
+
+```py
+from typing import Any
+
+_default: Any = object()
+
+def f(x: int = _default):  # Red Knot: Default value of type `object` is not assignable to annotated parameter type `int`
+    pass
+```
+https://playknot.ruff.rs/4b49ce75-02f7-49b1-a798-f9f6d0744d0a
+
+---
+
+_Comment by @mikeshardmind on 2025-04-09 11:31_
+
+A Policy I think would work well here to avoid clobbering developer intent, but would be more complex to implement.
+
+- If both types result in no type errors, use the more precise one.
+- If the declared type results in a type error, emit an error. (even if the inferred one doesn't, there's something wrong, possibly with the type declaration, not the runtime code)
+- If the inferred type results in a type error, but the declared one doesn't and the value is assignable to the declared type, use the declared type.
+
+The third part of this principle here also avoids what was a rather [contentious issue](https://discuss.python.org/t/inference-on-literal-types/72018) with other type checkers and inference of Literal types causing type errors with invariant generics
+
+A simpler rule to implement here would be to prefer the more precise type unless the declared type is a gradual type or the more precise type is only a refinement type of the declared type, otherwise use the declared type. This should cover all the cases *currently* within python's type system where preferring precision results in false positives that directly conflict with developer intent, but may become a more complex rule overall if the type system gains more than just `Literal` and `LiteralStr` for refinement types.
+
+
+---
+
+_Comment by @carljm on 2025-04-09 15:03_
+
+Unfortunately I think "results in a type error" is simply not feasible as a predicate for making this decision, implementation-wise. In principle the "resulting type error" could be anywhere in the code base, so effectively this heuristic would mean unbounded fixpoint iteration of the entire type-check.
+
+Also I suspect that such a heuristic is not a good idea for user experience, either, because it would make the behavior very "jumpy" and subject to non-obvious non-local effects. Perhaps there really is a type error that needs to be fixed later in the function, but one interpretation of an earlier assignment "hides" that error with a gradual type -- are we sure that we should really prefer hiding the later error?
+
+We will need to find a heuristic or principle that is predictable and local to the two types in the assignment.
+
+If we want to base decisions on which type is "more precise", that also requires a definition of "more precise" in terms of subtyping and assignability; it's not self-evident what that definition is.
+
+---
+
+_Comment by @mikeshardmind on 2025-04-09 15:11_
+
+The simpler version can be restated as the following order of operations, which should not require any new definitions or specification clarity:
+
+
+- If the declared type is gradual, and the inferred type is not, use the declared type.
+- If the inferred type is a value-constrained form (refinement type, currently: Literals) of the declared type, use the declared type
+- If the inferred type is a subtype by structural or nominal subtyping, use the inferred type
+- otherwise, use the declared type
+
+---
+
+_Comment by @carljm on 2025-04-09 15:13_
+
+> Now the declared type is _less_ precise, but that's exactly the intention of the author
+
+I think a fundamental question is whether we _want_ to support that code example, without requiring a `type: ignore`. It seems obviously unsound, and can result in a function parameter annotated as `int` taking on a value that is not of type `int`. The author seems to desire that unsoundness, and is trying to use a declared type of `Any` as a way to silence the type checker. But red-knot currently doesn't interpret a declared type that way (as a form of cast), instead we interpret it as setting an upper bound on the types that can be assigned to a name.
+
+---
+
+_Comment by @mikeshardmind on 2025-04-09 15:17_
+
+That code example may have come from my own code based on a comment elsewhere. If so, It's used as a sentinel value where no default value is appropriate and should not change the public API The function needs to distinguish between no value provided without changing the types allowed to be passed. I'd be inclined to remove it if there was a better option here, but type checkers don't really allow for true divergence between public API and a default value which isn't allowed to be passed by a user in any other way.
+
+Late bound defaults (pep 671) looked promising to me as a future better way, though that's still in draft.
+
+If you've got another solution that works for this without arguably abusing the way Any is defined in the type system, I'd be less inclined to ask you to consider supporting this particular use. 
+
+That said, I think the set of steps I provided above is somewhat reasonable even outside of the case of Any, it should work without conflicting with developer intent with things like a fully known tuple vs variadic tuple (gradual length component), as well as avoid the issue of being too or less specific than a developer intended with Literals.
+
+---
+
+_Comment by @carljm on 2025-04-09 16:23_
+
+Isn't it possible to [achieve this soundly today with overloads](https://pyright-play.net/?strict=true&enableExperimentalFeatures=true&code=GYJw9gtgBALgngBwJYDsDmUkQWEMpgBuApiADZgCGAJgFC0ACRpFNt1xwUwAFAB4AuTChgBKKAFoAfMJhCAdIvpMS5KnQ5de46bIVL2nbvyGp8AHygA5MCmJQAvNdvEdMswNpRvmLn0wAzs52nj5hUCDEMACuIChQAAxePpExcVB89Nq0vACMojk8NnYFQA)? Effectively you are wanting to "split" the public signature of the function from the private internal signature, and overloads permit this split:
+
+```py
+from typing import overload
+
+@overload
+def f(x: int) -> int: ...
+
+@overload
+def f() -> int: ...
+
+def f(x: int | None = None) -> int:
+    if x is None:
+        return 0
+    return x
+
+f()
+f(1)
+f(None)  # type error, there's no overload that accepts `None`
+```
+
+This is admittedly more verbose.
+
+It's also of course possible to use the `Any` version with an explicit `typing.cast` to `Any` on the RHS instead of relying on type checkers ignoring a clearly-correct inferred type. This seems to me like a reasonable compromise when intentionally doing something unsound.
+
+---
+
+_Comment by @mikeshardmind on 2025-04-09 16:28_
+
+overloads have a problem where they have a runtime effect. Same with cast. This ruins other goals (no eager typing imports) that are frankly more important to me than satisfying a type checker for something where the immediate first line of the function is handling the default.
+
+FWIW, This particular pattern has been noted as common in various peps researching it. See 671 for an example.
+
+---
+
+_Comment by @mikeshardmind on 2025-04-09 16:31_
+
+> It's also of course possible to use the Any version with an explicit typing.cast to Any on the RHS instead of relying on type checkers ignoring a clearly-correct inferred type.
+
+Oh, also there's a slight problem with calling it relying on inference behavior:
+
+Any is the annotated type in a direct assignment, and this is accessible at a module level, there's no guarantee that the order of execution doesn't have another value assigned if this is modified in line with it's annotated type during import.
+
+---
+
+_Comment by @mikeshardmind on 2025-04-09 16:38_
+
+Oh, one more problem 🙃 (sorry, I missed it at first, responding too quickly)
+
+your overload example isn't properly expressible if `None` is a valid input and there's an actual need for a sentinel object. There's no way to include the sentinel marker that's guaranteed unique (an instance of an object) without ruining the type checking of the body for the library:
+
+compare this version for a fair comparison:
+
+Code sample in [pyright playground](https://pyright-play.net/?strict=true&enableExperimentalFeatures=true&code=GYJw9gtgBALgngBwJYDsDmUkQWEMpgBuApiADZgCGAJgFD0D61xwlArmfgLwEBGAVsQDGMABQBKegAEipCjVrNgUYKIAeALkwp8AHygA5MCmLioAWgB82mFoB0D6bPJU6SlRIvXUtqA7v07qqaNlD6RiZhfIIiUDwRpl42GrRQaZjKapgAzlBMLOycKeklUCDEMGwgKFAADKnp5ZXVUGr0qpKqAIydogmSQA)
+
+
+---
+
+_Comment by @carljm on 2025-04-09 17:14_
+
+I think the desire to not import `typing` can be managed with `TYPE_CHECKING`, even using overloads or cast.
+
+I think the overload approach doesn't really have a problem with finding a sentinel value, assuming there is _some_ type that is not a valid external input to the function. For example, if valid inputs are `int | None`, then you can't use `None` as sentinel, but the sentinel can be a string literal, etc. Of course this would be nicer with a dedicated sentinel type in the standard library.
+
+It's a good point indeed that even local confidence in inferred types in module global scope is technically unsafe, given that any import could trigger external code that mutates this module's globals, and any call could trigger such an import, and almost any Python code can trigger a call (via dunder methods etc.), and we are currently choosing to ignore this possibility. This is a case where the unsoundness may be sufficiently rare in practice that the cure is worse than the disease, but I'm not averse to saying that in global scope we should always union the inferred type with the declared type (and with `Unknown` if no declared type) to reflect this possibility. But I would want to address the unsoundness via this union, not simply by ignoring the inferred type entirely, because the latter would allow way too many obvious type errors to pass silently. So with that union, we'd still error on the unsound-default pattern, because `Any | object` is not assignable to `int`.
+
+---
+
+_Comment by @carljm on 2025-04-09 17:20_
+
+Actually I think unions and intersections might provide an interesting generalized path forward here. In a scope where we don't consider arbitrary external mutation mid-execution to be possible (this is currently all scopes, but as mentioned above it could exclude module-global scope to be more sound), we could infer the intersection of the declared and inferred type, which is a formal way to say "it has to be both, and we want the most precise knowledge available". In cases without gradual types, this intersection would just simplify to the more precise inferred type, as we do today.
+
+If we want to consider the possibility of arbitrarily-timed external mutation in module global scopes, then in that case we would want to take the union rather than the intersection. "We can only trust the declared type as upper bound, but the inferred type is a lower bound."
+
+---
+
+_Comment by @mikeshardmind on 2025-04-09 17:34_
+
+> I think the desire to not import typing can be managed with TYPE_CHECKING, even using overloads or cast.
+
+overload cannot without harming runtime introspection, a runtime use of inspect would get the incorrect annotation and no overloads to be found with typing.get_overloads
+
+cast can, but I'm going to be very blunt, if someone ever writes: 
+
+```py
+if t.TYPE_CHECKING:
+    x: t.Any = t.cast(t.Any, object())
+else:
+    x = object()
+```
+
+I'm going to tell them to just use a type ignore instead. `object()` is assignable to Any, and Any is what I have said via annotations is what a type checker should treat it as, I don't see any value in a type checker ignoring a developer use of Any in an inline assignment. That's a pretty significant sign they know they are doing something a type checker doesn't understand or working around some other issue.
+
+---
+
+_Comment by @DiscordLiz on 2025-04-09 18:01_
+
+>  we could infer the intersection of the declared and inferred type, which is a formal way to say "it has to be both, and we want the most precise knowledge available". In cases without gradual types, this intersection would just simplify to the more precise inferred type, as we do today.
+
+I know intersections haven't been accepted yet, but wouldn't this mean the example should be fine? Any & T doesn't reduce based on all of the working discussion that has happened.
+
+In fact, while I'm not positive on this (I think it works, but I'd need to work out the Literal interactions), I think in the case of a default value, the 4 step process that doesnt require any sort of recursive checking @mikeshardmind gave you [here](https://github.com/astral-sh/ty/issues/136) should be equivalent to what you propose under the current working definition of intersections without relying on a definition of intersections.
+
+---
+
+_Comment by @carljm on 2025-04-09 21:39_
+
+Red-knot already has intersections as a core part of our type model. All of our type narrowing is implemented exclusively through intersections and reduction of intersections. Our intersections behave as has been discussed (including that `Any & T` does not reduce). So "not relying on a definition of intersections" is an anti-goal for red-knot. We will much prefer to define our logic in terms of core primitives of gradual set-theoretic types (including intersections) which we've already implemented, rather than multi-step heuristics with at-first-glance arbitrary-seeming treatment of different kinds of types.
+
+So yes, it's true that if we infer the intersection of the declared and inferred type, that means that a declared type of `Any` will allow subsequent uses that require a narrower type than the inferred type. I think this is defensible, as it does give the developer the option of using an explicit declared type of `Any` to express that there are known constraints on the type of this name that the developer is responsible for ensuring, and that aren't reflected in the type system. Annotating with `Any` is an unusual thing to do, and it's clearly expressing some kind of developer intent to opt that name out of type checking. (Otherwise, a variable annotation of `Any` in our model would be indistinguishable, in local-scope use of the name, from a variable annotation of `object` -- both would simply mean that any type can be assigned to the name in that scope.) If we do this, it will mean that un-annotated names are no longer equivalent to names explicitly annotated as `Any` (barring our `Unknown/Any` distinction) -- we will definitely not want to intersect the inferred type of unannotated names with `Unknown`.
+
+The question is what we do in the module-global scope, _if_ we decide that we should respect the possibility of external mutation of module globals while the module scope is mid-execution (which we should really probably have a separate issue to discuss.) I had suggested above that we union declared and inferred type in this case, but I think that's not consistent; if a variable annotation of `Any` in function scopes means "this could be an arbitrarily narrow type", then it should also mean that in module-global scope. I _think_ that leads to the conclusion that we'd simply respect declared types only in module global scope, but I'm not sure I'm happy with the results of that for un-annotated names (they would simply be `Unknown` and lose all type checking.) EDIT: on second thought, I think the corollary of not intersecting `Unknown` with the inferred type in function scopes, would be that in module global scope we would infer the union of `Unknown` with the inferred type for un-declared names, so we would still get type-checking on that lower bound, and we'd infer solely the declared type for declared names. This seems potentially reasonable.
+
+---
+
+_Comment by @mikeshardmind on 2025-04-09 22:58_
+
+> then it should also mean that in module-global scope. I think that leads to the conclusion that we'd simply respect declared types only in module global scope, but I'm not sure I'm happy with the results of that for un-annotated names (they would simply be Unknown and lose all type checking.
+
+I think it's defensible to treat Unknown differently from Any (not just here, but in general). Unknown should really function as the absence of an annotation, and not as `typing.Any` (loosely speaking, probably something closer to another language's `auto`, rather than having the special properties of `typing.Any`, I'm willing to deal with formal definitions and standardization of this concept if that's needed here). Unknown is the absence of an explicit annotation, and while that means there's no request from a developer to enforce any specific type, it doesn't mean any possible value is valid within the program being type-checked.
+
+I think at the module scope, this is also potentially a place to offer a code action in the future to fill in with the inferred type, because without an annotation, things outside of the module interacting with it can only treat it as lacking type information. This is where the behavior gets especially fuzzy in the current typing specification, because what does a lack of an annotation mean for a module with py.typed? (Currently, this essentially makes it Any for those importing it)
+
+
+> The question is what we do in the module-global scope, if we decide that we should respect the possibility of external mutation of module globals while the module scope is mid-execution (which we should really probably have a separate issue to discuss.)
+
+If you'd like to split the union or intersection based on concern for import behavior into another topic, happy to continue it elsewhere, but I agree with your analysis: Intersection if it's assumed the value can't change from some other code inbetween, Union if it's assumed it can. This holds beyond module-global scope and modification during import to other cases of potential non-linear (concurrency fun) modification of values. I'm unsure if type checkers *should* have to account for this or not, but it's at least good to know what the path would be.
+
+---
+
+_Comment by @DiscordLiz on 2025-04-10 15:09_
+
+> Red-knot already has intersections as a core part of our type model. All of our type narrowing is implemented exclusively through intersections and reduction of intersections. 
+
+Okay, I'm not used to type checkers being willing to do this much without specification, I'll adjust.
+___
+
+The union bit is likely incorrect, and it's just a matter of always having an upper bound, and if narrowing is safe, also having a safe narrowing.
+
+The thing to watch here is that if replacement can happen, the Union doesn't provide useful information beyond the original upper bound, and can create false positives in the case of gradual types, which is antithetical to gradual typing, as a Union between a type and a supertype of that type *outside of gradual typing* has safe operations equivalent to those that are safe on the supertype. 
+
+With narrowing not assumed to be safe, re-assignment can happen to anything assignable to that original upper bound.
+
+This makes it `Annotation & Inferred` if replacement cannot happen, and `Annotation` if replacement can happen.
+
+This leads to your question about what to do with Unannotated values. I believe the specification says to treat these as Any currently for module globals, but says nothing about other locations. While I agree with @mikeshardmind that this isn't a useful definition, (I think type::Unknown as used by red-knot internally is more useful in this case) unless type checkers are willing to agree on inference behavior, these are visible symbols to other type checkers that use said modules. This case may warrant a warning or code action as he suggested.
+
+
+---
+
+_Comment by @sharkdp on 2025-04-14 10:51_
+
+Maybe it makes sense to move the discussion around external mutation to a separate ticket, and to focus on two concrete examples:
+
+### Example 1: declared type more precise than inferred type
+
+```py
+def returns_any() -> Any: ...
+
+x: str = returns_any()
+
+1 + x
+```
+
+Both mypy and pyright emit an error here (they use `str` as the type for `x` in the last line), Red Knot does not (we use `Any` as the type for `x`). The question here seems to be if the declaration alone should be sufficient to "collapse" the type from `Any` to `str`, or if we want users to declare the intent more clearly using `x = cast(str, returns_any())` (or using an actual conversion). I can see arguments for both sides, but I am personally sympathetic to the viewpoint where an explicit cast is required for potentially-unsafe operations.
+
+It also seems worth noting that using `str & Any` (`declared & inferred`) as the type for `x` in the last line would *not* change our current behavior here. `1 + x` is a valid operation for `x: str & Any`, because `Never` is a possible materialization of `str & Any`.
+
+### Example 2: declared type less precise than inferred type
+
+```py
+y: Any = "a string"
+
+1 + y
+```
+
+Both mypy and pyright emit *no* error here (they use `Any` as the type for `y` in the last line), but Red Knot does (we use `Literal["a string"]` as the type for `y`). I would argue that our behavior here is favorable. This code *will* fail at runtime.
+
+Changing our behavior to use `Any & str` (`declared & inferred`) as the type for `y` would cause us to *not* emit a diagnostic. This seems undesirable for another reason as well: it would break the gradual guarantee (removing the `: Any` annotation would result in a new error, because we would then use `Literal["…"]` as the type for `y`), unless we also change the type for an un-annotated `y = "a string"` to `Unknown & Literal["…"]`. But doing so would basically require users to add annotations *everywhere*.
+
+---
+
+So overall, I'm not sure I see strong arguments for the proposed `declared & inferred` behavior here.
+
+I think the core question is whether or not `x: T_declared = <expr of type T_inferred>` is seen as an *intentional* change of the type to `T_declared`, or if it is merely a way to ensure that `T_inferred` is assignable to `T_declared`. The latter is what we do right now, and I would argue it's also what developers are used to from other strongly-typed languages (arguably, without gradual types), where you would be forced to use a cast if your intent is to *change* the type.
+
+---
+
+_Comment by @carljm on 2025-04-14 23:03_
+
+I created https://github.com/astral-sh/ty/issues/126 for follow-up on whether red-knot should honor the external mutation possibility.
+
+---
+
+_Comment by @carljm on 2025-04-14 23:13_
+
+> I am personally sympathetic to the viewpoint where an explicit cast is required for potentially-unsafe operations.
+
+I am too, but I'm not sure how this applies to example 1 (it seems more relevant to example 2). Using `str & Any` as the type of `x` is no more or less unsafe than using `Any` for its type. As you point out, it doesn't really change our behavior, because an intersection with `Any` is just as "forgiving" (in usage) as `Any` itself. Practically, what it does is "look less weird" to a user of LSP hover or `reveal_type`, since it doesn't look as if we are totally ignoring their annotation of `str`. Theoretically, what it does is model our knowledge that after `x: str = returns_any()`, `x` has an upper bound on its possible type. (Given, of course, the assumption that the assignment is actually valid at runtime, but this is the general assumption that we make in gradual typing -- truly sound gradual typing systems enforce this by inserting runtime type assertions.)
+
+
+> Both mypy and pyright emit _no_ error here (they use `Any` as the type for `y` in the last line), but Red Knot does (we use `Literal["a string"]` as the type for `y`). I would argue that our behavior here is favorable. This code _will_ fail at runtime.
+
+This was my original feeling, and I'm sympathetic to it. The counter-argument is that explicitly annotating with `Any` is an odd thing to do, and clearly expresses _some_ kind of user intent. Currently we effectively ignore this intent, since we treat variable annotations as upper bounds only, meaning `: Any` is indistinguishable from `: object`. I don't think it's unreasonable to suggest that the most likely intent of an explicitly non-static type annotation is to request that this name be "opted out" from static type checking.
+
+---
+
+_Comment by @AlexWaygood on 2025-04-15 14:10_
+
+> The question here seems to be if the declaration alone should be sufficient to "collapse" the type from `Any` to `str`, or if we want users to declare the intent more clearly using `x = cast(str, returns_any())` (or using an actual conversion). I can see arguments for both sides, but I am personally sympathetic to the viewpoint where an explicit cast is required for potentially-unsafe operations.
+
+It's true that we cannot verify that the variable really _does_ have type `str`, But I'm not sure I would use the term "potentially-unsafe" to describe "collapsing" the type from `Any` to `str`. Collapsing the type here can only ever result in more possible type errors being caught, and more diagnostics being emitted, by red-knot: the prior type is the dynamic type, on which all operations are permitted by the type checker, while the new type is a static type on which many operations are disallowed. The user is asking us to assume a more static type so that more possible type errors will be caught.
+
+> It also seems worth noting that using `str & Any` (`declared & inferred`) as the type for `x` in the last line would _not_ change our current behavior here. `1 + x` is a valid operation for `x: str & Any`, because `Never` is a possible materialization of `str & Any`.
+
+At some future point we'll want to start emitting diagnostics for code that's inferred as being "accidentally unreachable" -- I would assume that at that point we'd emit warnings about all following code being unreachable as soon as we inferred a variable as being of type `Never`? Though `str & Any` could also materialize as `<some str subclass that permits being added to integers>`, so your point still stands.
+
+---
+
+_Comment by @sharkdp on 2025-04-15 14:55_
+
+> But I'm not sure I would use the term "potentially-unsafe" to describe "collapsing" the type from `Any` to `str`. Collapsing the type here can only ever result in more possible type errors being caught, and more diagnostics being emitted, by red-knot
+
+I think it's an unsafe operation. There are functions that are annotated with `Any` because people use this to mean "can return anything". Typeshed also uses a return type of `Any` for some functions like this, e.g. `json.load`. So if you write
+```py
+number: int = json.load(some_file)
+```
+to mean "I know that this is fine because `some_file` only contains a single integer", I would consider that an unsafe operation. And I would prefer if that unsafe operation would be more explicit in the code (using a cast), or made safe (using a conversion).
+
+---
+
+_Comment by @carljm on 2025-04-15 15:10_
+
+I don't think that is a sustainable interpretation of what it means for an operation to be "safe" or "unsafe" in gradual typing. Under that interpretation, essentially _all_ usage of `Any` is unsafe, including canonical usages such as:
+
+```py
+def takes_int(x: int):
+    assert isinstance(x, int)
+
+def takes_any(x: Any):
+    return takes_int(x)
+```
+
+You're not wrong that this is unsafe! The static type checker will allow you to call `takes_any("foo")`, which clearly will fail at runtime. But allowing this "unsafety" (that is, allowing parts of the program to opt out of static type checking and rely on dynamic type checking, as Python always did in the past) is the entire purpose of gradual typing, and the raison-d'etre for `Any` in the first place. If we were to declare the above unsafe and require an explicit cast, we might as well eliminate `Any` from the type system and have a fully-static type system instead of gradual typing.
+
+I think that the _useful_ definition of "unsafe" in gradual typing is one where we assume that every assignment of `Any` to a typed destination is valid (that is, we assume the author of the code is correctly ensuring the necessary invariants, since that part of the program is using dynamic, not static, typing), and we ask whether the program types correctly under that assumption.
+
+This assumption maps precisely to the definition of how `Any` behaves in the type system via "optimistic" materialization.
+
+So I think that it is correct for us to assume that if we have `x: str = returns_any()`, the upper bound on the type of `x` is `str`. (But of course it remains true that the lower bound is `Never`, which means that any use of `x` is permitted.)
+
+To be honest, I am not clear what behavior you are advocating for in example 1. How do you think we should infer the type of `x` after `x: str = returns_any()`?
+
+---
+
+_Comment by @sharkdp on 2025-04-15 15:56_
+
+I clearly haven't thought through all implications and still need to internalize some gradual-typing concepts, so please feel free to cut off the discussion here. It seems reasonable to try the `declared & inferred` strategy.
+
+---
+
+> But allowing this "unsafety" [..] is the entire purpose of gradual typing
+
+I have to admit that I never thought of it this way, but rather the opposite: I thought the purpose of gradual typing was to give you a tool to opt into *more* safety, gradually, by adding more and more type annotations.
+
+> If we were to declare the above unsafe and require an explicit cast, we might as well eliminate Any from the type system and have a fully-static type system instead of gradual typing.
+
+I'm certainly not suggesting that we emit a diagnostic for `x: str = returns_any()`! I thought we were only discussing what kind of type we should infer for local uses of `x` after such a declaration. And the only thing I wanted to express is that the mypy/pyright interpretation ("the type is definitely `str` now") is unsafe in the sense that it can not be verified.
+
+> I think that the _useful_ definition of "unsafe" in gradual typing is one where we assume that every assignment of `Any` to a typed destination is valid (that is, we assume the author of the code is correctly ensuring the necessary invariants, since that part of the program is using dynamic, not static, typing), and we ask whether the program types correctly under that assumption.
+
+That it a reasonable definition. I guess I have to get used to the fact that `x: T = <expr>` is not necessarily "opting into more safety" (and merely asking the type checker to verify this assignment), but potentially also an explicit request to trust the developer that the type of `x` is now `T`. It's just not something I'm used to, but I can see how it makes sense in the context of gradual typing. I guess it's easier for me to follow that reasoning for untyped functions. `x: int = some_unannotated_function()` seems like a reasonable interface between typed and untyped code. If a function is explicitly annotated as returning `Any`, I find that a bit harder to justify, but I guess we shouldn't treat `Unknown` and `Any` differently. 
+
+> To be honest, I am not clear what behavior you are advocating for in example 1. How do you think we should infer the type of `x` after `x: str = returns_any()`?
+
+I wanted to argue that our current behavior (of inferring `Any` for `x` after this definition) seems okay to me — because if you wanted `str`, you could still do `x = cast(str, returns_any())`. But as I said above, I have not thought through all implications. And I realize that I'm not being very helpful here, so I suggest we move forward with the `declared & inferred` strategy here and see if that works out.
+
+---
+
+_Comment by @carljm on 2025-04-15 17:33_
+
+> I have to admit that I never thought of it this way, but rather the opposite: I thought the purpose of gradual typing was to give you a tool to opt into _more_ safety, gradually, by adding more and more type annotations.
+
+I suppose these are two sides of the same coin!
+
+I'm pretty comfortable with inferring `str & Any` for `x: str = returns_any()`; I don't have questions about whether this is sound (under the definition of soundness we use for gradual typing). If I have a question here, it's more how _useful_ it is, since an inferred type of `str & Any` doesn't really behave differently from `Any`.
+
+I'm less comfortable with inferring `str & Any` for `x: Any = returns_str()`, because this goes further than "assume `Any` is some valid type" -- it allows the author to silence the type checker even in cases where we can with 100% certainty in local analysis say the code will fail at runtime (that is, in cases where there is no possible type `Any` could materialize to that would make the code valid):
+
+```py
+x: Any = 1
+
+x + "foo"
+```
+
+And I do kind of feel like this should require a cast or a `type: ignore`. The only reason I'm tempted to consider this is because I think annotating a variable with `Any` is unusual, and I don't see another reasonable interpretation of the author's intent other than "please don't type-check uses of this variable."
+
+---
+
+_Comment by @sharkdp on 2025-04-15 17:49_
+
+> If I have a question here, it's more how _useful_ it is, since an inferred type of `str & Any` doesn't really behave differently from `Any`
+
+I think it would be fairly useful for the LSP usecase! Inferring `x: C & Any` allows us to show all attributes of `C`, when the user does `x.`-<kbd>tab</kbd>, whereas we couldn't do anything meaningful if we infer `Any`.
+
+---
+
+_Comment by @mikeshardmind on 2025-04-15 21:05_
+
+> I think that the useful definition of "unsafe" in gradual typing is one where we assume that every assignment of Any to a typed destination is valid (that is, we assume the author of the code is correctly ensuring the necessary invariants, since that part of the program is using dynamic, not static, typing), and we ask whether the program types correctly under that assumption.
+
+I mostly agree here
+
+> it allows the author to silence the type checker even in cases where we can with 100% certainty in local analysis say the code will fail at runtime (that is, in cases where there is no possible type Any could materialize to that would make the code valid)
+
+
+I think I agree here too, however.... I think 100% certainty is extremely hard to have here, and because of the nature of gradual typing, should be restricted to things that will fail at runtime. Going back to the example that started this branch of discussion, we might have something like the below:
+
+```py
+_marker: Any = object()
+
+...
+    async def foo(self, ..., timeout: int | None = _marker):
+        """ If no timeout is specified, uses the session's default timeout
+        for requests, pass None for no timeout"""
+        timeout = self.default_timeout if timeout is _marker else timeout
+```
+
+No type error will occur at runtime here, but the assignment of `_marker` as a default can be visibly not of the type of timeout. The library author has a few type-safe ways to handle this, but none of them are going to feel ergonomic here, nor are these actually the documented purpose of things like overloads. It feels like a hack to have a overloads that have a narrower type than the function itself does. Putting an overload for the public signature, and changing the marker to an enum member and annotating the function (not the overload) as taking that literal enum member works currently.... but the prior non-obviousness is an issue and it brings in the enum library just for a default that isn't meant to be public, and get around what can be seen as a language level deficiency, the inability to have a true "no value" because None commonly has semantic meaning other than "This is a placeholder for no value, but isn't passable"
+
+This particular case is clearly better served by either a built-in sentinel type or by late-bound defaults, however the earliest either of those will happen is [3.15](https://discuss.python.org/t/pep-661-sentinel-values/9126/241)
+
+```py
+def returns_any() -> Any: ...
+
+x: str = returns_any()
+
+1 + x
+```
+
+This case, there is a possible materialization that isn't a type error at all, it would be a subclass of str that implements `__radd__` such that integers are converted to their decimal representation as a string then concatenated. This might seem paradoxical, but I think despite such a materialization being possible, this one is a more useful place to error than the prior one, because the author has stated they only expect a str, not the more specific `str & RADD_with_int` (hopefully obvious intent on the RHS there from name), so this, especially given existing type checker behaviors, might be reasonably expected to be a barrier between a library that is typed and one that isn't.
+
+A more obvious case of this kind of boundary and developer intent comes up with sqlite
+
+If we assume the following kind of signature on fetching one row
+```
+.fetchone() -> tuple[Any, ...] | None
+```
+
+Then given a specific query, one might write:
+```py
+row = cursor.execute("SELECT COUNT(1) FROM some_table").fetchone()
+assert row is not None, "This can't be none, if the table doesnt exist, this will error, otherwise we have a count"
+count: int = row,
+f = "this" + count  # this should error
+```
+
+Assuming the author is aware of how sql works and their driver of choice behaves and is typed this way, they won't want `Any & int` for the type, but `int`.
+
+It may require specification clarification, but I think annotations should be seen as developer intent in a way that is useful to developers, and I think if the annotation is a fully static type, any gradual information allowing more than that static type should be assumed to not be within what the developer intends to be allowed for use of that variable.
+
+> And I do kind of feel like this should require a cast or a type: ignore. The only reason I'm tempted to consider this is because I think annotating a variable with Any is unusual, and I don't see another reasonable interpretation of the author's intent other than "please don't type-check uses of this variable."
+
+I think the more useful interpretation, and the one that at least leaves *some* room for type checkers to produce useful errors in some cases is not "don't type-check this" but "I know I'm doing something that currently can't be modeled nicely in the type system"
+
+
+---
+
+_Comment by @carljm on 2025-04-15 22:47_
+
+The idea that `x: str = returns_any()` might be intended to apply some static typing safety at the boundary with an untyped library is a really good point. In general, I think there's a good argument that we should weight explicit type annotations highly, since they are the developer trying to communicate with us, and it's frustrating to try to communicate and not be listened to. (I'm imagining a hypothetical developer trying to add annotations to say "no really, consider this a string please!" and getting frustrated that we just insist on going with the inferred type from the RHS, or an intersection of the two types, instead.)
+
+I wonder what the overall impact would look like if we always simply preferred the declared type over the inferred type, when there is an explicit declaration.
+
+On the other hand, I was recently told by a mypy developer that mypy has a longstanding intention to change its behavior of always preferring the declared type. So that suggests that may not be the route we want to take.
+
+---
+
+_Comment by @hauntsaninja on 2025-04-15 23:37_
+
+Both mypy and pyright agree that `x: str = returns_any(); x + 1` should be an error. I think this is the most user friendly behaviour, for the reasons in Carl's last message
+
+(Off topic, but at some point, I think Carl had mentioned wanting `if isinstance(x, str)` to not narrow from Any. I'm not convinced about that behaviour for the similar reason that false negatives where it feels the false negative is because the type checker didn't listen to you are frustrating)
+
+For some previous discussion, see:
+- https://mail.python.org/archives/list/typing-sig@python.org/thread/GYVM5KEE6URE6PAH7UTK6324M7GWSFQS/
+- https://github.com/python/mypy/issues/2008
+
+Roughly speaking, I anticipate any mypy changes here to be on the lines of making `x: typ; x = value` and `x: typ = value` behave more consistently and only preserving the casting like behaviour in `x: typ = value` if `typ` is a gradual form
+
+
+
+---
+
+_Comment by @carljm on 2025-04-16 00:01_
+
+I feel somewhat strongly about `isinstance(x, str)` from `x` as `Any` narrowing to `str & Any` (which will basically behave like `Any`), not to `str`, because the latter is not defensible in terms of gradual typing theory, and violates the gradual guarantee. I think freely violating the gradual guarantee (in general) is a significant cause of Python typing being hard to adopt in existing untyped codebases, and turns people off of typing (and the people it turns off are thus under-represented among current vocal typing users). You run a static type checker on your working codebase, and it gives you a bunch of false positive errors right off the bat, and you have to add a bunch of annotations to make it happy before you can even turn it on. (This is true even with mypy's very coarse-grained form of "gradual typing" where it doesn't check the bodies of un-annotated functions, which I don't want to emulate.)
+
+From the user perspective I also don't think it's the same; an `isinstance` check is IMO not in the same category of "no really, I want this to be considered this type" as an explicit type annotation.
+
+Preferring the declared type over the inferred type in an annotated assignment also doesn't violate the gradual guarantee, just gives you a (potentially) less precise type.
+
+It is hard to reconcile consistently with type narrowing from assignments, though, which is mypy's issue (and would be a problem for us, too, if we tried to go the direction of privileging explicit annotations more.)
+
+---
+
+_Comment by @carljm on 2025-04-16 00:14_
+
+> Roughly speaking, I anticipate any mypy changes here to be on the lines of making `x: typ; x = value` and `x: typ = value` behave more consistently and only preserving the casting like behaviour in `x: typ = value` if `typ` is a gradual form
+
+I'm curious how this could be done in a way that preserves having `x: str = returns_any(); x + 1` be an error. In this case, `str` is not a gradual form, so if you eliminate the "casting like behaviour" you'd end up making that not an error, wouldn't you?
+
+EDIT: I guess the most likely answer here is also one I wouldn't like 😆 because it probably involves never allowing `Any` to narrow a type, which is the corollary to also allowing anything to "replace" `Any` in narrowing.
+
+---
+
+_Comment by @hauntsaninja on 2025-04-16 00:52_
+
+Yeah, that's right 😅 mypy will only narrow to Any in some specific set of situations (e.g. if the declared type is a Union containing Any). If there is a declared type, assignment to Any will usually just reset to the declared type. I think the set of situations mypy narrows to Any is not the most principled and is history dependent, but I think we've been tightening it a little over time, see https://github.com/python/mypy/blob/34e8c7c5fa09516fbed37cad80b161906e97f53a/mypy/binder.py#L389-L413
+
+---
+
+_Comment by @hauntsaninja on 2025-04-16 02:23_
+
+I think "always prefer declared type over inferred type" is still fairly viable. Mypy's had this behaviour for a long time and while it shows up in issues every now and then, I'd venture most users don't really run into it in day to day usage.
+
+If you took one step more heuristic-y, and chose "always prefer declared type over inferred type + if declared type is a union attempt to narrow to union member" I suspect this would fix most of the real world cases where users expect narrowing. I believe TypeScript does something like this.
+
+The upcasts do have some legitimate use even when gradual types are not involved, e.g. `x: Sequence[int] = list_int` if you'd like to avoid a local getting mutated
+
+---
+
+_Renamed from "[red-knot] prefer more precise declared type over gradual inferred type" to "prefer more precise declared type over gradual inferred type" by @MichaReiser on 2025-05-07 15:25_
+
+---
+
+_Comment by @MatthewMckee4 on 2025-05-31 21:01_
+
+Would we also want to consider allowing something like
+
+```py
+a: list[object] = [1, "2"]
+```
+
+And favouring `list[object]` (when the other value isn't gradual)
+
+---
+
+_Label `needs-decision` added by @carljm on 2025-08-18 18:59_
+
+---
+
+_Assigned to @carljm by @carljm on 2025-08-22 14:21_
+
+---
+
+_Unassigned @carljm by @carljm on 2025-09-19 14:48_
+
+---
+
+_Assigned to @ibraheemdev by @carljm on 2025-09-19 15:00_
+
+---
+
+_Comment by @ibraheemdev on 2025-10-17 03:23_
+
+We now prefer the declared type for invariant collection literals (https://github.com/astral-sh/ruff/pull/20927). We also narrow the declared type, filtering out unrelated union elements. The next step forward here would be to do the same for invariant generic types in general. Other than that, it's not clear whether we want to change our current behavior, which is to prefer the inferred type unless the type context can be used to infer a more assignable type (e.g. when solving a generic function specialization).
+
+---
+
+_Label `bidirectional inference` added by @ibraheemdev on 2025-10-17 03:27_
+
+---
+
+_Removed from milestone `Beta` by @ibraheemdev on 2025-11-13 21:57_
+
+---
+
+_Added to milestone `Stable` by @ibraheemdev on 2025-11-13 21:57_
+
+---
+
+_Unassigned @ibraheemdev by @ibraheemdev on 2025-11-14 15:19_
+
+---
+
+_Comment by @MichaReiser on 2025-11-25 14:55_
+
+> I reopened this ticket because I found the following problem, which is somewhat reversed. Now the declared type is less precise, but that's exactly the intention of the author:
+
+This pattern is also present in discord.py
+
+https://github.com/Rapptz/discord.py/blob/9be91cb093402f54a44726c7dc4c04ff3b2c5a63/discord/utils.py#L325-L334
+
+---
+
+_Comment by @MichaReiser on 2025-11-26 14:51_
+
+I ran into this again today, where a method returned `Unknown`, so I annotated the variable, hoping the IDE would give me some complications once I do. Unfortunately, that's not the case; the variable is still treated as Unknown.
+
+---
+
+_Renamed from "prefer more precise declared type over gradual inferred type" to "prefer more precise declared type over gradual inferred type, or vice versa" by @carljm on 2025-12-01 21:43_
+
+---
+
+_Comment by @MichaReiser on 2025-12-06 16:18_
+
+> I think "always prefer declared type over inferred type" is still fairly viable. Mypy's had this behaviour for a long time and while it shows up in issues every now and then, I'd venture most users don't really run into it in day to day usage.
+
+It's also what typescript does and I think we should only deviate from this behavior that most users expect if we have very compelling reasons to. 
+
+---
+
+_Comment by @carljm on 2025-12-06 16:32_
+
+
+> we should only deviate from this behavior that most users expect if we have very compelling reasons to.
+
+To be clear, this is the behavior of mypy and pyrefly, but not of pyright. So it's not clear what percentage of users expect it, or how many users will be upset if we change from our current behavior (which is closer to pyright).
+
+That said, I'm open to just preferring declared type. It has the downside that these two code samples that seem the same become different in their meaning:
+
+```py
+x: int = 1
+```
+
+vs
+
+```py
+x: int
+x = 1
+```
+
+Where `x` in the latter case is inferred as `Literal[1]` and in the former case as `str`. (Narrowing on subsequent assignment is an absolute requirement or we would fail lots of valid programs, and all other type checkers do it.) But I'm coming around to the view that this "inconsistency" isn't so bad, and is even intuitive given the visual structure of the code. In effect people interpret the annotation as a form of "safe cast" of the RHS in the same assignment statement.
+
+It does worry me that I think we may still have to introduce some kind of limited ad-hoc narrowing on the initial assignment, so that with `x: int | None = 1` (where presumably `x` may be assigned to `None` later in the code) we understand that `x` cannot be `None` immediately after that initial assignment. This is clearly inconsistent with the general policy of "always prefer declared type", but I do think users will expect it (at least some users -- maybe not those fully accustomed to mypy's behavior). And this makes the behavior more subtle/inconsistent and harder to explain clearly. But I expect we can find an explainable heuristic.
+
+
+---
+
+_Comment by @MichaReiser on 2025-12-06 16:50_
+
+I would expect that the 'int | None' case should be less of an issue with ty
+
+* the code needs to guard against None if x is used in a loop where the value can be None after the first iteration 
+* if the value can't be None up to a certain point, declate the type as int and later redeclare x with int | None
+
+---
+
+_Comment by @MichaReiser on 2025-12-08 10:38_
+
+A related typescript feature is [`satifies`](https://sjer.red/blog/2024-12-21/) that tries to solve a similar problem
+
+---
+
+_Comment by @MichaReiser on 2025-12-17 12:38_
+
+I wonder if this will also help with performance. For example, `discord.py` has this massive `TRANSFORMERS` dictionary, where we try to infer the precise type on every dictionary lookup (which is cool, but expensive).
+
+https://github.com/Rapptz/discord.py/blob/9be91cb093402f54a44726c7dc4c04ff3b2c5a63/discord/audit_logs.py#L319-L373
+
+---
+
+_Removed from milestone `Stable` by @carljm on 2025-12-20 00:42_
+
+---
+
+_Added to milestone `M1` by @carljm on 2025-12-20 00:42_
+
+---
+
+_Comment by @mattangus on 2025-12-24 12:20_
+
+Maybe a short term win could be to add specific cases for `@Todo` and `Unknown` type narrowing from user annotations. I think this would have big usability gains. For example if I'm using a library that doesn't annotate the return type (which isn't implemented by `ty` at the moment), but I know what type it should be (either from the docs or manual code review). I would like to be able to override the inferred type `Unknown`. (e.g. see [this playground](https://play.ty.dev/8969be94-0582-4480-b626-5ce61e6f0e7d)).
+
+This could be a good stop gap until `ty` has more features covered.
+
+Apologies if I'm repeating something that's already said. I tried to read through most comments above but there is quite a lot of discussion! 
+
+---
+
+_Comment by @MichaReiser on 2025-12-24 15:26_
+
+@mattangus Not sure if you're aware of it but you can use `typing.cast` in that specific case. It also has the benefit that ty will warn you when the cast becomes redundant:
+
+```py
+from typing import cast
+
+def test():
+    return 4
+
+a = cast(int, test())
+```
+
+https://play.ty.dev/fbe2664e-a10f-48ad-aa5c-4b98b6a1eb8f
+
+---
+
+_Label `needs-decision` removed by @carljm on 2026-01-08 18:05_
+
+---
+
+_Label `bidirectional inference` removed by @carljm on 2026-01-08 18:05_
+
+---
+
+_Assigned to @carljm by @carljm on 2026-01-09 15:28_
+
+---
