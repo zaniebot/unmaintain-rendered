@@ -2,16 +2,17 @@
 number: 17032
 title: "Move test support files out of `scripts/` into `test/`\n"
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels: []
 assignees: []
+merged: true
 base: main
 head: zb/test-support
 created_at: 2025-12-08T15:44:26Z
 updated_at: 2025-12-09T16:06:07Z
 url: https://github.com/astral-sh/uv/pull/17032
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Move test support files out of `scripts/` into `test/`

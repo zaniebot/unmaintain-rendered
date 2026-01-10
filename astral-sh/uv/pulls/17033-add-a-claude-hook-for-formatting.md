@@ -2,17 +2,18 @@
 number: 17033
 title: Add a Claude hook for formatting
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zb/claude-format
 created_at: 2025-12-08T15:49:26Z
 updated_at: 2025-12-08T16:57:18Z
 url: https://github.com/astral-sh/uv/pull/17033
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add a Claude hook for formatting

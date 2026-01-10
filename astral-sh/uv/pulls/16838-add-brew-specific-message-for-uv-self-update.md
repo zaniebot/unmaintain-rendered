@@ -2,17 +2,18 @@
 number: 16838
 title: "Add brew specific message for `uv self update`"
 type: pull_request
-state: closed
+state: merged
 author: terror
 labels:
   - error messages
 assignees: []
+merged: true
 base: main
 head: self-update-brew
 created_at: 2025-11-24T17:38:16Z
 updated_at: 2025-12-04T18:44:07Z
 url: https://github.com/astral-sh/uv/pull/16838
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add brew specific message for `uv self update`
@@ -334,9 +335,5 @@ _Merged by @zanieb on 2025-12-04 18:44_
 ---
 
 _Closed by @zanieb on 2025-12-04 18:44_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

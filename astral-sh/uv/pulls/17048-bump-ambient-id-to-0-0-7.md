@@ -2,19 +2,19 @@
 number: 17048
 title: Bump ambient-id to 0.0.7
 type: pull_request
-state: closed
+state: merged
 author: woodruffw
 labels:
   - internal
   - dependencies
-assignees:
-  - woodruffw
+assignees: []
+merged: true
 base: main
 head: ww/bump
 created_at: 2025-12-09T16:38:00Z
 updated_at: 2025-12-09T17:08:28Z
 url: https://github.com/astral-sh/uv/pull/17048
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Bump ambient-id to 0.0.7
@@ -50,10 +50,6 @@ _Label `dependencies` added by @woodruffw on 2025-12-09 16:38_
 ---
 
 _@zanieb approved on 2025-12-09 16:56_
-
----
-
-_Referenced in [astral-sh/pyx#2578](../../astral-sh/pyx/issues/2578.md) on 2025-12-09 17:02_
 
 ---
 

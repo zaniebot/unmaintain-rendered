@@ -2,16 +2,17 @@
 number: 17016
 title: Increase the size of binary build runners
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels: []
 assignees: []
+merged: true
 base: main
 head: zb/release-runners-2
 created_at: 2025-12-06T14:28:37Z
 updated_at: 2025-12-09T22:04:46Z
 url: https://github.com/astral-sh/uv/pull/17016
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Increase the size of binary build runners

@@ -13,7 +13,7 @@ head: package-sync-install-summary
 created_at: 2025-11-10T04:50:07Z
 updated_at: 2025-12-09T01:22:08Z
 url: https://github.com/astral-sh/uv/pull/16660
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add package change summaries to `uv sync` json output
@@ -71,10 +71,6 @@ What's your plan for dry-run? I think a clear path forward there is important to
 ---
 
 _Label `preview` added by @zanieb on 2025-11-10 15:06_
-
----
-
-_Referenced in [astral-sh/uv#16981](../../astral-sh/uv/pulls/16981.md) on 2025-12-04 15:49_
 
 ---
 

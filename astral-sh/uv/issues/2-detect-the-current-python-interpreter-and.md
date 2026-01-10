@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-05T15:24:12Z
 updated_at: 2023-10-05T19:09:24Z
 url: https://github.com/astral-sh/uv/issues/2
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:49:12Z
 ```
 
 # Detect the current Python interpreter and environment
@@ -22,26 +22,6 @@ _No description provided._
 
 ---
 
-_Referenced in [astral-sh/uv#11](../../astral-sh/uv/pulls/11.md) on 2023-10-05 19:07_
-
----
-
 _Closed by @charliermarsh on 2023-10-05 19:09_
-
----
-
-_Referenced in [astral-sh/uv#2582](../../astral-sh/uv/pulls/2582.md) on 2024-03-23 01:02_
-
----
-
-_Referenced in [astral-sh/uv#13738](../../astral-sh/uv/issues/13738.md) on 2025-05-30 18:02_
-
----
-
-_Referenced in [astral-sh/uv#16760](../../astral-sh/uv/issues/16760.md) on 2025-12-03 10:04_
-
----
-
-_Referenced in [astral-sh/uv#16747](../../astral-sh/uv/issues/16747.md) on 2025-12-05 12:51_
 
 ---

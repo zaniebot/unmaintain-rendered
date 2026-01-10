@@ -13,7 +13,7 @@ head: zsol/jj-ormktspssmzq
 created_at: 2025-08-28T10:19:24Z
 updated_at: 2025-12-06T13:50:58Z
 url: https://github.com/astral-sh/uv/pull/15568
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Allow declaring match-runtime for project's own build dependencies
@@ -86,9 +86,5 @@ _Comment by @codspeed-hq[bot] on 2025-08-31 12:40_
 ---
 
 _Label `enhancement` added by @konstin on 2025-09-01 07:21_
-
----
-
-_Referenced in [astral-sh/uv#15984](../../astral-sh/uv/issues/15984.md) on 2025-09-22 20:22_
 
 ---

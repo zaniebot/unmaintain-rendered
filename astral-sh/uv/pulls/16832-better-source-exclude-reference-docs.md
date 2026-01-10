@@ -2,17 +2,18 @@
 number: 16832
 title: Better source-exclude reference docs
 type: pull_request
-state: closed
+state: merged
 author: konstin
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: konsti/backend-source-exclude-docs
 created_at: 2025-11-24T13:33:55Z
 updated_at: 2025-12-09T21:17:19Z
 url: https://github.com/astral-sh/uv/pull/16832
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Better source-exclude reference docs
@@ -28,10 +29,6 @@ This is already explained in the guide, but it was missing from the reference do
 ---
 
 _Label `documentation` added by @konstin on 2025-11-24 13:33_
-
----
-
-_Referenced in [astral-sh/uv#16821](../../astral-sh/uv/issues/16821.md) on 2025-11-24 13:34_
 
 ---
 
@@ -78,9 +75,5 @@ _Closed by @zanieb on 2025-12-09 21:14_
 ---
 
 _Branch deleted on 2025-12-09 21:14_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257965](../../Homebrew/homebrew-core/pulls/257965.md) on 2025-12-09 23:22_
 
 ---

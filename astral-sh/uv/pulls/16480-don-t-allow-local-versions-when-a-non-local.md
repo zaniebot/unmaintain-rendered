@@ -13,7 +13,7 @@ head: konsti/mismatch-local-versions-in-sync
 created_at: 2025-10-28T11:42:39Z
 updated_at: 2025-12-05T18:37:51Z
 url: https://github.com/astral-sh/uv/pull/16480
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Don't allow local versions when a non-local version is pinned
@@ -126,10 +126,6 @@ Another case where we observe this is https://github.com/karpathy/nanochat (`at1
 * `uv sync --extra cpu`, then `uv sync` does NOT switch from `torch==2.9.0+cpu` to `torch==2.9.0` (same release)
 
 It's arguable that you don't actually want the PyPI version, but it seems counterintuitive that `uv sync` would install it when run first, but not after running with `--extra cpu`.
-
----
-
-_Referenced in [wheelnext/peps#12](../../wheelnext/peps/pulls/12.md) on 2025-12-05 18:35_
 
 ---
 

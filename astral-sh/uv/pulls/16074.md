@@ -2,17 +2,18 @@
 number: 16074
 title: Error when built wheel is for the wrong platform
 type: pull_request
-state: closed
+state: merged
 author: konstin
 labels:
   - enhancement
 assignees: []
+merged: true
 base: main
 head: konsti/check-built-wheel-tags
 created_at: 2025-09-30T12:44:19Z
 updated_at: 2025-12-10T07:27:08Z
 url: https://github.com/astral-sh/uv/pull/16074
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Error when built wheel is for the wrong platform
@@ -117,10 +118,6 @@ What do you mean by (3)? Yes I would only expect most build backends to target t
 
 ---
 
-_Referenced in [astral-sh/uv#16972](../../astral-sh/uv/pulls/16972.md) on 2025-12-03 16:38_
-
----
-
 _Comment by @konstin on 2025-12-03 16:43_
 
 That's a very good point, I added a test specifically for this. The good news is it's already passing as the metadata-only branch in `DistributionDatabase` doesn't pass around tags nor does it check them.
@@ -152,10 +149,6 @@ _Closed by @konstin on 2025-12-05 15:04_
 ---
 
 _Branch deleted on 2025-12-05 15:04_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---
 

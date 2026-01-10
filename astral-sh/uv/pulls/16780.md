@@ -2,17 +2,18 @@
 number: 16780
 title: "CI Perf: fast-build"
 type: pull_request
-state: closed
+state: merged
 author: konstin
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: konsti/cargo-fast-build
 created_at: 2025-11-19T18:03:07Z
 updated_at: 2025-12-11T13:51:39Z
 url: https://github.com/astral-sh/uv/pull/16780
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # CI Perf: fast-build

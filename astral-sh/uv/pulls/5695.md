@@ -2,18 +2,19 @@
 number: 5695
 title: Add a dedicated error for members with mismatched Python requirements
 type: pull_request
-state: closed
+state: merged
 author: charliermarsh
 labels:
   - error messages
   - preview
 assignees: []
+merged: true
 base: main
 head: charlie/warn-requires
 created_at: 2024-08-01T17:06:26Z
 updated_at: 2025-12-09T14:19:49Z
 url: https://github.com/astral-sh/uv/pull/5695
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add a dedicated error for members with mismatched Python requirements

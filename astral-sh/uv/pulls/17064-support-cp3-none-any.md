@@ -13,7 +13,7 @@ head: konsti/support-cp3-none-any
 created_at: 2025-12-10T10:06:46Z
 updated_at: 2025-12-10T12:47:44Z
 url: https://github.com/astral-sh/uv/pull/17064
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Support `cp3-none-any`
@@ -55,9 +55,5 @@ I don't know enough about rkyv internals to know whether this is _actually_ brea
 ---
 
 _@BurntSushi reviewed on 2025-12-10 12:47_
-
----
-
-_Referenced in [astral-sh/uv#17061](../../astral-sh/uv/issues/17061.md) on 2025-12-11 07:02_
 
 ---

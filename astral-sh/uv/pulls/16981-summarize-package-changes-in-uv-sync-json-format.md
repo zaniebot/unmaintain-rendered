@@ -2,18 +2,18 @@
 number: 16981
 title: "Summarize package changes in `uv sync` json format output"
 type: pull_request
-state: open
+state: merged
 author: EliteTK
 labels:
   - preview
 assignees: []
-draft: true
+merged: true
 base: main
 head: tk/sync-summary
 created_at: 2025-12-04T15:39:33Z
-updated_at: 2025-12-08T22:50:42Z
+updated_at: 2025-12-18T19:37:04Z
 url: https://github.com/astral-sh/uv/pull/16981
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Summarize package changes in `uv sync` json format output
@@ -24,23 +24,11 @@ _Pull request opened by @EliteTK on 2025-12-04 15:39_
 
 ## Summary
 
-Implement #16653 by making `uv sync --output-format=json` output information about package changes. 
+Implement #16653 by making `uv sync --output-format=json` output information about package changes.
 
 ## Test Plan
 
-So far there are integration tests but they don't quite cover everything that I think they maybe should. A bunch of manual testing was performed too. Test suite passes.
-
-## Notes/Outstanding issues
-
-I am not certain about the whole approach. The crux of the issue is that `dry_run` doesn't "prepare" remote `Dist`s and `Changelog::new` expects `CachedDist`s. It's possible to make a `CachedDist` from a `Dist` using `CachedDist::from_remote`, `hashes` and `cache_info` can understandably be empty. `path` could maybe be something fake, but the problem comes from `filename` which is a wheel filename. The issue is that calculating a plausible wheel filename for most `Dist::Source` `Dist`s isn't possible without building the wheel.
-
-So  the current approach involved changing `Changelog` to accept `Dist` and dealing with resolving the fallout. This could probably be simplified if `ChangedDist` was just a `PackageName` and `Option<CanonicalVersion>`. There are a lot of places which are using the full `InstalledVersion` for comparison which can contain a URL despite the fact that in other places (e.g. when it was used in hashsets) the `canonical_version` is used (which seems correct).
-
-However, even then, `Changelog`'s contents are often smuggled through `ChangeEvent` which expects `dist` to implement `InstalledMetadata` a trait which exposes `installed_version`, but the problem is that `Changelog` can now contain packages without versions.
-
-Putting in a fake version is an option, but that strictly presents wrong information to users. I guess one option is to extend `Version` to be able to hold an empty version (currently explicitly not allowed) or maybe just `CanonicalVersion` to have an `Unknown` variant.
-
-There are some other issues/side effects of the current set of problems.
+Additional tests to test the cases where there is no known package version _may_ be beneficial but as the information used is the same as the information used by the dry run logging now, I don't think that's strictly necessary as those cases are tested.
 
 ---
 
@@ -116,10 +104,6 @@ I'm not worried about this allocating, it's not in a hot loop, it's cheaper than
 
 ---
 
-_Referenced in [astral-sh/uv#16660](../../astral-sh/uv/pulls/16660.md) on 2025-12-04 16:16_
-
----
-
 _Comment by @EliteTK on 2025-12-04 18:36_
 
 So, to summarise a discussion from Discord, a suggestion was made to pull out the planning step from `pip::operations::install` into a separate `plan` function. Or, alternatively, just return the plan from `install`.
@@ -127,10 +111,6 @@ So, to summarise a discussion from Discord, a suggestion was made to pull out th
 The goal being that a `PackageChangeReport::from_plan` can be added and used in the dry-run case, avoiding going through `Changelog` entirely, saving a bunch of code.
 
 I've started to explore the idea of pulling out `plan`, but I don't think it's worth it. It adds a lot of boilerplate. I'll submit it as a separate PR and then I'll consider the alternative. Then whatever the result of that, this PR can be rebased on top and simplified.
-
----
-
-_Referenced in [astral-sh/uv#16985](../../astral-sh/uv/pulls/16985.md) on 2025-12-05 14:30_
 
 ---
 
@@ -188,6 +168,180 @@ Sounds fine to me!
 
 ---
 
-_Referenced in [astral-sh/uv#17039](../../astral-sh/uv/pulls/17039.md) on 2025-12-08 22:11_
+_@EliteTK reviewed on 2025-12-12 12:16_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/commands/pip/loggers.rs`:157 on 2025-12-12 12:16_
+
+Having thought about it further, maybe it doesn't matter much for this usecase.
+
+---
+
+_Comment by @EliteTK on 2025-12-12 12:17_
+
+Okay, rebased on top of the new changelog stuff, fixed the package naming and attaching the wrong lifetime to a reference in `VersionOrUrlRef`. This is ready I think?
+
+---
+
+_Marked ready for review by @EliteTK on 2025-12-12 12:18_
+
+---
+
+_@zanieb reviewed on 2025-12-15 18:03_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/sync.rs`:1370 on 2025-12-15 18:03_
+
+I think I'd expect "Uninstalled" and "Installed" here if we're using "Reinstalled"?
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/sync.rs`:1378 on 2025-12-15 18:04_
+
+I'm a little confused by the name of this struct. It also appears to be missing from the test coverage?
+
+---
+
+_@zanieb reviewed on 2025-12-15 18:04_
+
+---
+
+_@zanieb reviewed on 2025-12-15 18:06_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/sync.rs`:1325 on 2025-12-15 18:06_
+
+It seems weird for `PackageChangeReport::from_changelog` to return `Vec<Self>`? I guess I'd expect a `PackageChangesReport(Vec<PackageChangeReport>)` new-type?
+
+---
+
+_@zanieb reviewed on 2025-12-15 18:06_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/sync.rs`:1339 on 2025-12-15 18:06_
+
+Have you thought more about what other information we'll want to include here? I don't think we need to expand on it in this pull request but we should at least open an issue for discussion.
+
+---
+
+_@zanieb reviewed on 2025-12-15 18:07_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/sync.rs`:1378 on 2025-12-15 18:07_
+
+I think the name makes sense in the context of the parent, but I'm still a bit confused on the scope here. Isn't the source an enum? like "registry", "path", "url", etc.?
+
+---
+
+_@EliteTK reviewed on 2025-12-15 18:14_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/commands/project/sync.rs`:1325 on 2025-12-15 18:14_
+
+Yes I thought this was weird too. I will adjust it.
+
+---
+
+_@EliteTK reviewed on 2025-12-15 18:22_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/commands/project/sync.rs`:1378 on 2025-12-15 18:22_
+
+Yes I agree that this would make more sense as the definition of source.
+
+But I don't think we should necessarily try to put that in yet, although it's not the worst idea for something to put in here. I think in this case the nesting is unnecessary and I would probably rather just see an `Option<DisplaySafeUrl>` one level up for now. Would that work?
+
+---
+
+_@EliteTK reviewed on 2025-12-15 18:23_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/commands/project/sync.rs`:1339 on 2025-12-15 18:23_
+
+Well part of changing the changelog to just store the dist was also in preparation for this. We can more or less put anything in here we want that can be found in a Dist/LocalDist at this point. But I will make an issue tomorrow.
+
+---
+
+_@EliteTK reviewed on 2025-12-15 18:28_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/commands/project/sync.rs`:1370 on 2025-12-15 18:28_
+
+I imagine it's because of the `ChangeEventKind` wording, but that doesn't justify it, `DefaultInstallLogger` uses `Installed`, and `Uninstalled`. `UpgradeInstallLogger` uses `Added` and `Removed`. Maybe this sort of thing should be in a style guide?
+
+---
+
+_@zanieb reviewed on 2025-12-15 18:53_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/sync.rs`:1378 on 2025-12-15 18:53_
+
+That could be okay or I'd just omit it entirely until we handle sources more comprehensively?
+
+---
+
+_@zanieb approved on 2025-12-15 18:53_
+
+---
+
+_@EliteTK reviewed on 2025-12-15 19:58_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/commands/project/sync.rs`:1378 on 2025-12-15 19:58_
+
+Hmm, but we do print it in the stderr change log in those cases. But I am somewhat indifferent. 
+
+---
+
+_@EliteTK reviewed on 2025-12-18 13:28_
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/commands/project/sync.rs`:1339 on 2025-12-18 13:28_
+
+Maybe the package details should be in their own specific sub-structure so that the top level is just "what happened" and "to what" instead of "what happened" and a bunch of metadata about what it happened to. I'll make this change.
+
+---
+
+_@zanieb reviewed on 2025-12-18 13:30_
+
+---
+
+_Review comment by @zanieb on `crates/uv/src/commands/project/sync.rs`:1339 on 2025-12-18 13:30_
+
+Can you sketch what you're thinking of first? I don't want you to waste your time if we don't have consensus on the structure.
+
+---
+
+_Review comment by @EliteTK on `crates/uv/src/commands/project/sync.rs`:1339 on 2025-12-18 13:56_
+
+I'll propose something in the issue I made. For now I've left it alone.
+
+---
+
+_@EliteTK reviewed on 2025-12-18 13:56_
+
+---
+
+_Merged by @EliteTK on 2025-12-18 19:37_
+
+---
+
+_Closed by @EliteTK on 2025-12-18 19:37_
+
+---
+
+_Branch deleted on 2025-12-18 19:37_
 
 ---

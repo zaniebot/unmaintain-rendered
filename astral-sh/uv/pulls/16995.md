@@ -2,16 +2,18 @@
 number: 16995
 title: Ignore pyproject index username in lockfile comparison
 type: pull_request
-state: open
+state: merged
 author: jkipper
-labels: []
+labels:
+  - bug
 assignees: []
+merged: true
 base: main
 head: fix/authenticated-update
 created_at: 2025-12-05T07:43:47Z
-updated_at: 2025-12-09T14:12:38Z
+updated_at: 2025-12-16T10:47:51Z
 url: https://github.com/astral-sh/uv/pull/16995
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Ignore pyproject index username in lockfile comparison
@@ -79,5 +81,23 @@ I think we need an integration test case that demonstrates the change in behavio
 _Comment by @jkipper on 2025-12-09 14:11_
 
 Got it. Added one now.
+
+---
+
+_Label `bug` added by @konstin on 2025-12-16 10:33_
+
+---
+
+_@konstin approved on 2025-12-16 10:34_
+
+Thank you!
+
+---
+
+_Merged by @konstin on 2025-12-16 10:47_
+
+---
+
+_Closed by @konstin on 2025-12-16 10:47_
 
 ---

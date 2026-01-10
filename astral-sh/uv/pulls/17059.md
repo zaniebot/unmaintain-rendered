@@ -2,17 +2,18 @@
 number: 17059
 title: Gate a few more tests on the pypi feature
 type: pull_request
-state: closed
+state: merged
 author: musicinmybrain
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: pypi-feature-20251209
 created_at: 2025-12-09T23:37:48Z
 updated_at: 2025-12-10T09:41:48Z
 url: https://github.com/astral-sh/uv/pull/17059
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Gate a few more tests on the pypi feature

@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: freethreaded-selector-hint
 created_at: 2025-12-08T04:11:59Z
-updated_at: 2025-12-09T21:08:29Z
+updated_at: 2025-12-15T02:31:17Z
 url: https://github.com/astral-sh/uv/pull/17021
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add free-threaded selector hint for requires-python
@@ -197,5 +197,35 @@ _@zanieb reviewed on 2025-12-09 21:08_
 _Review comment by @zanieb on `crates/uv-workspace/src/pyproject.rs`:247 on 2025-12-09 21:08_
 
 (or pull out the variant parsing from there so we can re-use it?)
+
+---
+
+_@kxzk reviewed on 2025-12-15 02:22_
+
+---
+
+_Review comment by @kxzk on `crates/uv-workspace/src/pyproject.rs`:247 on 2025-12-15 02:22_
+
+First suggestion makes sense to me if you're okay adding `uv-python` as a dep to `uv-workspace`. For the second `uv-pep440` seems plausible (both crates already depend on it). To keep a single source of truth, `uv-python` would also need to use it, which expands scope. Happy to go either route - what's your preference?
+
+---
+
+_@kxzk reviewed on 2025-12-15 02:22_
+
+---
+
+_Review comment by @kxzk on `crates/uv-workspace/src/pyproject.rs`:2000 on 2025-12-15 02:22_
+
+Got it, makes sense.
+
+---
+
+_@kxzk reviewed on 2025-12-15 02:31_
+
+---
+
+_Review comment by @kxzk on `crates/uv-workspace/src/pyproject.rs`:771 on 2025-12-15 02:31_
+
+It was, but not anymore - `VersionSpecifiers` doesn't implement `JsonSchema`, so the attribute was required. The new `RequiresPythonSpecifiers` wrapper implements it directly, making the override redundant. Obviously, this is subject to change based on the final impl.
 
 ---

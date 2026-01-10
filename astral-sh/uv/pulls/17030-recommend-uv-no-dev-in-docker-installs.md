@@ -2,17 +2,18 @@
 number: 17030
 title: "Recommend `UV_NO_DEV` in Docker installs"
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: zb/no-dev-docker
 created_at: 2025-12-08T12:46:30Z
 updated_at: 2025-12-09T18:12:09Z
 url: https://github.com/astral-sh/uv/pull/17030
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Recommend `UV_NO_DEV` in Docker installs
@@ -28,10 +29,6 @@ See also, https://github.com/astral-sh/uv-docker-example/pull/73
 ---
 
 _Label `documentation` added by @zanieb on 2025-12-08 12:46_
-
----
-
-_Referenced in [astral-sh/uv-docker-example#73](../../astral-sh/uv-docker-example/pulls/73.md) on 2025-12-08 14:07_
 
 ---
 
@@ -56,9 +53,5 @@ _Closed by @zanieb on 2025-12-09 18:12_
 ---
 
 _Branch deleted on 2025-12-09 18:12_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257965](../../Homebrew/homebrew-core/pulls/257965.md) on 2025-12-09 23:22_
 
 ---

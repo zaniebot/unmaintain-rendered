@@ -2,17 +2,18 @@
 number: 16992
 title: Regenerate the crates.io readmes on release
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: zb/gen-readme
 created_at: 2025-12-04T23:20:17Z
 updated_at: 2025-12-05T01:19:39Z
 url: https://github.com/astral-sh/uv/pull/16992
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Regenerate the crates.io readmes on release
@@ -42,9 +43,5 @@ _Closed by @zanieb on 2025-12-05 01:19_
 ---
 
 _Branch deleted on 2025-12-05 01:19_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

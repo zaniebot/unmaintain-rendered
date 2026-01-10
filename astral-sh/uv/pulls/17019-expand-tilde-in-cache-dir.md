@@ -11,7 +11,7 @@ head: bugfix/16288-expand-tilde
 created_at: 2025-12-07T21:56:07Z
 updated_at: 2025-12-08T23:45:44Z
 url: https://github.com/astral-sh/uv/pull/17019
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # expand tilde in cache-dir
@@ -87,10 +87,6 @@ _Comment by @konstin on 2025-12-08 14:26_
 I agree that `~` sounds good, but we need to do it consistently - It's more complex than treating it as just a bugfix in one location I'm afraid. For example if we only changes the `cache-dir`, users would get confused why `cache-dir` works with the tilde but other path-based configuration doesn't.
 
 I wouldn't expand env vars (`shellexpand::full`), just tildes. We already support env vars for changing the cache, and I'd like to keep the complexity from string interpolation to a minimum, and there exist real paths with a `$` in them. An open question is where exactly we support tildes, and how we handle tilde-created paths in lockfile if we support such options too: For example, would an index path be stored with `~/path/to/index` in the lockfile?
-
----
-
-_Referenced in [astral-sh/uv#16982](../../astral-sh/uv/issues/16982.md) on 2025-12-08 15:45_
 
 ---
 

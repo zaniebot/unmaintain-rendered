@@ -8,13 +8,12 @@ labels:
   - error messages
   - breaking
 assignees: []
-milestone: v0.10.0
 base: main
 head: charlie/def
 created_at: 2025-12-06T02:04:51Z
 updated_at: 2025-12-09T21:20:11Z
 url: https://github.com/astral-sh/uv/pull/17011
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Error if multiple indexes include `default = true`

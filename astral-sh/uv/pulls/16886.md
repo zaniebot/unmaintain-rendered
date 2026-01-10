@@ -2,18 +2,19 @@
 number: 16886
 title: "Add a `uv auth helper --protocol bazel` command"
 type: pull_request
-state: closed
+state: merged
 author: zsol
 labels:
   - enhancement
   - preview
 assignees: []
+merged: true
 base: main
 head: zsol/jj-qpnoslvrymlk
 created_at: 2025-11-28T19:35:57Z
 updated_at: 2025-12-04T18:59:35Z
 url: https://github.com/astral-sh/uv/pull/16886
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add a `uv auth helper --protocol bazel` command
@@ -233,10 +234,6 @@ I'll follow up in a separate PR with this, everything else is addressed
 
 ---
 
-_Referenced in [astral-sh/pyx-docs#46](../../astral-sh/pyx-docs/pulls/46.md) on 2025-12-03 15:51_
-
----
-
 _Renamed from "Add a `uv auth credential-helper` command" to "Add a `uv auth helper --protocol bazel` command" by @konstin on 2025-12-04 12:04_
 
 ---
@@ -449,13 +446,5 @@ _Closed by @zsol on 2025-12-04 18:56_
 ---
 
 _Branch deleted on 2025-12-04 18:56_
-
----
-
-_Referenced in [aspect-build/rules_py#721](../../aspect-build/rules_py/issues/721.md) on 2025-12-04 19:10_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

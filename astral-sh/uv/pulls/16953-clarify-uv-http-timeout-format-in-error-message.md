@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: implement-item-1
 created_at: 2025-12-03T04:03:39Z
-updated_at: 2025-12-04T18:31:51Z
+updated_at: 2026-01-08T17:51:22Z
 url: https://github.com/astral-sh/uv/pull/16953
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Clarify UV_HTTP_TIMEOUT format in error message for streaming timeout
@@ -51,10 +51,6 @@ _Renamed from "Clarify UV_HTTP_TIMEOUT format in error message" to "Clarify UV_H
 ---
 
 _Marked ready for review by @anoop-rehman on 2025-12-03 04:15_
-
----
-
-_Referenced in [astral-sh/uv#16940](../../astral-sh/uv/issues/16940.md) on 2025-12-03 04:31_
 
 ---
 
@@ -98,5 +94,23 @@ _@anoop-rehman reviewed on 2025-12-04 18:31_
 _Review comment by @anoop-rehman on `crates/uv-client/src/registry_client.rs`:1210 on 2025-12-04 18:31_
 
 Thank you sm for taking the time to review this! Agreed with all 3 points and applied these changes.
+
+---
+
+_Comment by @zanieb on 2025-12-15 14:44_
+
+I'm trying to write a test case for this, proving tricky :)
+
+---
+
+_Comment by @anoop-rehman on 2026-01-07 21:26_
+
+Same here, I wasnt able to figure out how to delay only the body and not the header with wiremock - if you have any suggestions/ideas lmk
+
+---
+
+_Comment by @LoukasPap on 2026-01-08 17:51_
+
+So, if I'm correct, the problem is fixed and we are trying to write a test case to cause the timeout, correct?
 
 ---

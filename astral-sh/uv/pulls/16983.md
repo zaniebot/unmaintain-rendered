@@ -13,7 +13,7 @@ head: zsol/jj-nyvrllosmoon
 created_at: 2025-12-04T18:00:18Z
 updated_at: 2025-12-08T12:21:43Z
 url: https://github.com/astral-sh/uv/pull/16983
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Bail when trying to attach ambiguous credentials instead of picking an arbitrary one
@@ -44,10 +44,6 @@ _Review requested from @zanieb by @zsol on 2025-12-04 18:00_
 ---
 
 _Review requested from @konstin by @zsol on 2025-12-04 18:00_
-
----
-
-_Referenced in [astral-sh/uv#16886](../../astral-sh/uv/pulls/16886.md) on 2025-12-04 18:00_
 
 ---
 

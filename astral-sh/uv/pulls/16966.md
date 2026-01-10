@@ -2,17 +2,18 @@
 number: 16966
 title: "Add a stub `debug` subcommand to `uv pip` announcing its intentional absence"
 type: pull_request
-state: closed
+state: merged
 author: EliteTK
 labels:
   - compatibility
 assignees: []
+merged: true
 base: main
 head: tk/pip-debug
 created_at: 2025-12-03T14:44:05Z
 updated_at: 2025-12-04T04:35:20Z
 url: https://github.com/astral-sh/uv/pull/16966
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add a stub `debug` subcommand to `uv pip` announcing its intentional absence
@@ -140,13 +141,5 @@ _Closed by @EliteTK on 2025-12-03 16:10_
 ---
 
 _Branch deleted on 2025-12-03 16:10_
-
----
-
-_@TBTY-Dev approved on 2025-12-04 04:35_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

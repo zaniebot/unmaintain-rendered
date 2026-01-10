@@ -2,17 +2,18 @@
 number: 17056
 title: Fix a typo
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zb/fix-typo
 created_at: 2025-12-09T21:36:02Z
 updated_at: 2025-12-09T21:49:53Z
 url: https://github.com/astral-sh/uv/pull/17056
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Fix a typo

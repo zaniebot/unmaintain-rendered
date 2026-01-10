@@ -2,17 +2,18 @@
 number: 17004
 title: Help rustfmt a little
 type: pull_request
-state: closed
+state: merged
 author: konstin
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: konsti/rustfmt-break
 created_at: 2025-12-05T18:45:00Z
 updated_at: 2025-12-05T19:35:20Z
 url: https://github.com/astral-sh/uv/pull/17004
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Help rustfmt a little

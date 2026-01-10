@@ -2,17 +2,18 @@
 number: 17043
 title: Explicitly set EntryType for file entries in tar
 type: pull_request
-state: closed
+state: merged
 author: e-nomem
 labels:
   - bug
 assignees: []
+merged: true
 base: main
 head: tar-entry-type
 created_at: 2025-12-09T08:17:08Z
 updated_at: 2025-12-11T10:37:36Z
 url: https://github.com/astral-sh/uv/pull/17043
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Explicitly set EntryType for file entries in tar
@@ -167,10 +168,6 @@ if __name__ == "__main__":
 ---
 
 _Label `bug` added by @konstin on 2025-12-11 10:17_
-
----
-
-_Referenced in [python/cpython#141707](../../python/cpython/issues/141707.md) on 2025-12-11 10:20_
 
 ---
 

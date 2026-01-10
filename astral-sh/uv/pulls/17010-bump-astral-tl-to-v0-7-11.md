@@ -2,17 +2,18 @@
 number: 17010
 title: "Bump `astral-tl` to v0.7.11"
 type: pull_request
-state: closed
+state: merged
 author: charliermarsh
 labels:
   - performance
 assignees: []
+merged: true
 base: main
 head: charlie/tl
 created_at: 2025-12-06T01:51:31Z
 updated_at: 2025-12-06T13:32:57Z
 url: https://github.com/astral-sh/uv/pull/17010
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Bump `astral-tl` to v0.7.11
@@ -45,9 +46,5 @@ _Closed by @zanieb on 2025-12-06 13:32_
 ---
 
 _Branch deleted on 2025-12-06 13:32_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

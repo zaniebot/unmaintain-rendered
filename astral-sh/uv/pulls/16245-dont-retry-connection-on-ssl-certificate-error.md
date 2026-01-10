@@ -5,14 +5,13 @@ type: pull_request
 state: open
 author: assadyousuf
 labels: []
-assignees:
-  - konstin
+assignees: []
 base: main
 head: fix/16235-dont-retry-on-SSL-cert-errors
 created_at: 2025-10-11T00:18:06Z
-updated_at: 2025-12-06T04:06:08Z
+updated_at: 2025-12-18T12:54:02Z
 url: https://github.com/astral-sh/uv/pull/16245
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Dont retry connection on SSL certificate error
@@ -36,10 +35,6 @@ _Marked ready for review by @assadyousuf on 2025-10-15 00:15_
 ---
 
 _Renamed from "Fix: Dont retry connection on SSL errors" to "Dont retry connection on SSL errors" by @assadyousuf on 2025-10-15 00:16_
-
----
-
-_Referenced in [astral-sh/uv#16235](../../astral-sh/uv/issues/16235.md) on 2025-10-15 00:18_
 
 ---
 
@@ -172,10 +167,6 @@ Sgtm!
 ---
 
 _@zanieb reviewed on 2025-10-30 14:32_
-
----
-
-_Referenced in [astral-sh/uv#16473](../../astral-sh/uv/pulls/16473.md) on 2025-10-30 18:10_
 
 ---
 
@@ -325,5 +316,35 @@ _@samypr100 reviewed on 2025-12-06 04:06_
 _Review comment by @samypr100 on `crates/uv-client/src/base_client.rs`:940 on 2025-12-06 04:06_
 
 Agreed, it does feel quite inconsistent currently.
+
+---
+
+_@assadyousuf reviewed on 2025-12-12 03:07_
+
+---
+
+_Review comment by @assadyousuf on `crates/uv-client/src/base_client.rs`:940 on 2025-12-12 03:07_
+
+@konstin Im confused on what you suggest should be the source of truth code path used across uv. Should I remove the `DefaultRetryableStrategy` logic and just use `is_transient_network_error()` as the source of truth code path to be followed?                                                                                                                                                          
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/base_client.rs`:940 on 2025-12-12 17:45_
+
+I've put up a stack of PRs that unifies the retry logic and avoids this duplication.
+
+---
+
+_@konstin reviewed on 2025-12-12 17:45_
+
+---
+
+_@konstin reviewed on 2025-12-18 12:54_
+
+---
+
+_Review comment by @konstin on `crates/uv-client/src/base_client.rs`:940 on 2025-12-18 12:54_
+
+I've merged the PRs that de-duplicate the retry logic, so we can now have it in a single location - sorry for the merge conflicts.
 
 ---

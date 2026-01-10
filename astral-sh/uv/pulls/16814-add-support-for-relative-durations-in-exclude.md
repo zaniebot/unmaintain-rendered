@@ -2,17 +2,18 @@
 number: 16814
 title: "Add support for relative durations in `exclude-newer`"
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - enhancement
 assignees: []
+merged: true
 base: main
 head: zb/exclude-newer-delay
 created_at: 2025-11-21T21:59:18Z
-updated_at: 2025-12-09T19:52:15Z
+updated_at: 2026-01-06T16:55:43Z
 url: https://github.com/astral-sh/uv/pull/16814
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add support for relative durations in `exclude-newer`
@@ -25,32 +26,12 @@ Adds support for "friendly" durations like, 1 week, 7 days, 24 hours using Jiff'
 
 ---
 
-_Referenced in [astral-sh/uv#14992](../../astral-sh/uv/issues/14992.md) on 2025-11-26 15:52_
-
----
-
-_Referenced in [PlasmaPy/PlasmaPy#3158](../../PlasmaPy/PlasmaPy/issues/3158.md) on 2025-11-26 22:37_
-
----
-
 _Comment by @namurphy on 2025-11-26 22:55_
 
 Thank you for doing this!  I'm going to start using this feature immediately after 48 hours after it's released! 😹
 
 I'm wondering if it would be helpful to add the term "cooldown" in the documentation for `--exclude-newer` since it's been gaining traction, and might be what a lot of people would do web searches for. 🤔 
 
-
----
-
-_Referenced in [j178/prek#1152](../../j178/prek/issues/1152.md) on 2025-11-29 19:48_
-
----
-
-_Referenced in [jazzband/pip-tools#2288](../../jazzband/pip-tools/issues/2288.md) on 2025-11-30 01:25_
-
----
-
-_Referenced in [pypa/pip#13674](../../pypa/pip/issues/13674.md) on 2025-11-30 11:43_
 
 ---
 
@@ -255,18 +236,8 @@ _Branch deleted on 2025-12-09 19:52_
 
 ---
 
-_Referenced in [astral-sh/uv#17055](../../astral-sh/uv/pulls/17055.md) on 2025-12-09 19:57_
+_Comment by @GeoVizNow on 2026-01-06 16:55_
 
----
-
-_Referenced in [Homebrew/homebrew-core#257965](../../Homebrew/homebrew-core/pulls/257965.md) on 2025-12-09 23:22_
-
----
-
-_Referenced in [astropy/astropy#17788](../../astropy/astropy/issues/17788.md) on 2025-12-10 11:12_
-
----
-
-_Referenced in [astral-sh/uv#17079](../../astral-sh/uv/pulls/17079.md) on 2025-12-10 21:22_
+ Wonderful, thanks a lot for implementing this!!
 
 ---

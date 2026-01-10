@@ -2,18 +2,19 @@
 number: 17015
 title: Speed up cache size command
 type: pull_request
-state: closed
+state: merged
 author: MatthewMckee4
 labels:
   - enhancement
   - performance
 assignees: []
+merged: true
 base: main
 head: cache-size-speed-up
 created_at: 2025-12-06T14:20:33Z
 updated_at: 2025-12-11T17:11:02Z
 url: https://github.com/astral-sh/uv/pull/17015
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Speed up cache size command

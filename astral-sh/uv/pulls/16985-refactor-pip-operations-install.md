@@ -2,7 +2,7 @@
 number: 16985
 title: "Refactor `pip::operations::install`"
 type: pull_request
-state: open
+state: closed
 author: EliteTK
 labels:
   - internal
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: tk/split-install-plan
 created_at: 2025-12-04T19:11:25Z
-updated_at: 2025-12-05T14:31:24Z
+updated_at: 2025-12-12T21:08:06Z
 url: https://github.com/astral-sh/uv/pull/16985
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Refactor `pip::operations::install`
@@ -65,5 +65,19 @@ But, regardless of the option, I think fundamentally, Changelog seems like somet
 I mean, there is this way to look at it: the command that initiates this is `uv sync --dry-run` and not `uv dry-run-sync` so I feel like it's not entirely unusual for install to take a dry-run parameter.
 
 I agree that it not returning a changelog in the dry-run case is weird, but I will explain more in the other PR.
+
+---
+
+_Comment by @EliteTK on 2025-12-12 21:07_
+
+Superseded by #17039.
+
+---
+
+_Closed by @EliteTK on 2025-12-12 21:07_
+
+---
+
+_Branch deleted on 2025-12-12 21:08_
 
 ---

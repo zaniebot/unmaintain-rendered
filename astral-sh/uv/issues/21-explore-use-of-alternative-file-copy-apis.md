@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-06T05:16:47Z
 updated_at: 2023-10-08T04:04:50Z
 url: https://github.com/astral-sh/uv/issues/21
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:49:12Z
 ```
 
 # Explore use of alternative file-copy APIs
@@ -56,10 +56,6 @@ So in Orogene, they download tarballs from NPM. They store the tarball index in 
 
 When they copy from the cache, they fetch the index, iterate over it, and copy each file using its hash.
 
-
----
-
-_Referenced in [astral-sh/uv#49](../../astral-sh/uv/pulls/49.md) on 2023-10-08 03:53_
 
 ---
 

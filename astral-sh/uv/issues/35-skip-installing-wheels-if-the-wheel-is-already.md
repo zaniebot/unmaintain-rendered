@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-07T01:56:27Z
 updated_at: 2023-10-07T19:26:47Z
 url: https://github.com/astral-sh/uv/issues/35
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:49:12Z
 ```
 
 # Skip installing wheels if the wheel is already installed
@@ -68,14 +68,6 @@ It looks like packages _must_ add a `.dist-info` to the site-packages: https://p
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-07 15:20_
-
----
-
-_Referenced in [astral-sh/uv#42](../../astral-sh/uv/pulls/42.md) on 2023-10-07 18:40_
-
----
-
-_Referenced in [astral-sh/uv#43](../../astral-sh/uv/pulls/43.md) on 2023-10-07 19:06_
 
 ---
 

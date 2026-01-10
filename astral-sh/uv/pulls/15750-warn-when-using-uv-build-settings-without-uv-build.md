@@ -13,7 +13,7 @@ head: konsti/warn-on-unused-build-backend-settings
 created_at: 2025-09-09T12:23:49Z
 updated_at: 2025-12-11T14:50:41Z
 url: https://github.com/astral-sh/uv/pull/15750
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Warn when using `uv_build` settings without `uv_build`
@@ -116,18 +116,6 @@ I've removed the path, it's clearer this was got Git dependencies too.
 ---
 
 _@konstin reviewed on 2025-11-24 10:11_
-
----
-
-_Referenced in [astral-sh/uv#16928](../../astral-sh/uv/pulls/16928.md) on 2025-12-02 14:27_
-
----
-
-_Referenced in [astral-sh/uv#16961](../../astral-sh/uv/issues/16961.md) on 2025-12-03 11:20_
-
----
-
-_Referenced in [astral-sh/uv#16962](../../astral-sh/uv/issues/16962.md) on 2025-12-03 12:54_
 
 ---
 

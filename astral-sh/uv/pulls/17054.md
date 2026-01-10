@@ -2,17 +2,18 @@
 number: 17054
 title: Sort packages in GPU lists
 type: pull_request
-state: closed
+state: merged
 author: charliermarsh
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: charlie/so
 created_at: 2025-12-09T19:46:26Z
 updated_at: 2025-12-09T20:10:08Z
 url: https://github.com/astral-sh/uv/pull/17054
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Sort packages in GPU lists

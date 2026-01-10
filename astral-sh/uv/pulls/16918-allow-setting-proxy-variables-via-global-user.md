@@ -2,17 +2,18 @@
 number: 16918
 title: Allow setting proxy variables via global / user configuration
 type: pull_request
-state: open
+state: merged
 author: seemethere
-labels: []
-assignees:
-  - zanieb
+labels:
+  - configuration
+assignees: []
+merged: true
 base: main
 head: seemethere/add_proxy_configuration
 created_at: 2025-12-01T22:24:16Z
-updated_at: 2025-12-11T18:10:46Z
+updated_at: 2026-01-09T20:14:24Z
 url: https://github.com/astral-sh/uv/pull/16918
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Allow setting proxy variables via global / user configuration
@@ -66,10 +67,6 @@ no-proxy = [
 
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#9472](../../astral-sh/uv/issues/9472.md) on 2025-12-01 22:24_
 
 ---
 
@@ -247,13 +244,13 @@ _@zanieb reviewed on 2025-12-10 13:21_
 
 ---
 
-_Review comment by @zanieb on `crates/uv-client/src/base_client.rs`:554 on 2025-12-10 13:21_
+_Review comment by @zanieb on `crates/uv-client/src/base_client.rs`:557 on 2025-12-10 13:21_
 
 Can you explain why we're not using the `Proxy` type directly for validation? Why do we add a wrapper type?
 
 ---
 
-_Review comment by @seemethere on `crates/uv-client/src/base_client.rs`:554 on 2025-12-10 15:52_
+_Review comment by @seemethere on `crates/uv-client/src/base_client.rs`:557 on 2025-12-10 15:52_
 
 The wrapper type includes a `Deserialize` implementation which `reqwest::Proxy` does not, as well the error messaging is a bit more informative than the generic `error building client: builder error` you might get from `reqwest`.
 
@@ -269,7 +266,7 @@ _@zanieb reviewed on 2025-12-10 15:54_
 
 ---
 
-_Review comment by @zanieb on `crates/uv-client/src/base_client.rs`:554 on 2025-12-10 15:54_
+_Review comment by @zanieb on `crates/uv-client/src/base_client.rs`:557 on 2025-12-10 15:54_
 
 Why does it wrap `Url` instead of `Proxy`?
 
@@ -281,7 +278,7 @@ _@seemethere reviewed on 2025-12-10 16:11_
 
 ---
 
-_Review comment by @seemethere on `crates/uv-client/src/base_client.rs`:554 on 2025-12-10 16:11_
+_Review comment by @seemethere on `crates/uv-client/src/base_client.rs`:557 on 2025-12-10 16:11_
 
 I think it mostly comes down to Proxy being a suitable type for the runtime http client while being an unsuitable type for expressing user configuration. 
 
@@ -295,7 +292,7 @@ _@seemethere reviewed on 2025-12-10 16:14_
 
 ---
 
-_Review comment by @seemethere on `crates/uv-client/src/base_client.rs`:554 on 2025-12-10 16:14_
+_Review comment by @seemethere on `crates/uv-client/src/base_client.rs`:557 on 2025-12-10 16:14_
 
 I do think that perhaps this would be something that should be upstreamed to reqwest since it might also be generally useful for other people too.
 
@@ -316,5 +313,61 @@ _Comment by @seemethere on 2025-12-11 18:10_
 > I'm out sick today but my next step is to futz with this locally and propose some tweaks based on that.
 
 Sounds good! I hope you feel better!
+
+---
+
+_Comment by @zanieb on 2026-01-06 00:05_
+
+Alright sorry for the delay from the holiday time off :)
+
+I've pushed a commit that does a few things
+
+1. Moves conversion into the `reqwest::Proxy` type into our wrapper `ProxyUrl` type to consolidate the safety logic
+2. Adds curl / reqwest compatible `http://` scheme assumption
+3. Adds CLI-level integration tests
+
+and I've resolved the conflict with `main`.
+
+Please give it a look over and let me know if you have any questions or concerns.
+
+---
+
+_Comment by @seemethere on 2026-01-06 16:40_
+
+> Alright sorry for the delay from the holiday time off :)
+> 
+> I've pushed a commit that does a few things
+> 
+> 1. Moves conversion into the `reqwest::Proxy` type into our wrapper `ProxyUrl` type to consolidate the safety logic
+> 2. Adds curl / reqwest compatible `http://` scheme assumption
+> 3. Adds CLI-level integration tests
+> 
+> and I've resolved the conflict with `main`.
+> 
+> Please give it a look over and let me know if you have any questions or concerns.
+
+LGTM!
+
+---
+
+_@zanieb approved on 2026-01-06 17:13_
+
+---
+
+_Merged by @zanieb on 2026-01-06 17:13_
+
+---
+
+_Closed by @zanieb on 2026-01-06 17:13_
+
+---
+
+_Label `configuration` added by @zanieb on 2026-01-06 17:14_
+
+---
+
+_Comment by @charliermarsh on 2026-01-09 20:14_
+
+This is live in v0.9.23.
 
 ---

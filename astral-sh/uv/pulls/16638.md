@@ -12,7 +12,7 @@ head: zb/metadata-deps
 created_at: 2025-11-07T18:00:05Z
 updated_at: 2025-12-06T13:50:58Z
 url: https://github.com/astral-sh/uv/pull/16638
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Show workspace dependencies in `uv workspace metadata`
@@ -47,10 +47,6 @@ _Comment by @codspeed-hq[bot] on 2025-11-07 18:19_
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#16516](../../astral-sh/uv/pulls/16516.md) on 2025-11-10 23:14_
 
 ---
 

@@ -2,16 +2,17 @@
 number: 17031
 title: Remove now unused generate tests
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels: []
 assignees: []
+merged: true
 base: main
 head: zb/gen-tests
 created_at: 2025-12-08T15:35:46Z
 updated_at: 2025-12-08T15:50:42Z
 url: https://github.com/astral-sh/uv/pull/17031
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Remove now unused generate tests

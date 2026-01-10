@@ -2,18 +2,18 @@
 number: 16989
 title: Publish PyPI releases before crates.io artifacts
 type: pull_request
-state: closed
+state: merged
 author: woodruffw
 labels:
   - internal
-assignees:
-  - woodruffw
+assignees: []
+merged: true
 base: main
 head: ww/release-publish-order
 created_at: 2025-12-04T19:30:39Z
 updated_at: 2025-12-11T16:03:16Z
 url: https://github.com/astral-sh/uv/pull/16989
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Publish PyPI releases before crates.io artifacts

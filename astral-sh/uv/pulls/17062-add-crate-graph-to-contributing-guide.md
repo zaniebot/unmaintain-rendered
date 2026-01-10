@@ -2,17 +2,18 @@
 number: 17062
 title: Add crate graph to contributing guide
 type: pull_request
-state: closed
+state: merged
 author: konstin
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: konsti/contributing-graph
 created_at: 2025-12-10T08:40:48Z
 updated_at: 2025-12-10T15:01:02Z
 url: https://github.com/astral-sh/uv/pull/17062
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add crate graph to contributing guide

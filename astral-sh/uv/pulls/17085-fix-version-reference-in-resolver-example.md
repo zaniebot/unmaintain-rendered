@@ -2,17 +2,18 @@
 number: 17085
 title: Fix version reference in resolver example
 type: pull_request
-state: closed
+state: merged
 author: charliermarsh
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: charlie/b
 created_at: 2025-12-11T14:10:19Z
 updated_at: 2025-12-11T14:53:50Z
 url: https://github.com/astral-sh/uv/pull/17085
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Fix version reference in resolver example

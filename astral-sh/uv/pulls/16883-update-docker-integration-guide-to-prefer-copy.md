@@ -2,17 +2,18 @@
 number: 16883
 title: "Update Docker integration guide to prefer `COPY` over `ADD` for simple cases"
 type: pull_request
-state: closed
+state: merged
 author: MatthijsKok
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: update-docs-docker-integration-guide
 created_at: 2025-11-28T15:17:19Z
 updated_at: 2025-12-03T15:16:43Z
 url: https://github.com/astral-sh/uv/pull/16883
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Update Docker integration guide to prefer `COPY` over `ADD` for simple cases
@@ -161,9 +162,5 @@ _Merged by @zanieb on 2025-12-03 15:16_
 ---
 
 _Closed by @zanieb on 2025-12-03 15:16_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

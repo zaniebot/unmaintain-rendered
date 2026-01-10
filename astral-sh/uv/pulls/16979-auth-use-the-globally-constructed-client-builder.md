@@ -2,17 +2,18 @@
 number: 16979
 title: "auth: use the globally constructed client builder"
 type: pull_request
-state: closed
+state: merged
 author: zsol
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zsol/jj-rwztvoqowvuy
 created_at: 2025-12-04T15:15:27Z
 updated_at: 2025-12-04T20:04:36Z
 url: https://github.com/astral-sh/uv/pull/16979
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # auth: use the globally constructed client builder
@@ -60,10 +61,6 @@ _@zanieb approved on 2025-12-04 15:20_
 ---
 
 _Label `internal` added by @zanieb on 2025-12-04 15:20_
-
----
-
-_Referenced in [astral-sh/uv#16886](../../astral-sh/uv/pulls/16886.md) on 2025-12-04 15:20_
 
 ---
 

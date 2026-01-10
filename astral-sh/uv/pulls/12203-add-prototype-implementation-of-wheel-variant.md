@@ -14,7 +14,7 @@ head: charlie/wheel-variant
 created_at: 2025-03-16T16:35:56Z
 updated_at: 2025-12-08T17:01:08Z
 url: https://github.com/astral-sh/uv/pull/12203
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add prototype implementation of wheel variant specification
@@ -214,10 +214,6 @@ _Comment by @charliermarsh on 2025-03-17 23:15_
 
 ---
 
-_Referenced in [wheelnext/pep_xxx_wheel_variants#11](../../wheelnext/pep_xxx_wheel_variants/issues/11.md) on 2025-03-19 12:44_
-
----
-
 _@charliermarsh reviewed on 2025-07-23 20:18_
 
 ---
@@ -255,9 +251,5 @@ _@konstin reviewed on 2025-07-23 20:40_
 _Review comment by @konstin on `crates/uv-resolver/src/candidate_selector.rs`:681 on 2025-07-23 20:40_
 
 It's a notion that this kind of mutability method shouldn't exist on this type. Here it means that we should ideally refactor it in a way that doesn't edit the `Candidate`; You can think of it as marker that this should be refactored prior to merging.
-
----
-
-_Referenced in [wheelnext/variant-repack#4](../../wheelnext/variant-repack/pulls/4.md) on 2025-09-23 22:41_
 
 ---

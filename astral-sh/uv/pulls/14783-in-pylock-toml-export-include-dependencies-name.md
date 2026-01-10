@@ -11,7 +11,7 @@ head: pim/pylock-deps
 created_at: 2025-07-21T09:14:19Z
 updated_at: 2025-12-09T17:40:28Z
 url: https://github.com/astral-sh/uv/pull/14783
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # In pylock.toml export, include dependencies (name, marker and version)
@@ -38,10 +38,6 @@ I've updated the tests to include the dependencies.
 
 ---
 
-_Referenced in [pantsbuild/pants#22518](../../pantsbuild/pants/pulls/22518.md) on 2025-07-21 09:29_
-
----
-
 _Review requested from @charliermarsh by @konstin on 2025-07-21 09:50_
 
 ---
@@ -58,17 +54,9 @@ I've added the dependencies to the tests, and fixed the linting.
 
 ---
 
-_Referenced in [pex-tool/pex#2834](../../pex-tool/pex/issues/2834.md) on 2025-07-21 15:41_
-
----
-
 _Comment by @charliermarsh on 2025-07-22 19:12_
 
 Thanks @pimdh. We technically might be required to add (e.g.) the VCS annotations and such here... I need to review the spec.
-
----
-
-_Referenced in [astral-sh/uv#13032](../../astral-sh/uv/issues/13032.md) on 2025-07-23 21:01_
 
 ---
 
@@ -100,14 +88,6 @@ _Renamed from "In pylock.toml export, include dependencies (name and version)" t
 _Comment by @pimdh on 2025-08-25 14:52_
 
 Following the point by @jsirois, and my own experience that (name, version) does not guarantee that each dependency uniquely identifies a package, I've added the `marker` to the each dependency. This seems to successfully allow matching of dependencies with packages. The resulting `pylock.toml` files appear compatible with PEX.
-
----
-
-_Referenced in [pex-tool/pex#2885](../../pex-tool/pex/issues/2885.md) on 2025-08-25 15:08_
-
----
-
-_Referenced in [astral-sh/uv#15521](../../astral-sh/uv/issues/15521.md) on 2025-08-25 23:24_
 
 ---
 

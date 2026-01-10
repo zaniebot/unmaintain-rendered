@@ -14,7 +14,7 @@ head: zsol/jj-yspoqwnxoqkt
 created_at: 2025-11-12T11:13:48Z
 updated_at: 2025-12-05T10:54:06Z
 url: https://github.com/astral-sh/uv/pull/16702
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Mark `uv pip` invocations in linehaul data
@@ -175,10 +175,6 @@ _@zsol reviewed on 2025-11-18 10:26_
 _Review comment by @zsol on `crates/uv-client/src/linehaul.rs`:129 on 2025-11-18 10:26_
 
 ref: https://github.com/pypi/linehaul-cloud-function/issues/233
-
----
-
-_Referenced in [astral-sh/uv#16837](../../astral-sh/uv/pulls/16837.md) on 2025-11-24 17:09_
 
 ---
 

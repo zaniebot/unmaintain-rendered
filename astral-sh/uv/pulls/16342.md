@@ -2,17 +2,18 @@
 number: 16342
 title: " Add a 5 min default timeout for deadlocks "
 type: pull_request
-state: closed
+state: merged
 author: konstin
 labels:
   - enhancement
 assignees: []
+merged: true
 base: main
 head: konsti/locked-file-timeout
 created_at: 2025-10-17T11:53:11Z
 updated_at: 2025-12-04T13:59:05Z
 url: https://github.com/astral-sh/uv/pull/16342
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 #  Add a 5 min default timeout for deadlocks 
@@ -97,10 +98,6 @@ _@zanieb reviewed on 2025-10-21 14:28_
 
 ---
 
-_Referenced in [astral-sh/uv#14720](../../astral-sh/uv/issues/14720.md) on 2025-10-22 08:40_
-
----
-
 _@konstin reviewed on 2025-10-22 08:40_
 
 ---
@@ -175,10 +172,6 @@ I've rebased on top of dropping fs2
 
 ---
 
-_Referenced in [astral-sh/uv#16707](../../astral-sh/uv/issues/16707.md) on 2025-11-13 10:18_
-
----
-
 _@zanieb approved on 2025-12-03 13:56_
 
 ---
@@ -192,9 +185,5 @@ _Closed by @konstin on 2025-12-04 13:59_
 ---
 
 _Branch deleted on 2025-12-04 13:59_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

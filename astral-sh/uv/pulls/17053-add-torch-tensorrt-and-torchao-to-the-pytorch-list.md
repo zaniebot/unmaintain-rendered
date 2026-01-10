@@ -2,17 +2,18 @@
 number: 17053
 title: "Add `torch-tensorrt` and `torchao` to the PyTorch list"
 type: pull_request
-state: closed
+state: merged
 author: charliermarsh
 labels:
   - enhancement
 assignees: []
+merged: true
 base: main
 head: charlie/torch-tensorrt
 created_at: 2025-12-09T19:35:24Z
 updated_at: 2025-12-09T20:29:33Z
 url: https://github.com/astral-sh/uv/pull/17053
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add `torch-tensorrt` and `torchao` to the PyTorch list
@@ -49,9 +50,5 @@ _Closed by @charliermarsh on 2025-12-09 20:29_
 ---
 
 _Branch deleted on 2025-12-09 20:29_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257965](../../Homebrew/homebrew-core/pulls/257965.md) on 2025-12-09 23:22_
 
 ---

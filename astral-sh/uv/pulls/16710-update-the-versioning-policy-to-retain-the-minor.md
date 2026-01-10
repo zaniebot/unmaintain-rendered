@@ -2,17 +2,18 @@
 number: 16710
 title: Update the versioning policy to retain the minor breaking scheme indefinitely
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: zb/versioning-v2
 created_at: 2025-11-12T18:49:38Z
 updated_at: 2025-12-05T15:05:48Z
 url: https://github.com/astral-sh/uv/pull/16710
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Update the versioning policy to retain the minor breaking scheme indefinitely
@@ -96,9 +97,5 @@ _Closed by @zanieb on 2025-12-05 15:05_
 ---
 
 _Branch deleted on 2025-12-05 15:05_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

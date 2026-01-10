@@ -2,17 +2,18 @@
 number: 16720
 title: Tweak language for build backend validation errors
 type: pull_request
-state: closed
+state: merged
 author: konstin
 labels:
   - error messages
 assignees: []
+merged: true
 base: main
 head: konsti/better-validation-error
 created_at: 2025-11-13T13:10:12Z
 updated_at: 2025-12-05T15:14:22Z
 url: https://github.com/astral-sh/uv/pull/16720
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Tweak language for build backend validation errors
@@ -42,9 +43,5 @@ _Closed by @konstin on 2025-12-05 15:14_
 ---
 
 _Branch deleted on 2025-12-05 15:14_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

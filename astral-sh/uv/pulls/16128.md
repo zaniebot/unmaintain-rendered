@@ -2,24 +2,25 @@
 number: 16128
 title: Update Swatinem/rust-cache action to v2.8.2
 type: pull_request
-state: closed
-author: renovate[bot]
+state: merged
+author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/swatinem-rust-cache-2.x
 created_at: 2025-10-06T00:50:11Z
 updated_at: 2025-12-03T14:10:47Z
 url: https://github.com/astral-sh/uv/pull/16128
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Update Swatinem/rust-cache action to v2.8.2
 
 ---
 
-_Pull request opened by @renovate[bot] on 2025-10-06 00:50_
+_Pull request opened by @renovate on 2025-10-06 00:50_
 
 This PR contains the following updates:
 

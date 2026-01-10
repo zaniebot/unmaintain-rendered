@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-05T15:35:43Z
 updated_at: 2023-10-06T01:44:32Z
 url: https://github.com/astral-sh/uv/issues/9
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:49:12Z
 ```
 
 # Add separate `resolve` and `install` commands
@@ -22,14 +22,6 @@ _No description provided._
 
 ---
 
-_Referenced in [astral-sh/uv#17](../../astral-sh/uv/pulls/17.md) on 2023-10-06 01:44_
-
----
-
 _Closed by @charliermarsh on 2023-10-06 01:44_
-
----
-
-_Referenced in [astral-sh/uv#15280](../../astral-sh/uv/issues/15280.md) on 2025-08-14 13:49_
 
 ---

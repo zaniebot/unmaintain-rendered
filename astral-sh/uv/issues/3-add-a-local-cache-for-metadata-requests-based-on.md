@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-05T15:24:37Z
 updated_at: 2023-10-05T23:14:06Z
 url: https://github.com/astral-sh/uv/issues/3
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:49:12Z
 ```
 
 # Add a local cache for metadata requests based on ETags
@@ -22,22 +22,6 @@ _No description provided._
 
 ---
 
-_Referenced in [astral-sh/uv#14](../../astral-sh/uv/pulls/14.md) on 2023-10-05 23:14_
-
----
-
 _Closed by @charliermarsh on 2023-10-05 23:14_
-
----
-
-_Referenced in [astral-sh/uv#5289](../../astral-sh/uv/pulls/5289.md) on 2024-07-22 14:33_
-
----
-
-_Referenced in [astral-sh/uv#1703](../../astral-sh/uv/issues/1703.md) on 2025-02-25 19:24_
-
----
-
-_Referenced in [astral-sh/uv#16764](../../astral-sh/uv/issues/16764.md) on 2025-12-03 16:23_
 
 ---

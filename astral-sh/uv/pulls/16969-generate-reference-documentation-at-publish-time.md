@@ -2,17 +2,18 @@
 number: 16969
 title: Generate reference documentation at publish-time and the JSON schema at release-time
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zb/gen-all
 created_at: 2025-12-03T14:58:29Z
 updated_at: 2025-12-08T12:38:28Z
 url: https://github.com/astral-sh/uv/pull/16969
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Generate reference documentation at publish-time and the JSON schema at release-time
@@ -93,9 +94,5 @@ _Closed by @zanieb on 2025-12-08 12:31_
 ---
 
 _Branch deleted on 2025-12-08 12:31_
-
----
-
-_Referenced in [astral-sh/uv#17031](../../astral-sh/uv/pulls/17031.md) on 2025-12-08 15:35_
 
 ---

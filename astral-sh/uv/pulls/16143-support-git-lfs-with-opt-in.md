@@ -2,18 +2,19 @@
 number: 16143
 title: Support Git LFS with opt-in
 type: pull_request
-state: closed
+state: merged
 author: samypr100
 labels:
   - enhancement
   - "test:macos"
 assignees: []
+merged: true
 base: main
 head: conditional_lfs_support
 created_at: 2025-10-06T21:13:10Z
 updated_at: 2025-12-06T12:08:39Z
 url: https://github.com/astral-sh/uv/pull/16143
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Support Git LFS with opt-in
@@ -140,10 +141,6 @@ We should run those with cache, both for test performance and to check when we r
 _Comment by @samypr100 on 2025-10-30 19:46_
 
 @zanieb This should be good to go. Given the size, how would you like to approach reviewing this best? I can also do a walkthrough of any of the changes and their rationale sync or async if desired. I tried to keep the commits idependently reviewable, although GH doesn't make it easy to review that way.
-
----
-
-_Referenced in [astral-sh/uv#16539](../../astral-sh/uv/issues/16539.md) on 2025-11-01 03:17_
 
 ---
 
@@ -433,10 +430,6 @@ _@samypr100 reviewed on 2025-11-04 14:12_
 _Review comment by @samypr100 on `crates/uv-git-types/src/lib.rs`:15 on 2025-11-04 14:12_
 
 Yes, when running benchmarks I saw a non-trivial slowdown. It was introduced as a function in f110cc9ee3a81f6fe52c0a4d1fcb8ddcbe39aa24, I later changed it to a global static in 5e791b7659b5ae355a41125f5012beb3f4bde270 due to the performance hit on the airflow benchmark.
-
----
-
-_Referenced in [astral-sh/uv#16592](../../astral-sh/uv/pulls/16592.md) on 2025-11-04 16:23_
 
 ---
 
@@ -1334,10 +1327,6 @@ Again, I don't think this is a problem in practice / don't think this should blo
 
 ---
 
-_Referenced in [astral-sh/uv#12156](../../astral-sh/uv/pulls/12156.md) on 2025-11-21 16:50_
-
----
-
 _Review comment by @konstin on `crates/uv-distribution-types/src/requirement.rs`:449 on 2025-11-28 13:13_
 
 We need to remove the 0 here too, otherwise we invalidate the built wheel cache, through extra-build-requires.
@@ -1453,10 +1442,6 @@ I proceeded with copying the check inline in b88ff97c13a69b8aee20f3fe13d8fd8a84e
 
 ---
 
-_Referenced in [astral-sh/uv#16927](../../astral-sh/uv/pulls/16927.md) on 2025-12-02 11:05_
-
----
-
 _Renamed from "Conditional Git LFS Support" to "Support Git LFS with opt-in" by @konstin on 2025-12-02 11:44_
 
 ---
@@ -1472,10 +1457,6 @@ _Merged by @konstin on 2025-12-02 12:23_
 ---
 
 _Closed by @konstin on 2025-12-02 12:23_
-
----
-
-_Referenced in [Homebrew/homebrew-core#256853](../../Homebrew/homebrew-core/pulls/256853.md) on 2025-12-03 03:08_
 
 ---
 

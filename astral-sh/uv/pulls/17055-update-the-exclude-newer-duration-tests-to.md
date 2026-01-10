@@ -2,17 +2,18 @@
 number: 17055
 title: Update the exclude newer duration tests to demonstrate package version changes
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zb/exclude-newer-delay-tests
 created_at: 2025-12-09T19:56:17Z
 updated_at: 2025-12-10T13:47:46Z
 url: https://github.com/astral-sh/uv/pull/17055
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Update the exclude newer duration tests to demonstrate package version changes

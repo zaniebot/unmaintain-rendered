@@ -2,18 +2,18 @@
 number: 17020
 title: "Add hint for misplaced `--verbose`  in `uv tool run`"
 type: pull_request
-state: closed
+state: merged
 author: F4RAN
 labels:
   - error messages
-assignees:
-  - EliteTK
+assignees: []
+merged: true
 base: main
 head: feature-16777-verbose-error-hint
 created_at: 2025-12-07T23:37:29Z
 updated_at: 2025-12-09T16:15:11Z
 url: https://github.com/astral-sh/uv/pull/17020
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Add hint for misplaced `--verbose`  in `uv tool run`
@@ -214,9 +214,5 @@ _Closed by @zanieb on 2025-12-09 16:15_
 ---
 
 _Renamed from "Add hint for misplaced `--verbose`" to "Add hint for misplaced `--verbose`  in `uv tool run`" by @zanieb on 2025-12-09 16:15_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257965](../../Homebrew/homebrew-core/pulls/257965.md) on 2025-12-09 23:22_
 
 ---

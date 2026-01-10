@@ -2,17 +2,18 @@
 number: 16957
 title: Update pytorch.md to include information about supporting CUDA 13.0.x
 type: pull_request
-state: closed
+state: merged
 author: mjwoolf
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: push-kvzqqvpwsulw
 created_at: 2025-12-03T06:51:59Z
 updated_at: 2025-12-03T14:47:57Z
 url: https://github.com/astral-sh/uv/pull/16957
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Update pytorch.md to include information about supporting CUDA 13.0.x
@@ -49,9 +50,5 @@ _Merged by @charliermarsh on 2025-12-03 14:47_
 ---
 
 _Closed by @charliermarsh on 2025-12-03 14:47_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257541](../../Homebrew/homebrew-core/pulls/257541.md) on 2025-12-06 14:23_
 
 ---

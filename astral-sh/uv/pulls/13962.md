@@ -5,14 +5,13 @@ type: pull_request
 state: open
 author: InSyncWithFoo
 labels: []
-assignees:
-  - zanieb
+assignees: []
 base: main
 head: tool-list-json
 created_at: 2025-06-11T11:28:52Z
-updated_at: 2025-12-06T13:50:58Z
+updated_at: 2025-12-15T20:25:03Z
 url: https://github.com/astral-sh/uv/pull/13962
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Support `tool list --output-format=json`
@@ -98,10 +97,6 @@ _Review request for @Gankra removed by @konstin on 2025-07-07 10:01_
 
 ---
 
-_Referenced in [astral-sh/uv#13695](../../astral-sh/uv/issues/13695.md) on 2025-07-09 10:59_
-
----
-
 _@zanieb reviewed on 2025-07-14 16:58_
 
 ---
@@ -137,5 +132,21 @@ _Assigned to @zanieb by @zanieb on 2025-07-14 20:22_
 _Comment by @sigma67 on 2025-10-17 07:59_
 
 Is there still interest in this PR? Would be a great feature to have ❤️
+
+---
+
+_Comment by @egerlach on 2025-12-15 18:51_
+
+@zanieb @InSyncWithFoo I just ran into a situation where this would have been useful. Would it be okay if I took a stab at this in the coming weeks? No guarantees, but I have the itch and I might have time.
+
+Specifically, I'm thinking of doing 2 PRs, one that would refactor the reporting stuff from project sync off on its own, and a second which implements `--format=json` for `tool list` similar to `sync`. I'm not familiar with the internals of `uv` (yet), so I figure that doing a refactor first will let me get my bearings before actually trying to change anything.
+
+---
+
+_Comment by @zanieb on 2025-12-15 20:25_
+
+Feel free yeah! I haven't had a chance to pick it up.
+
+cc @EliteTK 
 
 ---

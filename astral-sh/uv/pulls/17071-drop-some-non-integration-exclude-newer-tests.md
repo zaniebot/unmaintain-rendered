@@ -2,17 +2,18 @@
 number: 17071
 title: Drop some non-integration exclude-newer tests
 type: pull_request
-state: closed
+state: merged
 author: zanieb
 labels:
   - testing
 assignees: []
+merged: true
 base: main
 head: zb/exclude-newer-tests
 created_at: 2025-12-10T13:50:16Z
 updated_at: 2025-12-10T14:04:06Z
 url: https://github.com/astral-sh/uv/pull/17071
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Drop some non-integration exclude-newer tests

@@ -2,17 +2,18 @@
 number: 17012
 title: Respect dropped (but explicit) indexes in dependency groups
 type: pull_request
-state: closed
+state: merged
 author: charliermarsh
 labels:
   - bug
 assignees: []
+merged: true
 base: main
 head: charlie/d
 created_at: 2025-12-06T03:05:56Z
 updated_at: 2025-12-06T14:06:47Z
 url: https://github.com/astral-sh/uv/pull/17012
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Respect dropped (but explicit) indexes in dependency groups
@@ -47,9 +48,5 @@ _Closed by @charliermarsh on 2025-12-06 14:06_
 ---
 
 _Branch deleted on 2025-12-06 14:06_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257965](../../Homebrew/homebrew-core/pulls/257965.md) on 2025-12-09 23:22_
 
 ---

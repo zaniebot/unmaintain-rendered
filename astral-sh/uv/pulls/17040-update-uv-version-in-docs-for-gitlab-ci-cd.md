@@ -2,17 +2,18 @@
 number: 17040
 title: Update UV_VERSION in docs for GitLab CI/CD
 type: pull_request
-state: closed
+state: merged
 author: npikall
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: dev
 created_at: 2025-12-08T23:34:41Z
 updated_at: 2025-12-09T20:56:33Z
 url: https://github.com/astral-sh/uv/pull/17040
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Update UV_VERSION in docs for GitLab CI/CD
@@ -77,9 +78,5 @@ _Closed by @zanieb on 2025-12-09 20:56_
 ---
 
 _Label `documentation` added by @zanieb on 2025-12-09 20:56_
-
----
-
-_Referenced in [Homebrew/homebrew-core#257965](../../Homebrew/homebrew-core/pulls/257965.md) on 2025-12-09 23:22_
 
 ---

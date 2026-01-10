@@ -13,7 +13,7 @@ head: konsti/packse-0.3.54
 created_at: 2025-11-27T14:52:20Z
 updated_at: 2025-12-08T12:53:38Z
 url: https://github.com/astral-sh/uv/pull/16876
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Update packse to 0.3.54
@@ -40,10 +40,6 @@ Windows adds an extra hint, I need to change the packse scenario do use fictiona
 ---
 
 _Converted to draft by @konstin on 2025-11-27 15:52_
-
----
-
-_Referenced in [astral-sh/packse#299](../../astral-sh/packse/pulls/299.md) on 2025-12-08 12:49_
 
 ---
 

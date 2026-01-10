@@ -2,16 +2,17 @@
 number: 16971
 title: Adjust release script to handle uv-trampoline lockfile changes
 type: pull_request
-state: closed
+state: merged
 author: samypr100
 labels: []
 assignees: []
+merged: true
 base: main
 head: fix-release-script
 created_at: 2025-12-03T15:21:36Z
 updated_at: 2025-12-04T18:52:30Z
 url: https://github.com/astral-sh/uv/pull/16971
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Adjust release script to handle uv-trampoline lockfile changes

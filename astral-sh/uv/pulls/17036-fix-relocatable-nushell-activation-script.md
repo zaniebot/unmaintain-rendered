@@ -2,16 +2,17 @@
 number: 17036
 title: Fix relocatable nushell activation script
 type: pull_request
-state: closed
+state: merged
 author: yumeminami
 labels: []
 assignees: []
+merged: true
 base: main
 head: fix/relocatable-venv-activation-nushell-scripts
 created_at: 2025-12-08T17:47:17Z
-updated_at: 2025-12-11T03:42:40Z
+updated_at: 2026-01-08T22:18:44Z
 url: https://github.com/astral-sh/uv/pull/17036
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-10T05:49:14Z
 ```
 
 # Fix relocatable nushell activation script
@@ -70,10 +71,16 @@ _Closed by @zanieb on 2025-12-09 14:39_
 
 ---
 
-_Referenced in [Homebrew/homebrew-core#257965](../../Homebrew/homebrew-core/pulls/257965.md) on 2025-12-09 23:22_
+_Branch deleted on 2025-12-11 03:42_
 
 ---
 
-_Branch deleted on 2025-12-11 03:42_
+_@EliteTK reviewed on 2026-01-08 22:18_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-virtualenv/src/activator/activate.nu`:71 on 2026-01-08 22:18_
+
+It's handled in https://github.com/astral-sh/uv/pull/17036/changes#diff-1b2c87e330cac104d820ffaf2b35067c7bcf36cc5acd14767ab2007f25866619R469
 
 ---
