@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-07T14:52:45Z
 updated_at: 2025-01-15T03:35:18Z
 url: https://github.com/astral-sh/uv/issues/10367
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Drop UV_STACK_SIZE in favour of RUST_MIN_STACK
@@ -38,10 +38,6 @@ _Label `internal` added by @zanieb on 2025-01-07 15:38_
 _Comment by @konstin on 2025-01-08 09:50_
 
 Another consideration is that usually the main thread overflowed, which afaik gets built by the OS instead of rust.
-
----
-
-_Referenced in [astral-sh/uv#10479](../../astral-sh/uv/pulls/10479.md) on 2025-01-10 20:11_
 
 ---
 

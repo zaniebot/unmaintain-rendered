@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-18T17:45:56Z
 updated_at: 2025-01-09T13:50:47Z
 url: https://github.com/astral-sh/uv/issues/8342
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Executables not found in Docker after installing with uv
@@ -266,9 +266,5 @@ I was bind mounting in my docker-compose file.
 End of story.
 
 Thanks guys.
-
----
-
-_Referenced in [Paulescu/kubernetes-for-ml-engineers#3](../../Paulescu/kubernetes-for-ml-engineers/issues/3.md) on 2025-03-30 02:09_
 
 ---

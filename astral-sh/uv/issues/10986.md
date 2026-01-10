@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-27T14:41:33Z
 updated_at: 2025-01-27T19:24:49Z
 url: https://github.com/astral-sh/uv/issues/10986
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Fish Shell Activation Script Compatibility Issue
@@ -130,10 +130,6 @@ https://github.com/astral-sh/uv/blob/90a4178c7a8fde7fabae25ea97b5e5879ba165a0/do
 There is no mention of this in the uv documentation.
 
 I will try to make a PR to add this.
-
----
-
-_Referenced in [astral-sh/uv#11000](../../astral-sh/uv/pulls/11000.md) on 2025-01-27 18:58_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-31T15:48:30Z
 updated_at: 2025-01-14T18:59:17Z
 url: https://github.com/astral-sh/uv/issues/1206
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Prefetch all dependencies when resolving with a lockfile
@@ -31,23 +31,11 @@ _Label `performance` added by @konstin on 2024-01-31 15:48_
 
 ---
 
-_Referenced in [astral-sh/uv#1204](../../astral-sh/uv/issues/1204.md) on 2024-01-31 15:49_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-02 22:03_
 
 ---
 
-_Referenced in [astral-sh/uv#1246](../../astral-sh/uv/pulls/1246.md) on 2024-02-04 19:50_
-
----
-
 _Unassigned @charliermarsh by @charliermarsh on 2024-02-22 17:08_
-
----
-
-_Referenced in [astral-sh/uv#7427](../../astral-sh/uv/pulls/7427.md) on 2024-09-23 12:40_
 
 ---
 

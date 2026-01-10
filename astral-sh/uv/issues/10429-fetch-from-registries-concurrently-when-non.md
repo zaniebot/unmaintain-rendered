@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-09T14:21:30Z
 updated_at: 2025-01-09T17:45:22Z
 url: https://github.com/astral-sh/uv/issues/10429
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Fetch from registries concurrently when non-default `--index-strategy` is present
@@ -28,10 +28,6 @@ _Label `performance` added by @charliermarsh on 2025-01-09 14:21_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-09 14:31_
-
----
-
-_Referenced in [astral-sh/uv#10432](../../astral-sh/uv/pulls/10432.md) on 2025-01-09 14:59_
 
 ---
 

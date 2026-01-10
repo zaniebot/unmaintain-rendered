@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-10T22:36:45Z
 updated_at: 2025-01-11T03:30:06Z
 url: https://github.com/astral-sh/uv/issues/10481
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Huge number of platform markers now in `uv pip compile` output (0.5.8+)
@@ -495,14 +495,6 @@ Or perhaps uv is saying this universal solution is only valid for `platform_mach
 _Comment by @charliermarsh on 2025-01-11 01:45_
 
 I'll try to explain it in a bit. I have a fix locally.
-
----
-
-_Referenced in [astral-sh/uv#10489](../../astral-sh/uv/pulls/10489.md) on 2025-01-11 01:53_
-
----
-
-_Referenced in [astral-sh/uv#10490](../../astral-sh/uv/pulls/10490.md) on 2025-01-11 01:59_
 
 ---
 

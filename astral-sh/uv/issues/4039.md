@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-05T04:48:53Z
 updated_at: 2025-01-25T16:21:23Z
 url: https://github.com/astral-sh/uv/issues/4039
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Add short alias `uvp` for `uv pip`
@@ -31,10 +31,6 @@ There's a bunch more discussion over in https://github.com/astral-sh/uv/issues/1
 ---
 
 _Closed by @itsmeadarsh2008 on 2024-06-05 13:58_
-
----
-
-_Referenced in [astral-sh/uv#10949](../../astral-sh/uv/issues/10949.md) on 2025-01-24 23:10_
 
 ---
 

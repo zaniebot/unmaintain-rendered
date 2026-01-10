@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-27T17:00:33Z
 updated_at: 2025-01-22T18:15:43Z
 url: https://github.com/astral-sh/uv/issues/10201
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Workflow Headache: dev dependencies (private) are resolved when not included
@@ -151,9 +151,5 @@ Also, the `uv.lock` is also a cache for the results of this algorithm. So it sho
 _Comment by @zanieb on 2025-01-22 18:15_
 
 Yeah we'd need to resolve them in combination with the other groups and project because they _could_ be installed together. The main thing we could do is add support for _only_ using a group in isolation — so only `uv sync --only-group foo` would be allowed.
-
----
-
-_Referenced in [astral-sh/uv#11104](../../astral-sh/uv/issues/11104.md) on 2025-01-30 21:44_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-10T10:45:03Z
 updated_at: 2025-01-10T15:13:01Z
 url: https://github.com/astral-sh/uv/issues/10465
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Idea: uv as a self-contained tool wrapper
@@ -71,14 +71,6 @@ If this functionality wasn't baked into `uv` itself, it would be pretty easy to 
 Hmm... that actually suggests a third alternative: all this could be a separate executable built as part of the `uv` project, which would mean it would be available every time there was a `uv` update. In that case, something like `uv self update` would be fairly straightforward. Doing it that way would require a little more work on the part of the `uv` delivery team, but it would mean that it could live separate from the `uv` binary and hence imply zero risk for the main `uv` deliverable.
 
 Anyway, thank you for coming to my Ted Talk!
-
----
-
-_Referenced in [astral-sh/uv#5802](../../astral-sh/uv/issues/5802.md) on 2025-01-10 10:49_
-
----
-
-_Referenced in [astral-sh/uv#10452](../../astral-sh/uv/issues/10452.md) on 2025-01-10 10:53_
 
 ---
 

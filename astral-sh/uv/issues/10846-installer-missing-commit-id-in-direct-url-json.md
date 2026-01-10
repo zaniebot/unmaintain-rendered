@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T08:50:37Z
 updated_at: 2025-01-22T17:16:51Z
 url: https://github.com/astral-sh/uv/issues/10846
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # [Installer] Missing `commit_id` in direct_url.json
@@ -56,10 +56,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-22 13:29_
 _Comment by @charliermarsh on 2025-01-22 14:15_
 
 Thanks, sorry about that. I'll fix it today.
-
----
-
-_Referenced in [astral-sh/uv#10862](../../astral-sh/uv/pulls/10862.md) on 2025-01-22 15:46_
 
 ---
 

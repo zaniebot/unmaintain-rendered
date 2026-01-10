@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-10T15:59:19Z
 updated_at: 2025-01-20T09:02:55Z
 url: https://github.com/astral-sh/uv/issues/9778
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Unable to publish package to Google Artifact Registry
@@ -88,10 +88,6 @@ in my GitHub action.
 
 ---
 
-_Referenced in [astral-sh/uv#10469](../../astral-sh/uv/pulls/10469.md) on 2025-01-10 12:22_
-
----
-
 _Comment by @konstin on 2025-01-10 12:48_
 
 There's two interleaving things: The google cloud artifact registry uses `oauth2accesstoken` as username, not `__token__` as pypi does, so you need set `--username oauth2accesstoken`. We also read the username from the URL if you want to set it there, but there was a bug in uv due to how redirects with POST requests are handled, which should be fixed with https://github.com/astral-sh/uv/pull/10469. With that PR, you should be able to specify `oauth2accesstoken` as username both in the CLI and the URL and publish with e.g.
@@ -141,13 +137,5 @@ _Comment by @konstin on 2025-01-20 09:02_
 ---
 
 _Closed by @konstin on 2025-01-20 09:02_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2025-01-28 15:47_
-
----
-
-_Referenced in [astral-sh/uv#11032](../../astral-sh/uv/pulls/11032.md) on 2025-01-28 18:41_
 
 ---

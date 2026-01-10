@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-17T17:45:14Z
 updated_at: 2025-01-21T21:45:30Z
 url: https://github.com/astral-sh/uv/issues/10717
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Omit `stdout` and `stderr` sections when empty in errors
@@ -67,10 +67,6 @@ ref https://github.com/astral-sh/uv/blob/9e0b35ad8280924fc9e347f668d6153d925673d
 ---
 
 _Label `help wanted` added by @zanieb on 2025-01-17 18:36_
-
----
-
-_Referenced in [astral-sh/uv#10746](../../astral-sh/uv/pulls/10746.md) on 2025-01-19 01:05_
 
 ---
 

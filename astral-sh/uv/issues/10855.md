@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T12:53:59Z
 updated_at: 2025-01-23T08:36:27Z
 url: https://github.com/astral-sh/uv/issues/10855
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv lock --locked reports 'uv.lock needs to be updated' when it doesn't (with workspace members that have multiple self-referential extras)
@@ -106,10 +106,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-22 13:26_
 _Comment by @charliermarsh on 2025-01-22 13:51_
 
 Have you tried this on the latest version (v0.5.22)? I can't reproduce, and I believe I fixed this already.
-
----
-
-_Referenced in [astral-sh/uv#10856](../../astral-sh/uv/pulls/10856.md) on 2025-01-22 13:58_
 
 ---
 

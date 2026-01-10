@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-20T10:29:33Z
 updated_at: 2025-01-21T00:45:57Z
 url: https://github.com/astral-sh/uv/issues/10776
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Possibly broken uv lock after upgrading from 0.5.20 to 0.5.21
@@ -2378,36 +2378,16 @@ _Label `bug` added by @charliermarsh on 2025-01-20 17:49_
 
 ---
 
-_Referenced in [astral-sh/uv#10792](../../astral-sh/uv/pulls/10792.md) on 2025-01-20 22:39_
-
----
-
-_Referenced in [astral-sh/uv#10794](../../astral-sh/uv/pulls/10794.md) on 2025-01-20 22:57_
-
----
-
 _Comment by @charliermarsh on 2025-01-20 23:35_
 
 I have this fixed in https://github.com/astral-sh/uv/pull/10794. It ended up surfacing a pretty tricky problem, partly intersecting with the standards: https://discuss.python.org/t/core-metadata-for-self-referential-extras/77793/6.
 
 ---
 
-_Referenced in [astral-sh/uv#10797](../../astral-sh/uv/pulls/10797.md) on 2025-01-21 00:18_
-
----
-
 _Closed by @charliermarsh on 2025-01-21 00:45_
 
 ---
 
 _Closed by @charliermarsh on 2025-01-21 00:45_
-
----
-
-_Referenced in [datalab-org/datalab#1039](../../datalab-org/datalab/pulls/1039.md) on 2025-01-22 09:36_
-
----
-
-_Referenced in [astral-sh/uv#10852](../../astral-sh/uv/issues/10852.md) on 2025-01-22 11:51_
 
 ---

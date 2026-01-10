@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-11T16:29:06Z
 updated_at: 2025-01-23T17:45:55Z
 url: https://github.com/astral-sh/uv/issues/9021
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Empty environment variables e.g. `UV_FROZEN=''` is treated as an error, not unset
@@ -98,10 +98,6 @@ uv run --resolution lowest-direct coverage run -m pytest
 ```
 
 But for that to work, I need to unset `UV_FROZEN` which is otherwise set globally in CI.
-
----
-
-_Referenced in [pydantic/pydantic-ai#743](../../pydantic/pydantic-ai/pulls/743.md) on 2025-01-22 16:28_
 
 ---
 

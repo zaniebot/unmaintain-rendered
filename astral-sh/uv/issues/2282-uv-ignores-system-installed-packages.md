@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-07T15:52:19Z
 updated_at: 2025-01-28T07:33:16Z
 url: https://github.com/astral-sh/uv/issues/2282
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # uv ignores system installed packages
@@ -61,10 +61,6 @@ _Closed by @charliermarsh on 2024-03-07 15:56_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-03-07 15:56_
-
----
-
-_Referenced in [astral-sh/uv#2596](../../astral-sh/uv/pulls/2596.md) on 2024-03-21 21:49_
 
 ---
 

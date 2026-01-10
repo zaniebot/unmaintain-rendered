@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-16T15:12:21Z
 updated_at: 2025-01-20T03:55:50Z
 url: https://github.com/astral-sh/uv/issues/10683
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv lock` fails to update outdated lockfile if project is in cache
@@ -324,17 +324,5 @@ _Comment by @moonbox3 on 2025-01-20 03:55_
 > [@moonbox3](https://github.com/moonbox3) -- I think you must be running an older uv version in pre-commit (which is versioned separately from whatever you install with GH Actions).
 
 Thanks for the tip. As I was debugging the last pre-commit showed as `0.5.20`. I now see `0.5.21` and that works. Appreciate your help.
-
----
-
-_Referenced in [astral-sh/uv#10776](../../astral-sh/uv/issues/10776.md) on 2025-01-20 11:27_
-
----
-
-_Referenced in [astral-sh/uv#10852](../../astral-sh/uv/issues/10852.md) on 2025-01-22 11:51_
-
----
-
-_Referenced in [flyteorg/flyte#6392](../../flyteorg/flyte/issues/6392.md) on 2025-04-04 12:29_
 
 ---

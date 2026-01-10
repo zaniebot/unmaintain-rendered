@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-21T21:40:47Z
 updated_at: 2025-01-23T13:15:50Z
 url: https://github.com/astral-sh/uv/issues/10828
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # langchain version confusion with aiohttp started in uv 0.5.17
@@ -195,10 +195,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2025-01-21 22:43_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-21 23:01_
-
----
-
-_Referenced in [astral-sh/uv#10833](../../astral-sh/uv/pulls/10833.md) on 2025-01-21 23:15_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-09T16:53:39Z
 updated_at: 2025-01-10T23:12:46Z
 url: https://github.com/astral-sh/uv/issues/10438
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Resolution stress test (>10 seconds offline with warm cache)
@@ -385,19 +385,7 @@ That's good news since this is CPU work which we can always improve :)
 
 ---
 
-_Referenced in [astral-sh/uv#10439](../../astral-sh/uv/pulls/10439.md) on 2025-01-09 18:10_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2025-01-09 18:31_
-
----
-
-_Referenced in [astral-sh/uv#10463](../../astral-sh/uv/pulls/10463.md) on 2025-01-10 09:36_
-
----
-
-_Referenced in [astral-sh/uv#10472](../../astral-sh/uv/pulls/10472.md) on 2025-01-10 15:48_
 
 ---
 
@@ -412,9 +400,5 @@ _Closed by @BurntSushi on 2025-01-10 16:23_
 _Comment by @notatallshaw on 2025-01-10 23:12_
 
 FYI, with 0.5.17 this scenario went from ~13 seconds at home and ~123 seconds at work to ~0.5 seconds and ~2 seconds respectively.
-
----
-
-_Referenced in [astral-sh/uv#10947](../../astral-sh/uv/pulls/10947.md) on 2025-01-27 10:17_
 
 ---

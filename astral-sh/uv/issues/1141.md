@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-27T01:10:46Z
 updated_at: 2025-01-24T15:24:24Z
 url: https://github.com/astral-sh/uv/issues/1141
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Re-enable ARM Windows builds in release pipeline
@@ -46,10 +46,6 @@ _Label `wish` added by @charliermarsh on 2024-01-29 03:53_
 ---
 
 _Label `bug` removed by @charliermarsh on 2024-01-29 03:55_
-
----
-
-_Referenced in [astral-sh/uv#1190](../../astral-sh/uv/pulls/1190.md) on 2024-01-30 17:27_
 
 ---
 
@@ -104,10 +100,6 @@ So with the advent of the Snapdragon X chips, we're seeing Windows ARM machines 
 _Comment by @zanieb on 2024-10-17 21:59_
 
 If someone wants to put some effort into getting an ARM build working I'm all for it. I think we could start with something low impact like the #8269 build then move to distributing releases as a secondary goal.
-
----
-
-_Referenced in [astral-sh/uv#9138](../../astral-sh/uv/issues/9138.md) on 2024-11-15 02:21_
 
 ---
 
@@ -217,21 +209,9 @@ I set one up, see https://github.com/astral-sh/uv/issues/1141#issuecomment-25714
 
 ---
 
-_Referenced in [astral-sh/uv#10306](../../astral-sh/uv/pulls/10306.md) on 2025-01-05 19:51_
-
----
-
 _Comment by @kalradivyanshu on 2025-01-05 19:52_
 
 @zanieb , can you take a look at this https://github.com/astral-sh/uv/pull/10306?
-
----
-
-_Referenced in [astral-sh/uv#10540](../../astral-sh/uv/pulls/10540.md) on 2025-01-12 13:46_
-
----
-
-_Referenced in [astral-sh/uv#10885](../../astral-sh/uv/pulls/10885.md) on 2025-01-23 05:04_
 
 ---
 

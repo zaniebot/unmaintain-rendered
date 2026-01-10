@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T08:36:25Z
 updated_at: 2025-01-17T05:18:34Z
 url: https://github.com/astral-sh/uv/issues/10558
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Failing to compile numpy from source against a uv-managed interpreter (`Cannot compile `Python.h`.`)
@@ -73,10 +73,6 @@ $ uv pip install git+https://github.com/numpy/numpy
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#10185](../../astral-sh/uv/issues/10185.md) on 2025-01-13 08:36_
 
 ---
 
@@ -533,9 +529,5 @@ Great thanks everyone!
 ---
 
 _Closed by @zanieb on 2025-01-17 05:18_
-
----
-
-_Referenced in [astral-sh/uv#11061](../../astral-sh/uv/issues/11061.md) on 2025-01-29 14:14_
 
 ---

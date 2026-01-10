@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-08T14:41:05Z
 updated_at: 2025-01-27T23:04:28Z
 url: https://github.com/astral-sh/uv/issues/9719
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Behavior of `uv run` depends on the app name
@@ -313,10 +313,6 @@ I think this is an issue with how the environment layering works, but please do 
 _Comment by @charliermarsh on 2024-12-08 20:01_
 
 I see the problem though not obvious how to fix it.
-
----
-
-_Referenced in [astral-sh/uv#9724](../../astral-sh/uv/issues/9724.md) on 2024-12-08 20:18_
 
 ---
 

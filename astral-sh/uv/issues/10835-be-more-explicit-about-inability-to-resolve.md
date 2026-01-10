@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T01:06:19Z
 updated_at: 2025-01-22T17:22:54Z
 url: https://github.com/astral-sh/uv/issues/10835
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Be more explicit about inability to resolve workspace `requires-python`
@@ -109,10 +109,6 @@ Yep, my suggestion was just to be more explicit about that fact in the output.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-22 02:35_
-
----
-
-_Referenced in [astral-sh/uv#10841](../../astral-sh/uv/pulls/10841.md) on 2025-01-22 02:46_
 
 ---
 

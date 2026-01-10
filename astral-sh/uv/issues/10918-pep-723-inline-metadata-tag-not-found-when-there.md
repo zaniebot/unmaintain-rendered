@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-23T22:27:55Z
 updated_at: 2025-01-24T20:14:30Z
 url: https://github.com/astral-sh/uv/issues/10918
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # PEP 723 inline metadata tag not found when there's trailing whitespace
@@ -147,9 +147,5 @@ Just the spec. The PEP has a banner saying:
 > This PEP is a historical document. The up-to-date, canonical spec, [Inline script metadata](https://packaging.python.org/en/latest/specifications/inline-script-metadata/#inline-script-metadata), is maintained on the [PyPA specs page](https://packaging.python.org/en/latest/specifications/).
 > 
 > See the [PyPA specification update process](https://www.pypa.io/en/latest/specifications/#handling-fixes-and-other-minor-updates) for how to propose changes. 
-
----
-
-_Referenced in [pypa/pip#13052](../../pypa/pip/pulls/13052.md) on 2025-11-22 22:57_
 
 ---

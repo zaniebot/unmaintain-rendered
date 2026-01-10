@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-16T17:40:28Z
 updated_at: 2025-01-17T04:27:48Z
 url: https://github.com/astral-sh/uv/issues/10689
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv lock should not run build backend for dynamic versions
@@ -34,26 +34,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-16 17:41_
 
 ---
 
-_Referenced in [astral-sh/uv-pre-commit#35](../../astral-sh/uv-pre-commit/issues/35.md) on 2025-01-16 17:42_
-
----
-
-_Referenced in [aiidateam/aiida-core#6699](../../aiidateam/aiida-core/pulls/6699.md) on 2025-01-16 18:01_
-
----
-
-_Referenced in [astral-sh/uv#10703](../../astral-sh/uv/pulls/10703.md) on 2025-01-17 04:00_
-
----
-
 _Closed by @charliermarsh on 2025-01-17 04:27_
-
----
-
-_Referenced in [aiidateam/aiida-core#6711](../../aiidateam/aiida-core/pulls/6711.md) on 2025-01-17 14:02_
-
----
-
-_Referenced in [vega/altair#3776](../../vega/altair/pulls/3776.md) on 2025-01-18 13:46_
 
 ---

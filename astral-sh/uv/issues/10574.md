@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T18:11:07Z
 updated_at: 2025-01-14T18:17:20Z
 url: https://github.com/astral-sh/uv/issues/10574
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Recommend `--native-tls` on SSL errors
@@ -40,10 +40,6 @@ _Label `error messages` removed by @charliermarsh on 2025-01-14 16:44_
 ---
 
 _Label `error messages` added by @charliermarsh on 2025-01-14 17:33_
-
----
-
-_Referenced in [astral-sh/uv#10605](../../astral-sh/uv/pulls/10605.md) on 2025-01-14 17:33_
 
 ---
 

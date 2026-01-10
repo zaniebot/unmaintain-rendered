@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-08T23:21:51Z
 updated_at: 2025-01-09T22:39:02Z
 url: https://github.com/astral-sh/uv/issues/10418
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Add meta titles and descriptions to guides
@@ -105,10 +105,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-09 01:19_
 
 ---
 
-_Referenced in [astral-sh/uv#10421](../../astral-sh/uv/pulls/10421.md) on 2025-01-09 01:21_
-
----
-
 _Unassigned @charliermarsh by @charliermarsh on 2025-01-09 01:21_
 
 ---
@@ -143,10 +139,6 @@ I'll wrap these up.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-09 21:38_
-
----
-
-_Referenced in [astral-sh/uv#10450](../../astral-sh/uv/pulls/10450.md) on 2025-01-09 22:38_
 
 ---
 

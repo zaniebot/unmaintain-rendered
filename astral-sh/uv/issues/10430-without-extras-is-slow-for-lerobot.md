@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-09T14:32:59Z
 updated_at: 2025-01-10T16:23:21Z
 url: https://github.com/astral-sh/uv/issues/10430
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `without_extras` is slow for lerobot
@@ -67,19 +67,7 @@ We can maybe also optimize the _caller_ here? It looks like we call `marker.pep5
 
 ---
 
-_Referenced in [astral-sh/uv#10438](../../astral-sh/uv/issues/10438.md) on 2025-01-09 17:54_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2025-01-09 18:31_
-
----
-
-_Referenced in [astral-sh/uv#10453](../../astral-sh/uv/pulls/10453.md) on 2025-01-10 13:10_
-
----
-
-_Referenced in [astral-sh/uv#10472](../../astral-sh/uv/pulls/10472.md) on 2025-01-10 15:48_
 
 ---
 

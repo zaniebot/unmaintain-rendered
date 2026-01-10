@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-26T23:02:34Z
 updated_at: 2025-01-13T08:36:53Z
 url: https://github.com/astral-sh/uv/issues/10185
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Unexpected `prefix` value in `.../lib/pkgconfig/python-3.<minor>.pc`
@@ -76,10 +76,6 @@ _Label `compatibility` added by @charliermarsh on 2024-12-26 23:16_
 
 ---
 
-_Referenced in [astral-sh/uv#10189](../../astral-sh/uv/pulls/10189.md) on 2024-12-27 00:35_
-
----
-
 _Closed by @charliermarsh on 2024-12-27 00:50_
 
 ---
@@ -131,10 +127,6 @@ I made sure to reinstall Python 3.13 after I upgraded uv to 0.5.14.
 I already had this issue with earlier versions of uv but didn't have time to report it at the time. I found this issue from uv 0.5.14's release notes.
 
 
-
----
-
-_Referenced in [astral-sh/uv#10558](../../astral-sh/uv/issues/10558.md) on 2025-01-13 08:36_
 
 ---
 

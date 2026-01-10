@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-20T07:32:17Z
 updated_at: 2025-01-20T17:23:09Z
 url: https://github.com/astral-sh/uv/issues/10772
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv 0.5.21 fails to install pytorch
@@ -342,14 +342,6 @@ I think the second thing is a different bug. I'll track it in a separate issue.
 
 ---
 
-_Referenced in [astral-sh/uv#10782](../../astral-sh/uv/pulls/10782.md) on 2025-01-20 17:12_
-
----
-
-_Referenced in [astral-sh/uv#10783](../../astral-sh/uv/issues/10783.md) on 2025-01-20 17:22_
-
----
-
 _Closed by @charliermarsh on 2025-01-20 17:23_
 
 ---
@@ -357,9 +349,5 @@ _Closed by @charliermarsh on 2025-01-20 17:23_
 _Comment by @charliermarsh on 2025-01-20 17:23_
 
 Tracking the second piece in: https://github.com/astral-sh/uv/issues/10783
-
----
-
-_Referenced in [astral-sh/uv#10818](../../astral-sh/uv/pulls/10818.md) on 2025-01-21 16:50_
 
 ---

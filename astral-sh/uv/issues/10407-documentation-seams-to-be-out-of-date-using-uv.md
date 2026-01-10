@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-08T19:28:29Z
 updated_at: 2025-01-09T21:43:10Z
 url: https://github.com/astral-sh/uv/issues/10407
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Documentation seams to be out of date: "Using uv with Jupyter"
@@ -66,10 +66,6 @@ _Label `good first issue` added by @zanieb on 2025-01-08 20:58_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-09 21:09_
-
----
-
-_Referenced in [astral-sh/uv#10446](../../astral-sh/uv/pulls/10446.md) on 2025-01-09 21:18_
 
 ---
 

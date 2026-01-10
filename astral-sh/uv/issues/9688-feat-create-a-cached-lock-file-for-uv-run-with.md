@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-06T16:12:42Z
 updated_at: 2025-01-08T20:34:48Z
 url: https://github.com/astral-sh/uv/issues/9688
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Feat: Create a cached lock file for `uv run` with scripts
@@ -26,10 +26,6 @@ The current behavior is problematic when the network is having transient issues 
 In general, I think the expected user experience (perhaps incorrectly) of `uv run ...` is there is no network activity required unless absolutely necessary.
 
 FYI, I'm not currently impacted by this issue, so it's not a big priority for me, but I have seen it in the past, and in general it does feel like a better user experience.
-
----
-
-_Referenced in [astral-sh/uv#7538](../../astral-sh/uv/issues/7538.md) on 2024-12-06 16:13_
 
 ---
 
@@ -172,14 +168,6 @@ Minor note regarding `--no-offline`
 We have hidden inversions of nearly all of our boolean flags.
 
 
-
----
-
-_Referenced in [astral-sh/uv#10123](../../astral-sh/uv/pulls/10123.md) on 2024-12-23 18:43_
-
----
-
-_Referenced in [astral-sh/uv#10136](../../astral-sh/uv/pulls/10136.md) on 2024-12-25 19:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T16:40:47Z
 updated_at: 2025-01-13T10:00:53Z
 url: https://github.com/astral-sh/uv/issues/6880
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Pytorch downgrades to a lower version
@@ -152,10 +152,6 @@ _Comment by @zanieb on 2024-10-21 21:40_
 _Comment by @charliermarsh on 2024-10-21 23:21_
 
 Yeah. The system packages aren't taken into account.
-
----
-
-_Referenced in [astral-sh/uv#4466](../../astral-sh/uv/issues/4466.md) on 2024-11-21 11:32_
 
 ---
 

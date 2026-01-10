@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-02T14:19:51Z
 updated_at: 2025-01-14T08:58:04Z
 url: https://github.com/astral-sh/uv/issues/2777
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # No wheels found with matching Python ABI error message does not show ABI
@@ -33,17 +33,9 @@ _Label `error messages` added by @zanieb on 2024-04-02 14:19_
 
 ---
 
-_Referenced in [astral-sh/uv#3437](../../astral-sh/uv/issues/3437.md) on 2024-05-07 20:24_
-
----
-
 _Comment by @fzyzcjy on 2024-10-19 11:56_
 
 Hi, is there any updates? Thanks!
-
----
-
-_Referenced in [astral-sh/uv#8363](../../astral-sh/uv/pulls/8363.md) on 2024-10-19 13:44_
 
 ---
 
@@ -187,10 +179,6 @@ Gonna look at this today.
 
 ---
 
-_Referenced in [astral-sh/uv#10527](../../astral-sh/uv/pulls/10527.md) on 2025-01-11 23:22_
-
----
-
 _Comment by @konstin on 2025-01-13 21:33_
 
 My high-level comment is that it would be nice if we could show the user the msimatch in categories of python version, platform and architecture, if only one of them mismatches:
@@ -227,10 +215,6 @@ Yes, i just didn't want to make it a PR review comment (this could be done in a 
 
 ---
 
-_Referenced in [astral-sh/uv#10534](../../astral-sh/uv/pulls/10534.md) on 2025-01-13 22:46_
-
----
-
 _Comment by @charliermarsh on 2025-01-13 22:47_
 
 (@konstin -- Just clarifying that https://github.com/astral-sh/uv/pull/10534 is different than https://github.com/astral-sh/uv/pull/10527 which you reviewed.)
@@ -249,9 +233,5 @@ _Comment by @zhangrongyu0101 on 2025-01-14 08:58_
 
 maybe it's the problem with the Python version? I solved this problem by changing the Python version from 3.13 to 3.10.
 
-
----
-
-_Referenced in [astral-sh/uv#10612](../../astral-sh/uv/issues/10612.md) on 2025-01-14 19:08_
 
 ---

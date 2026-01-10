@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-11T21:07:28Z
 updated_at: 2025-01-15T09:22:21Z
 url: https://github.com/astral-sh/uv/issues/10523
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Better support for reproducible Docker images and other artifacts?
@@ -173,10 +173,6 @@ Instead of the Python code you added, I can do `docker buildx build [.....] --bu
 
 ---
 
-_Referenced in [astral-sh/uv#10619](../../astral-sh/uv/issues/10619.md) on 2025-01-14 23:50_
-
----
-
 _Comment by @zanieb on 2025-01-15 01:00_
 
 Regarding the bytecode files, it looks like we respect [`PYC_INVALIDATION_MODE`](https://docs.python.org/3/library/py_compile.html#py_compile.PycInvalidationMode)
@@ -198,9 +194,5 @@ _Comment by @maxfriedrich on 2025-01-15 09:22_
 @zanieb I think this is correct / useful behavior, the compileall module picks the default/fallback based on SOURCE_DATE_EPOCH being set: https://docs.python.org/3/library/compileall.html#cmdoption-compileall-invalidation-mode and https://github.com/python/cpython/blob/6e4f64109b0eb6c9f1b50eb7dc5f647a1d901ff4/Lib/py_compile.py#L72
 
 The file creation/modification timestamps still need my `python -c` or @jackvreeken's `docker ... rewrite-timestamps=true` workaround
-
----
-
-_Referenced in [astral-sh/uv#13139](../../astral-sh/uv/issues/13139.md) on 2025-04-27 22:06_
 
 ---

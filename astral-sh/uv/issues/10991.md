@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-27T16:25:59Z
 updated_at: 2025-01-27T18:55:37Z
 url: https://github.com/astral-sh/uv/issues/10991
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Support disabling workspace and dev installation of `uv pip install`
@@ -192,10 +192,6 @@ _Label `enhancement` added by @potiuk on 2025-01-27 16:25_
 
 ---
 
-_Referenced in [apache/airflow#46139](../../apache/airflow/pulls/46139.md) on 2025-01-27 16:40_
-
----
-
 _Comment by @konstin on 2025-01-27 16:48_
 
 Does `--no-sources` work for you?
@@ -228,10 +224,6 @@ Maybe we should add the word "workspace" somewhere in the help for `--no-sources
 
 ---
 
-_Referenced in [astral-sh/uv#10995](../../astral-sh/uv/pulls/10995.md) on 2025-01-27 18:16_
-
----
-
 _Comment by @potiuk on 2025-01-27 18:39_
 
 > Maybe we should add the word "workspace" somewhere in the help for `--no-sources`.
@@ -241,10 +233,6 @@ Yes. That would be great :)
 But actually ... I found a bug with how `--no-sources` implementation ... I will open a separate issue.
 
 
-
----
-
-_Referenced in [astral-sh/uv#10999](../../astral-sh/uv/issues/10999.md) on 2025-01-27 18:55_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T21:07:31Z
 updated_at: 2025-01-13T21:25:14Z
 url: https://github.com/astral-sh/uv/issues/10577
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Registry-derived distributions built with `-C` don't read from the cache
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-13 21:07_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-01-13 21:07_
-
----
-
-_Referenced in [astral-sh/uv#10578](../../astral-sh/uv/pulls/10578.md) on 2025-01-13 21:12_
 
 ---
 

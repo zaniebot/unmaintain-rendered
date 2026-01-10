@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T22:22:30Z
 updated_at: 2025-01-23T04:52:03Z
 url: https://github.com/astral-sh/uv/issues/6384
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Some tools are installed without pkg_resources
@@ -161,13 +161,5 @@ _Comment by @zanieb on 2025-01-23 04:52_
 @AzizNadirov just add `setuptools` to your dependencies — some packages just assume that it is available.
 
 Please see #9452 regarding reporting issues.
-
----
-
-_Referenced in [modelscope/modelscope#1246](../../modelscope/modelscope/issues/1246.md) on 2025-03-25 01:58_
-
----
-
-_Referenced in [airbytehq/airbyte#59190](../../airbytehq/airbyte/pulls/59190.md) on 2025-05-01 20:21_
 
 ---

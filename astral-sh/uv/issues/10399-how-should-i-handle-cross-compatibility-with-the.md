@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-08T16:30:20Z
 updated_at: 2025-01-24T16:12:07Z
 url: https://github.com/astral-sh/uv/issues/10399
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # How should I handle cross compatibility with the torch dependency?
@@ -79,10 +79,6 @@ dependencies = [
 ```
 
 Maybe as a constraint?
-
----
-
-_Referenced in [aslafy-z/yolo-object-detection-cli#42](../../aslafy-z/yolo-object-detection-cli/pulls/42.md) on 2025-01-22 17:25_
 
 ---
 

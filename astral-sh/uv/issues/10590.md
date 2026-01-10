@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-14T10:55:03Z
 updated_at: 2025-01-27T14:05:43Z
 url: https://github.com/astral-sh/uv/issues/10590
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # How to surface Pytorch CPU/GPU config in workspace member to repo level
@@ -126,10 +126,6 @@ _Comment by @sh1man999 on 2025-01-21 13:55_
 I have the same error, it seems that the documentation is not written correctly
 
 https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies
-
----
-
-_Referenced in [astral-sh/uv#9942](../../astral-sh/uv/issues/9942.md) on 2025-01-21 14:23_
 
 ---
 
@@ -319,10 +315,6 @@ So... is there an alternative where we can correctly detect the second example a
 
 ---
 
-_Referenced in [astral-sh/uv#10875](../../astral-sh/uv/pulls/10875.md) on 2025-01-22 19:55_
-
----
-
 _Closed by @BurntSushi on 2025-01-22 23:52_
 
 ---
@@ -470,10 +462,6 @@ Edit: Looking at their repo and build system in [setup.py](https://github.com/Li
 So uv resolver has installed `torch==2.4.1+cu124` and then installs `torch==2.4.1` which is strange having two different versions of the same package
 
 This behavior changed after introducing this change
-
----
-
-_Referenced in [astral-sh/uv#10985](../../astral-sh/uv/issues/10985.md) on 2025-01-27 14:05_
 
 ---
 

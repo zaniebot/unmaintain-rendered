@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-09T18:32:34Z
 updated_at: 2025-01-16T09:25:51Z
 url: https://github.com/astral-sh/uv/issues/10440
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Install failed with uv but works with regular python
@@ -156,13 +156,5 @@ However, audiblez is run as a tool (from my understanding of `uv` - i.e., it's r
 Am I doing something wrong, or is it not working / a bug?
 
 EDIT: Solved with `uv tool install --with numba audiblez --prerelease=allow --python 3.12`
-
----
-
-_Referenced in [astral-sh/uv#10664](../../astral-sh/uv/issues/10664.md) on 2025-01-16 15:07_
-
----
-
-_Referenced in [astral-sh/uv#4022](../../astral-sh/uv/issues/4022.md) on 2025-09-18 09:11_
 
 ---

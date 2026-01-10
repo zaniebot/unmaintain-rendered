@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-09T10:31:02Z
 updated_at: 2025-01-14T18:55:50Z
 url: https://github.com/astral-sh/uv/issues/4921
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Add universal resolution to continuous benchmarking
@@ -32,10 +32,6 @@ _Label `preview` added by @konstin on 2024-07-09 10:31_
 ---
 
 _Assigned to @ibraheemdev by @charliermarsh on 2024-07-30 15:29_
-
----
-
-_Referenced in [astral-sh/uv#5938](../../astral-sh/uv/pulls/5938.md) on 2024-08-08 21:32_
 
 ---
 

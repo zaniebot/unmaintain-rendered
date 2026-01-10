@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T14:56:25Z
 updated_at: 2025-01-13T17:43:12Z
 url: https://github.com/astral-sh/uv/issues/10566
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv sync is not removing former seed packages
@@ -116,10 +116,6 @@ Thanks, that's a bug.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-13 17:11_
-
----
-
-_Referenced in [astral-sh/uv#10572](../../astral-sh/uv/pulls/10572.md) on 2025-01-13 17:17_
 
 ---
 

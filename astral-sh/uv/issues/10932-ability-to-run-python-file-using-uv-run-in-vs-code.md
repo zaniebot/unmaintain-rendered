@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-24T09:27:51Z
 updated_at: 2025-01-24T15:32:05Z
 url: https://github.com/astral-sh/uv/issues/10932
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Ability to "Run Python file" using "uv run" in VS Code
@@ -44,9 +44,5 @@ _Label `enhancement` added by @valentincalomme on 2025-01-24 09:27_
 _Comment by @zanieb on 2025-01-24 15:32_
 
 Some discussion in https://github.com/astral-sh/uv/issues/8558
-
----
-
-_Referenced in [InSyncWithFoo/uv-for-vscode#11](../../InSyncWithFoo/uv-for-vscode/issues/11.md) on 2025-04-17 15:55_
 
 ---

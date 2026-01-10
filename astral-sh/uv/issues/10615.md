@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-14T22:38:57Z
 updated_at: 2025-01-14T23:26:17Z
 url: https://github.com/astral-sh/uv/issues/10615
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # FastAPI not being found in PATH after installing with uv in a Docker container
@@ -235,9 +235,5 @@ _Closed by @zanieb on 2025-01-14 23:22_
 _Comment by @carrollpaul on 2025-01-14 23:26_
 
 Thanks for your patience and assistance!
-
----
-
-_Referenced in [astral-sh/uv#11454](../../astral-sh/uv/issues/11454.md) on 2025-02-12 17:04_
 
 ---

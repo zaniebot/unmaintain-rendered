@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-08T08:25:14Z
 updated_at: 2025-01-16T18:10:01Z
 url: https://github.com/astral-sh/uv/issues/10383
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv pip-compile upgrade dependencies from tool.uv.sources even without the --upgrade flag
@@ -112,14 +112,6 @@ Thanks!
 
 ---
 
-_Referenced in [astral-sh/uv#10690](../../astral-sh/uv/pulls/10690.md) on 2025-01-16 17:44_
-
----
-
 _Closed by @charliermarsh on 2025-01-16 18:10_
-
----
-
-_Referenced in [astral-sh/uv#10782](../../astral-sh/uv/pulls/10782.md) on 2025-01-20 17:12_
 
 ---

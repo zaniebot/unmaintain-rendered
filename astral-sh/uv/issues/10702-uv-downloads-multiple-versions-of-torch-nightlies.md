@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-17T02:19:56Z
 updated_at: 2025-01-17T17:43:33Z
 url: https://github.com/astral-sh/uv/issues/10702
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv downloads multiple versions of torch nightlies continuously
@@ -224,9 +224,5 @@ Thanks, I'll open a new issue for the error I'm seeing above.
 ---
 
 _Closed by @rbavery on 2025-01-17 17:43_
-
----
-
-_Referenced in [astral-sh/uv#10718](../../astral-sh/uv/issues/10718.md) on 2025-01-17 17:47_
 
 ---

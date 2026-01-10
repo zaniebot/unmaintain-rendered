@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T13:37:16Z
 updated_at: 2025-01-27T21:21:48Z
 url: https://github.com/astral-sh/uv/issues/6812
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # libpython missing
@@ -64,10 +64,6 @@ We are also encountering the same issue when trying to run [pytriton](https://gi
 
 ---
 
-_Referenced in [astral-sh/python-build-standalone#381](../../astral-sh/python-build-standalone/issues/381.md) on 2024-10-23 19:37_
-
----
-
 _Comment by @smheidrich on 2024-10-23 19:38_
 
 I guess this is only an issue for the [python-build-standalone](https://github.com/indygreg/python-build-standalone) binaries [uv uses](https://docs.astral.sh/uv/concepts/python-versions/#cpython-distributions) by default.
@@ -92,10 +88,6 @@ So maybe uv should somehow find out whether the binary in question has a relativ
 
 But this issue also messes with venvs created with python-build-standalone binaries independently of uv, so here's an issue on their side to maybe do something about it:
 - https://github.com/indygreg/python-build-standalone/issues/381
-
----
-
-_Referenced in [Quantinuum/tket-json-rs#85](../../Quantinuum/tket-json-rs/issues/85.md) on 2024-10-25 16:30_
 
 ---
 
@@ -307,33 +299,5 @@ SyntaxError: not a chance
 (This is on NixOS 24.05 stable inside `nix-shell -p cmake`, i.e., I have no `python` command on my PATH.)
 
 Conda by its nature has its own environment implementation. I don't think uv should diverge from how upstream `venv` works, but it definitely makes sense to make sure that build tools know how to work right with upstream `venv` and locate things properly, either by changing those build tools (which is I think what the suggestion in the Python bug report was) or changing upstream `venv`.
-
----
-
-_Referenced in [astral-sh/uv#11006](../../astral-sh/uv/issues/11006.md) on 2025-01-27 22:02_
-
----
-
-_Referenced in [linuxserver-labs/docker-simplelogin#3](../../linuxserver-labs/docker-simplelogin/pulls/3.md) on 2025-01-31 12:54_
-
----
-
-_Referenced in [astral-sh/uv#11234](../../astral-sh/uv/issues/11234.md) on 2025-02-05 06:45_
-
----
-
-_Referenced in [vllm-project/vllm#14991](../../vllm-project/vllm/issues/14991.md) on 2025-03-18 09:23_
-
----
-
-_Referenced in [pyinstaller/pyinstaller#8111](../../pyinstaller/pyinstaller/issues/8111.md) on 2025-05-15 19:10_
-
----
-
-_Referenced in [namhyung/uftrace#2014](../../namhyung/uftrace/issues/2014.md) on 2025-08-14 02:40_
-
----
-
-_Referenced in [rstudio/reticulate#1847](../../rstudio/reticulate/issues/1847.md) on 2025-10-25 22:12_
 
 ---

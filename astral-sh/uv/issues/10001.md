@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-18T14:48:31Z
 updated_at: 2025-01-09T21:01:25Z
 url: https://github.com/astral-sh/uv/issues/10001
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Dependency backoff appears unmantained, and depends on unmaintained instant crate
@@ -25,10 +25,6 @@ The dependency `backoff` appears unmaintained, https://github.com/ihrwein/backof
 I’m not aware of any concrete, specific defects in these dependencies, but it might be a good idea to consider alternatives.
 
 As an intermediate step – since the crate is currently used only to work around file locking by antivirus programs on Windows – I plan to open a PR that would actually conditionalize the dependency so that `uv` can be compiled without `backoff` on non-Windows platforms.
-
----
-
-_Referenced in [astral-sh/uv#10002](../../astral-sh/uv/pulls/10002.md) on 2024-12-18 14:52_
 
 ---
 
@@ -75,10 +71,6 @@ backon looks to be in a healthy state, I've used it in other projects before, so
 ---
 
 _Assigned to @Gankra by @Gankra on 2025-01-09 15:59_
-
----
-
-_Referenced in [astral-sh/uv#10442](../../astral-sh/uv/pulls/10442.md) on 2025-01-09 20:12_
 
 ---
 

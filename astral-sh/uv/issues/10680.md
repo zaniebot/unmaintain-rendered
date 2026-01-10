@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-16T14:25:38Z
 updated_at: 2025-01-17T18:55:11Z
 url: https://github.com/astral-sh/uv/issues/10680
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # In a workspace, `uv sync` does not respect some environment variables for workspace members
@@ -104,10 +104,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-16 15:15_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-01-16 15:20_
-
----
-
-_Referenced in [astral-sh/uv#10688](../../astral-sh/uv/pulls/10688.md) on 2025-01-16 17:38_
 
 ---
 

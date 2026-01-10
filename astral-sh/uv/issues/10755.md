@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-19T17:19:41Z
 updated_at: 2025-01-20T13:32:29Z
 url: https://github.com/astral-sh/uv/issues/10755
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv export doesn't seem to respect --no-dev
@@ -89,10 +89,6 @@ Resolved 20 packages in 0.62ms
 </p>
 </details> 
 
-
----
-
-_Referenced in [astral-sh/uv#10774](../../astral-sh/uv/issues/10774.md) on 2025-01-20 09:34_
 
 ---
 

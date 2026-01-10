@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-14T14:19:18Z
 updated_at: 2025-01-15T20:11:56Z
 url: https://github.com/astral-sh/uv/issues/10598
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # [bug] Can't build Rust extensions via `pyo3` if using a `uv`-managed Python interpreter
@@ -506,10 +506,6 @@ https://github.com/astral-sh/uv/blob/bec8468183c7cc1697ad1d34a5eb6087ec5c8a90/cr
 
 ---
 
-_Referenced in [astral-sh/uv#10629](../../astral-sh/uv/pulls/10629.md) on 2025-01-15 11:02_
-
----
-
 _Comment by @LukeMathWalker on 2025-01-15 11:02_
 
 PR is up: https://github.com/astral-sh/uv/pull/10629
@@ -521,17 +517,5 @@ _Closed by @zanieb on 2025-01-15 20:11_
 ---
 
 _Closed by @zanieb on 2025-01-15 20:11_
-
----
-
-_Referenced in [astral-sh/uv#11234](../../astral-sh/uv/issues/11234.md) on 2025-02-05 06:45_
-
----
-
-_Referenced in [astral-sh/uv#12343](../../astral-sh/uv/issues/12343.md) on 2025-03-20 16:34_
-
----
-
-_Referenced in [astral-sh/uv#10766](../../astral-sh/uv/issues/10766.md) on 2025-04-21 20:03_
 
 ---

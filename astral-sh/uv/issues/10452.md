@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-10T00:08:08Z
 updated_at: 2025-01-10T10:53:37Z
 url: https://github.com/astral-sh/uv/issues/10452
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Any plans to support packaged binary?
@@ -87,9 +87,5 @@ _Comment by @ceejatec on 2025-01-10 10:53_
 Thanks, I went ahead and did so: #10465 
 
 Get a cup of coffee... brevity is definitely not one of my strengths.
-
----
-
-_Referenced in [shyndman/vantron-collectd-support#2](../../shyndman/vantron-collectd-support/pulls/2.md) on 2025-03-07 22:23_
 
 ---

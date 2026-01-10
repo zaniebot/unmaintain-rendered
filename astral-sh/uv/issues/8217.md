@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T13:44:32Z
 updated_at: 2025-01-14T20:49:32Z
 url: https://github.com/astral-sh/uv/issues/8217
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Notify users when a new Python patch version is available
@@ -75,10 +75,6 @@ Python 3.11.5
 ```
 
 Switching minor versions can change the package compatibility and is generally not safe.
-
----
-
-_Referenced in [astral-sh/uv#9314](../../astral-sh/uv/issues/9314.md) on 2024-11-21 13:09_
 
 ---
 

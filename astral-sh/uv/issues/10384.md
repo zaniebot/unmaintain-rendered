@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-08T09:08:27Z
 updated_at: 2025-01-09T10:15:52Z
 url: https://github.com/astral-sh/uv/issues/10384
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Progress bar rendering through indicatif is slow
@@ -123,13 +123,5 @@ The local-noop version does nothing on `on_progress` for the progress bar, so th
 I've tried setting different values `stderr_with_hz`, and there is just no difference in the runtime. Higher refresh rates feel much snappier though.
 
 I've also implemented a simple custom rate-limiter, that returns early in `on_progress`. It takes just shy of 150 ms using 50Hz, and ~151 using 100Hz. I guess we could shave off most of the overhead of indicatif.
-
----
-
-_Referenced in [console-rs/indicatif#683](../../console-rs/indicatif/pulls/683.md) on 2025-01-13 10:21_
-
----
-
-_Referenced in [astral-sh/uv#10863](../../astral-sh/uv/issues/10863.md) on 2025-01-22 21:44_
 
 ---

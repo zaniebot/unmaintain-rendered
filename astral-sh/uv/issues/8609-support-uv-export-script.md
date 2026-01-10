@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-28T00:03:09Z
 updated_at: 2025-01-08T21:48:55Z
 url: https://github.com/astral-sh/uv/issues/8609
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Support `uv export --script`
@@ -66,10 +66,6 @@ yes that would be helpful and fasten things up, pls share ur progress
 
 ---
 
-_Referenced in [astral-sh/uv#8652](../../astral-sh/uv/issues/8652.md) on 2024-10-29 01:55_
-
----
-
 _Comment by @zanieb on 2024-10-29 02:09_
 
 (their progress is linked above)
@@ -82,27 +78,7 @@ sounds good, will work on it later today.
 
 ---
 
-_Referenced in [manzt/juv#7](../../manzt/juv/issues/7.md) on 2024-10-29 16:42_
-
----
-
-_Referenced in [astral-sh/uv#9061](../../astral-sh/uv/issues/9061.md) on 2024-11-12 18:59_
-
----
-
-_Referenced in [astral-sh/uv#9657](../../astral-sh/uv/issues/9657.md) on 2024-12-05 10:21_
-
----
-
-_Referenced in [astral-sh/uv#10160](../../astral-sh/uv/pulls/10160.md) on 2024-12-25 19:18_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-25 19:18_
-
----
-
-_Referenced in [astral-sh/uv#10381](../../astral-sh/uv/issues/10381.md) on 2025-01-08 04:49_
 
 ---
 

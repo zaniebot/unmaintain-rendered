@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-20T17:22:44Z
 updated_at: 2025-01-21T19:04:32Z
 url: https://github.com/astral-sh/uv/issues/10783
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Lockfile contains overlapping markers
@@ -83,10 +83,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-20 17:22_
 
 ---
 
-_Referenced in [astral-sh/uv#10772](../../astral-sh/uv/issues/10772.md) on 2025-01-20 17:23_
-
----
-
 _Comment by @charliermarsh on 2025-01-20 17:27_
 
 I think this is a conflicting extras problem, @BurntSushi?
@@ -151,10 +147,6 @@ fn deduplicated_simplified_pep508_markers(
     simplified
 }
 ```
-
----
-
-_Referenced in [astral-sh/uv#10818](../../astral-sh/uv/pulls/10818.md) on 2025-01-21 16:50_
 
 ---
 

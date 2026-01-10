@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-03T00:15:01Z
 updated_at: 2025-01-13T09:29:45Z
 url: https://github.com/astral-sh/uv/issues/10282
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv tool install` fails to download newer Python when `pip` is installed in system python
@@ -138,10 +138,6 @@ I'm going to try to fix this.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-05 23:41_
-
----
-
-_Referenced in [astral-sh/uv#10401](../../astral-sh/uv/pulls/10401.md) on 2025-01-08 17:14_
 
 ---
 

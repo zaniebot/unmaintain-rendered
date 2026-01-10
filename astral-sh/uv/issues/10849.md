@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T10:21:40Z
 updated_at: 2025-01-22T12:08:05Z
 url: https://github.com/astral-sh/uv/issues/10849
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # inconsistency between `uv sync` and `uv pip install`
@@ -90,9 +90,5 @@ This is a known bug and another case that would be solved by https://github.com/
 ---
 
 _Closed by @konstin on 2025-01-22 12:08_
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2025-01-22 12:08_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T17:25:35Z
 updated_at: 2025-01-25T06:25:57Z
 url: https://github.com/astral-sh/uv/issues/1657
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Change the name of `uv pip`
@@ -30,10 +30,6 @@ I'd really prefer not to do a lot of bike-shedding over names here. We'll probab
 ---
 
 _Label `enhancement` added by @zanieb on 2024-02-18 17:25_
-
----
-
-_Referenced in [astral-sh/uv#1331](../../astral-sh/uv/issues/1331.md) on 2024-02-18 17:25_
 
 ---
 
@@ -287,25 +283,9 @@ Duplicate of https://github.com/astral-sh/uv/issues/1899:
 
 ---
 
-_Referenced in [astral-sh/uv#1899](../../astral-sh/uv/issues/1899.md) on 2024-02-23 04:14_
-
----
-
-_Referenced in [astral-sh/uv#1535](../../astral-sh/uv/issues/1535.md) on 2024-02-23 04:31_
-
----
-
 _Comment by @jordantshaw on 2024-03-07 19:55_
 
 I would love to see something besides `uv pip`.  I understand the thought process behind it, but I think to the casual user, this could be confusing. I think it should be clear that uv is not using pip behind the scenes or anything.  I would suggest for something more along the lines of `uv pkg install`.
-
----
-
-_Referenced in [astral-sh/uv#2495](../../astral-sh/uv/issues/2495.md) on 2024-03-17 15:57_
-
----
-
-_Referenced in [astral-sh/uv#1173](../../astral-sh/uv/issues/1173.md) on 2024-03-19 11:31_
 
 ---
 
@@ -329,14 +309,6 @@ I assumed a symlink called pip could be created pointing to uv and it would exec
 
 ---
 
-_Referenced in [kedro-org/kedro#3772](../../kedro-org/kedro/pulls/3772.md) on 2024-04-03 09:28_
-
----
-
-_Referenced in [astral-sh/uv#4039](../../astral-sh/uv/issues/4039.md) on 2024-06-05 13:58_
-
----
-
 _Comment by @astrojuanlu on 2024-06-24 16:09_
 
 With #3272, I suppose `uv pip` is departing more and more from the original `pip` CLI. I welcome the addition of `uv pip tree` anyway 😄 
@@ -350,14 +322,6 @@ At this point, I think it's fair to say that we won't be changing the name of th
 ---
 
 _Closed by @zanieb on 2024-06-24 16:34_
-
----
-
-_Referenced in [astral-sh/uv#10037](../../astral-sh/uv/issues/10037.md) on 2024-12-19 17:59_
-
----
-
-_Referenced in [astral-sh/uv#10949](../../astral-sh/uv/issues/10949.md) on 2025-01-24 23:10_
 
 ---
 
@@ -436,17 +400,5 @@ Though I'll still keep my alias because it is aliasing `pip` to `uv pip` and for
 The issue is when I use someone else's project. Of course there are times where it doesn't work out.
 (Though would probably work better by using `eval "uv pip $@"` or filtering out certain flags, and I have done this)
 
-
----
-
-_Referenced in [astral-sh/uv#12199](../../astral-sh/uv/issues/12199.md) on 2025-03-16 11:47_
-
----
-
-_Referenced in [astral-sh/uv#12335](../../astral-sh/uv/issues/12335.md) on 2025-03-20 10:41_
-
----
-
-_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-01 17:54_
 
 ---

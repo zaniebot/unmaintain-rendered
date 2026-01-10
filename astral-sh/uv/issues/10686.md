@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-16T17:13:50Z
 updated_at: 2025-01-16T22:49:56Z
 url: https://github.com/astral-sh/uv/issues/10686
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # pip-compatiblity: PIP_CONSTRAINT and PIP_CONSTRAINTS are not used, only UV_CONSTRAINT is used
@@ -63,14 +63,6 @@ We don’t respect pip environment variables anywhere, as a rule. The full list 
 
 ---
 
-_Referenced in [ansible/ansible-compat#446](../../ansible/ansible-compat/pulls/446.md) on 2025-01-16 17:17_
-
----
-
-_Referenced in [tox-dev/tox-uv#154](../../tox-dev/tox-uv/pulls/154.md) on 2025-01-16 17:35_
-
----
-
 _Comment by @ssbarnea on 2025-01-16 22:49_
 
 @charliermarsh Maybe it would worth displaying a warning if PIP_CONSTRAINT(S) is found as defined, mentioning the uv will not use it. This could save a good number of hours to those trying to migrate or use both.
@@ -80,9 +72,5 @@ As someone that defined these in his user profile, I do face few surprises...
 pip='python3 -m uv pip'
 pip3='python3 -m uv pip'
 ```
-
----
-
-_Referenced in [ansible/molecule#4367](../../ansible/molecule/pulls/4367.md) on 2025-01-20 16:38_
 
 ---

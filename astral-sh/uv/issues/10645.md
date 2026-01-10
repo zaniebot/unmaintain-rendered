@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-15T21:05:46Z
 updated_at: 2025-01-17T23:20:27Z
 url: https://github.com/astral-sh/uv/issues/10645
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Remove use of expensive packages in tests `tool_run_csv_with` and `tool_run_repeated_with`
@@ -33,10 +33,6 @@ _Label `testing` added by @zanieb on 2025-01-15 21:05_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-17 23:01_
-
----
-
-_Referenced in [astral-sh/uv#10725](../../astral-sh/uv/pulls/10725.md) on 2025-01-17 23:08_
 
 ---
 

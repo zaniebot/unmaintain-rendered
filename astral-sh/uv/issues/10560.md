@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-13T10:06:06Z
 updated_at: 2025-01-15T13:32:21Z
 url: https://github.com/astral-sh/uv/issues/10560
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # platform_system changes on uv sync
@@ -87,13 +87,5 @@ _Closed by @bheemaguli on 2025-01-15 07:13_
 _Comment by @charliermarsh on 2025-01-15 13:32_
 
 Thanks for following up!
-
----
-
-_Referenced in [ethereum/execution-spec-tests#1176](../../ethereum/execution-spec-tests/issues/1176.md) on 2025-02-05 07:43_
-
----
-
-_Referenced in [polaris-hub/polaris#265](../../polaris-hub/polaris/pulls/265.md) on 2025-02-11 18:22_
 
 ---

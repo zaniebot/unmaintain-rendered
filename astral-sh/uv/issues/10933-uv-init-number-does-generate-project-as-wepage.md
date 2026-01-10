@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-24T10:26:20Z
 updated_at: 2025-01-24T14:54:27Z
 url: https://github.com/astral-sh/uv/issues/10933
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv init number does generate project as wepage for ruff tutorial
@@ -72,10 +72,6 @@ _Label `documentation` added by @konstin on 2025-01-24 13:37_
 _Comment by @charliermarsh on 2025-01-24 14:43_
 
 That's just a docs issue -- this should be filed in Ruff instead. That's the output of `uv init --lib`.
-
----
-
-_Referenced in [astral-sh/ruff#15718](../../astral-sh/ruff/pulls/15718.md) on 2025-01-24 14:49_
 
 ---
 

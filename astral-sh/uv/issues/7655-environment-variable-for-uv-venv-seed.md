@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-24T09:04:54Z
 updated_at: 2025-01-19T19:52:57Z
 url: https://github.com/astral-sh/uv/issues/7655
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Environment variable for `uv venv seed`?
@@ -40,10 +40,6 @@ I have no qualms with exposing this via an environment variable, though, since n
 _Comment by @ReubenFrankel on 2024-09-24 13:47_
 
 Yeah, no problem - appreciate it's a bit of a niche issue.
-
----
-
-_Referenced in [meltano/meltano#8796](../../meltano/meltano/issues/8796.md) on 2024-09-24 13:56_
 
 ---
 
@@ -98,10 +94,6 @@ I can do it today.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-17 16:02_
-
----
-
-_Referenced in [astral-sh/uv#10715](../../astral-sh/uv/pulls/10715.md) on 2025-01-17 16:47_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-11T20:10:27Z
 updated_at: 2025-01-13T19:06:33Z
 url: https://github.com/astral-sh/uv/issues/10522
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv venv "Failed to parse: `pyproject.toml`" warning without the root cause + why the project version in `pyproject.toml`
@@ -87,10 +87,6 @@ If you have a `[project]` table, the `version` field is mandatory per the specif
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-13 02:47_
-
----
-
-_Referenced in [astral-sh/uv#10553](../../astral-sh/uv/pulls/10553.md) on 2025-01-13 02:58_
 
 ---
 

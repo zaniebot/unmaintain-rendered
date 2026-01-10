@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-19T09:38:30Z
 updated_at: 2025-01-24T15:20:33Z
 url: https://github.com/astral-sh/uv/issues/10751
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv swallows segmentation fault
@@ -51,14 +51,6 @@ _Label `bug` added by @konstin on 2025-01-20 15:09_
 
 ---
 
-_Referenced in [astral-sh/uv#10781](../../astral-sh/uv/pulls/10781.md) on 2025-01-20 15:14_
-
----
-
 _Closed by @konstin on 2025-01-24 15:20_
-
----
-
-_Referenced in [astral-sh/uv#11886](../../astral-sh/uv/issues/11886.md) on 2025-03-02 01:09_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-15T21:48:07Z
 updated_at: 2025-01-15T23:03:30Z
 url: https://github.com/astral-sh/uv/issues/10654
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv.lock` generated with `uv==0.5.18` fails to parse in `uv==0.5.19`
@@ -103,14 +103,6 @@ I'll try to fix this now, sorry.
 
 ---
 
-_Referenced in [commaai/openpilot#34393](../../commaai/openpilot/pulls/34393.md) on 2025-01-15 22:19_
-
----
-
-_Referenced in [astral-sh/uv#10655](../../astral-sh/uv/pulls/10655.md) on 2025-01-15 22:20_
-
----
-
 _Comment by @mgcrea on 2025-01-15 22:30_
 
 Hitting this as well, broke on CI (using a python:3.12 image) as it pulled the latest uv version:
@@ -169,22 +161,6 @@ Thanks for confirming @sunshowers and sorry for the disruption.
 
 ---
 
-_Referenced in [developmentseed/obstore#148](../../developmentseed/obstore/pulls/148.md) on 2025-01-15 22:55_
-
----
-
 _Closed by @charliermarsh on 2025-01-15 23:03_
-
----
-
-_Referenced in [astral-sh/uv#10661](../../astral-sh/uv/issues/10661.md) on 2025-01-15 23:37_
-
----
-
-_Referenced in [jj-vcs/jj#5375](../../jj-vcs/jj/pulls/5375.md) on 2025-01-16 00:22_
-
----
-
-_Referenced in [ethereum/execution-spec-tests#1084](../../ethereum/execution-spec-tests/issues/1084.md) on 2025-01-16 09:38_
 
 ---

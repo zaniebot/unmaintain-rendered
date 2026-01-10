@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-08T23:08:53Z
 updated_at: 2025-01-23T17:26:20Z
 url: https://github.com/astral-sh/uv/issues/8025
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Cache Python version downloads
@@ -53,26 +53,10 @@ I'm not sure we want to make the uv binary bigger, the distributions aren't supe
 
 ---
 
-_Referenced in [astral-sh/uv#9749](../../astral-sh/uv/issues/9749.md) on 2024-12-09 23:06_
-
----
-
 _Comment by @hutch3232 on 2025-01-23 17:26_
 
 I came here to create this same issue. Having python downloads cached (and hopefully at `UV_CACHE_DIR` which I'm already setting to a persistent location) would be a great help/time saver.
 
 I work in ephemeral environments (docker + kubernetes) so I would need to regularly re-download the binaries. They're not huge, but it does take some time. I find myself currently sticking with the system installed python version, despite it being older (3.9), because I'm impatient with python download times. `uv` python package install times have already spoiled me...
-
----
-
-_Referenced in [astral-sh/uv#11834](../../astral-sh/uv/issues/11834.md) on 2025-02-27 18:10_
-
----
-
-_Referenced in [astral-sh/uv#16289](../../astral-sh/uv/issues/16289.md) on 2025-10-13 23:07_
-
----
-
-_Referenced in [astral-sh/uv#16757](../../astral-sh/uv/issues/16757.md) on 2025-11-18 19:23_
 
 ---

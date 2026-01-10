@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-31T12:16:53Z
 updated_at: 2025-01-14T18:58:37Z
 url: https://github.com/astral-sh/uv/issues/1204
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Optimize cold start with refresh by prefetching revalidation requests
@@ -47,10 +47,6 @@ Agree. We actually might want to do this prefetching _always_ when we have an ex
 _Comment by @charliermarsh on 2024-01-31 15:35_
 
 (Do you want to benchmark it?)
-
----
-
-_Referenced in [astral-sh/uv#1206](../../astral-sh/uv/issues/1206.md) on 2024-01-31 15:48_
 
 ---
 

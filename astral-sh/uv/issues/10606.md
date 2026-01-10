@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-14T17:44:35Z
 updated_at: 2025-01-14T18:17:27Z
 url: https://github.com/astral-sh/uv/issues/10606
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Resolution hints don't appear for packages with markers
@@ -33,10 +33,6 @@ _Label `bug` added by @charliermarsh on 2025-01-14 17:44_
 ---
 
 _Label `error messages` added by @charliermarsh on 2025-01-14 17:44_
-
----
-
-_Referenced in [astral-sh/uv#10607](../../astral-sh/uv/pulls/10607.md) on 2025-01-14 17:53_
 
 ---
 

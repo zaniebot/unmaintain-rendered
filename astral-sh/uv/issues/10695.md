@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-16T21:59:08Z
 updated_at: 2025-01-20T17:23:59Z
 url: https://github.com/astral-sh/uv/issues/10695
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uvx` and `uv run` not equivalent? uvx fails resolving tool dependencies
@@ -81,10 +81,6 @@ _Comment by @maphew on 2025-01-20 15:49_
 ...it must not have been an Astral page. Somehow I completely missed the concept of _tool_, and it's quite clear that's a fundamental idea that's been around for awhile. Apologies for the noise!
 
 A small mark in my defense, the error message doesn't give much to go on. For example the OP script  does not _"require foo-py"_ and I do not see anything in the pages referenced above that talks about that (admittedly, I skimmed).
-
----
-
-_Referenced in [astral-sh/uv#10784](../../astral-sh/uv/issues/10784.md) on 2025-01-20 17:23_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-23T07:46:50Z
 updated_at: 2025-01-16T15:00:35Z
 url: https://github.com/astral-sh/uv/issues/10119
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv` sometimes can't handle PyTorch nightly's cuda dependencies correctly.
@@ -515,13 +515,5 @@ Was this reported upstream? Has it been happening consistently on versions other
 _Comment by @charliermarsh on 2025-01-16 15:00_
 
 Sorry, I would need a more thorough reproduction to help out.
-
----
-
-_Referenced in [astral-sh/uv#10693](../../astral-sh/uv/issues/10693.md) on 2025-01-16 20:06_
-
----
-
-_Referenced in [pytorch/pytorch#145021](../../pytorch/pytorch/pulls/145021.md) on 2025-01-17 00:12_
 
 ---

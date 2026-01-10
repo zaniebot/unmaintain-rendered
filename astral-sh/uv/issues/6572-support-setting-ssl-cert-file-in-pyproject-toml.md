@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-24T07:33:06Z
 updated_at: 2025-01-15T23:51:09Z
 url: https://github.com/astral-sh/uv/issues/6572
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # support setting `SSL_CERT_FILE` in `pyproject.toml`
@@ -60,22 +60,10 @@ it might also be worth noting that my team uses [pyprojectx](https://pyprojectx.
 
 ---
 
-_Referenced in [astral-sh/uv#6715](../../astral-sh/uv/issues/6715.md) on 2024-08-27 19:18_
-
----
-
 _Comment by @DetachHead on 2025-01-15 23:51_
 
 just found out about the [`native-tls`](https://docs.astral.sh/uv/reference/settings/#native-tls) option, which works for my use case.
 
 i'll leave this issue open in case anybody needs to be able to specify the path to the cert file
-
----
-
-_Referenced in [servo/book#53](../../servo/book/issues/53.md) on 2025-02-21 05:46_
-
----
-
-_Referenced in [astral-sh/uv#11728](../../astral-sh/uv/issues/11728.md) on 2025-02-23 21:10_
 
 ---

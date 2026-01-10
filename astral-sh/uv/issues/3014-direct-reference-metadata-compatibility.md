@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-12T14:48:00Z
 updated_at: 2025-01-22T17:16:50Z
 url: https://github.com/astral-sh/uv/issues/3014
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Direct reference metadata compatibility
@@ -83,10 +83,6 @@ I think the requested revision should match what the user specified (or did not)
 
 ---
 
-_Referenced in [pypa/packaging.python.org#1531](../../pypa/packaging.python.org/pulls/1531.md) on 2024-04-12 15:23_
-
----
-
 _Comment by @ofek on 2024-04-12 15:24_
 
 > This clarification is worth a spec update PR on the packaging.python.org page.
@@ -115,24 +111,12 @@ Thanks. Probably not gonna fix it immediately, will require some internal refact
 
 ---
 
-_Referenced in [pypa/hatch#1388](../../pypa/hatch/pulls/1388.md) on 2024-04-14 20:56_
-
----
-
 _Comment by @ofek on 2024-10-01 23:39_
 
 Have the refactors been completed?
 
 ---
 
-_Referenced in [astral-sh/uv#10862](../../astral-sh/uv/pulls/10862.md) on 2025-01-22 15:46_
-
----
-
 _Closed by @charliermarsh on 2025-01-22 17:16_
-
----
-
-_Referenced in [pypa/hatch#1924](../../pypa/hatch/pulls/1924.md) on 2025-03-04 04:17_
 
 ---

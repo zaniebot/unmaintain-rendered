@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-16T17:13:55Z
 updated_at: 2025-01-27T21:10:15Z
 url: https://github.com/astral-sh/uv/issues/7434
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Cache is hitting race conditions when when sharing the cache directory across multiple running docker containers
@@ -128,10 +128,6 @@ Other files as well. If you want I can put the stack trace for those here too
 _Comment by @henryborchers on 2024-09-19 13:08_
 
 Actually, I think it might be only CACHEDIR.TAG that I'm running into. At least when using Linux.
-
----
-
-_Referenced in [astral-sh/uv#7550](../../astral-sh/uv/pulls/7550.md) on 2024-09-19 14:10_
 
 ---
 
@@ -349,10 +345,6 @@ Someone on my team actually spent a day investigating this issue but it appeared
 _Comment by @charliermarsh on 2025-01-27 18:36_
 
 I just reproduced the "Failed to retrieve temporary file" thing on my Windows machine by building in parallel with setuptools -- is that what you're seeing @jan11011977?
-
----
-
-_Referenced in [astral-sh/uv#11002](../../astral-sh/uv/issues/11002.md) on 2025-01-27 21:09_
 
 ---
 

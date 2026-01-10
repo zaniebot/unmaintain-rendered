@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-09T08:15:03Z
 updated_at: 2025-01-13T22:50:06Z
 url: https://github.com/astral-sh/uv/issues/5952
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # feature request: support `uv pip freeze --path <path>`
@@ -42,10 +42,6 @@ _Label `cli` added by @zanieb on 2024-08-09 13:29_
 _Comment by @ericmarkmartin on 2025-01-11 00:31_
 
 @zanieb I can take this if it's good w/ you
-
----
-
-_Referenced in [astral-sh/uv#10488](../../astral-sh/uv/pulls/10488.md) on 2025-01-11 01:45_
 
 ---
 

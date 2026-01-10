@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-21T23:05:39Z
 updated_at: 2025-01-23T19:17:35Z
 url: https://github.com/astral-sh/uv/issues/10832
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # no-manylinux support does not work when cache is enabled
@@ -267,10 +267,6 @@ Does running with `--refresh` resolve it?
 _Comment by @pythonweb2 on 2025-01-21 23:20_
 
 Yes, that does look like it also resolves the issue, similar to `--no-cache`.
-
----
-
-_Referenced in [astral-sh/uv#10361](../../astral-sh/uv/pulls/10361.md) on 2025-01-21 23:48_
 
 ---
 

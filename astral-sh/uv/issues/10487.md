@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-11T01:04:13Z
 updated_at: 2025-01-15T17:36:57Z
 url: https://github.com/astral-sh/uv/issues/10487
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `cygpath: not found` in linux
@@ -149,18 +149,6 @@ Dockerfile:19
 --------------------
 ERROR: failed to solve: process "/bin/sh -c . $VENV_DIR/bin/activate && /home/$USERNAME/.local/bin/uv pip install --no-color -q -r $APP_DIR/requirements.txt" did not complete successfully: exit code: 2
 ```
-
----
-
-_Referenced in [astral-sh/uv#10492](../../astral-sh/uv/pulls/10492.md) on 2025-01-11 05:11_
-
----
-
-_Referenced in [whitphx/stlite#1257](../../whitphx/stlite/pulls/1257.md) on 2025-01-11 10:31_
-
----
-
-_Referenced in [astral-sh/uv#10497](../../astral-sh/uv/pulls/10497.md) on 2025-01-11 14:10_
 
 ---
 

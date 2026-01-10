@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-12T17:39:48Z
 updated_at: 2025-01-19T13:29:43Z
 url: https://github.com/astral-sh/uv/issues/10543
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # How to use the parent directory `venv` within subfolders?
@@ -119,10 +119,6 @@ error: No interpreter found for executable name `foo` in virtual environments, m
 _Comment by @zanieb on 2025-01-12 21:55_
 
 I can look into fixing that, but... I would not recommend using directory names in `.python-version` files or using a custom virtual environment name in a project.
-
----
-
-_Referenced in [astral-sh/uv#10548](../../astral-sh/uv/issues/10548.md) on 2025-01-12 21:56_
 
 ---
 

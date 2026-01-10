@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-07T14:46:14Z
 updated_at: 2025-01-09T18:19:53Z
 url: https://github.com/astral-sh/uv/issues/10366
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # UV pip install requirements file breaks when it contains `--trusted-host`
@@ -89,18 +89,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-09 00:30_
 
 ---
 
-_Referenced in [astral-sh/uv#10420](../../astral-sh/uv/pulls/10420.md) on 2025-01-09 01:18_
-
----
-
 _Closed by @charliermarsh on 2025-01-09 18:19_
 
 ---
 
 _Closed by @charliermarsh on 2025-01-09 18:19_
-
----
-
-_Referenced in [astral-sh/uv#14870](../../astral-sh/uv/issues/14870.md) on 2025-07-24 12:42_
 
 ---

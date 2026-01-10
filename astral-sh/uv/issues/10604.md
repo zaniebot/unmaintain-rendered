@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-14T17:07:27Z
 updated_at: 2025-01-14T17:29:30Z
 url: https://github.com/astral-sh/uv/issues/10604
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Requirement unsatisfiable when installing torch 2.4.1
@@ -307,9 +307,5 @@ _Closed by @pharmapsychotic on 2025-01-14 17:23_
 _Comment by @zanieb on 2025-01-14 17:29_
 
 https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes
-
----
-
-_Referenced in [astral-sh/uv#10606](../../astral-sh/uv/issues/10606.md) on 2025-01-14 17:44_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-08T22:17:37Z
 updated_at: 2025-01-08T22:29:56Z
 url: https://github.com/astral-sh/uv/issues/10413
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # How do I stop uv from modifying config files
@@ -42,9 +42,5 @@ Or here: https://docs.astral.sh/uv/configuration/installer/#disabling-shell-modi
 ---
 
 _Closed by @charliermarsh on 2025-01-08 22:29_
-
----
-
-_Referenced in [astral-sh/uv#14547](../../astral-sh/uv/issues/14547.md) on 2025-07-10 17:34_
 
 ---

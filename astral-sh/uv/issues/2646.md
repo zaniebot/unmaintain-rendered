@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-25T11:35:34Z
 updated_at: 2025-01-26T15:42:30Z
 url: https://github.com/astral-sh/uv/issues/2646
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # `uv` fails to install `scikits.odes` on Python 3.11 due to Cython dependency resolution mismatch, works on Python 3.10 and earlier (cannot find `longintrepr.h`?)
@@ -5188,10 +5188,6 @@ And this is where pip inherits it's behavior from, therefore at least according 
 
 ---
 
-_Referenced in [pypa/packaging#788](../../pypa/packaging/issues/788.md) on 2024-03-26 22:35_
-
----
-
 _Comment by @notatallshaw on 2024-03-26 22:35_
 
 I've created an issue on packaging side, let's see if there's any feedback there: https://github.com/pypa/packaging/issues/788
@@ -5213,10 +5209,6 @@ This is a bug in packaging.
 _Comment by @notatallshaw on 2024-04-13 17:03_
 
 FWIW I've made a PR: https://github.com/pypa/packaging/pull/794
-
----
-
-_Referenced in [astral-sh/packse#172](../../astral-sh/packse/pulls/172.md) on 2024-04-14 17:28_
 
 ---
 

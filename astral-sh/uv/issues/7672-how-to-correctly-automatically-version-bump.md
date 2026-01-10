@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-24T20:22:58Z
 updated_at: 2025-01-24T19:32:31Z
 url: https://github.com/astral-sh/uv/issues/7672
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # How to correctly automatically version bump
@@ -69,10 +69,6 @@ Awesome, thanks for the quick reply @zanieb! I'll pursue that solution then. I'l
 _Comment by @charliermarsh on 2024-09-25 18:24_
 
 👍 Thanks for following up. I'll improve the docs a bit and will use this issue to track that work.
-
----
-
-_Referenced in [astral-sh/uv#7694](../../astral-sh/uv/pulls/7694.md) on 2024-09-25 22:14_
 
 ---
 

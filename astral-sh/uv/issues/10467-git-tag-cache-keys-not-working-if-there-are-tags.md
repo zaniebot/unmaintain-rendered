@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-10T11:52:14Z
 updated_at: 2025-01-12T02:30:47Z
 url: https://github.com/astral-sh/uv/issues/10467
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # git-tag cache-keys not working if there are tags containing slash
@@ -68,10 +68,6 @@ $ tree .git/refs/tags
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-10 13:09_
-
----
-
-_Referenced in [astral-sh/uv#10500](../../astral-sh/uv/pulls/10500.md) on 2025-01-11 17:01_
 
 ---
 

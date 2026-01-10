@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-14T16:40:14Z
 updated_at: 2025-01-09T14:59:37Z
 url: https://github.com/astral-sh/uv/issues/6088
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # unable to install petsc4py
@@ -267,10 +267,6 @@ Looking at the build statement, I see that this is due to `/Users/teoc/Library/C
 _Comment by @samypr100 on 2025-01-09 03:49_
 
 Duplicate of https://github.com/astral-sh/uv/issues/10052
-
----
-
-_Referenced in [astral-sh/uv#10052](../../astral-sh/uv/issues/10052.md) on 2025-01-09 03:52_
 
 ---
 

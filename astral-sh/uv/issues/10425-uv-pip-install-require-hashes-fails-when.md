@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-09T13:32:45Z
 updated_at: 2025-01-13T10:18:52Z
 url: https://github.com/astral-sh/uv/issues/10425
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv pip install --require-hashes` fails when (transitive) dependencies aren't pinned to latest version
@@ -96,10 +96,6 @@ Whilst using 3.8 seems to be what surfaced this issue for me I don't think it's 
 
 ---
 
-_Referenced in [atsign-foundation/at_python#310](../../atsign-foundation/at_python/pulls/310.md) on 2025-01-09 13:40_
-
----
-
 _Comment by @cpswan on 2025-01-09 14:10_
 
 I meant to also add the [`--verbose` logs](https://gist.github.com/cpswan/bed14d6fe28a0aef29698e23cb3d43d8#file-verbose-log), which ends:
@@ -168,10 +164,6 @@ _Label `bug` added by @charliermarsh on 2025-01-09 17:52_
 
 ---
 
-_Referenced in [astral-sh/uv#10441](../../astral-sh/uv/pulls/10441.md) on 2025-01-09 18:44_
-
----
-
 _Closed by @charliermarsh on 2025-01-09 20:37_
 
 ---
@@ -183,13 +175,5 @@ _Closed by @charliermarsh on 2025-01-09 20:37_
 _Comment by @cpswan on 2025-01-13 10:18_
 
 Thanks for the quick resolution on this @charliermarsh :)
-
----
-
-_Referenced in [atsign-foundation/at_python#313](../../atsign-foundation/at_python/pulls/313.md) on 2025-01-13 10:19_
-
----
-
-_Referenced in [astral-sh/uv#10833](../../astral-sh/uv/pulls/10833.md) on 2025-01-21 23:15_
 
 ---

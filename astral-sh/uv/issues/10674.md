@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-16T11:37:53Z
 updated_at: 2025-01-22T16:49:07Z
 url: https://github.com/astral-sh/uv/issues/10674
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Can't `uv run` a simple script when Python binary is a symlink with uv 0.5.x
@@ -358,9 +358,5 @@ Thanks a lot @zanieb @charliermarsh , that was very helpful.
 ---
 
 _Closed by @gozdal on 2025-01-22 16:49_
-
----
-
-_Referenced in [astral-sh/uv#11234](../../astral-sh/uv/issues/11234.md) on 2025-02-05 06:45_
 
 ---

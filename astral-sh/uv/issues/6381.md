@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-21T21:49:57Z
 updated_at: 2025-01-08T17:38:18Z
 url: https://github.com/astral-sh/uv/issues/6381
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # `uv tool install posting` failed with Python version conflict
@@ -80,10 +80,6 @@ _Label `uv tool` added by @zanieb on 2024-08-21 22:41_
 _Comment by @peppedilillo on 2024-09-12 21:11_
 
 +1, this is important for me too! i encountered this problem with `uv tool install`, which I was expecting to install and manage a python instance. Ty for the great work so far!
-
----
-
-_Referenced in [astral-sh/uv#7827](../../astral-sh/uv/pulls/7827.md) on 2024-10-01 05:32_
 
 ---
 
@@ -190,10 +186,6 @@ Note how it uses Python 3.13.0, even though the `.python-version` file is 3.11 a
 
 ---
 
-_Referenced in [astral-sh/uv#8206](../../astral-sh/uv/issues/8206.md) on 2024-10-16 15:04_
-
----
-
 _Comment by @notatallshaw on 2024-11-25 01:04_
 
 I assumed uv at least looked at the `pyproject.toml` or the `Requires-Python` in the wheel of the primary package it was installing to check for any restrictions, but apparently not, OP pointed me to this issue from Reddit.
@@ -245,14 +237,6 @@ I think the "holistic" solution is probably something like: do a solve with _no_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-31 03:27_
-
----
-
-_Referenced in [astral-sh/uv#10282](../../astral-sh/uv/issues/10282.md) on 2025-01-03 00:22_
-
----
-
-_Referenced in [astral-sh/uv#10401](../../astral-sh/uv/pulls/10401.md) on 2025-01-08 17:14_
 
 ---
 

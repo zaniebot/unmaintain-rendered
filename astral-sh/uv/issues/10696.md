@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-16T22:20:43Z
 updated_at: 2025-01-20T15:11:47Z
 url: https://github.com/astral-sh/uv/issues/10696
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # UV compile does not discover binary correctly for targeting macOS even though macOS binaries exist
@@ -222,10 +222,6 @@ It's hard to show that kind of thing in error messages, though I'm supportive of
 Here's the documentation https://github.com/astral-sh/uv/pull/10698
 
 I'm not sure why we don't support `macosx_13_0_arm64` — that's a wheel platform tag though and the CLI takes target triples which don't have a OS version component like that.
-
----
-
-_Referenced in [astral-sh/uv#10699](../../astral-sh/uv/issues/10699.md) on 2025-01-16 22:53_
 
 ---
 

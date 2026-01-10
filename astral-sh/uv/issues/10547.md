@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-12T20:45:34Z
 updated_at: 2025-01-13T02:40:49Z
 url: https://github.com/astral-sh/uv/issues/10547
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # A way for `uv self update` to respect `required-version`
@@ -38,21 +38,5 @@ _Label `enhancement` added by @charliermarsh on 2025-01-13 02:40_
 ---
 
 _Label `wish` added by @charliermarsh on 2025-01-13 02:40_
-
----
-
-_Referenced in [astral-sh/uv#12787](../../astral-sh/uv/issues/12787.md) on 2025-04-09 20:55_
-
----
-
-_Referenced in [tonkintaylor/rastr#120](../../tonkintaylor/rastr/issues/120.md) on 2025-08-27 04:38_
-
----
-
-_Referenced in [tonkintaylor/rastr#121](../../tonkintaylor/rastr/pulls/121.md) on 2025-08-27 04:39_
-
----
-
-_Referenced in [astral-sh/uv#16014](../../astral-sh/uv/issues/16014.md) on 2025-10-10 11:50_
 
 ---

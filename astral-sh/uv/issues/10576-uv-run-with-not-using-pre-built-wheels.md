@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T21:00:49Z
 updated_at: 2025-01-14T16:33:04Z
 url: https://github.com/astral-sh/uv/issues/10576
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv run --with` not using pre-built wheels
@@ -124,9 +124,5 @@ Thanks @charliermarsh. You are right about the python version. After passing `--
 ---
 
 _Closed by @charliermarsh on 2025-01-14 16:33_
-
----
-
-_Referenced in [mesonbuild/meson-python#805](../../mesonbuild/meson-python/issues/805.md) on 2025-10-28 20:09_
 
 ---

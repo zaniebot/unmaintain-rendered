@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-08T19:21:39Z
 updated_at: 2025-01-08T22:12:54Z
 url: https://github.com/astral-sh/uv/issues/10406
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Add an example with Lambda Layers to AWS Lambda docs
@@ -52,10 +52,6 @@ I think using the zip based approach would solve this. I'm trying it out now. if
 _Comment by @charliermarsh on 2025-01-08 21:06_
 
 I think I have this figured out, will have a PR later today hopefully.
-
----
-
-_Referenced in [astral-sh/uv#10411](../../astral-sh/uv/pulls/10411.md) on 2025-01-08 21:53_
 
 ---
 

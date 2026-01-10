@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T17:07:13Z
 updated_at: 2025-01-14T14:39:22Z
 url: https://github.com/astral-sh/uv/issues/10571
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Filter out x86 wheels when `platform_machine == 'arm64'` is specified
@@ -45,10 +45,6 @@ _Closed by @charliermarsh on 2025-01-13 17:08_
 ---
 
 _Reopened by @charliermarsh on 2025-01-13 17:08_
-
----
-
-_Referenced in [astral-sh/uv#10584](../../astral-sh/uv/pulls/10584.md) on 2025-01-14 03:27_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-03T19:23:22Z
 updated_at: 2025-01-08T13:33:32Z
 url: https://github.com/astral-sh/uv/issues/9618
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Upgrade to Rust 1.83 is blocked by powerpc64le binary builds
@@ -63,9 +63,5 @@ Update: I think it's available now in rust-musl-cross now that Rust nightly has 
 _Comment by @charliermarsh on 2025-01-08 13:33_
 
 Thanks, I’ll try re-adding.
-
----
-
-_Referenced in [element-hq/synapse#18240](../../element-hq/synapse/issues/18240.md) on 2025-07-28 23:43_
 
 ---

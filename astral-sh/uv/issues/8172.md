@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-14T11:07:25Z
 updated_at: 2025-01-14T11:01:54Z
 url: https://github.com/astral-sh/uv/issues/8172
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `Missing href attribute on anchor link` when using private pypi
@@ -108,10 +108,6 @@ Unfortunately I can't reproduce this. Pasting that HTML into our HTML parser giv
 _Comment by @musab-k on 2024-11-13 18:17_
 
 I don't know if it helps since it sounds like you can see the package via pip, but I just got the same error and it was resolved by ensuring I was on the company VPN.
-
----
-
-_Referenced in [astral-sh/uv#9118](../../astral-sh/uv/pulls/9118.md) on 2024-11-14 12:49_
 
 ---
 

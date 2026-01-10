@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-27T18:55:08Z
 updated_at: 2025-01-27T23:10:29Z
 url: https://github.com/astral-sh/uv/issues/10999
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # When using `--no-sources` it seems that uv still reads some metadata from workspace packages
@@ -86,19 +86,7 @@ _Label `bug` added by @potiuk on 2025-01-27 18:55_
 
 ---
 
-_Referenced in [astral-sh/uv#10991](../../astral-sh/uv/issues/10991.md) on 2025-01-27 18:55_
-
----
-
-_Referenced in [apache/airflow#46139](../../apache/airflow/pulls/46139.md) on 2025-01-27 19:00_
-
----
-
 _Assigned to @konstin by @konstin on 2025-01-27 20:03_
-
----
-
-_Referenced in [astral-sh/uv#11003](../../astral-sh/uv/pulls/11003.md) on 2025-01-27 21:22_
 
 ---
 

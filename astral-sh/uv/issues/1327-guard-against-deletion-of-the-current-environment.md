@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T19:10:52Z
 updated_at: 2025-01-22T13:28:30Z
 url: https://github.com/astral-sh/uv/issues/1327
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Guard against deletion of the current environment
@@ -52,10 +52,6 @@ _Label `windows` added by @charliermarsh on 2024-02-15 19:21_
 
 ---
 
-_Referenced in [astral-sh/uv#1368](../../astral-sh/uv/issues/1368.md) on 2024-02-15 22:06_
-
----
-
 _Comment by @charliermarsh on 2024-03-04 14:48_
 
 @gaborbernat -- just curious, do `virtualenv` do anything special here (e.g., if you try to create a virtualenv with `--clear`, and the `virtualenv.exe` you're running is in the directory that needs to be removed)?
@@ -71,14 +67,6 @@ Nothing at all: https://github.com/pypa/virtualenv/blob/5cd543f/src/virtualenv/c
 _Comment by @charliermarsh on 2024-03-04 15:56_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/uv#2248](../../astral-sh/uv/issues/2248.md) on 2024-03-08 21:30_
-
----
-
-_Referenced in [astral-sh/uv#3339](../../astral-sh/uv/issues/3339.md) on 2024-05-02 18:25_
 
 ---
 
@@ -156,10 +144,6 @@ Activate with: py311\Scripts\activate
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-27 18:17_
-
----
-
-_Referenced in [astral-sh/uv#10206](../../astral-sh/uv/pulls/10206.md) on 2024-12-27 18:17_
 
 ---
 

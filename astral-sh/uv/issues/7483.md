@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-18T04:03:12Z
 updated_at: 2025-01-08T20:34:47Z
 url: https://github.com/astral-sh/uv/issues/7483
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Add lock files for inline script metadata
@@ -60,14 +60,6 @@ _Comment by @ketozhang on 2024-09-21 23:53_
 There's significant overlap with #6318 that I am OK with closing this as duplicate.
 
 I feel it---I have the same sentiment back when the PEP was designed. After the fact, I now wish the PEP went further with addressing reproducibility (no good ideas until we have a standard lock file)
-
----
-
-_Referenced in [astral-sh/uv#10123](../../astral-sh/uv/pulls/10123.md) on 2024-12-23 18:43_
-
----
-
-_Referenced in [astral-sh/uv#10136](../../astral-sh/uv/pulls/10136.md) on 2024-12-25 19:02_
 
 ---
 

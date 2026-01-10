@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-21T13:26:05Z
 updated_at: 2025-01-18T15:25:59Z
 url: https://github.com/astral-sh/uv/issues/10076
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Sorting dependencies in `pyproject.toml` does not work as expected
@@ -104,10 +104,6 @@ Thanks! Looks like a bug.
 
 ---
 
-_Referenced in [astral-sh/uv#10078](../../astral-sh/uv/pulls/10078.md) on 2024-12-21 13:55_
-
----
-
 _Closed by @charliermarsh on 2024-12-21 14:43_
 
 ---
@@ -121,9 +117,5 @@ _Comment by @Kavan72 on 2025-01-18 08:48_
 _Comment by @charliermarsh on 2025-01-18 15:25_
 
 @Kavan72 -- Please open a new issue with a clear, minimal reproduction. Thanks.
-
----
-
-_Referenced in [astral-sh/uv#10738](../../astral-sh/uv/issues/10738.md) on 2025-01-18 19:04_
 
 ---

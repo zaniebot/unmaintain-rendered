@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-15T13:26:23Z
 updated_at: 2025-01-15T20:17:09Z
 url: https://github.com/astral-sh/uv/issues/10633
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Manager interpreter read link always fails on Windows
@@ -49,10 +49,6 @@ _Label `bug` added by @charliermarsh on 2025-01-15 16:37_
 ---
 
 _Assigned to @zanieb by @zanieb on 2025-01-15 18:45_
-
----
-
-_Referenced in [astral-sh/uv#10639](../../astral-sh/uv/pulls/10639.md) on 2025-01-15 18:59_
 
 ---
 

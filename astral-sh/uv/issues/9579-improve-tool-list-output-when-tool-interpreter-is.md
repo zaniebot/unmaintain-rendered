@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-02T15:50:12Z
 updated_at: 2025-01-09T21:48:08Z
 url: https://github.com/astral-sh/uv/issues/9579
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Improve `tool list` output when tool interpreter is missing
@@ -137,10 +137,6 @@ It's on our radar to improve the behavior here, just lots else to do :)
 _Comment by @aretrace on 2025-01-07 04:23_
 
 Ahh yes, tools need to run under some interpreter, I assume they just reference whatever interpreter that happens to be "selected" when the tool installs.
-
----
-
-_Referenced in [astral-sh/uv#10409](../../astral-sh/uv/pulls/10409.md) on 2025-01-08 20:13_
 
 ---
 

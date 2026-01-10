@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-17T23:43:27Z
 updated_at: 2025-01-15T17:37:34Z
 url: https://github.com/astral-sh/uv/issues/7480
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # venv/activate uses zsh-specific syntax
@@ -33,19 +33,11 @@ _Label `bug` added by @charliermarsh on 2024-09-18 02:47_
 
 ---
 
-_Referenced in [astral-sh/uv#10397](../../astral-sh/uv/pulls/10397.md) on 2025-01-08 15:13_
-
----
-
 _Closed by @Gankra on 2025-01-08 18:12_
 
 ---
 
 _Closed by @Gankra on 2025-01-08 18:12_
-
----
-
-_Referenced in [astral-sh/uv#10497](../../astral-sh/uv/pulls/10497.md) on 2025-01-11 14:10_
 
 ---
 

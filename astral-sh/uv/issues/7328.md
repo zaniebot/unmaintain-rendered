@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-12T11:50:22Z
 updated_at: 2025-01-08T21:32:48Z
 url: https://github.com/astral-sh/uv/issues/7328
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Support `uv tree --script my_script.py`
@@ -35,10 +35,6 @@ Seems reasonable although `uv tree` operates on a lockfile which scripts don't h
 
 ---
 
-_Referenced in [astral-sh/uv#5613](../../astral-sh/uv/issues/5613.md) on 2024-09-13 23:31_
-
----
-
 _Label `help wanted` added by @charliermarsh on 2024-10-28 00:02_
 
 ---
@@ -54,10 +50,6 @@ can i take on this issue ?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-25 19:02_
-
----
-
-_Referenced in [astral-sh/uv#10159](../../astral-sh/uv/pulls/10159.md) on 2024-12-25 19:02_
 
 ---
 

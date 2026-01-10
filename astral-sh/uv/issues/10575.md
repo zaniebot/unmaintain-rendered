@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-13T19:10:16Z
 updated_at: 2025-01-13T21:02:02Z
 url: https://github.com/astral-sh/uv/issues/10575
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Caching and --config-settings
@@ -134,13 +134,5 @@ I think it's related to this: https://github.com/pypa/setuptools/issues/1347
 ---
 
 _Label `upstream` added by @konstin on 2025-01-13 21:02_
-
----
-
-_Referenced in [astral-sh/uv#10577](../../astral-sh/uv/issues/10577.md) on 2025-01-13 21:07_
-
----
-
-_Referenced in [astral-sh/uv#12463](../../astral-sh/uv/issues/12463.md) on 2025-03-25 13:20_
 
 ---

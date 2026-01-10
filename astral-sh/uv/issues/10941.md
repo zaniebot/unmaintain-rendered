@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-24T18:09:59Z
 updated_at: 2025-01-25T20:30:32Z
 url: https://github.com/astral-sh/uv/issues/10941
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Understand `--editable=.` also in `requirements.txt`
@@ -80,10 +80,6 @@ _Label `needs-decision` added by @zanieb on 2025-01-24 18:11_
 
 ---
 
-_Referenced in [crate/crate-docs-theme#569](../../crate/crate-docs-theme/pulls/569.md) on 2025-01-24 21:50_
-
----
-
 _Comment by @charliermarsh on 2025-01-24 23:57_
 
 I'm sort of fine with it, since it seems pretty trivial.
@@ -97,10 +93,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-25 00:58_
 _Comment by @charliermarsh on 2025-01-25 02:35_
 
 Oh interesting, we already support this for most values (but not `--editable`), that seems like an oversight.
-
----
-
-_Referenced in [astral-sh/uv#10954](../../astral-sh/uv/pulls/10954.md) on 2025-01-25 02:46_
 
 ---
 

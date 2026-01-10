@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-13T13:29:20Z
 updated_at: 2025-01-13T14:43:41Z
 url: https://github.com/astral-sh/uv/issues/10563
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # SSL Verification Issue
@@ -51,9 +51,5 @@ Figured it out native-tls it is
 ---
 
 _Closed by @sssaha on 2025-01-13 14:43_
-
----
-
-_Referenced in [astral-sh/uv#10574](../../astral-sh/uv/issues/10574.md) on 2025-01-13 18:11_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-16T08:44:43Z
 updated_at: 2025-01-20T07:24:26Z
 url: https://github.com/astral-sh/uv/issues/10669
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # uv sync x dependency groups doesn't work with PyPy
@@ -175,10 +175,6 @@ _Label `bug` added by @konstin on 2025-01-16 13:44_
 
 ---
 
-_Referenced in [astral-sh/uv#10682](../../astral-sh/uv/pulls/10682.md) on 2025-01-16 14:43_
-
----
-
 _Comment by @konstin on 2025-01-16 14:45_
 
 This bug is two bugs on uv's side: We need to discard lockfiles with invalid fork markers (#10682 with the minimal reproduction), but we must also figure out why we generate a resolution with these fork markers in the first place (TBD):
@@ -251,10 +247,6 @@ iniconfig==2.0.0 ; python_full_version >= '3.10' and platform_python_implementat
 
 Which omits `coverage` on Python 3.10 and later for non-CPython.
 
-
----
-
-_Referenced in [astral-sh/uv#10704](../../astral-sh/uv/pulls/10704.md) on 2025-01-17 04:33_
 
 ---
 

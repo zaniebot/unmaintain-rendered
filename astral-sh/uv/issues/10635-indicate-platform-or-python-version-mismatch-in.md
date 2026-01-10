@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-15T16:41:14Z
 updated_at: 2025-01-20T17:46:47Z
 url: https://github.com/astral-sh/uv/issues/10635
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Indicate platform or Python version mismatch in `uv sync` errors
@@ -40,10 +40,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-15 16:45_
 _Comment by @charliermarsh on 2025-01-18 16:27_
 
 I'm going to do this, it's bothering me a ton and we get lots of reports about it. Maybe our worst error message experience!
-
----
-
-_Referenced in [astral-sh/uv#10739](../../astral-sh/uv/pulls/10739.md) on 2025-01-18 19:16_
 
 ---
 

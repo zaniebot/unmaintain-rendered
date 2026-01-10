@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-24T22:59:37Z
 updated_at: 2025-01-25T16:22:59Z
 url: https://github.com/astral-sh/uv/issues/10949
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Alias pip
@@ -83,13 +83,5 @@ _Label `duplicate` added by @zanieb on 2025-01-24 23:10_
 _Comment by @stevenwalton on 2025-01-24 23:33_
 
 Sorry, I didn't see the dupe when searching.
-
----
-
-_Referenced in [astral-sh/uv#12335](../../astral-sh/uv/issues/12335.md) on 2025-03-20 13:15_
-
----
-
-_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-01 17:54_
 
 ---

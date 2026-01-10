@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-21T14:19:04Z
 updated_at: 2025-01-21T21:01:22Z
 url: https://github.com/astral-sh/uv/issues/10816
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Avoid build backend for lockfile validation with Hatchling with recursive extras and dynamic metadata
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-21 14:19_
 ---
 
 _Label `performance` added by @charliermarsh on 2025-01-21 14:19_
-
----
-
-_Referenced in [astral-sh/uv#10823](../../astral-sh/uv/pulls/10823.md) on 2025-01-21 20:33_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-28T13:36:06Z
 updated_at: 2025-01-14T18:57:16Z
 url: https://github.com/astral-sh/uv/issues/3879
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Using build as tool fails while pipx suceeds
@@ -74,10 +74,6 @@ For my build backend, this can be resolved by adding `.uv` into `.gitignore`. I 
 _Comment by @charliermarsh on 2024-06-10 21:16_
 
 Yes I can fix that separately. Can you file another issue? Can be very brief / short.
-
----
-
-_Referenced in [astral-sh/uv#4219](../../astral-sh/uv/issues/4219.md) on 2024-06-10 21:32_
 
 ---
 

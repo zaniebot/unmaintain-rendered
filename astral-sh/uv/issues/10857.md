@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T14:17:25Z
 updated_at: 2025-01-23T09:48:09Z
 url: https://github.com/astral-sh/uv/issues/10857
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Fetching pyproject.toml fails when it is symlinked
@@ -128,10 +128,6 @@ Ahh thanks! I'll fix this today.
 _Comment by @charliermarsh on 2025-01-22 14:18_
 
 (Yes, it's definitely from the resolver fast-path.)
-
----
-
-_Referenced in [astral-sh/uv#10859](../../astral-sh/uv/pulls/10859.md) on 2025-01-22 14:49_
 
 ---
 

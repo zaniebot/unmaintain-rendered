@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-26T17:56:25Z
 updated_at: 2025-01-22T21:07:30Z
 url: https://github.com/astral-sh/uv/issues/10176
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv lock --locked --offline` doesn’t work with projects that use dynamic versions
@@ -85,10 +85,6 @@ repos:
 
 ---
 
-_Referenced in [astral-sh/uv#10167](../../astral-sh/uv/issues/10167.md) on 2024-12-26 18:19_
-
----
-
 _Renamed from "`uv lock --locked --offline` doesn't work for dynamic-versioned projects" to "`uv lock --locked --offline` doesn’t work with projects that use dynamic versions" by @vivodi on 2024-12-26 18:23_
 
 ---
@@ -134,9 +130,5 @@ I believe this now works, by the way.
 ---
 
 _Closed by @charliermarsh on 2025-01-22 21:07_
-
----
-
-_Referenced in [opentargets/gentropy#1024](../../opentargets/gentropy/pulls/1024.md) on 2025-03-20 09:24_
 
 ---

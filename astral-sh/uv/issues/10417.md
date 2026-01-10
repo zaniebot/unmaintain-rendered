@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-08T23:08:22Z
 updated_at: 2025-01-08T23:46:27Z
 url: https://github.com/astral-sh/uv/issues/10417
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv pip install -r requirements.txt` Fails to Parse Requirements
@@ -69,9 +69,5 @@ ERROR: .[dev, is not a valid editable requirement. It should either be a path to
 ```
 I reckon this difference in behavior should be documented in the pip compatibility section.
 
-
----
-
-_Referenced in [astral-sh/uv#10941](../../astral-sh/uv/issues/10941.md) on 2025-01-24 18:10_
 
 ---

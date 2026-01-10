@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-21T13:16:27Z
 updated_at: 2025-01-21T14:10:00Z
 url: https://github.com/astral-sh/uv/issues/10813
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # How can I install project dependencies from an existing pyproject.toml?
@@ -89,9 +89,5 @@ _Label `question` added by @charliermarsh on 2025-01-21 14:06_
 _Comment by @alexted on 2025-01-21 14:09_
 
 Thank you!
-
----
-
-_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2025-01-26 18:10_
 
 ---

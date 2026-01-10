@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-14T12:32:48Z
 updated_at: 2025-01-21T23:03:18Z
 url: https://github.com/astral-sh/uv/issues/10592
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Option to disable all dependency groups in `uv sync`
@@ -74,10 +74,6 @@ No other groups that the defaults should be resolved unless explicitly requested
 ---
 
 _Label `good first issue` added by @zanieb on 2025-01-14 16:14_
-
----
-
-_Referenced in [astral-sh/uv#10618](../../astral-sh/uv/pulls/10618.md) on 2025-01-14 23:29_
 
 ---
 

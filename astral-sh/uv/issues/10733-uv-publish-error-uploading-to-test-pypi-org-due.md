@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-18T13:44:45Z
 updated_at: 2025-01-18T15:25:05Z
 url: https://github.com/astral-sh/uv/issues/10733
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv publish` error uploading to test.pypi.org due to metadata version mismatch
@@ -124,9 +124,5 @@ _Label `duplicate` added by @charliermarsh on 2025-01-18 15:25_
 ---
 
 _Label `upstream` added by @charliermarsh on 2025-01-18 15:25_
-
----
-
-_Referenced in [ToFuProject/datastock#226](../../ToFuProject/datastock/issues/226.md) on 2025-04-02 21:23_
 
 ---

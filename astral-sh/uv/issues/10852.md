@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T11:51:57Z
 updated_at: 2025-01-22T17:58:17Z
 url: https://github.com/astral-sh/uv/issues/10852
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv lock` fails to update version in lockfile
@@ -307,10 +307,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-22 13:24_
 _Comment by @charliermarsh on 2025-01-22 13:59_
 
 Thanks! Will fix.
-
----
-
-_Referenced in [astral-sh/uv#10858](../../astral-sh/uv/pulls/10858.md) on 2025-01-22 14:38_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-13T16:19:10Z
 updated_at: 2025-01-13T18:12:53Z
 url: https://github.com/astral-sh/uv/issues/9873
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # Certain tests & scenarios are sensitive to exported environment variables
@@ -358,14 +358,6 @@ _Comment by @charliermarsh on 2024-12-14 17:56_
 
 ---
 
-_Referenced in [astral-sh/uv#9913](../../astral-sh/uv/pulls/9913.md) on 2024-12-15 14:33_
-
----
-
-_Referenced in [astral-sh/uv#9914](../../astral-sh/uv/pulls/9914.md) on 2024-12-15 14:40_
-
----
-
 _Closed by @charliermarsh on 2024-12-17 20:28_
 
 ---
@@ -389,13 +381,5 @@ We can track the Clap output problems here.. we should just unset most variables
 ---
 
 _Reopened by @zanieb on 2025-01-13 18:12_
-
----
-
-_Referenced in [astral-sh/uv#13790](../../astral-sh/uv/issues/13790.md) on 2025-06-02 21:34_
-
----
-
-_Referenced in [astral-sh/uv#14080](../../astral-sh/uv/pulls/14080.md) on 2025-10-19 12:30_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-14T06:57:16Z
 updated_at: 2025-01-21T15:01:20Z
 url: https://github.com/astral-sh/uv/issues/10586
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv python list` doesn't pick up non-base variants of python
@@ -63,10 +63,6 @@ cpython-3.9.20-linux-x86_64-gnu     /bin/python3 -> python3.9
 
 ---
 
-_Referenced in [PrairieLearn/PrairieLearn#11039](../../PrairieLearn/PrairieLearn/pulls/11039.md) on 2025-01-14 06:58_
-
----
-
 _Renamed from "`uv python install` doesn't pick up non-base variants of python" to "`uv python list` doesn't pick up non-base variants of python" by @reteps on 2025-01-14 07:05_
 
 ---
@@ -82,10 +78,6 @@ Thanks, I think that's a bug.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-17 19:25_
-
----
-
-_Referenced in [astral-sh/uv#10722](../../astral-sh/uv/pulls/10722.md) on 2025-01-17 19:30_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-10T02:52:30Z
 updated_at: 2025-01-10T03:11:30Z
 url: https://github.com/astral-sh/uv/issues/10454
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # does uv support python 3.7?
@@ -86,9 +86,5 @@ _Closed by @robert8138 on 2025-01-10 03:05_
 _Comment by @charliermarsh on 2025-01-10 03:11_
 
 No worries, thanks for the well-written issue.
-
----
-
-_Referenced in [canonical/starflow#38](../../canonical/starflow/pulls/38.md) on 2025-01-13 08:16_
 
 ---

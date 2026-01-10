@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-14T16:59:18Z
 updated_at: 2025-01-14T19:10:53Z
 url: https://github.com/astral-sh/uv/issues/10603
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv venv --python` allow specifying universal (arm64 + Rosetta2) architecture on macOS
@@ -75,9 +75,5 @@ Interesting. Thank you for sharing your use-case! That makes sense to me. Let's 
 ---
 
 _Closed by @zanieb on 2025-01-14 19:10_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#140](../../astral-sh/python-build-standalone/issues/140.md) on 2025-01-14 19:11_
 
 ---

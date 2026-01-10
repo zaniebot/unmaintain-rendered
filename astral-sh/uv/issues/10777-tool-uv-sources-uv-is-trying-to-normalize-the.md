@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-20T13:05:04Z
 updated_at: 2025-01-20T21:36:19Z
 url: https://github.com/astral-sh/uv/issues/10777
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # [tool.uv.sources] uv is trying to normalize the path, even when the system platform differs from the marker
@@ -119,10 +119,6 @@ I sort of doubt we will support this. The lockfile is referencing an impossible 
 
 ---
 
-_Referenced in [astral-sh/uv#10789](../../astral-sh/uv/pulls/10789.md) on 2025-01-20 21:02_
-
----
-
 _Comment by @charliermarsh on 2025-01-20 21:05_
 
 I've fixed this in https://github.com/astral-sh/uv/pull/10789.
@@ -138,9 +134,5 @@ _Closed by @charliermarsh on 2025-01-20 21:36_
 ---
 
 _Closed by @charliermarsh on 2025-01-20 21:36_
-
----
-
-_Referenced in [astral-sh/uv#16156](../../astral-sh/uv/issues/16156.md) on 2025-10-07 16:30_
 
 ---

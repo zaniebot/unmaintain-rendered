@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-18T10:38:03Z
 updated_at: 2025-01-22T06:56:20Z
 url: https://github.com/astral-sh/uv/issues/10730
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv init --lib` should add `uv.lock` to the `.gitignore`
@@ -150,25 +150,5 @@ I guess you'll suggest something like dependabot, which from my perspective cont
 I prefer the run CI periodically, daily if possible, with unpinned deps to highlight when problems occur, as soon a they occur.
 `uv sync --lowest` certainly seems like a great addition to that approach!
 
-
----
-
-_Referenced in [pypa/pip#8085](../../pypa/pip/issues/8085.md) on 2025-03-27 08:39_
-
----
-
-_Referenced in [Aleph-Alpha/pharia-skill#196](../../Aleph-Alpha/pharia-skill/pulls/196.md) on 2025-03-27 12:27_
-
----
-
-_Referenced in [django-guardian/django-guardian#870](../../django-guardian/django-guardian/pulls/870.md) on 2025-05-15 18:08_
-
----
-
-_Referenced in [sktime/tutorial_haicon_prologue_day#1](../../sktime/tutorial_haicon_prologue_day/pulls/1.md) on 2025-07-18 09:44_
-
----
-
-_Referenced in [SCM-NV/PLAMS#318](../../SCM-NV/PLAMS/pulls/318.md) on 2025-09-12 13:35_
 
 ---

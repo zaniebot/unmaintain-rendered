@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-05T07:36:22Z
 updated_at: 2025-01-08T21:48:55Z
 url: https://github.com/astral-sh/uv/issues/9657
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T04:27:58Z
 ```
 
 # `uv export --script` being able to export the requirements of a script to a `requirements.txt`
@@ -53,10 +53,6 @@ _Closed by @zanieb on 2024-12-05 15:11_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-12-05 15:11_
-
----
-
-_Referenced in [astral-sh/uv#10160](../../astral-sh/uv/pulls/10160.md) on 2024-12-25 19:18_
 
 ---
 

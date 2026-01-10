@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T18:47:21Z
 updated_at: 2025-01-14T02:11:02Z
 url: https://github.com/astral-sh/uv/issues/1525
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T04:27:57Z
 ```
 
 # Uninstalling then reinstalling a package produces METADATA error
@@ -140,10 +140,6 @@ warning: Failed to uninstall package at .venv/lib/python3.8/site-packages/aiobot
 ```
 
 edit: the problem presents itself when index-url is pointed towards a self hosted registry like Nexus I think, so something might be problematic with me running `uv pip uninstall xxx` commands against packages downloaded from Nexus
-
----
-
-_Referenced in [astral-sh/uv#8690](../../astral-sh/uv/issues/8690.md) on 2024-10-29 22:16_
 
 ---
 
