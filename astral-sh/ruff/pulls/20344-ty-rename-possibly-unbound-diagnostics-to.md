@@ -1,0 +1,590 @@
+```yaml
+number: 20344
+title: "[ty] Rename \"possibly-unbound\" diagnostics to \"possibly-undeclared\""
+type: pull_request
+state: closed
+author: Renkai
+labels:
+  - ty
+  - diagnostics
+assignees: []
+base: main
+head: confusing-naming-unbound-for-methods
+created_at: 2025-09-11T06:43:23Z
+updated_at: 2025-09-21T12:20:18Z
+url: https://github.com/astral-sh/ruff/pull/20344
+synced_at: 2026-01-10T17:40:28Z
+```
+
+# [ty] Rename "possibly-unbound" diagnostics to "possibly-undeclared"
+
+---
+
+_Pull request opened by @Renkai on 2025-09-11 06:43_
+
+this fixes https://github.com/astral-sh/ty/issues/636
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-11 06:45_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-09-11 07:46:10.408566687 +0000
++++ new-output.txt	2025-09-11 07:46:13.397578026 +0000
+@@ -773,7 +773,7 @@
+ specialtypes_none.py:21:7: error[invalid-argument-type] Argument to function `func1` is incorrect: Expected `None`, found `<class 'NoneType'>`
+ specialtypes_none.py:27:1: error[invalid-assignment] Object of type `None` is not assignable to `Iterable[Unknown]`
+ specialtypes_none.py:32:1: error[missing-argument] No argument provided for required parameter `value` of function `__eq__`
+-specialtypes_promotions.py:13:5: warning[possibly-unbound-attribute] Attribute `numerator` on type `int | float` is possibly unbound
++specialtypes_promotions.py:13:5: warning[possibly-undeclared-attribute] Attribute `numerator` on type `int | float` is possibly undeclared
+ specialtypes_type.py:44:1: error[type-assertion-failure] Argument does not have asserted type `TeamUser`
+ specialtypes_type.py:56:7: error[invalid-argument-type] Argument to function `func4` is incorrect: Expected `type[BasicUser] | type[ProUser]`, found `<class 'TeamUser'>`
+ specialtypes_type.py:76:17: error[invalid-type-form] type[...] must have exactly one type argument
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-11 06:49_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/from_thread.py:211:27: warning[possibly-unbound-attribute] Attribute `cancel` on type `CancelScope | None` is possibly unbound
++ src/anyio/from_thread.py:211:27: warning[possibly-undeclared-attribute] Attribute `cancel` on type `CancelScope | None` is possibly undeclared
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+- pytest_robotframework/_internal/robot/library.py:86:99: warning[unused-ignore-comment] Unused `ty: ignore` directive: 'possibly-unbound-attribute'
++ pytest_robotframework/_internal/robot/library.py:86:99: warning[unknown-rule] Unknown rule `possibly-unbound-attribute`
+
+parso (https://github.com/davidhalter/parso)
+- parso/python/parser.py:120:50: warning[possibly-unbound-attribute] Attribute `value` on type `@Todo(Subscript expressions on intersections) | None` is possibly unbound
++ parso/python/parser.py:120:50: warning[possibly-undeclared-attribute] Attribute `value` on type `@Todo(Subscript expressions on intersections) | None` is possibly undeclared
+- parso/python/parser.py:121:26: warning[possibly-unbound-attribute] Attribute `value` on type `@Todo(Subscript expressions on intersections) | None` is possibly unbound
++ parso/python/parser.py:121:26: warning[possibly-undeclared-attribute] Attribute `value` on type `@Todo(Subscript expressions on intersections) | None` is possibly undeclared
+- parso/python/pep8.py:719:31: warning[possibly-unbound-attribute] Attribute `group` on type `Match[str] | None` is possibly unbound
++ parso/python/pep8.py:719:31: warning[possibly-undeclared-attribute] Attribute `group` on type `Match[str] | None` is possibly undeclared
+- parso/python/tree.py:259:16: warning[possibly-unbound-attribute] Attribute `group` on type `Match[str] | None` is possibly unbound
++ parso/python/tree.py:259:16: warning[possibly-undeclared-attribute] Attribute `group` on type `Match[str] | None` is possibly undeclared
+- parso/python/tree.py:267:16: warning[possibly-unbound-attribute] Attribute `group` on type `Match[str] | None` is possibly unbound
++ parso/python/tree.py:267:16: warning[possibly-undeclared-attribute] Attribute `group` on type `Match[str] | None` is possibly undeclared
+- parso/python/tree.py:267:37: warning[possibly-unbound-attribute] Attribute `group` on type `Match[str] | None` is possibly unbound
++ parso/python/tree.py:267:37: warning[possibly-undeclared-attribute] Attribute `group` on type `Match[str] | None` is possibly undeclared
+- parso/utils.py:95:27: warning[possibly-unbound-attribute] Attribute `group` on type `Match[bytes] | None` is possibly unbound
++ parso/utils.py:95:27: warning[possibly-undeclared-attribute] Attribute `group` on type `Match[bytes] | None` is possibly undeclared
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_check/forward/fwdresolve.py:584:5: warning[possibly-unbound-attribute] Attribute `update` on type `Unknown | None | BeartypeForwardScope` is possibly unbound
++ beartype/_check/forward/fwdresolve.py:584:5: warning[possibly-undeclared-attribute] Attribute `update` on type `Unknown | None | BeartypeForwardScope` is possibly undeclared
+- beartype/_check/forward/fwdresolve.py:585:5: warning[possibly-unbound-attribute] Attribute `update` on type `Unknown | None | BeartypeForwardScope` is possibly unbound
++ beartype/_check/forward/fwdresolve.py:585:5: warning[possibly-undeclared-attribute] Attribute `update` on type `Unknown | None | BeartypeForwardScope` is possibly undeclared
+- beartype/_util/func/utilfunctest.py:1100:16: warning[possibly-unbound-attribute] Attribute `__name__` on type `(Any & ~MethodType) | ((...) -> Unknown)` is possibly unbound
++ beartype/_util/func/utilfunctest.py:1100:16: warning[possibly-undeclared-attribute] Attribute `__name__` on type `(Any & ~MethodType) | ((...) -> Unknown)` is possibly undeclared
+- beartype/_util/hint/pep/proposal/pep484585/pep484585callable.py:44:9: warning[possibly-unbound-attribute] Attribute `ParamSpec` on type `<module 'beartype.typing'>` is possibly unbound
++ beartype/_util/hint/pep/proposal/pep484585/pep484585callable.py:44:9: warning[possibly-undeclared-attribute] Attribute `ParamSpec` on type `<module 'beartype.typing'>` is possibly undeclared
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- pyinstrument/vendor/appdirs.py:497:11: warning[possibly-unbound-attribute] Attribute `OpenKey` on type `<module 'winreg'> | Unknown` is possibly unbound
++ pyinstrument/vendor/appdirs.py:497:11: warning[possibly-undeclared-attribute] Attribute `OpenKey` on type `<module 'winreg'> | Unknown` is possibly undeclared
+- pyinstrument/vendor/appdirs.py:498:9: warning[possibly-unbound-attribute] Attribute `HKEY_CURRENT_USER` on type `<module 'winreg'> | Unknown` is possibly unbound
++ pyinstrument/vendor/appdirs.py:498:9: warning[possibly-undeclared-attribute] Attribute `HKEY_CURRENT_USER` on type `<module 'winreg'> | Unknown` is possibly undeclared
+- pyinstrument/vendor/appdirs.py:501:17: warning[possibly-unbound-attribute] Attribute `QueryValueEx` on type `<module 'winreg'> | Unknown` is possibly unbound
++ pyinstrument/vendor/appdirs.py:501:17: warning[possibly-undeclared-attribute] Attribute `QueryValueEx` on type `<module 'winreg'> | Unknown` is possibly undeclared
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_make.py:469:35: warning[possibly-unbound-attribute] Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:469:35: warning[possibly-undeclared-attribute] Attribute `init` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:469:59: warning[possibly-unbound-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:469:59: warning[possibly-undeclared-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:481:16: warning[possibly-unbound-attribute] Attribute `alias` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:481:16: warning[possibly-undeclared-attribute] Attribute `alias` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:483:70: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:483:70: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:487:19: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:487:19: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:1582:29: warning[possibly-unbound-attribute] Attribute `hash` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1582:29: warning[possibly-undeclared-attribute] Attribute `hash` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:1582:48: warning[possibly-unbound-attribute] Attribute `hash` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1582:48: warning[possibly-undeclared-attribute] Attribute `hash` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:1582:67: warning[possibly-unbound-attribute] Attribute `eq` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1582:67: warning[possibly-undeclared-attribute] Attribute `eq` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:1620:16: warning[possibly-unbound-attribute] Attribute `eq_key` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1620:16: warning[possibly-undeclared-attribute] Attribute `eq_key` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:1621:32: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1621:32: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:1622:35: warning[possibly-unbound-attribute] Attribute `eq_key` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1622:35: warning[possibly-undeclared-attribute] Attribute `eq_key` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:1624:57: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1624:57: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:1627:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1627:62: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2162:12: warning[possibly-unbound-attribute] Attribute `validator` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2162:12: warning[possibly-undeclared-attribute] Attribute `validator` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2165:21: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2165:21: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2166:26: warning[possibly-unbound-attribute] Attribute `on_setattr` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2166:26: warning[possibly-undeclared-attribute] Attribute `on_setattr` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2167:13: warning[possibly-unbound-attribute] Attribute `on_setattr` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2167:13: warning[possibly-undeclared-attribute] Attribute `on_setattr` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2171:20: warning[possibly-unbound-attribute] Attribute `alias` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2171:20: warning[possibly-undeclared-attribute] Attribute `alias` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2173:34: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2173:34: warning[possibly-undeclared-attribute] Attribute `default` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2174:48: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2174:48: warning[possibly-undeclared-attribute] Attribute `default` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2176:12: warning[possibly-unbound-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2176:12: warning[possibly-undeclared-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2176:55: warning[possibly-unbound-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2176:55: warning[possibly-undeclared-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2177:35: warning[possibly-unbound-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2177:35: warning[possibly-undeclared-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2179:25: warning[possibly-unbound-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2179:25: warning[possibly-undeclared-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2181:12: warning[possibly-unbound-attribute] Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2181:12: warning[possibly-undeclared-attribute] Attribute `init` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2183:58: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2183:58: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2193:66: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2193:66: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2204:56: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2204:56: warning[possibly-undeclared-attribute] Attribute `default` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2214:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2214:62: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2225:14: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2225:14: warning[possibly-undeclared-attribute] Attribute `default` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2227:16: warning[possibly-unbound-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2227:16: warning[possibly-undeclared-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2239:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2239:62: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2247:16: warning[possibly-unbound-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2247:16: warning[possibly-undeclared-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2254:54: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2254:54: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2272:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2272:62: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2288:52: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2288:52: warning[possibly-undeclared-attribute] Attribute `default` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2290:16: warning[possibly-unbound-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2290:16: warning[possibly-undeclared-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2302:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2302:62: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2308:12: warning[possibly-unbound-attribute] Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2308:12: warning[possibly-undeclared-attribute] Attribute `init` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2309:16: warning[possibly-unbound-attribute] Attribute `type` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2309:16: warning[possibly-undeclared-attribute] Attribute `type` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2310:41: warning[possibly-unbound-attribute] Attribute `type` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2310:41: warning[possibly-undeclared-attribute] Attribute `type` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2346:33: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2346:33: warning[possibly-undeclared-attribute] Attribute `name` on type `Attribute | Unknown` is possibly undeclared
+- src/attr/_make.py:2346:60: warning[possibly-unbound-attribute] Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2346:60: warning[possibly-undeclared-attribute] Attribute `init` on type `Attribute | Unknown` is possibly undeclared
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/rtcpeerconnection.py:671:55: warning[possibly-unbound-attribute] Attribute `kind` on type `MediaDescription | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:671:55: warning[possibly-undeclared-attribute] Attribute `kind` on type `MediaDescription | None` is possibly undeclared
+- src/aiortc/rtcpeerconnection.py:672:53: warning[possibly-unbound-attribute] Attribute `rtp` on type `MediaDescription | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:672:53: warning[possibly-undeclared-attribute] Attribute `rtp` on type `MediaDescription | None` is possibly undeclared
+- src/aiortc/rtcpeerconnection.py:1362:20: warning[possibly-unbound-attribute] Attribute `usernameFragment` on type `RTCIceParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:1362:20: warning[possibly-undeclared-attribute] Attribute `usernameFragment` on type `RTCIceParameters | None` is possibly undeclared
+- src/aiortc/rtcpeerconnection.py:1362:54: warning[possibly-unbound-attribute] Attribute `password` on type `RTCIceParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:1362:54: warning[possibly-undeclared-attribute] Attribute `password` on type `RTCIceParameters | None` is possibly undeclared
+- src/aiortc/rtcpeerconnection.py:1366:63: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:1366:63: warning[possibly-undeclared-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly undeclared
+- src/aiortc/rtcrtpreceiver.py:71:22: warning[possibly-unbound-attribute] Attribute `decode` on type `None | Decoder` is possibly unbound
++ src/aiortc/rtcrtpreceiver.py:71:22: warning[possibly-undeclared-attribute] Attribute `decode` on type `None | Decoder` is possibly undeclared
+- src/aiortc/sdp.py:385:63: warning[possibly-unbound-attribute] Attribute `rtp` on type `None | MediaDescription` is possibly unbound
++ src/aiortc/sdp.py:385:63: warning[possibly-undeclared-attribute] Attribute `rtp` on type `None | MediaDescription` is possibly undeclared
+- src/aiortc/sdp.py:405:46: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:405:46: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+- src/aiortc/sdp.py:463:43: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:463:43: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+- src/aiortc/sdp.py:471:50: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:471:50: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+- src/aiortc/sdp.py:490:38: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:490:38: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+- src/aiortc/sdp.py:500:50: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:500:50: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+- src/aiortc/sdp.py:517:50: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:517:50: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+- src/aiortc/sdp.py:524:47: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:524:47: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+- src/aiortc/sdp.py:546:50: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:546:50: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+- src/aiortc/sdp.py:550:32: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:550:32: warning[possibly-undeclared-attribute] Attribute `split` on type `str | None` is possibly undeclared
+
+antidote (https://github.com/Finistere/antidote)
+- src/antidote/core/_injection.py:298:9: warning[possibly-unbound-attribute] Attribute `__qualname__` on type `(((...) -> object) & ~staticmethod & ~classmethod) | (@Todo(specialized non-generic class) & ~staticmethod & ~classmethod)` is possibly unbound
++ src/antidote/core/_injection.py:298:9: warning[possibly-undeclared-attribute] Attribute `__qualname__` on type `(((...) -> object) & ~staticmethod & ~classmethod) | (@Todo(specialized non-generic class) & ~staticmethod & ~classmethod)` is possibly undeclared
+- src/antidote/core/_injection.py:298:30: warning[possibly-unbound-attribute] Attribute `__name__` on type `(((...) -> object) & ~staticmethod & ~classmethod) | (@Todo(specialized non-generic class) & ~staticmethod & ~classmethod)` is possibly unbound
++ src/antidote/core/_injection.py:298:30: warning[possibly-undeclared-attribute] Attribute `__name__` on type `(((...) -> object) & ~staticmethod & ~classmethod) | (@Todo(specialized non-generic class) & ~staticmethod & ~classmethod)` is possibly undeclared
+- src/antidote/core/_injection.py:302:17: warning[possibly-unbound-attribute] Attribute `__qualname__` on type `(((...) -> object) & ~staticmethod & ~classmethod & ~MethodType) | (@Todo(specialized non-generic class) & ~staticmethod & ~classmethod & ~MethodType)` is possibly unbound
++ src/antidote/core/_injection.py:302:17: warning[possibly-undeclared-attribute] Attribute `__qualname__` on type `(((...) -> object) & ~staticmethod & ~classmethod & ~MethodType) | (@Todo(specialized non-generic class) & ~staticmethod & ~classmethod & ~MethodType)` is possibly undeclared
+- src/antidote/core/_injection.py:302:42: warning[possibly-unbound-attribute] Attribute `__name__` on type `(((...) -> object) & ~staticmethod & ~classmethod & ~MethodType) | (@Todo(specialized non-generic class) & ~staticmethod & ~classmethod & ~MethodType)` is possibly unbound
++ src/antidote/core/_injection.py:302:42: warning[possibly-undeclared-attribute] Attribute `__name__` on type `(((...) -> object) & ~staticmethod & ~classmethod & ~MethodType) | (@Todo(specialized non-generic class) & ~staticmethod & ~classmethod & ~MethodType)` is possibly undeclared
+
+operator (https://github.com/canonical/operator)
+- ops/lib/__init__.py:86:16: warning[possibly-unbound-attribute] Attribute `get` on type `Unknown | None` is possibly unbound
++ ops/lib/__init__.py:86:16: warning[possibly-undeclared-attribute] Attribute `get` on type `Unknown | None` is possibly undeclared
+
+black (https://github.com/psf/black)
+- src/blib2to3/pgen2/conv.py:77:34: warning[possibly-unbound-attribute] Attribute `groups` on type `Match[str] | None` is possibly unbound
++ src/blib2to3/pgen2/conv.py:77:34: warning[possibly-undeclared-attribute] Attribute `groups` on type `Match[str] | None` is possibly undeclared
+
+kornia (https://github.com/kornia/kornia)
+- kornia/enhance/adjust.py:180:14: warning[possibly-unbound-attribute] Attribute `to` on type `int | (Unknown & ~float) | Unknown` is possibly unbound
++ kornia/enhance/adjust.py:180:14: warning[possibly-undeclared-attribute] Attribute `to` on type `int | (Unknown & ~float) | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:249:12: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:249:12: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:249:27: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:249:27: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:250:16: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:250:16: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:250:52: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:250:52: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:251:90: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:251:90: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:254:12: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:254:12: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:254:26: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:254:26: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:255:16: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:255:16: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:255:51: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:255:51: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/enhance/normalize.py:256:89: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:256:89: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/feature/lightglue_onnx/lightglue.py:92:24: warning[possibly-unbound-attribute] Attribute `InferenceSession` on type `Unknown | None` is possibly unbound
++ kornia/feature/lightglue_onnx/lightglue.py:92:24: warning[possibly-undeclared-attribute] Attribute `InferenceSession` on type `Unknown | None` is possibly undeclared
+- kornia/feature/lightglue_onnx/lightglue.py:169:30: warning[possibly-unbound-attribute] Attribute `float32` on type `Unknown | None` is possibly unbound
++ kornia/feature/lightglue_onnx/lightglue.py:169:30: warning[possibly-undeclared-attribute] Attribute `float32` on type `Unknown | None` is possibly undeclared
+- kornia/filters/kernels.py:106:18: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:106:18: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:110:40: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:110:40: warning[possibly-undeclared-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:110:60: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:110:60: warning[possibly-undeclared-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:115:43: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:115:43: warning[possibly-undeclared-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:115:63: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:115:63: warning[possibly-undeclared-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:120:42: warning[possibly-unbound-attribute] Attribute `pow` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:120:42: warning[possibly-undeclared-attribute] Attribute `pow` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:146:18: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:146:18: warning[possibly-undeclared-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:148:43: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:148:43: warning[possibly-undeclared-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:148:63: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:148:63: warning[possibly-undeclared-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:150:22: warning[possibly-unbound-attribute] Attribute `abs` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:150:22: warning[possibly-undeclared-attribute] Attribute `abs` on type `(Unknown & ~float) | int | Unknown` is possibly undeclared
+- kornia/filters/kernels.py:276:55: warning[possibly-unbound-attribute] Attribute `exp` on type `Unknown | int` is possibly unbound
++ kornia/filters/kernels.py:276:55: warning[possibly-undeclared-attribute] Attribute `exp` on type `Unknown | int` is possibly undeclared
+- kornia/utils/draw.py:379:38: warning[possibly-unbound-attribute] Attribute `shape` on type `Unknown | list[Unknown]` is possibly unbound
++ kornia/utils/draw.py:379:38: warning[possibly-undeclared-attribute] Attribute `shape` on type `Unknown | list[Unknown]` is possibly undeclared
+- kornia/utils/draw.py:379:54: warning[possibly-unbound-attribute] Attribute `device` on type `Unknown | list[Unknown]` is possibly unbound
++ kornia/utils/draw.py:379:54: warning[possibly-undeclared-attribute] Attribute `device` on type `Unknown | list[Unknown]` is possibly undeclared
+- kornia/utils/draw.py:379:71: warning[possibly-unbound-attribute] Attribute `dtype` on type `Unknown | list[Unknown]` is possibly unbound
++ kornia/utils/draw.py:379:71: warning[possibly-undeclared-attribute] Attribute `dtype` on type `Unknown | list[Unknown]` is possibly undeclared
+
+starlette (https://github.com/encode/starlette)
+- starlette/templating.py:80:14: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:80:14: warning[possibly-undeclared-attribute] Attribute `Environment` on type `Unknown | None` is possibly undeclared
+- starlette/templating.py:89:14: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:89:14: warning[possibly-undeclared-attribute] Attribute `Environment` on type `Unknown | None` is possibly undeclared
+- starlette/templating.py:111:10: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:111:10: warning[possibly-undeclared-attribute] Attribute `Environment` on type `Unknown | None` is possibly undeclared
+- starlette/templating.py:112:18: warning[possibly-unbound-attribute] Attribute `FileSystemLoader` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:112:18: warning[possibly-undeclared-attribute] Attribute `FileSystemLoader` on type `Unknown | None` is possibly undeclared
+- starlette/templating.py:116:16: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:116:16: warning[possibly-undeclared-attribute] Attribute `Environment` on type `Unknown | None` is possibly undeclared
+- starlette/templating.py:118:40: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:118:40: warning[possibly-undeclared-attribute] Attribute `Environment` on type `Unknown | None` is possibly undeclared
+- starlette/templating.py:131:42: warning[possibly-unbound-attribute] Attribute `Template` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:131:42: warning[possibly-undeclared-attribute] Attribute `Template` on type `Unknown | None` is possibly undeclared
+
+artigraph (https://github.com/artigraph/artigraph)
+- tests/arti/internal/test_mappings.py:160:9: warning[possibly-unbound-attribute] Attribute `_dne` on type `Coord | TypedBox[Coord]` is possibly unbound
++ tests/arti/internal/test_mappings.py:160:9: warning[possibly-undeclared-attribute] Attribute `_dne` on type `Coord | TypedBox[Coord]` is possibly undeclared
+- tests/arti/internal/test_mappings.py:172:5: warning[possibly-unbound-attribute] Attribute `attribute` on type `Coord | TypedBox[Coord]` is possibly unbound
++ tests/arti/internal/test_mappings.py:172:5: warning[possibly-undeclared-attribute] Attribute `attribute` on type `Coord | TypedBox[Coord]` is possibly undeclared
+- tests/arti/internal/test_mappings.py:172:5: warning[possibly-unbound-attribute] Attribute `child` on type `Coord | TypedBox[Coord]` is possibly unbound
++ tests/arti/internal/test_mappings.py:172:5: warning[possibly-undeclared-attribute] Attribute `child` on type `Coord | TypedBox[Coord]` is possibly undeclared
+
+svcs (https://github.com/hynek/svcs)
++ pyproject.toml:232:1: warning[unknown-rule] Unknown lint rule `possibly-unbound-attribute`
++ tests/typing/aiohttp.py:20:7: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:21:7: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:22:7: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:24:1: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:25:1: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:27:1: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:28:1: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:29:1: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:48:42: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:52:18: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:54:11: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/aiohttp.py:56:27: warning[possibly-undeclared-attribute] Attribute `aiohttp` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/fastapi.py:17:2: warning[possibly-undeclared-attribute] Attribute `fastapi` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/fastapi.py:27:2: warning[possibly-undeclared-attribute] Attribute `fastapi` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/fastapi.py:34:2: warning[possibly-undeclared-attribute] Attribute `fastapi` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/fastapi.py:42:2: warning[possibly-undeclared-attribute] Attribute `fastapi` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/fastapi.py:55:49: warning[possibly-undeclared-attribute] Attribute `fastapi` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/fastapi.py:63:27: warning[possibly-undeclared-attribute] Attribute `fastapi` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:19:7: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:20:7: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:22:7: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:24:1: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:25:1: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:27:1: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:28:1: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:29:1: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:31:14: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:43:32: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:48:1: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:50:23: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:51:7: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:58:7: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:59:7: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:61:27: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/flask.py:62:26: warning[possibly-undeclared-attribute] Attribute `flask` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/starlette.py:22:2: warning[possibly-undeclared-attribute] Attribute `starlette` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/starlette.py:32:2: warning[possibly-undeclared-attribute] Attribute `starlette` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/starlette.py:39:2: warning[possibly-undeclared-attribute] Attribute `starlette` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/starlette.py:47:2: warning[possibly-undeclared-attribute] Attribute `starlette` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/starlette.py:58:47: warning[possibly-undeclared-attribute] Attribute `starlette` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/starlette.py:80:42: warning[possibly-undeclared-attribute] Attribute `starlette` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/starlette.py:84:18: warning[possibly-undeclared-attribute] Attribute `starlette` on type `<module 'svcs'>` is possibly undeclared
++ tests/typing/starlette.py:87:23: warning[possibly-undeclared-attribute] Attribute `starlette` on type `<module 'svcs'>` is possibly undeclared
+- Found 9 diagnostics
++ Found 53 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- kopf/_cogs/structs/dicts.py:241:25: warning[possibly-unbound-attribute] Attribute `obj` on type `(_T@walk & Unknown & ~None) | (Iterable[_T@walk] & Unknown) | (_T@walk & _dummy) | (Iterable[_T@walk] & _dummy)` is possibly unbound
++ kopf/_cogs/structs/dicts.py:241:25: warning[possibly-undeclared-attribute] Attribute `obj` on type `(_T@walk & Unknown & ~None) | (Iterable[_T@walk] & Unknown) | (_T@walk & _dummy) | (Iterable[_T@walk] & _dummy)` is possibly undeclared
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_core/_tests/test_run.py:291:16: warning[possibly-unbound-attribute] Attribute `parent_task` on type `Nursery | None` is possibly unbound
++ src/trio/_core/_tests/test_run.py:291:16: warning[possibly-undeclared-attribute] Attribute `parent_task` on type `Nursery | None` is possibly undeclared
+- src/trio/_core/_tests/test_run.py:299:12: warning[possibly-unbound-attribute] Attribute `parent_nursery` on type `Task | None` is possibly unbound
++ src/trio/_core/_tests/test_run.py:299:12: warning[possibly-undeclared-attribute] Attribute `parent_nursery` on type `Task | None` is possibly undeclared
+- src/trio/_core/_tests/test_run.py:299:35: warning[possibly-unbound-attribute] Attribute `eventual_parent_nursery` on type `Task | None` is possibly unbound
++ src/trio/_core/_tests/test_run.py:299:35: warning[possibly-undeclared-attribute] Attribute `eventual_parent_nursery` on type `Task | None` is possibly undeclared
+- src/trio/_core/_tests/test_run.py:894:12: warning[possibly-unbound-attribute] Attribute `__cause__` on type `BaseException | None` is possibly unbound
++ src/trio/_core/_tests/test_run.py:894:12: warning[possibly-undeclared-attribute] Attribute `__cause__` on type `BaseException | None` is possibly undeclared
+- src/trio/_core/_tests/test_run.py:895:12: warning[possibly-unbound-attribute] Attribute `__context__` on type `BaseException | None` is possibly unbound
++ src/trio/_core/_tests/test_run.py:895:12: warning[possibly-undeclared-attribute] Attribute `__context__` on type `BaseException | None` is possibly undeclared
+- src/trio/_core/_tests/test_run.py:1553:13: warning[possibly-unbound-attribute] Attribute `run_sync_soon` on type `TrioToken | None` is possibly unbound
++ src/trio/_core/_tests/test_run.py:1553:13: warning[possibly-undeclared-attribute] Attribute `run_sync_soon` on type `TrioToken | None` is possibly undeclared
+- src/trio/_core/_tests/test_run.py:1755:16: warning[possibly-unbound-attribute] Attribute `parent_task` on type `Nursery | None` is possibly unbound
++ src/trio/_core/_tests/test_run.py:1755:16: warning[possibly-undeclared-attribute] Attribute `parent_task` on type `Nursery | None` is possibly undeclared
+- src/trio/_tests/test_path.py:124:12: warning[possibly-unbound-attribute] Attribute `__name__` on type `Unknown | ((...) -> Awaitable[Unknown])` is possibly unbound
++ src/trio/_tests/test_path.py:124:12: warning[possibly-undeclared-attribute] Attribute `__name__` on type `Unknown | ((...) -> Awaitable[Unknown])` is possibly undeclared
+- src/trio/_tests/test_path.py:125:12: warning[possibly-unbound-attribute] Attribute `__qualname__` on type `Unknown | ((...) -> Awaitable[Unknown])` is possibly unbound
++ src/trio/_tests/test_path.py:125:12: warning[possibly-undeclared-attribute] Attribute `__qualname__` on type `Unknown | ((...) -> Awaitable[Unknown])` is possibly undeclared
+- src/trio/_tests/test_path.py:128:12: warning[possibly-unbound-attribute] Attribute `__qualname__` on type `Unknown | ((...) -> Awaitable[Unknown])` is possibly unbound
++ src/trio/_tests/test_path.py:128:12: warning[possibly-undeclared-attribute] Attribute `__qualname__` on type `Unknown | ((...) -> Awaitable[Unknown])` is possibly undeclared
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
+- test/generated/testproto/test_pb2.pyi:389:37: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:389:37: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:396:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:396:25: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:405:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:405:25: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:414:37: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:414:37: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:418:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:418:25: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:426:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:426:25: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:432:20: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:432:20: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:437:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:437:25: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:443:37: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:443:37: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+- test/generated/testproto/test_pb2.pyi:447:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:447:25: warning[possibly-undeclared-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly undeclared
+
+comtypes (https://github.com/enthought/comtypes)
+- comtypes/test/__init__.py:44:8: warning[possibly-unbound-attribute] Attribute `f_globals` on type `FrameType | None` is possibly unbound
++ comtypes/test/__init__.py:44:8: warning[possibly-undeclared-attribute] Attribute `f_globals` on type `FrameType | None` is possibly undeclared
+- comtypes/test/__init__.py:63:8: warning[possibly-unbound-attribute] Attribute `f_globals` on type `FrameType | None` is possibly unbound
++ comtypes/test/__init__.py:63:8: warning[possibly-undeclared-attribute] Attribute `f_globals` on type `FrameType | None` is possibly undeclared
+- comtypes/test/test_npsupport.py:61:20: warning[possibly-unbound-attribute] Attribute `f_back` on type `FrameType | None` is possibly unbound
++ comtypes/test/test_npsupport.py:61:20: warning[possibly-undeclared-attribute] Attribute `f_back` on type `FrameType | None` is possibly undeclared
+- comtypes/test/test_npsupport.py:61:20: warning[possibly-unbound-attribute] Attribute `f_locals` on type `FrameType | None` is possibly unbound
++ comtypes/test/test_npsupport.py:61:20: warning[possibly-undeclared-attribute] Attribute `f_locals` on type `FrameType | None` is possibly undeclared
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/common/builtins.py:72:23: warning[possibly-unbound-attribute] Attribute `IByteString` on type `<module 'zope.interface.common.collections'>` is possibly unbound
++ src/zope/interface/common/builtins.py:72:23: warning[possibly-undeclared-attribute] Attribute `IByteString` on type `<module 'zope.interface.common.collections'>` is possibly undeclared
+- src/zope/interface/common/tests/test_builtins.py:40:10: warning[possibly-unbound-attribute] Attribute `IByteString` on type `<module 'zope.interface.common.builtins'>` is possibly unbound
++ src/zope/interface/common/tests/test_builtins.py:40:10: warning[possibly-undeclared-attribute] Attribute `IByteString` on type `<module 'zope.interface.common.builtins'>` is possibly undeclared
+
+rich (https://github.com/Textualize/rich)
+- tests/test_console.py:167:13: warning[possibly-unbound-attribute] Attribute `fileno` on type `TextIOWrapper[_WrappedBuffer] | None` is possibly unbound
++ tests/test_console.py:167:13: warning[possibly-undeclared-attribute] Attribute `fileno` on type `TextIOWrapper[_WrappedBuffer] | None` is possibly undeclared
+- tests/test_console.py:168:13: warning[possibly-unbound-attribute] Attribute `fileno` on type `TextIOWrapper[_WrappedBuffer] | None` is possibly unbound
++ tests/test_console.py:168:13: warning[possibly-undeclared-attribute] Attribute `fileno` on type `TextIOWrapper[_WrappedBuffer] | None` is possibly undeclared
+- tests/test_console.py:169:13: warning[possibly-unbound-attribute] Attribute `fileno` on type `TextIOWrapper[_WrappedBuffer] | None` is possibly unbound
++ tests/test_console.py:169:13: warning[possibly-undeclared-attribute] Attribute `fileno` on type `TextIOWrapper[_WrappedBuffer] | None` is possibly undeclared
+- tests/test_console.py:1012:5: warning[possibly-unbound-attribute] Attribute `close` on type `IO[bytes] | None` is possibly unbound
++ tests/test_console.py:1012:5: warning[possibly-undeclared-attribute] Attribute `close` on type `IO[bytes] | None` is possibly undeclared
+- tests/test_logging.py:55:14: warning[possibly-unbound-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly unbound
++ tests/test_logging.py:55:14: warning[possibly-undeclared-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly undeclared
+- tests/test_logging.py:86:14: warning[possibly-unbound-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly unbound
++ tests/test_logging.py:86:14: warning[possibly-undeclared-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly undeclared
+- tests/test_logging.py:146:20: warning[possibly-unbound-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly unbound
++ tests/test_logging.py:146:20: warning[possibly-undeclared-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly undeclared
+- tests/test_logging.py:153:21: warning[possibly-unbound-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly unbound
++ tests/test_logging.py:153:21: warning[possibly-undeclared-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly undeclared
+- tests/test_logging.py:160:20: warning[possibly-unbound-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly unbound
++ tests/test_logging.py:160:20: warning[possibly-undeclared-attribute] Attribute `getvalue` on type `Unknown | IO[str]` is possibly undeclared
+- tests/test_syntax.py:348:16: warning[possibly-unbound-attribute] Attribute `name` on type `Unknown | None` is possibly unbound
++ tests/test_syntax.py:348:16: warning[possibly-undeclared-attribute] Attribute `name` on type `Unknown | None` is possibly undeclared
+- tests/test_text.py:247:9: warning[possibly-unbound-attribute] Attribute `link` on type `Unknown | str | Style` is possibly unbound
++ tests/test_text.py:247:9: warning[possibly-undeclared-attribute] Attribute `link` on type `Unknown | str | Style` is possibly undeclared
+- tests/test_text.py:261:9: warning[possibly-unbound-attribute] Attribute `link` on type `Unknown | str | Style` is possibly unbound
++ tests/test_text.py:261:9: warning[possibly-undeclared-attribute] Attribute `link` on type `Unknown | str | Style` is possibly undeclared
+
+alerta (https://github.com/alerta/alerta)
+- alerta/auth/decorators.py:114:29: warning[possibly-unbound-attribute] Attribute `id` on type `User | None` is possibly unbound
++ alerta/auth/decorators.py:114:29: warning[possibly-undeclared-attribute] Attribute `id` on type `User | None` is possibly undeclared
+- alerta/auth/decorators.py:115:27: warning[possibly-unbound-attribute] Attribute `login` on type `User | None` is possibly unbound
++ alerta/auth/decorators.py:115:27: warning[possibly-undeclared-attribute] Attribute `login` on type `User | None` is possibly undeclared
+- alerta/auth/decorators.py:116:45: warning[possibly-unbound-attribute] Attribute `login` on type `User | None` is possibly unbound
++ alerta/auth/decorators.py:116:45: warning[possibly-undeclared-attribute] Attribute `login` on type `User | None` is possibly undeclared
+- alerta/auth/decorators.py:116:64: warning[possibly-unbound-attribute] Attribute `get_groups` on type `User | None` is possibly unbound
++ alerta/auth/decorators.py:116:64: warning[possibly-undeclared-attribute] Attribute `get_groups` on type `User | None` is possibly undeclared
+- alerta/auth/decorators.py:117:46: warning[possibly-unbound-attribute] Attribute `login` on type `User | None` is possibly unbound
++ alerta/auth/decorators.py:117:46: warning[possibly-undeclared-attribute] Attribute `login` on type `User | None` is possibly undeclared
+- alerta/database/backends/mongodb/base.py:400:31: warning[possibly-unbound-attribute] Attribute `serialize` on type `Unknown | None` is possibly unbound
++ alerta/database/backends/mongodb/base.py:400:31: warning[possibly-undeclared-attribute] Attribute `serialize` on type `Unknown | None` is possibly undeclared
+- alerta/database/backends/mongodb/base.py:469:55: warning[possibly-unbound-attribute] Attribute `items` on type `Unknown | None` is possibly unbound
++ alerta/database/backends/mongodb/base.py:469:55: warning[possibly-undeclared-attribute] Attribute `items` on type `Unknown | None` is possibly undeclared
+- alerta/database/backends/mongodb/base.py:472:57: warning[possibly-unbound-attribute] Attribute `items` on type `Unknown | None` is possibly unbound
++ alerta/database/backends/mongodb/base.py:472:57: warning[possibly-undeclared-attribute] Attribute `items` on type `Unknown | None` is possibly undeclared
+- alerta/database/backends/mongodb/base.py:1609:59: warning[possibly-unbound-attribute] Attribute `DEFAULT_INFORM_SEVERITY` on type `Unknown | AlarmModel` is possibly unbound
++ alerta/database/backends/mongodb/base.py:1609:59: warning[possibly-undeclared-attribute] Attribute `DEFAULT_INFORM_SEVERITY` on type `Unknown | AlarmModel` is possibly undeclared
+- alerta/database/backends/postgres/base.py:383:20: warning[possibly-unbound-attribute] Attribute `where` on type `Unknown | None` is possibly unbound
++ alerta/database/backends/postgres/base.py:383:20: warning[possibly-undeclared-attribute] Attribute `where` on type `Unknown | None` is possibly undeclared
+- alerta/database/backends/postgres/base.py:386:62: warning[possibly-unbound-attribute] Attribute `vars` on type `Unknown | None` is possibly unbound
++ alerta/database/backends/postgres/base.py:386:62: warning[possibly-undeclared-attribute] Attribute `vars` on type `Unknown | None` is possibly undeclared
+- alerta/database/backends/postgres/base.py:1540:57: warning[possibly-unbound-attribute] Attribute `DEFAULT_INFORM_SEVERITY` on type `Unknown | AlarmModel` is possibly unbound
++ alerta/database/backends/postgres/base.py:1540:57: warning[possibly-undeclared-attribute] Attribute `DEFAULT_INFORM_SEVERITY` on type `Unknown | AlarmModel` is possibly undeclared
+- alerta/views/alerts.py:310:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:310:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:358:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:358:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:385:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:385:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:406:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:406:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:433:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:433:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:460:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:460:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:486:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:486:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:511:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:511:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:536:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:536:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/alerts.py:561:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/alerts.py:561:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/blackouts.py:66:13: warning[possibly-unbound-attribute] Attribute `blackouts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/blackouts.py:66:13: warning[possibly-undeclared-attribute] Attribute `blackouts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/bulk.py:43:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/bulk.py:43:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/bulk.py:85:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/bulk.py:85:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/bulk.py:105:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/bulk.py:105:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/bulk.py:120:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/bulk.py:120:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/bulk.py:135:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/bulk.py:135:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/bulk.py:147:13: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/bulk.py:147:13: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/customers.py:47:72: warning[possibly-unbound-attribute] Attribute `customer` on type `Customer | None` is possibly unbound
++ alerta/views/customers.py:47:72: warning[possibly-undeclared-attribute] Attribute `customer` on type `Customer | None` is possibly undeclared
+- alerta/views/customers.py:48:55: warning[possibly-unbound-attribute] Attribute `serialize` on type `Customer | None` is possibly unbound
++ alerta/views/customers.py:48:55: warning[possibly-undeclared-attribute] Attribute `serialize` on type `Customer | None` is possibly undeclared
+- alerta/views/customers.py:58:13: warning[possibly-unbound-attribute] Attribute `customers` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/customers.py:58:13: warning[possibly-undeclared-attribute] Attribute `customers` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/groups.py:83:13: warning[possibly-unbound-attribute] Attribute `groups` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/groups.py:83:13: warning[possibly-undeclared-attribute] Attribute `groups` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/heartbeats.py:62:13: warning[possibly-unbound-attribute] Attribute `heartbeats` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/heartbeats.py:62:13: warning[possibly-undeclared-attribute] Attribute `heartbeats` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/keys.py:81:13: warning[possibly-unbound-attribute] Attribute `keys` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/keys.py:81:13: warning[possibly-undeclared-attribute] Attribute `keys` on type `Unknown | QueryBuilder` is possibly undeclared
+- alerta/views/oembed.py:35:21: warning[possibly-unbound-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly unbound
++ alerta/views/oembed.py:35:21: warning[possibly-undeclared-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` is possibly undeclare...*[Comment body truncated]*
+
+---
+
+_Marked ready for review by @Renkai on 2025-09-11 07:50_
+
+---
+
+_Review requested from @carljm by @Renkai on 2025-09-11 07:50_
+
+---
+
+_Review requested from @AlexWaygood by @Renkai on 2025-09-11 07:50_
+
+---
+
+_Review requested from @sharkdp by @Renkai on 2025-09-11 07:50_
+
+---
+
+_Review requested from @dcreager by @Renkai on 2025-09-11 07:50_
+
+---
+
+_Review requested from @MichaReiser by @Renkai on 2025-09-11 07:50_
+
+---
+
+_Renamed from "Rename "possibly-unbound" diagnostics to "possibly-undeclared"" to "[ty] Rename "possibly-unbound" diagnostics to "possibly-undeclared"" by @AlexWaygood on 2025-09-11 12:08_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-09-11 12:08_
+
+---
+
+_Label `diagnostics` added by @AlexWaygood on 2025-09-11 12:08_
+
+---
+
+_@carljm requested changes on 2025-09-12 21:40_
+
+Sorry, I should have replied to the latest comment on that issue. That wasn't from a ty team member and didn't necessarily describe a plan that we agreed on; I don't think "declared" is a good word to use here.
+
+The first step in fixing this issue is to make a proposal for updated wording and get consensus on it. It would probably be best to make your suggestion on the issue. My preference is still for "missing", at least when we are talking about methods or attributes.
+
+---
+
+_Comment by @Renkai on 2025-09-21 12:20_
+
+will use other names
+
+---
+
+_Closed by @Renkai on 2025-09-21 12:20_
+
+---

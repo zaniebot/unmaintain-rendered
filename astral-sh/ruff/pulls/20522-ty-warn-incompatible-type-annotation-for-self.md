@@ -1,0 +1,2451 @@
+```yaml
+number: 20522
+title: "[ty] Warn incompatible type annotation for self"
+type: pull_request
+state: closed
+author: Glyphack
+labels: []
+assignees: []
+draft: true
+base: main
+head: self-invalid-annotation
+created_at: 2025-09-22T21:36:31Z
+updated_at: 2025-09-29T09:09:42Z
+url: https://github.com/astral-sh/ruff/pull/20522
+synced_at: 2026-01-10T17:40:28Z
+```
+
+# [ty] Warn incompatible type annotation for self
+
+---
+
+_Pull request opened by @Glyphack on 2025-09-22 21:36_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+Part of: https://github.com/astral-sh/ty/issues/159
+
+Report incompatible type annotations for `self` argument.
+The type that is used should be either `typing.Self` or super type of the class.
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-22 21:38_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-09-22 21:38:22.662654457 +0000
++++ new-output.txt	2025-09-22 21:38:25.871682674 +0000
+@@ -1,6 +1,4732 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
++[crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = ProtocolInstance(
++    ProtocolInstanceType {
++        inner: FromClass(
++            NonGeneric(
++                ClassLiteral {
++                    name: Name("Copyable"),
++                    body_scope: ScopeId {
++                        [salsa id]: Id(a832),
++                        file: File {
++                            path: System(
++                                "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_self.py",
++                            ),
++                            status: Exists,
++                            permissions: Some(
++                                33188,
++                            ),
++                            revision: FileRevision(
++                                32440020350974012142473248262,
++                            ),
++                        },
++                        file_scope_id: FileScopeId(
++                            1,
++                        ),
++                    },
++                    known: None,
++                    deprecated: None,
++                    dataclass_params: None,
++                    dataclass_transformer_params: None,
++                },
++            ),
++        ),
++        _phantom: PhantomData<()>,
++    },
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NonInferableTypeVar(
++    BoundTypeVarInstance {
++        typevar: TypeVarInstance {
++            name: Name("C"),
++            definition: Some(
++                Definition {
++                    [salsa id]: Id(71e7),
++                    file: File {
++                        path: System(
++                            "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_self.py",
++                        ),
++                        status: Exists,
++                        permissions: Some(
++                            33188,
++                        ),
++                        revision: FileRevision(
++                            32440020350974012142473248262,
++                        ),
++                    },
++                    file_scope: FileScopeId(
++                        0,
++                    ),
++                    place: Symbol(
++                        ScopedSymbolId(
++                            4,
++                        ),
++                    ),
++                    kind: Assignment(
++                        AssignmentDefinitionKind {
++                            target_kind: Single,
++                            value: AstNodeRef {
++                                kind: ExprCall,
++                                range: 233..263,
++                            },
++                            target: AstNodeRef {
++                                kind: ExprName,
++                                range: 229..230,
++                            },
++                        },
++                    ),
++                    is_reexported: true,
++                },
++            ),
++            _bound_or_constraints: Some(
++                Eager(
++                    UpperBound(
++                        ProtocolInstance(
++                            ProtocolInstanceType {
++                                inner: FromClass(
++                                    NonGeneric(
++                                        ClassLiteral {
++                                            name: Name("Copyable"),
++                                            body_scope: ScopeId {
++                                                [salsa id]: Id(a832),
++                                                file: File {
++                                                    path: System(
++                                                        "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_self.py",
++                                                    ),
++                                                    status: Exists,
++                                                    permissions: Some(
++                                                        33188,
++                                                    ),
++                                                    revision: FileRevision(
++                                                        32440020350974012142473248262,
++                                                    ),
++                                                },
++                                                file_scope_id: FileScopeId(
++                                                    1,
++                                                ),
++                                            },
++                                            known: None,
++                                            deprecated: None,
++                                            dataclass_params: None,
++                                            dataclass_transformer_params: None,
++                                        },
++                                    ),
++                                ),
++                                _phantom: PhantomData<()>,
++                            },
++                        ),
++                    ),
++                ),
++            ),
++            explicit_variance: Some(
++                Invariant,
++            ),
++            _default: None,
++            kind: Legacy,
++        },
++        binding_context: Definition(
++            Definition {
++                [salsa id]: Id(71e9),
++                file: File {
++                    path: System(
++                        "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_self.py",
++                    ),
++                    status: Exists,
++                    permissions: Some(
++                        33188,
++                    ),
++                    revision: FileRevision(
++                        32440020350974012142473248262,
++                    ),
++                },
++                file_scope: FileScopeId(
++                    1,
++                ),
++                place: Symbol(
++                    ScopedSymbolId(
++                        1,
++                    ),
++                ),
++                kind: Function(
++                    AstNodeRef {
++                        kind: StmtFunctionDef,
++                        range: 296..339,
++                    },
++                ),
++                is_reexported: true,
++            },
++        ),
++    },
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = NominalInstance(
++    NominalInstanceType(
++        NonTuple(
++            NonGeneric(
++                ClassLiteral {
++                    name: Name("Other"),
++                    body_scope: ScopeId {
++                        [salsa id]: Id(a836),
++                        file: File {
++                            path: System(
++                                "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_self.py",
++                            ),
++                            status: Exists,
++                            permissions: Some(
++                                33188,
++                            ),
++                            revision: FileRevision(
++                                32440020350974012142473248262,
++                            ),
++                        },
++                        file_scope_id: FileScopeId(
++                            5,
++                        ),
++                    },
++                    known: None,
++                    deprecated: None,
++                    dataclass_params: None,
++                    dataclass_transformer_params: None,
++                },
++            ),
++        ),
++    ),
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NonInferableTypeVar(
++    BoundTypeVarInstance {
++        typevar: TypeVarInstance {
++            name: Name("T"),
++            definition: Some(
++                Definition {
++                    [salsa id]: Id(71ee),
++                    file: File {
++                        path: System(
++                            "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_self.py",
++                        ),
++                        status: Exists,
++                        permissions: Some(
++                            33188,
++                        ),
++                        revision: FileRevision(
++                            32440020350974012142473248262,
++                        ),
++                    },
++                    file_scope: FileScopeId(
++                        0,
++                    ),
++                    place: Symbol(
++                        ScopedSymbolId(
++                            7,
++                        ),
++                    ),
++                    kind: Assignment(
++                        AssignmentDefinitionKind {
++                            target_kind: Single,
++                            value: AstNodeRef {
++                                kind: ExprCall,
++                                range: 409..436,
++                            },
++                            target: AstNodeRef {
++                                kind: ExprName,
++                                range: 405..406,
++                            },
++                        },
++                    ),
++                    is_reexported: true,
++                },
++            ),
++            _bound_or_constraints: Some(
++                Eager(
++                    UpperBound(
++                        NominalInstance(
++                            NominalInstanceType(
++                                NonTuple(
++                                    NonGeneric(
++                                        ClassLiteral {
++                                            name: Name("Other"),
++                                            body_scope: ScopeId {
++                                                [salsa id]: Id(a836),
++                                                file: File {
++                                                    path: System(
++                                                        "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_self.py",
++                                                    ),
++                                                    status: Exists,
++                                                    permissions: Some(
++                                                        33188,
++                                                    ),
++                                                    revision: FileRevision(
++                                                        32440020350974012142473248262,
++                                                    ),
++                                                },
++                                                file_scope_id: FileScopeId(
++                                                    5,
++                                                ),
++                                            },
++                                            known: None,
++                                            deprecated: None,
++                                            dataclass_params: None,
++                                            dataclass_transformer_params: None,
++                                        },
++                                    ),
++                                ),
++                            ),
++                        ),
++                    ),
++                ),
++            ),
++            explicit_variance: Some(
++                Invariant,
++            ),
++            _default: None,
++            kind: Legacy,
++        },
++        binding_context: Definition(
++            Definition {
++                [salsa id]: Id(71f0),
++                file: File {
++                    path: System(
++                        "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_self.py",
++                    ),
++                    status: Exists,
++                    permissions: Some(
++                        33188,
++                    ),
++                    revision: FileRevision(
++                        32440020350974012142473248262,
++                    ),
++                },
++                file_scope: FileScopeId(
++                    5,
++                ),
++                place: Symbol(
++                    ScopedSymbolId(
++                        1,
++                    ),
++                ),
++                kind: Function(
++                    AstNodeRef {
++                        kind: StmtFunctionDef,
++                        range: 456..499,
++                    },
++                ),
++                is_reexported: true,
++            },
++        ),
++    },
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = NominalInstance(
++    NominalInstanceType(
++        NonTuple(
++            NonGeneric(
++                ClassLiteral {
++                    name: Name("Foo2"),
++                    body_scope: ScopeId {
++                        [salsa id]: Id(a94c),
++                        file: File {
++                            path: System(
++                                "/home/runner/work/ruff/ruff/typing/conformance/tests/generics_self_usage.py",
++                            ),
++                            status: Exists,
++                            permissions: Some(
++                                33188,
++                            ),
++                            revision: FileRevision(
++                                32440020350974012142472164922,
++                            ),
++                        },
++                        file_scope_id: FileScopeId(
++                            22,
++                        ),
++                    },
++                    known: None,
++                    deprecated: None,
++                    dataclass_params: None,
++                    dataclass_transformer_params: None,
++                },
++            ),
++        ),
++    ),
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NonInferableTypeVar(
++    BoundTypeVarInstance {
++        typevar: TypeVarInstance {
++            name: Name("TFoo2"),
++            definition: Some(
++                Definition {
++                    [salsa id]: Id(c5e4),
++                    file: File {
++                        path: System(
++                            "/home/runner/work/ruff/ruff/typing/conformance/tests/generics_self_usage.py",
++                        ),
++                        status: Exists,
++                        permissions: Some(
++                            33188,
++                        ),
++                        revision: FileRevision(
++                            32440020350974012142472164922,
++                        ),
++                    },
++                    file_scope: FileScopeId(
++                        0,
++                    ),
++                    place: Symbol(
++                        ScopedSymbolId(
++                            15,
++                        ),
++                    ),
++                    kind: Assignment(
++                        AssignmentDefinitionKind {
++                            target_kind: Single,
++                            value: AstNodeRef {
++                                kind: ExprCall,
++                                range: 1907..1937,
++                            },
++                            target: AstNodeRef {
++                                kind: ExprName,
++                                range: 1899..1904,
++                            },
++                        },
++                    ),
++                    is_reexported: true,
++                },
++            ),
++            _bound_or_constraints: Some(
++                Eager(
++                    UpperBound(
++                        NominalInstance(
++                            NominalInstanceType(
++                                NonTuple(
++                                    NonGeneric(
++                                        ClassLiteral {
++                                            name: Name("Foo2"),
++                                            body_scope: ScopeId {
++                                                [salsa id]: Id(a94c),
++                                                file: File {
++                                                    path: System(
++                                                        "/home/runner/work/ruff/ruff/typing/conformance/tests/generics_self_usage.py",
++                                                    ),
++                                                    status: Exists,
++                                                    permissions: Some(
++                                                        33188,
++                                                    ),
++                                                    revision: FileRevision(
++                                                        32440020350974012142472164922,
++                                                    ),
++                                                },
++                                                file_scope_id: FileScopeId(
++                                                    22,
++                                                ),
++                                            },
++                                            known: None,
++                                            deprecated: None,
++                                            dataclass_params: None,
++                                            dataclass_transformer_params: None,
++                                        },
++                                    ),
++                                ),
++                            ),
++                        ),
++                    ),
++                ),
++            ),
++            explicit_variance: Some(
++                Invariant,
++            ),
++            _default: None,
++            kind: Legacy,
++        },
++        binding_context: Definition(
++            Definition {
++                [salsa id]: Id(c5e6),
++                file: File {
++                    path: System(
++                        "/home/runner/work/ruff/ruff/typing/conformance/tests/generics_self_usage.py",
++                    ),
++                    status: Exists,
++                    permissions: Some(
++                        33188,
++                    ),
++                    revision: FileRevision(
++                        32440020350974012142472164922,
++                    ),
++                },
++                file_scope: FileScopeId(
++                    22,
++                ),
++                place: Symbol(
++                    ScopedSymbolId(
++                        2,
++                    ),
++                ),
++                kind: Function(
++                    AstNodeRef {
++                        kind: StmtFunctionDef,
++                        range: 2000..2058,
++                    },
++                ),
++                is_reexported: true,
++            },
++        ),
++    },
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = ProtocolInstance(
++    ProtocolInstanceType {
++        inner: FromClass(
++            NonGeneric(
++                ClassLiteral {
++                    name: Name("HasParent"),
++                    body_scope: ScopeId {
++                        [salsa id]: Id(a9e6),
++                        file: File {
++                            path: System(
++                                "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_generic.py",
++                            ),
++                            status: Exists,
++                            permissions: Some(
++                                33188,
++                            ),
++                            revision: FileRevision(
++                                32440020350974012142472164922,
++                            ),
++                        },
++                        file_scope_id: FileScopeId(
++                            18,
++                        ),
++                    },
++                    known: None,
++                    deprecated: None,
++                    dataclass_params: None,
++                    dataclass_transformer_params: None,
++                },
++            ),
++        ),
++        _phantom: PhantomData<()>,
++    },
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NonInferableTypeVar(
++    BoundTypeVarInstance {
++        typevar: TypeVarInstance {
++            name: Name("T"),
++            definition: Some(
++                Definition {
++                    [salsa id]: Id(c788),
++                    file: File {
++                        path: System(
++                            "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_generic.py",
++                        ),
++                        status: Exists,
++                        permissions: Some(
++                            33188,
++                        ),
++                        revision: FileRevision(
++                            32440020350974012142472164922,
++                        ),
++                    },
++                    file_scope: FileScopeId(
++                        0,
++                    ),
++                    place: Symbol(
++                        ScopedSymbolId(
++                            8,
++                        ),
++                    ),
++                    kind: Assignment(
++                        AssignmentDefinitionKind {
++                            target_kind: Single,
++                            value: AstNodeRef {
++                                kind: ExprCall,
++                                range: 253..265,
++                            },
++                            target: AstNodeRef {
++                                kind: ExprName,
++                                range: 249..250,
++                            },
++                        },
++                    ),
++                    is_reexported: true,
++                },
++            ),
++            _bound_or_constraints: None,
++            explicit_variance: Some(
++                Invariant,
++            ),
++            _default: None,
++            kind: Legacy,
++        },
++        binding_context: Definition(
++            Definition {
++                [salsa id]: Id(c7b5),
++                file: File {
++                    path: System(
++                        "/home/runner/work/ruff/ruff/typing/conformance/tests/protocols_generic.py",
++                    ),
++                    status: Exists,
++                    permissions: Some(
++                        33188,
++                    ),
++                    revision: FileRevision(
++                        32440020350974012142472164922,
++                    ),
++                },
++                file_scope: FileScopeId(
++                    18,
++                ),
++                place: Symbol(
++                    ScopedSymbolId(
++                        1,
++                    ),
++                ),
++                kind: Function(
++                    AstNodeRef {
++                        kind: StmtFunctionDef,
++                        range: 1896..1937,
++                    },
++                ),
++                is_reexported: true,
++            },
++        ),
++    },
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = NominalInstance(
++    NominalInstanceType(
++        NonTuple(
++            NonGeneric(
++                ClassLiteral {
++                    name: Name("A"),
++                    body_scope: ScopeId {
++                        [salsa id]: Id(aa0c),
++                        file: File {
++                            path: System(
++                                "/home/runner/work/ruff/ruff/typing/conformance/tests/narrowing_typeis.py",
++                            ),
++                            status: Exists,
++                            permissions: Some(
++                                33188,
++                            ),
++                            revision: FileRevision(
++                                32440020350974012142472164922,
++                            ),
++                        },
++                        file_scope_id: FileScopeId(
++                            5,
++                        ),
++                    },
++                    known: None,
++                    deprecated: None,
++                    dataclass_params: None,
++                    dataclass_transformer_params: None,
++                },
++            ),
++        ),
++    ),
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NonInferableTypeVar(
++    BoundTypeVarInstance {
++        typevar: TypeVarInstance {
++            name: Name("T_A"),
++            definition: Some(
++                Definition {
++                    [salsa id]: Id(d41d),
++                    file: File {
++                        path: System(
++                            "/home/runner/work/ruff/ruff/typing/conformance/tests/narrowing_typeis.py",
++                        ),
++                        status: Exists,
++                        permissions: Some(
++                            33188,
++                        ),
++                        revision: FileRevision(
++                            32440020350974012142472164922,
++                        ),
++                    },
++                    file_scope: FileScopeId(
++                        0,
++                    ),
++                    place: Symbol(
++                        ScopedSymbolId(
++                            18,
++                        ),
++                    ),
++                    kind: Assignment(
++                        AssignmentDefinitionKind {
++                            target_kind: Single,
++                            value: AstNodeRef {
++                                kind: ExprCall,
++                                range: 1153..1178,
++                            },
++                            target: AstNodeRef {
++                                kind: ExprName,
++                                range: 1147..1150,
++                            },
++                        },
++                    ),
++                    is_reexported: true,
++                },
++            ),
++            _bound_or_constraints: Some(
++                Eager(
++                    UpperBound(
++                        NominalInstance(
++                            NominalInstanceType(
++                                NonTuple(
++                                    NonGeneric(
++                                        ClassLiteral {
++                                            name: Name("A"),
++                                            body_scope: ScopeId {
++                                                [salsa id]: Id(aa0c),
++                                                file: File {
++                                                    path: System(
++                                                        "/home/runner/work/ruff/ruff/typing/conformance/tests/narrowing_typeis.py",
++                                                    ),
++                                                    status: Exists,
++                                                    permissions: Some(
++                                                        33188,
++                                                    ),
++                                                    revision: FileRevision(
++                                                        32440020350974012142472164922,
++                                                    ),
++                                                },
++                                                file_scope_id: FileScopeId(
++                                                    5,
++                                                ),
++                                            },
++                                            known: None,
++                                            deprecated: None,
++                                            dataclass_params: None,
++                                            dataclass_transformer_params: None,
++                                        },
++                                    ),
++                                ),
++                            ),
++                        ),
++                    ),
++                ),
++            ),
++            explicit_variance: Some(
++                Invariant,
++            ),
++            _default: None,
++            kind: Legacy,
++        },
++        binding_context: Definition(
++            Definition {
++                [salsa id]: Id(d42b),
++                file: File {
++                    path: System(
++                        "/home/runner/work/ruff/ruff/typing/conformance/tests/narrowing_typeis.py",
++                    ),
++                    status: Exists,
++                    permissions: Some(
++                        33188,
++                    ),
++                    revision: FileRevision(
++                        32440020350974012142472164922,
++                    ),
++                },
++                file_scope: FileScopeId(
++                    5,
++                ),
++                place: Symbol(
++                    ScopedSymbolId(
++                        11,
++                    ),
++                ),
++                kind: Function(
++                    AstNodeRef {
++                        kind: StmtFunctionDef,
++                        range: 1568..1658,
++                    },
++                ),
++                is_reexported: true,
++            },
++        ),
++    },
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = NominalInstance(
++    NominalInstanceType(
++        NonTuple(
++            Generic(
++                GenericAlias {
++                    origin: ClassLiteral {
++                        name: Name("Class4"),
++                        body_scope: ScopeId {
++                            [salsa id]: Id(aa30),
++                            file: File {
++                                path: System(
++                                    "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                ),
++                                status: Exists,
++                                permissions: Some(
++                                    33188,
++                                ),
++                                revision: FileRevision(
++                                    32440020350974012142471081582,
++                                ),
++                            },
++                            file_scope_id: FileScopeId(
++                                6,
++                            ),
++                        },
++                        known: None,
++                        deprecated: None,
++                        dataclass_params: None,
++                        dataclass_transformer_params: None,
++                    },
++                    specialization: Specialization {
++                        generic_context: GenericContext {
++                            variables: {
++                                BoundTypeVarInstance {
++                                    typevar: TypeVarInstance {
++                                        name: Name("T"),
++                                        definition: Some(
++                                            Definition {
++                                                [salsa id]: Id(d466),
++                                                file: File {
++                                                    path: System(
++                                                        "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                                    ),
++                                                    status: Exists,
++                                                    permissions: Some(
++                                                        33188,
++                                                    ),
++                                                    revision: FileRevision(
++                                                        32440020350974012142471081582,
++                                                    ),
++                                                },
++                                                file_scope: FileScopeId(
++                                                    0,
++                                                ),
++                                                place: Symbol(
++                                                    ScopedSymbolId(
++                                                        6,
++                                                    ),
++                                                ),
++                                                kind: Assignment(
++                                                    AssignmentDefinitionKind {
++                                                        target_kind: Single,
++                                                        value: AstNodeRef {
++                                                            kind: ExprCall,
++                                                            range: 264..276,
++                                                        },
++                                                        target: AstNodeRef {
++                                                            kind: ExprName,
++                                                            range: 260..261,
++                                                        },
++                                                    },
++                                                ),
++                                                is_reexported: true,
++                                            },
++                                        ),
++                                        _bound_or_constraints: None,
++                                        explicit_variance: Some(
++                                            Invariant,
++                                        ),
++                                        _default: None,
++                                        kind: Legacy,
++                                    },
++                                    binding_context: Definition(
++                                        Definition {
++                                            [salsa id]: Id(d472),
++                                            file: File {
++                                                path: System(
++                                                    "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                                ),
++                                                status: Exists,
++                                                permissions: Some(
++                                                    33188,
++                                                ),
++                                                revision: FileRevision(
++                                                    32440020350974012142471081582,
++                                                ),
++                                            },
++                                            file_scope: FileScopeId(
++                                                0,
++                                            ),
++                                            place: Symbol(
++                                                ScopedSymbolId(
++                                                    12,
++                                                ),
++                                            ),
++                                            kind: Class(
++                                                AstNodeRef {
++                                                    kind: StmtClassDef,
++                                                    range: 1151..1227,
++                                                },
++                                            ),
++                                            is_reexported: true,
++                                        },
++                                    ),
++                                },
++                            },
++                        },
++                        types: [
++                            Dynamic(
++                                Unknown,
++                            ),
++                        ],
++                        materialization_kind: None,
++                        tuple_inner: None,
++                    },
++                },
++            ),
++        ),
++    ),
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NominalInstance(
++    NominalInstanceType(
++        NonTuple(
++            Generic(
++                GenericAlias {
++                    origin: ClassLiteral {
++                        name: Name("Class4"),
++                        body_scope: ScopeId {
++                            [salsa id]: Id(aa30),
++                            file: File {
++                                path: System(
++                                    "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                ),
++                                status: Exists,
++                                permissions: Some(
++                                    33188,
++                                ),
++                                revision: FileRevision(
++                                    32440020350974012142471081582,
++                                ),
++                            },
++                            file_scope_id: FileScopeId(
++                                6,
++                            ),
++                        },
++                        known: None,
++                        deprecated: None,
++                        dataclass_params: None,
++                        dataclass_transformer_params: None,
++                    },
++                    specialization: Specialization {
++                        generic_context: GenericContext {
++                            variables: {
++                                BoundTypeVarInstance {
++                                    typevar: TypeVarInstance {
++                                        name: Name("T"),
++                                        definition: Some(
++                                            Definition {
++                                                [salsa id]: Id(d466),
++                                                file: File {
++                                                    path: System(
++                                                        "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                                    ),
++                                                    status: Exists,
++                                                    permissions: Some(
++                                                        33188,
++                                                    ),
++                                                    revision: FileRevision(
++                                                        32440020350974012142471081582,
++                                                    ),
++                                                },
++                                                file_scope: FileScopeId(
++                                                    0,
++                                                ),
++                                                place: Symbol(
++                                                    ScopedSymbolId(
++                                                        6,
++                                                    ),
++                                                ),
++                                                kind: Assignment(
++                                                    AssignmentDefinitionKind {
++                                                        target_kind: Single,
++                                                        value: AstNodeRef {
++                                                            kind: ExprCall,
++                                                            range: 264..276,
++                                                        },
++                                                        target: AstNodeRef {
++                                                            kind: ExprName,
++                                                            range: 260..261,
++                                                        },
++                                                    },
++                                                ),
++                                                is_reexported: true,
++                                            },
++                                        ),
++                                        _bound_or_constraints: None,
++                                        explicit_variance: Some(
++                                            Invariant,
++                                        ),
++                                        _default: None,
++                                        kind: Legacy,
++                                    },
++                                    binding_context: Definition(
++                                        Definition {
++                                            [salsa id]: Id(d472),
++                                            file: File {
++                                                path: System(
++                                                    "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                                ),
++                                                status: Exists,
++                                                permissions: Some(
++                                                    33188,
++                                                ),
++                                                revision: FileRevision(
++                                                    32440020350974012142471081582,
++                                                ),
++                                            },
++                                            file_scope: FileScopeId(
++                                                0,
++                                            ),
++                                            place: Symbol(
++                                                ScopedSymbolId(
++                                                    12,
++                                                ),
++                                            ),
++                                            kind: Class(
++                                                AstNodeRef {
++                                                    kind: StmtClassDef,
++                                                    range: 1151..1227,
++                                                },
++                                            ),
++                                            is_reexported: true,
++                                        },
++                                    ),
++                                },
++                            },
++                        },
++                        types: [
++                            NominalInstance(
++                                NominalInstanceType(
++                                    NonTuple(
++                                        NonGeneric(
++                                            ClassLiteral {
++                                                name: Name("int"),
++                                                body_scope: ScopeId {
++                                                    [salsa id]: Id(13a0),
++                                                    file: File {
++                                                        path: Vendored(
++                                                            VendoredPathBuf(
++                                                                "stdlib/builtins.pyi",
++                                                            ),
++                                                        ),
++                                                        status: Exists,
++                                                        permissions: Some(
++                                                            292,
++                                                        ),
++                                                        revision: FileRevision(
++                                                            3207854063,
++                                                        ),
++                                                    },
++                                                    file_scope_id: FileScopeId(
++                                                        65,
++                                                    ),
++                                                },
++                                                known: Some(
++                                                    Int,
++                                                ),
++                                                deprecated: None,
++                                                dataclass_params: None,
++                                                dataclass_transformer_params: None,
++                                            },
++                                        ),
++                                    ),
++                                ),
++                            ),
++                        ],
++                        materialization_kind: None,
++                        tuple_inner: None,
++                    },
++                },
++            ),
++        ),
++    ),
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = NominalInstance(
++    NominalInstanceType(
++        NonTuple(
++            Generic(
++                GenericAlias {
++                    origin: ClassLiteral {
++                        name: Name("Class5"),
++                        body_scope: ScopeId {
++                            [salsa id]: Id(aa32),
++                            file: File {
++                                path: System(
++                                    "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                ),
++                                status: Exists,
++                                permissions: Some(
++                                    33188,
++                                ),
++                                revision: FileRevision(
++                                    32440020350974012142471081582,
++                                ),
++                            },
++                            file_scope_id: FileScopeId(
++                                8,
++                            ),
++                        },
++                        known: None,
++                        deprecated: None,
++                        dataclass_params: None,
++                        dataclass_transformer_params: None,
++                    },
++                    specialization: Specialization {
++                        generic_context: GenericContext {
++                            variables: {
++                                BoundTypeVarInstance {
++                                    typevar: TypeVarInstance {
++                                        name: Name("T"),
++                                        definition: Some(
++                                            Definition {
++                                                [salsa id]: Id(d466),
++                                                file: File {
++                                                    path: System(
++                                                        "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                                    ),
++                                                    status: Exists,
++                                                    permissions: Some(
++                                                        33188,
++                                                    ),
++                                                    revision: FileRevision(
++                                                        32440020350974012142471081582,
++                                                    ),
++                                                },
++                                                file_scope: FileScopeId(
++                                                    0,
++                                                ),
++                                                place: Symbol(
++                                                    ScopedSymbolId(
++                                                        6,
++                                                    ),
++                                                ),
++                                                kind: Assignment(
++                                                    AssignmentDefinitionKind {
++                                                        target_kind: Single,
++                                                        value: AstNodeRef {
++                                                            kind: ExprCall,
++                                                            range: 264..276,
++                                                        },
++                                                        target: AstNodeRef {
++                                                            kind: ExprName,
++                                                            range: 260..261,
++                                                        },
++                                                    },
++                                                ),
++                                                is_reexported: true,
++                                            },
++                                        ),
++                                        _bound_or_constraints: None,
++                                        explicit_variance: Some(
++                                            Invariant,
++                                        ),
++                                        _default: None,
++                                        kind: Legacy,
++                                    },
++                                    binding_context: Definition(
++                                        Definition {
++                                            [salsa id]: Id(d47f),
++                                            file: File {
++                                                path: System(
++                                                    "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                                ),
++                                                status: Exists,
++                                                permissions: Some(
++                                                    33188,
++                                                ),
++                                                revision: FileRevision(
++                                                    32440020350974012142471081582,
++                                                ),
++                                            },
++                                            file_scope: FileScopeId(
++                                                0,
++                                            ),
++                                            place: Symbol(
++                                                ScopedSymbolId(
++                                                    14,
++                                                ),
++                                            ),
++                                            kind: Class(
++                                                AstNodeRef {
++                                                    kind: StmtClassDef,
++                                                    range: 1286..1603,
++                                                },
++                                            ),
++                                            is_reexported: true,
++                                        },
++                                    ),
++                                },
++                            },
++                        },
++                        types: [
++                            Dynamic(
++                                Unknown,
++                            ),
++                        ],
++                        materialization_kind: None,
++                        tuple_inner: None,
++                    },
++                },
++            ),
++        ),
++    ),
++)
++[crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NominalInstance(
++    NominalInstanceType(
++        NonTuple(
++            Generic(
++                GenericAlias {
++                    origin: ClassLiteral {
++                        name: Name("Class5"),
++                        body_scope: ScopeId {
++                            [salsa id]: Id(aa32),
++                            file: File {
++                                path: System(
++                                    "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                ),
++                                status: Exists,
++                                permissions: Some(
++                                    33188,
++                                ),
++                                revision: FileRevision(
++                                    32440020350974012142471081582,
++                                ),
++                            },
++                            file_scope_id: FileScopeId(
++                                8,
++                            ),
++                        },
++                        known: None,
++                        deprecated: None,
++                        dataclass_params: None,
++                        dataclass_transformer_params: None,
++                    },
++                    specialization: Specialization {
++                        generic_context: GenericContext {
++                            variables: {
++                                BoundTypeVarInstance {
++                                    typevar: TypeVarInstance {
++                                        name: Name("T"),
++                                        definition: Some(
++                                            Definition {
++                                                [salsa id]: Id(d466),
++                                                file: File {
++                                                    path: System(
++                                                        "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                                    ),
++                                                    status: Exists,
++                                                    permissions: Some(
++                                                        33188,
++                                                    ),
++                                                    revision: FileRevision(
++                                                        32440020350974012142471081582,
++                                                    ),
++                                                },
++                                                file_scope: FileScopeId(
++                                                    0,
++                                                ),
++                                                place: Symbol(
++                                                    ScopedSymbolId(
++                                                        6,
++                                                    ),
++                                                ),
++                                                kind: Assignment(
++                                                    AssignmentDefinitionKind {
++                                                        target_kind: Single,
++                                                        value: AstNodeRef {
++                                                            kind: ExprCall,
++                                                            range: 264..276,
++                                                        },
++                                                        target: AstNodeRef {
++                                                            kind: ExprName,
++                                                            range: 260..261,
++                                                        },
++                                                    },
++                                                ),
++                                                is_reexported: true,
++                                            },
++                                        ),
++                                        _bound_or_constraints: None,
++                                        explicit_variance: Some(
++                                            Invariant,
++                                        ),
++                                        _default: None,
++                                        kind: Legacy,
++                                    },
++                                    binding_context: Definition(
++                                        Definition {
++                                            [salsa id]: Id(d47f),
++                                            file: File {
++                                                path: System(
++                                                    "/home/runner/work/ruff/ruff/typing/conformance/tests/constructors_call_init.py",
++                                                ),
++                                                status: Exists,
++                                                permissions: Some(
++                                                    33188,
++                                                ),
++                                                revision: FileRevision(
++                                                    32440020350974012142471081582,
++                                                ),
++                                            },
++                                            file_scope: FileScopeId(
++                                                0,
++                                            ),
++                                            place: Symbol(
++                                                ScopedSymbolId(
++                                                    14,
++                                                ),
++                                            ),
++                                            kind: Class(
++                                                AstNodeRef {
++                                                    kind: StmtClassDef,
++                                                    range: 1286..1603,
++                                                },
++                                            ),
++                                            is_reexported: true,
++                                        },
++                                    ),
++                                },
++                            },
++                        },
++                        types: [
++                            NominalInstance(
++                                NominalInstanceType(
++                                    NonTuple(
++                                        Generic(
++                                            GenericAlias {
++                                                origin: ClassLiteral {
++                                                    name: Name("list"),
++                                                    body_scope: ScopeId {
++                                                        [salsa id]: Id(6187),
++                                                        file: File {
++                                                            path: Vendored(
++                                                                VendoredPathBuf(
++                                                                    "stdlib/builtins.pyi",
++                                                                ),
++                                                            ),
++                                                            status: Exists,
++                                                            permissions: Some(
++                                                                292,
++                                                            ),
++                                                            revision: FileRevision(
++                                                                3207854063,
++                                                            ),
++                                                        },
++                                                        file_scope_id: FileScopeId(
++                                                            552,
++                                                        ),
++                                                    },
++                                                    known: Some(
++                                                        List,
++                                                    ),
++                                                    deprecated: None,
++                                                    dataclass_params: None,
++                                                    dataclass_transformer_params: None,
++                                                },
++                                                specialization: Specialization {
++                                                    generic_context: GenericContext {
++                                                        variables: {
++                                                            BoundTypeVarInstance {
++                                                                typevar: TypeVarInstance {
++                                                                    name: Name("_T"),
++                                                                    definition: Some(
++                                                                        Definition {
++                                                                            [salsa id]: Id(4ef1),
++                                                                            file: File {
++                                                                                path: Vendored(
++                                                                                    VendoredPathBuf(
++                                                                                        "stdlib/builtins.pyi",
++                                                                                    ),
++                                                                                ),
++                                                                                status: Exists,
++                                                                                permissions: Some(
++                                                                                    292,
++                                                                                ),
++                                                                                revision: FileRevision(
++                                                                                    3207854063,
++                                                                                ),
++                                                                            },
++                                                                            file_scope: FileScopeId(
++                                                                                0,
++                                                                            ),
++                                                                            place: Symbol(
++                                                      ...*[Comment body truncated]*
+
+---
+
+_Renamed from "[ty] Warn user for incompatible type annotation for self" to "[ty] Warn incompatible type annotation for self" by @Glyphack on 2025-09-22 21:46_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-22 21:49_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bidict (https://github.com/jab/bidict)
++ [crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = NominalInstance(
++     NominalInstanceType(
++         NonTuple(
++             Generic(
++                 GenericAlias {
++                     origin: ClassLiteral {
++                         name: Name("BidictBase"),
++                         body_scope: ScopeId {
++                             [salsa id]: Id(a802),
++                             file: File {
++                                 path: System(
++                                     ".../projects/bidict/bidict/_base.py",
++                                 ),
++                                 status: Exists,
++                                 permissions: Some(
++                                     33188,
++                                 ),
++                                 revision: FileRevision(
++                                     32440021420885168417550838277,
++                                 ),
++                             },
++                             file_scope_id: FileScopeId(
++                                 2,
++                             ),
++                         },
++                         known: None,
++                         deprecated: None,
++                         dataclass_params: None,
++                         dataclass_transformer_params: None,
++                     },
++                     specialization: Specialization {
++                         generic_context: GenericContext {
++                             variables: {
++                                 BoundTypeVarInstance {
++                                     typevar: TypeVarInstance {
++                                         name: Name("KT"),
++                                         definition: Some(
++                                             Definition {
++                                                 [salsa id]: Id(cc05),
++                                                 file: File {
++                                                     path: System(
++                                                         ".../projects/bidict/bidict/_typing.py",
++                                                     ),
++                                                     status: Exists,
++                                                     permissions: Some(
++                                                         33188,
++                                                     ),
++                                                     revision: FileRevision(
++                                                         32440021420885168417550838277,
++                                                     ),
++                                                 },
++                                                 file_scope: FileScopeId(
++                                                     0,
++                                                 ),
++                                                 place: Symbol(
++                                                     ScopedSymbolId(
++                                                         5,
++                                                     ),
++                                                 ),
++                                                 kind: Assignment(
++                                                     AssignmentDefinitionKind {
++                                                         target_kind: Single,
++                                                         value: AstNodeRef {
++                                                             kind: ExprCall,
++                                                             range: 459..474,
++                                                         },
++                                                         target: AstNodeRef {
++                                                             kind: ExprName,
++                                                             range: 454..456,
++                                                         },
++                                                     },
++                                                 ),
++                                                 is_reexported: true,
++                                             },
++                                         ),
++                                         _bound_or_constraints: None,
++                                         explicit_variance: Some(
++                                             Invariant,
++                                         ),
++                                         _default: None,
++                                         kind: Legacy,
++                                     },
++                                     binding_context: Definition(
++                                         Definition {
++                                             [salsa id]: Id(b0bc),
++                                             file: File {
++                                                 path: System(
++                                                     ".../projects/bidict/bidict/_base.py",
++                                                 ),
++                                                 status: Exists,
++                                                 permissions: Some(
++                                                     33188,
++                                                 ),
++                                                 revision: FileRevision(
++                                                     32440021420885168417550838277,
++                                                 ),
++                                             },
++                                             file_scope: FileScopeId(
++                                                 0,
++                                             ),
++                                             place: Symbol(
++                                                 ScopedSymbolId(
++                                                     39,
++                                                 ),
++                                             ),
++                                             kind: Class(
++                                                 AstNodeRef {
++                                                     kind: StmtClassDef,
++                                                     range: 2113..23986,
++                                                 },
++                                             ),
++                                             is_reexported: true,
++                                         },
++                                     ),
++                                 },
++                                 BoundTypeVarInstance {
++                                     typevar: TypeVarInstance {
++                                         name: Name("VT"),
++                                         definition: Some(
++                                             Definition {
++                                                 [salsa id]: Id(cc06),
++                                                 file: File {
++                                                     path: System(
++                                                         ".../projects/bidict/bidict/_typing.py",
++                                                     ),
++                                                     status: Exists,
++                                                     permissions: Some(
++                                                         33188,
++                                                     ),
++                                                     revision: FileRevision(
++                                                         32440021420885168417550838277,
++                                                     ),
++                                                 },
++                                                 file_scope: FileScopeId(
++                                                     0,
++                                                 ),
++                                                 place: Symbol(
++                                                     ScopedSymbolId(
++                                                         6,
++                                                     ),
++                                                 ),
++                                                 kind: Assignment(
++                                                     AssignmentDefinitionKind {
++                                                         target_kind: Single,
++                                                         value: AstNodeRef {
++                                                             kind: ExprCall,
++                                                             range: 480..495,
++                                                         },
++                                                         target: AstNodeRef {
++                                                             kind: ExprName,
++                                                             range: 475..477,
++                                                         },
++                                                     },
++                                                 ),
++                                                 is_reexported: true,
++                                             },
++                                         ),
++                                         _bound_or_constraints: None,
++                                         explicit_variance: Some(
++                                             Invariant,
++                                         ),
++                                         _default: None,
++                                         kind: Legacy,
++                                     },
++                                     binding_context: Definition(
++                                         Definition {
++                                             [salsa id]: Id(b0bc),
++                                             file: File {
++                                                 path: System(
++                                                     ".../projects/bidict/bidict/_base.py",
++                                                 ),
++                                                 status: Exists,
++                                                 permissions: Some(
++                                                     33188,
++                                                 ),
++                                                 revision: FileRevision(
++                                                     32440021420885168417550838277,
++                                                 ),
++                                             },
++                                             file_scope: FileScopeId(
++                                                 0,
++                                             ),
++                                             place: Symbol(
++                                                 ScopedSymbolId(
++                                                     39,
++                                                 ),
++                                             ),
++                                             kind: Class(
++                                                 AstNodeRef {
++                                                     kind: StmtClassDef,
++                                                     range: 2113..23986,
++                                                 },
++                                             ),
++                                             is_reexported: true,
++                                         },
++                                     ),
++                                 },
++                             },
++                         },
++                         types: [
++                             Dynamic(
++                                 Unknown,
++                             ),
++                             Dynamic(
++                                 Unknown,
++                             ),
++                         ],
++                         materialization_kind: None,
++                         tuple_inner: None,
++                     },
++                 },
++             ),
++         ),
++     ),
++ )
++ [crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NonInferableTypeVar(
++     BoundTypeVarInstance {
++         typevar: TypeVarInstance {
++             name: Name("BT"),
++             definition: Some(
++                 Definition {
++                     [salsa id]: Id(b023),
++                     file: File {
++                         path: System(
++                             ".../projects/bidict/bidict/_base.py",
++                         ),
++                         status: Exists,
++                         permissions: Some(
++                             33188,
++                         ),
++                         revision: FileRevision(
++                             32440021420885168417550838277,
++                         ),
++                     },
++                     file_scope: FileScopeId(
++                         0,
++                     ),
++                     place: Symbol(
++                         ScopedSymbolId(
++                             37,
++                         ),
++                     ),
++                     kind: Assignment(
++                         AssignmentDefinitionKind {
++                             target_kind: Single,
++                             value: AstNodeRef {
++                                 kind: ExprCall,
++                                 range: 1774..1823,
++                             },
++                             target: AstNodeRef {
++                                 kind: ExprName,
++                                 range: 1769..1771,
++                             },
++                         },
++                     ),
++                     is_reexported: true,
++                 },
++             ),
++             _bound_or_constraints: Some(
++                 Eager(
++                     UpperBound(
++                         NominalInstance(
++                             NominalInstanceType(
++                                 NonTuple(
++                                     Generic(
++                                         GenericAlias {
++                                             origin: ClassLiteral {
++                                                 name: Name("BidictBase"),
++                                                 body_scope: ScopeId {
++                                                     [salsa id]: Id(a802),
++                                                     file: File {
++                                                         path: System(
++                                                             ".../projects/bidict/bidict/_base.py",
++                                                         ),
++                                                         status: Exists,
++                                                         permissions: Some(
++                                                             33188,
++                                                         ),
++                                                         revision: FileRevision(
++                                                             32440021420885168417550838277,
++                                                         ),
++                                                     },
++                                                     file_scope_id: FileScopeId(
++                                                         2,
++                                                     ),
++                                                 },
++                                                 known: None,
++                                                 deprecated: None,
++                                                 dataclass_params: None,
++                                                 dataclass_transformer_params: None,
++                                             },
++                                             specialization: Specialization {
++                                                 generic_context: GenericContext {
++                                                     variables: {
++                                                         BoundTypeVarInstance {
++                                                             typevar: TypeVarInstance {
++                                                                 name: Name("KT"),
++                                                                 definition: Some(
++                                                                     Definition {
++                                                                         [salsa id]: Id(cc05),
++                                                                         file: File {
++                                                                             path: System(
++                                                                                 ".../projects/bidict/bidict/_typing.py",
++                                                                             ),
++                                                                             status: Exists,
++                                                                             permissions: Some(
++                                                                                 33188,
++                                                                             ),
++                                                                             revision: FileRevision(
++                                                                                 32440021420885168417550838277,
++                                                                             ),
++                                                                         },
++                                                                         file_scope: FileScopeId(
++                                                                             0,
++                                                                         ),
++                                                                         place: Symbol(
++                                                                             ScopedSymbolId(
++                                                                                 5,
++                                                                             ),
++                                                                         ),
++                                                                         kind: Assignment(
++                                                                             AssignmentDefinitionKind {
++                                                                                 target_kind: Single,
++                                                                                 value: AstNodeRef {
++                                                                                     kind: ExprCall,
++                                                                                     range: 459..474,
++                                                                                 },
++                                                                                 target: AstNodeRef {
++                                                                                     kind: ExprName,
++                                                                                     range: 454..456,
++                                                                                 },
++                                                                             },
++                                                                         ),
++                                                                         is_reexported: true,
++                                                                     },
++                                                                 ),
++                                                                 _bound_or_constraints: None,
++                                                                 explicit_variance: Some(
++                                                                     Invariant,
++                                                                 ),
++                                                                 _default: None,
++                                                                 kind: Legacy,
++                                                             },
++                                                             binding_context: Definition(
++                                                                 Definition {
++                                                                     [salsa id]: Id(b0bc),
++                                                                     file: File {
++                                                                         path: System(
++                                                                             ".../projects/bidict/bidict/_base.py",
++                                                                         ),
++                                                                         status: Exists,
++                                                                         permissions: Some(
++                                                                             33188,
++                                                                         ),
++                                                                         revision: FileRevision(
++                                                                             32440021420885168417550838277,
++                                                                         ),
++                                                                     },
++                                                                     file_scope: FileScopeId(
++                                                                         0,
++                                                                     ),
++                                                                     place: Symbol(
++                                                                         ScopedSymbolId(
++                                                                             39,
++                                                                         ),
++                                                                     ),
++                                                                     kind: Class(
++                                                                         AstNodeRef {
++                                                                             kind: StmtClassDef,
++                                                                             range: 2113..23986,
++                                                                         },
++                                                                     ),
++                                                                     is_reexported: true,
++                                                                 },
++                                                             ),
++                                                         },
++                                                         BoundTypeVarInstance {
++                                                             typevar: TypeVarInstance {
++                                                                 name: Name("VT"),
++                                                                 definition: Some(
++                                                                     Definition {
++                                                                         [salsa id]: Id(cc06),
++                                                                         file: File {
++                                                                             path: System(
++                                                                                 ".../projects/bidict/bidict/_typing.py",
++                                                                             ),
++                                                                             status: Exists,
++                                                                             permissions: Some(
++                                                                                 33188,
++                                                                             ),
++                                                                             revision: FileRevision(
++                                                                                 32440021420885168417550838277,
++                                                                             ),
++                                                                         },
++                                                                         file_scope: FileScopeId(
++                                                                             0,
++                                                                         ),
++                                                                         place: Symbol(
++                                                                             ScopedSymbolId(
++                                                                                 6,
++                                                                             ),
++                                                                         ),
++                                                                         kind: Assignment(
++                                                                             AssignmentDefinitionKind {
++                                                                                 target_kind: Single,
++                                                                                 value: AstNodeRef {
++                                                                                     kind: ExprCall,
++                                                                                     range: 480..495,
++                                                                                 },
++                                                                                 target: AstNodeRef {
++                                                                                     kind: ExprName,
++                                                                                     range: 475..477,
++                                                                                 },
++                                                                             },
++                                                                         ),
++                                                                         is_reexported: true,
++                                                                     },
++                                                                 ),
++                                                                 _bound_or_constraints: None,
++                                                                 explicit_variance: Some(
++                                                                     Invariant,
++                                                                 ),
++                                                                 _default: None,
++                                                                 kind: Legacy,
++                                                             },
++                                                             binding_context: Definition(
++                                                                 Definition {
++                                                                     [salsa id]: Id(b0bc),
++                                                                     file: File {
++                                                                         path: System(
++                                                                             ".../projects/bidict/bidict/_base.py",
++                                                                         ),
++                                                                         status: Exists,
++                                                                         permissions: Some(
++                                                                             33188,
++                                                                         ),
++                                                                         revision: FileRevision(
++                                                                             32440021420885168417550838277,
++                                                                         ),
++                                                                     },
++                                                                     file_scope: FileScopeId(
++                                                                         0,
++                                                                     ),
++                                                                     place: Symbol(
++                                                                         ScopedSymbolId(
++                                                                             39,
++                                                                         ),
++                                                                     ),
++                                                                     kind: Class(
++                                                                         AstNodeRef {
++                                                                             kind: StmtClassDef,
++                                                                             range: 2113..23986,
++                                                                         },
++                                                                     ),
++                                                                     is_reexported: true,
++                                                                 },
++                                                             ),
++                                                         },
++                                                     },
++                                                 },
++                                                 types: [
++                                                     Dynamic(
++                                                         Any,
++                                                     ),
++                                                     Dynamic(
++                                                         Any,
++                                                     ),
++                                                 ],
++                                                 materialization_kind: None,
++                                                 tuple_inner: None,
++                                             },
++                                         },
++                                     ),
++                                 ),
++                             ),
++                         ),
++                     ),
++                 ),
++             ),
++             explicit_variance: Some(
++                 Invariant,
++             ),
++             _default: None,
++             kind: Legacy,
++         },
++         binding_context: Definition(
++             Definition {
++                 [salsa id]: Id(b09a),
++                 file: File {
++                     path: System(
++                         ".../projects/bidict/bidict/_base.py",
++                     ),
++                     status: Exists,
++                     permissions: Some(
++                         33188,
++                     ),
++                     revision: FileRevision(
++                         32440021420885168417550838277,
++                     ),
++                 },
++                 file_scope: FileScopeId(
++                     2,
++                 ),
++                 place: Symbol(
++                     ScopedSymbolId(
++                         52,
++                     ),
++                 ),
++                 kind: Function(
++                     AstNodeRef {
++                         kind: StmtFunctionDef,
++                         range: 20645..20771,
++                     },
++                 ),
++                 is_reexported: true,
++             },
++         ),
++     },
++ )
++ [crates/ty_python_semantic/src/types/infer/builder.rs:2333:33] should_be_subtype = NominalInstance(
++     NominalInstanceType(
++         NonTuple(
++             Generic(
++                 GenericAlias {
++                     origin: ClassLiteral {
++                         name: Name("BidictBase"),
++                         body_scope: ScopeId {
++                             [salsa id]: Id(a802),
++                             file: File {
++                                 path: System(
++                                     ".../projects/bidict/bidict/_base.py",
++                                 ),
++                                 status: Exists,
++                                 permissions: Some(
++                                     33188,
++                                 ),
++                                 revision: FileRevision(
++                                     32440021420885168417550838277,
++                                 ),
++                             },
++                             file_scope_id: FileScopeId(
++                                 2,
++                             ),
++                         },
++                         known: None,
++                         deprecated: None,
++                         dataclass_params: None,
++                         dataclass_transformer_params: None,
++                     },
++                     specialization: Specialization {
++                         generic_context: GenericContext {
++                             variables: {
++                                 BoundTypeVarInstance {
++                                     typevar: TypeVarInstance {
++                                         name: Name("KT"),
++                                         definition: Some(
++                                             Definition {
++                                                 [salsa id]: Id(cc05),
++                                                 file: File {
++                                                     path: System(
++                                                         ".../projects/bidict/bidict/_typing.py",
++                                                     ),
++                                                     status: Exists,
++                                                     permissions: Some(
++                                                         33188,
++                                                     ),
++                                                     revision: FileRevision(
++                                                         32440021420885168417550838277,
++                                                     ),
++                                                 },
++                                                 file_scope: FileScopeId(
++                                                     0,
++                                                 ),
++                                                 place: Symbol(
++                                                     ScopedSymbolId(
++                                                         5,
++                                                     ),
++                                                 ),
++                                                 kind: Assignment(
++                                                     AssignmentDefinitionKind {
++                                                         target_kind: Single,
++                                                         value: AstNodeRef {
++                                                             kind: ExprCall,
++                                                             range: 459..474,
++                                                         },
++                                                         target: AstNodeRef {
++                                                             kind: ExprName,
++                                                             range: 454..456,
++                                                         },
++                                                     },
++                                                 ),
++                                                 is_reexported: true,
++                                             },
++                                         ),
++                                         _bound_or_constraints: None,
++                                         explicit_variance: Some(
++                                             Invariant,
++                                         ),
++                                         _default: None,
++                                         kind: Legacy,
++                                     },
++                                     binding_context: Definition(
++                                         Definition {
++                                             [salsa id]: Id(b0bc),
++                                             file: File {
++                                                 path: System(
++                                                     ".../projects/bidict/bidict/_base.py",
++                                                 ),
++                                                 status: Exists,
++                                                 permissions: Some(
++                                                     33188,
++                                                 ),
++                                                 revision: FileRevision(
++                                                     32440021420885168417550838277,
++                                                 ),
++                                             },
++                                             file_scope: FileScopeId(
++                                                 0,
++                                             ),
++                                             place: Symbol(
++                                                 ScopedSymbolId(
++                                                     39,
++                                                 ),
++                                             ),
++                                             kind: Class(
++                                                 AstNodeRef {
++                                                     kind: StmtClassDef,
++                                                     range: 2113..23986,
++                                                 },
++                                             ),
++                                             is_reexported: true,
++                                         },
++                                     ),
++                                 },
++                                 BoundTypeVarInstance {
++                                     typevar: TypeVarInstance {
++                                         name: Name("VT"),
++                                         definition: Some(
++                                             Definition {
++                                                 [salsa id]: Id(cc06),
++                                                 file: File {
++                                                     path: System(
++                                                         ".../projects/bidict/bidict/_typing.py",
++                                                     ),
++                                                     status: Exists,
++                                                     permissions: Some(
++                                                         33188,
++                                                     ),
++                                                     revision: FileRevision(
++                                                         32440021420885168417550838277,
++                                                     ),
++                                                 },
++                                                 file_scope: FileScopeId(
++                                                     0,
++                                                 ),
++                                                 place: Symbol(
++                                                     ScopedSymbolId(
++                                                         6,
++                                                     ),
++                                                 ),
++                                                 kind: Assignment(
++                                                     AssignmentDefinitionKind {
++                                                         target_kind: Single,
++                                                         value: AstNodeRef {
++                                                             kind: ExprCall,
++                                                             range: 480..495,
++                                                         },
++                                                         target: AstNodeRef {
++                                                             kind: ExprName,
++                                                             range: 475..477,
++                                                         },
++                                                     },
++                                                 ),
++                                                 is_reexported: true,
++                                             },
++                                         ),
++                                         _bound_or_constraints: None,
++                                         explicit_variance: Some(
++                                             Invariant,
++                                         ),
++                                         _default: None,
++                                         kind: Legacy,
++                                     },
++                                     binding_context: Definition(
++                                         Definition {
++                                             [salsa id]: Id(b0bc),
++                                             file: File {
++                                                 path: System(
++                                                     ".../projects/bidict/bidict/_base.py",
++                                                 ),
++                                                 status: Exists,
++                                                 permissions: Some(
++                                                     33188,
++                                                 ),
++                                                 revision: FileRevision(
++                                                     32440021420885168417550838277,
++                                                 ),
++                                             },
++                                             file_scope: FileScopeId(
++                                                 0,
++                                             ),
++                                             place: Symbol(
++                                                 ScopedSymbolId(
++                                                     39,
++                                                 ),
++                                             ),
++                                             kind: Class(
++                                                 AstNodeRef {
++                                                     kind: StmtClassDef,
++                                                     range: 2113..23986,
++                                                 },
++                                             ),
++                                             is_reexported: true,
++                                         },
++                                     ),
++                                 },
++                             },
++                         },
++                         types: [
++                             Dynamic(
++                                 Unknown,
++                             ),
++                             Dynamic(
++                                 Unknown,
++                             ),
++                         ],
++                         materialization_kind: None,
++                         tuple_inner: None,
++                     },
++                 },
++             ),
++         ),
++     ),
++ )
++ [crates/ty_python_semantic/src/types/infer/builder.rs:2334:33] declared_ty = NonInferableTypeVar(
++     BoundTypeVarInstance {
++         typevar: TypeVarInstance {
++             name: Name("BT"),
++             definition: Some(
++                 Definition {
++                     [salsa id]: Id(b023),
++                     file: File {
++                         path: System(
++                             ".../projects/bidict/bidict/_base.py",
++                         ),
++                         status: Exists,
++                         permissions: Some(
++                             33188,
++                         ),
++                         revision: FileRevision(
++                             32440021420885168417550838277,
++                         ),
++                     },
++                     file_scope: FileScopeId(
++                         0,
++                     ),
++                     place: Symbol(
++                         ScopedSymbolId(
++                             37,
++                         ),
++                     ),
++                     kind: Assignment(
++                         AssignmentDefinitionKind {
++                             target_kind: Single,
++                             value: AstNodeRef {
++                                 kind: ExprCall,
++                                 range: 1774..1823,
++                             },
++                             target: AstNodeRef {
++                                 kind: ExprName,
++                                 range: 1769..1771,
++                             },
++                         },
++                     ),
++                     is_reexported: true,
++                 },
++             ),
++             _bound_or_constraints: Some(
++                 Eager(
++                     UpperBound(
++                         NominalInstance(
++                             NominalInstanceType(
++                                 NonTuple(
++                                     Generic(
++                                         GenericAlias {
++                                             origin: ClassLiteral {
++                                                 name: Name("BidictBase"),
++                                                 body_scope: ScopeId {
++                                                     [salsa id]: Id(a802),
++                                                     file: File {
++                                                         path: System(
++                                                             ".../projects/bidict/bidict/_base.py",
++                                                         ),
++                                                         status: Exists,
++                                                         permissions: Some(
++                                                             33188,
++                                                         ),
++                                                         revision: FileRevision(
++                                                             32440021420885168417550838277,
++                                                         ),
++                                                     },
++                                                     file_scope_id: FileScopeId(
++                                                         2,
++                                                     ),
++                                                 },
++                                                 known: None,
++                                                 deprecated: None,
++                                                 dataclass_params: None,
++                                                 dataclass_transformer_params: None,
++                                             },
++                                             specialization: Specialization {
++                                                 generic_context: GenericContext {
++                                                     variables: {
++                                                         BoundTypeVarInstance {
++                                                             typevar: TypeVarInstance {
++                                                                 name: Name("KT"),
++                                                                 definition: Some(
++                                                                     Definition {
++                                                                         [salsa id]: Id(cc05),
++                                                                         file: File {
++                                                                             path: System(
++                                                                                 ".../projects/bidict/bidict/_typing.py",
++                                                                             ),
++                                                                             status: Exists,
++                                                                             permissions: Some(
++                                                                                 33188,
++                                                                             ),
++                                                                             revision: FileRevision(
++                                                                                 32440021420885168417550838277,
++                                                                             ),
++                                                                         },
++                                                                         file_scope: FileScopeId(
++                                                                             0,
++                                                                         ),
++                                                                         place: Symbol(
++                                                                             ScopedSymbolId(
++                                                                                 5,
++                                                                             ),
++                                                                         ),
++                                                                         kind: Assignment(
++                                                                             AssignmentDefinitionKind {
++                                                                                 target_kind: Single,
++                                                                                 value: AstNodeRef {
++                                                                                     kind: ExprCall,
++                                                                                     range: 459..474,
++                                                                                 },
++                                                                                 target: AstNodeRef {
++                                                                                     kind: ExprName,
++                                                                                     range: 454..456,
++                                                                                 },
++                                                                             },
++                                                                         ),
++                                                                         is_reexported: true,
++                                                                     },
++                                                                 ),
++                                                                 _bound_or_constraints: None,
++                                                                 explicit_variance: Some(
++                                                                     Invariant,
++                                                                 ),
++                                                                 _default: None,
++                                                                 kind: Legacy,
++                                                             },
++                                                             binding_context: Definition(
++                                                                 Definition {
++                                                                     [salsa id]: Id(b0bc),
++                                                                     file: File {
++                                                                         path: System(
++                                                                             ".../projects/bidict/bidict/_base.py",
++                                                                         ),
++                                                                         status: Exists,
++                                                                         permissions: Some(
++                                                                             33188,
++                                                                         ),
++                                                                         revision: FileRevision(
++                                                                             32440021420885168417550838277,
++                                                                         ),
++                                                                     },
++                                                                     file_scope: FileScopeId(
++                                                                         0,
++                                                                     ),
++                                                                     place: Symbol(
++                                                                         ScopedSymbolId(
++                                                                             39,
++                                                                         ),
++                                                                     ),
++                                                                     kind: Class(
++                                                                         AstNodeRef {
++                                                                             kind: StmtClassDef,
++                                                                             range: 2113..23986,
++                                                                         },
++                                                                     ),
++                                                                     is_reexported: true,
++                                                                 },
++                                                             ),
++                                                         },
++                                                         BoundTypeVarInstance {
++                                                             typevar: TypeVarInstance {
++                                                                 name: Name("VT"),
++                                                                 definition: Some(
++                                                                     Definition {
++                                                                         [salsa id]: Id(cc06),
++                                                                         file: File {
++                                                                             path: System(
++                                                                                 ".../projects/bidict/bidict/_typing.py",
++                                                                             ),
++                                                                             status: Exists,
++                                                                             permissions: Some(
++                                                                                 33188,
++                                                                             ),
++                                                                             revision: FileRevision(
++                                                                                 32440021420885168417550838277,
++                                                                             ),
++                                                                         },
++                                                                         file_scope: FileScopeId(
++                                                                             0,
++                                                                         ),
++                                                                         place: Symbol(
++                                                                             ScopedSymbolId(
++                                                                                 6,
++                                                                             ),
++                                                                         ),
++                                                                         kind: Assignment(
++                                                                             AssignmentDefinitionKind {
++                                                                                 target_kind: Single,
++                                                                                 value: AstNodeRef {
++                                                                                     kind: ExprCall,
++                                                                                     range: 480..495,
++                                                                                 },
++                                                                                 target: AstNodeRef {
++                                                                                     kind: ExprName,
++                                                                                     range: 475..477,
++                                                                                 },
++                                                                             },
++                                                                         ),
++                                                                         is_reexported: true,
++                                                                     },
++                                                                 ),
++                                                                 _bound_or_constraints: None,
++                                                                 explicit_variance: Some(
++                                                                     Invariant,
++                                                                 ),
++                                                                 _default: None,
++                                                                 kind: Legacy,
++                                                             },
++                                                             binding_context: Definition(
++                                                                 Definition {
++                                                                     [salsa id]: Id(b0bc),
++                                                                     file: File {
++                                                                         path: System(
++                                                                             ".../projects/bidict/bidict/_base.py",
++                                                                         ),
++                                                                         status: Exists,
++                                                                         permissions: Some(
++                                                                             33188,
++                                                                         ),
++                                                                         revision: FileRevision(
++                                                                             32440021420885168417550838277,
++                                                                         ),
++                                                                     },
++                                                                     file_scope: FileScopeId(
++                                                                         0,
++                                                                     ),
++                                                                     place: Symbol(
++                                                                         ScopedSymbolId(
++                                                                             39,
++                                                                         ),
++                                                                     ),
++                                                                     kind: Class(
++                                                                         AstNodeRef {
++                                                                             kind: StmtClassDef,
++                                                                             range: 2113..23986,
++                                                                         },
++                                                                     ),
++                                                                     is_reexported: true,
++                                                                 },
++                                                             ),
++                                                         },
++                                                     },
++                                                 },
++                                                 types: [
++                                                     Dynamic(
++                                                         Any,
++                                                     ),
++                                                     Dynamic(
++                                                         Any,
++                                                     ),
++                                                 ],
++                                                 materialization_kind: None,
++                                                 tuple_inner: None,
++                                             },
++                                         },
++                                     ),
++                                 ),
++                             ),
++                         ),
++                     ),
++                 ),
++             ),
++             explicit_variance: Some(
++                 Invariant,
++             ),
++             _default: None,
++             kind: Legacy,
++         },
++         binding_context: Definition(
++             Definition {
++                 [salsa id]: Id(b09c),
++                 file: File {
++                     path: System(
++                         ".../projects/bidict/bidict/_base.py",
++                     ),
++                     status: Exists,
++                     permissions: Some(
++...*[Comment body truncated]*
+
+---
+
+_Comment by @Glyphack on 2025-09-24 17:06_
+
+Closing because of: https://github.com/astral-sh/ruff/pull/20517#discussion_r2372560363
+I feel this is not going to find a lot of diagnostics in codebases overall.
+
+---
+
+_Closed by @Glyphack on 2025-09-24 17:06_
+
+---
+
+_Branch deleted on 2025-09-29 09:09_
+
+---

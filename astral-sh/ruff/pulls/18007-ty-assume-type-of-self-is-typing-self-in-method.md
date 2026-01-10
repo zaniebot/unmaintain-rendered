@@ -1,0 +1,1089 @@
+```yaml
+number: 18007
+title: "[ty] Assume type of self is `typing.Self` in method calls"
+type: pull_request
+state: merged
+author: Glyphack
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: david/implicit-self-signature
+head: typing-self-argument
+created_at: 2025-05-10T16:47:08Z
+updated_at: 2025-09-22T18:59:53Z
+url: https://github.com/astral-sh/ruff/pull/18007
+synced_at: 2026-01-10T17:40:28Z
+```
+
+# [ty] Assume type of self is `typing.Self` in method calls
+
+---
+
+_Pull request opened by @Glyphack on 2025-05-10 16:47_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+Part of https://github.com/astral-sh/ty/issues/159
+
+This PR only adjusts the signature of a method so if it has a `self` argument then that argument will have type of `Typing.Self` even if it's not specified. If user provides an explicit annotation then Ty will not override that annotation.
+
+## Follow Ups
+
+- https://github.com/astral-sh/ty/issues/1131
+- https://github.com/astral-sh/ty/issues/1157
+- https://github.com/astral-sh/ty/issues/1156
+- https://github.com/astral-sh/ty/issues/1173
+- https://github.com/astral-sh/ruff/pull/20328
+- https://github.com/astral-sh/ty/issues/1163
+- https://github.com/astral-sh/ty/issues/1196
+
+## Test Plan
+
+Added mdtests.
+Also some tests need https://github.com/astral-sh/ruff/pull/18473 to work completely. So I added a todo for those new cases that I added.
+
+<!-- How was it tested? -->
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-05-10 20:30_
+
+---
+
+_Marked ready for review by @Glyphack on 2025-05-12 16:52_
+
+---
+
+_Review requested from @carljm by @Glyphack on 2025-05-12 16:52_
+
+---
+
+_Review requested from @AlexWaygood by @Glyphack on 2025-05-12 16:52_
+
+---
+
+_Review requested from @sharkdp by @Glyphack on 2025-05-12 16:52_
+
+---
+
+_Review requested from @dcreager by @Glyphack on 2025-05-12 16:52_
+
+---
+
+_Comment by @Glyphack on 2025-05-12 16:53_
+
+I'm un drafting to get some suggestions. Then I'll be quick in adjusting the PR.
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types.rs`:4774 on 2025-05-16 22:27_
+
+From an older comment on the typing.Self PR.
+
+---
+
+_@Glyphack reviewed on 2025-05-16 22:27_
+
+---
+
+_Converted to draft by @Glyphack on 2025-05-21 20:46_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-21 20:56_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bidict (https://github.com/jab/bidict)
++ bidict/_base.py:297:42: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ bidict/_base.py:297:42: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ bidict/_base.py:309:42: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ bidict/_base.py:309:42: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ bidict/_iter.py:26:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ bidict/_iter.py:26:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
+- Found 13 diagnostics
++ Found 19 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_make.py:1581:5: error[invalid-assignment] Object of type `tuple[Unknown, ...]` is not assignable to `list[Attribute | Unknown]`
++ src/attr/_make.py:1581:5: error[invalid-assignment] Object of type `tuple[@Todo(generator expression yield type), ...]` is not assignable to `list[Attribute | Unknown]`
++ tests/test_make.py:2174:57: error[invalid-argument-type] Argument to function `_get_copy_kwargs` is incorrect: Expected `TestClassBuilder`, found `Literal[False]`
+- Found 565 diagnostics
++ Found 566 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ aioredis/client.py:3430:34: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ aioredis/client.py:3430:34: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[Mapping[Unknown, object]]`
++ aioredis/client.py:3430:47: error[invalid-argument-type] Argument to bound method `values` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ aioredis/client.py:3430:47: error[invalid-argument-type] Argument to bound method `values` is incorrect: Expected `Self@values`, found `Top[Mapping[Unknown, object]]`
+- Found 16 diagnostics
++ Found 20 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
++ nion/utils/Stream.py:550:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Self@run`, found `AValueChangeStreamReactor[T@ValueChangeStreamReactor]`
+- Found 7 diagnostics
++ Found 8 diagnostics
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ pytest_robotframework/__init__.py:413:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Self@inner`, found `WrappedContextManager`
++ pytest_robotframework/_internal/robot/utils.py:245:59: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
+- Found 176 diagnostics
++ Found 178 diagnostics
+
+isort (https://github.com/pycqa/isort)
++ isort/place.py:132:17: error[unsupported-operator] Operator `not in` is not supported for types `bytes` and `str`, in comparing `Literal[b"__import__('pkg_resources').declare_namespace(__name__)"]` with `str`
++ isort/place.py:133:21: error[unsupported-operator] Operator `not in` is not supported for types `bytes` and `str`, in comparing `Literal[b'__import__("pkg_resources").declare_namespace(__name__)']` with `str`
++ isort/place.py:134:21: error[unsupported-operator] Operator `not in` is not supported for types `bytes` and `str`, in comparing `Literal[b"__path__ = __import__('pkgutil').extend_path(__path__, __name__)"]` with `str`
++ isort/place.py:136:21: error[unsupported-operator] Operator `not in` is not supported for types `bytes` and `str`, in comparing `Literal[b'__path__ = __import__("pkgutil").extend_path(__path__, __name__)']` with `str`
++ isort/settings.py:620:32: error[invalid-argument-type] Argument to function `fnmatch` is incorrect: Argument type `bytes | str` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
++ isort/settings.py:620:32: error[invalid-argument-type] Argument to function `fnmatch` is incorrect: Expected `str`, found `bytes | str`
++ isort/settings.py:620:69: error[unsupported-operator] Operator `+` is unsupported between objects of type `Literal["/"]` and `bytes | str`
+- Found 33 diagnostics
++ Found 40 diagnostics
+
+asynq (https://github.com/quora/asynq)
++ asynq/decorators.py:282:39: error[invalid-argument-type] Argument to function `__get__` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `DecoratorBase[Unknown]` of type variable `Self`
+- Found 184 diagnostics
++ Found 185 diagnostics
+
+jinja (https://github.com/pallets/jinja)
++ src/jinja2/filters.py:169:48: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/jinja2/filters.py:169:48: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
+- Found 185 diagnostics
++ Found 187 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch/tests/test_mirror.py:446:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"old index"]`
++ src/bandersnatch/tests/test_mirror.py:1067:17: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"this is not the release content"]`
+- Found 114 diagnostics
++ Found 116 diagnostics
+
+twine (https://github.com/pypa/twine)
++ twine/repository.py:74:34: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ twine/repository.py:74:34: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ twine/repository.py:80:61: error[not-iterable] Object of type `Top[list[Unknown]] | tuple[object, ...]` may not be iterable
+- Found 12 diagnostics
++ Found 15 diagnostics
+
+kornia (https://github.com/kornia/kornia)
++ kornia/core/check.py:218:78: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ kornia/geometry/camera/pinhole.py:442:24: error[not-iterable] Object of type `Top[list[Unknown]] | tuple[object, ...]` may not be iterable
++ kornia/nerf/data_utils.py:34:70: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ kornia/nerf/data_utils.py:38:73: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
+- Found 784 diagnostics
++ Found 788 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
++ src/aiortc/rtcpeerconnection.py:825:62: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:827:53: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:913:47: error[invalid-argument-type] Argument to function `reverse_direction` is incorrect: Expected `str`, found `str | None`
++ src/aiortc/rtcpeerconnection.py:968:64: warning[possibly-unbound-attribute] Attribute `iceLite` on type `RTCIceParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:972:52: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:976:42: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
+- Found 92 diagnostics
++ Found 98 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
++ src/werkzeug/datastructures/headers.py:517:28: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/werkzeug/datastructures/headers.py:517:28: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/headers.py:518:39: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[MultiDict[Unknown, Unknown]]` of type variable `Self`
++ src/werkzeug/datastructures/headers.py:518:39: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Expected `Self@getlist`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/headers.py:520:35: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ src/werkzeug/datastructures/headers.py:520:35: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ src/werkzeug/datastructures/structures.py:33:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/structures.py:33:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[MultiDict[Unknown, Unknown]]` of type variable `Self`
++ src/werkzeug/datastructures/structures.py:35:27: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ src/werkzeug/datastructures/structures.py:35:27: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ src/werkzeug/datastructures/structures.py:37:26: error[not-iterable] Object of type `Top[list[Unknown]] | tuple[object, ...] | Top[set[Unknown]]` may not be iterable
++ src/werkzeug/datastructures/structures.py:193:54: error[invalid-argument-type] Argument to bound method `lists` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[MultiDict[Unknown, Unknown]]` of type variable `Self`
++ src/werkzeug/datastructures/structures.py:193:54: error[invalid-argument-type] Argument to bound method `lists` is incorrect: Expected `Self@lists`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/structures.py:196:31: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ src/werkzeug/datastructures/structures.py:196:31: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ src/werkzeug/datastructures/structures.py:628:26: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[_OrderedMultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/structures.py:628:26: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[_OrderedMultiDict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[_OrderedMultiDict[Unknown, Unknown]]` of type variable `Self`
++ src/werkzeug/datastructures/structures.py:644:16: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[MultiDict[Unknown, Unknown]]` of type variable `Self`
++ src/werkzeug/datastructures/structures.py:644:16: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Expected `Self@getlist`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/debug/repr.py:249:31: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/werkzeug/debug/repr.py:249:31: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ src/werkzeug/http.py:274:27: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/werkzeug/http.py:274:27: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ src/werkzeug/middleware/shared_data.py:121:23: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ src/werkzeug/middleware/shared_data.py:121:23: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
+- Found 364 diagnostics
++ Found 389 diagnostics
+
+black (https://github.com/psf/black)
++ src/black/cache.py:80:71: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
+- Found 66 diagnostics
++ Found 67 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_util/py/utilpyweakref.py:173:11: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Argument type `Top[ReferenceType[Unknown]]` does not satisfy upper bound `Bottom[ReferenceType[Unknown]]` of type variable `Self`
++ beartype/_util/py/utilpyweakref.py:173:11: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `Self@__call__`, found `Top[ReferenceType[Unknown]]`
+- Found 586 diagnostics
++ Found 588 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ kopf/_cogs/structs/patches.py:104:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ kopf/_cogs/structs/patches.py:104:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ kopf/_core/reactor/subhandling.py:70:23: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ kopf/_core/reactor/subhandling.py:70:23: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
+- Found 43 diagnostics
++ Found 47 diagnostics
+
+pip (https://github.com/pypa/pip)
++ src/pip/_internal/models/link.py:182:11: error[unsupported-operator] Operator `+` is unsupported between objects of type `str` and `Literal[b""]`
++ src/pip/_internal/operations/check.py:134:17: error[invalid-argument-type] Argument to function `reduce` is incorrect: Expected `(frozenset[Tag] | frozenset[Unknown], Unknown, /) -> frozenset[Tag] | frozenset[Unknown]`, found `def union[_S](self, *s: Iterable[_S@union]) -> frozenset[Unknown | _S@union]`
++ src/pip/_vendor/pkg_resources/__init__.py:2840:21: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/pip/_vendor/pkg_resources/__init__.py:2840:21: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
+- Found 435 diagnostics
++ Found 439 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
++ sockeye/data_io.py:176:74: error[unsupported-operator] Operator `/` is unsupported between objects of type `int` and `int | float | None`
++ sockeye/data_io.py:193:27: error[unsupported-operator] Operator `*` is unsupported between objects of type `int | Unknown` and `int | float | None`
+- sockeye/scoring.py:190:48: warning[division-by-zero] Cannot divide object of type `Literal[1]` by zero
+- Found 318 diagnostics
++ Found 319 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ tests/test_progress.py:583:17: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"Hello, World!"]`
++ tests/test_progress.py:595:17: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"Hello, World!"]`
++ tests/test_progress.py:608:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"Hello, World!"]`
++ tests/test_progress.py:638:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"Hello, World!"]`
+- Found 310 diagnostics
++ Found 314 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/status.py:2324:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ paasta_tools/contrib/get_running_task_allocation.py:338:21: error[invalid-argument-type] Argument to bound method `_asdict` is incorrect: Expected `NamedTupleFallback`, found `TaskAllocationInfo`
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/extensions/spiderstate.py:39:43: error[invalid-argument-type] Argument to function `dump` is incorrect: Expected `SupportsWrite[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ scrapy/http/headers.py:37:15: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ scrapy/http/headers.py:37:15: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ scrapy/http/headers.py:45:30: error[invalid-argument-type] Argument to bound method `title` is incorrect: Expected `bytes`, found `AnyStr@normkey`
++ scrapy/http/headers.py:45:30: error[no-matching-overload] No overload of bound method `title` matches arguments
++ scrapy/utils/datatypes.py:76:16: error[invalid-argument-type] Argument to bound method `lower` is incorrect: Expected `bytes`, found `AnyStr@normkey`
+- scrapy/utils/datatypes.py:76:16: error[invalid-return-type] Return type does not match returned value: expected `AnyStr@normkey`, found `str | bytes`
++ scrapy/utils/datatypes.py:76:16: error[invalid-return-type] Return type does not match returned value: expected `AnyStr@normkey`, found `Unknown | bytes`
++ scrapy/utils/datatypes.py:76:16: error[no-matching-overload] No overload of bound method `lower` matches arguments
++ scrapy/utils/datatypes.py:90:15: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ scrapy/utils/datatypes.py:90:15: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ scrapy/utils/python.py:335:34: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ scrapy/utils/python.py:335:34: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
+- Found 1045 diagnostics
++ Found 1056 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
++ porcupine/plugins/filetypes.py:31:27: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ porcupine/plugins/filetypes.py:31:27: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[dict[Unknown, Unknown]]`
++ porcupine/plugins/filetypes.py:31:44: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ porcupine/plugins/filetypes.py:31:44: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[dict[Unknown, Unknown]]`
++ porcupine/plugins/filetypes.py:38:76: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ porcupine/plugins/langserver.py:239:77: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ porcupine/plugins/langserver.py:241:89: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ porcupine/plugins/langserver.py:241:89: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ porcupine/plugins/restart.py:39:36: error[invalid-argument-type] Argument to function `dump` is incorrect: Expected `SupportsWrite[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ porcupine/plugins/restart.py:54:41: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
+- Found 25 diagnostics
++ Found 35 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ dulwich/cli.py:178:9: error[no-matching-overload] No overload of bound method `write` matches arguments
++ dulwich/config.py:263:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Self@keys`, found `UniqueKeysView[Unknown]`
++ dulwich/config.py:287:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Self@items`, found `OrderedItemsView[Unknown, Unknown]`
+- dulwich/contrib/diffstat.py:169:27: warning[division-by-zero] Cannot divide object of type `float` by zero
+- dulwich/contrib/diffstat.py:170:27: warning[division-by-zero] Cannot divide object of type `float` by zero
++ dulwich/hooks.py:160:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/object_store.py:1500:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO | None`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/object_store.py:1501:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/porcelain.py:895:18: error[not-iterable] Object of type `(list[str | bytes | PathLike[Unknown]] & ~AlwaysFalsy) | (PathLike[Unknown] & Top[list[Unknown]] & ~AlwaysFalsy) | list[Unknown | str] | list[Unknown | (str & ~AlwaysFalsy) | (bytes & ~AlwaysFalsy) | (PathLike[Unknown] & ~AlwaysFalsy & ~Top[list[Unknown]])]` may not be iterable
++ dulwich/porcelain.py:3972:37: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Unknown | bytes`
+- Found 180 diagnostics
++ Found 186 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
++ github/MainClass.py:634:54: error[not-iterable] Object of type `(list[@Todo(unknown type subscript)] & Unknown) | (@Todo(unknown type subscript) & Top[list[Unknown]]) | (_NotSetType & Top[list[Unknown]]) | list[@Todo(unknown type subscript)]` may not be iterable
++ github/Organization.py:899:82: error[not-iterable] Object of type `(@Todo(unknown type subscript) & Top[list[Unknown]]) | (_NotSetType & Top[list[Unknown]])` is not iterable
++ github/Organization.py:1035:82: error[not-iterable] Object of type `(@Todo(unknown type subscript) & Top[list[Unknown]]) | (_NotSetType & Top[list[Unknown]])` is not iterable
+- Found 345 diagnostics
++ Found 348 diagnostics
+
+nox (https://github.com/wntrblm/nox)
++ nox/project.py:70:29: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
+- Found 22 diagnostics
++ Found 23 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
++ mkosi/__init__.py:1535:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ mkosi/__init__.py:1540:29: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ mkosi/__init__.py:1545:29: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ mkosi/config.py:1853:21: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ mkosi/config.py:1853:21: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ mkosi/config.py:1863:79: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ mkosi/config.py:1863:79: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ mkosi/config.py:2426:21: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ mkosi/config.py:2426:21: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ mkosi/config.py:2436:82: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ mkosi/config.py:2436:82: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ mkosi/qemu.py:1533:29: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ mkosi/qemu.py:1534:29: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ mkosi/util.py:219:20: error[unresolved-attribute] Type `TextIOWrapper[_WrappedBuffer]` has no attribute `readinto`
+- Found 109 diagnostics
++ Found 123 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
++ src/poetry/vcs/git/backend.py:578:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Literal[b""]`
++ tests/integration/test_utils_vcs_git.py:432:43: error[unresolved-attribute] Type `Literal[b""]` has no attribute `encode`
+- Found 936 diagnostics
++ Found 938 diagnostics
+
+optuna (https://github.com/optuna/optuna)
++ optuna/_gp/search_space.py:193:56: error[invalid-argument-type] Argument to bound method `to_external_repr` is incorrect: Expected `int | float`, found `ndarray[Unknown, Unknown]`
+- Found 560 diagnostics
++ Found 561 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- pandera/api/pandas/container.py:105:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/backends/pandas/container.py:751:12: error[unresolved-attribute] Type `Index[str]` has no attribute `any`
+- pandera/backends/pandas/error_formatters.py:115:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/mypy/pandas_modules/pandas_dataframe.py:41:12: error[invalid-return-type] Return type does not match returned value: expected `DataFrame[SchemaOut]`, found `DataFrame[Schema]`
++ tests/mypy/pandas_modules/pandas_dataframe.py:80:12: error[invalid-return-type] Return type does not match returned value: expected `DataFrame[SchemaOut]`, found `Series[Any]`
+- tests/pandas/test_decorators.py:858:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_model.py:1394:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/pandas/test_model.py:1409:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/pandas/test_schemas.py:1907:16: warning[possibly-unbound-attribute] Attribute `name` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2291:12: warning[possibly-unbound-attribute] Attribute `unique` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2292:12: warning[possibly-unbound-attribute] Attribute `title` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2293:12: warning[possibly-unbound-attribute] Attribute `description` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2294:12: warning[possibly-unbound-attribute] Attribute `metadata` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2414:12: warning[possibly-unbound-attribute] Attribute `named_indexes` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2415:12: warning[possibly-unbound-attribute] Attribute `named_indexes` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2416:12: warning[possibly-unbound-attribute] Attribute `named_indexes` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2418:12: warning[possibly-unbound-attribute] Attribute `named_indexes` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2419:12: warning[possibly-unbound-attribute] Attribute `named_indexes` on type `Unknown | None` is possibly unbound
++ tests/pandas/test_schemas.py:2420:12: warning[possibly-unbound-attribute] Attribute `named_indexes` on type `Unknown | None` is possibly unbound
+- Found 1586 diagnostics
++ Found 1595 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ src/graphql/error/graphql_error.py:222:29: error[not-iterable] Object of type `Top[dict[Unknown, Unknown]]` is not iterable
++ src/graphql/utilities/value_from_ast.py:138:46: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode & ~AlwaysFalsy & ~VariableNode & ~NullValueNode`
++ src/graphql/utilities/value_from_ast.py:140:46: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode & ~AlwaysFalsy & ~VariableNode & ~NullValueNode`
++ src/graphql/validation/rules/values_of_correct_type.py:162:48: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
++ tests/type/test_definition.py:152:37: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
++ tests/type/test_definition.py:154:34: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
++ tests/type/test_definition.py:158:34: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
++ tests/type/test_scalars.py:60:49: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
++ tests/type/test_scalars.py:222:51: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
++ tests/type/test_scalars.py:348:52: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
++ tests/type/test_scalars.py:471:53: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
++ tests/type/test_scalars.py:616:48: error[invalid-argument-type] Argument to function `parse_literal` is incorrect: Expected `GraphQLScalarType`, found `ValueNode`
+- Found 303 diagnostics
++ Found 315 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ pydantic/json_schema.py:1321:31: error[not-iterable] Object of type `list[str | int] | list[list[str | int]] | (((Any, /) -> Hashable) & Top[list[Unknown]])` may not be iterable
+- Found 760 diagnostics
++ Found 761 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ cki_lib/misc.py:57:18: error[not-iterable] Object of type `(T@flattened & Top[list[Unknown]]) | list[T@flattened] | list[Any]` may not be iterable
++ cki_lib/misc.py:283:18: error[unresolved-attribute] Type `str & ~AlwaysFalsy` has no attribute `decode`
++ cki_lib/misc.py:284:18: error[unresolved-attribute] Type `str & ~AlwaysFalsy` has no attribute `decode`
+- Found 150 diagnostics
++ Found 153 diagnostics
+
+spack (https://github.com/spack/spack)
++ lib/spack/spack/cmd/ci.py:716:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Literal[b""]`
++ lib/spack/spack/cmd/commands.py:563:34: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ lib/spack/spack/cmd/commands.py:563:34: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[dict[Unknown, Unknown]]`
+- lib/spack/spack/config.py:477:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/install_test.py:517:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/install_test.py:519:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ lib/spack/spack/oci/oci.py:48:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Literal[b""]`
++ lib/spack/spack/oci/opener.py:246:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Literal[b""]`
+- lib/spack/spack/solver/asp.py:3131:26: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[Unknown]` and `tuple[Unknown, ...]`
++ lib/spack/spack/solver/asp.py:3131:26: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[Unknown]` and `tuple[@Todo(generator expression yield type), ...]`
+- lib/spack/spack/solver/asp.py:3132:30: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[Unknown]` and `tuple[Unknown, ...]`
++ lib/spack/spack/solver/asp.py:3132:30: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[Unknown]` and `tuple[@Todo(generator expression yield type), ...]`
++ lib/spack/spack/test/cmd/logs.py:38:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_WrappedBuffer]` does not satisfy upper bound `_WrappedBuffer` of type variable `_BufferT_co`
++ lib/spack/spack/test/cmd/logs.py:38:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_WrappedBuffer`, found `TextIOWrapper[_WrappedBuffer]`
+- lib/spack/spack/vendor/archspec/cpu/schema.py:78:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[Path, Path]`, found `tuple[Unknown, None | Unknown]`
++ lib/spack/spack/vendor/archspec/cpu/schema.py:78:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[Path, Path]`, found `tuple[Unknown | Path, None | Path]`
++ lib/spack/spack/vendor/jinja2/filters.py:219:50: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ lib/spack/spack/vendor/jinja2/filters.py:219:50: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
+- Found 7526 diagnostics
++ Found 7532 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ examples/cifar10/main.py:100:45: error[invalid-argument-type] Argument to function `setup_tb_logging` is incorrect: Expected `str`, found `Unknown | Path`
++ examples/cifar10_qat/main.py:96:45: error[invalid-argument-type] Argument to function `setup_tb_logging` is incorrect: Expected `str`, found `Unknown | Path`
++ examples/transformers/main.py:103:13: error[invalid-argument-type] Argument to function `setup_tb_logging` is incorrect: Expected `str`, found `Unknown | Path`
++ ignite/utils.py:75:101: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ ignite/utils.py:75:101: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ ignite/utils.py:87:92: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ ignite/utils.py:87:92: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ ignite/utils.py:208:73: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ ignite/utils.py:208:73: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[Mapping[Unknown, object]]`
++ tests/ignite/handlers/test_clearml_logger.py:43:35: error[invalid-argument-type] Argument to function `__call__` is incorrect: Expected `ClearMLSaver`, found `None`
+- Found 2140 diagnostics
++ Found 2150 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ src/schemathesis/config/_diff_base.py:41:20: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/schemathesis/config/_diff_base.py:41:20: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[dict[Unknown, Unknown]]`
++ src/schemathesis/config/_diff_base.py:41:41: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/schemathesis/config/_diff_base.py:41:41: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[dict[Unknown, Unknown]]`
++ src/schemathesis/config/_diff_base.py:43:70: error[not-iterable] Object of type `Top[dict[Unknown, Unknown]] & ~DataclassInstance` is not iterable
++ src/schemathesis/config/_diff_base.py:59:58: error[not-iterable] Object of type `Top[list[Unknown]] & ~DataclassInstance` is not iterable
++ src/schemathesis/config/_diff_base.py:62:25: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/schemathesis/config/_diff_base.py:62:25: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ src/schemathesis/core/output/sanitization.py:54:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Literal[b""]`
++ src/schemathesis/core/validation.py:38:98: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ src/schemathesis/specs/openapi/checks.py:689:14: error[invalid-argument-type] Argument to bound method `copy` is incorrect: Argument type `Top[list[Unknown]]` does not satisfy upper bound `Bottom[list[Unknown]]` of type variable `Self`
++ src/schemathesis/specs/openapi/checks.py:689:14: error[invalid-argument-type] Argument to bound method `copy` is incorrect: Expected `Self@copy`, found `Top[list[Unknown]]`
++ src/schemathesis/specs/openapi/checks.py:689:14: error[invalid-argument-type] Argument to bound method `copy` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/schemathesis/specs/openapi/checks.py:689:14: error[invalid-argument-type] Argument to bound method `copy` is incorrect: Expected `Self@copy`, found `Top[dict[Unknown, Unknown]]`
+- Found 273 diagnostics
++ Found 287 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ tornado/gen.py:527:21: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ tornado/gen.py:527:21: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[dict[Unknown, Unknown]]`
++ tornado/gen.py:528:24: error[invalid-argument-type] Argument to bound method `values` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ tornado/gen.py:528:24: error[invalid-argument-type] Argument to bound method `values` is incorrect: Expected `Self@values`, found `Top[dict[Unknown, Unknown]]`
+- Found 246 diagnostics
++ Found 250 diagnostics
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
++ src/typeshed_stats/gather.py:964:76: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
+- Found 25 diagnostics
++ Found 26 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
++ src/arti/io/pickle_localfile_python.py:50:27: error[invalid-argument-type] Argument to function `dump` is incorrect: Expected `SupportsWrite[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
+- Found 139 diagnostics
++ Found 140 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
++ src/urllib3/_collections.py:356:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ src/urllib3/_collections.py:356:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ src/urllib3/fields.py:281:24: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ src/urllib3/fields.py:281:24: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
+- test/test_connectionpool.py:464:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/test_response.py:653:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/test_response.py:654:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/test_response.py:684:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/test_response.py:685:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/test_response.py:720:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/test_response.py:721:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/test_ssltransport.py:447:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/test_ssltransport.py:451:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_connectionpool.py:76:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_connectionpool.py:315:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_connectionpool.py:339:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_connectionpool.py:358:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_connectionpool.py:376:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_connectionpool.py:1083:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_https.py:345:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_https.py:460:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_https.py:461:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_https.py:814:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_https.py:816:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_https.py:909:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_https.py:911:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/with_dummyserver/test_proxy_poolmanager.py:175:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 386 diagnostics
++ Found 367 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ tests/test_tstring.py:238:16: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ tests/test_tstring.py:239:25: warning[possibly-unbound-attribute] Attribute `query` on type `PostgresQuery | None` is possibly unbound
++ tests/test_tstring.py:240:29: warning[possibly-unbound-attribute] Attribute `query` on type `PostgresQuery | None` is possibly unbound
+- Found 699 diagnostics
++ Found 702 diagnostics
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
++ tanjun/commands/slash.py:1795:95: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ tanjun/commands/slash.py:1795:95: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
+- Found 120 diagnostics
++ Found 122 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ schema_salad/jsonld_context.py:212:18: error[invalid-argument-type] Argument to bound method `values` is incorrect: Argument type `Top[MutableMapping[Unknown, Unknown]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ schema_salad/jsonld_context.py:212:18: error[invalid-argument-type] Argument to bound method `values` is incorrect: Expected `Self@values`, found `Top[MutableMapping[Unknown, Unknown]]`
++ schema_salad/jsonld_context.py:215:22: error[not-iterable] Object of type `(CommentedMap & Top[MutableSequence[Unknown]]) | (int & Top[MutableSequence[Unknown]]) | (float & Top[MutableSequence[Unknown]]) | (str & Top[MutableSequence[Unknown]]) | CommentedSeq` may not be iterable
++ schema_salad/jsonld_context.py:244:18: error[not-iterable] Object of type `(CommentedMap & Top[MutableSequence[Unknown]]) | (int & Top[MutableSequence[Unknown]]) | (float & Top[MutableSequence[Unknown]]) | (str & Top[MutableSequence[Unknown]]) | CommentedSeq` may not be iterable
++ schema_salad/sourceline.py:189:25: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[MutableMapping[Unknown, Unknown]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ schema_salad/sourceline.py:189:25: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[MutableMapping[Unknown, Unknown]]`
+- Found 172 diagnostics
++ Found 178 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
++ freqtrade/data/btanalysis/historic_precision.py:27:12: error[invalid-return-type] Return type does not match returned value: expected `Series[Any]`, found `int | float`
++ freqtrade/data/btanalysis/trade_parallelism.py:44:12: error[invalid-return-type] Return type does not match returned value: expected `DataFrame`, found `Series[int]`
++ freqtrade/data/converter/trade_converter.py:89:12: error[invalid-return-type] Return type does not match returned value: expected `DataFrame`, found `Series[Any] | Unknown`
++ freqtrade/data/converter/trade_converter_kraken.py:82:39: error[invalid-argument-type] Argument to function `trades_convert_types` is incorrect: Expected `DataFrame`, found `Series[Any]`
++ freqtrade/data/dataprovider.py:225:9: error[invalid-assignment] Object of type `Series[Any]` is not assignable to `Timestamp`
+- freqtrade/data/entryexitanalysis.py:319:35: error[invalid-argument-type] Argument to function `print_df_rich_table` is incorrect: Expected `Sequence[str]`, found `Unknown | Index[Any]`
++ freqtrade/data/entryexitanalysis.py:319:35: error[invalid-argument-type] Argument to function `print_df_rich_table` is incorrect: Expected `Sequence[str]`, found `Index[Any]`
++ freqtrade/data/history/history_utils.py:287:19: error[invalid-argument-type] Argument to function `dt_ts` is incorrect: Expected `datetime | None`, found `Series[Any]`
++ freqtrade/data/history/history_utils.py:529:51: error[invalid-argument-type] Argument to function `format_ms_time_det` is incorrect: Expected `int | float`, found `Series[Any]`
++ freqtrade/data/history/history_utils.py:560:9: error[invalid-argument-type] Argument to bound method `get_historic_trades` is incorrect: Expected `str | None`, found `Series[Any] | None`
++ freqtrade/data/metrics.py:243:9: error[invalid-argument-type] Argument is incorrect: Expected `Timestamp`, found `Series[Any] | Unknown`
++ freqtrade/data/metrics.py:244:9: error[invalid-argument-type] Argument is incorrect: Expected `Timestamp`, found `Series[Any] | Unknown`
++ freqtrade/data/metrics.py:249:9: error[invalid-argument-type] Argument is incorrect: Expected `Timestamp`, found `Series[Any] | Unknown`
++ freqtrade/data/metrics.py:250:9: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Series[Any]`
++ freqtrade/data/metrics.py:251:9: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Series[Any]`
++ freqtrade/data/metrics.py:252:9: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Series[Any]`
++ freqtrade/freqai/data_drawer.py:324:51: error[unknown-argument] Argument `columns` does not match any known parameter of bound method `reindex`
+- freqtrade/freqai/data_kitchen.py:299:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[DataFrame, DataFrame]`, found `tuple[Unknown, Unknown | list[Unknown]]`
++ freqtrade/freqai/data_kitchen.py:299:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[DataFrame, DataFrame]`, found `tuple[DataFrame | Series[Any], Series[Any] | list[Unknown]]`
++ freqtrade/freqai/data_kitchen.py:836:13: error[invalid-assignment] Method `__setitem__` of type `(bound method dict[str, dict[str, DataFrame]].__setitem__(key: str, value: dict[str, DataFrame], /) -> None) | (bound method dict[@Todo(dict literal key type), @Todo(dict literal value type)].__setitem__(key: @Todo(dict literal key type), value: @Todo(dict literal value type), /) -> None)` cannot be called with a key of type `Unknown` and a value of type `DataFrame` on object of type `(dict[str, dict[str, DataFrame]] & ~AlwaysFalsy) | dict[@Todo(dict literal key type), @Todo(dict literal value type)]`
++ freqtrade/optimize/optimize_reports/optimize_reports.py:424:31: error[unresolved-attribute] Type `Hashable` has no attribute `date`
++ freqtrade/templates/strategy_analysis_example.ipynb:cell 23:13:5: error[invalid-argument-type] Argument to function `generate_candlestick_graph` is incorrect: Expected `DataFrame`, found `Series[Any]`
+- Found 385 diagnostics
++ Found 403 diagnostics
+
+vision (https://github.com/pytorch/vision)
++ test/test_datasets.py:3118:9: error[invalid-assignment] Object of type `Path` is not assignable to `str`
++ test/test_datasets.py:3128:19: error[unsupported-operator] Operator `/` is unsupported between objects of type `str` and `Literal["_camera_settings.json"]`
++ test/test_datasets.py:3190:9: error[invalid-assignment] Object of type `Path` is not assignable to `str`
++ test/test_datasets.py:3194:65: error[unsupported-operator] Operator `/` is unsupported between objects of type `str` and `str`
++ test/test_datasets.py:3272:9: error[invalid-assignment] Object of type `Path` is not assignable to `str`
++ test/test_image.py:844:16: error[invalid-argument-type] Argument to function `write_file` is incorrect: Expected `str`, found `Path`
++ test/test_image.py:845:21: error[invalid-argument-type] Argument to function `write_jpeg` is incorrect: Expected `str`, found `Path`
++ test/test_image.py:846:20: error[invalid-argument-type] Argument to function `write_png` is incorrect: Expected `str`, found `Path`
+- Found 1442 diagnostics
++ Found 1450 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- properties/test_pandas_roundtrip.py:104:41: error[invalid-argument-type] Argument to function `assert_series_equal` is incorrect: Expected `Series[Any]`, found `Unknown | Series[Any] | DataFrame`
++ properties/test_pandas_roundtrip.py:104:41: error[invalid-argument-type] Argument to function `assert_series_equal` is incorrect: Expected `Series[Any]`, found `DataArray | Series[Any] | DataFrame`
+- properties/test_pandas_roundtrip.py:122:39: error[invalid-argument-type] Argument to function `assert_frame_equal` is incorrect: Expected `DataFrame`, found `Unknown | Series[Any] | DataFrame`
++ properties/test_pandas_roundtrip.py:122:39: error[invalid-argument-type] Argument to function `assert_frame_equal` is incorrect: Expected `DataFrame`, found `DataArray | Series[Any] | DataFrame`
++ xarray/computation/rolling.py:1218:20: error[invalid-return-type] Return type does not match returned value: expected `T_Xarray@Coarsen`, found `Dataset`
++ xarray/core/coordinates.py:1196:69: error[invalid-argument-type] Method `__getitem__` of type `(bound method T_Xarray@assert_coordinate_consistent.__getitem__(key: Any) -> T_Xarray@assert_coordinate_consistent) | (Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_Xarray@assert_coordinate_consistent])` cannot be called with key of type `Hashable` on object of type `T_Xarray@assert_coordinate_consistent`
++ xarray/core/coordinates.py:1199:51: error[invalid-argument-type] Method `__getitem__` of type `(bound method T_Xarray@assert_coordinate_consistent.__getitem__(key: Any) -> T_Xarray@assert_coordinate_consistent) | (Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_Xarray@assert_coordinate_consistent])` cannot be called with key of type `Hashable` on object of type `T_Xarray@assert_coordinate_consistent`
++ xarray/core/dataarray.py:517:13: error[invalid-assignment] Object of type `Unknown | Default` is not assignable to attribute `attrs` on type `Variable | Unknown`
++ xarray/core/dataset.py:5626:39: error[invalid-argument-type] Argument to bound method `_asdict` is incorrect: Expected `NamedTupleFallback`, found `_MergeResult`
++ xarray/core/dataset.py:5725:32: error[invalid-argument-type] Argument to bound method `_asdict` is incorrect: Expected `NamedTupleFallback`, found `_MergeResult`
++ xarray/core/dataset.py:6231:77: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ xarray/core/dataset.py:8079:71: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ xarray/core/datatree.py:1070:44: error[invalid-argument-type] Argument to bound method `_asdict` is incorrect: Expected `NamedTupleFallback`, found `_MergeResult`
++ xarray/core/groupby.py:686:25: error[invalid-argument-type] Argument to bound method `transpose` is incorrect: Argument type `T_Xarray@GroupBy` does not satisfy upper bound `DataArray` of type variable `Self`
++ xarray/core/groupby.py:686:25: error[invalid-argument-type] Argument to bound method `transpose` is incorrect: Argument type `T_Xarray@GroupBy` does not satisfy upper bound `Dataset` of type variable `Self`
+- xarray/core/parallel.py:670:20: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ xarray/plot/facetgrid.py:172:43: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_DataArrayOrSet@FacetGrid]) | (bound method T_DataArrayOrSet@FacetGrid.__getitem__(key: Any) -> T_DataArrayOrSet@FacetGrid)` cannot be called with key of type `Hashable & ~None` on object of type `T_DataArrayOrSet@FacetGrid`
++ xarray/plot/facetgrid.py:173:43: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_DataArrayOrSet@FacetGrid]) | (bound method T_DataArrayOrSet@FacetGrid.__getitem__(key: Any) -> T_DataArrayOrSet@FacetGrid)` cannot be called with key of type `Hashable & ~None` on object of type `T_DataArrayOrSet@FacetGrid`
++ xarray/plot/facetgrid.py:184:24: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_DataArrayOrSet@FacetGrid]) | (bound method T_DataArrayOrSet@FacetGrid.__getitem__(key: Any) -> T_DataArrayOrSet@FacetGrid)` cannot be called with key of type `Hashable & ~AlwaysFalsy` on object of type `T_DataArrayOrSet@FacetGrid`
++ xarray/plot/facetgrid.py:185:24: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_DataArrayOrSet@FacetGrid]) | (bound method T_DataArrayOrSet@FacetGrid.__getitem__(key: Any) -> T_DataArrayOrSet@FacetGrid)` cannot be called with key of type `Hashable & ~AlwaysFalsy` on object of type `T_DataArrayOrSet@FacetGrid`
++ xarray/plot/facetgrid.py:200:26: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_DataArrayOrSet@FacetGrid]) | (bound method T_DataArrayOrSet@FacetGrid.__getitem__(key: Any) -> T_DataArrayOrSet@FacetGrid)` cannot be called with key of type `Hashable & ~AlwaysFalsy` on object of type `T_DataArrayOrSet@FacetGrid`
++ xarray/plot/facetgrid.py:231:26: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_DataArrayOrSet@FacetGrid]) | (bound method T_DataArrayOrSet@FacetGrid.__getitem__(key: Any) -> T_DataArrayOrSet@FacetGrid)` cannot be called with key of type `Hashable & ~AlwaysFalsy` on object of type `T_DataArrayOrSet@FacetGrid`
++ xarray/plot/facetgrid.py:232:26: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_DataArrayOrSet@FacetGrid]) | (bound method T_DataArrayOrSet@FacetGrid.__getitem__(key: Any) -> T_DataArrayOrSet@FacetGrid)` cannot be called with key of type `Hashable & ~AlwaysFalsy` on object of type `T_DataArrayOrSet@FacetGrid`
++ xarray/plot/facetgrid.py:236:44: error[invalid-argument-type] Method `__getitem__` of type `(Overload[(key: Hashable) -> DataArray, (key: Iterable[Hashable]) -> T_DataArrayOrSet@FacetGrid]) | (bound method T_DataArrayOrSet@FacetGrid.__getitem__(key: Any) -> T_DataArrayOrSet@FacetGrid)` cannot be called with key of type `Hashable & ~AlwaysFalsy` on object of type `T_DataArrayOrSet@FacetGrid`
++ xarray/structure/merge.py:1048:40: error[invalid-argument-type] Argument to bound method `_asdict` is incorrect: Expected `NamedTupleFallback`, found `_MergeResult`
++ xarray/testing/strategies.py:464:17: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ xarray/testing/strategies.py:464:17: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[Mapping[Unknown, object]]`
+- xarray/tests/test_dask.py:1789:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_dask.py:1790:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_dask.py:1791:86: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_dask.py:1792:82: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_dataarray.py:2317:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- xarray/tests/test_dataset.py:3977:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ xarray/tests/test_distributed.py:278:13: warning[possibly-unbound-attribute] Attribute `compute` on type `ZarrStore | Unknown` is possibly unbound
++ xarray/tests/test_namedarray.py:446:19: error[no-matching-overload] No overload of bound method `_new` matches arguments
++ xarray/tests/test_nd_point_index.py:26:12: error[invalid-argument-type] Argument to bound method `equals` is incorrect: Argument type `Top[NDPointIndex[Unknown]]` does not satisfy upper bound `Bottom[NDPointIndex[Unknown]]` of type variable `Self`
++ xarray/tests/test_nd_point_index.py:26:12: error[invalid-argument-type] Argument to bound method `equals` is incorrect: Expected `Self@equals`, found `Top[NDPointIndex[Unknown]]`
+- Found 1600 diagnostics
++ Found 1619 diagnostics
+
+pyppeteer (https://github.com/pyppeteer/pyppeteer)
++ pyppeteer/chromium_downloader.py:115:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
+- Found 99 diagnostics
++ Found 100 diagnostics
+
+mypy (https://github.com/python/mypy)
++ mypy/server/objgraph.py:53:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound `Bottom[Mapping[Unknown, Never]]` of type variable `Self`
++ mypy/server/objgraph.py:53:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ mypyc/ir/pprint.py:422:17: error[unresolved-attribute] Type `Op` has no attribute `label`
+- Found 1858 diagnostics
++ Found 1861 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- examples/contrib/mitmproxywrapper.py:164:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(Any, @Todo(Support for `typing.TypeAlias`), Unknown, /) -> BaseRequestHandler`, found `None`
++ examples/contrib/mitmproxywrapper.py:164:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(Any, @Todo(Support for `typing.TypeAlias`), TCPServer, /) -> BaseRequestHandler`, found `None`
++ mitmproxy/http.py:604:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ mitmproxy/http.py:604:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ mitmproxy/http.py:1084:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound `Bottom[dict[Unknown, Unknown]]` of type variable `Self`
++ mitmproxy/http.py:1084:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Un...*[Comment body truncated]*
+
+---
+
+_Comment by @carljm on 2025-05-21 21:01_
+
+Sorry I haven't had time to review this yet, with PyCon! It was near the top of my list. If you get it rebased and passing and mark it ready for review again, I will prioritize taking a look!
+
+---
+
+_Comment by @Glyphack on 2025-05-24 09:19_
+
+It's all good. I try to get it ready soon. The only tests not passing right now are:
+```
+        FAIL [   0.972s] ty_python_semantic::mdtest mdtest__descriptor_protocol
+        FAIL [   1.517s] ty_python_semantic::mdtest mdtest__generics_legacy_classes
+        FAIL [   1.214s] ty_python_semantic::mdtest mdtest__generics_pep695_classes
+        FAIL [   0.438s] ty_python_semantic::mdtest mdtest__generics_scoping
+        FAIL [   0.469s] ty_python_semantic::mdtest mdtest__named_tuple
+```
+
+I am checking why this test is failing:
+
+```py
+from typing import Generic, TypeVar
+
+T = TypeVar("T")
+
+class C(Generic[T]):
+    def __init__(self, x: T) -> None: ...
+
+
+# in the __init__ method self has type of C[str]
+# unexpected error: [invalid-argument-type] "Argument to bound method `__init__` is incorrect: Expected `C[str]`, found `C[Literal["five"]]`"
+C("five")
+```
+
+After [discussion](https://discord.com/channels/1039017663004942429/1343690517745111081/1377096775835320330) this PR blocked by https://github.com/astral-sh/ruff/pull/17994.
+
+---
+
+_Renamed from "Assume type of self is `typing.Self`" to "[ty] Assume type of self is `typing.Self`" by @MichaReiser on 2025-06-12 06:55_
+
+---
+
+_Renamed from "[ty] Assume type of self is `typing.Self`" to "[ty] Assume type of self is `typing.Self` in method calls" by @Glyphack on 2025-08-29 09:29_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-04 20:08_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-09-22 18:33:16.964053580 +0000
++++ new-output.txt	2025-09-22 18:33:20.270066023 +0000
+@@ -1,6 +1,6 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+ fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/3713cd7/src/function/execute.rs:213:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType < 'db >::value_type_(Id(b816)): execute: too many cycle iterations`
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/3713cd7/src/function/execute.rs:213:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(12e7a)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/3713cd7/src/function/execute.rs:213:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1327a)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -420,16 +420,12 @@
+ generics_self_basic.py:14:9: error[type-assertion-failure] Argument does not have asserted type `Self@set_scale`
+ generics_self_basic.py:20:16: error[invalid-return-type] Return type does not match returned value: expected `Self@method2`, found `Shape`
+ generics_self_basic.py:33:16: error[invalid-return-type] Return type does not match returned value: expected `Self@cls_method2`, found `Shape`
+-generics_self_basic.py:51:1: error[type-assertion-failure] Argument does not have asserted type `Shape`
+-generics_self_basic.py:52:1: error[type-assertion-failure] Argument does not have asserted type `Circle`
+ generics_self_basic.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Shape`
+ generics_self_basic.py:55:1: error[type-assertion-failure] Argument does not have asserted type `Circle`
+ generics_self_basic.py:64:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@set_value`
+ generics_self_basic.py:67:26: error[invalid-type-form] Special form `typing.Self` expected no type parameter
+-generics_self_basic.py:74:5: error[type-assertion-failure] Argument does not have asserted type `Container[int]`
+-generics_self_basic.py:75:5: error[type-assertion-failure] Argument does not have asserted type `Container[str]`
+-generics_self_basic.py:83:5: error[type-assertion-failure] Argument does not have asserted type `Container[T@object_with_generic_type]`
+ generics_self_protocols.py:48:5: error[type-assertion-failure] Argument does not have asserted type `ShapeProtocol`
++generics_self_usage.py:50:5: error[invalid-assignment] Object of type `def foo(self) -> int` is not assignable to `(typing.Self, /) -> int`
+ generics_self_usage.py:73:14: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:76:6: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+@@ -861,5 +857,5 @@
+ typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 862 diagnostics
++Found 858 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-09-04 20:18_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed Instrumentation Performance Report](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-argument?runnerMode=Instrumentation)
+
+### Merging #18007 will **degrade performances by 4.61%**
+
+<sub>Comparing <code>Glyphack:typing-self-argument</code> (a76ea05) with <code>main</code> (00a9e65)[^unexpected-base]</sub>
+[^unexpected-base]: No successful run was found on <code>david/implicit-self-signature</code> (29406de) during the generation of this report, so <code>main</code> (00a9e65) was used instead as the comparison base. There might be some changes unrelated to this pull request in this report.
+
+
+
+### Summary
+
+`❌ 1` regression  
+`✅ 42` untouched  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-argument?runnerMode=Instrumentation)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `BASE` | `HEAD` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | `` DateType `` | 225.6 ms | 236.5 ms | -4.61% |
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-09-04 20:19_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed WallTime Performance Report](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-argument?runnerMode=WallTime)
+
+### Merging #18007 will **degrade performances by 7.45%**
+
+<sub>Comparing <code>Glyphack:typing-self-argument</code> (a76ea05) with <code>main</code> (00a9e65)[^unexpected-base]</sub>
+[^unexpected-base]: No successful run was found on <code>david/implicit-self-signature</code> (29406de) during the generation of this report, so <code>main</code> (00a9e65) was used instead as the comparison base. There might be some changes unrelated to this pull request in this report.
+
+
+
+### Summary
+
+`❌ 2` regressions  
+`✅ 6` untouched  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Atyping-self-argument?runnerMode=WallTime)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `BASE` | `HEAD` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | `` medium[pandas] `` | 30.9 s | 33.4 s | -7.45% |
+| ❌ | `` small[freqtrade] `` | 4.1 s | 4.3 s | -5.63% |
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-05 19:11_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_Marked ready for review by @Glyphack on 2025-09-05 22:11_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-08 08:40_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-08 08:44_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 782 | 1 | 8 |
+| `type-assertion-failure` | 9 | 553 | 0 |
+| `unsupported-operator` | 143 | 0 | 5 |
+| `unresolved-attribute` | 86 | 2 | 0 |
+| `not-iterable` | 54 | 0 | 0 |
+| `unused-ignore-comment` | 0 | 50 | 0 |
+| `possibly-unbound-attribute` | 41 | 0 | 2 |
+| `invalid-assignment` | 31 | 1 | 4 |
+| `non-subscriptable` | 32 | 0 | 0 |
+| `no-matching-overload` | 23 | 0 | 0 |
+| `invalid-return-type` | 13 | 3 | 4 |
+| `division-by-zero` | 0 | 3 | 0 |
+| `invalid-key` | 2 | 0 | 0 |
+| `missing-argument` | 1 | 0 | 0 |
+| `parameter-already-assigned` | 1 | 0 | 0 |
+| `unknown-argument` | 1 | 0 | 0 |
+| **Total** | **1,219** | **613** | **23** |
+
+
+---
+
+_@sharkdp reviewed on 2025-09-08 12:22_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/signatures.rs`:1251 on 2025-09-08 12:22_
+
+I noticed that this returns a `Type::NonInferableTypeVar` instead of a `Type::TypeVar`, which causes some of the problems we see in the ecosystem. It also means that we didn't really see the full effect of this change. I have opened https://github.com/astral-sh/ruff/pull/20303 to experiment with a (non-production) fix for this.
+
+---
+
+_@Glyphack reviewed on 2025-09-08 18:40_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/resources/mdtest/generics/scoping.md`:168 on 2025-09-08 18:40_
+
+```suggestion
+```
+
+---
+
+_Converted to draft by @sharkdp on 2025-09-10 20:09_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/signatures.rs`:1264 on 2025-09-10 22:02_
+
+I think this can be even more precise -- if there is no `Self` typevar in the generic context, we don't need to make `self` generic.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/signatures.rs`:1265 on 2025-09-10 22:03_
+
+Do we need to even check whether the class is generic? Does it cause any bad result if we don't?
+
+---
+
+_@carljm reviewed on 2025-09-10 22:03_
+
+---
+
+_@Glyphack reviewed on 2025-09-11 13:57_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types/signatures.rs`:1265 on 2025-09-11 13:57_
+
+I could not figure out a way to resolve this problem:
+
+```py
+from typing import Generic, TypeVar, Any
+
+T = TypeVar("T")
+
+class C(Generic[T]):
+    def __init__(self: "C", x: T) -> None: ...
+
+reveal_type(C(1))  # revealed: C[Unknown | int]
+```
+
+Not sure what goes wrong here, will take a deeper look today.
+
+
+---
+
+_@Glyphack reviewed on 2025-09-11 14:16_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types/signatures.rs`:1265 on 2025-09-11 14:16_
+
+Is this expected behavior? Because mypy and pyright also do the same (say the type is unknown)
+
+https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDiApikSEgMYA0UAKokQGoCGIAUG7VALx0MsgAFACJawgJQcKAG2YBnOVADCg4qXIUA2rQC64gFxsoxqABMiwKAH0rqJDBuC5RacH1RhS4TQAe72uJQALQAfFAAcmCk7gB0cRwgRABuRMzSVvAIRIIqAIzigVAAxFCJKWlEpu5KmqgwOkA
+https://mypy-play.net/?mypy=latest&python=3.12&gist=73a251964b5325ffe06f344054d3ffea
+
+---
+
+_@carljm reviewed on 2025-09-11 15:15_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/signatures.rs`:1265 on 2025-09-11 15:15_
+
+I'm not entirely sure how we end up with `Unknown | int` here (maybe something to do with the way we bidirectionally match up arguments and annotated types in our current constraint solver), but in general I think `Unknown` is a reasonable answer: the annotation `C` is syntax sugar for `C[Unknown]`, and by explicitly annotating `self` as `C[Unknown]` we are overriding the usual inference.
+
+---
+
+_@Glyphack reviewed on 2025-09-11 15:51_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types/signatures.rs`:1265 on 2025-09-11 15:51_
+
+That makes sense. So if in the above codeblock we annotate self with `typing.Self` the reveal type would be `C[int]`. That was the case I could not solve and had to add the if statement to not use `Type::instance` annotation for generic classes.
+
+So my guess is using `C[T]` would be the correct annotation here? This way the generic context of method would still be None.
+Sorry for my misunderstanding.
+
+---
+
+_@sharkdp reviewed on 2025-09-11 16:55_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/src/types/signatures.rs`:1265 on 2025-09-11 16:55_
+
+FWIW, I'm currently working on something that will also help us infer `C[int]` here.
+
+---
+
+_@Glyphack reviewed on 2025-09-11 18:08_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types/signatures.rs`:1265 on 2025-09-11 18:08_
+
+Another problem I found after this change(was not related to this I noticed it after this, and can be produced on main) is this:
+
+In the following example when we annotate self with type var in f then f binds that type var and the `Self` in b is actually bound by `f`:
+
+```py
+from typing import Self
+
+class C[T]():
+    def f(self: Self):
+        def b(x: Self):
+            reveal_type(x)  # revealed: Self@f
+```
+
+If we annotate `self` with `C`:
+
+```py
+from typing import Self
+
+class C():
+    def f(self: "C"):
+        def b(x: Self):
+            reveal_type(x)  # revealed: Self@b
+```
+
+And the first example is correct based on [this todo comment](https://github.com/astral-sh/ruff/blob/59c8fda3f8f3bf2cc5c1ae34e7ca9dbea4d0278f/crates/ty_python_semantic/resources/mdtest/annotations/self.md#L33) in mdtests.
+
+Made this issue: https://github.com/astral-sh/ty/issues/1173
+
+---
+
+_@Glyphack reviewed on 2025-09-11 20:43_
+
+---
+
+_Review comment by @Glyphack on `crates/ty_python_semantic/src/types/signatures.rs`:1264 on 2025-09-11 20:43_
+
+Addressed in https://github.com/astral-sh/ruff/pull/18007/commits/d824ae0d24b6b14def3037b1d316efd83f473ce3
+
+---
+
+_@dcreager reviewed on 2025-09-11 23:33_
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/signatures.rs`:1265 on 2025-09-11 23:33_
+
+Ah, that's a good catch! The current behavior is the correct thing to do for real legacy typevars.  This is the function that implements that:
+
+https://github.com/astral-sh/ruff/blob/36888198a61eeb86f2a3a416a99ac537676c6bbc/crates/ty_python_semantic/src/types/generics.rs#L76-L91
+
+The `find_map` looks for an enclosing scope that has already bound the typevar. The `or_else` binds it to the current function definition if there isn't one. Fixing this should hopefully just require adding a check at the beginning of that function to immediately bind any `Self` typevar to `typevar_binding_context`.
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-15 07:56_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-15 07:56_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-15 08:02_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-15 08:02_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-15 08:43_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-15 08:43_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-15 14:26_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-15 14:26_
+
+---
+
+_@sharkdp reviewed on 2025-09-15 14:31_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md`:328 on 2025-09-15 14:31_
+
+This regression is tracked in https://github.com/astral-sh/ty/issues/1157
+
+---
+
+_Comment by @sharkdp on 2025-09-22 18:36_
+
+I am planning to make a couple of additional changes here, and I'm also going to merge in other branches. So I'm going to merge this PR into a new integration branch (https://github.com/astral-sh/ruff/pull/20517). That also makes it a bit easier for me to run `ecosystem-analyzer` (as it's not a contributor PR anymore). Thank you very much for your work here, @Glyphack. This also doesn't mean that further contributions to type-of-self are not wanted anymore (quite the contrary), but contributions should now ideally be new PRs targeted at https://github.com/astral-sh/ruff/pull/20517.
+
+---
+
+_Marked ready for review by @sharkdp on 2025-09-22 18:37_
+
+---
+
+_Merged by @sharkdp on 2025-09-22 18:37_
+
+---
+
+_Closed by @sharkdp on 2025-09-22 18:37_
+
+---
+
+_Branch deleted on 2025-09-22 18:59_
+
+---

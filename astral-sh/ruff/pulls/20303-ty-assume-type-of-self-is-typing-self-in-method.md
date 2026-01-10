@@ -1,0 +1,736 @@
+```yaml
+number: 20303
+title: "[ty] Assume type of self is typing.Self in method calls (pt2)"
+type: pull_request
+state: closed
+author: sharkdp
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+draft: true
+base: main
+head: david/signature-implicit-self
+created_at: 2025-09-08T11:04:11Z
+updated_at: 2025-09-22T18:08:33Z
+url: https://github.com/astral-sh/ruff/pull/20303
+synced_at: 2026-01-10T17:40:28Z
+```
+
+# [ty] Assume type of self is typing.Self in method calls (pt2)
+
+---
+
+_Pull request opened by @sharkdp on 2025-09-08 11:04_
+
+an extension of https://github.com/astral-sh/ruff/pull/18007:
+
+* Changed the type of the implicit `self` to be a `Type::TypeVar` instead of a `Type::NonInferableTypeVar`
+* Cherry-picked fix for https://github.com/astral-sh/ty/issues/1131 (https://github.com/astral-sh/ruff/pull/20304)
+* Cherry-picked fix for https://github.com/astral-sh/ty/issues/1156 (https://github.com/astral-sh/ruff/pull/20325)
+* Cherry-pick https://github.com/astral-sh/ruff/pull/20326 for easier debugging
+
+---
+
+_Label `ty` added by @sharkdp on 2025-09-08 11:04_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-08 11:04_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-08 11:06_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-09-10 09:46:31.641158001 +0000
++++ new-output.txt	2025-09-10 09:46:34.683187956 +0000
+@@ -1,6 +1,6 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+ fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/a3ffa22/src/function/execute.rs:228:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType < 'db >::value_type_(Id(b416)): execute: too many cycle iterations`
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/a3ffa22/src/function/execute.rs:228:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(1267a)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/a3ffa22/src/function/execute.rs:228:25 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(12a7a)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -359,10 +359,15 @@
+ generics_defaults.py:155:58: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[bytes]`?
+ generics_defaults.py:169:1: error[type-assertion-failure] Argument does not have asserted type `(Foo7[int], /) -> Foo7[int]`
+ generics_defaults_referential.py:23:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
++generics_defaults_referential.py:35:1: error[type-assertion-failure] Argument does not have asserted type `Foo[int, str]`
++generics_defaults_referential.py:35:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Foo[DefaultStrT@Foo, T2@Foo]` does not satisfy upper bound of type variable `Self` (Foo[str, str])
++generics_defaults_referential.py:36:1: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Foo[int, int]` does not satisfy upper bound of type variable `Self` (Foo[str, str])
+ generics_defaults_referential.py:36:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[""]`
++generics_defaults_referential.py:37:1: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Foo[int, int]` does not satisfy upper bound of type variable `Self` (Foo[str, str])
+ generics_defaults_referential.py:37:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[""]`
+ generics_defaults_referential.py:94:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
+ generics_defaults_referential.py:95:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
++generics_defaults_referential.py:98:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Bar[int, str]` does not satisfy upper bound of type variable `Self` (Bar[Unknown, list[Unknown]])
+ generics_defaults_specialization.py:26:5: error[type-assertion-failure] Argument does not have asserted type `SomethingWithNoDefaults[int, str]`
+ generics_defaults_specialization.py:27:5: error[type-assertion-failure] Argument does not have asserted type `SomethingWithNoDefaults[int, bool]`
+ generics_defaults_specialization.py:30:1: error[non-subscriptable] Cannot subscript object of type `<class 'SomethingWithNoDefaults[int, typing.TypeVar]'>` with no `__class_getitem__` method
+@@ -401,10 +406,10 @@
+ generics_self_advanced.py:18:1: error[type-assertion-failure] Argument does not have asserted type `ParentA`
+ generics_self_advanced.py:19:1: error[type-assertion-failure] Argument does not have asserted type `ChildA`
+ generics_self_advanced.py:28:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@method1`
+-generics_self_advanced.py:35:9: error[type-assertion-failure] Argument does not have asserted type `typing.Self`
+-generics_self_advanced.py:36:9: error[type-assertion-failure] Argument does not have asserted type `list[typing.Self]`
+-generics_self_advanced.py:37:9: error[type-assertion-failure] Argument does not have asserted type `typing.Self`
+-generics_self_advanced.py:38:9: error[type-assertion-failure] Argument does not have asserted type `typing.Self`
++generics_self_advanced.py:35:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
++generics_self_advanced.py:36:9: error[type-assertion-failure] Argument does not have asserted type `list[Self@method2]`
++generics_self_advanced.py:37:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
++generics_self_advanced.py:38:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
+ generics_self_advanced.py:43:9: error[type-assertion-failure] Argument does not have asserted type `list[typing.Self]`
+ generics_self_advanced.py:44:9: error[type-assertion-failure] Argument does not have asserted type `typing.Self`
+ generics_self_advanced.py:45:9: error[type-assertion-failure] Argument does not have asserted type `typing.Self`
+@@ -414,16 +419,12 @@
+ generics_self_basic.py:14:9: error[type-assertion-failure] Argument does not have asserted type `Self@set_scale`
+ generics_self_basic.py:20:16: error[invalid-return-type] Return type does not match returned value: expected `Self@method2`, found `Shape`
+ generics_self_basic.py:33:16: error[invalid-return-type] Return type does not match returned value: expected `Self@cls_method2`, found `Shape`
+-generics_self_basic.py:51:1: error[type-assertion-failure] Argument does not have asserted type `Shape`
+-generics_self_basic.py:52:1: error[type-assertion-failure] Argument does not have asserted type `Circle`
+ generics_self_basic.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Shape`
+ generics_self_basic.py:55:1: error[type-assertion-failure] Argument does not have asserted type `Circle`
+ generics_self_basic.py:64:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@set_value`
+ generics_self_basic.py:67:26: error[invalid-type-form] Special form `typing.Self` expected no type parameter
+-generics_self_basic.py:74:5: error[type-assertion-failure] Argument does not have asserted type `Container[int]`
+-generics_self_basic.py:75:5: error[type-assertion-failure] Argument does not have asserted type `Container[str]`
+-generics_self_basic.py:83:5: error[type-assertion-failure] Argument does not have asserted type `Container[T@object_with_generic_type]`
+ generics_self_protocols.py:48:5: error[type-assertion-failure] Argument does not have asserted type `ShapeProtocol`
++generics_self_usage.py:50:5: error[invalid-assignment] Object of type `def foo(self) -> int` is not assignable to `(typing.Self, /) -> int`
+ generics_self_usage.py:73:14: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:76:6: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+@@ -539,8 +540,8 @@
+ generics_upper_bound.py:37:1: error[type-assertion-failure] Argument does not have asserted type `list[int]`
+ generics_upper_bound.py:38:1: error[type-assertion-failure] Argument does not have asserted type `set[int]`
+ generics_upper_bound.py:43:1: error[type-assertion-failure] Argument does not have asserted type `list[int] | set[int]`
+-generics_upper_bound.py:51:8: error[invalid-argument-type] Argument to function `longer` is incorrect: Argument type `Literal[3]` does not satisfy upper bound of type variable `ST`
+-generics_upper_bound.py:51:11: error[invalid-argument-type] Argument to function `longer` is incorrect: Argument type `Literal[3]` does not satisfy upper bound of type variable `ST`
++generics_upper_bound.py:51:8: error[invalid-argument-type] Argument to function `longer` is incorrect: Argument type `Literal[3]` does not satisfy upper bound of type variable `ST` (Sized)
++generics_upper_bound.py:51:11: error[invalid-argument-type] Argument to function `longer` is incorrect: Argument type `Literal[3]` does not satisfy upper bound of type variable `ST` (Sized)
+ generics_variance.py:14:6: error[invalid-legacy-type-variable] A legacy `typing.TypeVar` cannot be both covariant and contravariant
+ generics_variance.py:26:27: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Iterator[T_co@ImmutableList]`
+ generics_variance.py:57:28: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `B_co@func`
+@@ -610,9 +611,9 @@
+ literals_literalstring.py:74:5: error[invalid-assignment] Object of type `Literal[3]` is not assignable to `LiteralString`
+ literals_literalstring.py:75:5: error[invalid-assignment] Object of type `Literal[b"test"]` is not assignable to `LiteralString`
+ literals_literalstring.py:79:21: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `bool`
+-literals_literalstring.py:120:22: error[invalid-argument-type] Argument to function `literal_identity` is incorrect: Argument type `str` does not satisfy upper bound of type variable `TLiteral`
++literals_literalstring.py:120:22: error[invalid-argument-type] Argument to function `literal_identity` is incorrect: Argument type `str` does not satisfy upper bound of type variable `TLiteral` (LiteralString)
+ literals_literalstring.py:130:5: error[invalid-assignment] Object of type `Container[str]` is not assignable to `Container[LiteralString]`
+-literals_literalstring.py:134:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `str` does not satisfy upper bound of type variable `T`
++literals_literalstring.py:134:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `str` does not satisfy upper bound of type variable `T` (LiteralString)
+ literals_literalstring.py:167:1: error[type-assertion-failure] Argument does not have asserted type `A`
+ literals_literalstring.py:171:5: error[invalid-assignment] Object of type `list[LiteralString]` is not assignable to `list[str]`
+ literals_parameterizations.py:41:15: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+@@ -848,5 +849,5 @@
+ typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 849 diagnostics
++Found 850 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-08 11:09_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 2,140 | 3 | 122 |
+| `type-assertion-failure` | 8 | 528 | 0 |
+| `unsupported-operator` | 151 | 0 | 5 |
+| `unresolved-attribute` | 113 | 5 | 0 |
+| `unused-ignore-comment` | 0 | 57 | 0 |
+| `not-iterable` | 55 | 0 | 0 |
+| `possibly-unbound-attribute` | 45 | 0 | 2 |
+| `invalid-return-type` | 30 | 5 | 4 |
+| `no-matching-overload` | 37 | 0 | 0 |
+| `invalid-assignment` | 30 | 1 | 4 |
+| `non-subscriptable` | 32 | 0 | 0 |
+| `division-by-zero` | 0 | 3 | 0 |
+| `invalid-key` | 2 | 0 | 0 |
+| `invalid-parameter-default` | 2 | 0 | 0 |
+| `missing-argument` | 1 | 0 | 0 |
+| `parameter-already-assigned` | 1 | 0 | 0 |
+| `unknown-argument` | 1 | 0 | 0 |
+| **Total** | **2,648** | **602** | **137** |
+
+**[Full report with detailed diff](https://david-signature-implicit-sel.ecosystem-663.pages.dev/diff)**
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-08 11:09_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+python-sop (https://gitlab.com/dkg/python-sop)
++ sop/__init__.py:344:24: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `str`
++ sop/__init__.py:355:20: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `str`
+- Found 3 diagnostics
++ Found 5 diagnostics
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ pytest_robotframework/_internal/robot/utils.py:245:59: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
+- Found 175 diagnostics
++ Found 176 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/_core/_tempfile.py:298:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 224 diagnostics
++ Found 223 diagnostics
+
+com2ann (https://github.com/ilevkivskyi/com2ann)
++ src/com2ann.py:911:18: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
+- Found 4 diagnostics
++ Found 5 diagnostics
+
+zipp (https://github.com/jaraco/zipp)
++ zipp/__init__.py:356:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_BufferT_co@TextIOWrapper]` does not satisfy upper bound of type variable `Self`
+- Found 2 diagnostics
++ Found 3 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
++ gitrevise/utils.py:134:26: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ gitrevise/utils.py:137:26: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"\n"]`
++ gitrevise/utils.py:139:30: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ gitrevise/utils.py:141:34: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ gitrevise/utils.py:142:30: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"\n"]`
+- Found 1 diagnostic
++ Found 6 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_util/py/utilpyweakref.py:173:11: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Argument type `Top[ReferenceType[Unknown]]` does not satisfy upper bound of type variable `Self`
++ beartype/_util/py/utilpyweakref.py:173:11: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `Self@__call__`, found `Top[ReferenceType[Unknown]]`
+- Found 592 diagnostics
++ Found 594 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ mypy_primer/utils.py:172:37: error[unresolved-attribute] Type `TextIOWrapper[_WrappedBuffer]` has no attribute `raw`
+- Found 8 diagnostics
++ Found 9 diagnostics
+
+bidict (https://github.com/jab/bidict)
++ bidict/_base.py:297:42: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ bidict/_base.py:297:42: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ bidict/_base.py:309:42: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ bidict/_base.py:309:42: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ bidict/_iter.py:26:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ bidict/_iter.py:26:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
+- Found 14 diagnostics
++ Found 20 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
++ chess/svg.py:152:11: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Element[_Tag@Element]` does not satisfy upper bound of type variable `Self`
++ chess/svg.py:193:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Element[_Tag@Element]` does not satisfy upper bound of type variable `Self`
+- Found 14 diagnostics
++ Found 16 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch/tests/test_mirror.py:446:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"old index"]`
++ src/bandersnatch/tests/test_sync.py:14:17: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"112233"]`
++ src/bandersnatch_filter_plugins/allowlist_name.py:160:39: error[invalid-argument-type] Argument to function `auto_decode` is incorrect: Expected `bytes`, found `str`
+- src/bandersnatch_storage_plugins/swift.py:703:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/bandersnatch_storage_plugins/swift.py:717:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 126 diagnostics
++ Found 127 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_make.py:1581:5: error[invalid-assignment] Object of type `tuple[Unknown, ...]` is not assignable to `list[Attribute | Unknown]`
++ src/attr/_make.py:1581:5: error[invalid-assignment] Object of type `tuple[@Todo(generator expression yield type), ...]` is not assignable to `list[Attribute | Unknown]`
++ tests/test_make.py:2174:57: error[invalid-argument-type] Argument to function `_get_copy_kwargs` is incorrect: Argument type `Literal[False]` does not satisfy upper bound of type variable `Self`
+- Found 563 diagnostics
++ Found 564 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ aioredis/client.py:3430:34: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ aioredis/client.py:3430:34: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[Mapping[Unknown, object]]`
++ aioredis/client.py:3430:47: error[invalid-argument-type] Argument to bound method `values` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ aioredis/client.py:3430:47: error[invalid-argument-type] Argument to bound method `values` is incorrect: Expected `Self@values`, found `Top[Mapping[Unknown, object]]`
+- Found 15 diagnostics
++ Found 19 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
++ src/aiortc/rtcpeerconnection.py:825:62: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:827:53: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:913:47: error[invalid-argument-type] Argument to function `reverse_direction` is incorrect: Expected `str`, found `str | None`
++ src/aiortc/rtcpeerconnection.py:968:64: warning[possibly-unbound-attribute] Attribute `iceLite` on type `RTCIceParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:972:52: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:976:42: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
+- Found 93 diagnostics
++ Found 99 diagnostics
+
+operator (https://github.com/canonical/operator)
++ ops/pebble.py:3183:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_BufferT_co@TextIOWrapper]` does not satisfy upper bound of type variable `Self`
++ ops/pebble.py:3198:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_BufferT_co@TextIOWrapper]` does not satisfy upper bound of type variable `Self`
+- Found 99 diagnostics
++ Found 101 diagnostics
+
+asynq (https://github.com/quora/asynq)
++ asynq/decorators.py:282:39: error[invalid-argument-type] Argument to function `__get__` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `Self`
+- Found 184 diagnostics
++ Found 185 diagnostics
+
+twine (https://github.com/pypa/twine)
++ twine/repository.py:74:34: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ twine/repository.py:74:34: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ twine/repository.py:80:61: error[not-iterable] Object of type `Top[list[Unknown]] | tuple[object, ...]` may not be iterable
+- Found 12 diagnostics
++ Found 15 diagnostics
+
+kornia (https://github.com/kornia/kornia)
++ kornia/core/check.py:218:78: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ kornia/geometry/camera/pinhole.py:442:24: error[not-iterable] Object of type `Top[list[Unknown]] | tuple[object, ...]` may not be iterable
++ kornia/nerf/data_utils.py:34:70: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
++ kornia/nerf/data_utils.py:38:73: error[not-iterable] Object of type `Top[list[Unknown]]` is not iterable
+- Found 783 diagnostics
++ Found 787 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
++ src/werkzeug/datastructures/headers.py:517:28: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/headers.py:517:28: error[invalid-argument-type] Argument to bound method `keys` is incorrect: Expected `Self@keys`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/headers.py:518:39: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/headers.py:518:39: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Expected `Self@getlist`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/headers.py:520:35: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/headers.py:520:35: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ src/werkzeug/datastructures/structures.py:33:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/structures.py:33:20: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/structures.py:35:27: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/structures.py:35:27: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ src/werkzeug/datastructures/structures.py:37:26: error[not-iterable] Object of type `Top[list[Unknown]] | tuple[object, ...] | Top[set[Unknown]]` may not be iterable
++ src/werkzeug/datastructures/structures.py:193:54: error[invalid-argument-type] Argument to bound method `lists` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/structures.py:193:54: error[invalid-argument-type] Argument to bound method `lists` is incorrect: Expected `Self@lists`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/structures.py:196:31: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/structures.py:196:31: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ src/werkzeug/datastructures/structures.py:628:26: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[_OrderedMultiDict[Unknown, Unknown]]`
++ src/werkzeug/datastructures/structures.py:628:26: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[_OrderedMultiDict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/structures.py:644:16: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Argument type `Top[MultiDict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/datastructures/structures.py:644:16: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Expected `Self@getlist`, found `Top[MultiDict[Unknown, Unknown]]`
++ src/werkzeug/debug/__init__.py:77:26: error[no-matching-overload] No overload of bound method `rpartition` matches arguments
++ src/werkzeug/debug/repr.py:249:31: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/debug/repr.py:249:31: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ src/werkzeug/http.py:274:27: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[dict[Unknown, Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/http.py:274:27: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[dict[Unknown, Unknown]]`
++ src/werkzeug/middleware/shared_data.py:121:23: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ src/werkzeug/middleware/shared_data.py:121:23: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ tests/test_formparser.py:188:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_BufferT_co@TextIOWrapper]` does not satisfy upper bound of type variable `Self`
++ tests/test_wrappers.py:630:53: error[invalid-argument-type] Argument to function `wrap_file` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ tests/test_wrappers.py:650:53: error[invalid-argument-type] Argument to function `wrap_file` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ tests/test_wsgi.py:158:14: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_BufferT_co@TextIOWrapper]` does not satisfy upper bound of type variable `Self`
++ tests/test_wsgi.py:158:31: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BufferedReader[_BufferedReaderStreamT@BufferedReader]` does not satisfy upper bound of type variable `Self`
++ tests/test_wsgi.py:296:44: error[invalid-argument-type] Argument to function `wrap_file` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ tests/test_wsgi.py:304:44: error[invalid-argument-type] Argument to function `wrap_file` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
+- Found 369 diagnostics
++ Found 402 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ tests/test_formparsers.py:160:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"<file content>"]`
++ tests/test_formparsers.py:178:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"<file content>"]`
++ tests/test_formparsers.py:196:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"<file1 content>"]`
++ tests/test_formparsers.py:200:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"<file2 content>"]`
++ tests/test_formparsers.py:224:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"<file1 content>"]`
++ tests/test_formparsers.py:228:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"<file2 content>"]`
++ tests/test_formparsers.py:261:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"<file1 content>"]`
++ tests/test_formparsers.py:265:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"<file2 content>"]`
++ tests/test_responses.py:362:20: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
+- Found 144 diagnostics
++ Found 153 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
++ boostedblob/azure_auth.py:142:30: error[unresolved-attribute] Type `str` has no attribute `decode`
++ boostedblob/read.py:83:20: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `str`
++ boostedblob/read.py:85:16: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `str`
++ boostedblob/read.py:111:16: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `str`
+- Found 23 diagnostics
++ Found 27 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ kopf/_cogs/structs/patches.py:104:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ kopf/_cogs/structs/patches.py:104:29: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
++ kopf/_core/reactor/subhandling.py:70:23: error[invalid-argument-type] Argument to bound method `items` is incorrect: Argument type `Top[Mapping[Unknown, object]]` does not satisfy upper bound of type variable `Self`
++ kopf/_core/reactor/subhandling.py:70:23: error[invalid-argument-type] Argument to bound method `items` is incorrect: Expected `Self@items`, found `Top[Mapping[Unknown, object]]`
+- Found 52 diagnostics
++ Found 56 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/cmds/status.py:2324:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ paasta_tools/cli/cmds/validate.py:885:12: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `croniter[_R_co@croniter]` does not satisfy upper bound of type variable `Self`
++ paasta_tools/contrib/get_running_task_allocation.py:338:21: error[invalid-argument-type] Argument to bound method `_asdict` is incorrect: Argument type `TaskAllocationInfo` does not satisfy upper bound of type variable `Self`
+- Found 869 diagnostics
++ Found 870 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ rich/progress.py:1377:20: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_BufferT_co@TextIOWrapper]` does not satisfy upper bound of type variable `Self`
++ tests/test_progress.py:583:17: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"Hello, World!"]`
++ tests/test_progress.py:595:17: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"Hello, World!"]`
++ tests/test_progress.py:608:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"Hello, World!"]`
++ tests/test_progress.py:611:42: error[invalid-argument-type] Argument to function `wrap_file` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ tests/test_progress.py:638:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"Hello, World!"]`
++ tests/test_progress.py:643:41: error[invalid-argument-type] Argument to bound method `wrap_file` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
+- Found 310 diagnostics
++ Found 317 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ psycopg/psycopg/_typeinfo.py:102:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Cursor[Row@Cursor]` does not satisfy upper bound of type variable `Self`
++ psycopg/psycopg/_typeinfo.py:120:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncCursor[Row@AsyncCursor]` does not satisfy upper bound of type variable `Self`
++ psycopg_c/build_backend/cython_backend.py:34:30: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ psycopg_pool/psycopg_pool/pool.py:240:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `WaitingClient[CT@WaitingClient]` does not satisfy upper bound of type variable `Self`
++ psycopg_pool/psycopg_pool/pool.py:251:24: error[invalid-argument-type] Argument to bound method `wait` is incorrect: Argument type `WaitingClient[CT@ConnectionPool]` does not satisfy upper bound of type variable `Self`
++ psycopg_pool/psycopg_pool/pool_async.py:268:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `WaitingClient[ACT@WaitingClient]` does not satisfy upper bound of type variable `Self`
++ psycopg_pool/psycopg_pool/pool_async.py:279:30: error[invalid-argument-type] Argument to bound method `wait` is incorrect: Argument type `WaitingClient[ACT@AsyncConnectionPool]` does not satisfy upper bound of type variable `Self`
++ tests/fix_faker.py:151:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Cursor[Row@Cursor]` does not satisfy upper bound of type variable `Self`
++ tests/fix_faker.py:175:20: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncCursor[Row@AsyncCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_client.py:90:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `ClientCursor[Row@ClientCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_client_async.py:91:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncClientCursor[Row@AsyncClientCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server.py:28:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `ServerCursor[Row@ServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server.py:35:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `ServerCursor[Row@ServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server.py:39:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `ServerCursor[Row@ServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server.py:45:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `ServerCursor[Row@ServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server.py:49:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `ServerCursor[Row@ServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server_async.py:26:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncServerCursor[Row@AsyncServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server_async.py:33:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncServerCursor[Row@AsyncServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server_async.py:37:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncServerCursor[Row@AsyncServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server_async.py:45:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncServerCursor[Row@AsyncServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_cursor_server_async.py:49:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncServerCursor[Row@AsyncServerCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_tstring.py:212:11: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncClientCursor[Row@AsyncClientCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_tstring.py:223:11: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncClientCursor[Row@AsyncClientCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_tstring.py:229:11: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncRawCursor[Row@AsyncRawCursor]` does not satisfy upper bound of type variable `Self`
++ tests/test_tstring.py:235:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AsyncServerCursor[Row@AsyncServerCursor]` does not satisfy upper bound of type variable `Self`
++ tools/ci/copy_to_binary.py:25:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
+- Found 690 diagnostics
++ Found 716 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
++ koda_validate/_internal.py:212:26: error[invalid-argument-type] Argument to bound method `_validate_to_tuple` is incorrect: Argument type `Top[_ToTupleValidator[Unknown]]` does not satisfy upper bound of type variable `Self`
++ koda_validate/_internal.py:212:26: error[invalid-argument-type] Argument to bound method `_validate_to_tuple` is incorrect: Expected `Self@_validate_to_tuple`, found `Top[_ToTupleValidator[Unknown]]`
++ koda_validate/_internal.py:232:32: error[invalid-argument-type] Argument to bound method `_validate_to_tuple_async` is incorrect: Argument type `Top[_ToTupleValidator[Unknown]]` does not satisfy upper bound of type variable `Self`
++ koda_validate/_internal.py:232:32: error[invalid-argument-type] Argument to bound method `_validate_to_tuple_async` is incorrect: Expected `Self@_validate_to_tuple_async`, found `Top[_ToTupleValidator[Unknown]]`
++ koda_validate/generic.py:236:21: error[not-iterable] Object of type `ListOrTupleOrSetAny@UniqueItems` may not be iterable
++ koda_validate/generic.py:330:16: error[invalid-argument-type] Argument to bound method `upper` is incorrect: Argument type `StrOrBytes@UpperCase` does not satisfy upper bound of type variable `Self`
+- koda_validate/generic.py:330:16: error[invalid-return-type] Return type does not match returned value: expected `StrOrBytes@UpperCase`, found `str | bytes`
++ koda_validate/generic.py:330:16: error[invalid-return-type] Return type does not match returned value: expected `StrOrBytes@UpperCase`, found `Unknown | bytes`
++ koda_validate/generic.py:330:16: error[no-matching-overload] No overload of bound method `upper` matches arguments
++ koda_validate/generic.py:336:16: error[invalid-argument-type] Argument to bound method `lower` is incorrect: Argument type `StrOrBytes@LowerCase` does not satisfy upper bound of type variable `Self`
+- koda_validate/generic.py:336:16: error[invalid-return-type] Return type does not match returned value: expected `StrOrBytes@LowerCase`, found `str | bytes`
++ koda_validate/generic.py:336:16: error[invalid-return-type] Return type does not match returned value: expected `StrOrBytes@LowerCase`, found `Unknown | bytes`
++ koda_validate/generic.py:336:16: error[no-matching-overload] No overload of bound method `lower` matches arguments
+- Found 56 diagnostics
++ Found 65 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
++ src/zope/interface/common/tests/test_io.py:37:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BufferedReader[_BufferedReaderStreamT@BufferedReader]` does not satisfy upper bound of type variable `Self`
++ src/zope/interface/common/tests/test_io.py:38:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_BufferT_co@TextIOWrapper]` does not satisfy upper bound of type variable `Self`
+- Found 339 diagnostics
++ Found 341 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ dulwich/attrs.py:246:58: error[invalid-argument-type] Argument to function `parse_git_attributes` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/bisect.py:147:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Unknown | bytes`
++ dulwich/bisect.py:179:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Unknown | bytes`
++ dulwich/bisect.py:210:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/bisect.py:251:36: error[invalid-argument-type] Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `Literal[b"refs/"]`
++ dulwich/bisect.py:343:41: error[unresolved-attribute] Type `str` has no attribute `decode`
++ dulwich/cli.py:178:9: error[no-matching-overload] No overload of bound method `write` matches arguments
++ dulwich/cli.py:188:16: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `str`
++ dulwich/cli.py:2430:59: error[unresolved-attribute] Type `str` has no attribute `decode`
++ dulwich/cli.py:2432:50: error[unresolved-attribute] Type `str` has no attribute `decode`
++ dulwich/cli.py:3194:57: error[invalid-argument-type] Argument to bound method `from_string` is incorrect: Expected `bytes`, found `str`
++ dulwich/cli.py:3712:30: error[invalid-argument-type] Argument to function `write_bundle` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/cli.py:3753:38: error[invalid-argument-type] Argument to function `read_bundle` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/cli.py:3773:38: error[invalid-argument-type] Argument to function `read_bundle` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/cli.py:3801:38: error[invalid-argument-type] Argument to function `read_bundle` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/client.py:1800:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BufferedReader[_BufferedReaderStreamT@BufferedReader]` does not satisfy upper bound of type variable `Self`
++ dulwich/client.py:2243:39: error[invalid-argument-type] Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `Literal[b"@"]`
++ dulwich/client.py:2244:28: error[no-matching-overload] No overload of bound method `rstrip` matches arguments
++ dulwich/client.py:2254:35: error[invalid-argument-type] Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `Literal[b"-"]`
++ dulwich/client.py:2255:37: error[no-matching-overload] No overload of bound method `rstrip` matches arguments
++ dulwich/client.py:2260:33: error[no-matching-overload] No overload of bound method `rstrip` matches arguments
++ dulwich/commit_graph.py:403:38: error[invalid-argument-type] Argument to bound method `from_file` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/contrib/diffstat.py:214:17: error[no-matching-overload] No overload of bound method `split` matches arguments
+- dulwich/contrib/diffstat.py:169:27: warning[division-by-zero] Cannot divide object of type `float` by zero
+- dulwich/contrib/diffstat.py:170:27: warning[division-by-zero] Cannot divide object of type `float` by zero
++ dulwich/diff.py:558:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_BufferT_co@TextIOWrapper]` does not satisfy upper bound of type variable `Self`
++ dulwich/gc.py:417:43: error[unresolved-attribute] Type `str` has no attribute `decode`
++ dulwich/gc.py:439:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/hooks.py:160:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/hooks.py:169:24: error[invalid-return-type] Return type does not match returned value: expected `bytes | None`, found `str`
++ dulwich/ignore.py:499:45: error[invalid-argument-type] Argument to function `read_ignore_patterns` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/index.py:1450:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/mailmap.py:168:37: error[invalid-argument-type] Argument to function `read_mailmap` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/merge_drivers.py:98:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/merge_drivers.py:100:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/merge_drivers.py:102:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/merge_drivers.py:129:24: error[invalid-return-type] Return type does not match returned value: expected `tuple[bytes, bool]`, found `tuple[str, bool]`
++ dulwich/object_store.py:1500:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO | None`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/object_store.py:1501:60: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/porcelain.py:895:18: error[not-iterable] Object of type `(list[str | bytes | PathLike[Unknown]] & ~AlwaysFalsy) | (PathLike[Unknown] & Top[list[Unknown]] & ~AlwaysFalsy) | list[@Todo(list literal element type)]` may not be iterable
++ dulwich/porcelain.py:2269:33: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `str | bytes | PathLike[Unknown]`
++ dulwich/porcelain.py:3972:37: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Unknown | bytes`
++ dulwich/porcelain.py:4069:29: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `str | bytes | PathLike[Unknown]`
++ dulwich/porcelain.py:4974:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/porcelain.py:5724:25: error[invalid-argument-type] Argument to function `write_commit_patch` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/porcelain.py:6153:36: error[invalid-argument-type] Argument to bound method `clean` is incorrect: Expected `bytes`, found `str`
++ dulwich/porcelain.py:6304:51: error[invalid-argument-type] Argument to bound method `clean` is incorrect: Expected `bytes`, found `str`
++ dulwich/porcelain.py:6308:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/porcelain.py:6360:53: error[invalid-argument-type] Argument to bound method `from_bytes` is incorrect: Expected `bytes`, found `str`
++ dulwich/porcelain.py:6481:49: error[invalid-argument-type] Argument to bound method `from_bytes` is incorrect: Expected `bytes`, found `str`
++ dulwich/porcelain.py:6488:37: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/porcelain.py:6619:49: error[invalid-argument-type] Argument to bound method `from_bytes` is incorrect: Expected `bytes`, found `str`
++ dulwich/rebase.py:462:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/rebase.py:491:24: error[invalid-return-type] Return type does not match returned value: expected `bytes | None`, found `str`
++ dulwich/reftable.py:827:25: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"this repository uses the reftable format\n"]`
++ dulwich/reftable.py:892:30: error[unresolved-attribute] Type `str` has no attribute `decode`
++ dulwich/reftable.py:1076:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/reftable.py:1165:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/reftable.py:1316:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/reftable.py:1358:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/repo.py:1221:41: error[invalid-argument-type] Argument to function `read_gitfile` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/repo.py:1337:17: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/repo.py:1364:40: error[invalid-argument-type] Argument to function `read_reflog` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/repo.py:1912:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/repo.py:1922:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/repo.py:1924:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Literal[b"../..\n"]`
++ dulwich/repo.py:2001:52: error[invalid-argument-type] Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `Literal[b"#"]`
++ dulwich/repo.py:2012:44: error[invalid-argument-type] Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `Literal[b"-"]`
++ dulwich/repo.py:2015:30: error[unsupported-operator] Operator `in` is not supported for types `bytes` and `str`, in comparing `Literal[b"="]` with `str`
++ dulwich/repo.py:2017:42: error[no-matching-overload] No overload of bound method `split` matches arguments
++ dulwich/repo.py:2101:66: error[invalid-argument-type] Argument to function `parse_git_attributes` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/repo.py:2109:66: error[invalid-argument-type] Argument to function `parse_git_attributes` is incorrect: Expected `IO[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/sparse_patterns.py:230:33: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Unknown | bytes`
++ dulwich/stash.py:104:31: error[invalid-argument-type] Argument to function `drop_reflog_entry` is incorrect: Expected `BinaryIO`, found `TextIOWrapper[_WrappedBuffer]`
++ dulwich/stash.py:174:29: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `str | bytes | PathLike[Unknown]`
++ dulwich/submodule.py:92:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ dulwich/worktree.py:648:29: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `str | bytes | PathLike[Unknown]`
++ dulwich/worktree.py:774:41: error[invalid-argument-type] Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `Unknown | Literal[b"ref: "]`
++ dulwich/worktree.py:826:49: error[invalid-argument-type] Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `Unknown | Literal[b"ref: "]`
++ dulwich/worktree.py:831:44: error[invalid-argument-type] Method `__getitem__` of type `bound method DiskRefsContainer.__getitem__(name: bytes) -> Unknown | bytes` cannot be called with key of type `str` on object of type `DiskRefsContainer`
++ dulwich/worktree.py:831:44: error[invalid-argument-type] Method `__getitem__` of type `bound method ReftableRefsContainer.__getitem__(name: bytes) -> Unknown | bytes` cannot be called with key of type `str` on object of type `ReftableRefsContainer`
++ dulwich/worktree.py:937:21: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `Unknown | bytes`
++ dulwich/worktree.py:1196:17: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
+- Found 188 diagnostics
++ Found 267 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_core/_ki.py:108:53: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Argument type `Top[_IdRef[Unknown]]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_ki.py:108:53: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `Self@__call__`, found `Top[_IdRef[Unknown]]`
++ src/trio/_core/_tests/test_parking_lot.py:271:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_parking_lot.py:386:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:137:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:148:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:190:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:228:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
+- src/trio/_core/_tests/test_run.py:524:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_core/_tests/test_run.py:828:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:829:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:831:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:1283:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:1310:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:1348:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:1379:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:1879:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:1883:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:1906:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:2267:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:2622:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:2651:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_run.py:2773:15: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_core/_tests/test_windows.py:131:22: error[invalid-argument-type] Argument to bound method `write` is incorrect: Expected `str`, found `bytes`
++ src/trio/_tests/test_channel.py:523:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_channel.py:524:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_channel.py:573:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_file_io.py:262:20: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BufferedReader[_BufferedReaderStreamT@BufferedReader]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_file_io.py:262:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_WrappedBuffer]` does not satisfy upper bound of type variable `_BufferedReaderStreamT`
++ src/trio/_tests/test_file_io.py:262:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_BufferedReaderStream`, found `TextIOWrapper[_WrappedBuffer]`
++ src/trio/_tests/test_highlevel_open_tcp_stream.py:553:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_highlevel_serve_listeners.py:127:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
+- src/trio/_tests/test_highlevel_socket.py:159:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/test_ssl.py:359:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_ssl.py:783:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_subprocess.py:526:27: error[invalid-argument-type] Argument to function `test_one_signal` is incorrect: Expected `(Process, /) -> None`, found `def kill(self) -> None`
++ src/trio/_tests/test_subprocess.py:527:27: error[invalid-argument-type] Argument to function `test_one_signal` is incorrect: Expected `(Process, /) -> None`, found `def terminate(self) -> None`
++ src/trio/_tests/test_subprocess.py:665:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_sync.py:702:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
+- src/trio/_tests/test_testing_raisesgroup.py:993:26: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/test_testing_raisesgroup.py:418:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:468:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:483:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:808:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:857:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:881:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:995:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:1007:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:1044:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:1075:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_testing_raisesgroup.py:1082:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/test_util.py:58:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
+- src/trio/_tests/test_util.py:171:82: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/test_util.py:172:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/type_tests/path.py:16:5: error[type-assertion-failure] Argument does not have asserted type `Path`
+- src/trio/_tests/type_tests/path.py:17:5: error[type-assertion-failure] Argument does not have asserted type `Path`
+- src/trio/_tests/type_tests/path.py:18:5: error[type-assertion-failure] Argument does not have asserted type `Path`
+- src/trio/_tests/type_tests/path.py:19:5: error[type-assertion-failure] Argument does not have asserted type `Path`
+- src/trio/_tests/type_tests/path.py:53:5: error[type-assertion-failure] Argument does not have asserted type `Path`
+- src/trio/_tests/type_tests/path.py:55:5: error[type-assertion-failure] Argument does not have asserted type `Path`
+- src/trio/_tests/type_tests/path.py:58:5: error[type-assertion-failure] Argument does not have asserted type `Path`
+- src/trio/_tests/type_tests/path.py:59:5: error[type-assertion-failure] Argument does not have asserted type `Path`
+- src/trio/_tests/type_tests/path.py:60:5: error[type-assertion-failure] Argument does not have asserted type `Path`
++ src/trio/_tests/type_tests/raisesgroup.py:58:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:59:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:60:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:61:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:63:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:64:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:71:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:74:5: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:125:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:165:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:165:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:166:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:177:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:177:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:178:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:201:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
++ src/trio/_tests/type_tests/raisesgroup.py:210:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Matcher[MatchE@Matcher]` does not satisfy upper bound of type variable `Self`
+- Found 675 diagnostics
++ Found 727 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/app_commands/transformers.py:713:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:714:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:715:12: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:716:11: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:717:11: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:719:11: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:720:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `RawChannelTransformer[ClientT@RawChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:721:23: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `RawChannelTransformer[ClientT@RawChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:722:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BaseChannelTransformer[ClientT@BaseChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:723:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BaseChannelTransformer[ClientT@BaseChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:724:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BaseChannelTransformer[ClientT@BaseChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:725:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BaseChannelTransformer[ClientT@BaseChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:726:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BaseChannelTransformer[ClientT@BaseChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:727:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BaseChannelTransformer[ClientT@BaseChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:728:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `BaseChannelTransformer[ClientT@BaseChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:729:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:782:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `InlineTransformer[ClientT@InlineTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:814:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `UnionChannelTransformer[ClientT@UnionChannelTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:824:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/app_commands/transformers.py:826:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `IdentityTransformer[ClientT@IdentityTransformer]` does not satisfy upper bound of type variable `Self`
++ discord/channel.py:639:53: error[not-iterable] Object of type `Top[list[Unknown]] | tuple[object, ...]` may not be iterable
++ discord/channel.py:1283:53: error[not-iterable] Object of type `Top[list[Unknown]] | tuple[object, ...]` may not be iterable
+- discord/client.py:331:27: error[invalid-argument-type] Argument to class `ConnectionState` is incorrect: Expected `Client`, found `typing.Self`
++ discord/client.py:365:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `ConnectionState[ClientT@ConnectionState]` does not satisfy upper bound of type variable `Self`
++ discord/interactions.py:386:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `InteractionResponse[ClientT@InteractionResponse]` does not satisfy upper bound of type variable `Self`
++ discord/interactions.py:867:20: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `InteractionCallbackResponse[ClientT@InteractionCallbackResponse]` does not satisfy upper bound of type variable `Self`
++ discord/interactions.py:1082:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `InteractionCallbackResponse[ClientT@InteractionCallbackResponse]` does not satisfy upper bound of type variable `Self`
++ discord/interactions.py:1232:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `InteractionCallbackResponse[ClientT@InteractionCallbackResponse]` does not satisfy upper bound of type variable `Self...*[Comment body truncated]*
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-08 11:16_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-09-08 11:42_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed WallTime Performance Report](https://codspeed.io/astral-sh/ruff/branches/david%2Fsignature-implicit-self?runnerMode=WallTime)
+
+### Merging #20303 will **degrade performances by 9.1%**
+
+<sub>Comparing <code>david/signature-implicit-self</code> (6a3101b) with <code>main</code> (9cb37db)</sub>
+
+
+
+### Summary
+
+`❌ 3` regressions  
+`✅ 5` untouched benchmarks  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/david%2Fsignature-implicit-self?runnerMode=WallTime)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `BASE` | `HEAD` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | `` large[sympy] `` | 41 s | 42.9 s | -4.36% |
+| ❌ | `` medium[pandas] `` | 26 s | 28.6 s | -9.1% |
+| ❌ | `` small[freqtrade] `` | 4 s | 4.2 s | -4.74% |
+
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-08 13:43_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-08 13:43_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-10 09:05_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-10 09:05_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-10 09:14_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-10 09:14_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-10 09:45_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-10 09:45_
+
+---
+
+_Closed by @sharkdp on 2025-09-22 18:08_
+
+---

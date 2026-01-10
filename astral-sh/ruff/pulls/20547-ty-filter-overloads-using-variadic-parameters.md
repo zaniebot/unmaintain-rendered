@@ -1,0 +1,343 @@
+```yaml
+number: 20547
+title: "[ty] Filter overloads using variadic parameters"
+type: pull_request
+state: merged
+author: dhruvmanila
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: dhruv/overload-step-4
+created_at: 2025-09-24T10:01:16Z
+updated_at: 2025-09-25T14:58:01Z
+url: https://github.com/astral-sh/ruff/pull/20547
+synced_at: 2026-01-10T17:40:28Z
+```
+
+# [ty] Filter overloads using variadic parameters
+
+---
+
+_Pull request opened by @dhruvmanila on 2025-09-24 10:01_
+
+## Summary
+
+Closes: https://github.com/astral-sh/ty/issues/551
+
+This PR adds support for step 4 of the overload call evaluation algorithm which states that:
+
+> If the argument list is compatible with two or more overloads, determine whether one or more of the overloads has a variadic parameter (either `*args` or `**kwargs`) that maps to a corresponding argument that supplies an indeterminate number of positional or keyword arguments. If so, eliminate overloads that do not have a variadic parameter.
+
+And, with that, the overload call evaluation algorithm has been implemented completely end to end as stated in the typing spec.
+
+## Test Plan
+
+Expand the overload call test suite.
+
+
+---
+
+_Label `ty` added by @dhruvmanila on 2025-09-24 10:01_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-24 10:03_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-09-25 14:55:06.960583879 +0000
++++ new-output.txt	2025-09-25 14:55:10.158604005 +0000
+@@ -715,7 +715,6 @@
+ overloads_evaluation.py:62:35: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | float`
+ overloads_evaluation.py:115:5: error[no-matching-overload] No overload of function `example2` matches arguments
+ overloads_evaluation.py:161:5: error[type-assertion-failure] Argument does not have asserted type `Literal[0, 1]`
+-overloads_evaluation.py:234:5: error[type-assertion-failure] Argument does not have asserted type `int`
+ overloads_evaluation.py:291:33: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@example6`
+ protocols_class_objects.py:58:1: error[invalid-assignment] Object of type `<class 'ConcreteA'>` is not assignable to `ProtoA1`
+ protocols_class_objects.py:59:1: error[invalid-assignment] Object of type `<class 'ConcreteA'>` is not assignable to `ProtoA2`
+@@ -861,5 +860,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 862 diagnostics
++Found 861 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-24 10:04_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/instance/kubernetes.py:822:12: error[invalid-return-type] Return type does not match returned value: expected `list[KubernetesVersionDict]`, found `tuple[Unknown]`
+- paasta_tools/instance/kubernetes.py:830:12: error[invalid-return-type] Return type does not match returned value: expected `KubernetesVersionDict`, found `dict[Unknown | str, Unknown | str | int | tuple[Unknown] | list[Unknown]]`
++ paasta_tools/instance/kubernetes.py:830:12: error[invalid-return-type] Return type does not match returned value: expected `KubernetesVersionDict`, found `dict[Unknown | str, Unknown | str | int | list[Unknown]]`
+- paasta_tools/instance/kubernetes.py:1100:12: error[invalid-return-type] Return type does not match returned value: expected `list[KubernetesVersionDict]`, found `tuple[Unknown]`
+- Found 913 diagnostics
++ Found 911 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/pyutils/gather_with_cancel.py:28:16: error[invalid-return-type] Return type does not match returned value: expected `list[Any]`, found `tuple[Unknown]`
+- src/graphql/pyutils/gather_with_cancel.py:30:16: error[invalid-return-type] Return type does not match returned value: expected `list[Any]`, found `tuple[Unknown]`
+- Found 346 diagnostics
++ Found 344 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ tests/utils.py:165:14: error[invalid-context-manager] Object of type `ExceptionInfo[BaseException]` cannot be used with `with` because it does not implement `__enter__` and `__exit__`
+- Found 697 diagnostics
++ Found 698 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/generation/hypothesis/builder.py:230:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 285 diagnostics
++ Found 284 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- test/test_image.py:366:27: error[invalid-argument-type] Argument to function `fromarray` is incorrect: Expected `SupportsArrayInterface`, found `bool`
+- test/test_image.py:392:27: error[invalid-argument-type] Argument to function `fromarray` is incorrect: Expected `SupportsArrayInterface`, found `bool`
+- Found 1480 diagnostics
++ Found 1478 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/server/events/actions.py:627:16: error[invalid-return-type] Return type does not match returned value: expected `list[str]`, found `tuple[Unknown]`
+- Found 3115 diagnostics
++ Found 3114 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- xarray/tests/test_dataarray.py:3273:9: error[invalid-assignment] Not enough values to unpack: Expected 2
+- xarray/tests/test_weighted.py:713:17: error[unresolved-attribute] Type `int | float` has no attribute `size`
+- xarray/tests/test_weighted.py:714:9: error[unresolved-attribute] Type `int | float` has no attribute `ravel`
+- xarray/tests/test_weighted.py:714:46: error[unresolved-attribute] Type `int | float` has no attribute `size`
+- Found 1623 diagnostics
++ Found 1619 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/http/async_base_view.py:187:20: error[invalid-return-type] Return type does not match returned value: expected `ExecutionResult | list[ExecutionResult] | SubscriptionExecutionResult`, found `tuple[Unknown]`
+- Found 379 diagnostics
++ Found 378 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/linear_model/tests/test_linear_loss.py:258:50: error[unresolved-attribute] Type `int | float` has no attribute `T`
+- sklearn/linear_model/tests/test_linear_loss.py:377:11: error[unresolved-attribute] Type `int | float` has no attribute `ravel`
+- sklearn/linear_model/tests/test_ridge.py:658:22: error[unresolved-attribute] Type `int | float` has no attribute `shape`
+- sklearn/linear_model/tests/test_ridge.py:679:22: error[unresolved-attribute] Type `int | float` has no attribute `shape`
+- sklearn/manifold/tests/test_locally_linear.py:79:13: error[unresolved-attribute] Type `int | float` has no attribute `astype`
+- Found 1991 diagnostics
++ Found 1986 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
+- arviz/tests/base_tests/test_plots_matplotlib.py:485:8: error[unresolved-attribute] Type `int | float` has no attribute `ndim`
+- Found 733 diagnostics
++ Found 732 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/pallas/mosaic/interpret.py:2718:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[Any, tuple[Any, ...], Array, list[Array], list[Array], list[Array]]`, found `tuple[Any, Unknown, Array, list[Array], Unknown | tuple[Unknown], Unknown | tuple[Unknown]]`
++ jax/_src/pallas/mosaic/interpret.py:2718:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[Any, tuple[Any, ...], Array, list[Array], list[Array], list[Array]]`, found `tuple[Any, Unknown, Array, list[Array], Unknown | tuple[Any, ...], Unknown | tuple[Any, ...]]`
+- jax/_src/pallas/mosaic/interpret.py:2749:9: error[invalid-argument-type] Argument to function `while_loop` is incorrect: Expected `(tuple[Unknown, Unknown, Array, Unknown | tuple[Unknown], Unknown | tuple[Unknown], Unknown | tuple[Unknown]], /) -> tuple[Unknown, Unknown, Array, Unknown | tuple[Unknown], Unknown | tuple[Unknown], Unknown | tuple[Unknown]]`, found `def _body(carry: tuple[Any, tuple[Any, ...], Array, list[Array], list[Array], list[Array]]) -> tuple[Any, tuple[Any, ...], Array, list[Array], list[Array], list[Array]]`
++ jax/_src/pallas/mosaic/interpret.py:2749:9: error[invalid-argument-type] Argument to function `while_loop` is incorrect: Expected `(tuple[Unknown, Unknown, Array, Unknown | tuple[Any, ...], Unknown | tuple[Any, ...], Unknown | tuple[Any, ...]], /) -> tuple[Unknown, Unknown, Array, Unknown | tuple[Any, ...], Unknown | tuple[Any, ...], Unknown | tuple[Any, ...]]`, found `def _body(carry: tuple[Any, tuple[Any, ...], Array, list[Array], list[Array], list[Array]]) -> tuple[Any, tuple[Any, ...], Array, list[Array], list[Array], list[Array]]`
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/google_photos/coordinator.py:70:16: error[invalid-return-type] Return type does not match returned value: expected `list[Unknown]`, found `tuple[Unknown]`
+- homeassistant/components/kodi/browse_media.py:64:9: error[unresolved-attribute] Type `tuple[Unknown]` has no attribute `sort`
++ homeassistant/components/kodi/browse_media.py:230:42: error[invalid-argument-type] Argument to bound method `extend` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | Sequence[BrowseMedia] | None`
+- homeassistant/components/kodi/browse_media.py:230:13: error[unresolved-attribute] Type `tuple[Unknown]` has no attribute `extend`
+- homeassistant/components/kodi/browse_media.py:232:13: error[unresolved-attribute] Type `tuple[Unknown]` has no attribute `append`
+- homeassistant/components/template/__init__.py:168:9: error[invalid-assignment] Method `__setitem__` of type `Unknown | (Overload[(key: HassEntryKey[_S@__setitem__], value: dict[str, _S@__setitem__], /) -> None, (key: HassKey[_S@__setitem__], value: _S@__setitem__, /) -> None, (key: str, value: Any, /) -> None])` cannot be called with a key of type `HassKey[list[TriggerUpdateCoordinator]]` and a value of type `tuple[Unknown]` on object of type `Unknown | HassDict`
+- homeassistant/components/zwave_js/services.py:559:42: error[invalid-argument-type] Argument to function `process_results` is incorrect: Expected `list[Any]`, found `tuple[Unknown | BaseException]`
+- homeassistant/components/zwave_js/services.py:561:75: error[invalid-argument-type] Argument to function `process_results` is incorrect: Expected `list[Any]`, found `tuple[Unknown | BaseException]`
+- homeassistant/helpers/entity_platform.py:622:17: error[invalid-assignment] Object of type `tuple[Unknown | BaseException]` is not assignable to `list[BaseException | None] | None`
+- homeassistant/helpers/service.py:864:5: error[invalid-assignment] Object of type `tuple[Unknown | BaseException]` is not assignable to `list[ServiceResponse | BaseException]`
+- Found 13737 diagnostics
++ Found 13729 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- benchmarks/benchmarks/linalg.py:116:17: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- benchmarks/benchmarks/linalg.py:116:17: error[non-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
+- scipy/fft/_pocketfft/tests/test_basic.py:891:16: error[unresolved-attribute] Type `int | float | complex` has no attribute `astype`
+- scipy/fft/_pocketfft/tests/test_basic.py:933:16: error[unresolved-attribute] Type `int | float | complex` has no attribute `astype`
+- scipy/fft/_pocketfft/tests/test_real_transforms.py:422:9: error[unresolved-attribute] Type `int | float | complex` has no attribute `astype`
+- scipy/fftpack/tests/test_basic.py:778:16: error[unresolved-attribute] Type `int | float | complex` has no attribute `astype`
+- scipy/fftpack/tests/test_basic.py:816:16: error[unresolved-attribute] Type `int | float | complex` has no attribute `astype`
+- scipy/fftpack/tests/test_pseudo_diffs.py:351:16: error[unresolved-attribute] Type `int | float | complex` has no attribute `astype`
+- scipy/fftpack/tests/test_real_transforms.py:730:16: error[unresolved-attribute] Type `int | float | complex` has no attribute `astype`
+- scipy/interpolate/tests/test_polyint.py:29:9: error[unresolved-attribute] Type `int | float` has no attribute `transpose`
+- scipy/interpolate/tests/test_polyint.py:33:16: error[unresolved-attribute] Type `int | float` has no attribute `transpose`
+- scipy/linalg/_testutils.py:42:16: error[unresolved-attribute] Type `int | float` has no attribute `astype`
+- scipy/linalg/tests/test_decomp.py:1113:21: error[unresolved-attribute] Type `int | float` has no attribute `astype`
+- scipy/stats/tests/test_discrete_distns.py:506:54: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- scipy/stats/tests/test_discrete_distns.py:506:54: error[non-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
+- scipy/stats/tests/test_distributions.py:3943:52: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- scipy/stats/tests/test_distributions.py:3943:52: error[non-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
+- scipy/stats/tests/test_distributions.py:3944:51: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- scipy/stats/tests/test_distributions.py:3944:51: error[non-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
+- Found 6714 diagnostics
++ Found 6695 diagnostics
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Marked ready for review by @dhruvmanila on 2025-09-25 08:11_
+
+---
+
+_Review requested from @carljm by @dhruvmanila on 2025-09-25 08:11_
+
+---
+
+_Review requested from @AlexWaygood by @dhruvmanila on 2025-09-25 08:11_
+
+---
+
+_Review requested from @sharkdp by @dhruvmanila on 2025-09-25 08:11_
+
+---
+
+_Review requested from @dcreager by @dhruvmanila on 2025-09-25 08:11_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:936 on 2025-09-25 11:22_
+
+```suggestion
+This is step 4 of the overload call evaluation algorithm which specifies that:
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:966 on 2025-09-25 11:24_
+
+could also test other iterables of `int`s that we know are fixed-length when splatting them, e.g.
+
+```suggestion
+    reveal_type(f(*(x1, x2)))  # revealed: tuple[int, int]
+    reveal_type(f(*b"ab"))  # revealed: tuple[int, int]
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:1060 on 2025-09-25 11:39_
+
+Interesting -- this is what other type checkers do too, but I don't think it's actually sound unless the `TypedDict` is marked as `closed=True`. That's because you could always have a `Bar` `TypedDict` that's a subclass of `Foo` and adds additional keys:
+
+```py
+from typing import TypedDict, overload
+
+@overload
+def f(*, x: int) -> int: ...
+@overload
+def f(*, x: int, y: int) -> tuple[int, int]: ...
+@overload
+def f(**kwargs: int) -> tuple[int, ...]: ...
+
+class Foo(TypedDict):
+    x: int
+    y: int
+
+class Bar(Foo):
+    z: str
+
+def g(foo: Foo):
+    reveal_type(f(**foo))
+
+g(Bar({"x": 42, "y": 42, "z": "z"}))
+```
+
+In the example above, a `z="z"` argument is passed to the `g()` function, which isn't permitted by any overload of `f()`, but no type checker catches this.
+
+It probably makes sense to follow what existing type checkers do here (especially since `closed=True` is a very new feature in the type system). Maybe this is just an example I should add to https://github.com/JelleZijlstra/unsoundness
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/call/bind.rs`:2093 on 2025-09-25 11:41_
+
+```suggestion
+    #[expect(clippy::too_many_arguments)]
+```
+
+---
+
+_@AlexWaygood approved on 2025-09-25 11:43_
+
+Nice!
+
+---
+
+_@AlexWaygood reviewed on 2025-09-25 11:44_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:1060 on 2025-09-25 11:44_
+
+Oh, and I See @JelleZijlstra already has exactly this example :-) https://github.com/JelleZijlstra/unsoundness/blob/main/examples/typeddicts/typeddict_argument_unpacking.py
+
+---
+
+_@JelleZijlstra reviewed on 2025-09-25 14:17_
+
+---
+
+_Review comment by @JelleZijlstra on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:1060 on 2025-09-25 14:17_
+
+Agree it makes sense to follow other type checkers here for now, but in the long term it would be nice to close this hole.
+
+---
+
+_@dhruvmanila reviewed on 2025-09-25 14:46_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:1060 on 2025-09-25 14:46_
+
+Oh, that's interesting! Yeah, I think what Jelle said makes sense.
+
+---
+
+_@dhruvmanila reviewed on 2025-09-25 14:48_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:966 on 2025-09-25 14:48_
+
+Yeah, I think this makes sense although I'll put it in a relevant place as this is mainly to make sure that `*args` works and that other cases are just to verify that the overload structure is correct for non-variadic parameters.
+
+---
+
+_@dhruvmanila reviewed on 2025-09-25 14:53_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:966 on 2025-09-25 14:53_
+
+Ok, I've added this to `call/function.md` > `Splatted arguments` > `Unknown argument length` :)
+
+---
+
+_Merged by @dhruvmanila on 2025-09-25 14:58_
+
+---
+
+_Closed by @dhruvmanila on 2025-09-25 14:58_
+
+---
+
+_Branch deleted on 2025-09-25 14:58_
+
+---

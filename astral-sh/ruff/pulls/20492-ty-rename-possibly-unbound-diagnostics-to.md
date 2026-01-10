@@ -1,0 +1,660 @@
+```yaml
+number: 20492
+title: "[ty] Rename \"possibly unbound\" diagnostics to \"possibly missing\""
+type: pull_request
+state: merged
+author: Renkai
+labels:
+  - ty
+  - diagnostics
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: renkai-replacing-unbound
+created_at: 2025-09-21T12:32:27Z
+updated_at: 2025-09-23T14:26:56Z
+url: https://github.com/astral-sh/ruff/pull/20492
+synced_at: 2026-01-10T17:40:28Z
+```
+
+# [ty] Rename "possibly unbound" diagnostics to "possibly missing"
+
+---
+
+_Pull request opened by @Renkai on 2025-09-21 12:32_
+
+Fixes https://github.com/astral-sh/ty/issues/636
+
+---
+
+_Review requested from @carljm by @Renkai on 2025-09-21 12:32_
+
+---
+
+_Review requested from @AlexWaygood by @Renkai on 2025-09-21 12:32_
+
+---
+
+_Review requested from @sharkdp by @Renkai on 2025-09-21 12:32_
+
+---
+
+_Review requested from @dcreager by @Renkai on 2025-09-21 12:32_
+
+---
+
+_Review requested from @MichaReiser by @Renkai on 2025-09-21 12:32_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-21 12:34_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-09-23 14:24:38.598431901 +0000
++++ new-output.txt	2025-09-23 14:24:41.800452078 +0000
+@@ -784,7 +784,7 @@
+ specialtypes_none.py:21:7: error[invalid-argument-type] Argument to function `func1` is incorrect: Expected `None`, found `<class 'NoneType'>`
+ specialtypes_none.py:27:1: error[invalid-assignment] Object of type `None` is not assignable to `Iterable[Unknown]`
+ specialtypes_none.py:32:1: error[missing-argument] No argument provided for required parameter `value` of function `__eq__`
+-specialtypes_promotions.py:13:5: warning[possibly-unbound-attribute] Attribute `numerator` on type `int | float` is possibly unbound
++specialtypes_promotions.py:13:5: warning[possibly-missing-attribute] Attribute `numerator` on type `int | float` may be missing
+ specialtypes_type.py:44:1: error[type-assertion-failure] Argument does not have asserted type `TeamUser`
+ specialtypes_type.py:56:7: error[invalid-argument-type] Argument to function `func4` is incorrect: Expected `type[BasicUser] | type[ProUser]`, found `<class 'TeamUser'>`
+ specialtypes_type.py:76:17: error[invalid-type-form] type[...] must have exactly one type argument
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-21 12:45_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_make.py:469:35: warning[possibly-unbound-attribute] Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:469:35: warning[possibly-missing-attribute] Attribute `init` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:469:59: warning[possibly-unbound-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:469:59: warning[possibly-missing-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:481:16: warning[possibly-unbound-attribute] Attribute `alias` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:481:16: warning[possibly-missing-attribute] Attribute `alias` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:483:70: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:483:70: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:487:19: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:487:19: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:1582:29: warning[possibly-unbound-attribute] Attribute `hash` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1582:29: warning[possibly-missing-attribute] Attribute `hash` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:1582:48: warning[possibly-unbound-attribute] Attribute `hash` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1582:48: warning[possibly-missing-attribute] Attribute `hash` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:1582:67: warning[possibly-unbound-attribute] Attribute `eq` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1582:67: warning[possibly-missing-attribute] Attribute `eq` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:1620:16: warning[possibly-unbound-attribute] Attribute `eq_key` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1620:16: warning[possibly-missing-attribute] Attribute `eq_key` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:1621:32: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1621:32: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:1622:35: warning[possibly-unbound-attribute] Attribute `eq_key` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1622:35: warning[possibly-missing-attribute] Attribute `eq_key` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:1624:57: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1624:57: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:1627:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:1627:62: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2162:12: warning[possibly-unbound-attribute] Attribute `validator` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2162:12: warning[possibly-missing-attribute] Attribute `validator` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2165:21: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2165:21: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2166:26: warning[possibly-unbound-attribute] Attribute `on_setattr` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2166:26: warning[possibly-missing-attribute] Attribute `on_setattr` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2167:13: warning[possibly-unbound-attribute] Attribute `on_setattr` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2167:13: warning[possibly-missing-attribute] Attribute `on_setattr` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2171:20: warning[possibly-unbound-attribute] Attribute `alias` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2171:20: warning[possibly-missing-attribute] Attribute `alias` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2173:34: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2173:34: warning[possibly-missing-attribute] Attribute `default` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2174:48: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2174:48: warning[possibly-missing-attribute] Attribute `default` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2176:12: warning[possibly-unbound-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2176:12: warning[possibly-missing-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2176:55: warning[possibly-unbound-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2176:55: warning[possibly-missing-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2177:35: warning[possibly-unbound-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2177:35: warning[possibly-missing-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2179:25: warning[possibly-unbound-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2179:25: warning[possibly-missing-attribute] Attribute `converter` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2181:12: warning[possibly-unbound-attribute] Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2181:12: warning[possibly-missing-attribute] Attribute `init` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2183:58: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2183:58: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2193:66: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2193:66: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2204:56: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2204:56: warning[possibly-missing-attribute] Attribute `default` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2214:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2214:62: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2225:14: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2225:14: warning[possibly-missing-attribute] Attribute `default` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2227:16: warning[possibly-unbound-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2227:16: warning[possibly-missing-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2239:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2239:62: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2247:16: warning[possibly-unbound-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2247:16: warning[possibly-missing-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2254:54: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2254:54: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2272:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2272:62: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2288:52: warning[possibly-unbound-attribute] Attribute `default` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2288:52: warning[possibly-missing-attribute] Attribute `default` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2290:16: warning[possibly-unbound-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2290:16: warning[possibly-missing-attribute] Attribute `kw_only` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2302:62: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2302:62: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2308:12: warning[possibly-unbound-attribute] Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2308:12: warning[possibly-missing-attribute] Attribute `init` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2309:16: warning[possibly-unbound-attribute] Attribute `type` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2309:16: warning[possibly-missing-attribute] Attribute `type` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2310:41: warning[possibly-unbound-attribute] Attribute `type` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2310:41: warning[possibly-missing-attribute] Attribute `type` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2346:33: warning[possibly-unbound-attribute] Attribute `name` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2346:33: warning[possibly-missing-attribute] Attribute `name` on type `Attribute | Unknown` is possibly missing
+- src/attr/_make.py:2346:60: warning[possibly-unbound-attribute] Attribute `init` on type `Attribute | Unknown` is possibly unbound
++ src/attr/_make.py:2346:60: warning[possibly-missing-attribute] Attribute `init` on type `Attribute | Unknown` is possibly missing
+- tests/test_validators.py:870:13: warning[possibly-unbound-attribute] Attribute `__name__` on type `Unknown | ((val: _T@lt) -> @Todo(Inference of subscript on special form)) | ((val: _T@le) -> @Todo(Inference of subscript on special form)) | ((val: _T@ge) -> @Todo(Inference of subscript on special form)) | ((val: _T@gt) -> @Todo(Inference of subscript on special form))` is possibly unbound
++ tests/test_validators.py:870:13: warning[possibly-missing-attribute] Attribute `__name__` on type `Unknown | ((val: _T@lt) -> @Todo(Inference of subscript on special form)) | ((val: _T@le) -> @Todo(Inference of subscript on special form)) | ((val: _T@ge) -> @Todo(Inference of subscript on special form)) | ((val: _T@gt) -> @Todo(Inference of subscript on special form))` is possibly missing
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/from_thread.py:241:27: warning[possibly-unbound-attribute] Attribute `cancel` on type `CancelScope | None` is possibly unbound
++ src/anyio/from_thread.py:241:27: warning[possibly-missing-attribute] Attribute `cancel` on type `CancelScope | None` is possibly missing
+
+parso (https://github.com/davidhalter/parso)
+- parso/python/parser.py:120:50: warning[possibly-unbound-attribute] Attribute `value` on type `@Todo(Subscript expressions on intersections) | None` is possibly unbound
++ parso/python/parser.py:120:50: warning[possibly-missing-attribute] Attribute `value` on type `@Todo(Subscript expressions on intersections) | None` is possibly missing
+- parso/python/parser.py:121:26: warning[possibly-unbound-attribute] Attribute `value` on type `@Todo(Subscript expressions on intersections) | None` is possibly unbound
++ parso/python/parser.py:121:26: warning[possibly-missing-attribute] Attribute `value` on type `@Todo(Subscript expressions on intersections) | None` is possibly missing
+- parso/python/pep8.py:719:31: warning[possibly-unbound-attribute] Attribute `group` on type `Match[str] | None` is possibly unbound
++ parso/python/pep8.py:719:31: warning[possibly-missing-attribute] Attribute `group` on type `Match[str] | None` is possibly missing
+- parso/python/tree.py:259:16: warning[possibly-unbound-attribute] Attribute `group` on type `Match[str] | None` is possibly unbound
++ parso/python/tree.py:259:16: warning[possibly-missing-attribute] Attribute `group` on type `Match[str] | None` is possibly missing
+- parso/python/tree.py:267:16: warning[possibly-unbound-attribute] Attribute `group` on type `Match[str] | None` is possibly unbound
++ parso/python/tree.py:267:16: warning[possibly-missing-attribute] Attribute `group` on type `Match[str] | None` is possibly missing
+- parso/python/tree.py:267:37: warning[possibly-unbound-attribute] Attribute `group` on type `Match[str] | None` is possibly unbound
++ parso/python/tree.py:267:37: warning[possibly-missing-attribute] Attribute `group` on type `Match[str] | None` is possibly missing
+- parso/utils.py:95:27: warning[possibly-unbound-attribute] Attribute `group` on type `Match[bytes] | None` is possibly unbound
++ parso/utils.py:95:27: warning[possibly-missing-attribute] Attribute `group` on type `Match[bytes] | None` is possibly missing
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- pyinstrument/vendor/appdirs.py:497:11: warning[possibly-unbound-attribute] Attribute `OpenKey` on type `<module 'winreg'> | Unknown` is possibly unbound
++ pyinstrument/vendor/appdirs.py:497:11: warning[possibly-missing-attribute] Attribute `OpenKey` on type `<module 'winreg'> | Unknown` is possibly missing
+- pyinstrument/vendor/appdirs.py:498:9: warning[possibly-unbound-attribute] Attribute `HKEY_CURRENT_USER` on type `<module 'winreg'> | Unknown` is possibly unbound
++ pyinstrument/vendor/appdirs.py:498:9: warning[possibly-missing-attribute] Attribute `HKEY_CURRENT_USER` on type `<module 'winreg'> | Unknown` is possibly missing
+- pyinstrument/vendor/appdirs.py:501:17: warning[possibly-unbound-attribute] Attribute `QueryValueEx` on type `<module 'winreg'> | Unknown` is possibly unbound
++ pyinstrument/vendor/appdirs.py:501:17: warning[possibly-missing-attribute] Attribute `QueryValueEx` on type `<module 'winreg'> | Unknown` is possibly missing
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ pytest_robotframework/_internal/pytest/plugin.py:341:13: warning[possibly-missing-import] Member `KeywordUnwrapper` of module `pytest_robotframework._internal.robot.listeners_and_suite_visitors` is possibly missing
++ pytest_robotframework/_internal/pytest/plugin.py:341:32: warning[unknown-rule] Unknown rule `possibly-unbound-import`
+- pytest_robotframework/_internal/robot/library.py:86:99: warning[unused-ignore-comment] Unused `ty: ignore` directive: 'possibly-unbound-attribute'
++ pytest_robotframework/_internal/robot/library.py:86:99: warning[unknown-rule] Unknown rule `possibly-unbound-attribute`
+- Found 176 diagnostics
++ Found 178 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- tests/test_loader.py:412:17: warning[possibly-unbound-attribute] Attribute `origin` on type `ModuleSpec | None` is possibly unbound
++ tests/test_loader.py:412:17: warning[possibly-missing-attribute] Attribute `origin` on type `ModuleSpec | None` is possibly missing
+- tests/test_loader.py:414:44: warning[possibly-unbound-attribute] Attribute `submodule_search_locations` on type `ModuleSpec | None` is possibly unbound
++ tests/test_loader.py:414:44: warning[possibly-missing-attribute] Attribute `submodule_search_locations` on type `ModuleSpec | None` is possibly missing
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_check/forward/fwdresolve.py:584:5: warning[possibly-unbound-attribute] Attribute `update` on type `Unknown | None | BeartypeForwardScope` is possibly unbound
++ beartype/_check/forward/fwdresolve.py:584:5: warning[possibly-missing-attribute] Attribute `update` on type `Unknown | None | BeartypeForwardScope` is possibly missing
+- beartype/_check/forward/fwdresolve.py:585:5: warning[possibly-unbound-attribute] Attribute `update` on type `Unknown | None | BeartypeForwardScope` is possibly unbound
++ beartype/_check/forward/fwdresolve.py:585:5: warning[possibly-missing-attribute] Attribute `update` on type `Unknown | None | BeartypeForwardScope` is possibly missing
+- beartype/_util/func/utilfunctest.py:1100:16: warning[possibly-unbound-attribute] Attribute `__name__` on type `(Any & ~MethodType) | ((...) -> Unknown)` is possibly unbound
++ beartype/_util/func/utilfunctest.py:1100:16: warning[possibly-missing-attribute] Attribute `__name__` on type `(Any & ~MethodType) | ((...) -> Unknown)` is possibly missing
+- beartype/_util/hint/pep/proposal/pep484585/pep484585callable.py:44:9: warning[possibly-unbound-attribute] Attribute `ParamSpec` on type `<module 'beartype.typing'>` is possibly unbound
++ beartype/_util/hint/pep/proposal/pep484585/pep484585callable.py:44:9: warning[possibly-missing-attribute] Attribute `ParamSpec` on type `<module 'beartype.typing'>` is possibly missing
+- beartype/_util/hint/pep/proposal/pep544.py:198:9: warning[possibly-unbound-import] Member `AnyStr` of module `beartype.typing` is possibly unbound
++ beartype/_util/hint/pep/proposal/pep544.py:198:9: warning[possibly-missing-import] Member `AnyStr` of module `beartype.typing` is possibly missing
+- beartype/_util/hint/pep/proposal/pep646692.py:454:33: warning[possibly-unbound-import] Member `Unpack` of module `beartype.typing` is possibly unbound
++ beartype/_util/hint/pep/proposal/pep646692.py:454:33: warning[possibly-missing-import] Member `Unpack` of module `beartype.typing` is possibly missing
+- beartype/_util/hint/pep/proposal/pep696.py:104:37: warning[possibly-unbound-import] Member `NoDefault` of module `beartype.typing` is possibly unbound
++ beartype/_util/hint/pep/proposal/pep696.py:104:37: warning[possibly-missing-import] Member `NoDefault` of module `beartype.typing` is possibly missing
+
+kornia (https://github.com/kornia/kornia)
+- kornia/enhance/adjust.py:180:14: warning[possibly-unbound-attribute] Attribute `to` on type `int | (Unknown & ~float) | Unknown` is possibly unbound
++ kornia/enhance/adjust.py:180:14: warning[possibly-missing-attribute] Attribute `to` on type `int | (Unknown & ~float) | Unknown` is possibly missing
+- kornia/enhance/normalize.py:249:12: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:249:12: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:249:27: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:249:27: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:250:16: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:250:16: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:250:52: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:250:52: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:251:90: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:251:90: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:254:12: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:254:12: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:254:26: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:254:26: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:255:16: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:255:16: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:255:51: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:255:51: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/enhance/normalize.py:256:89: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/enhance/normalize.py:256:89: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/feature/lightglue_onnx/lightglue.py:92:24: warning[possibly-unbound-attribute] Attribute `InferenceSession` on type `Unknown | None` is possibly unbound
++ kornia/feature/lightglue_onnx/lightglue.py:92:24: warning[possibly-missing-attribute] Attribute `InferenceSession` on type `Unknown | None` is possibly missing
+- kornia/feature/lightglue_onnx/lightglue.py:169:30: warning[possibly-unbound-attribute] Attribute `float32` on type `Unknown | None` is possibly unbound
++ kornia/feature/lightglue_onnx/lightglue.py:169:30: warning[possibly-missing-attribute] Attribute `float32` on type `Unknown | None` is possibly missing
+- kornia/filters/kernels.py:106:18: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:106:18: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:110:40: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:110:40: warning[possibly-missing-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:110:60: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:110:60: warning[possibly-missing-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:115:43: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:115:43: warning[possibly-missing-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:115:63: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:115:63: warning[possibly-missing-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:120:42: warning[possibly-unbound-attribute] Attribute `pow` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:120:42: warning[possibly-missing-attribute] Attribute `pow` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:146:18: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:146:18: warning[possibly-missing-attribute] Attribute `shape` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:148:43: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:148:43: warning[possibly-missing-attribute] Attribute `device` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:148:63: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:148:63: warning[possibly-missing-attribute] Attribute `dtype` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:150:22: warning[possibly-unbound-attribute] Attribute `abs` on type `(Unknown & ~float) | int | Unknown` is possibly unbound
++ kornia/filters/kernels.py:150:22: warning[possibly-missing-attribute] Attribute `abs` on type `(Unknown & ~float) | int | Unknown` is possibly missing
+- kornia/filters/kernels.py:276:55: warning[possibly-unbound-attribute] Attribute `exp` on type `Unknown | int` is possibly unbound
++ kornia/filters/kernels.py:276:55: warning[possibly-missing-attribute] Attribute `exp` on type `Unknown | int` is possibly missing
+- kornia/utils/draw.py:379:38: warning[possibly-unbound-attribute] Attribute `shape` on type `Unknown | list[Unknown]` is possibly unbound
++ kornia/utils/draw.py:379:38: warning[possibly-missing-attribute] Attribute `shape` on type `Unknown | list[Unknown]` is possibly missing
+- kornia/utils/draw.py:379:54: warning[possibly-unbound-attribute] Attribute `device` on type `Unknown | list[Unknown]` is possibly unbound
++ kornia/utils/draw.py:379:54: warning[possibly-missing-attribute] Attribute `device` on type `Unknown | list[Unknown]` is possibly missing
+- kornia/utils/draw.py:379:71: warning[possibly-unbound-attribute] Attribute `dtype` on type `Unknown | list[Unknown]` is possibly unbound
++ kornia/utils/draw.py:379:71: warning[possibly-missing-attribute] Attribute `dtype` on type `Unknown | list[Unknown]` is possibly missing
+
+black (https://github.com/psf/black)
+- src/blib2to3/pgen2/conv.py:77:34: warning[possibly-unbound-attribute] Attribute `groups` on type `Match[str] | None` is possibly unbound
++ src/blib2to3/pgen2/conv.py:77:34: warning[possibly-missing-attribute] Attribute `groups` on type `Match[str] | None` is possibly missing
+
+stone (https://github.com/dropbox/stone)
+- stone/backends/python_client.py:488:50: warning[possibly-unbound-attribute] Attribute `fields` on type `Unknown | None` is possibly unbound
++ stone/backends/python_client.py:488:50: warning[possibly-missing-attribute] Attribute `fields` on type `Unknown | None` is possibly missing
+- stone/cli.py:369:9: warning[possibly-unbound-attribute] Attribute `loader` on type `ModuleSpec | None` is possibly unbound
++ stone/cli.py:369:9: warning[possibly-missing-attribute] Attribute `loader` on type `ModuleSpec | None` is possibly missing
+- stone/cli.py:369:9: warning[possibly-unbound-attribute] Attribute `exec_module` on type `Loader | None` is possibly unbound
++ stone/cli.py:369:9: warning[possibly-missing-attribute] Attribute `exec_module` on type `Loader | None` is possibly missing
+- stone/frontend/ir_generator.py:1761:37: warning[possibly-unbound-attribute] Attribute `namespace` on type `Unknown | None` is possibly unbound
++ stone/frontend/ir_generator.py:1761:37: warning[possibly-missing-attribute] Attribute `namespace` on type `Unknown | None` is possibly missing
+- test/test_backend.py:228:25: warning[possibly-unbound-attribute] Attribute `verbose` on type `Unknown | None` is possibly unbound
++ test/test_backend.py:228:25: warning[possibly-missing-attribute] Attribute `verbose` on type `Unknown | None` is possibly missing
+- test/test_backend.py:373:29: warning[possibly-unbound-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly unbound
++ test/test_backend.py:373:29: warning[possibly-missing-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly missing
+- test/test_backend.py:374:29: warning[possibly-unbound-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly unbound
++ test/test_backend.py:374:29: warning[possibly-missing-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly missing
+- test/test_backend.py:376:17: warning[possibly-unbound-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly unbound
++ test/test_backend.py:376:17: warning[possibly-missing-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly missing
+- test/test_backend.py:380:17: warning[possibly-unbound-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly unbound
++ test/test_backend.py:380:17: warning[possibly-missing-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly missing
+- test/test_backend.py:469:30: warning[possibly-unbound-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly unbound
++ test/test_backend.py:469:30: warning[possibly-missing-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly missing
+- test/test_backend.py:471:22: warning[possibly-unbound-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly unbound
++ test/test_backend.py:471:22: warning[possibly-missing-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly missing
+- test/test_backend.py:495:30: warning[possibly-unbound-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly unbound
++ test/test_backend.py:495:30: warning[possibly-missing-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly missing
+- test/test_backend.py:497:17: warning[possibly-unbound-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly unbound
++ test/test_backend.py:497:17: warning[possibly-missing-attribute] Attribute `fields` on type `@Todo(dict comprehension value type) | None` is possibly missing
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/rtcpeerconnection.py:671:55: warning[possibly-unbound-attribute] Attribute `kind` on type `MediaDescription | None` is possibly unbound
+- src/aiortc/rtcpeerconnection.py:672:53: warning[possibly-unbound-attribute] Attribute `rtp` on type `MediaDescription | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:671:55: warning[possibly-missing-attribute] Attribute `kind` on type `MediaDescription | None` is possibly missing
++ src/aiortc/rtcpeerconnection.py:672:53: warning[possibly-missing-attribute] Attribute `rtp` on type `MediaDescription | None` is possibly missing
+- src/aiortc/rtcpeerconnection.py:1362:20: warning[possibly-unbound-attribute] Attribute `usernameFragment` on type `RTCIceParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:1362:20: warning[possibly-missing-attribute] Attribute `usernameFragment` on type `RTCIceParameters | None` is possibly missing
+- src/aiortc/rtcpeerconnection.py:1362:54: warning[possibly-unbound-attribute] Attribute `password` on type `RTCIceParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:1362:54: warning[possibly-missing-attribute] Attribute `password` on type `RTCIceParameters | None` is possibly missing
+- src/aiortc/rtcpeerconnection.py:1366:63: warning[possibly-unbound-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly unbound
++ src/aiortc/rtcpeerconnection.py:1366:63: warning[possibly-missing-attribute] Attribute `role` on type `RTCDtlsParameters | None` is possibly missing
+- src/aiortc/rtcrtpreceiver.py:71:22: warning[possibly-unbound-attribute] Attribute `decode` on type `None | Decoder` is possibly unbound
++ src/aiortc/rtcrtpreceiver.py:71:22: warning[possibly-missing-attribute] Attribute `decode` on type `None | Decoder` is possibly missing
+- src/aiortc/sdp.py:385:63: warning[possibly-unbound-attribute] Attribute `rtp` on type `None | MediaDescription` is possibly unbound
++ src/aiortc/sdp.py:385:63: warning[possibly-missing-attribute] Attribute `rtp` on type `None | MediaDescription` is possibly missing
+- src/aiortc/sdp.py:405:46: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:405:46: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+- src/aiortc/sdp.py:463:43: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:463:43: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+- src/aiortc/sdp.py:471:50: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:471:50: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+- src/aiortc/sdp.py:490:38: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:490:38: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+- src/aiortc/sdp.py:500:50: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:500:50: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+- src/aiortc/sdp.py:517:50: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:517:50: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+- src/aiortc/sdp.py:524:47: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:524:47: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+- src/aiortc/sdp.py:546:50: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:546:50: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+- src/aiortc/sdp.py:550:32: warning[possibly-unbound-attribute] Attribute `split` on type `str | None` is possibly unbound
++ src/aiortc/sdp.py:550:32: warning[possibly-missing-attribute] Attribute `split` on type `str | None` is possibly missing
+
+starlette (https://github.com/encode/starlette)
+- starlette/templating.py:80:14: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:80:14: warning[possibly-missing-attribute] Attribute `Environment` on type `Unknown | None` is possibly missing
+- starlette/templating.py:89:14: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:89:14: warning[possibly-missing-attribute] Attribute `Environment` on type `Unknown | None` is possibly missing
+- starlette/templating.py:111:10: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:111:10: warning[possibly-missing-attribute] Attribute `Environment` on type `Unknown | None` is possibly missing
+- starlette/templating.py:112:18: warning[possibly-unbound-attribute] Attribute `FileSystemLoader` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:112:18: warning[possibly-missing-attribute] Attribute `FileSystemLoader` on type `Unknown | None` is possibly missing
+- starlette/templating.py:116:16: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:116:16: warning[possibly-missing-attribute] Attribute `Environment` on type `Unknown | None` is possibly missing
+- starlette/templating.py:118:40: warning[possibly-unbound-attribute] Attribute `Environment` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:118:40: warning[possibly-missing-attribute] Attribute `Environment` on type `Unknown | None` is possibly missing
+- starlette/templating.py:131:42: warning[possibly-unbound-attribute] Attribute `Template` on type `Unknown | None` is possibly unbound
++ starlette/templating.py:131:42: warning[possibly-missing-attribute] Attribute `Template` on type `Unknown | None` is possibly missing
+
+pyjwt (https://github.com/jpadilla/pyjwt)
+- jwt/api_jws.py:26:29: warning[possibly-unbound-import] Member `AllowedPrivateKeys` of module `jwt.algorithms` is possibly unbound
++ jwt/api_jws.py:26:29: warning[possibly-missing-import] Member `AllowedPrivateKeys` of module `jwt.algorithms` is possibly missing
+- jwt/api_jws.py:26:49: warning[possibly-unbound-import] Member `AllowedPublicKeys` of module `jwt.algorithms` is possibly unbound
++ jwt/api_jws.py:26:49: warning[possibly-missing-import] Member `AllowedPublicKeys` of module `jwt.algorithms` is possibly missing
+- jwt/api_jwt.py:33:33: warning[possibly-unbound-import] Member `AllowedPrivateKeys` of module `jwt.algorithms` is possibly unbound
++ jwt/api_jwt.py:33:33: warning[possibly-missing-import] Member `AllowedPrivateKeys` of module `jwt.algorithms` is possibly missing
+- jwt/api_jwt.py:33:53: warning[possibly-unbound-import] Member `AllowedPublicKeys` of module `jwt.algorithms` is possibly unbound
++ jwt/api_jwt.py:33:53: warning[possibly-missing-import] Member `AllowedPublicKeys` of module `jwt.algorithms` is possibly missing
+
+werkzeug (https://github.com/pallets/werkzeug)
+- tests/live_apps/run.py:20:30: warning[possibly-unbound-attribute] Attribute `app` on type `Unknown | ModuleType` is possibly unbound
++ tests/live_apps/run.py:20:30: warning[possibly-missing-attribute] Attribute `app` on type `Unknown | ModuleType` is possibly missing
+- tests/test_datastructures.py:1277:12: warning[possibly-unbound-attribute] Attribute `ranges` on type `Range | None` is possibly unbound
++ tests/test_datastructures.py:1277:12: warning[possibly-missing-attribute] Attribute `ranges` on type `Range | None` is possibly missing
+- tests/test_http.py:159:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:159:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:160:16: warning[possibly-unbound-attribute] Attribute `username` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:160:16: warning[possibly-missing-attribute] Attribute `username` on type `Unknown | None` is possibly missing
+- tests/test_http.py:161:16: warning[possibly-unbound-attribute] Attribute `password` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:161:16: warning[possibly-missing-attribute] Attribute `password` on type `Unknown | None` is possibly missing
+- tests/test_http.py:164:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:164:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:165:16: warning[possibly-unbound-attribute] Attribute `username` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:165:16: warning[possibly-missing-attribute] Attribute `username` on type `Unknown | None` is possibly missing
+- tests/test_http.py:166:16: warning[possibly-unbound-attribute] Attribute `password` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:166:16: warning[possibly-missing-attribute] Attribute `password` on type `Unknown | None` is possibly missing
+- tests/test_http.py:169:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:169:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:170:16: warning[possibly-unbound-attribute] Attribute `username` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:170:16: warning[possibly-missing-attribute] Attribute `username` on type `Unknown | None` is possibly missing
+- tests/test_http.py:171:16: warning[possibly-unbound-attribute] Attribute `password` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:171:16: warning[possibly-missing-attribute] Attribute `password` on type `Unknown | None` is possibly missing
+- tests/test_http.py:183:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:183:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:184:16: warning[possibly-unbound-attribute] Attribute `username` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:184:16: warning[possibly-missing-attribute] Attribute `username` on type `Unknown | None` is possibly missing
+- tests/test_http.py:185:16: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:185:16: warning[possibly-missing-attribute] Attribute `realm` on type `Unknown | None` is possibly missing
+- tests/test_http.py:186:16: warning[possibly-unbound-attribute] Attribute `nonce` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:186:16: warning[possibly-missing-attribute] Attribute `nonce` on type `Unknown | None` is possibly missing
+- tests/test_http.py:187:16: warning[possibly-unbound-attribute] Attribute `uri` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:187:16: warning[possibly-missing-attribute] Attribute `uri` on type `Unknown | None` is possibly missing
+- tests/test_http.py:188:16: warning[possibly-unbound-attribute] Attribute `qop` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:188:16: warning[possibly-missing-attribute] Attribute `qop` on type `Unknown | None` is possibly missing
+- tests/test_http.py:189:16: warning[possibly-unbound-attribute] Attribute `nc` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:189:16: warning[possibly-missing-attribute] Attribute `nc` on type `Unknown | None` is possibly missing
+- tests/test_http.py:190:16: warning[possibly-unbound-attribute] Attribute `cnonce` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:190:16: warning[possibly-missing-attribute] Attribute `cnonce` on type `Unknown | None` is possibly missing
+- tests/test_http.py:191:16: warning[possibly-unbound-attribute] Attribute `response` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:191:16: warning[possibly-missing-attribute] Attribute `response` on type `Unknown | None` is possibly missing
+- tests/test_http.py:192:16: warning[possibly-unbound-attribute] Attribute `opaque` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:192:16: warning[possibly-missing-attribute] Attribute `opaque` on type `Unknown | None` is possibly missing
+- tests/test_http.py:202:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:202:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:203:16: warning[possibly-unbound-attribute] Attribute `username` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:203:16: warning[possibly-missing-attribute] Attribute `username` on type `Unknown | None` is possibly missing
+- tests/test_http.py:204:16: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:204:16: warning[possibly-missing-attribute] Attribute `realm` on type `Unknown | None` is possibly missing
+- tests/test_http.py:205:16: warning[possibly-unbound-attribute] Attribute `nonce` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:205:16: warning[possibly-missing-attribute] Attribute `nonce` on type `Unknown | None` is possibly missing
+- tests/test_http.py:206:16: warning[possibly-unbound-attribute] Attribute `uri` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:206:16: warning[possibly-missing-attribute] Attribute `uri` on type `Unknown | None` is possibly missing
+- tests/test_http.py:207:16: warning[possibly-unbound-attribute] Attribute `response` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:207:16: warning[possibly-missing-attribute] Attribute `response` on type `Unknown | None` is possibly missing
+- tests/test_http.py:208:16: warning[possibly-unbound-attribute] Attribute `opaque` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:208:16: warning[possibly-missing-attribute] Attribute `opaque` on type `Unknown | None` is possibly missing
+- tests/test_http.py:212:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:212:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:216:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:216:16: warning[possibly-missing-attribute] Attribute `to_header` on type `Unknown | None` is possibly missing
+- tests/test_http.py:222:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:222:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:223:16: warning[possibly-unbound-attribute] Attribute `token` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:223:16: warning[possibly-missing-attribute] Attribute `token` on type `Unknown | None` is possibly missing
+- tests/test_http.py:228:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:228:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:229:16: warning[possibly-unbound-attribute] Attribute `token` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:229:16: warning[possibly-missing-attribute] Attribute `token` on type `Unknown | None` is possibly missing
+- tests/test_http.py:253:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:253:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:254:16: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:254:16: warning[possibly-missing-attribute] Attribute `realm` on type `Unknown | None` is possibly missing
+- tests/test_http.py:256:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:256:16: warning[possibly-missing-attribute] Attribute `to_header` on type `Unknown | None` is possibly missing
+- tests/test_http.py:264:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:264:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:265:16: warning[possibly-unbound-attribute] Attribute `realm` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:265:16: warning[possibly-missing-attribute] Attribute `realm` on type `Unknown | None` is possibly missing
+- tests/test_http.py:266:16: warning[possibly-unbound-attribute] Attribute `parameters` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:266:16: warning[possibly-missing-attribute] Attribute `parameters` on type `Unknown | None` is possibly missing
+- tests/test_http.py:267:16: warning[possibly-unbound-attribute] Attribute `nonce` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:267:16: warning[possibly-missing-attribute] Attribute `nonce` on type `Unknown | None` is possibly missing
+- tests/test_http.py:268:16: warning[possibly-unbound-attribute] Attribute `opaque` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:268:16: warning[possibly-missing-attribute] Attribute `opaque` on type `Unknown | None` is possibly missing
+- tests/test_http.py:270:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:270:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:277:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:277:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:278:16: warning[possibly-unbound-attribute] Attribute `token` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:278:16: warning[possibly-missing-attribute] Attribute `token` on type `Unknown | None` is possibly missing
+- tests/test_http.py:283:16: warning[possibly-unbound-attribute] Attribute `type` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:283:16: warning[possibly-missing-attribute] Attribute `type` on type `Unknown | None` is possibly missing
+- tests/test_http.py:284:16: warning[possibly-unbound-attribute] Attribute `token` on type `Unknown | None` is possibly unbound
++ tests/test_http.py:284:16: warning[possibly-missing-attribute] Attribute `token` on type `Unknown | None` is possibly missing
+- tests/test_http.py:636:16: warning[possibly-unbound-attribute] Attribute `units` on type `Range | None` is possibly unbound
++ tests/test_http.py:636:16: warning[possibly-missing-attribute] Attribute `units` on type `Range | None` is possibly missing
+- tests/test_http.py:637:16: warning[possibly-unbound-attribute] Attribute `ranges` on type `Range | None` is possibly unbound
++ tests/test_http.py:637:16: warning[possibly-missing-attribute] Attribute `ranges` on type `Range | None` is possibly missing
+- tests/test_http.py:638:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `Range | None` is possibly unbound
++ tests/test_http.py:638:16: warning[possibly-missing-attribute] Attribute `to_header` on type `Range | None` is possibly missing
+- tests/test_http.py:641:16: warning[possibly-unbound-attribute] Attribute `units` on type `Range | None` is possibly unbound
++ tests/test_http.py:641:16: warning[possibly-missing-attribute] Attribute `units` on type `Range | None` is possibly missing
+- tests/test_http.py:642:16: warning[possibly-unbound-attribute] Attribute `ranges` on type `Range | None` is possibly unbound
++ tests/test_http.py:642:16: warning[possibly-missing-attribute] Attribute `ranges` on type `Range | None` is possibly missing
+- tests/test_http.py:643:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `Range | None` is possibly unbound
++ tests/test_http.py:643:16: warning[possibly-missing-attribute] Attribute `to_header` on type `Range | None` is possibly missing
+- tests/test_http.py:646:16: warning[possibly-unbound-attribute] Attribute `units` on type `Range | None` is possibly unbound
++ tests/test_http.py:646:16: warning[possibly-missing-attribute] Attribute `units` on type `Range | None` is possibly missing
+- tests/test_http.py:647:16: warning[possibly-unbound-attribute] Attribute `ranges` on type `Range | None` is possibly unbound
++ tests/test_http.py:647:16: warning[possibly-missing-attribute] Attribute `ranges` on type `Range | None` is possibly missing
+- tests/test_http.py:648:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `Range | None` is possibly unbound
++ tests/test_http.py:648:16: warning[possibly-missing-attribute] Attribute `to_header` on type `Range | None` is possibly missing
+- tests/test_http.py:651:16: warning[possibly-unbound-attribute] Attribute `units` on type `Range | None` is possibly unbound
++ tests/test_http.py:651:16: warning[possibly-missing-attribute] Attribute `units` on type `Range | None` is possibly missing
+- tests/test_http.py:652:16: warning[possibly-unbound-attribute] Attribute `ranges` on type `Range | None` is possibly unbound
++ tests/test_http.py:652:16: warning[possibly-missing-attribute] Attribute `ranges` on type `Range | None` is possibly missing
+- tests/test_http.py:653:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `Range | None` is possibly unbound
++ tests/test_http.py:653:16: warning[possibly-missing-attribute] Attribute `to_header` on type `Range | None` is possibly missing
+- tests/test_http.py:656:16: warning[possibly-unbound-attribute] Attribute `units` on type `Range | None` is possibly unbound
++ tests/test_http.py:656:16: warning[possibly-missing-attribute] Attribute `units` on type `Range | None` is possibly missing
+- tests/test_http.py:657:16: warning[possibly-unbound-attribute] Attribute `ranges` on type `Range | None` is possibly unbound
++ tests/test_http.py:657:16: warning[possibly-missing-attribute] Attribute `ranges` on type `Range | None` is possibly missing
+- tests/test_http.py:658:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `Range | None` is possibly unbound
++ tests/test_http.py:658:16: warning[possibly-missing-attribute] Attribute `to_header` on type `Range | None` is possibly missing
+- tests/test_http.py:677:16: warning[possibly-unbound-attribute] Attribute `units` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:677:16: warning[possibly-missing-attribute] Attribute `units` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:678:16: warning[possibly-unbound-attribute] Attribute `start` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:678:16: warning[possibly-missing-attribute] Attribute `start` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:679:16: warning[possibly-unbound-attribute] Attribute `stop` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:679:16: warning[possibly-missing-attribute] Attribute `stop` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:680:16: warning[possibly-unbound-attribute] Attribute `length` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:680:16: warning[possibly-missing-attribute] Attribute `length` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:681:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:681:16: warning[possibly-missing-attribute] Attribute `to_header` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:690:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:690:16: warning[possibly-missing-attribute] Attribute `to_header` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:693:16: warning[possibly-unbound-attribute] Attribute `units` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:693:16: warning[possibly-missing-attribute] Attribute `units` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:694:16: warning[possibly-unbound-attribute] Attribute `to_header` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:694:16: warning[possibly-missing-attribute] Attribute `to_header` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:697:16: warning[possibly-unbound-attribute] Attribute `start` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:697:16: warning[possibly-missing-attribute] Attribute `start` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:698:16: warning[possibly-unbound-attribute] Attribute `stop` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:698:16: warning[possibly-missing-attribute] Attribute `stop` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:699:16: warning[possibly-unbound-attribute] Attribute `length` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:699:16: warning[possibly-missing-attribute] Attribute `length` on type `ContentRange | None` is possibly missing
+- tests/test_http.py:700:16: warning[possibly-unbound-attribute] Attribute `units` on type `ContentRange | None` is possibly unbound
++ tests/test_http.py:700:16: warning[possibly-missing-attribute] Attribute `units` on type `ContentRange | None` is possibly missing
+- tests/test_local.py:191:12: warning[possibly-unbound-attribute] Attribute `startswith` on type `Unknown | _ProxyLookup` is possibly unbound
++ tests/test_local.py:191:12: warning[possibly-missing-attribute] Attribute `startswith` on type `Unknown | _ProxyLookup` is possibly missing
+- tests/test_routing.py:601:5: warning[possibly-unbound-attribute] Attribute `add` on type `Unknown | None | set[@Todo(set comprehension element type)]` is possibly unbound
++ tests/test_routing.py:601:5: warning[possibly-missing-attribute] Attribute `add` on type `Unknown | None | set[@Todo(set comprehension element type)]` is possibly missing
+- tests/test_routing.py:603:5: warning[possibly-unbound-attribute] Attribute `discard` on type `Unknown | None | set[@Todo(set comprehension element type)]` is possibly unbound
++ tests/test_routing.py:603:5: warning[possibly-missing-attribute] Attribute `discard` on type `Unknown | None | set[@Todo(set comprehension element type)]` is possibly missing
+- tests/test_routing.py:604:5: warning[possibly-unbound-implicit-call] Method `__setitem__` of type `Unknown | Mapping[str, Any] | None` is possibly unbound
++ tests/test_routing.py:604:5: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | Mapping[str, Any] | None` is possibly missing
+
+kopf (https://github.com/nolar/kopf)
+- kopf/_cogs/structs/dicts.py:241:25: warning[possibly-unbound-attribute] Attribute `obj` on type `(_T@walk & Unknown & ~None) | (Iterable[_T@walk] & Unknown) | (_T@walk & _dummy) | (Iterable[_T@walk] & _dummy)` is possibly unbound
++ kopf/_cogs/structs/dicts.py:241:25: warning[possibly-missing-attribute] Attribute `obj` on type `(_T@walk & Unknown & ~None) | (Iterable[_T@walk] & Unknown) | (_T@walk & _dummy) | (Iterable[_T@walk] & _dummy)` is possibly missing
+
+pylint (https://github.com/pycqa/pylint)
+- pylint/checkers/spelling.py:62:45: warning[possibly-unbound-attribute] Attribute `ProviderDesc` on type `Unknown | None` is possibly unbound
++ pylint/checkers/spelling.py:62:45: warning[possibly-missing-attribute] Attribute `ProviderDesc` on type `Unknown | None` is possibly missing
+- pylint/checkers/spelling.py:63:12: warning[possibly-unbound-attribute] Attribute `Broker` on type `Unknown | None` is possibly unbound
++ pylint/checkers/spelling.py:63:12: warning[possibly-missing-attribute] Attribute `Broker` on type `Unknown | None` is possibly missing
+- pylint/checkers/spelling.py:67:42: warning[possibly-unbound-attribute] Attribute `ProviderDesc` on type `Unknown | None` is possibly unbound
++ pylint/checkers/spelling.py:67:42: warning[possibly-missing-attribute] Attribute `ProviderDesc` on type `Unknown | None` is possibly missing
+- pylint/checkers/spelling.py:73:42: warning[possibly-unbound-attribute] Attribute `ProviderDesc` on type `Unknown | None` is possibly unbound
++ pylint/checkers/spelling.py:73:42: warning[possibly-missing-attribute] Attribute `ProviderDesc` on type `Unknown | None` is possibly missing
+- pylint/checkers/spelling.py:314:34: warning[possibly-unbound-attribute] Attribute `DictWithPWL` on type `Unknown | None` is possibly unbound
++ pylint/checkers/spelling.py:314:34: warning[possibly-missing-attribute] Attribute `DictWithPWL` on type `Unknown | None` is possibly missing
+- pylint/checkers/spelling.py:318:34: warning[possibly-unbound-attribute] Attribute `Dict` on type `Unknown | None` is possibly unbound
++ pylint/checkers/spelling.py:318:34: warning[possibly-missing-attribute] Attribute `Dict` on type `Unknown | None` is possibly missing
+- pylint/checkers/spelling.py:385:20: warning[possibly-unbound-attribute] Attribute `errors` on type `Unknown | None` is possibly unbound
++ pylint/checkers/spelling.py:385:20: warning[possibly-missing-attribute] Attribute `errors` on type `Unknown | None` is possibly missing
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
+- test/generated/testproto/test_pb2.pyi:389:37: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:389:37: warning[possibly-missing-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly missing
+- test/generated/testproto/test_pb2.pyi:396:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:396:25: warning[possibly-missing-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly missing
+- test/generated/testproto/test_pb2.pyi:405:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:405:25: warning[possibly-missing-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly missing
+- test/generated/testproto/test_pb2.pyi:414:37: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:414:37: warning[possibly-missing-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly missing
+- test/generated/testproto/test_pb2.pyi:418:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:418:25: warning[possibly-missing-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly missing
+- test/generated/testproto/test_pb2.pyi:426:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:426:25: warning[possibly-missing-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly missing
+- test/generated/testproto/test_pb2.pyi:432:20: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:432:20: warning[possibly-missing-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly missing
+- test/generated/testproto/test_pb2.pyi:437:25: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly unbound
++ test/generated/testproto/test_pb2.pyi:437:25: warning[possibly-missing-attribute] Attribute `service` on type `<module 'google.protobuf'> | Unknown` is possibly missing
+- test/generated/testproto/test_pb2.pyi:443:37: warning[possibly-unbound-attribute] Attribute `service` on type `<module 'google.proto...*[Comment body truncated]*
+
+---
+
+_Renamed from "Rename "possibly unbound" diagnostics to "possibly missing"" to "[ty] Rename "possibly unbound" diagnostics to "possibly missing"" by @AlexWaygood on 2025-09-21 12:54_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-09-21 12:54_
+
+---
+
+_Label `diagnostics` added by @AlexWaygood on 2025-09-21 12:54_
+
+---
+
+_@carljm approved on 2025-09-23 00:03_
+
+This looks good to me, thank you! I think the new codes/messages are clearer.
+
+@AlexWaygood, you often have valuable opinions on diagnostic messages and codes; can you take a look at this too?
+
+---
+
+_@AlexWaygood approved on 2025-09-23 13:09_
+
+LGTM! I pushed a change to reword some error messages from "is possibly missing" to "may be missing", which is slightly shorter and feels slightly more idiomatic to me. @carljm hopefully you're okay with that change -- I'm happy to revert https://github.com/astral-sh/ruff/pull/20492/commits/2327ae9ab9ee5cfc09d54bb7178c0e3408bdd683 if you disagree with it 😄
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-09-23 13:34_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-23 13:40_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `possibly-missing-attribute` | 7,521 | 0 | 0 |
+| `possibly-unbound-attribute` | 0 | 7,477 | 0 |
+| `possibly-missing-import` | 210 | 0 | 0 |
+| `possibly-unbound-import` | 0 | 209 | 0 |
+| `possibly-missing-implicit-call` | 87 | 0 | 0 |
+| `possibly-unbound-implicit-call` | 0 | 87 | 0 |
+| `invalid-context-manager` | 0 | 0 | 12 |
+| `unknown-rule` | 4 | 0 | 0 |
+| `unused-ignore-comment` | 0 | 1 | 0 |
+| **Total** | **7,822** | **7,774** | **12** |
+
+
+---
+
+_Review request for @sharkdp removed by @sharkdp on 2025-09-23 13:45_
+
+---
+
+_Comment by @AlexWaygood on 2025-09-23 14:00_
+
+Since the `ecosystem-analyzer` job completed in good time, I'm confident that the primer timeout is just because a lot of diagnostics have their error messages change on this PR branch.
+
+---
+
+_Comment by @carljm on 2025-09-23 14:15_
+
+I think your change to use "may be missing" is an improvement!
+
+---
+
+_Comment by @AlexWaygood on 2025-09-23 14:22_
+
+I'll fixup the merge conflicts and land
+
+---
+
+_Merged by @AlexWaygood on 2025-09-23 14:26_
+
+---
+
+_Closed by @AlexWaygood on 2025-09-23 14:26_
+
+---
