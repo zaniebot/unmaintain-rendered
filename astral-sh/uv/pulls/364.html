@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support resolving for an alternate Python distribution - astral-sh/uv #364</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support resolving for an alternate Python distribution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/364">#364</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-08 04:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-08 04:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Low-priority but fun thing to end the day. You can now pass <code>--target-version py37</code>, and we'll generate a resolution for Python 3.7.</p>
+<p>See: https://github.com/astral-sh/puffin/issues/183.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-11-08 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-11-08 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2023-11-08 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/python_version.rs</code>:6 on 2023-11-08 09:49</div>
+            <div class="timeline-body"><p>I'd add a from string with <code>3.7</code>, <code>3.8</code>, etc., virtualenv usees this (<code>virtualenv -p 3.8</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/python_version.rs</code>:41 on 2023-11-08 09:55</div>
+            <div class="timeline-body"><p>That isn't correct for pypy:</p>
+<pre><code>$ cat pep508_script.py 
+import sys
+
+def format_full_version(info):
+    version = '{0.major}.{0.minor}.{0.micro}'.format(info)
+    kind = info.releaselevel
+    if kind != 'final':
+        version += kind[0] + str(info.serial)
+    return version
+
+if hasattr(sys, 'implementation'):
+    implementation_version = format_full_version(sys.implementation.version)
+else:
+    implementation_version = &quot;0&quot;
+
+print(implementation_version)
+$  /home/konsti/.pyenv/versions/pypy3.10-7.3.13/bin/pypy3 pep508_script.py
+7.3.13
+</code></pre>
+<p>I'm not sure what the correct implementation is - Evaluate every comparison with <code>implementation_version</code> to true, because it could be true? It's not a widely used marker: https://github.com/search?q=path%3A%2Frequirements.*%5C.txt%2F+implementation_version&amp;type=code&amp;query=path%3Arequirements.txt+implementation_version A cheaper solution would be leaving the field empty or setting the value to <code>[elided]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-08 10:03</div>
+            <div class="timeline-body"><p>An interesting thing that we can do is to check version intersections: Use <code>&gt;=3.10</code> as input instead of <code>3.10</code> and check whether the <code>python_version</code> version intersects with out current one (<code>==3.12</code>, <code>&lt;3.11</code> and <code>!=3.11</code> intersect, <code>&lt;3.8</code> does not not)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-08 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/python_version.rs</code>:41 on 2023-11-08 10:04</div>
+            <div class="timeline-body"><p>This is the one thing i think we should fix before merging</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-08 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/python_version.rs</code>:41 on 2023-11-08 15:01</div>
+            <div class="timeline-body"><p>Oh hmm, I'd say we should consider just not touching it here, just as we aren't touching <code>implementation_name</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-08 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/python_version.rs</code>:41 on 2023-11-08 15:19</div>
+            <div class="timeline-body"><p>@konstin - How's this -- we set the version if you're using CPython, and preserve it if you're using anything else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:584 on 2023-11-08 15:32</div>
+            <div class="timeline-body"><p>Do we need to use <code>--target-python</code>, <code>--python-version</code>, or <code>--target-python-version</code> for clarity? <code>--target-version</code> seems a little vague in the context of a resolver. I think I have a preference for just <code>--python-version</code> since that's what you're overriding unless we are supporting different target python builds in which <code>--target-python</code> makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:585 on 2023-11-08 15:32</div>
+            <div class="timeline-body"><p>Why this format? I'd expect &quot;3.12&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-08 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-08 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:585 on 2023-11-08 15:34</div>
+            <div class="timeline-body"><p>Is there a plan to support like <code>pypy310</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-08 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:584 on 2023-11-08 15:36</div>
+            <div class="timeline-body"><p>Hmm, well the current naming and version scheme is identical to what we use in Ruff and what's used in Black. Either way we're going to deviate from some tools so I just opted to be consistent with Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-08 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:584 on 2023-11-08 15:38</div>
+            <div class="timeline-body"><p>I think in Black and Ruff there aren't any other target versions to be concerned about but for a package manager it feels too vague.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-08 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/python_version.rs</code>:41 on 2023-11-08 16:23</div>
+            <div class="timeline-body"><p>Sounds fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-08 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:584 on 2023-11-08 16:28</div>
+            <div class="timeline-body"><p>virtualenv has</p>
+<pre><code>-p py, --python py            interpreter based on what to create environment (path/identifier) - by default use the interpreter where the tool is installed - first found wins (default: [])
+</code></pre>
+<p>, rye uses <code>rye pin 3.10</code> and <code>python +3.8 my-script.py</code>.</p>
+<p>Wheel tags use <code>py3</code>, <code>py39</code>, <code>cp10</code>, <code>pypy37</code> (https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/#python-tag), which i think is where that syntax comes from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-08 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:584 on 2023-11-08 19:45</div>
+            <div class="timeline-body"><p>I changed it to <code>--python-version</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:584 on 2023-11-08 19:46</div>
+            <div class="timeline-body"><p>I haven't changed the input format yet, I may defer it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-08 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-11-08 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-11-08 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-08 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:584 on 2023-11-08 22:30</div>
+            <div class="timeline-body"><p>Thanks! Input format seems fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-11-08 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-08 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-08 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-08 23:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

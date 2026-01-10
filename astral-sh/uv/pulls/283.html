@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for Git dependencies - astral-sh/uv #283</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for Git dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/283">#283</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-02 01:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-02 01:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for Git dependencies, like:</p>
+<pre><code>flask @ git+https://github.com/pallets/flask.git
+</code></pre>
+<p>Right now, they're only supported in the resolver (and not the installer), since the installer doesn't yet support source distributions at all.</p>
+<p>The general approach here is based on Cargo's Git implementation. Specifically, I adapted Cargo's <a href="https://github.com/rust-lang/cargo/blob/23eb492cf920ce051abfc56bbaf838514dc8365c/src/cargo/sources/git/mod.rs"><code>git</code></a> module to perform the cloning, which is based on <code>libgit2</code>.</p>
+<p>As compared to Cargo's implementation, I made the following changes:</p>
+<ul>
+<li>Removed any unnecessary code.</li>
+<li>Fixed any Clippy errors for our stricter ruleset.</li>
+<li>Removed the dependency on <code>curl</code>, in favor of <code>reqwest</code> which we use elsewhere.</li>
+<li>Removed the ability to use <code>gix</code>. Cargo allows the use of <code>gix</code> as an experimental flag, but it only supports a small subset of the operations. When Cargo fully adopts <code>gix</code>, we should plan to do the same.</li>
+<li>Removed Cargo's host key checking. We need to re-add this! I'll do it shortly.</li>
+<li>Removed Cargo's progress bars. We should re-add this too, but we use <code>indicatif</code> and Cargo had their own thing.</li>
+</ul>
+<p>There are a few follow-ups to consider:</p>
+<ul>
+<li>Adding support in the installer.</li>
+<li>When we lock, we should write out the Git URL that includes the exact SHA. This lets us cache in perpetuity and avoids dependencies changing without re-locking.</li>
+<li>When we resolve, we should <em>always</em> try to refresh Git dependencies. (Right now, we skip if the wheel was already built.)</li>
+</ul>
+<p>I'll work on the latter two in follow-up PRs.</p>
+<p>Closes #202.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 01:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-vcs/src/git.rs</code>:1 on 2023-11-02 01:31</div>
+            <div class="timeline-body"><p>This file does the actual Git operations. It's largely derived from Cargo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 01:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-vcs/src/source.rs</code>:89 on 2023-11-02 01:35</div>
+            <div class="timeline-body"><p>The cool thing about Cargo's implementation is that they maintain a &quot;database&quot; of repositories. So every repository that you ever check out is included in there. Then, peer to it, they have a directory of checkouts, which are created by checking out the commit in the database and hardlinking from the database to the checkout. So it's fast to switch between commits of the same repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-11-02 04:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 04:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-git/src/git.rs</code>:892 on 2023-11-02 04:10</div>
+            <div class="timeline-body"><p>There are so many issues about Cargo not working as expected with SSH dependencies that I'm wondering if we should just make this the default (https://github.com/rust-lang/cargo/issues/2078, https://github.com/rust-lang/cargo/issues/3381, etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-11-02 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-11-02 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 04:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-git/src/git.rs</code>:892 on 2023-11-02 04:44</div>
+            <div class="timeline-body"><p>(This would not remove our dependency on <code>libgit2</code> since this is <em>just</em> the fetch.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-build/src/lib.rs</code>:127 on 2023-11-02 12:41</div>
+            <div class="timeline-body"><p>The method docstring needs updating (outside of comment range)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-build/src/lib.rs</code>:136 on 2023-11-02 12:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let source_tree = if fs::metadata(sdist)?.is_dir() {
+            sdist.to_path_buf()
+        } else {
+             debug!(&quot;Unpacking for build: {}&quot;, sdist.display());
+            let extracted = temp_dir.path().join(&quot;extracted&quot;);
+            extract_archive(sdist, &amp;extracted)?
+        };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:663 on 2023-11-02 12:48</div>
+            <div class="timeline-body"><p>nit: Either remove the &quot;from&quot; or show the url</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-11-02 12:56</div>
+            <div class="timeline-body"><p>I didn't review the parts copied from cargo.</p>
+<p>It's a pity that we copy the code and there's no reusable crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-02 12:58</div>
+            <div class="timeline-body"><p>@konstin - I agree although I'm actually happy with how little code we had to copy in the end. It may not feel that way from the review, but I was able to pare it down a lot. Now, we're really only borrowing the actual Git operations and logic around when to refresh, when to reset, recursively cloning submodules, etc., which at least feels somewhat domain agnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-02 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-02 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-02 15:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

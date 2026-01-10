@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix mastodon-py dist-info handling - astral-sh/uv #336</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix mastodon-py dist-info handling</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/336">#336</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-11-06 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-11-06 16:05</div>
+            <div class="timeline-body"><p>mastodon-py 1.5.1 uses a dot in its dist-info dir name, which we previously didn't handle, causing home-assistant to fail. The new implementation is based on https://github.com/pypa/packaging/blob/2f83540272e79e3fe1f5d42abae8df0c14ddf4c2/src/packaging/utils.py#L146-L172.</p>
+<p>Part of #199</p>
+<pre><code>unzip -l  Mastodon.py-1.5.1-py2.py3-none-any.whl
+Archive:  Mastodon.py-1.5.1-py2.py3-none-any.whl
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+   153929  2020-02-29 17:39   mastodon/Mastodon.py
+     1029  2019-10-11 19:15   mastodon/__init__.py
+     7357  2019-10-11 20:24   mastodon/streaming.py
+       10  2020-03-14 18:14   Mastodon.py-1.5.1.dist-info/DESCRIPTION.rst
+     1398  2020-03-14 18:14   Mastodon.py-1.5.1.dist-info/metadata.json
+        9  2020-03-14 18:14   Mastodon.py-1.5.1.dist-info/top_level.txt
+      110  2020-03-14 18:14   Mastodon.py-1.5.1.dist-info/WHEEL
+     1543  2020-03-14 18:14   Mastodon.py-1.5.1.dist-info/METADATA
+      753  2020-03-14 18:14   Mastodon.py-1.5.1.dist-info/RECORD
+---------                     -------
+   166138                     9 files
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 03:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/wheel.rs</code>:931 on 2023-11-07 03:54</div>
+            <div class="timeline-body"><p>I find this much clearer as:</p>
+<pre><code class="language-rust">let dist_info_prefix = match crate::find_dist_info(filename, archive.file_names().map(|name| (name, name))) {
+    Ok((_, dist_info_dir)) =&gt; dist_info_dir.to_string(),
+    Err(err) =&gt; return Err(Error::InvalidWheel(err)),
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 03:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/distribution/cached_wheel.rs</code>:59 on 2023-11-07 03:55</div>
+            <div class="timeline-body"><p>Is this <code>.to_string</code> necessary? We immediately pass this to a <code>format</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 03:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/wheel.rs</code>:1071 on 2023-11-07 03:56</div>
+            <div class="timeline-body"><p>So what happened to these errors? Are they no longer ever surfaced? Should we remove them from the enum?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/install-wheel-rs/src/wheel.rs</code>:1071 on 2023-11-07 08:56</div>
+            <div class="timeline-body"><p>There are still other cases where <code>Error::InvalidWheel</code> is used</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-07 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-07 11:36</div>
+            <div class="timeline-body"><p>Merging this since i need it for the top 8k pypi checks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-11-07 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-11-07 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-07 11:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

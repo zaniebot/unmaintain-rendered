@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallelize wheel installations with Rayon - astral-sh/uv #84</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parallelize wheel installations with Rayon</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/84">#84</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-10 19:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-10 19:21</div>
+            <div class="timeline-body"><p>It looks like using <em>either</em> async Rust with a <code>JoinSet</code> <em>or</em> parallelizing a fixed threadpool with Rayon provide about a ~5% speed-up over our current serial approach:</p>
+<pre><code class="language-console">❯ hyperfine --runs 30 --warmup 5 --prepare &quot;./target/release/puffin venv .venv&quot; \
+  &quot;./target/release/rayon sync ./scripts/benchmarks/requirements-large.txt&quot; \
+  &quot;./target/release/async sync ./scripts/benchmarks/requirements-large.txt&quot; \
+  &quot;./target/release/main sync ./scripts/benchmarks/requirements-large.txt&quot;
+Benchmark 1: ./target/release/rayon sync ./scripts/benchmarks/requirements-large.txt
+  Time (mean ± σ):     295.7 ms ±  16.9 ms    [User: 28.6 ms, System: 263.3 ms]
+  Range (min … max):   249.2 ms … 315.9 ms    30 runs
+
+Benchmark 2: ./target/release/async sync ./scripts/benchmarks/requirements-large.txt
+  Time (mean ± σ):     296.2 ms ±  20.2 ms    [User: 36.1 ms, System: 340.1 ms]
+  Range (min … max):   258.0 ms … 359.4 ms    30 runs
+
+Benchmark 3: ./target/release/main sync ./scripts/benchmarks/requirements-large.txt
+  Time (mean ± σ):     306.6 ms ±  19.5 ms    [User: 25.3 ms, System: 220.5 ms]
+  Range (min … max):   269.6 ms … 332.2 ms    30 runs
+
+Summary
+  './target/release/rayon sync ./scripts/benchmarks/requirements-large.txt' ran
+    1.00 ± 0.09 times faster than './target/release/async sync ./scripts/benchmarks/requirements-large.txt'
+    1.04 ± 0.09 times faster than './target/release/main sync ./scripts/benchmarks/requirements-large.txt'
+</code></pre>
+<p>It's much easier to just parallelize with Rayon and avoid async in the underlying wheel code, so this PR takes that approach for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-11 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-11 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-11 03:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

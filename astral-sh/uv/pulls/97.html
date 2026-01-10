@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate resolver proof-of-concept to PubGrub - astral-sh/uv #97</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Migrate resolver proof-of-concept to PubGrub</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/97">#97</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-16 01:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 01:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables the proof-of-concept resolver to backtrack by way of using the <code>pubgrub-rs</code> crate.</p>
+<p>Rather than using PubGrub as a <em>framework</em> (implementing the <code>DependencyProvider</code> trait, letting PubGrub call us), I've instead copied over PubGrub's primary solver hook (which is only ~100 lines or so) and modified it for our purposes (e.g., made it async).</p>
+<p>There's a lot to improve here, but it's a start that will let us understand PubGrub's appropriateness for this problem space. A few observations:</p>
+<ul>
+<li>In simple cases, the resolver is slower than our current (naive) resolver. I think it's just that the pipelining isn't as efficient as in the naive case, where we can just stream package and version fetches concurrently without any bottlenecks.</li>
+<li>A lot of the code here relates to bridging PubGrub with our own abstractions -- so we need a <code>PubGrubPackage</code>, a <code>PubGrubVersion</code>, etc.</li>
+</ul>
+<h2>Appendix</h2>
+<p>I've vendored the crate to enable us to make some small changes to it without maintaining a fork (for now). Specifically, I copied over <code>pubgrub-rs</code> at <code>717289be5722dd5caaa0d1f4ed13047d11a7f7fd</code>, and then made these changes, which only modify visibility and make some traits async-friendly:</p>
+<pre><code class="language-diff">diff --git a/vendor/pubgrub/src/error.rs b/vendor/pubgrub/src/error.rs
+index 0553d8d..d75f1b9 100644
+--- a/vendor/pubgrub/src/error.rs
++++ b/vendor/pubgrub/src/error.rs
+@@ -27,7 +27,7 @@ pub enum PubGrubError&lt;P: Package, V: Version&gt; {
+         version: V,
+         /// Error raised by the implementer of
+         /// [DependencyProvider](crate::solver::DependencyProvider).
+-        source: Box&lt;dyn std::error::Error&gt;,
++        source: Box&lt;dyn std::error::Error + Send + Sync&gt;,
+     },
+ 
+     /// Error arising when the implementer of
+@@ -63,12 +63,12 @@ pub enum PubGrubError&lt;P: Package, V: Version&gt; {
+     /// returned an error in the method
+     /// [choose_package_version](crate::solver::DependencyProvider::choose_package_version).
+     #[error(&quot;Decision making failed&quot;)]
+-    ErrorChoosingPackageVersion(Box&lt;dyn std::error::Error&gt;),
++    ErrorChoosingPackageVersion(Box&lt;dyn std::error::Error + Send + Sync&gt;),
+ 
+     /// Error arising when the implementer of [DependencyProvider](crate::solver::DependencyProvider)
+     /// returned an error in the method [should_cancel](crate::solver::DependencyProvider::should_cancel).
+     #[error(&quot;We should cancel&quot;)]
+-    ErrorInShouldCancel(Box&lt;dyn std::error::Error&gt;),
++    ErrorInShouldCancel(Box&lt;dyn std::error::Error + Send + Sync&gt;),
+ 
+     /// Something unexpected happened.
+     #[error(&quot;{0}&quot;)]
+diff --git a/vendor/pubgrub/src/internal/incompatibility.rs b/vendor/pubgrub/src/internal/incompatibility.rs
+index acf900b..f0f7d62 100644
+--- a/vendor/pubgrub/src/internal/incompatibility.rs
++++ b/vendor/pubgrub/src/internal/incompatibility.rs
+@@ -36,7 +36,7 @@ pub struct Incompatibility&lt;P: Package, V: Version&gt; {
+ }
+ 
+ /// Type alias of unique identifiers for incompatibilities.
+-pub type IncompId&lt;P, V&gt; = Id&lt;Incompatibility&lt;P, V&gt;&gt;;
++pub(crate) type IncompId&lt;P, V&gt; = Id&lt;Incompatibility&lt;P, V&gt;&gt;;
+ 
+ #[derive(Debug, Clone)]
+ enum Kind&lt;P: Package, V: Version&gt; {
+diff --git a/vendor/pubgrub/src/internal/mod.rs b/vendor/pubgrub/src/internal/mod.rs
+index 86d7e22..4c4fc55 100644
+--- a/vendor/pubgrub/src/internal/mod.rs
++++ b/vendor/pubgrub/src/internal/mod.rs
+@@ -2,9 +2,9 @@
+ 
+ //! Non exposed modules.
+ 
+-pub mod arena;
+-pub mod core;
+-pub mod incompatibility;
+-pub mod partial_solution;
+-pub mod small_map;
+-pub mod small_vec;
++pub(crate) mod arena;
++pub(crate) mod core;
++pub(crate) mod incompatibility;
++pub(crate) mod partial_solution;
++pub(crate) mod small_map;
++pub(crate) mod small_vec;
+diff --git a/vendor/pubgrub/src/internal/partial_solution.rs b/vendor/pubgrub/src/internal/partial_solution.rs
+index ad45424..390fcac 100644
+--- a/vendor/pubgrub/src/internal/partial_solution.rs
++++ b/vendor/pubgrub/src/internal/partial_solution.rs
+@@ -44,7 +44,7 @@ struct PackageAssignments&lt;P: Package, V: Version&gt; {
+ }
+ 
+ #[derive(Clone, Debug)]
+-pub struct DatedDerivation&lt;P: Package, V: Version&gt; {
++pub(crate) struct DatedDerivation&lt;P: Package, V: Version&gt; {
+     global_index: u32,
+     decision_level: DecisionLevel,
+     cause: IncompId&lt;P, V&gt;,
+@@ -93,7 +93,7 @@ impl&lt;P: Package, V: Version&gt; PartialSolution&lt;P, V&gt; {
+             }
+         }
+         self.current_decision_level = self.current_decision_level.increment();
+-        let mut pa = self
++        let pa = self
+             .package_assignments
+             .get_mut(&amp;package)
+             .expect(&quot;Derivations must already exist&quot;);
+@@ -123,7 +123,7 @@ impl&lt;P: Package, V: Version&gt; PartialSolution&lt;P, V&gt; {
+         self.next_global_index += 1;
+         match self.package_assignments.entry(package) {
+             Entry::Occupied(mut occupied) =&gt; {
+-                let mut pa = occupied.get_mut();
++                let pa = occupied.get_mut();
+                 pa.highest_decision_level = self.current_decision_level;
+                 match &amp;mut pa.assignments_intersection {
+                     // Check that add_derivation is never called in the wrong context.
+diff --git a/vendor/pubgrub/src/internal/small_map.rs b/vendor/pubgrub/src/internal/small_map.rs
+index a1fe5f9..702e7e2 100644
+--- a/vendor/pubgrub/src/internal/small_map.rs
++++ b/vendor/pubgrub/src/internal/small_map.rs
+@@ -2,7 +2,7 @@ use crate::type_aliases::Map;
+ use std::hash::Hash;
+ 
+ #[derive(Debug, Clone)]
+-pub enum SmallMap&lt;K, V&gt; {
++pub(crate) enum SmallMap&lt;K, V&gt; {
+     Empty,
+     One([(K, V); 1]),
+     Two([(K, V); 2]),
+@@ -10,7 +10,7 @@ pub enum SmallMap&lt;K, V&gt; {
+ }
+ 
+ impl&lt;K: PartialEq + Eq + Hash, V&gt; SmallMap&lt;K, V&gt; {
+-    pub fn get(&amp;self, key: &amp;K) -&gt; Option&lt;&amp;V&gt; {
++    pub(crate) fn get(&amp;self, key: &amp;K) -&gt; Option&lt;&amp;V&gt; {
+         match self {
+             Self::Empty =&gt; None,
+             Self::One([(k, v)]) if k == key =&gt; Some(v),
+@@ -22,7 +22,7 @@ impl&lt;K: PartialEq + Eq + Hash, V&gt; SmallMap&lt;K, V&gt; {
+         }
+     }
+ 
+-    pub fn get_mut(&amp;mut self, key: &amp;K) -&gt; Option&lt;&amp;mut V&gt; {
++    pub(crate) fn get_mut(&amp;mut self, key: &amp;K) -&gt; Option&lt;&amp;mut V&gt; {
+         match self {
+             Self::Empty =&gt; None,
+             Self::One([(k, v)]) if k == key =&gt; Some(v),
+@@ -34,7 +34,7 @@ impl&lt;K: PartialEq + Eq + Hash, V&gt; SmallMap&lt;K, V&gt; {
+         }
+     }
+ 
+-    pub fn remove(&amp;mut self, key: &amp;K) -&gt; Option&lt;V&gt; {
++    pub(crate) fn remove(&amp;mut self, key: &amp;K) -&gt; Option&lt;V&gt; {
+         let out;
+         *self = match std::mem::take(self) {
+             Self::Empty =&gt; {
+@@ -70,7 +70,7 @@ impl&lt;K: PartialEq + Eq + Hash, V&gt; SmallMap&lt;K, V&gt; {
+         out
+     }
+ 
+-    pub fn insert(&amp;mut self, key: K, value: V) {
++    pub(crate) fn insert(&amp;mut self, key: K, value: V) {
+         *self = match std::mem::take(self) {
+             Self::Empty =&gt; Self::One([(key, value)]),
+             Self::One([(k, v)]) =&gt; {
+@@ -108,7 +108,7 @@ impl&lt;K: Clone + PartialEq + Eq + Hash, V: Clone&gt; SmallMap&lt;K, V&gt; {
+     /// apply the provided function to both values.
+     /// If the result is None, remove that key from the merged map,
+     /// otherwise add the content of the Some(_).
+-    pub fn merge&lt;'a&gt;(
++    pub(crate) fn merge&lt;'a&gt;(
+         &amp;'a mut self,
+         map_2: impl Iterator&lt;Item = (&amp;'a K, &amp;'a V)&gt;,
+         f: impl Fn(&amp;V, &amp;V) -&gt; Option&lt;V&gt;,
+@@ -136,7 +136,7 @@ impl&lt;K, V&gt; Default for SmallMap&lt;K, V&gt; {
+ }
+ 
+ impl&lt;K, V&gt; SmallMap&lt;K, V&gt; {
+-    pub fn len(&amp;self) -&gt; usize {
++    pub(crate) fn len(&amp;self) -&gt; usize {
+         match self {
+             Self::Empty =&gt; 0,
+             Self::One(_) =&gt; 1,
+@@ -147,7 +147,7 @@ impl&lt;K, V&gt; SmallMap&lt;K, V&gt; {
+ }
+ 
+ impl&lt;K: Eq + Hash + Clone, V: Clone&gt; SmallMap&lt;K, V&gt; {
+-    pub fn as_map(&amp;self) -&gt; Map&lt;K, V&gt; {
++    pub(crate) fn as_map(&amp;self) -&gt; Map&lt;K, V&gt; {
+         match self {
+             Self::Empty =&gt; Map::default(),
+             Self::One([(k, v)]) =&gt; {
+@@ -184,7 +184,7 @@ impl&lt;'a, K: 'a, V: 'a&gt; Iterator for IterSmallMap&lt;'a, K, V&gt; {
+ }
+ 
+ impl&lt;K, V&gt; SmallMap&lt;K, V&gt; {
+-    pub fn iter(&amp;self) -&gt; impl Iterator&lt;Item = (&amp;K, &amp;V)&gt; {
++    pub(crate) fn iter(&amp;self) -&gt; impl Iterator&lt;Item = (&amp;K, &amp;V)&gt; {
+         match self {
+             Self::Empty =&gt; IterSmallMap::Inline([].iter()),
+             Self::One(data) =&gt; IterSmallMap::Inline(data.iter()),
+diff --git a/vendor/pubgrub/src/solver.rs b/vendor/pubgrub/src/solver.rs
+index 6201591..7f110b7 100644
+--- a/vendor/pubgrub/src/solver.rs
++++ b/vendor/pubgrub/src/solver.rs
+@@ -70,8 +70,8 @@ use std::collections::{BTreeMap, BTreeSet as Set};
+ use std::error::Error;
+ 
+ use crate::error::PubGrubError;
+-use crate::internal::core::State;
+-use crate::internal::incompatibility::Incompatibility;
++pub use crate::internal::core::State;
++pub use crate::internal::incompatibility::Incompatibility;
+ use crate::package::Package;
+ use crate::range::Range;
+ use crate::type_aliases::{Map, SelectedDependencies};
+@@ -249,7 +249,7 @@ pub trait DependencyProvider&lt;P: Package, V: Version&gt; {
+     fn choose_package_version&lt;T: Borrow&lt;P&gt;, U: Borrow&lt;Range&lt;V&gt;&gt;&gt;(
+         &amp;self,
+         potential_packages: impl Iterator&lt;Item = (T, U)&gt;,
+-    ) -&gt; Result&lt;(T, Option&lt;V&gt;), Box&lt;dyn Error&gt;&gt;;
++    ) -&gt; Result&lt;(T, Option&lt;V&gt;), Box&lt;dyn Error + Send + Sync&gt;&gt;;
+ 
+     /// Retrieves the package dependencies.
+     /// Return [Dependencies::Unknown] if its dependencies are unknown.
+@@ -257,14 +257,14 @@ pub trait DependencyProvider&lt;P: Package, V: Version&gt; {
+         &amp;self,
+         package: &amp;P,
+         version: &amp;V,
+-    ) -&gt; Result&lt;Dependencies&lt;P, V&gt;, Box&lt;dyn Error&gt;&gt;;
++    ) -&gt; Result&lt;Dependencies&lt;P, V&gt;, Box&lt;dyn Error + Send + Sync&gt;&gt;;
+ 
+     /// This is called fairly regularly during the resolution,
+     /// if it returns an Err then resolution will be terminated.
+     /// This is helpful if you want to add some form of early termination like a timeout,
+     /// or you want to add some form of user feedback if things are taking a while.
+     /// If not provided the resolver will run as long as needed.
+-    fn should_cancel(&amp;self) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
++    fn should_cancel(&amp;self) -&gt; Result&lt;(), Box&lt;dyn Error + Send + Sync&gt;&gt; {
+         Ok(())
+     }
+ }
+@@ -367,7 +367,7 @@ impl&lt;P: Package, V: Version&gt; DependencyProvider&lt;P, V&gt; for OfflineDependencyProvi
+     fn choose_package_version&lt;T: Borrow&lt;P&gt;, U: Borrow&lt;Range&lt;V&gt;&gt;&gt;(
+         &amp;self,
+         potential_packages: impl Iterator&lt;Item = (T, U)&gt;,
+-    ) -&gt; Result&lt;(T, Option&lt;V&gt;), Box&lt;dyn Error&gt;&gt; {
++    ) -&gt; Result&lt;(T, Option&lt;V&gt;), Box&lt;dyn Error + Send + Sync&gt;&gt; {
+         Ok(choose_package_with_fewest_versions(
+             |p| {
+                 self.dependencies
+@@ -385,7 +385,7 @@ impl&lt;P: Package, V: Version&gt; DependencyProvider&lt;P, V&gt; for OfflineDependencyProvi
+         &amp;self,
+         package: &amp;P,
+         version: &amp;V,
+-    ) -&gt; Result&lt;Dependencies&lt;P, V&gt;, Box&lt;dyn Error&gt;&gt; {
++    ) -&gt; Result&lt;Dependencies&lt;P, V&gt;, Box&lt;dyn Error + Send + Sync&gt;&gt; {
+         Ok(match self.dependencies(package, version) {
+             None =&gt; Dependencies::Unknown,
+             Some(dependencies) =&gt; Dependencies::Known(dependencies),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-16 01:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/wheel_finder.rs</code>:30 on 2023-10-16 01:49</div>
+            <div class="timeline-body"><p>This is basically the previous resolver with the <code>--no-deps</code> flag set. It's used in <code>puffin sync</code>, where you have a resolved set of packages, and need to find the wheels to install. I think it's nice to keep this separate from the core resolver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-16 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-16 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-16 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-16 02:07</div>
+            <div class="timeline-body"><p>I haven't looked at the code and only read the summary:</p>
+<p>What's the benefit of making the resolver async? I would expect that resolving is mainly CPU bound. Or is it because we intend of making network requests as part of the resolver phase?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 02:12</div>
+            <div class="timeline-body"><p>We need to make (a substantial number of) network requests as part of the resolver phase. We don't have access to the entire package index upfront.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 02:13</div>
+            <div class="timeline-body"><p>Resolving is mainly I/O bound. We are also considering writing our own endpoints to serve the metadata more efficiently (e.g., serve all metadata for all versions of a given package in a single request, rather than requiring a separate request for each version).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 02:14</div>
+            <div class="timeline-body"><p>Sorry, &quot;Resolving is mainly I/O bound&quot; is not really true. It's I/O bound in simple cases. I assume it is CPU bound in more complex cases.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

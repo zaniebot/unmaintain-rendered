@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix platform detection on Linux - astral-sh/uv #359</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix platform detection on Linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/359">#359</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-11-07 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-07 16:03</div>
+            <div class="timeline-body"><p>Rejigger Linux platform detection</p>
+<p>This change makes some very small improvements to the Linux platform
+detection logic. In particular, the existing logic did not work on my
+Archlinux machine since /lib64/ld-linux-x86-64.so.2 isn't a symlink. In
+that case, the detection logic should have fallen back to the slower
+<code>ldd --version</code> technique, but <code>read_link</code> fails outright when its
+argument isn't a symbolic link. So we tweak the logic to allow it to
+fail, and if it does, we still try the <code>ldd --version</code> approach instead
+of giving up completely.</p>
+<p>I also made some cosmetic improvements to the regex matching, as well as
+ensuring that the regexes are only compiled exactly once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2023-11-07 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/platform-host/src/linux.rs</code>:17 on 2023-11-07 16:05</div>
+            <div class="timeline-body"><p>Is that preferred? I think we're just using <code>static MY_REGEX: Lazy&lt;Regex&gt; = Lazy::new(|| Regex::new(r&quot;.*&quot;).unwrap());</code> everywhere else</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-07 16:05</div>
+            <div class="timeline-body"><p>Love it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/platform-host/src/linux.rs</code>:37 on 2023-11-07 16:07</div>
+            <div class="timeline-body"><p>That is neat</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/platform-host/src/linux.rs</code>:19 on 2023-11-07 16:09</div>
+            <div class="timeline-body"><p>I think we should rename this to something like <code>glibc_version_from_ldd</code> (this was already wrong previously)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-11-07 16:09</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/platform-host/src/linux.rs</code>:17 on 2023-11-07 16:22</div>
+            <div class="timeline-body"><p>Ah okay. I switched it over to <code>once_cell</code>'s <code>Lazy</code> type. I usually don't like bringing in a dependency just for this since <code>OnceLock</code> is in std, but I now see that <code>once_cell</code> was already a workspace dependency.</p>
+<p>(I expect to add something like the <code>regex!</code> macro I wrote above to the <code>regex</code> crate proper once its MSRV is new enough. I do like it better than writing out <code>Lazy&lt;Regex&gt;</code>. It's terser and less noisy.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-11-07 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2023-11-07 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-07 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-07 16:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

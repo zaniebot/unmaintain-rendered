@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--no-build` - astral-sh/uv #358</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>--no-build</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/358">#358</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-11-07 14:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-11-07 14:42</div>
+            <div class="timeline-body"><p>By default, we will build source distributions for both resolving and installing, running arbitrary code. <code>--no-build</code> adds an option to ban this and only install from wheels, no source distributions or git builds allowed. We also don't fetch these and instead report immediately.</p>
+<p>I've heard from users for whom this is a requirement, i'm implementing it now because it's helpful for testing.</p>
+<p>I'm thinking about adding a shared <code>PuffinSharedArgs</code> struct so we don't have to repeat each option everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-traits/src/lib.rs</code>:66 on 2023-11-07 14:43</div>
+            <div class="timeline-body"><p>This feels slightly misplaced, but the alternative would be moving the client into the build context interface (which would be reasonable, but a large refactoring)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-07 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:200 on 2023-11-07 15:16</div>
+            <div class="timeline-body"><p>Contrary to the summary in the PR, I <em>think</em> we will end up downloading sdists above but then failing here. Should we instead fail eagerly before <code>// Download any missing distributions.</code> by inspecting the remotes to see if any are source distributions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:33 on 2023-11-07 15:16</div>
+            <div class="timeline-body"><p>We could also consider bitflags for these, since we'll have a number of flags here...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-07 15:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:200 on 2023-11-07 15:31</div>
+            <div class="timeline-body"><p>Shouldn't this check do this? https://github.com/astral-sh/puffin/pull/358/files#diff-5ba8a94412efc7027eb91366092458edf752eb50949307c67c4f8b7f52854037R79-R81</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-07 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:33 on 2023-11-07 15:32</div>
+            <div class="timeline-body"><p>I'd just parse the whole args struct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:200 on 2023-11-07 15:34</div>
+            <div class="timeline-body"><p>No, I don't think this uses that struct. That struct is only used in the resolver unfortunately. In the installer, we download the sdists in <code>Downloader</code>, then build them here in the builder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-08 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:200 on 2023-11-08 11:08</div>
+            <div class="timeline-body"><p>Blocked downloads there too. I think downloads is the most reusable place to block for now (the alternative would be to block in the <code>DistributionFinder</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-08 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-08 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-08 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-08 15:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

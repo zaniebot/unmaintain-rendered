@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for URL dependencies - astral-sh/uv #251</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for URL dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/251">#251</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-31 04:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-31 04:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for resolving and installing dependencies via direct URLs, like:</p>
+<pre><code>werkzeug @ https://files.pythonhosted.org/packages/ff/1d/960bb4017c68674a1cb099534840f18d3def3ce44aed12b5ed8b78e0153e/Werkzeug-2.0.0-py3-none-any.whl
+</code></pre>
+<p>These are fairly common (e.g., with <code>torch</code>), but you most often see them as Git dependencies.</p>
+<p>Broadly, structs like <code>RemoteDistribution</code> and friends are now enums that can represent either registry-based dependencies or URL-based dependencies:</p>
+<pre><code class="language-rust">/// A built distribution (wheel) that exists as a remote file (e.g., on `PyPI`).
+#[derive(Debug, Clone)]
+#[allow(clippy::large_enum_variant)]
+pub enum RemoteDistribution {
+    /// The distribution exists in a registry, like `PyPI`.
+    Registry(PackageName, Version, File),
+    /// The distribution exists at an arbitrary URL.
+    Url(PackageName, Url),
+}
+</code></pre>
+<p>In the resolver, we now allow packages to take on an extra, optional <code>Url</code> field:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, Eq, Derivative)]
+#[derivative(PartialEq, Hash)]
+pub enum PubGrubPackage {
+    Root,
+    Package(
+        PackageName,
+        Option&lt;DistInfoName&gt;,
+        #[derivative(PartialEq = &quot;ignore&quot;)]
+        #[derivative(PartialOrd = &quot;ignore&quot;)]
+        #[derivative(Hash = &quot;ignore&quot;)]
+        Option&lt;Url&gt;,
+    ),
+}
+</code></pre>
+<p>However, for the purpose of version satisfaction, we ignore the URL. This allows for the URL dependency to satisfy the transitive request in cases like:</p>
+<pre><code>flask==3.0.0
+werkzeug @ https://files.pythonhosted.org/packages/c3/fc/254c3e9b5feb89ff5b9076a23218dafbc99c96ac5941e900b71206e6313b/werkzeug-3.0.1-py3-none-any.whl
+</code></pre>
+<p>There are a couple limitations in the current approach:</p>
+<ul>
+<li>The caching for remote URLs is done separately in the resolver vs. the installer. I decided not to sweat this too much... We need to figure out caching holistically.</li>
+<li>We don't support any sort of time-based cache for remote URLs -- they just exist forever. This will be a problem for URL dependencies, where we need some way to evict and refresh them. But I've deferred it for now.</li>
+<li>I think I need to redo how this is modeled in the resolver, because right now, we don't detect a variety of invalid cases, e.g., providing two different URLs for a dependency, asking for a URL dependency and a <em>different version</em> of the same dependency in the list of first-party dependencies, etc.</li>
+<li>(We don't yet support VCS dependencies.)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-11-01 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-11-01 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-11-01 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2023-11-01 03:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/tests/snapshots/pip_compile__conflicting_transitive_url_dependency.snap</code>:9 on 2023-11-01 11:41</div>
+            <div class="timeline-body"><p>This should be filtered out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/url_index.rs</code>:33 on 2023-11-01 11:49</div>
+            <div class="timeline-body"><p>I think we need a <code>url -&gt; cache info</code> cache bucket and then index all the wheel by hashes url to avoid the filename collisions we currently have. Most of that can be done later but it think putting wheel in sha names directories (e.g. like cacache) to prevent one overriding the other would be good before merging</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/error.rs</code>:24 on 2023-11-01 11:53</div>
+            <div class="timeline-body"><p>Shouldn't this be wrapped in a PEP 508 error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/source_distribution.rs</code>:98 on 2023-11-01 11:57</div>
+            <div class="timeline-body"><p>Those should use a different cache</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/wheel_finder.rs</code>:79 on 2023-11-01 11:58</div>
+            <div class="timeline-body"><p>What's the function of the non-default hasher here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-11-01 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-01 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/url_index.rs</code>:33 on 2023-11-01 13:04</div>
+            <div class="timeline-body"><p>This actually <em>does</em> use the SHA of the URL as the cache key. It's doing roughly what you've described.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-01 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/error.rs</code>:24 on 2023-11-01 13:04</div>
+            <div class="timeline-body"><p>Yes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-01 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/wheel_finder.rs</code>:79 on 2023-11-01 13:04</div>
+            <div class="timeline-body"><p>It's the default hasher -- you just <em>have</em> to do this if you want to set a capacity on an FxHasher.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/source_distribution.rs</code>:98 on 2023-11-01 13:18</div>
+            <div class="timeline-body"><p>Good call. This should actually be a totally separate struct IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-01 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-01 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-01 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-01 13:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

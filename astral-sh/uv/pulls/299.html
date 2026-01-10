@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write fully-precise Git SHAs to `pip-compile` output - astral-sh/uv #299</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Write fully-precise Git SHAs to <code>pip-compile</code> output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/299">#299</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-02 20:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-02 20:05</div>
+            <div class="timeline-body"><p>This PR adds a mechanism by which we can ensure that we <em>always</em> try to refresh Git dependencies when resolving; further, we now write the fully resolved SHA to the &quot;lockfile&quot;. However, nothing in the code <em>assumes</em> we do this, so the installer will remain agnostic to this behavior.</p>
+<p>The specific approach taken here is minimally invasive. Specifically, when we try to fetch a source distribution, we check if it's a Git dependency; if it is, we fetch, and return the exact SHA, which we then map back to a new URL. In the resolver, we keep track of URL &quot;redirects&quot;, and then we use the redirect (1) for the actual source distribution building, and (2) when writing back out to the lockfile. As such, none of the types outside of the resolver change at all, since we're just mapping <code>RemoteDistribution</code> to <code>RemoteDistribution</code>, but swapping out the internal URLs.</p>
+<p>There are some inefficiencies here since, e.g., we do the Git fetch, send back the &quot;precise&quot; URL, then a moment later, do a Git checkout of that URL (which will be <em>mostly</em> a no-op -- since we have a full SHA, we don't have to fetch anything, but we <em>do</em> check back on disk to see if the SHA is still checked out). A more efficient approach would be to return the path to the checked-out revision when we do this conversion to a &quot;precise&quot; URL, since we'd then only interact with the Git repo exactly once. But this runs the risk that the checked-out SHA changes between the time we make the &quot;precise&quot; URL and the time we build the source distribution.</p>
+<p>Closes #286.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-02 20:18</div>
+            <div class="timeline-body"><p>This looks nice!</p>
+<blockquote>
+<p>But this runs the risk that the checked-out SHA changes between the time we make the &quot;precise&quot; URL and the time we build the source distribution.</p>
+</blockquote>
+<p>Is there a case where this can happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-02 20:20</div>
+            <div class="timeline-body"><p>No, it shouldn't happen currently, and I may refactor to take advantage of that, but the separation ended up being a bit simpler for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-11-02 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-git/src/git.rs</code>:927 on 2023-11-02 20:36</div>
+            <div class="timeline-body"><p>Apparently this fetch doesn't work for short commits...? It may actually be a bug in Cargo? I think you only hit this if the GitHub fast path fails, and that only fails if you get rate limited.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-11-02 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-11-02 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:879 on 2023-11-02 20:37</div>
+            <div class="timeline-body"><p>I hate that this is a wait map, but it needs to be mutably shareable because it's used in the channel stream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-git/src/git.rs</code>:1285 on 2023-11-03 16:15</div>
+            <div class="timeline-body"><p>huh?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-11-03 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-03 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-03 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-03 16:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

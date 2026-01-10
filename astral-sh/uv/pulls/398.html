@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter out incompatible dists - astral-sh/uv #398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter out incompatible dists</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/398">#398</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-11-10 19:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-11-10 19:21</div>
+            <div class="timeline-body"><p>Filter out source dists and wheels whose <code>requires-python</code> from the simple api is incompatible with the current python version.</p>
+<p>This change showed an important problem: When we use a fake python version for resolving, building source distributions breaks down because we can only build with versions we actually have.</p>
+<p>This change became surprisingly big. The tests now require python 3.7 to be installed, but changing that would mean an even bigger change.</p>
+<p>Fixes #388</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/finder.rs</code>:154 on 2023-11-10 19:28</div>
+            <div class="timeline-body"><p>I'm surprised this needs to clone -- is it necessary? Should <code>VersionSpecifiers</code> from implement <code>From&lt;&amp;str&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:559 on 2023-11-10 19:29</div>
+            <div class="timeline-body"><p>I think you can omit the issue link here, folks can always look this up in the Git history.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:20 on 2023-11-10 19:31</div>
+            <div class="timeline-body"><p>I think the type here should be <code>VersionSpecifiers</code>, right? As it is in <code>Metadata21</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:20 on 2023-11-10 19:55</div>
+            <div class="timeline-body"><p>Like I think the <em>stored</em> type should be <code>VersionSpecifiers</code> even if we use <code>LenientVersionSpecifiers</code> for parsing...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:132 on 2023-11-10 20:57</div>
+            <div class="timeline-body"><p>Can you say more about this? Don't we want to mirror the <em>real</em> markers in the resolver?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-10 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:557 on 2023-11-10 22:28</div>
+            <div class="timeline-body"><p>Is this the right place to filter this?</p>
+<p>It seems like it'd be ideal of we could reject these versions with a message (in the style of https://github.com/pubgrub-rs/pubgrub/issues/152) so that the reason the versions are rejected are tracked in the derivation tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:557 on 2023-11-10 22:33</div>
+            <div class="timeline-body"><p>Yeah that would be better for sure. Resolvo has this concept too: dependencies that are available but don’t match the current platform. (I don’t see how we can support this right now though, and we already filter out incompatible wheels…)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 22:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-10 22:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:557 on 2023-11-10 22:34</div>
+            <div class="timeline-body"><p>Okay — the xref here will be enough for me to revisit if I get this functionality added to PubGrub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 23:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:557 on 2023-11-10 23:13</div>
+            <div class="timeline-body"><p>Awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-11 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:557 on 2023-11-11 12:16</div>
+            <div class="timeline-body"><p>Something like this, if that works in the pubgrub/resolvo models?</p>
+<pre><code class="language-rust">type VersionMap = BTreeMap&lt;PubGrubVersion, MaybeDistFile&gt;
+enum MaybeDistFile {
+    /// No compatible wheels and no source distribution (e.g. only an `.exe`)
+    NoCompatiblePackage,
+    /// No compatible wheels and the source distribution isn't compatible 
+    VersionMismatch(VersionSpecifiers),
+    ///
+    Available {
+        /// The highest priority file, usually a wheel
+       picked: DistFile,
+       /// Other installation candidates, such as lower priority compatible wheels and the source distribution if a wheel exists
+        ///
+        /// We track them here to add their hashes to the lockfile (the user may e.g. have a different glibc version)
+        /// TODO(konstin): Check that this is actually how pip-tools generates the hashes list
+       others: Vec&lt;DistFile&gt;
+    }
+}
+</code></pre>
+<p>otoh it might make more sense to keep those sdists in and instead give them a dependency on the python version, so we can properly report a conflict on root requiring python ==3.7, while pandas at the selected version requires python &gt;3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-13 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:557 on 2023-11-13 10:03</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/puffin/issues/406</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-13 10:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:132 on 2023-11-13 10:16</div>
+            <div class="timeline-body"><p>This is so we use the fake python version everywhere including when recursing for builds, it's effectively https://github.com/astral-sh/puffin/issues/407</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-13 11:35</div>
+            <div class="timeline-body"><p>My suggestion would be to merge this because it unblocks a bunch of downstream things where we currently fail on picking an invalid sdist and add the proper #406 solution later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Filter out incompatible source dists" to "Filter out incompatible dists" by @konstin on 2023-11-13 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/tests/snapshots/pip_compile__compile_constraints_markers.snap</code>:21 on 2023-11-13 13:05</div>
+            <div class="timeline-body"><p>pip installs this one, too, so i assume it's correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-13 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-13 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/tests/snapshots/pip_compile__compile_constraints_txt.snap</code>:25 on 2023-11-13 13:05</div>
+            <div class="timeline-body"><p>pip installs this one, too, so i assume it's correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-13 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:132 on 2023-11-13 14:32</div>
+            <div class="timeline-body"><p>Does this mean we'll end up trying to build source distributions that aren't actually supported? E.g., if we're using Python 3.7, but we use <code>--python-version py312</code>, when recursing, would we try to build Python 3.12-only source distributions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-13 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-11-13 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-11-13 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-13 16:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

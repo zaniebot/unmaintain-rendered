@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for `pip-compile --extra &lt;name&gt;` - astral-sh/uv #239</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for <code>pip-compile --extra &lt;name&gt;</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/239">#239</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-30 19:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-30 19:18</div>
+            <div class="timeline-body"><p>Adds support for <code>pip-compile --extra &lt;name&gt; ...</code> which includes optional dependencies in the specified group in the resolution.</p>
+<p>Following precedent in <code>pip-compile</code>, if a given extra is not found, there is no error. ~We could consider warning in this case.~ We should probably add an error but it expands scope and will be considered separately in #241</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-30 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Following precedent in pip-compile, if a given extra is not found, there is no error. We could consider warning in this case.</p>
+</blockquote>
+<p>I'd prefer throwing an error, pip/pip-compile are generally way to lenient, causing many errors to go unnoticed. My main argument is that the set of extras is fixed and known, so specifying a non-existent extra is almost certainly an error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-30 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>My main argument is that the set of extras is fixed and known, so specifying a non-existent extra is almost certainly an error</p>
+</blockquote>
+<p>Happy to do that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-package/src/extra_name.rs</code>:14 on 2023-10-30 19:25</div>
+            <div class="timeline-body"><p>I'd keep the clone explicit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-package/src/extra_name.rs</code>:26 on 2023-10-30 19:25</div>
+            <div class="timeline-body"><p>I'd add some comment about normalization on the type itself too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/requirements.rs</code>:90 on 2023-10-30 19:28</div>
+            <div class="timeline-body"><p>Does https://doc.rust-lang.org/stable/std/option/enum.Option.html#method.cloned work here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/snapshots/pip_compile__compile_pyproject_toml_extra.snap</code>:19 on 2023-10-30 19:48</div>
+            <div class="timeline-body"><p>Unclear why my <code>--extra foo</code> flag is excluded here; it is present in a <code>cargo run -p puffin-cli -- pip-compile</code> run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/snapshots/pip_compile__compile_pyproject_toml_extra.snap</code>:19 on 2023-10-30 19:48</div>
+            <div class="timeline-body"><p>Perhaps the cache dir filter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-10-30 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/requirements.rs</code>:87 on 2023-10-30 19:54</div>
+            <div class="timeline-body"><p>We do not normalize the keys of the <code>optional_dependencies</code> so this could have confusing failure cases where the user is not using the normalized name. We'll want to fix that...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/requirements.rs</code>:87 on 2023-10-30 19:56</div>
+            <div class="timeline-body"><p>I may separate this into a different issue though. I'd love suggestions on how to normalize all the keys cleanly. May make sense as a part of #241 where we will collect all the keys separately anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:42 on 2023-10-30 19:56</div>
+            <div class="timeline-body"><p>I think this should go after <code>constraints</code>, since those constitute the input requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/main.rs</code>:101 on 2023-10-30 19:56</div>
+            <div class="timeline-body"><p>Nit: add a docstring here? This shows up in the CLI help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/requirements.rs</code>:80 on 2023-10-30 19:58</div>
+            <div class="timeline-body"><p>I think this can be removed (without any other code changes).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/requirements.rs</code>:90 on 2023-10-30 19:58</div>
+            <div class="timeline-body"><p>Nit: <code>.cloned()</code> would be more idiomatic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/requirements.rs</code>:90 on 2023-10-30 19:58</div>
+            <div class="timeline-body"><p>I think I agree with the suggestion that we should hard-error here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/requirements.rs</code>:80 on 2023-10-30 20:01</div>
+            <div class="timeline-body"><p>Thanks! Leftover from a previous impl</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/requirements.rs</code>:90 on 2023-10-30 20:02</div>
+            <div class="timeline-body"><p>Gosh I wish clippy had suggested that instead haha</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/requirements.rs</code>:90 on 2023-10-30 20:02</div>
+            <div class="timeline-body"><p>See #241 — this is non-trivial because extras may be missing from one source but present in another.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/requirements.rs</code>:87 on 2023-10-30 21:44</div>
+            <div class="timeline-body"><p>Hmm yeah, we probably need to iterate over all the keys then compare the normalized representations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 22:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/requirements.rs</code>:87 on 2023-10-30 22:22</div>
+            <div class="timeline-body"><p>Opting for follow-up in #245</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-10-31 11:38</div>
+            <div class="timeline-body"><p>(somehow it didn't submit my review the first time?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-package/src/extra_name.rs</code>:14 on 2023-10-31 14:20</div>
+            <div class="timeline-body"><p>I agree. You should be able to use <code>.clone()</code> for this, which makes it explicit when users need to copy memory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-package/src/extra_name.rs</code>:14 on 2023-10-31 15:38</div>
+            <div class="timeline-body"><p>This was copied from <code>PackageName</code> — I didn't write it :) I'd prefer to follow with a second pull request that resolves both uses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-package/src/extra_name.rs</code>:26 on 2023-10-31 15:39</div>
+            <div class="timeline-body"><p>This also is missing from <code>PackageName</code>, I can write about normalization of both in a follow-up adding documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-package/src/extra_name.rs</code>:14 on 2023-10-31 15:43</div>
+            <div class="timeline-body"><p>That means I wrote it 😎</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-10-31 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-31 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-31 16:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

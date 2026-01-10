@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose most-compatible wheel in resolver and installer - astral-sh/uv #422</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Choose most-compatible wheel in resolver and installer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/422">#422</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-14 04:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-14 04:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements logic to sort wheels by priority, where priority is defined as preferring more &quot;specific&quot; wheels over less &quot;specific&quot; wheels. For example, in the case of Black, my machine now selects <code>black-23.11.0-cp311-cp311-macosx_11_0_arm64.whl</code>, whereas sorting by lowest priority instead gives me <code>black-23.11.0-py3-none-any.whl</code>.</p>
+<p>As part of this change, I've also modified the resolver to fallback to using incompatible wheels when determining package metadata, if no compatible wheels are available.</p>
+<p>The <code>VersionMap</code> was also moved out of <code>resolver.rs</code> and into its own file with a wrapper type, for clarity.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/380.
+Closes https://github.com/astral-sh/puffin/issues/421.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-11-14 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2023-11-14 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-11-14 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-14 04:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/platform-tags/src/lib.rs</code>:141 on 2023-11-14 04:13</div>
+            <div class="timeline-body"><p>This method could just as easily be <code>compatibility(...).is_some()</code>, except that it short-circuits when it finds the first compatible match. I figured it was fine to keep as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-14 04:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/version_map.rs</code>:52 on 2023-11-14 04:14</div>
+            <div class="timeline-body"><p>In this method, everything here and up is a straight move from <code>resolver.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/finder.rs</code>:160 on 2023-11-14 11:27</div>
+            <div class="timeline-body"><p>I'm note sure if this assumption (files are in version order) holds up outside pypi, or even inside pypi, PEP 503 doesn't require any order. This isn't specific to this PR and doesn't need to be fixed now, but at some point or people may get the feeling that puffin is an unreliable resolver on their private registry because it seems to ignore versions at random</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-14 11:46</div>
+            <div class="timeline-body"><p>Just so we're on the same page: This encodes the assumption that the wheels of a version, e.g. <code>black-23.11.0-cp311-cp311-macosx_11_0_arm64.whl</code> and <code>black-23.11.0-py3-none-any.whl</code> have the same metadata. But we also wouldn't look into an incompatible over building the sdist when resolving, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-11-14 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/platform-tags/src/lib.rs</code>:141 on 2023-11-14 13:14</div>
+            <div class="timeline-body"><p>Yeah the short-circuiting is useful. And small/simple enough that trying to abstract it probably isn't worth it. I agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/platform-tags/src/lib.rs</code>:19 on 2023-11-14 13:19</div>
+            <div class="timeline-body"><p>I might add to the docs here that the priority given to each tag is based on its position in the <code>Vec</code> given. It looks like tags appearing earlier get higher priority?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/platform-tags/src/lib.rs</code>:174 on 2023-11-14 13:20</div>
+            <div class="timeline-body"><p>It might just be my brain, but it wasn't clear to me whether a lower or higher value was higher priority. I might add a quick note mentioning which it is. (From looking at the code elsewhere, it looks like a higher value implies a higher priority.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2023-11-14 13:24</div>
+            <div class="timeline-body"><p>Nice! I like it.</p>
+<p>One thing that wasn't clear from me in this PR is how tag priority is actually determined. I see that it's assigned in <code>Tags::new</code> based on the order of the input, but how is that order determined? It might be worth calling that out somewhere in the comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-14 14:08</div>
+            <div class="timeline-body"><blockquote>
+<p>But we also wouldn't look into an incompatible over building the sdist when resolving, right?</p>
+</blockquote>
+<p>@konstin -- We <em>will</em> prefer an incompatible wheel over building a compatible sdist when resolving. Do you think that's incorrect?</p>
+<p>(We will prefer the compatible sdist when <em>installing</em>. We will never install an incompatible wheel.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-14 14:11</div>
+            <div class="timeline-body"><blockquote>
+<p>(We will prefer the compatible sdist when installing. We will never install an incompatible wheel.)</p>
+</blockquote>
+<p>ah thanks, that's the installer part of the resolver, makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-14 14:14</div>
+            <div class="timeline-body"><p>@konstin - As an edge case... if there's <em>no</em> source distribution, should we avoid falling back to an incompatible wheel in the resolver? Since we knowingly won't be able to install that package later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-14 14:26</div>
+            <div class="timeline-body"><p>I tend towards yes, i think a missing version is less confusing than the installation later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-15 18:18</div>
+            <div class="timeline-body"><p>@konstin - Will follow-up on that in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-15 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-15 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-15 18:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add error when user requests extras that do not exist - astral-sh/uv #254</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add error when user requests extras that do not exist</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/254">#254</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-31 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-31 15:47</div>
+            <div class="timeline-body"><p>Extends #253
+Closes #241</p>
+<p>Adds <code>extras</code> to <code>RequirementsSpecification</code> to track extras used to construct the requirements so we can throw an error when not all of the requested extras are used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2023-10-31 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:51 on 2023-10-31 15:53</div>
+            <div class="timeline-body"><p>Can we just have this return an error rather than returning the used extras?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:51 on 2023-10-31 15:54</div>
+            <div class="timeline-body"><p>No, if you provide multiple pyproject files the extra may be present in one but not the other and that is not an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:51 on 2023-10-31 15:56</div>
+            <div class="timeline-body"><p>Why can that not be handled within <code>RequirementsSpecification::try_from_sources</code>? That method already takes all the sources and all the extras.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:51 on 2023-10-31 16:01</div>
+            <div class="timeline-body"><p>Then we'd need to read and parse all of the sources twice? I'm confused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:51 on 2023-10-31 16:02</div>
+            <div class="timeline-body"><p>To be clear: I'd prefer not to add <code>extras</code> to <code>RequirementsSpecification</code> but you'll need to be clearer about the proposed alternative because I considered a few other options and I don't see them working efficiently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:51 on 2023-10-31 16:26</div>
+            <div class="timeline-body"><p>To rephrase: why can't the code you have below just go at the end of <code>try_from_sources</code>? That method has access to all the same information. (It's fine if <code>extras</code> goes on <code>RequirementsSpecification</code>, but why does this validation need to live here?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:51 on 2023-10-31 16:34</div>
+            <div class="timeline-body"><p>Oh.. that could move there. Although I'd find it weird that <code>try_from_sources</code> errors on missing extras but <code>try_from_source</code> does not. I think that's why I pushed validation out of <code>RequirementsSpecification</code> itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-10-31 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:66 on 2023-10-31 17:18</div>
+            <div class="timeline-body"><p>I think I'd suggest:</p>
+<pre><code class="language-rust">let mut unused_extras = extras
+    .iter()
+    .filter(|extra| !used.contains(extra))
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+if !unused_extras.is_empty() {
+    unused_extras.sort_unstable();
+    unused_extras.dedup();
+    let s = if unused_extras.len() == 1 { &quot;&quot; } else { &quot;s&quot; };
+    return Err(anyhow!(
+        &quot;Requested extra{s} not found: {}&quot;,
+        unused_extras.join(&quot;, &quot;)
+    ));
+}
+</code></pre>
+<p>I feel like cloning and hashing all the extras is more work, since we have to iterate over and hash all the extras once, then do another pass to compute the difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:60 on 2023-10-31 17:18</div>
+            <div class="timeline-body"><p>I think we're tending towards capitalizing these in the repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:56 on 2023-10-31 17:18</div>
+            <div class="timeline-body"><p>I tend to use <code>.collect::&lt;Vec&lt;_&gt;&gt;</code> to reduce the uses of <code>itertools</code> which we may want to remove at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:51 on 2023-10-31 17:19</div>
+            <div class="timeline-body"><p>Hmm, ok, fair enough. I could see either being correct but agree with continuing with what you have here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:61 on 2023-10-31 17:20</div>
+            <div class="timeline-body"><p>Should we wrap each extra in backticks? (I'm not sure.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-31 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-31 17:20</div>
+            <div class="timeline-body"><p>Some feedback on the difference check, but otherwise LGTM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:61 on 2023-10-31 17:39</div>
+            <div class="timeline-body"><p>Only if the names can contain spaces and commas, to prevent ambiguity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:61 on 2023-10-31 17:43</div>
+            <div class="timeline-body"><p>which they should not, but can now.. I'll handle that separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-31 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:61 on 2023-10-31 19:14</div>
+            <div class="timeline-body"><p>#257</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-10-31 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-31 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-31 19:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

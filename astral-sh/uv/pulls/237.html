@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fallback to copy if hardlinking failed - astral-sh/uv #237</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fallback to copy if hardlinking failed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/237">#237</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-10-30 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-10-30 19:08</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/installer.rs</code>:52 on 2023-10-30 19:09</div>
+            <div class="timeline-body"><p>Nit: format as <code>Failed to install: {} @ {}</code> for consistency with other error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-10-30 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-10-30 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-30 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:10</div>
+            <div class="timeline-body"><p>Do you know why it's failing? What's the root cause?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:389 on 2023-10-30 19:11</div>
+            <div class="timeline-body"><p>This seems like it could be problematic, since we can end up with a mixed link -- where some files are symlinked and others are copied. Should we do this instead a layer higher? Try to hardlink; if it fails, remove, then do a full copy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-30 19:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you know why it's failing? What's the root cause?</p>
+</blockquote>
+<p>I'm using a cache on the host system and building inside a docker container, which are technically two different file systems, and you can't hard link between two different file systems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-30 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:389 on 2023-10-30 19:21</div>
+            <div class="timeline-body"><p>What about we track whether it's the first file, if so we switch strategies, otherwise we propagate the error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/linker.rs</code>:389 on 2023-10-30 19:22</div>
+            <div class="timeline-body"><p>Sure. If it’s not the first file, then we should probably hard error rather than falling back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 19:22</div>
+            <div class="timeline-body"><p>What does pnpm do there? Is there any way for us to detect this before trying to hardlink?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-01 12:21</div>
+            <div class="timeline-body"><p>pnpm always hardlinks or fails: https://github.com/pnpm/pnpm/blob/fc858f6a51099eabe92abd9a2b22f292726d145d/fs/hard-link-dir/src/index.ts#L55-L81</p>
+<blockquote>
+<p>Is there any way for us to detect this before trying to hardlink?</p>
+</blockquote>
+<p>I don't think so, i'd be surprised if os/fs have apis to check this. Only relevant think i found quickly googling suggests the same: https://stackoverflow.com/a/5011016/3549270</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>

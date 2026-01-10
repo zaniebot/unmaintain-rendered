@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store unzipped wheels in a cache - astral-sh/uv #49</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Store unzipped wheels in a cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/49">#49</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-08 03:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-08 03:53</div>
+            <div class="timeline-body"><p>This PR massively speeds up the case in which you need to install wheels that already exist in the global cache.</p>
+<p>The new strategy is as follows:</p>
+<ul>
+<li>Download the wheel into the content-addressed cache.</li>
+<li>Unzip the wheel into the cache, but ignore content-addressing. It turns out that writing to <code>cacache</code> for every file in the zip added a ton of overhead, and I don't see any actual advantages to doing so. Instead, we just unzip the contents into a directory at, e.g., <code>~/.cache/puffin/django-4.1.5</code>.</li>
+<li>(The unzip itself is now parallelized with Rayon.)</li>
+<li>When installing the wheel, we now support unzipping from a directory instead of a zip archive. This required duplicating and tweaking a few functions.</li>
+<li>When installing the wheel, we now use reflinks (or copy-on-write links). These have a few fantastic properties: (1) they're extremely cheap to create (on macOS, they are allegedly faster than hard links); (2) they minimize disk space, since we avoid copying files entirely in the vast majority of cases; and (3) if the user then edits a file locally, the cache doesn't get polluted. Orogene, Bun, and soon pnpm all use reflinks.</li>
+</ul>
+<p>Puffin is now ~15x faster than <code>pip</code> for the common case of installing cached data into a fresh environment.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/21.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/39.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-08 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-08 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-08 04:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:50:52 UTC
+    </footer>
+</body>
+</html>
