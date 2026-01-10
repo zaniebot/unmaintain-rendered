@@ -1,0 +1,501 @@
+```yaml
+number: 19828
+title: dummy PR to re-run CodSpeed
+type: pull_request
+state: closed
+author: oconnor663
+labels:
+  - do-not-merge
+  - ty
+assignees: []
+draft: true
+base: main
+head: jack/scratch
+created_at: 2025-08-08T13:48:38Z
+updated_at: 2025-08-18T07:32:57Z
+url: https://github.com/astral-sh/ruff/pull/19828
+synced_at: 2026-01-10T17:52:17Z
+```
+
+# dummy PR to re-run CodSpeed
+
+---
+
+_Pull request opened by @oconnor663 on 2025-08-08 13:48_
+
+This is https://github.com/astral-sh/ruff/pull/19820 with the collection of unbound free variables removed. I want to see if that affects performance metrics.
+
+---
+
+_Comment by @github-actions[bot] on 2025-08-08 13:50_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+No changes detected when running ty on typing conformance tests ✅
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-08-08 13:52_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+operator (https://github.com/canonical/operator)
+- ops/lib/__init__.py:86:16: warning[possibly-unbound-attribute] Attribute `get` on type `Unknown | None` is possibly unbound
++ ops/lib/__init__.py:86:16: warning[possibly-unbound-attribute] Attribute `get` on type `Unknown | None | dict[Unknown, Unknown]` is possibly unbound
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/aglib/arch.py:231:21: warning[possibly-unbound-attribute] Attribute `cpsr` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/arch.py:231:21: warning[possibly-unbound-attribute] Attribute `cpsr` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/arch.py:232:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pwndbg/aglib/disasm/disassembly.py:69:8: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:69:8: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:79:5: error[no-matching-overload] No overload of bound method `pop` matches arguments
+- pwndbg/aglib/disasm/disassembly.py:79:36: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:79:36: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/disasm/disassembly.py:174:19: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:174:19: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:176:37: error[invalid-argument-type] Argument to function `peek` is incorrect: Expected `int`, found `(Unknown & ~None) | Unknown | int | None`
+- pwndbg/aglib/disasm/disassembly.py:199:19: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:199:19: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:201:37: error[invalid-argument-type] Argument to function `peek` is incorrect: Expected `int`, found `(Unknown & ~None) | Unknown | int | None`
+- pwndbg/aglib/disasm/disassembly.py:276:19: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:276:19: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/disasm/disassembly.py:283:19: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:283:19: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/disasm/disassembly.py:296:9: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:296:9: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/disasm/disassembly.py:316:10: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/disasm/disassembly.py:316:10: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/elf.py:358:65: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pwndbg/aglib/kernel/paging.py:326:34: warning[possibly-unbound-attribute] Attribute `stack` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/kernel/paging.py:326:34: warning[possibly-unbound-attribute] Attribute `stack` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/kernel/paging.py:346:30: warning[possibly-unbound-attribute] Attribute `TCR_EL1` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/kernel/paging.py:346:30: warning[possibly-unbound-attribute] Attribute `TCR_EL1` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/kernel/paging.py:392:34: warning[possibly-unbound-attribute] Attribute `vbar` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/kernel/paging.py:392:34: warning[possibly-unbound-attribute] Attribute `vbar` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/kernel/paging.py:578:34: warning[possibly-unbound-attribute] Attribute `stack` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/kernel/paging.py:578:34: warning[possibly-unbound-attribute] Attribute `stack` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/kernel/paging.py:603:25: warning[possibly-unbound-attribute] Attribute `TTBR1_EL1` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/kernel/paging.py:603:25: warning[possibly-unbound-attribute] Attribute `TTBR1_EL1` on type `Unknown | None | module` is possibly unbound
+- pwndbg/aglib/kernel/paging.py:605:25: warning[possibly-unbound-attribute] Attribute `TTBR0_EL1` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/kernel/paging.py:605:25: warning[possibly-unbound-attribute] Attribute `TTBR0_EL1` on type `Unknown | None | module` is possibly unbound
++ pwndbg/aglib/vmmap_custom.py:137:54: error[invalid-argument-type] Argument to function `page_align` is incorrect: Expected `int`, found `Unknown | int | None`
+- pwndbg/aglib/vmmap_custom.py:137:54: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/vmmap_custom.py:137:54: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
++ pwndbg/aglib/vmmap_custom.py:141:55: error[invalid-argument-type] Argument to function `page_align` is incorrect: Expected `int`, found `Unknown | int | None`
+- pwndbg/aglib/vmmap_custom.py:141:55: warning[possibly-unbound-attribute] Attribute `sp` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/vmmap_custom.py:141:55: warning[possibly-unbound-attribute] Attribute `sp` on type `Unknown | None | module` is possibly unbound
+- pwndbg/commands/dev.py:70:13: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/commands/dev.py:70:13: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
+- pwndbg/commands/hijack_fd.py:127:24: warning[possibly-unbound-attribute] Attribute `sp` on type `Unknown | None` is possibly unbound
++ pwndbg/commands/hijack_fd.py:127:24: warning[possibly-unbound-attribute] Attribute `sp` on type `Unknown | None | module` is possibly unbound
++ pwndbg/commands/hijack_fd.py:128:19: error[unsupported-operator] Operator `-` is unsupported between objects of type `Unknown | int | None` and `int`
++ pwndbg/commands/hijack_fd.py:133:31: error[unsupported-operator] Operator `-` is unsupported between objects of type `Unknown | int | None` and `Unknown | int | None`
+- pwndbg/commands/hijack_fd.py:133:50: warning[possibly-unbound-attribute] Attribute `sp` on type `Unknown | None` is possibly unbound
++ pwndbg/commands/hijack_fd.py:133:50: warning[possibly-unbound-attribute] Attribute `sp` on type `Unknown | None | module` is possibly unbound
+- pwndbg/commands/rop.py:27:77: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None` is possibly unbound
++ pwndbg/commands/rop.py:27:77: warning[possibly-unbound-attribute] Attribute `pc` on type `Unknown | None | module` is possibly unbound
+- pwndbg/commands/saved_register_frames.py:40:19: warning[possibly-unbound-attribute] Attribute `flags` on type `Unknown | None` is possibly unbound
++ pwndbg/commands/saved_register_frames.py:40:19: warning[possibly-unbound-attribute] Attribute `flags` on type `Unknown | None | module` is possibly unbound
+- pwndbg/commands/saved_register_frames.py:41:25: warning[possibly-unbound-attribute] Attribute `flags` on type `Unknown | None` is possibly unbound
++ pwndbg/commands/saved_register_frames.py:41:25: warning[possibly-unbound-attribute] Attribute `flags` on type `Unknown | None | module` is possibly unbound
+- pwndbg/dbg/gdb/__init__.py:156:12: error[unsupported-operator] Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `Unknown | None`
++ pwndbg/dbg/gdb/__init__.py:156:12: error[unsupported-operator] Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `Unknown | None | module`
+- pwndbg/dbg/gdb/__init__.py:746:56: warning[possibly-unbound-attribute] Attribute `xpsr` on type `Unknown | None` is possibly unbound
++ pwndbg/dbg/gdb/__init__.py:746:56: warning[possibly-unbound-attribute] Attribute `xpsr` on type `Unknown | None | module` is possibly unbound
+- pwndbg/dbg/lldb/__init__.py:146:12: error[unsupported-operator] Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `Unknown | None`
++ pwndbg/dbg/lldb/__init__.py:146:12: error[unsupported-operator] Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `Unknown | None | module`
+- pwndbg/gdblib/functions.py:295:12: warning[possibly-unbound-attribute] Attribute `fsbase` on type `Unknown | None` is possibly unbound
++ pwndbg/gdblib/functions.py:295:12: warning[possibly-unbound-attribute] Attribute `fsbase` on type `Unknown | None | module` is possibly unbound
+- pwndbg/gdblib/functions.py:327:12: warning[possibly-unbound-attribute] Attribute `gsbase` on type `Unknown | None` is possibly unbound
++ pwndbg/gdblib/functions.py:327:12: warning[possibly-unbound-attribute] Attribute `gsbase` on type `Unknown | None | module` is possibly unbound
+- pwndbg/gdblib/ptmalloc2_tracking.py:702:9: warning[possibly-unbound-attribute] Attribute `delete` on type `Unknown | None` is possibly unbound
++ pwndbg/gdblib/ptmalloc2_tracking.py:702:9: warning[possibly-unbound-attribute] Attribute `delete` on type `Unknown | None | MallocEnterBreakpoint` is possibly unbound
+- pwndbg/gdblib/ptmalloc2_tracking.py:703:9: warning[possibly-unbound-attribute] Attribute `delete` on type `Unknown | None` is possibly unbound
++ pwndbg/gdblib/ptmalloc2_tracking.py:703:9: warning[possibly-unbound-attribute] Attribute `delete` on type `Unknown | None | FreeEnterBreakpoint` is possibly unbound
+- Found 2341 diagnostics
++ Found 2346 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- asynq/debug.py:324:5: error[invalid-assignment] Object of type `Unknown | None` is not assignable to attribute `excepthook` of type `(type[BaseException], BaseException, TracebackType | None, /) -> Any`
++ asynq/debug.py:324:5: error[invalid-assignment] Object of type `Unknown | None | ((type[BaseException], BaseException, TracebackType | None, /) -> Any)` is not assignable to attribute `excepthook` of type `(type[BaseException], BaseException, TracebackType | None, /) -> Any`
+- asynq/tests/test_contexts.py:111:19: error[unresolved-reference] Name `expected_change_amount_base` used when not defined
+- asynq/tests/test_contexts.py:113:23: error[unresolved-reference] Name `expected_change_amount_base` used when not defined
+- asynq/tests/test_contexts.py:115:23: error[unresolved-reference] Name `expected_change_amount_base` used when not defined
+- asynq/tests/test_contexts.py:118:27: error[unresolved-reference] Name `expected_change_amount_base` used when not defined
+- asynq/tests/test_contexts.py:119:23: error[unresolved-reference] Name `expected_change_amount_base` used when not defined
+- asynq/tests/test_contexts.py:120:19: error[unresolved-reference] Name `expected_change_amount_base` used when not defined
+- Found 185 diagnostics
++ Found 179 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- tools/mock-meta.py:352:26: warning[possibly-unbound-attribute] Attribute `get_data` on type `Unknown | None` is possibly unbound
++ tools/mock-meta.py:352:26: warning[possibly-unbound-attribute] Attribute `get_data` on type `Unknown | None | UserDataHandler` is possibly unbound
+- tools/mock-meta.py:353:26: warning[possibly-unbound-attribute] Attribute `get_data` on type `Unknown | None` is possibly unbound
++ tools/mock-meta.py:353:26: warning[possibly-unbound-attribute] Attribute `get_data` on type `Unknown | None | MetaDataHandler` is possibly unbound
+
+pywin32 (https://github.com/mhammond/pywin32)
+- Pythonwin/pywin/Demos/ocx/ocxtest.py:144:21: error[unresolved-reference] Name `videoControlModule` used when not defined
+- Pythonwin/pywin/Demos/ocx/ocxtest.py:159:36: error[unresolved-reference] Name `videoControlFileName` used when not defined
+- Pythonwin/pywin/scintilla/view.py:281:9: warning[possibly-unbound-attribute] Attribute `configure` on type `Unknown | None` is possibly unbound
++ Pythonwin/pywin/scintilla/view.py:281:9: warning[possibly-unbound-attribute] Attribute `configure` on type `Unknown | None | ConfigManager` is possibly unbound
+- Pythonwin/pywin/scintilla/view.py:282:12: warning[possibly-unbound-attribute] Attribute `last_error` on type `Unknown | None` is possibly unbound
++ Pythonwin/pywin/scintilla/view.py:282:12: warning[possibly-unbound-attribute] Attribute `last_error` on type `Unknown | None | ConfigManager` is possibly unbound
+- Pythonwin/pywin/scintilla/view.py:283:32: warning[possibly-unbound-attribute] Attribute `last_error` on type `Unknown | None` is possibly unbound
++ Pythonwin/pywin/scintilla/view.py:283:32: warning[possibly-unbound-attribute] Attribute `last_error` on type `Unknown | None | ConfigManager` is possibly unbound
+- Pythonwin/pywin/scintilla/view.py:342:23: warning[possibly-unbound-attribute] Attribute `get_key_binding` on type `Unknown | None` is possibly unbound
++ Pythonwin/pywin/scintilla/view.py:342:23: warning[possibly-unbound-attribute] Attribute `get_key_binding` on type `Unknown | None | ConfigManager` is possibly unbound
+- Pythonwin/pywin/tools/browser.py:492:5: warning[possibly-unbound-attribute] Attribute `OpenObject` on type `Unknown | None` is possibly unbound
++ Pythonwin/pywin/tools/browser.py:492:5: warning[possibly-unbound-attribute] Attribute `OpenObject` on type `Unknown | None | BrowserTemplate` is possibly unbound
+- com/win32comext/adsi/demos/search.py:38:8: warning[possibly-unbound-attribute] Attribute `verbose` on type `Unknown | None` is possibly unbound
++ com/win32comext/adsi/demos/search.py:38:8: warning[possibly-unbound-attribute] Attribute `verbose` on type `Unknown | None | Values` is possibly unbound
+- com/win32comext/adsi/demos/search.py:44:16: warning[possibly-unbound-attribute] Attribute `user` on type `Unknown | None` is possibly unbound
++ com/win32comext/adsi/demos/search.py:44:16: warning[possibly-unbound-attribute] Attribute `user` on type `Unknown | None | Values` is possibly unbound
+- com/win32comext/adsi/demos/search.py:44:30: warning[possibly-unbound-attribute] Attribute `password` on type `Unknown | None` is possibly unbound
++ com/win32comext/adsi/demos/search.py:44:30: warning[possibly-unbound-attribute] Attribute `password` on type `Unknown | None | Values` is possibly unbound
+- com/win32comext/adsi/demos/search.py:76:8: warning[possibly-unbound-attribute] Attribute `attributes` on type `Unknown | None` is possibly unbound
++ com/win32comext/adsi/demos/search.py:76:8: warning[possibly-unbound-attribute] Attribute `attributes` on type `Unknown | None | Values` is possibly unbound
+- com/win32comext/adsi/demos/search.py:77:22: warning[possibly-unbound-attribute] Attribute `attributes` on type `Unknown | None` is possibly unbound
++ com/win32comext/adsi/demos/search.py:77:22: warning[possibly-unbound-attribute] Attribute `attributes` on type `Unknown | None | Values` is possibly unbound
+- com/win32comext/adsi/demos/search.py:81:26: warning[possibly-unbound-attribute] Attribute `filter` on type `Unknown | None` is possibly unbound
++ com/win32comext/adsi/demos/search.py:81:26: warning[possibly-unbound-attribute] Attribute `filter` on type `Unknown | None | Values` is possibly unbound
+- com/win32comext/axdebug/adb.py:63:9: warning[possibly-unbound-attribute] Attribute `_OnSetBreakPoint` on type `Unknown | None` is possibly unbound
++ com/win32comext/axdebug/adb.py:63:9: warning[possibly-unbound-attribute] Attribute `_OnSetBreakPoint` on type `Unknown | None | Adb` is possibly unbound
+- win32/Demos/win32netdemo.py:25:29: error[invalid-argument-type] Argument to function `NetUserDel` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:25:29: error[invalid-argument-type] Argument to function `NetUserDel` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:36:25: error[invalid-argument-type] Argument to function `NetUserAdd` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:36:25: error[invalid-argument-type] Argument to function `NetUserAdd` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:39:44: error[invalid-argument-type] Argument to function `NetUserChangePassword` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:39:44: error[invalid-argument-type] Argument to function `NetUserChangePassword` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:43:40: error[invalid-argument-type] Argument to function `NetUserChangePassword` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:43:40: error[invalid-argument-type] Argument to function `NetUserChangePassword` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:45:29: error[invalid-argument-type] Argument to function `NetUserDel` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:45:29: error[invalid-argument-type] Argument to function `NetUserDel` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:55:13: error[invalid-argument-type] Argument to function `NetUserEnum` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:55:13: error[invalid-argument-type] Argument to function `NetUserEnum` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:74:53: error[invalid-argument-type] Argument to function `NetGroupEnum` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:74:53: error[invalid-argument-type] Argument to function `NetGroupEnum` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:81:21: error[invalid-argument-type] Argument to function `NetGroupGetUsers` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:81:21: error[invalid-argument-type] Argument to function `NetGroupGetUsers` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:105:21: error[invalid-argument-type] Argument to function `NetLocalGroupGetMembers` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:105:21: error[invalid-argument-type] Argument to function `NetLocalGroupGetMembers` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:127:13: error[invalid-argument-type] Argument to function `NetServerEnum` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:127:13: error[invalid-argument-type] Argument to function `NetServerEnum` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:135:21: error[invalid-argument-type] Argument to function `NetShareEnum` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:135:21: error[invalid-argument-type] Argument to function `NetShareEnum` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:167:42: error[invalid-argument-type] Argument to function `NetLocalGroupAddMembers` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:167:42: error[invalid-argument-type] Argument to function `NetLocalGroupAddMembers` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:168:58: error[invalid-argument-type] Argument to function `NetLocalGroupGetMembers` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:168:58: error[invalid-argument-type] Argument to function `NetLocalGroupGetMembers` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:174:13: error[invalid-argument-type] Argument to function `NetLocalGroupDelMembers` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:174:13: error[invalid-argument-type] Argument to function `NetLocalGroupDelMembers` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:186:36: error[invalid-argument-type] Argument to function `NetUserGetInfo` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:186:36: error[invalid-argument-type] Argument to function `NetUserGetInfo` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:195:39: error[invalid-argument-type] Argument to function `NetUserGetInfo` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:195:39: error[invalid-argument-type] Argument to function `NetUserGetInfo` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:199:33: error[invalid-argument-type] Argument to function `NetUserSetInfo` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:199:33: error[invalid-argument-type] Argument to function `NetUserSetInfo` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:200:39: error[invalid-argument-type] Argument to function `NetUserGetInfo` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:200:39: error[invalid-argument-type] Argument to function `NetUserGetInfo` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Demos/win32netdemo.py:205:33: error[invalid-argument-type] Argument to function `NetUserSetInfo` is incorrect: Expected `str`, found `Unknown | None`
++ win32/Demos/win32netdemo.py:205:33: error[invalid-argument-type] Argument to function `NetUserSetInfo` is incorrect: Expected `str`, found `Unknown | None | str`
+- win32/Lib/win32serviceutil.py:585:16: error[unresolved-reference] Name `g_debugService` used when not defined
+- win32/Lib/win32serviceutil.py:587:9: error[unresolved-reference] Name `g_debugService` used when not defined
+- Found 2006 diagnostics
++ Found 2002 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py:333:17: error[unresolved-reference] Name `asked` used when not defined
+- lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py:362:17: error[unresolved-reference] Name `mgfcalls` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:87:42: error[unresolved-reference] Name `Random` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:94:25: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:100:28: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:106:25: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:117:28: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:132:31: error[unresolved-reference] Name `size` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:138:13: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:139:18: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:151:31: error[unresolved-reference] Name `size` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:164:13: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:165:18: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:166:13: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:167:13: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:172:18: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:173:13: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:174:13: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:179:25: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:188:21: error[unresolved-reference] Name `DSA` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:191:21: error[unresolved-reference] Name `DSA` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:224:39: error[unresolved-reference] Name `DSA` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_DSA.py:234:39: error[unresolved-reference] Name `DSA` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:115:42: error[unresolved-reference] Name `Random` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:123:42: error[unresolved-reference] Name `Random` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:269:17: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:271:17: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:283:22: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:296:43: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:303:43: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:304:26: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:307:21: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/PublicKey/test_RSA.py:308:22: error[unresolved-reference] Name `bytes_to_long` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:38:13: error[unresolved-reference] Name `Counter` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:39:13: error[unresolved-reference] Name `Counter` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:43:13: error[unresolved-reference] Name `Counter` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:46:13: error[unresolved-reference] Name `Counter` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:47:39: error[unresolved-reference] Name `Counter` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:50:13: error[unresolved-reference] Name `Counter` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:53:13: error[unresolved-reference] Name `Counter` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:56:13: error[unresolved-reference] Name `Counter` used when not defined
+- lib/Crypto/SelfTest/Util/test_Counter.py:57:39: error[unresolved-reference] Name `Counter` used when not defined
+- Found 1490 diagnostics
++ Found 1448 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/utils.py:1479:12: warning[possibly-unbound-attribute] Attribute `log` on type `Unknown | None` is possibly unbound
++ paasta_tools/utils.py:1479:12: warning[possibly-unbound-attribute] Attribute `log` on type `Unknown | None | LogWriter` is possibly unbound
+- paasta_tools/utils.py:1502:12: warning[possibly-unbound-attribute] Attribute `log_audit` on type `Unknown | None` is possibly unbound
++ paasta_tools/utils.py:1502:12: warning[possibly-unbound-attribute] Attribute `log_audit` on type `Unknown | None | LogWriter` is possibly unbound
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- test/helper_tools/memoryleak.py:42:44: warning[possibly-unresolved-reference] Name `ssl` used when possibly not defined
+- test/helper_tools/memoryleak.py:43:13: warning[possibly-unresolved-reference] Name `ssl` used when possibly not defined
+- Found 1822 diagnostics
++ Found 1820 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
++ openlibrary/data/db.py:125:18: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown & ~AlwaysTruthy & ~AlwaysFalsy) | (Client & ~AlwaysTruthy & ~AlwaysFalsy) | (Unknown & ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ openlibrary/data/db.py:127:40: error[unsupported-operator] Operator `not in` is not supported for types `Unknown` and `Client`, in comparing `Unknown` with `(Unknown & ~AlwaysTruthy & ~AlwaysFalsy) | (Client & ~AlwaysTruthy & ~AlwaysFalsy) | (Unknown & ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ openlibrary/data/db.py:129:9: warning[possibly-unbound-implicit-call] Method `__setitem__` of type `(Unknown & ~AlwaysTruthy & ~AlwaysFalsy) | (Client & ~AlwaysTruthy & ~AlwaysFalsy) | (Unknown & ~AlwaysFalsy) | dict[Unknown, Unknown]` is possibly unbound
+- openlibrary/olbase/events.py:32:5: warning[possibly-unbound-attribute] Attribute `add_event_listener` on type `Unknown | None` is possibly unbound
++ openlibrary/olbase/events.py:32:5: warning[possibly-unbound-attribute] Attribute `add_event_listener` on type `Unknown | None | Infobase` is possibly unbound
+- openlibrary/plugins/ol_infobase.py:44:9: warning[possibly-unbound-attribute] Attribute `add_event_listener` on type `Unknown | None` is possibly unbound
++ openlibrary/plugins/ol_infobase.py:44:9: warning[possibly-unbound-attribute] Attribute `add_event_listener` on type `Unknown | None | Infobase` is possibly unbound
+- openlibrary/plugins/ol_infobase.py:46:5: warning[possibly-unbound-attribute] Attribute `add_event_listener` on type `Unknown | None` is possibly unbound
++ openlibrary/plugins/ol_infobase.py:46:5: warning[possibly-unbound-attribute] Attribute `add_event_listener` on type `Unknown | None | Infobase` is possibly unbound
+- openlibrary/plugins/openlibrary/status.py:25:13: error[unresolved-reference] Name `feature_flags` used when not defined
+- Found 698 diagnostics
++ Found 700 diagnostics
+
+materialize (https://github.com/MaterializeInc/materialize)
+- misc/python/materialize/scalability/executor/benchmark_executor.py:301:27: error[unresolved-reference] Name `next_worker_id` used when not defined
+- misc/python/materialize/scalability/executor/benchmark_executor.py:302:26: error[unresolved-reference] Name `next_worker_id` used when not defined
+- Found 3259 diagnostics
++ Found 3257 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/vendor/ply/lex.py:1073:18: error[unresolved-reference] Name `token` used when not defined
+- ddtrace/vendor/ply/yacc.py:368:21: error[unresolved-attribute] Type `<module 'ddtrace.vendor.ply.lex'>` has no attribute `lexer`
++ ddtrace/vendor/ply/yacc.py:368:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `<module 'ddtrace.vendor.ply.lex'>` is possibly unbound
+- ddtrace/vendor/ply/yacc.py:601:29: error[invalid-assignment] Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
++ ddtrace/vendor/ply/yacc.py:601:29: error[invalid-assignment] Object of type `(Unknown & ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
+- ddtrace/vendor/ply/yacc.py:712:21: error[unresolved-attribute] Type `<module 'ddtrace.vendor.ply.lex'>` has no attribute `lexer`
++ ddtrace/vendor/ply/yacc.py:712:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `<module 'ddtrace.vendor.ply.lex'>` is possibly unbound
+- ddtrace/vendor/ply/yacc.py:907:29: error[invalid-assignment] Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
++ ddtrace/vendor/ply/yacc.py:907:29: error[invalid-assignment] Object of type `(Unknown & ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
+- ddtrace/vendor/ply/yacc.py:1018:21: error[unresolved-attribute] Type `<module 'ddtrace.vendor.ply.lex'>` has no attribute `lexer`
++ ddtrace/vendor/ply/yacc.py:1018:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `<module 'ddtrace.vendor.ply.lex'>` is possibly unbound
+- ddtrace/vendor/ply/yacc.py:1199:29: error[invalid-assignment] Object of type `(Unknown & ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
++ ddtrace/vendor/ply/yacc.py:1199:29: error[invalid-assignment] Object of type `(Unknown & ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown & ~AlwaysFalsy & ~<Protocol with members 'lexer'>) | (YaccSymbol & ~AlwaysFalsy & ~<Protocol with members 'lexer'>)`
+- tests/internal/test_forksafe.py:350:9: error[unresolved-reference] Name `service` used when not defined
+- Found 6510 diagnostics
++ Found 6508 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/linear_model/tests/test_ransac.py:228:16: error[unresolved-reference] Name `cause_skip` used when not defined
+- Found 2052 diagnostics
++ Found 2051 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- sympy/integrals/heurisch.py:285:17: warning[possibly-unbound-attribute] Attribute `has` on type `Unknown | None` is possibly unbound
++ sympy/integrals/heurisch.py:285:17: warning[possibly-unbound-attribute] Attribute `has` on type `Unknown | None | BesselTable` is possibly unbound
+- sympy/integrals/heurisch.py:289:22: warning[possibly-unbound-attribute] Attribute `diffs` on type `Unknown | None` is possibly unbound
++ sympy/integrals/heurisch.py:289:22: warning[possibly-unbound-attribute] Attribute `diffs` on type `Unknown | None | BesselTable` is possibly unbound
+- sympy/ntheory/partitions_.py:48:9: error[unresolved-reference] Name `_factor` used when not defined
+- sympy/ntheory/partitions_.py:106:29: error[unresolved-reference] Name `_totient` used when not defined
+- sympy/ntheory/partitions_.py:108:29: error[unresolved-reference] Name `_totient` used when not defined
+- sympy/ntheory/partitions_.py:117:29: error[unresolved-reference] Name `_totient` used when not defined
+- sympy/testing/runtests.py:2240:16: error[unresolved-reference] Name `linelen` used when not defined
+- sympy/testing/runtests.py:2241:17: error[unresolved-reference] Name `text` used when not defined
+- sympy/testing/runtests.py:2243:13: warning[possibly-unresolved-reference] Name `text` used when possibly not defined
+- sympy/testing/runtests.py:2244:13: warning[possibly-unresolved-reference] Name `linelen` used when possibly not defined
+- Found 12943 diagnostics
++ Found 12935 diagnostics
+
+manticore (https://github.com/trailofbits/manticore)
+- scripts/gdb.py:13:13: warning[possibly-unbound-attribute] Attribute `stdout` on type `Unknown | None` is possibly unbound
++ scripts/gdb.py:13:13: warning[possibly-unbound-attribute] Attribute `stdout` on type `Unknown | None | Popen[bytes]` is possibly unbound
++ scripts/gdb.py:13:13: warning[possibly-unbound-attribute] Attribute `read` on type `Unknown | IO[bytes] | None` is possibly unbound
++ scripts/gdb.py:14:9: error[unsupported-operator] Operator `+=` is unsupported between objects of type `Literal[""]` and `Unknown | bytes`
+- scripts/gdb.py:39:5: warning[possibly-unbound-attribute] Attribute `stdin` on type `Unknown | None` is possibly unbound
++ scripts/gdb.py:39:5: warning[possibly-unbound-attribute] Attribute `stdin` on type `Unknown | None | Popen[bytes]` is possibly unbound
++ scripts/gdb.py:39:5: warning[possibly-unbound-attribute] Attribute `write` on type `Unknown | IO[bytes] | None` is possibly unbound
+- scripts/gdb.py:40:5: warning[possibly-unbound-attribute] Attribute `stdin` on type `Unknown | None` is possibly unbound
++ scripts/gdb.py:40:5: warning[possibly-unbound-attribute] Attribute `stdin` on type `Unknown | None | Popen[bytes]` is possibly unbound
++ scripts/gdb.py:40:5: warning[possibly-unbound-attribute] Attribute `flush` on type `Unknown | IO[bytes] | None` is possibly unbound
+- scripts/qemu.py:25:13: warning[possibly-unbound-attribute] Attribute `stdout` on type `Unknown | None` is possibly unbound
++ scripts/qemu.py:25:13: warning[possibly-unbound-attribute] Attribute `stdout` on type `Unknown | None | Popen[bytes]` is possibly unbound
++ scripts/qemu.py:25:13: warning[possibly-unbound-attribute] Attribute `read` on type `Unknown | IO[bytes] | None` is possibly unbound
++ scripts/qemu.py:26:9: error[unsupported-operator] Operator `+=` is unsupported between objects of type `Literal[""]` and `Unknown | bytes`
+- scripts/qemu.py:91:9: warning[possibly-unbound-attribute] Attribute `stdin` on type `Unknown | None` is possibly unbound
++ scripts/qemu.py:91:9: warning[possibly-unbound-attribute] Attribute `stdin` on type `Unknown | None | Popen[bytes]` is possibly unbound
++ scripts/qemu.py:91:9: warning[possibly-unbound-attribute] Attribute `write` on type `Unknown | IO[bytes] | None` is possibly unbound
+- scripts/qemu.py:92:5: warning[possibly-unbound-attribute] Attribute `stdin` on type `Unknown | None` is possibly unbound
++ scripts/qemu.py:92:5: warning[possibly-unbound-attribute] Attribute `stdin` on type `Unknown | None | Popen[bytes]` is possibly unbound
++ scripts/qemu.py:92:5: warning[possibly-unbound-attribute] Attribute `flush` on type `Unknown | IO[bytes] | None` is possibly unbound
+- Found 1095 diagnostics
++ Found 1103 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- scipy/_lib/_ccallback.py:240:16: warning[possibly-unbound-attribute] Attribute `cast` on type `Unknown | None` is possibly unbound
++ scipy/_lib/_ccallback.py:240:16: warning[possibly-unbound-attribute] Attribute `cast` on type `Unknown | None | Literal[False]` is possibly unbound
+- scipy/_lib/_ccallback.py:244:21: warning[possibly-unbound-attribute] Attribute `getctype` on type `Unknown | None` is possibly unbound
++ scipy/_lib/_ccallback.py:244:21: warning[possibly-unbound-attribute] Attribute `getctype` on type `Unknown | None | Literal[False]` is possibly unbound
+- scipy/_lib/_ccallback.py:244:34: warning[possibly-unbound-attribute] Attribute `typeof` on type `Unknown | None` is possibly unbound
++ scipy/_lib/_ccallback.py:244:34: warning[possibly-unbound-attribute] Attribute `typeof` on type `Unknown | None | Literal[False]` is possibly unbound
+- scipy/_lib/_ccallback.py:251:12: warning[possibly-unbound-attribute] Attribute `cast` on type `Unknown | None` is possibly unbound
++ scipy/_lib/_ccallback.py:251:12: warning[possibly-unbound-attribute] Attribute `cast` on type `Unknown | None | Literal[False]` is possibly unbound
+- scipy/io/tests/test_mmio.py:46:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:47:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:48:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:52:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:53:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:54:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:69:42: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:70:42: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:170:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:171:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:172:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:176:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:177:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:178:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:196:42: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:197:42: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:275:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:276:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:277:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:281:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:283:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:372:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:373:55: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:375:42: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:377:17: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:572:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:573:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:634:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:636:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:639:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:655:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:663:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:679:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:687:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:697:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:699:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:702:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:713:9: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:715:22: error[unresolved-reference] Name `mminfo` used when not defined
+- scipy/io/tests/test_mmio.py:718:13: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:741:17: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:742:26: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:755:17: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:781:5: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:796:5: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:799:9: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:805:5: error[unresolved-reference] Name `mmwrite` used when not defined
+- scipy/io/tests/test_mmio.py:806:5: error[unresolved-reference] Name `mmread` used when not defined
+- scipy/io/tests/test_mmio.py:829:38: error[unresolved-reference] Name `mmread` used when not defined
+- Found 6794 diagnostics
++ Found 6745 diagnostics
+
+```
+</details>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+trio (https://github.com/python-trio/trio)
+- TOTAL MEMORY USAGE: ~159MB
++ TOTAL MEMORY USAGE: ~167MB
+-     struct fields = ~9MB
++     struct fields = ~10MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     memo metadata = ~76MB
++     memo metadata = ~80MB
+-     memo fields = ~424MB
++     memo fields = ~445MB
+
+```
+</details>
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-08-08 13:59_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed Instrumentation Performance Report](https://codspeed.io/astral-sh/ruff/branches/jack%2Fscratch?runnerMode=Instrumentation)
+
+### Merging #19828 will **degrade performances by 10.87%**
+
+<sub>Comparing <code>jack/scratch</code> (0569059) with <code>main</code> (50e1ecc)</sub>
+
+
+
+### Summary
+
+`⚡ 1` improvements  
+`❌ 1` regressions  
+`✅ 40` untouched benchmarks  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/jack%2Fscratch?runnerMode=Instrumentation)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `BASE` | `HEAD` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | `` ty_micro[many_string_assignments] `` | 73.2 ms | 68.3 ms | +7.25% |
+| ❌ | `` anyio `` | 833.8 ms | 935.5 ms | -10.87% |
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-08-08 14:12_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_Label `do-not-merge` added by @AlexWaygood on 2025-08-08 22:10_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-08-08 22:10_
+
+---
+
+_Closed by @MichaReiser on 2025-08-18 07:32_
+
+---

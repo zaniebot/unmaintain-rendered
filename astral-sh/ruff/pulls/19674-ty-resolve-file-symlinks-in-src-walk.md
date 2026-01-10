@@ -1,0 +1,730 @@
+```yaml
+number: 19674
+title: "[ty] resolve file symlinks in src walk"
+type: pull_request
+state: merged
+author: ngroman
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: symlink
+created_at: 2025-07-31T22:18:42Z
+updated_at: 2025-08-01T20:52:05Z
+url: https://github.com/astral-sh/ruff/pull/19674
+synced_at: 2026-01-10T17:52:17Z
+```
+
+# [ty] resolve file symlinks in src walk
+
+---
+
+_Pull request opened by @ngroman on 2025-07-31 22:18_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+See https://github.com/astral-sh/ty/issues/922
+
+This makes it easier to run with`bazel` which uses a symlink forest for sandboxing.
+
+While walking source directories add symlinks to the paths if:
+* the symlink's path matches the filters
+* the link canonicalizes to a real file
+
+Note that this adds the link's path, not the resolved path, so relative file resolution is preserved. Symlinks to directories are not followed.
+
+## Test Plan
+`cargo nextest run`
+Ran `ty check` in a bazel sandbox.
+<!-- How was it tested? -->
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-07-31 22:36_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-31 22:38_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on typing conformance tests
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-08-01 09:43:55.165160866 +0000
++++ new-output.txt	2025-08-01 09:43:55.243161503 +0000
+@@ -1,892 +1,880 @@
+ WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+-_directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-_directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+-_directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-_directives_deprecated_library.py:41:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | float`
+-_directives_deprecated_library.py:45:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+-aliases_explicit.py:41:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+-aliases_explicit.py:45:10: error[invalid-type-form] Variable of type `Literal["int | str"]` is not allowed in a type expression
+-aliases_explicit.py:49:5: error[type-assertion-failure] Argument does not have asserted type `int | str`
+-aliases_explicit.py:50:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
+-aliases_explicit.py:51:5: error[type-assertion-failure] Argument does not have asserted type `list[int | None]`
+-aliases_explicit.py:52:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
+-aliases_explicit.py:53:5: error[type-assertion-failure] Argument does not have asserted type `tuple[str, ...] | list[str]`
+-aliases_explicit.py:54:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int, int, str]`
+-aliases_explicit.py:55:5: error[type-assertion-failure] Argument does not have asserted type `(...) -> int`
+-aliases_explicit.py:56:5: error[type-assertion-failure] Argument does not have asserted type `(int, str, /) -> str`
+-aliases_explicit.py:57:5: error[type-assertion-failure] Argument does not have asserted type `(int, str, str, /) -> None`
+-aliases_explicit.py:59:5: error[type-assertion-failure] Argument does not have asserted type `int | str | None | list[list[int]]`
+-aliases_explicit.py:60:5: error[type-assertion-failure] Argument does not have asserted type `(...) -> None`
+-aliases_explicit.py:61:5: error[type-assertion-failure] Argument does not have asserted type `int | str`
+-aliases_explicit.py:63:5: error[type-assertion-failure] Argument does not have asserted type `Literal[3, 4, 5] | None`
+-aliases_explicit.py:98:1: error[type-assertion-failure] Argument does not have asserted type `list[str]`
+-aliases_explicit.py:101:6: error[call-non-callable] Object of type `UnionType` is not callable
+-aliases_implicit.py:54:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+-aliases_implicit.py:60:5: error[type-assertion-failure] Argument does not have asserted type `int | str`
+-aliases_implicit.py:61:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
+-aliases_implicit.py:62:5: error[type-assertion-failure] Argument does not have asserted type `list[int | None]`
+-aliases_implicit.py:63:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
+-aliases_implicit.py:64:5: error[type-assertion-failure] Argument does not have asserted type `tuple[str, ...] | list[str]`
+-aliases_implicit.py:65:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int, int, str]`
+-aliases_implicit.py:66:5: error[type-assertion-failure] Argument does not have asserted type `(...) -> int`
+-aliases_implicit.py:67:5: error[type-assertion-failure] Argument does not have asserted type `(int, str, /) -> str`
+-aliases_implicit.py:68:5: error[type-assertion-failure] Argument does not have asserted type `(int, str, str, /) -> None`
+-aliases_implicit.py:70:5: error[type-assertion-failure] Argument does not have asserted type `int | str | None | list[list[int]]`
+-aliases_implicit.py:71:5: error[type-assertion-failure] Argument does not have asserted type `list[bool]`
+-aliases_implicit.py:72:5: error[type-assertion-failure] Argument does not have asserted type `(...) -> None`
+-aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown]` is not allowed in a type expression
+-aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[<class 'int'>, <class 'str'>]]` is not allowed in a type expression
+-aliases_implicit.py:110:9: error[invalid-type-form] Variable of type `dict[Unknown, Unknown]` is not allowed in a type expression
+-aliases_implicit.py:114:9: error[invalid-type-form] Variable of type `Literal[3]` is not allowed in a type expression
+-aliases_implicit.py:115:10: error[invalid-type-form] Variable of type `Literal[True]` is not allowed in a type expression
+-aliases_implicit.py:116:10: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
+-aliases_implicit.py:118:10: error[invalid-type-form] Variable of type `Literal["int"]` is not allowed in a type expression
+-aliases_implicit.py:119:10: error[invalid-type-form] Variable of type `Literal["int | str"]` is not allowed in a type expression
+-aliases_implicit.py:128:1: error[type-assertion-failure] Argument does not have asserted type `list[str]`
+-aliases_implicit.py:133:6: error[call-non-callable] Object of type `UnionType` is not callable
+-aliases_newtype.py:15:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-aliases_newtype.py:18:1: error[invalid-assignment] Object of type `NewType` is not assignable to `type`
+-aliases_newtype.py:26:21: error[invalid-base] Invalid class base with type `NewType`
+-aliases_newtype.py:63:43: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 3, got 4
+-aliases_type_statement.py:17:1: error[unresolved-attribute] Type `typing.TypeAliasType` has no attribute `bit_count`
+-aliases_type_statement.py:19:1: error[call-non-callable] Object of type `TypeAliasType` is not callable
+-aliases_type_statement.py:23:7: error[unresolved-attribute] Type `typing.TypeAliasType` has no attribute `other_attrib`
+-aliases_type_statement.py:26:18: error[invalid-base] Invalid class base with type `typing.TypeAliasType`
+-aliases_type_statement.py:37:22: error[invalid-type-form] Function calls are not allowed in type expressions
+-aliases_type_statement.py:38:22: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_type_statement.py:39:22: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
+-aliases_type_statement.py:39:23: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_type_statement.py:40:22: error[invalid-type-form] List comprehensions are not allowed in type expressions
+-aliases_type_statement.py:41:22: error[invalid-type-form] Dict literals are not allowed in type expressions
+-aliases_type_statement.py:42:22: error[invalid-type-form] Function calls are not allowed in type expressions
+-aliases_type_statement.py:43:28: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-aliases_type_statement.py:44:22: error[invalid-type-form] `if` expressions are not allowed in type expressions
+-aliases_type_statement.py:45:22: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
+-aliases_type_statement.py:46:23: error[invalid-type-form] Boolean literals are not allowed in this context in a type expression
+-aliases_type_statement.py:47:23: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-aliases_type_statement.py:48:23: error[invalid-type-form] Boolean operations are not allowed in type expressions
+-aliases_type_statement.py:49:23: error[fstring-type-annotation] Type expressions cannot use f-strings
+-aliases_type_statement.py:80:37: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_typealiastype.py:32:7: error[unresolved-attribute] Type `typing.TypeAliasType` has no attribute `other_attrib`
+-aliases_typealiastype.py:39:26: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_typealiastype.py:52:40: error[invalid-type-form] Function calls are not allowed in type expressions
+-aliases_typealiastype.py:53:40: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_typealiastype.py:54:42: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
+-aliases_typealiastype.py:54:43: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-aliases_typealiastype.py:55:42: error[invalid-type-form] List comprehensions are not allowed in type expressions
+-aliases_typealiastype.py:56:42: error[invalid-type-form] Dict literals are not allowed in type expressions
+-aliases_typealiastype.py:57:42: error[invalid-type-form] Function calls are not allowed in type expressions
+-aliases_typealiastype.py:58:48: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-aliases_typealiastype.py:59:42: error[invalid-type-form] `if` expressions are not allowed in type expressions
+-aliases_typealiastype.py:60:42: error[invalid-type-form] Variable of type `Literal[3]` is not allowed in a type expression
+-aliases_typealiastype.py:61:42: error[invalid-type-form] Boolean literals are not allowed in this context in a type expression
+-aliases_typealiastype.py:62:42: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-aliases_typealiastype.py:63:42: error[invalid-type-form] Boolean operations are not allowed in type expressions
+-aliases_typealiastype.py:64:42: error[invalid-type-form] F-strings are not allowed in type expressions
+-aliases_typealiastype.py:66:47: error[unresolved-reference] Name `BadAlias21` used when not defined
+-aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `<class 'ClassA[T_co]'>` with no `__class_getitem__` method
+-aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `<class 'ClassA[T_co]'>` with no `__class_getitem__` method
+-aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `<class 'ClassB[T_co, T_contra]'>` with no `__class_getitem__` method
+-annotations_forward_refs.py:22:7: error[unresolved-reference] Name `ClassA` used when not defined
+-annotations_forward_refs.py:23:12: error[unresolved-reference] Name `ClassA` used when not defined
+-annotations_forward_refs.py:49:10: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
+-annotations_forward_refs.py:54:11: error[fstring-type-annotation] Type expressions cannot use f-strings
+-annotations_forward_refs.py:55:11: error[invalid-type-form] Variable of type `<module 'types'>` is not allowed in a type expression
+-annotations_forward_refs.py:66:26: error[unresolved-reference] Name `ClassB` used when not defined
+-annotations_forward_refs.py:80:14: error[unresolved-reference] Name `ClassF` used when not defined
+-annotations_forward_refs.py:82:11: error[invalid-type-form] Variable of type `Literal[""]` is not allowed in a type expression
+-annotations_forward_refs.py:87:9: error[invalid-type-form] Variable of type `def int(self) -> None` is not allowed in a type expression
+-annotations_forward_refs.py:89:8: error[invalid-type-form] Variable of type `def int(self) -> None` is not allowed in a type expression
+-annotations_forward_refs.py:95:1: error[type-assertion-failure] Argument does not have asserted type `str`
+-annotations_forward_refs.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-annotations_generators.py:86:21: error[invalid-return-type] Return type does not match returned value: expected `int`, found `types.GeneratorType`
+-annotations_generators.py:91:27: error[invalid-return-type] Return type does not match returned value: expected `int`, found `types.AsyncGeneratorType`
+-annotations_generators.py:193:1: error[type-assertion-failure] Argument does not have asserted type `() -> AsyncIterator[int]`
+-annotations_methods.py:31:1: error[type-assertion-failure] Argument does not have asserted type `A`
+-annotations_methods.py:36:1: error[type-assertion-failure] Argument does not have asserted type `B`
+-annotations_methods.py:42:1: error[type-assertion-failure] Argument does not have asserted type `A`
+-annotations_methods.py:48:1: error[type-assertion-failure] Argument does not have asserted type `A`
+-annotations_methods.py:49:1: error[type-assertion-failure] Argument does not have asserted type `B`
+-annotations_methods.py:50:1: error[type-assertion-failure] Argument does not have asserted type `B`
+-annotations_methods.py:51:1: error[type-assertion-failure] Argument does not have asserted type `A`
+-annotations_typeexpr.py:88:9: error[invalid-type-form] Function calls are not allowed in type expressions
+-annotations_typeexpr.py:89:9: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-annotations_typeexpr.py:90:9: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+-annotations_typeexpr.py:91:9: error[invalid-type-form] List comprehensions are not allowed in type expressions
+-annotations_typeexpr.py:92:9: error[invalid-type-form] Dict literals are not allowed in type expressions
+-annotations_typeexpr.py:93:9: error[invalid-type-form] Function calls are not allowed in type expressions
+-annotations_typeexpr.py:94:15: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-annotations_typeexpr.py:95:9: error[invalid-type-form] `if` expressions are not allowed in type expressions
+-annotations_typeexpr.py:96:9: error[invalid-type-form] Variable of type `Literal[3]` is not allowed in a type expression
+-annotations_typeexpr.py:97:10: error[invalid-type-form] Boolean literals are not allowed in this context in a type expression
+-annotations_typeexpr.py:98:10: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-annotations_typeexpr.py:99:10: error[invalid-type-form] Unary operations are not allowed in type expressions
+-annotations_typeexpr.py:100:10: error[invalid-type-form] Boolean operations are not allowed in type expressions
+-annotations_typeexpr.py:101:10: error[fstring-type-annotation] Type expressions cannot use f-strings
+-annotations_typeexpr.py:102:10: error[invalid-type-form] Variable of type `<module 'types'>` is not allowed in a type expression
+-callables_annotation.py:25:5: error[missing-argument] No argument provided for required parameter 2
+-callables_annotation.py:26:11: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Literal[2]`
+-callables_annotation.py:27:15: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
+-callables_annotation.py:29:5: error[missing-argument] No arguments provided for required parameters 1, 2
+-callables_annotation.py:29:8: error[unknown-argument] Argument `a` does not match any known parameter
+-callables_annotation.py:29:13: error[unknown-argument] Argument `b` does not match any known parameter
+-callables_annotation.py:35:8: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
+-callables_annotation.py:55:5: error[invalid-type-form] Special form `typing.Callable` expected exactly two arguments (parameter types and return type)
+-callables_annotation.py:55:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+-callables_annotation.py:56:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+-callables_annotation.py:57:18: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
+-callables_annotation.py:58:5: error[invalid-type-form] Special form `typing.Callable` expected exactly two arguments (parameter types and return type)
+-callables_annotation.py:58:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+-callables_annotation.py:114:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+-callables_kwargs.py:24:5: error[type-assertion-failure] Argument does not have asserted type `int`
+-callables_kwargs.py:32:9: error[type-assertion-failure] Argument does not have asserted type `str`
+-callables_kwargs.py:35:5: error[type-assertion-failure] Argument does not have asserted type `str`
+-callables_kwargs.py:41:5: error[type-assertion-failure] Argument does not have asserted type `TD1`
+-callables_kwargs.py:52:11: error[too-many-positional-arguments] Too many positional arguments to function `func1`: expected 0, got 3
+-callables_kwargs.py:62:5: error[missing-argument] No argument provided for required parameter `v3` of function `func2`
+-callables_kwargs.py:64:11: error[invalid-argument-type] Argument to function `func2` is incorrect: Expected `str`, found `Literal[1]`
+-callables_kwargs.py:65:5: error[missing-argument] No argument provided for required parameter `v3` of function `func2`
+-callables_protocol.py:97:1: error[invalid-assignment] Object of type `def cb4_bad1(x: int) -> None` is not assignable to `Proto4`
+-callables_protocol.py:121:1: error[invalid-assignment] Object of type `def cb6_bad1(*vals: bytes, *, max_len: int | None = None) -> list[bytes]` is not assignable to `NotProto6`
+-callables_protocol.py:176:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+-callables_protocol.py:179:62: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `R`
+-callables_subtyping.py:26:5: error[invalid-assignment] Object of type `(int, /) -> int` is not assignable to `(int | float, /) -> int | float`
+-callables_subtyping.py:29:5: error[invalid-assignment] Object of type `(int | float, /) -> int | float` is not assignable to `(int, /) -> int`
+-callables_subtyping.py:204:21: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Protocol`
+-classes_classvar.py:35:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+-classes_classvar.py:38:11: error[invalid-type-form] Type qualifier `typing.ClassVar` expected exactly 1 argument, got 2
+-classes_classvar.py:39:14: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-classes_classvar.py:40:14: error[unresolved-reference] Name `var` used when not defined
+-classes_classvar.py:52:5: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to `list[str]`
+-classes_classvar.py:55:17: error[invalid-type-form] Type qualifier `typing.ClassVar` is not allowed in type expressions (only in annotation expressions)
+-classes_classvar.py:69:23: error[invalid-type-form] `ClassVar` is not allowed in function parameter annotations
+-classes_classvar.py:70:12: error[invalid-type-form] `ClassVar` annotations are only allowed in class-body scopes
+-classes_classvar.py:71:18: error[invalid-type-form] `ClassVar` annotations are not allowed for non-name targets
+-classes_classvar.py:73:26: error[invalid-type-form] `ClassVar` is not allowed in function return type annotations
+-classes_classvar.py:77:8: error[invalid-type-form] `ClassVar` annotations are only allowed in class-body scopes
+-classes_classvar.py:111:1: error[invalid-attribute-access] Cannot assign to ClassVar `stats` from an instance of type `Starship`
+-classes_classvar.py:140:1: error[invalid-assignment] Object of type `ProtoAImpl` is not assignable to `ProtoA`
+-constructors_call_init.py:21:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `float`
+-constructors_call_init.py:25:1: error[type-assertion-failure] Argument does not have asserted type `Class1[int | float]`
+-constructors_call_init.py:56:1: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Class4[int]`, found `Class4[str]`
+-constructors_call_init.py:75:1: error[type-assertion-failure] Argument does not have asserted type `Class5[int | float]`
+-constructors_call_init.py:91:1: error[type-assertion-failure] Argument does not have asserted type `Class6[int, str]`
+-constructors_call_init.py:99:1: error[type-assertion-failure] Argument does not have asserted type `Class7[str, int]`
+-constructors_call_init.py:130:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+-constructors_call_metaclass.py:23:1: error[type-assertion-failure] Argument does not have asserted type `Never`
+-constructors_call_metaclass.py:23:13: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
+-constructors_call_metaclass.py:36:1: error[type-assertion-failure] Argument does not have asserted type `int | Meta2`
+-constructors_call_metaclass.py:36:13: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
+-constructors_call_metaclass.py:51:1: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
+-constructors_call_metaclass.py:65:1: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
+-constructors_call_new.py:21:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `int`, found `float`
+-constructors_call_new.py:24:1: error[type-assertion-failure] Argument does not have asserted type `Class1[int | float]`
+-constructors_call_new.py:49:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-constructors_call_new.py:49:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+-constructors_call_new.py:64:1: error[type-assertion-failure] Argument does not have asserted type `Class4 | Any`
+-constructors_call_new.py:64:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+-constructors_call_new.py:76:5: error[type-assertion-failure] Argument does not have asserted type `Never`
+-constructors_call_new.py:76:17: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+-constructors_call_new.py:89:1: error[type-assertion-failure] Argument does not have asserted type `int | Class6`
+-constructors_call_new.py:89:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+-constructors_call_new.py:113:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Class8[list[T]]`
+-constructors_call_new.py:116:1: error[type-assertion-failure] Argument does not have asserted type `Class8[list[int]]`
+-constructors_call_new.py:117:1: error[type-assertion-failure] Argument does not have asserted type `Class8[list[str]]`
+-constructors_call_new.py:125:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-constructors_call_new.py:140:47: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Class11[int]`
+-constructors_call_type.py:40:5: error[missing-argument] No arguments provided for required parameters `x`, `y` of function `__new__`
+-constructors_call_type.py:50:5: error[missing-argument] No arguments provided for required parameters `x`, `y` of bound method `__init__`
+-constructors_call_type.py:59:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+-constructors_callable.py:36:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:37:1: error[type-assertion-failure] Argument does not have asserted type `Class1`
+-constructors_callable.py:49:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:50:1: error[type-assertion-failure] Argument does not have asserted type `Class2`
+-constructors_callable.py:57:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-constructors_callable.py:63:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:64:1: error[type-assertion-failure] Argument does not have asserted type `Class3`
+-constructors_callable.py:73:33: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-constructors_callable.py:77:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:78:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-constructors_callable.py:97:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:100:5: error[type-assertion-failure] Argument does not have asserted type `Never`
+-constructors_callable.py:105:5: error[type-assertion-failure] Argument does not have asserted type `Never`
+-constructors_callable.py:125:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:126:1: error[type-assertion-failure] Argument does not have asserted type `Class6Proxy`
+-constructors_callable.py:142:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:162:5: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:164:1: error[type-assertion-failure] Argument does not have asserted type `Class7[int]`
+-constructors_callable.py:165:1: error[type-assertion-failure] Argument does not have asserted type `Class7[str]`
+-constructors_callable.py:182:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:183:1: error[type-assertion-failure] Argument does not have asserted type `Class8[str]`
+-constructors_callable.py:193:13: info[revealed-type] Revealed type: `(...) -> Unknown`
+-constructors_callable.py:194:1: error[type-assertion-failure] Argument does not have asserted type `Class9`
+-dataclasses_descriptors.py:23:62: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | Desc1`
+-dataclasses_descriptors.py:50:63: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `list[T] | T`
+-dataclasses_descriptors.py:66:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-dataclasses_descriptors.py:67:1: error[type-assertion-failure] Argument does not have asserted type `str`
+-dataclasses_final.py:27:1: error[invalid-assignment] Cannot assign to final attribute `final_classvar` on type `<class 'D'>`
+-dataclasses_final.py:35:1: error[invalid-assignment] Cannot assign to final attribute `final_no_default` on type `D`
+-dataclasses_final.py:36:1: error[invalid-assignment] Cannot assign to final attribute `final_with_default` on type `D`
+-dataclasses_final.py:37:1: error[invalid-assignment] Cannot assign to final attribute `final_no_default` on type `<class 'D'>`
+-dataclasses_final.py:38:1: error[invalid-assignment] Cannot assign to final attribute `final_with_default` on type `<class 'D'>`
+-dataclasses_frozen.py:16:1: error[invalid-assignment] Property `a` defined in `DC1` is read-only
+-dataclasses_frozen.py:17:1: error[invalid-assignment] Property `b` defined in `DC1` is read-only
+-dataclasses_kwonly.py:23:11: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+-dataclasses_kwonly.py:32:1: error[missing-argument] No argument provided for required parameter `a`
+-dataclasses_kwonly.py:32:5: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["hi"]`
+-dataclasses_kwonly.py:35:1: error[missing-argument] No argument provided for required parameter `a`
+-dataclasses_kwonly.py:35:5: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["hi"]`
+-dataclasses_kwonly.py:35:11: error[parameter-already-assigned] Multiple values provided for parameter `b`
+-dataclasses_kwonly.py:38:5: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal["hi"]`
+-dataclasses_kwonly.py:38:11: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `Literal[1]`
+-dataclasses_kwonly.py:61:1: error[missing-argument] No argument provided for required parameter `c`
+-dataclasses_kwonly.py:61:9: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `float`
+-dataclasses_kwonly.py:61:14: error[parameter-already-assigned] Multiple values provided for parameter `b`
+-dataclasses_order.py:50:4: error[unsupported-operator] Operator `<` is not supported for types `DC1` and `DC2`
+-dataclasses_postinit.py:28:7: error[unresolved-attribute] Type `DC1` has no attribute `x`
+-dataclasses_postinit.py:29:7: error[unresolved-attribute] Type `DC1` has no attribute `y`
+-dataclasses_slots.py:56:1: error[unresolved-attribute] Type `<class 'DC5'>` has no attribute `__slots__`
+-dataclasses_slots.py:57:1: error[unresolved-attribute] Type `DC5` has no attribute `__slots__`
+-dataclasses_slots.py:66:1: error[unresolved-attribute] Type `<class 'DC6'>` has no attribute `__slots__`
+-dataclasses_slots.py:69:1: error[unresolved-attribute] Type `DC6` has no attribute `__slots__`
+-dataclasses_transform_class.py:60:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+-dataclasses_transform_class.py:60:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:60:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:60:36: error[unknown-argument] Argument `other_name` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:66:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Literal[3]`
+-dataclasses_transform_class.py:66:21: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 2, got 3
+-dataclasses_transform_class.py:68:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+-dataclasses_transform_class.py:68:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:68:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:72:6: error[unsupported-operator] Operator `<` is not supported for types `Customer1` and `Customer1`
+-dataclasses_transform_class.py:74:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+-dataclasses_transform_class.py:74:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:74:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:76:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+-dataclasses_transform_class.py:76:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:78:6: error[unsupported-operator] Operator `<` is not supported for types `Customer2` and `Customer2`
+-dataclasses_transform_class.py:82:18: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Literal[0]`
+-dataclasses_transform_class.py:82:21: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 2, got 3
+-dataclasses_transform_class.py:106:24: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:119:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_class.py:119:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
+-dataclasses_transform_converter.py:25:6: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T`
+-dataclasses_transform_converter.py:48:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -> Unknown`, found `def bad_converter1() -> int`
+-dataclasses_transform_converter.py:49:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -> Unknown`, found `def bad_converter2(*, x: int) -> int`
+-dataclasses_transform_converter.py:107:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+-dataclasses_transform_converter.py:108:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+-dataclasses_transform_converter.py:109:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+-dataclasses_transform_converter.py:112:11: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+-dataclasses_transform_converter.py:114:1: error[invalid-assignment] Object of type `Literal["f1"]` is not assignable to attribute `field0` of type `int`
+-dataclasses_transform_converter.py:115:1: error[invalid-assignment] Object of type `Literal["f6"]` is not assignable to attribute `field3` of type `ConverterClass`
+-dataclasses_transform_converter.py:116:1: error[invalid-assignment] Object of type `Literal[b"f6"]` is not assignable to attribute `field3` of type `ConverterClass`
+-dataclasses_transform_converter.py:119:1: error[invalid-assignment] Object of type `Literal[1]` is not assignable to attribute `field3` of type `ConverterClass`
+-dataclasses_transform_converter.py:121:11: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 7
+-dataclasses_transform_converter.py:130:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Literal[1], /) -> Unknown`, found `def converter_simple(s: str) -> int`
+-dataclasses_transform_field.py:49:43: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -> @Todo`
+-dataclasses_transform_func.py:57:1: error[invalid-assignment] Object of type `Literal[3]` is not assignable to attribute `name` of type `str`
+-dataclasses_transform_func.py:61:6: error[unsupported-operator] Operator `<` is not supported for types `Customer1` and `Customer1`
+-dataclasses_transform_func.py:65:36: error[unknown-argument] Argument `salary` does not match any known parameter
+-dataclasses_transform_func.py:77:36: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T`
+-dataclasses_transform_func.py:97:1: error[invalid-assignment] Property `id` defined in `Customer3` is read-only
+-dataclasses_transform_meta.py:60:36: error[unknown-argument] Argument `other_name` does not match any known parameter
+-dataclasses_transform_meta.py:73:6: error[unsupported-operator] Operator `<` is not supported for types `Customer1` and `Customer1`
+-dataclasses_transform_meta.py:79:6: error[unsupported-operator] Operator `<` is not supported for types `Customer2` and `Customer2`
+-dataclasses_usage.py:50:6: error[missing-argument] No argument provided for required parameter `unit_price`
+-dataclasses_usage.py:51:28: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Literal["price"]`
+-dataclasses_usage.py:52:36: error[too-many-positional-arguments] Too many positional arguments: expected 3, got 4
+-dataclasses_usage.py:83:13: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+-dataclasses_usage.py:88:5: error[invalid-assignment] Object of type `dataclasses.Field[Literal[""]]` is not assignable to `int`
+-dataclasses_usage.py:127:8: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+-dataclasses_usage.py:130:1: error[missing-argument] No argument provided for required parameter `y` of bound method `__init__`
+-dataclasses_usage.py:179:6: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+-directives_assert_type.py:27:5: error[type-assertion-failure] Argument does not have asserted type `int`
+-directives_assert_type.py:28:5: error[type-assertion-failure] Argument does not have asserted type `int`
+-directives_assert_type.py:29:5: error[type-assertion-failure] Argument does not have asserted type `int`
+-directives_assert_type.py:31:5: error[missing-argument] No arguments provided for required parameters `value`, `type` of function `assert_type`
+-directives_assert_type.py:32:5: error[type-assertion-failure] Argument does not have asserted type `int`
+-directives_assert_type.py:33:31: error[too-many-positional-arguments] Too many positional arguments to function `assert_type`: expected 2, got 3
+-directives_cast.py:15:8: error[missing-argument] No arguments provided for required parameters `typ`, `val` of function `cast`
+-directives_cast.py:16:13: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-directives_cast.py:17:22: error[too-many-positional-arguments] Too many positional arguments to function `cast`: expected 2, got 3
+-directives_deprecated.py:18:44: warning[deprecated] The class `Ham` is deprecated: Use Spam instead
+-directives_deprecated.py:24:9: warning[deprecated] The function `norwegian_blue` is deprecated: It is pining for the fjords
+-directives_deprecated.py:25:13: warning[deprecated] The function `norwegian_blue` is deprecated: It is pining for the fjords
+-directives_deprecated.py:34:7: warning[deprecated] The class `Ham` is deprecated: Use Spam instead
+-directives_deprecated.py:69:1: warning[deprecated] The function `lorem` is deprecated: Deprecated
+-directives_deprecated.py:98:7: warning[deprecated] The function `foo` is deprecated: Deprecated
+-directives_no_type_check.py:15:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_no_type_check.py:29:7: error[invalid-argument-type] Argument to function `func1` is incorrect: Expected `int`, found `Literal[b"invalid"]`
+-directives_no_type_check.py:29:19: error[invalid-argument-type] Argument to function `func1` is incorrect: Expected `str`, found `Literal[b"arguments"]`
+-directives_no_type_check.py:32:1: error[missing-argument] No arguments provided for required parameters `a`, `b` of function `func1`
+-directives_reveal_type.py:14:17: info[revealed-type] Revealed type: `int | str`
+-directives_reveal_type.py:15:17: info[revealed-type] Revealed type: `list[int]`
+-directives_reveal_type.py:16:17: info[revealed-type] Revealed type: `Any`
+-directives_reveal_type.py:17:17: info[revealed-type] Revealed type: `ForwardReference`
+-directives_reveal_type.py:19:5: error[missing-argument] No argument provided for required parameter `obj` of function `reveal_type`
+-directives_reveal_type.py:20:20: error[too-many-positional-arguments] Too many positional arguments to function `reveal_type`: expected 1, got 2
+-directives_type_checking.py:11:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_type_checking.py:18:1: error[type-assertion-failure] Argument does not have asserted type `list[int]`
+-directives_type_ignore_file2.py:14:1: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:14:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:19:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:22:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:27:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:31:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:36:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:40:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-directives_version_platform.py:45:5: error[invalid-assignment] Object of type `Literal[""]` is not assignable to `int`
+-enums_behaviors.py:27:1: error[type-assertion-failure] Argument does not have asserted type `Color`
+-enums_behaviors.py:28:1: error[type-assertion-failure] Argument does not have asserted type `Literal[Color.RED]`
+-enums_behaviors.py:32:1: error[type-assertion-failure] Argument does not have asserted type `Literal[Color.BLUE]`
+-enums_behaviors.py:44:21: error[subclass-of-final-class] Class `ExtendedShape` cannot inherit from final class `Shape`
+-enums_expansion.py:52:9: error[type-assertion-failure] Argument does not have asserted type `CustomFlags`
+-enums_member_names.py:21:1: error[type-assertion-failure] Argument does not have asserted type `Literal["RED"]`
+-enums_member_names.py:22:1: error[type-assertion-failure] Argument does not have asserted type `Literal["RED"]`
+-enums_member_names.py:26:5: error[type-assertion-failure] Argument does not have asserted type `Literal["RED", "BLUE"]`
+-enums_member_names.py:30:5: error[type-assertion-failure] Argument does not have asserted type `Literal["RED", "BLUE", "GREEN"]`
+-enums_member_values.py:21:1: error[type-assertion-failure] Argument does not have asserted type `Literal[1]`
+-enums_member_values.py:22:1: error[type-assertion-failure] Argument does not have asserted type `Literal[1]`
+-enums_member_values.py:26:5: error[type-assertion-failure] Argument does not have asserted type `Literal[1, 3]`
+-enums_member_values.py:30:5: error[type-assertion-failure] Argument does not have asserted type `Literal[1, 2, 3]`
+-enums_member_values.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Literal[1]`
+-enums_member_values.py:68:1: error[type-assertion-failure] Argument does not have asserted type `Literal[1]`
+-enums_member_values.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-enums_members.py:128:21: info[revealed-type] Revealed type: `Unknown | Literal[2]`
+-enums_members.py:129:9: error[type-assertion-failure] Argument does not have asserted type `Unknown`
+-enums_members.py:129:43: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+-enums_members.py:146:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-enums_members.py:147:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-exceptions_context_managers.py:50:5: error[type-assertion-failure] Argument does not have asserted type `int | str`
+-exceptions_context_managers.py:57:5: error[type-assertion-failure] Argument does not have asserted type `int | str`
+-generics_base_class.py:26:26: error[invalid-argument-type] Argument to function `takes_dict_incorrect` is incorrect: Expected `dict[str, list[object]]`, found `SymbolTable`
+-generics_base_class.py:29:14: error[invalid-type-form] `typing.Generic` is not allowed in type expressions
+-generics_base_class.py:30:8: error[invalid-type-form] `typing.Generic` is not allowed in type expressions
+-generics_base_class.py:45:5: error[type-assertion-failure] Argument does not have asserted type `Iterator[int]`
+-generics_base_class.py:49:22: error[too-many-positional-arguments] Too many positional arguments to class `LinkedList`: expected 1, got 2
+-generics_base_class.py:61:18: error[too-many-positional-arguments] Too many positional arguments to class `MyDict`: expected 1, got 2
+-generics_basic.py:34:12: error[unsupported-operator] Operator `+` is unsupported between objects of type `AnyStr` and `AnyStr`
+-generics_basic.py:139:5: error[type-assertion-failure] Argument does not have asserted type `int`
+-generics_basic.py:140:5: error[type-assertion-failure] Argument does not have asserted type `int`
+-generics_basic.py:157:5: error[invalid-argument-type] Method `__getitem__` of type `bound method MyMap1[str, int].__getitem__(key: str, /) -> int` cannot be called with key of type `Literal[0]` on object of type `MyMap1[str, int]`
+-generics_basic.py:158:5: error[invalid-argument-type] Method `__getitem__` of type `bound method MyMap2[int, str].__getitem__(key: str, /) -> int` cannot be called with key of type `Literal[0]` on object of type `MyMap2[int, str]`
+-generics_basic.py:162:12: error[invalid-argument-type] `<class 'int'>` is not a valid argument to `Generic`
+-generics_basic.py:163:12: error[invalid-argument-type] `<class 'int'>` is not a valid argument to `Protocol`
+-generics_basic.py:171:1: error[invalid-generic-class] `Generic` base class must include all type variables used in other base classes
+-generics_basic.py:172:1: error[invalid-generic-class] `Generic` base class must include all type variables used in other base classes
+-generics_basic.py:199:5: error[type-assertion-failure] Argument does not have asserted type `Iterator[Any]`
+-generics_defaults.py:30:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:31:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:32:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:38:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:45:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:46:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:50:1: error[missing-argument] No argument provided for required parameter `T2` of class `AllTheDefaults`
+-generics_defaults.py:52:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:55:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:59:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:63:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:76:23: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+-generics_defaults.py:79:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:80:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:91:26: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+-generics_defaults.py:94:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:95:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults.py:127:32: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T4`
+-generics_defaults.py:141:12: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+-generics_defaults.py:151:12: error[invalid-argument-type] `@Todo` is not a valid argument to `Generic`
+-generics_defaults.py:154:49: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int | float, bool]`?
+-generics_defaults.py:155:58: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[bytes]`?
+-generics_defaults.py:169:1: error[type-assertion-failure] Argument does not have asserted type `(Foo7[int], /) -> Foo7[int]`
+-generics_defaults_referential.py:23:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults_referential.py:36:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[""]`
+-generics_defaults_referential.py:37:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[""]`
+-generics_defaults_referential.py:94:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults_referential.py:95:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_defaults_specialization.py:26:5: error[type-assertion-failure] Argument does not have asserted type `SomethingWithNoDefaults[int, str]`
+-generics_defaults_specialization.py:27:5: error[type-assertion-failure] Argument does not have asserted type `SomethingWithNoDefaults[int, bool]`
+-generics_defaults_specialization.py:30:1: error[non-subscriptable] Cannot subscript object of type `<class 'SomethingWithNoDefaults[int, DefaultStrT]'>` with no `__class_getitem__` method
+-generics_defaults_specialization.py:45:1: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_paramspec_basic.py:27:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_components.py:83:18: error[parameter-already-assigned] Multiple values provided for parameter 1 (`x`) of function `foo`
+-generics_paramspec_semantics.py:13:56: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -> str`
+-generics_paramspec_semantics.py:17:40: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:22:1: error[type-assertion-failure] Argument does not have asserted type `(str, bool, /) -> str`
+-generics_paramspec_semantics.py:30:56: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -> bool`
+-generics_paramspec_semantics.py:34:28: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:38:28: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:53:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:57:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:67:9: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+-generics_paramspec_semantics.py:76:30: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+-generics_paramspec_semantics.py:82:5: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+-generics_paramspec_semantics.py:82:28: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
+-generics_paramspec_semantics.py:84:5: error[type-assertion-failure] Argument does not have asserted type `(int, /) -> str`
+-generics_paramspec_semantics.py:87:33: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:91:33: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -> bool`
+-generics_paramspec_semantics.py:101:54: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -> bool`
+-generics_paramspec_semantics.py:113:6: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -> bool`
+-generics_paramspec_semantics.py:128:20: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:133:23: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:138:29: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_semantics.py:143:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_specialization.py:13:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+-generics_paramspec_specialization.py:18:29: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+-generics_paramspec_specialization.py:32:27: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, bool]`?
+-generics_paramspec_specialization.py:40:27: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+-generics_paramspec_specialization.py:40:31: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+-generics_paramspec_specialization.py:48:14: error[invalid-argument-type] `ParamSpec` is not a valid argument to `Generic`
+-generics_paramspec_specialization.py:52:22: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str, bool]`?
+-generics_scoping.py:14:1: error[type-assertion-failure] Argument does not have asserted type `int`
+-generics_scoping.py:15:1: error[type-assertion-failure] Argument does not have asserted type `str`
+-generics_scoping.py:42:1: error[type-assertion-failure] Argument does not have asserted type `str`
+-generics_scoping.py:43:1: error[type-assertion-failure] Argument does not have asserted type `bytes`
+-generics_self_advanced.py:11:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-generics_self_advanced.py:18:1: error[type-assertion-failure] Argument does not have asserted type `ParentA`
+-generics_self_advanced.py:19:1: error[type-assertion-failure] Argument does not have asserted type `ChildA`
+-generics_self_advanced.py:28:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-generics_self_advanced.py:35:9: error[type-assertion-failure] Argument does not have asserted type `Self`
+-generics_self_advanced.py:36:9: error[type-assertion-failure] Argument does not have asserted type `list[Self]`
+-generics_self_advanced.py:37:9: error[type-assertion-failure] Argument does not have asserted type `Self`
+-generics_self_advanced.py:38:9: error[type-assertion-failure] Argument does not have asserted type `Self`
+-generics_self_advanced.py:43:9: error[type-assertion-failure] Argument does not have asserted type `list[Self]`
+-generics_self_advanced.py:44:9: error[type-assertion-failure] Argument does not have asserted type `Self`
+-generics_self_advanced.py:45:9: error[type-assertion-failure] Argument does not have asserted type `Self`
+-generics_self_attributes.py:26:33: error[invalid-argument-type] Argument is incorrect: Expected `Self | None`, found `LinkedList[int]`
+-generics_self_attributes.py:29:5: error[invalid-assignment] Object of type `OrdinalLinkedList` is not assignable to attribute `next` of type `Self | None`
+-generics_self_attributes.py:32:5: error[invalid-assignment] Object of type `LinkedList[int]` is not assignable to attribute `next` of type `Self | None`
+-generics_self_basic.py:14:9: error[type-assertion-failure] Argument does not have asserted type `Self`
+-generics_self_basic.py:20:16: error[invalid-return-type] Return type does not match returned value: expected `Self`, found `Shape`
+-generics_self_basic.py:33:16: error[invalid-return-type] Return type does not match returned value: expected `Self`, found `Shape`
+-generics_self_basic.py:51:1: error[type-assertion-failure] Argument does not have asserted type `Shape`
+-generics_self_basic.py:52:1: error[type-assertion-failure] Argument does not have asserted type `Circle`
+-generics_self_basic.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Shape`
+-generics_self_basic.py:55:1: error[type-assertion-failure] Argument does not have asserted type `Circle`
+-generics_self_basic.py:64:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-generics_self_basic.py:67:26: error[invalid-type-form] Special form `typing.Self` expected no type parameter
+-generics_self_basic.py:74:5: error[type-assertion-failure] Argument does not have asserted type `Container[int]`
+-generics_self_basic.py:75:5: error[type-assertion-failure] Argument does not have asserted type `Container[str]`
+-generics_self_basic.py:83:5: error[type-assertion-failure] Argument does not have asserted type `Container[T]`
+-generics_self_protocols.py:48:5: error[type-assertion-failure] Argument does not have asserted type `ShapeProtocol`
+-generics_self_usage.py:73:14: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+-generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+-generics_self_usage.py:76:6: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+-generics_self_usage.py:82:54: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-generics_self_usage.py:86:16: error[invalid-return-type] Return type does not match returned value: expected `Self`, found `Foo3`
+-generics_self_usage.py:98:22: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T`
+-generics_self_usage.py:101:15: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+-generics_self_usage.py:103:12: error[invalid-base] Invalid class base with type `typing.Self`
+-generics_self_usage.py:106:30: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+-generics_self_usage.py:111:19: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-generics_self_usage.py:116:40: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-generics_self_usage.py:121:37: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self`
+-generics_self_usage.py:125:37: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `list[Self]`
+-generics_syntax_compatibility.py:23:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `V | K`
+-generics_syntax_compatibility.py:26:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `M | K`
+-generics_syntax_declarations.py:17:1: error[invalid-generic-class] Cannot both inherit from `typing.Generic` and use PEP 695 type variables
+-generics_syntax_declarations.py:25:20: error[invalid-generic-class] Cannot both inherit from subscripted `Protocol` and use PEP 695 type variables
+-generics_syntax_declarations.py:32:9: error[unresolved-attribute] Type `T` has no attribute `is_integer`
+-generics_syntax_declarations.py:48:17: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, int]`?
+-generics_syntax_declarations.py:60:17: error[invalid-type-variable-constraints] TypeVar must have at least two constrained types
+-generics_syntax_declarations.py:64:17: error[invalid-type-variable-constraints] TypeVar must have at least two constrained types
+-generics_syntax_declarations.py:71:17: error[invalid-type-form] Variable of type `tuple[<class 'bytes'>, <class 'str'>]` is not allowed in a type expression
+-generics_syntax_declarations.py:75:18: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+-generics_syntax_declarations.py:79:23: error[unresolved-reference] Name `S` used when not defined
+-generics_syntax_infer_variance.py:21:42: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T`
+-generics_syntax_infer_variance.py:24:27: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Iterator[T]`
+-generics_syntax_infer_variance.py:28:1: error[invalid-assignment] Object of type `ShouldBeCovariant1[int]` is not assignable to `ShouldBeCovariant1[int | float]`
+-generics_syntax_infer_variance.py:29:1: error[invalid-assignment] Object of type `ShouldBeCovariant1[int | float]` is not assignable to `ShouldBeCovariant1[int]`
+-generics_syntax_infer_variance.py:36:1: error[invalid-assignment] Object of type `ShouldBeCovariant2[int]` is not assignable to `ShouldBeCovariant2[int | float]`
+-generics_syntax_infer_variance.py:37:1: error[invalid-assignment] Object of type `ShouldBeCovariant2[int | float]` is not assignable to `ShouldBeCovariant2[int]`
+-generics_syntax_infer_variance.py:41:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `ShouldBeCovariant2[T]`
+-generics_syntax_infer_variance.py:45:1: error[invalid-assignment] Object of type `ShouldBeCovariant3[int]` is not assignable to `ShouldBeCovariant3[int | float]`
+-generics_syntax_infer_variance.py:46:1: error[invalid-assignment] Object of type `ShouldBeCovariant3[int | float]` is not assignable to `ShouldBeCovariant3[int]`
+-generics_syntax_infer_variance.py:74:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int]` is not assignable to `ShouldBeCovariant5[int | float]`
+-generics_syntax_infer_variance.py:75:1: error[invalid-assignment] Object of type `ShouldBeCovariant5[int | float]` is not assignable to `ShouldBeCovariant5[int]`
+-generics_syntax_infer_variance.py:85:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int]` is not assignable to `ShouldBeCovariant6[int | float]`
+-generics_syntax_infer_variance.py:86:1: error[invalid-assignment] Object of type `ShouldBeCovariant6[int | float]` is not assignable to `ShouldBeCovariant6[int]`
+-generics_syntax_infer_variance.py:102:1: error[invalid-assignment] Object of type `ShouldBeInvariant1[int]` is not assignable to `ShouldBeInvariant1[int | float]`
+-generics_syntax_infer_variance.py:103:1: error[invalid-assignment] Object of type `ShouldBeInvariant1[int | float]` is not assignable to `ShouldBeInvariant1[int]`
+-generics_syntax_infer_variance.py:117:1: error[invalid-assignment] Object of type `ShouldBeInvariant2[int]` is not assignable to `ShouldBeInvariant2[int | float]`
+-generics_syntax_infer_variance.py:118:1: error[invalid-assignment] Object of type `ShouldBeInvariant2[int | float]` is not assignable to `ShouldBeInvariant2[int]`
+-generics_syntax_infer_variance.py:125:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[int, str]` is not assignable to `ShouldBeInvariant3[int | float, str]`
+-generics_syntax_infer_variance.py:126:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[int | float, str]` is not assignable to `ShouldBeInvariant3[int, str]`
+-generics_syntax_infer_variance.py:127:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int]` is not assignable to `ShouldBeInvariant3[str, int | float]`
+-generics_syntax_infer_variance.py:128:1: error[invalid-assignment] Object of type `ShouldBeInvariant3[str, int | float]` is not as...*[Comment body truncated]*
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-31 22:40_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+aiohttp (https://github.com/aio-libs/aiohttp)
++ aiohttp/_websocket/reader_c.py:469:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 172 diagnostics
++ Found 173 diagnostics
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_@UnboundVariable reviewed on 2025-07-31 23:31_
+
+---
+
+_Review comment by @UnboundVariable on `crates/ty_project/src/walk.rs`:221 on 2025-07-31 23:31_
+
+One thing to be careful of here is that symlinks can create circularities. I don't see any checks for this in the current logic. This could result in an infinite loop if a symlink deeper in the file system hierarchy points back to a location that's higher in the hierarchy.
+
+---
+
+_@ngroman reviewed on 2025-07-31 23:57_
+
+---
+
+_Review comment by @ngroman on `crates/ty_project/src/walk.rs`:221 on 2025-07-31 23:57_
+
+As configured, the `WalkBuilder` used doesn't follow directory symlinks, if that wasn't the case I'd be very worried about cycles.
+
+`fs::canonicalize` will err if there's a loop and I've restricted it to files only (excluding directories). I might be missing something, but I think with those checks in place it should be safe.
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_project/src/walk.rs`:191 on 2025-08-01 07:22_
+
+I think I'd prefer Ruff's approach to this which only special cases the logic for directories and assumes everything else are files 
+
+https://github.com/astral-sh/ruff/blob/32c454bb56e7d35f55ac244de9b8ae5039171da9/crates/ruff_workspace/src/resolver.rs#L567-L662
+
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_project/src/walk.rs`:218 on 2025-08-01 07:24_
+
+I don't think I fully understand why this is needed here. Shouldn't we always hit the `Continue` on line 262 if we've taken this branch. 
+
+We also don't need to worry about symlinks that point to directories because the `ignore` walker doesn't visit them by default (we didn't enable the follow symlink feature)
+
+https://github.com/BurntSushi/ripgrep/blob/ac02f54c892cc22cf32344600360a911537b2a27/crates/ignore/src/walk.rs#L1855-L1863
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_project/src/walk.rs`:219 on 2025-08-01 07:26_
+
+Probably not relevant, given that I think that this entire branch can be deleted:
+
+We aren't allowed to use any `std::fs` operations inside `ty_project`. The crate is intended to be system independent so that we can override the operations in WASM, tests, and the LSP server. 
+
+Instead, we need to use the methods exposed by `System`: `system.canonicalize_path(entry.path())`
+
+---
+
+_@MichaReiser reviewed on 2025-08-01 07:29_
+
+Nice. Thank you for putting up a PR. 
+
+We should add a CLI integration test for a bazel project to ensure we don't break this in the future. Ideally one that also covers include/exclude. That would also help me get a better understanding of how a bazel sets up the symlinks (it's not entirely clear to me what a forest of symlinks is :)). 
+
+We have a lot of existing tests in https://github.com/astral-sh/ruff/blob/32c454bb56e7d35f55ac244de9b8ae5039171da9/crates/ty/tests/cli/file_selection.rs#L6 and coding agents are really good at writing those :)
+
+I can also take up this part if you can outline a bazel project structure (where does it use symlinks).
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_project/src/walk.rs`:176 on 2025-08-01 09:24_
+
+The only change here is that I split the if so that symlinks and files can use the `else` branch
+
+---
+
+_@MichaReiser reviewed on 2025-08-01 09:24_
+
+---
+
+_Comment by @MichaReiser on 2025-08-01 09:41_
+
+I pushed a few changes. Would you mind taking a look at the added CLI tests to ensure it captures the bazel (your use case) correctly?
+
+---
+
+_Marked ready for review by @MichaReiser on 2025-08-01 09:42_
+
+---
+
+_Review requested from @carljm by @MichaReiser on 2025-08-01 09:42_
+
+---
+
+_Review requested from @AlexWaygood by @MichaReiser on 2025-08-01 09:42_
+
+---
+
+_Review requested from @sharkdp by @MichaReiser on 2025-08-01 09:42_
+
+---
+
+_Review requested from @dcreager by @MichaReiser on 2025-08-01 09:42_
+
+---
+
+_Review request for @dcreager removed by @MichaReiser on 2025-08-01 09:46_
+
+---
+
+_Review request for @carljm removed by @MichaReiser on 2025-08-01 09:46_
+
+---
+
+_Review request for @AlexWaygood removed by @MichaReiser on 2025-08-01 09:46_
+
+---
+
+_Comment by @ngroman on 2025-08-01 17:01_
+
+@MichaReiser Thanks! I was able to verify that the updated branch works in the bazel sandbox.
+
+---
+
+_Merged by @MichaReiser on 2025-08-01 20:52_
+
+---
+
+_Closed by @MichaReiser on 2025-08-01 20:52_
+
+---
