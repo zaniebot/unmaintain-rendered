@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip GitHub fast path when rate-limited - astral-sh/uv #13033</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip GitHub fast path when rate-limited</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13033">#13033</a>
+        opened by <a href="https://github.com/christeefy">@christeefy</a>
+        on 2025-04-21 23:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/christeefy">@christeefy</a> on 2025-04-21 23:19</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Fixes #12761 and #12746.</p>
+<p>I'm interpreting the &quot;special handling&quot; required to mean erroring so that we skip the subsequent Git fetch operation in <a href="https://github.com/astral-sh/uv/blob/12bfbed0ecf29e7d11cb200d0d3ede9adc0da98d/crates/uv-distribution/src/source/mod.rs#L1636-L1653"><code>.git_metadata</code></a> and <a href="https://github.com/astral-sh/uv/blob/12bfbed0ecf29e7d11cb200d0d3ede9adc0da98d/crates/uv-distribution/src/source/mod.rs#L1878-L1891"><code>.resolve_revision</code></a> of <code>SourceDistributionBuilder</code>. Please advise if you meant something else instead.</p>
+<p>Also let me know if you'd like me to generalize this to other HTTP status codes (i.e. 400 and 422, as mentioned in the <a href="https://github.com/astral-sh/uv/blob/12bfbed0ecf29e7d11cb200d0d3ede9adc0da98d/crates/uv-git/src/resolver.rs#L90-L91">comments</a>).</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>None so far.</p>
+<ul>
+<li>What's the best way to create new (snapshot?) test cases for this?</li>
+<li>Should I use <code>wiremock</code> to mock a 429 response?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-05-02 17:49</div>
+            <div class="timeline-body"><p>Hi @zanieb, I like to follow up on this PR as it has been awaiting review for a while. Do you have any feedback on this work? Let me know if this is still relevant. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-04 17:05</div>
+            <div class="timeline-body"><p>I think this might not quite be the right approach. I <em>think</em> what we want is: if we detect a rate limit, skip these &quot;fast-path&quot; attempts in any subsequent operations. So we might need to track some kind of &quot;Are we rate-limited?&quot; global state, and read-from + update it in these locations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-06 16:04</div>
+            <div class="timeline-body"><p>Indeed, that's what I had in mind. GitHub also returns a time to wait until attempting another request, so we can stash that in the global state and invalidate it after that much time (though I think in practice, skipping it until the process exits would be fine).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-05-09 17:07</div>
+            <div class="timeline-body"><p>Thank you both for the feedback; I understand things better now after some studying.</p>
+<p>I'm assuming that we want the global state to apply to everything within <code>uv-git</code>, including <code>GitResolver</code> and <code>git.rs</code> which both have similar <code>fast-path</code> logic.</p>
+<p>Just to ensure I'm interpreting things correctly, here's the steps I'll implement:</p>
+<ol>
+<li>Keep track of an &quot;Are we rate-limited?&quot; global state<ul>
+<li>If we get a HTTP-429, mark this state to true</li>
+<li>The state can revert to false based on a &quot;time to wait&quot; derived from GitHub's response header, and may be a nice-to-have assuming the process runtime is typically much shorter than this &quot;time to wait&quot;</li>
+</ul>
+</li>
+<li>Subsequent calls to <code>github_fast_path</code> would avoid pinging the GitHub API if/while this global state is true, returning the appropriate value:<ul>
+<li><code>GitResolver::github_fast_path</code> returns <code>Ok(None)</code>, leading to a git fetch</li>
+<li><code>git.rs::github_fast_path</code> returns <code>FastPathRev::Indeterminate</code> leading to all branches and tags potentially being fetched in <code>git.rs::fetch</code> based on <code>RefspecStrategy</code> 🤔</li>
+</ul>
+</li>
+</ol>
+<p>Please let me know if I've misinterpreted anything here.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-05-20 14:44</div>
+            <div class="timeline-body"><p>Hi @zanieb, I've updated the PR based on your feedback.
+Appreciate you taking a look at it!</p>
+<p>I found adding integration tests to not be easy. The base urls for the GitHub fast-paths are hardcoded and not exposed via the CLI / env vars, so I don't know how to mock their response via <code>wiremock</code>. I can go down the route of exposing them, unless you have better suggestions.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-20 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>The base urls for the GitHub fast-paths are hardcoded and not exposed via the CLI / env vars,</p>
+</blockquote>
+<p>It'd be fine to add this as an environment variable, imo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-05-20 15:11</div>
+            <div class="timeline-body"><p>I can add that env var (tentatively <code>UV_GITHUB_FAST_PATH_URL</code>).
+In the meantime, let me know if I'm missing anything major in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-05-20 21:08</div>
+            <div class="timeline-body"><p>I've made the changes and included integration tests.</p>
+<p>I manually did some mutation testing (changing the status code from the mock response, and commenting out this PR's functionalities) to verify the tests aren't dummy tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv/tests/it/edit.rs</code>:510 on 2025-05-20 21:09</div>
+            <div class="timeline-body"><p><code>uv</code> makes 4 attempts (first try + 3 retries) because a HTTP 429 is considered transient in <code>uv-client</code>.</p>
+<p>If there are other concurrent fast paths attempt before the first rate-limited request finishes retrying, the skip functionality won't kick in yet. I'm testing the implications of changing the retry semantics for HTTP 429 to <code>Retryable::Fatal</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-05-20 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-05-20 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv/tests/it/edit.rs</code>:510 on 2025-05-20 21:18</div>
+            <div class="timeline-body"><p>Local test suite is passing, so I can update these tests to expect <em>zero</em> retries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-21 01:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:522 on 2025-05-21 01:53</div>
+            <div class="timeline-body"><p>I think this makes a 429 fatal everywhere? We probably don't want that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-05-21 02:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv-client/src/base_client.rs</code>:522 on 2025-05-21 02:01</div>
+            <div class="timeline-body"><p>Sounds good. Reverting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-05-21 02:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv/tests/it/edit.rs</code>:510 on 2025-05-21 02:12</div>
+            <div class="timeline-body"><p>Full test suite fails, so not going through with that. See comment below as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-05-21 14:28</div>
+            <div class="timeline-body"><p>Good morning @zanieb, the PR is ready for review.
+Please take a look when you get the chance, thanks 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @zanieb on 2025-06-09 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-git/src/rate_limit.rs</code>:7 on 2025-06-09 23:09</div>
+            <div class="timeline-body"><p>I don't think <code>LazyLock</code> is needed here, since <code>AtomicBool</code> can be const-initialized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-git/src/git.rs</code>:820 on 2025-06-09 23:15</div>
+            <div class="timeline-body"><p><a href="https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api?apiVersion=2022-11-28#rate-limit-errors">The GitHub API docs</a> say that both 403 and 429 are possible here. The only reason I went and found that is that I think the 403's I was seeing here are also rate-limit-related: https://github.com/astral-sh/uv/pull/13748#issuecomment-2957204584. Seems like we should handle both?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-git/src/rate_limit.rs</code>:20 on 2025-06-09 23:17</div>
+            <div class="timeline-body"><p>I don't think this matters for performance in practice, but my usual default with atomics is to make them <code>Relaxed</code> when they're &quot;just data&quot;, as opposed to some sort of synchronization tool that <code>unsafe</code> code might interact with. Curious what other folks think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> requested changes on 2025-06-09 23:41</div>
+            <div class="timeline-body"><p>How does this PR relate to #12746? (Incidentally that's about to be fixed by #13748.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-10 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-git/src/rate_limit.rs</code>:20 on 2025-06-10 09:11</div>
+            <div class="timeline-body"><p>I'm no expert on atomics to weigh in here, but we should make it consistent with (which may include changing the latter in an earlier PR) https://github.com/astral-sh/uv/blob/24859bd3eebfe8fe50b187391e72dab91afb7093/crates/uv-warnings/src/lib.rs#L11-L22. We can also use a mutex given that this is not performance critical, though <code>AtomicBool</code> is simple enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-10 09:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-static/src/env_vars.rs</code>:670 on 2025-06-10 09:13</div>
+            <div class="timeline-body"><p>This should document what shape of URL is expected, is there something that GitHub considers as API root that users could exchange?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @oconnor663 by @oconnor663 on 2025-06-18 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-06-21 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv-static/src/env_vars.rs</code>:670 on 2025-06-21 13:02</div>
+            <div class="timeline-body"><p>This env var's intended use is to mock the GitHub API root during tests. It's not meant for users to override, and is hidden from <a href="https://docs.astral.sh/uv/reference/environment/">user-facing docs</a> with <code>#[attr_hidden]</code>.</p>
+<p>I can rename this to <code>UV_TEST_GITHUB_FAST_PATH_URL</code> to be even more explicit, assuming we are okay with <code>UV_TEST_*</code> appearing in non-test files.</p>
+<p>Please let me know what you think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-06-21 13:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv-git/src/rate_limit.rs</code>:20 on 2025-06-21 13:07</div>
+            <div class="timeline-body"><p>I did some <a href="https://www.youtube.com/watch?v=ZQFzMfHIxng">studying</a> into Atomics and you're right. It's more appropriate to use <code>Ordering::Relaxed</code> here since the atomic isn't interacting with other data structures (e.g. as an index to a distributed vec).</p>
+<p>@konstin I will update those in <code>uv-warning</code> consistent in a separate PR as that work is distinct from this PR's.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-06-21 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv-git/src/rate_limit.rs</code>:7 on 2025-06-21 13:08</div>
+            <div class="timeline-body"><p>You're right, thanks for the suggestion. I'll remove the <code>LazyLock</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv-git/src/git.rs</code>:820 on 2025-06-21 13:10</div>
+            <div class="timeline-body"><p>Good point! That said, I feel more comfortable relying on <code>x-ratelimit-remaining</code> in the response header as 403 could imply failures beyond just rate-limiting.</p>
+<p>~~I'll update the implementation accordingly to improve its clarity.~~</p>
+<p>[Update] <code>x-ratelimit-remaining</code> applies only to primary rate limits; secondary rate limits do not have such headers. So we have to rely on 403 and 429 as indicators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-06-21 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @oconnor663 by @christeefy on 2025-06-21 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-06-21 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv-git/src/rate_limit.rs</code>:20 on 2025-06-21 15:16</div>
+            <div class="timeline-body"><p>#14190 created for this work thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> approved on 2025-06-23 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2025-06-23 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @oconnor663 on 2025-06-23 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @oconnor663 by @oconnor663 on 2025-06-23 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-git/src/rate_limit.rs</code>:18 on 2025-06-24 09:42</div>
+            <div class="timeline-body"><p>Does this method need to be <code>pub(crate)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_install.rs</code>:2083 on 2025-06-24 10:01</div>
+            <div class="timeline-body"><p>For consistency, can we use https://github.com/astral-test/uv-public-pypackage here too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_install.rs</code>:2109 on 2025-06-24 10:01</div>
+            <div class="timeline-body"><p>Nice work on the testing strategy here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-24 10:07</div>
+            <div class="timeline-body"><p>Two things that should be easy to fix, otherwise it looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Skip git fetch when rate-limited by GitHub" to "Skip GitHub fast path when rate-limited" by @konstin on 2025-06-24 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-06-24 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-06-24 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv-git/src/rate_limit.rs</code>:18 on 2025-06-24 13:29</div>
+            <div class="timeline-body"><p>No it doesn't. Updated to just <code>const</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @christeefy on 2025-06-24 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-06-24 13:30</div>
+            <div class="timeline-body"><p>@konstin changes have been made and CI is passing. Thanks for your quick PR review 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @oconnor663 on 2025-06-24 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-06-24 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-24 19:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 07:27:34 UTC
+    </footer>
+</body>
+</html>

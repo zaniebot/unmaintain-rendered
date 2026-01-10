@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCP Artifact Registry download URLs must have /simple path - astral-sh/uv #14251</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>GCP Artifact Registry download URLs must have /simple path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14251">#14251</a>
+        opened by <a href="https://github.com/pasunboneleve">@pasunboneleve</a>
+        on 2025-06-25 04:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/pasunboneleve">@pasunboneleve</a> on 2025-06-25 04:27</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>The current <strong>uv</strong> <a href="https://docs.astral.sh/uv/guides/integration/alternative-indexes/#google-artifact-registry">docs</a> for <strong>Google Artifact Registry</strong> integration state that download URLs are expressed as</p>
+<pre><code class="language-toml">url = &quot;https://&lt;REGION&gt;-python.pkg.dev/&lt;PROJECT&gt;/&lt;REPOSITORY&gt;&quot;
+</code></pre>
+<p>I just found, by following the documentation, that this is incomplete. Instead, they should be</p>
+<pre><code class="language-toml">url = &quot;https://&lt;REGION&gt;-python.pkg.dev/&lt;PROJECT&gt;/&lt;REPOSITORY&gt;/simple/&quot;
+</code></pre>
+<p>in order to work. The trailing <code>/</code> is optional, but I also included it to conform to the standard used in the sections referring to other cloud providers within this same page.</p>
+<p>This PR makes the necessary change to the documentation.</p>
+<h2>Test Plan</h2>
+<ol>
+<li><a href="https://cloud.google.com/artifact-registry/docs/python/store-python#create">Create</a> a GCP Artifact Registry repository.</li>
+<li>Add it to a <strong>Python</strong> project using</li>
+</ol>
+<pre><code class="language-bash">export ARTIFACT_REGISTRY_PULL_TOKEN=$(
+    gcloud auth print-access-token --project=&lt;PROJECT&gt;
+)
+
+export UV_INDEX_BUILD_USERNAME=oauth2accesstoken
+export UV_INDEX_BUILD_PASSWORD=&quot;$ARTIFACT_REGISTRY_PULL_TOKEN
+</code></pre>
+<p>and</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;BUILD&quot;
+url = &quot;https://&lt;REGION&gt;-python.pkg.dev/&lt;PROJECT&gt;/&lt;REPOSITORY&gt;/simple/&quot;
+</code></pre>
+<ol start="3">
+<li>Assuming packages were added to that repository using <code>uv publish</code>, pull one of these using <code>uv add &lt;package&gt;</code>.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @jtfmumm by @konstin on 2025-06-25 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @konstin on 2025-06-25 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-25 07:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/integration/alternative-indexes.md</code>:223 on 2025-06-25 07:37</div>
+            <div class="timeline-body"><p>Have you check the trailing slash for the publish URL? The rules for it are different, as we don't redirect POST requests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pasunboneleve">@pasunboneleve</a> reviewed on 2025-06-25 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pasunboneleve">@pasunboneleve</a> on <code>docs/guides/integration/alternative-indexes.md</code>:223 on 2025-06-25 10:22</div>
+            <div class="timeline-body"><p>I just deleted my package from Artifact Repository and published again. Worked as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> approved on 2025-06-25 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-25 15:28</div>
+            <div class="timeline-body"><p>Thanks for catching this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-06-25 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-25 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-25 20:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 07:27:35 UTC
+    </footer>
+</body>
+</html>

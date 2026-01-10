@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add a UV_ONLY_GLOBAL_LOCKS flag for uv add/sync/remove - astral-sh/uv #14130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add a UV_ONLY_GLOBAL_LOCKS flag for uv add/sync/remove</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14130">#14130</a>
+        opened by <a href="https://github.com/jpetrucciani">@jpetrucciani</a>
+        on 2025-06-18 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jpetrucciani">@jpetrucciani</a> on 2025-06-18 15:11</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>After the recent change in #13869, I've found that certain python environments can no longer run things like <code>uv sync</code>, <code>uv add</code>, and <code>uv remove</code>. In particular, I use <a href="https://nixos.org/">nix</a> to get my python and uv binaries - and when I specify paths for these with <code>UV_PYTHON=</code>, it attempts to write these locks into the nix store next to the interpreter! This is problematic since things in the nix store are read-only - so I am unable to use uv for my environments beyond that change at the moment.</p>
+<p>I did look around for other options I might be able to use to force this behavior, but I wasn't able to find anything that looked like it would behave how I wanted - if this is not the case, please let me know!</p>
+<p>I also am not entirely sure I've added this correctly, or if there's some other pattern I should be following. I am not tied to any particular name or style of this, so please let me know if there's anything you'd like me to change!</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I've been using a patched version of uv in my local environments using this commit's <code>.patch</code> file as a patch to the <code>uv</code> build in nixpkgs - adding <code>UV_ONLY_GLOBAL_LOCKS=1</code> with this change allows me to use uv again for operations that use these locks!</p>
+<p>Here's the overlay:</p>
+<pre><code class="language-nix">final: prev: {
+  uv = prev.uv.overrideAttrs (_: {
+    patches = [
+      (final.fetchpatch {
+        url = &quot;https://github.com/astral-sh/uv/pull/14130/commits/f332ef0f7b698b6db69c00a87fb8ab6797bb74f6.patch&quot;;
+        sha256 = &quot;sha256-sJcPyO/R+rxS2x4vOyogtY9zVU9mN/TjaBQLjECnjQI=&quot;;
+      })
+    ];
+  });
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add a UV_ONLY_GLOBAL_LOCKS flag for " to "add a UV_ONLY_GLOBAL_LOCKS flag for uv add/sync/remove" by @jpetrucciani on 2025-06-18 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @oconnor663 by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @oconnor663 by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @oconnor663 by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @oconnor663 by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @oconnor663 by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @oconnor663 by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-06-18 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpetrucciani">@jpetrucciani</a> on 2025-06-18 15:26</div>
+            <div class="timeline-body"><p>Fixed the linter errors - though I'm hitting a weird panic trying to run <code>cargo dev generate-cli-reference</code> - probably an env issue on my side - will dig in more later today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-18 15:30</div>
+            <div class="timeline-body"><p>When you're using <code>uv sync</code> with a Python interpreter in nix, doesn't it need to write to the interpreter directory anyway to install packages, i.e., which specific path is write-only and failing for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpetrucciani">@jpetrucciani</a> on 2025-06-18 16:02</div>
+            <div class="timeline-body"><p>Apologies - to clarify, I called out <code>uv sync</code> just since it was associated with the change as well - I am only using <code>uv add</code> and <code>uv remove</code> (and occasionally <code>uv lock</code>). When I am using uv inside nix environments, I am essentially using it only for the version solving and generating the lockfile, which then is parsed by <a href="https://github.com/pyproject-nix/uv2nix">uv2nix</a> to provide a reproducible tree of the dependencies. I am running with:</p>
+<pre><code>UV_PYTHON=/nix/store/78s3fidv1bhy5pj71sqff8y5cmzs1g1l-coco-env/bin/python   # this is an example from this particular environment - this would be a random /nix/store/* path depending on the derivation (which is read-only)
+UV_SYSTEM_PYTHON=true
+UV_NO_MANAGED_PYTHON=true
+UV_ONLY_GLOBAL_LOCKS=1            # this is the new flag i added to let this continue to work how i've been using uv
+UV_NO_SYNC=1
+UV_PYTHON_DOWNLOADS=never
+</code></pre>
+<p>and then as the lockfile changes, my setup rebuilds the entire derivation based on what's parsed from the lockfile</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-18 16:58</div>
+            <div class="timeline-body"><p>I wonder if the underlying issue here is that <code>uv</code> is asking &quot;is this a virtual environment?&quot; when it should (also?) be asking &quot;is the environment <a href="https://packaging.python.org/en/latest/specifications/externally-managed-environments"><em>externally managed</em></a>?&quot;:</p>
+<p>https://github.com/astral-sh/uv/blob/1fc65a1d9de51b2dd567733208f4595dc442db89/crates/uv-python/src/interpreter.rs#L593-L599</p>
+<p>@jpetrucciani, could you check whether your Nix environment has an <code>EXTERNALLY-MANAGED</code> marker file? Here's how I find that file in my Arch Linux environment, based on the <code>sysconfig</code> path rule <a href="https://packaging.python.org/en/latest/specifications/externally-managed-environments/#marking-an-interpreter-as-using-an-external-package-manager">described in the docs here</a>:</p>
+<pre><code>$ ls -l $(python -c &quot;import sysconfig; print(sysconfig.get_path('stdlib', sysconfig.get_default_scheme()))&quot;)/EXTERNALLY-MANAGED
+-rw-r--r-- 1 root root 553 Apr  9 00:44 /usr/lib/python3.13/EXTERNALLY-MANAGED
+</code></pre>
+<p>If a similar file exists for you, the best fix might be for us to add a check for it in the logic above. (If it doesn't exist, maybe it should? But I don't have any Nix experience myself.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-18 18:01</div>
+            <div class="timeline-body"><p>Those are technically mutually exclusive, <code>EXTERNALLY-MANAGED</code> can't be used in virtual environments (though I think it should be usable).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-18 18:26</div>
+            <div class="timeline-body"><p>Ah, I was missing the &quot;if both of these conditions are true&quot; part <a href="https://packaging.python.org/en/latest/specifications/externally-managed-environments/#marking-an-interpreter-as-using-an-external-package-manager">in the docs</a>. In that sense, is this situation in some sense &quot;Nix's fault&quot; for causing Python to believe it's in a virtual environment, when it's...mostly not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpetrucciani">@jpetrucciani</a> on 2025-06-18 19:00</div>
+            <div class="timeline-body"><p>Ah interesting - thank you for the links! I wasn't aware of this particular functionality being a part of the default python configuration/installation!</p>
+<p>@oconnor663 the default python derivations in nix do not have the <code>EXTERNALLY-MANAGED</code> marker file, though it sounds like that wouldn't solve this particular case alone - but that could be something else to explore adding for other reasons!</p>
+<p>This is interesting as well since the whole <code>sys.prefix != sys.base_prefix</code> check makes sense in most cases, but with how nix is managing the store paths, this would always be the case, since the base <code>python</code> derivation is its own store path, and then the uv2nix wrapper creates a symlink tree of that combined with the packages formed from the <code>uv.lock</code> file. I wonder if this is something I can actually patch as well - if that main check is the thing that determines &quot;being in a virtual environment&quot;, then perhaps I could fix that?</p>
+<p><img src="https://github.com/user-attachments/assets/5fce173b-d2d7-442c-91d1-6a6273f715bc" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matko">@matko</a> on 2025-06-20 11:05</div>
+            <div class="timeline-body"><p>@jpetrucciani, thank you for putting in effort into getting this issue resolved. I too started running into this in the last 2 days in my nix environments, and had to pin an earlier version of uv to keep things working.</p>
+<p>Regarding environment testing, maybe another option is checking if the environment directory is read-only. This will never be the case for a uv-managed environment, and always the case for a virtual environment in the nix store. Since environment-local locking will always fail for read-only environments, and concurrent modification of a read-only environment is very unlikely, defaulting to a global lock in that case makes sense.</p>
+<p>@oconnor663,</p>
+<blockquote>
+<p>In that sense, is this situation in some sense &quot;Nix's fault&quot; for causing Python to believe it's in a virtual environment, when it's...mostly not?</p>
+</blockquote>
+<p>Nix environments are certainly 'weird' and it's understandable that tool expectations are broken some times. That said, this is not a case of causing python to believe it's a virtual environment when it is not. The uv2nix tooling really does produce a virtual environment, with a pyvenv.cfg one directory above a python binary, and a site-packages directory. It is just read-only and mostly composed out of symlinks. To my knowledge, that is still <a href="https://peps.python.org/pep-0405/">PEP 405</a> compliant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpetrucciani">@jpetrucciani</a> on 2025-06-21 16:37</div>
+            <div class="timeline-body"><p>fixed my local rust env and ran:</p>
+<pre><code class="language-bash">cargo dev generate-all
+</code></pre>
+<p>then updated the snapshot tests:</p>
+<pre><code class="language-bash">cargo insta test --features pypi,python,python-patch --accept --test-runner nextest --test it -- help::help
+</code></pre>
+<p>then updated this branch - though CI still seems to think I've not regenerated some things 🤔 from the diff, it looks like I'm <a href="https://github.com/astral-sh/uv/actions/runs/15796998330/job/44530342903?pr=14130#step:9:11279">missing a section</a> of the <code>cli.md</code>, but I cannot find that section locally (<code>uv-python-upgrade</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpetrucciani">@jpetrucciani</a> on 2025-06-25 20:32</div>
+            <div class="timeline-body"><p>I think this ended up being user error on my part - I was using the wrong location for <code>UV_PYTHON=</code> for my environment, causing this to act in this way. Following the <a href="https://github.com/pyproject-nix/uv2nix/issues/208#issuecomment-3000838609">uv2nix's maintainer's advice</a> makes it work for me again, without needing this PR - Apologies for wasting anyone's time!</p>
+<p>for context, in my nix environment (inside my <code>buildEnv</code>), I needed to use:</p>
+<pre><code class="language-nix">UV_PYTHON = python.interpreter;
+</code></pre>
+<p>instead of</p>
+<pre><code class="language-nix">UV_PYTHON = &quot;${virtualenv}/bin/python&quot;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jpetrucciani on 2025-06-25 20:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 07:27:35 UTC
+    </footer>
+</body>
+</html>

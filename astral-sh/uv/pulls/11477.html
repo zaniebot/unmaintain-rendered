@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make the cache dir  wherever uv is called from when --no-cache specified - astral-sh/uv #11477</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make the cache dir  wherever uv is called from when --no-cache specified</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11477">#11477</a>
+        opened by <a href="https://github.com/shaneikennedy">@shaneikennedy</a>
+        on 2025-02-13 12:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2025-02-13 12:45</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>As brought up <a href="https://github.com/astral-sh/uv/issues/11385">here</a>, using the tempfile::env::temp_dir default per system is not ideal for cases where directories are on different mounts, or simply in the context where the system user doesn't have write permissions the temp_dir default.</p>
+<p>I read the initial issue and @charliermarsh 's <a href="https://github.com/astral-sh/uv/issues/11385#issuecomment-2649540234">follow up comment</a> and I think the coupling to the virtual env directory is not necessary, and instead I think we can simply default the tempdir to the directory where uv is being invoked from. I think this is a sensible default since it is common to run the project from the project root AND the .venv directory is created in the project root so we should have write permissions here.</p>
+<p>~In case for some reason the directory that uv is invoked from <strong>also</strong> doesn't have write permissions (or you just don't want the temp cache there for some reason?), I added a commit that will respect UV_CACHE_DIR so that these users can provide a directory for a temp cache when using --no-cache~</p>
+<h2>Test Plan</h2>
+<pre><code>uv git:main*
+❯ target/debug/uv cache dir --no-cache
+/Users/shane.kennedy/dev/shane/uv/.tmp4b6zap
+</code></pre>
+<p>Also used the uv build for building/syncing some test projects and it seems to work fine, I think the test suite for uv will be more comprehensive, however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @shaneikennedy on 2025-02-13 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Make the cache dir inside project when --no-cache specified" to "Make the cache dir  wherever uv is called from when --no-cache specified" by @shaneikennedy on 2025-02-13 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2025-02-17 14:22</div>
+            <div class="timeline-body"><p>@edmorley Hey :) Since this PR attempts to cover your use-case in the issue you submitted re:--no-cache, would you mind taking a look at the PR description and letting me know if you think this would resolve the issue for you at Heroku, please? I think I understood your problem correctly but want to double check</p>
+<p>I know your suggestion was to put the temp dir inside the venv but I understood that the main problem was hard linking and not wanting to do manual cleanup, which should be satisfiable here either by the default (temp dir inside directory where uv is invoked from) or by using UV_CACHE to create the temp dir somewhere that works for you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2025-02-27 09:47</div>
+            <div class="timeline-body"><p>@zanieb @charliermarsh in the issue it seems like you two are aligned on fixing this, wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2025-03-20 11:47</div>
+            <div class="timeline-body"><p>Needed a rebase due to some merge conflicts, @zanieb what do you think about this change?</p>
+<p>There's a failing test for all platforms but seems unrelated to this PR as all recent build are failing like this. I can rebase again later to trigger another build 👍</p>
+<blockquote>
+<p>× No solution found when resolving dependencies:
+╰─▶ Because iniconfig&lt;=2.0.0 needs to be downloaded from a registry and you require iniconfig, we can conclude that your requirements are unsatisfiable.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 13:39</div>
+            <div class="timeline-body"><p>Sorry for not getting back to you sooner. I'm pretty hesitant to pollute the working directory.</p>
+<p>I think we also can't respect <code>UV_CACHE_DIR</code> with <code>--no-cache</code> as I think the expectation there is that we won't write to the configured cache directory.</p>
+<p>I'm not sure what the solution is here yet, it seems like we'll have to explore the problem space more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2025-03-31 08:26</div>
+            <div class="timeline-body"><p>Agree on the CACHE_DIR for sure, I put it up incase a workaround was preferable but it's definitely confusing, I popped that commit 👍</p>
+<p>I don't understand what the problem is with a temp dir in the project root since that's where the uv cache goes by default when you don't use --no-cache, out of curiosity what is the concern there?</p>
+<p>Is putting the cache dir in the virtualenv preferable? it sounded like that was an acceptable solution in the issue but the coupling between cache and virtualenv feels unecessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daniel-albuschat">@daniel-albuschat</a> on 2025-06-24 12:29</div>
+            <div class="timeline-body"><p>@shaneikennedy See my comment on the related ticket: https://github.com/astral-sh/uv/issues/11385#issuecomment-3000172952
+It's essential to have <code>uv</code> operate on read-only file-systems, with the exception of user-configurable directories like <code>UV_CACHE_DIR</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2025-06-24 13:58</div>
+            <div class="timeline-body"><blockquote>
+<p>@shaneikennedy See my comment on the related ticket: <a href="https://github.com/astral-sh/uv/issues/11385#issuecomment-3000172952">#11385 (comment)</a> It's essential to have <code>uv</code> operate on read-only file-systems, with the exception of user-configurable directories like <code>UV_CACHE_DIR</code>.</p>
+</blockquote>
+<p>makes sense, but specifically for the topic of caching in uv it probably doesn't make sense for you to use --no-cache anyways with the current way it works since write access is needed in <em>some</em> directory to write the tempfile to that is subject to change by the uv maintainers. I tried to accommodate this in a previous commit in this PR but it's definitely confusing to have --no-cache + a cache CACHE_DIR setting, so I removed it</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 07:27:34 UTC
+    </footer>
+</body>
+</html>

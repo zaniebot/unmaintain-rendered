@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support transparent Python patch version upgrades - astral-sh/uv #13954</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support transparent Python patch version upgrades</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13954">#13954</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-06-10 19:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-10 19:47</div>
+            <div class="timeline-body"><blockquote>
+<p>NOTE: The PRs that were merged into this feature branch have all been independently reviewed. But it's also useful to see all of the changes in their final form. I've added comments to significant changes throughout the PR to aid discussion.</p>
+</blockquote>
+<p>This PR introduces transparent Python version upgrades to uv, allowing for a smoother experience when upgrading to new patch versions. Previously, upgrading Python patch versions required manual updates to each virtual environment. Now, virtual environments can transparently upgrade to newer patch versions.</p>
+<p>Due to significant changes in how uv installs and executes managed Python executables, this functionality is initially available behind a <code>--preview</code> flag. Once an installation has been made upgradeable through <code>--preview</code>, subsequent operations (like <code>uv venv -p 3.10</code> or patch upgrades) will work without requiring the flag again. This is accomplished by checking for the existence of a minor version symlink directory (or junction on Windows).</p>
+<h3>Features</h3>
+<ul>
+<li>New <code>uv python upgrade</code> command to upgrade installed Python versions to the latest available patch release:</li>
+</ul>
+<pre><code># Upgrade specific minor version 
+uv python upgrade 3.12 --preview
+# Upgrade all installed minor versions
+uv python upgrade --preview
+</code></pre>
+<ul>
+<li>Transparent upgrades also occur when installing newer patch versions:</li>
+</ul>
+<pre><code>uv python install 3.10.8 --preview
+# Automatically upgrades existing 3.10 environments
+uv python install 3.10.18
+</code></pre>
+<ul>
+<li>Support for transparently upgradeable Python <code>bin</code> installations via <code>--preview</code> flag</li>
+</ul>
+<pre><code>uv python install 3.13 --preview
+# Automatically upgrades the `bin` installation if there is a newer patch version available
+uv python upgrade 3.13 --preview
+</code></pre>
+<ul>
+<li>Virtual environments can still be tied to a patch version if desired (ignoring patch upgrades):</li>
+</ul>
+<pre><code>uv venv -p 3.10.8
+</code></pre>
+<h3>Implementation</h3>
+<p>Transparent upgrades are implemented using:</p>
+<ul>
+<li>Minor version symlink directories (Unix) or junctions (Windows)</li>
+<li>On Windows, trampolines simulate paths with junctions</li>
+<li>Symlink directory naming follows Python build standalone format: e.g., <code>cpython-3.10-macos-aarch64-none</code></li>
+<li>Upgrades are scoped to the minor version key (as represented in the naming format: implementation-minor version+variant-os-arch-libc)</li>
+<li>If the context does not provide a patch version request and the interpreter is from a managed CPython installation, the <code>Interpreter</code> used by <code>uv python run</code> will use the full symlink directory executable path when available, enabling transparently upgradeable environments created with the <code>venv</code> module (<code>uv run python -m venv</code>)</li>
+</ul>
+<p>New types:</p>
+<ul>
+<li><code>PythonMinorVersionLink</code>: in a sense, the core type for this PR, this is a representation of a minor version symlink directory (or junction on Windows) that points to the highest installed managed CPython patch version for a minor version key.</li>
+<li><code>PythonInstallationMinorVersionKey</code>: provides a view into a <code>PythonInstallationKey</code> that excludes the patch and prerelease. This is used for grouping installations by minor version key  (e.g., to find the highest available patch installation for that minor version key) and for minor version directory naming.</li>
+</ul>
+<h3>Compatibility</h3>
+<ul>
+<li>Supports virtual environments created with:<ul>
+<li><code>uv venv</code></li>
+<li><code>uv run python -m venv</code> (using managed Python that was installed or upgraded with <code>--preview</code>)</li>
+<li>Virtual environments created within these environments</li>
+</ul>
+</li>
+<li>Existing virtual environments from before these changes continue to work but aren't transparently upgradeable without being recreated</li>
+<li>Supports both standard Python (<code>python3.10</code>) and freethreaded Python (<code>python3.10t</code>)</li>
+<li>Support for transparently upgrades  is currently only available for managed CPython installations</li>
+</ul>
+<p>Closes #7287
+Closes #7325
+Closes #7892
+Closes #9031
+Closes #12977</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 19:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/discovery.rs</code>:347 on 2025-06-10 19:51</div>
+            <div class="timeline-body"><p>When deriving an executable from an installation, if the version is not a patch and it's a CPython installation, uv looks for a minor version symlink directory. If one is found, it will use the symlink-directory containing path. This enables transparently upgradeable virtual environments created with the <code>venv</code> module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/installation.rs</code>:206 on 2025-06-10 19:55</div>
+            <div class="timeline-body"><p>uv checks for the highest patch for each minor version key and ensures that the corresponding minor version link exists and points to it (but a symlink directory is only initially created in preview mode).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/installation.rs</code>:531 on 2025-06-10 19:56</div>
+            <div class="timeline-body"><p>Used for grouping by the full key minus the patch and prerelease. Also used for deriving symlink directory names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/interpreter.rs</code>:638 on 2025-06-10 19:58</div>
+            <div class="timeline-body"><p>This has been moved from <code>uv_fs</code> because it now knows about trampolines. If the path is to a trampoline, this will canonicalize the trampoline's internal Python path. If not, it will behave as before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/managed.rs</code>:675 on 2025-06-10 20:02</div>
+            <div class="timeline-body"><p>In a sense, the core of the implementation. We use this to derive a symlink directory name from a full Python installation path, to create such a directory (or junction on Windows), and to check for the existence of such a directory. This is also where the preview gating happens (EDIT: if preview is disabled and the symlink doesn't exist already, the constructor will return <code>None</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:81 on 2025-06-10 20:05</div>
+            <div class="timeline-body"><p>Updates to the trampoline logic to set the <code>__PYVENV_LAUNCHER__</code> env var for a Python launcher (the approach taken by CPython for Python Launchers) and, if it's not a virtual environment and the <code>PYTHONHOME</code> is not set, to set the <code>PYTHONHOME</code> env var to ensure the correct directories are added to <code>sys.path</code> when running with a junction trampoline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:284 on 2025-06-10 20:07</div>
+            <div class="timeline-body"><p>This update is required so we don't resolve junctions for junction trampolines. We need to be able to use the junction to ensure transparent upgrades.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:150 on 2025-06-10 20:10</div>
+            <div class="timeline-body"><p>If this is an upgradeable request, we'll try to use a Python minor version link when creating the virtual environment (creating the symlink directory/junction if it doesn't exist).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/install.rs</code>:188 on 2025-06-10 20:12</div>
+            <div class="timeline-body"><p>If this is an upgrade with empty targets, uv collects minor version requests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/install.rs</code>:490 on 2025-06-10 20:14</div>
+            <div class="timeline-body"><p>Ensure the minor version links exist for the highest patch installations per minor version key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/install.rs</code>:655 on 2025-06-10 20:15</div>
+            <div class="timeline-body"><p>When creating <code>bin</code> links, we now try to use a symlink directory as the <code>bin</code> link target if we can and this is an upgradeable request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/uninstall.rs</code>:248 on 2025-06-10 20:17</div>
+            <div class="timeline-body"><p>Here's where we uninstall symlink directories if there are no installations remaining for the corresponding minor version key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/lib.rs</code>:1424 on 2025-06-10 20:18</div>
+            <div class="timeline-body"><p>I had initially tried creating a new <code>python_upgrade</code> command, but there is so much shared machinery that it seemed like an unnecessary amount of maintenance overhead to split the code paths. Sharing them also makes adding <code>python install --upgrade</code> trivial if we decide to go that route.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jtfmumm on 2025-06-10 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @jtfmumm on 2025-06-10 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @jtfmumm on 2025-06-10 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-11 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:346 on 2025-06-11 22:42</div>
+            <div class="timeline-body"><p><code>PythonMinorVersionLink::from_installation</code> will already return <code>None</code> on alternative implementations, and we can use <code>bool::then</code> to avoid repeating the default case here.</p>
+<p>See https://github.com/astral-sh/uv/pull/13980</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-11 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:338 on 2025-06-11 22:47</div>
+            <div class="timeline-body"><p>Do we need preview mode to be threaded through here? Don't we always want to discover minor version links if they exist, regardless of whether preview is enabled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-11 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/interpreter.rs</code>:644 on 2025-06-11 22:50</div>
+            <div class="timeline-body"><p>Not a part of this pull request, but we should follow up on it.</p>
+<p>I'm still confused by this, why must the path be absolute? That isn't documented for this function. I think I asked this in a previous pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:156 on 2025-06-11 22:51</div>
+            <div class="timeline-body"><p>I think it's okay not to gate with this, we don't tend to do that unless we're performing a particularly expensive operation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-11 22:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-11 23:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/discovery.rs</code>:338 on 2025-06-11 23:50</div>
+            <div class="timeline-body"><p>Even when preview is disabled, <code>PythonMinorVersionLink</code> will check if the symlink exists. We could pass <code>PreviewMode::Disabled</code> directly into <code>PythonMinorVersionLink::from_installation</code> here, but I think that's too prone to error. My goal was to centralize the logic around how to handle preview states.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/interpreter.rs</code>:644 on 2025-06-11 23:51</div>
+            <div class="timeline-body"><p>Yeah we can follow up on it. This was a pre-existing invariant and my changes didn't eliminate the cases it would have applied to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-11 23:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/managed.rs</code>:748 on 2025-06-11 23:58</div>
+            <div class="timeline-body"><p>This nesting is left over from an earlier version and I'm going to consolidate into</p>
+<pre><code>if preview.is_disabled() &amp;&amp; !minor_version_link.symlink_exists() {
+    return None;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-11 23:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-11 23:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/discovery.rs</code>:346 on 2025-06-11 23:59</div>
+            <div class="timeline-body"><p>Merged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 19:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:338 on 2025-06-12 19:50</div>
+            <div class="timeline-body"><p>I see, I misread that code.</p>
+<p>I'm a bit confused by it still, but I'll read that more carefully and see if I have questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:62 on 2025-06-12 19:55</div>
+            <div class="timeline-body"><p>Should this be &quot;for Python minor version link at&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:78 on 2025-06-12 19:55</div>
+            <div class="timeline-body"><p>As in https://github.com/astral-sh/uv/pull/13954/files#r2143547453, should this be &quot;Python minor version link&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:828 on 2025-06-12 19:56</div>
+            <div class="timeline-body"><p>Does this need to be <code>pub</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:675 on 2025-06-12 20:08</div>
+            <div class="timeline-body"><p>That last sentence is part of what confused me at https://github.com/astral-sh/uv/pull/13954/files#r2143538708</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:804 on 2025-06-12 20:09</div>
+            <div class="timeline-body"><p>Nit: Should this just be <code>exists()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:236 on 2025-06-12 20:11</div>
+            <div class="timeline-body"><p>I think the name of this function is way too general now that it's unattached from a <code>ManagedPythonInstallation</code>. Previously, it was quite specifically &quot;create a <code>bin/</code> link to this managed Python interpreter&quot;. Now it seems to be used for more? We should probably rename it for clarity, and update the doc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:488 on 2025-06-12 20:57</div>
+            <div class="timeline-body"><p>Why not have this be <code>ManagedPythonInstallations::find_minor_versions</code> or similar? then transform those installations into <code>PythonInstallationMinorVersionKey</code>? It feels weird to collect all installations first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:204 on 2025-06-12 20:58</div>
+            <div class="timeline-body"><p>Should this be removed? You need these later, right? I worry about this tracing regression, we have that for a reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:488 on 2025-06-12 20:59</div>
+            <div class="timeline-body"><p>Contrary to my comment, I'm a bit confused that we're not just using https://github.com/astral-sh/uv/pull/13954/files#r2143645173 for <code>existing_installations</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-12 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/install.rs</code>:204 on 2025-06-12 21:00</div>
+            <div class="timeline-body"><p>This isn't removed. It's just been moved above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/install.rs</code>:488 on 2025-06-12 21:04</div>
+            <div class="timeline-body"><p>Haven't we potentially installed new installations by this point? The naming of <code>existing_installations</code> could be improved here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-12 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile_scenarios.rs</code>:425 on 2025-06-12 21:05</div>
+            <div class="timeline-body"><p>Why is this here? We can't mutate the scenario files, they're generated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install_scenarios.rs</code>:4069 on 2025-06-12 21:05</div>
+            <div class="timeline-body"><p>Same as https://github.com/astral-sh/uv/pull/13954/files#r2143657006 — if you want to mutate these it needs to happen in the template.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-12 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/pip_compile_scenarios.rs</code>:425 on 2025-06-12 21:08</div>
+            <div class="timeline-body"><p>Sorry, I thought I commented on this. This is here to prevent the test from using the highest available patch version if a minor link directory has been installed. Our test environments seem like they're not isolated enough to be able to simulate only having certain patches installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:204 on 2025-06-12 21:08</div>
+            <div class="timeline-body"><p>Ah I see, thanks! I think I'll need to review this file in an editor, the diff is hard to follow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/pip_install_scenarios.rs</code>:4069 on 2025-06-12 21:08</div>
+            <div class="timeline-body"><p>Same as comment above (and for other instances)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-12 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:488 on 2025-06-12 21:10</div>
+            <div class="timeline-body"><p>I see, that makes more sense. I think we've previously avoiding repeatedly reading all the installations. I find it surprising that we'd need to do that? We know what we've just installed via the <code>installations</code> variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:488 on 2025-06-12 21:12</div>
+            <div class="timeline-body"><p>I think it seems better to operate on the subset of Python versions requested in the install? Whereas this will consider all Python installations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:472 on 2025-06-12 21:16</div>
+            <div class="timeline-body"><p>I'm finding it confusing that we're passing <code>preview</code> in here <em>and</em> using <code>preview</code> to determine if the value of <code>upgradable</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/install.rs</code>:472 on 2025-06-12 21:18</div>
+            <div class="timeline-body"><p>I'm just being defensive there. If preview is disabled, <code>upgradeable</code> is effectively <code>false</code>, so I was trying to avoid confusion when it's used downstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-12 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/install.rs</code>:488 on 2025-06-12 21:20</div>
+            <div class="timeline-body"><p>The reason to consider all Python installations is to ensure we create minor version links for installations from prior to these changes to uv. But I can look at this again and see if I can combine the old existing_installations with the new ones</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-12 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile_scenarios.rs</code>:425 on 2025-06-12 21:36</div>
+            <div class="timeline-body"><p>I think that means we might want to canonicalize Python executables before using them in the test suite? There are various tests that do require specific patch versions, and rely on that <code>TestContext</code> behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install_scenarios.rs</code>:4069 on 2025-06-12 21:36</div>
+            <div class="timeline-body"><p>These changes will be undone on the next scenario update, they need to go in the template if they must be here. Though we can discuss ways to make them unnecessary above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-12 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-12 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/pip_compile_scenarios.rs</code>:425 on 2025-06-12 21:38</div>
+            <div class="timeline-body"><p>Maybe we can canonicalize them only with the <code>python-patch</code> feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:156 on 2025-06-13 15:22</div>
+            <div class="timeline-body"><p>Updated in #14029</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/managed.rs</code>:748 on 2025-06-13 15:22</div>
+            <div class="timeline-body"><p>Updated in #14029</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/managed.rs</code>:62 on 2025-06-13 15:22</div>
+            <div class="timeline-body"><p>Updated in #14029</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/managed.rs</code>:78 on 2025-06-13 15:22</div>
+            <div class="timeline-body"><p>Updated in #14029</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/managed.rs</code>:828 on 2025-06-13 15:22</div>
+            <div class="timeline-body"><p>Updated in #14029</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/managed.rs</code>:804 on 2025-06-13 15:22</div>
+            <div class="timeline-body"><p>Updated in #14029</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:236 on 2025-06-13 15:23</div>
+            <div class="timeline-body"><p>Updated in #14029</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/python/install.rs</code>:488 on 2025-06-13 15:23</div>
+            <div class="timeline-body"><p>Updated in #14029, chaining existing installations with the new ones</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/pip_compile_scenarios.rs</code>:425 on 2025-06-13 15:23</div>
+            <div class="timeline-body"><p>Updated in #14029 and removed those <code>uv venv</code> calls from the tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-13 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/pip_install_scenarios.rs</code>:4069 on 2025-06-13 15:24</div>
+            <div class="timeline-body"><p>Updated in #14029</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-16 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/interpreter.rs</code>:644 on 2025-06-16 12:16</div>
+            <div class="timeline-body"><p>iitc if we get a relative path here we don't know what it would be relative too (<code>CWD</code>,  <code>PYTHONHOME</code> or something else), so we chose to make this the responsibility of the caller. We're now passing <code>sys_executable</code> and <code>sys_base_executable</code> here, which are not enforced to be absolute, so we should change this from a panic to an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-trampoline/trampolines/trampolines/uv-trampoline-aarch64-console.exe</code>:1 on 2025-06-16 12:17</div>
+            <div class="timeline-body"><p>Are those duplicates?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/settings.rs</code>:977 on 2025-06-16 12:30</div>
+            <div class="timeline-body"><p>Unused clippy allow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/discovery.rs</code>:349 on 2025-06-16 12:34</div>
+            <div class="timeline-body"><p>nit: assign this to a variable outside the tuple to make it easier to follow that this is a tuple; ideally, we'd also de-nest it a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/install.rs</code>:183 on 2025-06-16 13:03</div>
+            <div class="timeline-body"><p>We're using the randomize-order hashset here, but <code>requests.first()</code> is special below. Can we ensure deterministic order?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/installation.rs</code>:542 on 2025-06-16 13:36</div>
+            <div class="timeline-body"><p>Can we use something ordered here? (And potentially remove the hash derives afterwards)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/managed.rs</code>:661 on 2025-06-16 13:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// The symlink directory (or junction on Windows).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_install.rs</code>:359 on 2025-06-16 14:06</div>
+            <div class="timeline-body"><p>Can you add something (cheap) that checks that we're not creating/using the new links in the non-preview <code>python_install</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-16 14:16</div>
+            <div class="timeline-body"><p>I found a bad interaction between our two preview features:</p>
+<pre><code>$ uv-debug python upgrade 3.12 --preview
+error: Failed to install cpython-3.12.11-linux-x86_64-gnu
+  Caused by: Executable already exists at `/home/konsti/.local/bin/python3.12` but is not managed by uv; use `--force` to replace it
+$ uv-debug python upgrade 3.12 --preview --force
+error: unexpected argument '--force' found
+
+  tip: to pass '--force' as a value, use '-- --force'
+
+Usage: uv-debug python upgrade &lt;TARGETS&gt;...
+
+For more information, try '--help'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-16 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-16 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/settings.rs</code>:977 on 2025-06-16 17:59</div>
+            <div class="timeline-body"><p>(I think this is fine, there are a bunch of copies of this. We should also just turn off that rule because we always ignore it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-16 19:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I found a bad interaction between our two preview features:</p>
+<pre><code>$ uv-debug python upgrade 3.12 --preview
+error: Failed to install cpython-3.12.11-linux-x86_64-gnu
+  Caused by: Executable already exists at `/home/konsti/.local/bin/python3.12` but is not managed by uv; use `--force` to replace it
+$ uv-debug python upgrade 3.12 --preview --force
+error: unexpected argument '--force' found
+
+  tip: to pass '--force' as a value, use '-- --force'
+
+Usage: uv-debug python upgrade &lt;TARGETS&gt;...
+
+For more information, try '--help'.
+</code></pre>
+</blockquote>
+<p>I changed this (in #14084) to be a warning in the upgrade case, hinting at using <code>--force</code> with <code>uv python install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-16 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-trampoline/trampolines/trampolines/uv-trampoline-aarch64-console.exe</code>:1 on 2025-06-16 19:21</div>
+            <div class="timeline-body"><p>I've removed those ones</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-17 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/settings.rs</code>:977 on 2025-06-17 09:11</div>
+            <div class="timeline-body"><p>I created a separate PR off <code>main</code> to turn this off: #14102</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jtfmumm on 2025-06-17 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @jtfmumm on 2025-06-18 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-18 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/lib.rs</code>:1424 on 2025-06-18 15:11</div>
+            <div class="timeline-body"><p>This doesn't match how we use <code>--preview</code> elsewhere, this should just show a warning, e.g.,</p>
+<p>https://github.com/astral-sh/uv/blob/f08b27827a2cb2af4de780c2b587f816b8617e8e/crates/uv/src/commands/pip/install.rs#L134-L140</p>
+<p>and should probably be in the implementation for consistency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-18 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/lib.rs</code>:1424 on 2025-06-18 17:46</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-06-20 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-20 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-20 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-06-20 16:48</div>
+            <div class="timeline-body"><p>Hi, I think I authored the oldest request for this feature (#7287) and I must say, I'm amazed by the amount of work that went into it. I had <em>no</em> idea it would be that involved, and I'm eternally grateful for your effort. Thank you so much !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/callegar">@callegar</a> on 2025-06-21 09:22</div>
+            <div class="timeline-body"><p>Will this also be available for the <code>tool</code> subcommand that internally relies on virtualenvs. Specifically, will it be possible to say <code>uv tool update -p &lt;something&gt;</code>, or <code>uv tool update -p &lt;something&gt; --all</code>?</p>
+<p>Even more interesting: in case you upgrade a managed python minor version (e.g <code>uv python install 3.15.3</code> and then <code>uv python uninstall 3.15.2</code>) will it then be possible to have <code>uv tool update --all</code> update all the virtualenvs using the not-anymore-existing minor python version to the newer one?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 07:27:34 UTC
+    </footer>
+</body>
+</html>
