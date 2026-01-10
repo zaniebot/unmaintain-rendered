@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update the tilde version specifier warning to include more context - astral-sh/uv #14335</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update the tilde version specifier warning to include more context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14335">#14335</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-06-27 21:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-27 21:44</div>
+            <div class="timeline-body"><p>Follows https://github.com/astral-sh/uv/pull/14008</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2025-06-27 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/requires_python.rs</code>:79 on 2025-06-27 21:45</div>
+            <div class="timeline-body"><p>I found this hard to follow and there's a lot of indirection that can be avoided for the case we care about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-27 21:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-27 22:03</div>
+            <div class="timeline-body"><p>cc @aaron-ang — curious if you have any thoughts here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aaron-ang">@aaron-ang</a> reviewed on 2025-06-27 22:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/aaron-ang">@aaron-ang</a> on <code>crates/uv-pep440/src/version_specifier.rs</code>:861 on 2025-06-27 22:36</div>
+            <div class="timeline-body"><p>@zanieb could you briefly explain why this is needed? I'm guessing it is to handle edge cases. If so, should we also check for post and local version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaron-ang">@aaron-ang</a> on 2025-06-27 22:41</div>
+            <div class="timeline-body"><blockquote>
+<p>cc @aaron-ang — curious if you have any thoughts here</p>
+</blockquote>
+<p>I was trying to reuse as much code as possible., but your implementation is definitely much cleaner!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-27 23:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep440/src/version_specifier.rs</code>:861 on 2025-06-27 23:08</div>
+            <div class="timeline-body"><p>Yeah just guarding against edge-cases.</p>
+<p>We might want to check if <code>specifier.version() == specifier.version.only_release()</code>? I'm not sure if that's costly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-06-27 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-01 19:11</div>
+            <div class="timeline-body"><p>I think this warning added in #14008 is quite confusing and @zanieb maybe you can fix it here?</p>
+<p>First if all it is very unclear what version it relates to - especially when you have a workspace.
+We started to receive this warning in <code>uv sync</code> recently in airflow:</p>
+<p><img src="https://github.com/user-attachments/assets/82df9c32-011d-4dbf-aaa1-1e841e405d89" alt="image" /></p>
+<p>I looked at it and it really makes no sense <code>~=3.10</code> is perfectly valid specification, meaning <code>~=3.10,&lt;4</code> and this is really what we mean in our specification of providers in our workspace, because our providers should be compatible with generally any future version of Python. Unless we specifically forbid it, anyhow in Airflow we upper bind Airflow itself, and it won't have upper-binding moved until we either check that all provider work with the new upper-binidng or we apply upper-binding to them. Also the message does not say how to fix it ... Is it <code>~=3.10,&lt;4</code> explicitly or <code>&gt;=3.10,&lt;4</code> -&gt; we are not even sure what we are asked for.</p>
+<p>So I thought (creatively) it is about something else - namly <code>~=3.10,&lt;3.13</code> we had - because I thought it's about unnecessary <code>&lt;4</code> implicltly added. But I replaced all of those with <code>&gt;=3.10,&lt;3.13</code> and we still got the same warning. So I am pretty sure it's about <code>~=3.10</code> in our provider's pyproject.tomls (deep into our workspace and many of those). Those are the only places left .. But it still does not seem to make a lot of sense -   is this really the intention to warn when someone specified <code>~=3.10</code> ? What would be a &quot;better&quot; way of writing it (this one is nice and short).</p>
+<p>Or maybe it's simply a but in the logic?</p>
+<p>Or maybe I completely missed something ? (could be ... I was staring at the numbers for a while).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-01 19:25</div>
+            <div class="timeline-body"><p>Thanks for the feedback! I'll take a deeper look, but briefly... the intent is to warn on <code>~=3.10</code> because <em>most</em> users will assume that's locking to <code>&gt;=3.10,&lt;3.11</code> not <code>&gt;=3.10,&lt;4</code> — for the former, you'd want <code>~=3.10.0</code> and for the latter you'd want it to remain the same (but it's probably better to disambiguate with the longer-form specification of <code>&gt;=3.10,&lt;4</code>). I can't think of a case where you'd want to write <code>~=3.10,&lt;4</code>, as that would expand to <code>&gt;=3.10,&lt;4,&lt;4</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-01 20:06</div>
+            <div class="timeline-body"><blockquote>
+<p>because most users will assume that's locking to &gt;=3.10,&lt;3.11 not &gt;=3.10,&lt;</p>
+</blockquote>
+<p>Interesting  - I never had that impression to be honest <code>~=3.10</code> is quite clearly specified in https://packaging.python.org/en/latest/specifications/version-specifiers/#compatible-release with good examples and I personally never had any confusion or problem with it. And to be honest it's first time I hear it is confusing, so I am not sure if the <code>most</code> statement is correct :D. Do you have some non-anecdotal data to back the <code>most</code> statement up?</p>
+<blockquote>
+<p>for the latter you'd want it to remain the same</p>
+</blockquote>
+<p>Well, Yeah. Actually I <strong>would* prefer to be able to still say <code>~=3.10</code> as it is very nice, short and concise. And the <code>~=</code> is weird enough a syntax to raise an eyebrow of people to consider what it is.  And it does seem like departing from the agreed/standard scheme to suggest to change it . Seems like even if someone **really</strong> wants to keep it (I've seen it already used in quite a number of packages, so that calls for them to change and adapt their processes). For one - in our case that version is automatically generated and we would have to redo some of our release processes (including some tests and automation) to change it - plus the specs will still remain in the old packages so that might create even more confusion to be honest.</p>
+<p>Is there a way to silence it ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-01 20:07</div>
+            <div class="timeline-body"><p>And BTW. Regardless from the result of the discussion - at the very least - the message should explain what the problem is and how to solve it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-01 21:24</div>
+            <div class="timeline-body"><p>We have a couple comments, e.g.:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/7426#issuecomment-2374979747</li>
+<li>https://github.com/astral-sh/uv/issues/7682#issuecomment-2373547351</li>
+</ul>
+<p>Part of the problem is that the <code>.0</code> is implied for some uses, e.g., <code>==3.13</code> means <code>==3.13.0</code>, but this does not apply for the tilde operator. Additionally, the behavior is not consistent across ecosystems, e.g., in Cargo, <code>~1.2</code> is equivalent to <code>&gt;=1.2.0, &lt;1.3.0</code> (see https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#tilde-requirements).</p>
+<p>I'll certainly be considering reducing the visibility of the warning, but we'd need to hear more feedback that it's doing more harm than good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-01 22:02</div>
+            <div class="timeline-body"><p>I'm also updating the error message to be more informative</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Refactor tilde version specifier handling" to "Update the tilde version specifier error message" by @zanieb on 2025-07-01 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @zanieb on 2025-07-01 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-07-01 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Update the tilde version specifier error message" to "Update the tilde version specifier warning to include more context" by @zanieb on 2025-07-01 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-01 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep440/src/version_specifier.rs</code>:895 on 2025-07-01 22:05</div>
+            <div class="timeline-body"><p>Alas I wrote this as using a borrowed version specifier then wanted to use <code>bounding_specifiers</code> alongside a <code>with_patch</code> utility to improve error messages and needed the ability to own the specifier. It's not a big deal, but that's why it is this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-01 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/requires_python.rs</code>:70 on 2025-07-01 22:06</div>
+            <div class="timeline-body"><p>This moved up a level, where was have access to the project and group names the specifiers come from</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-07-01 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-02 07:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Part of the problem is that the .0 is implied for some uses, e.g., ==3.13 means ==3.13.0, but this does not apply for the tilde operator. Additionally, the behavior is not consistent across ecosystems, e.g., in Cargo, ~1.2 is equivalent to &gt;=1.2.0, &lt;1.3.0 (see https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#tilde-requirements).</p>
+</blockquote>
+<p>Yep. I understand the potential ambiguity, and that some people might get confused when they are writing their own specification and that's fine and warning by default is good. This is good for people who switch between ecosystems for sure and for newcomers. So I am perfectly fine with having a warning with more explanation in this case  by default (and pointing to the right place where it happens).</p>
+<p>But also I think  you have to consider the ripple effect it might have for &quot;seasoned&quot; people - who will suddenly get the warning in their projects, and the only option they have is to change their specification (which might go well into many thousands workflows - It would be worth doing some checks on Github/PyPi to see how many packages already specify ~X.Y and my educated guess will be <strong>A LOT</strong>. So I think a good solution would be to allow - by uv configuration in pyproject.toml file (ideally in the workspace one) to silence the warning - AKA &quot;We know what we are doing&quot;.</p>
+<p>That would be way easier to handle by the &quot;seasoned&quot; maintainers (especially if the warning message will hint at the possibilty of disabling it for those who know what they do) - rather than trying to &quot;force ambiguity correction on all maintainers&quot; :). Souds a bit &quot;harsh&quot; - especially that it will affect contributors. If some maintainers do not use uv for development environment, and some of their contributors will - this will cause a tension, because uv users will have warning where non-uv users will not and maintainers will be &quot;pressured&quot; to change their specifications if if they know what they do and chose it consciously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2025-07-02 10:03</div>
+            <div class="timeline-body"><p>I personally don't think the difference in behaviuor across ecosystems is a factor here -- we are dealing with Python dependency specifiers so people need to know how Python ecosystem behaves here, which to me should follow the behaviour set out in the <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#compatible-releases">PyPA-maintained Version Specifiers - § Compatible release</a></p>
+<blockquote>
+<p>For example, the following groups of version clauses are equivalent:</p>
+<pre><code>~= 2.2
+&gt;= 2.2, == 2.*
+
+~= 1.4.5
+&gt;= 1.4.5, == 1.4.*
+</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep440/src/version_specifier.rs</code>:895 on 2025-07-02 11:55</div>
+            <div class="timeline-body"><p>imo we can just always clone those outside the resolver, it's not worth the complexity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-07-02 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep440/src/version_specifier.rs</code>:895 on 2025-07-02 13:28</div>
+            <div class="timeline-body"><p>The annoying part is that I didn't want to take an owned value for the <code>None</code> case and didn't want to hide a clone. I think if I knew I'd need an owned value later I would have just done it anyway, but I don't expect it to be a big deal to maintain now that it's there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-02 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-02 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-02 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-02 14:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:38 UTC
+    </footer>
+</body>
+</html>

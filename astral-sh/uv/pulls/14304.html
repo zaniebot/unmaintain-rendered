@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Only drop build directories on program exit - astral-sh/uv #14304</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Only drop build directories on program exit</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14304">#14304</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-06-27 02:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-27 02:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR ensures that we avoid cleaning up build directories until the end of a resolve-and-install cycle. It's not bulletproof (since we could still run into issues with <code>uv lock</code> followed by <code>uv sync</code> whereby a build directory gets cleaned up that's still referenced in the <code>build</code> artifacts), but it at least gets PyTorch building without error with <code>uv pip install .</code>, which is a case that's been reported several times.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/14269.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-27 02:42</div>
+            <div class="timeline-body"><p>TIL that statics don't run their destructors, so this can't be merged as-is (but should still fix the bug).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-27 02:45</div>
+            <div class="timeline-body"><p>@XuehaiPan -- are you interested in trying this, to see if it fixes https://github.com/astral-sh/uv/issues/14269? (Just a proof-of-concept, it couldn't be merged as-is.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2025-06-27 02:47</div>
+            <div class="timeline-body"><blockquote>
+<p>@XuehaiPan -- are you interested in trying this, to see if it fixes #14269? (Just a proof-of-concept, it couldn't be merged as-is.)</p>
+</blockquote>
+<p>I will try this later today. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2025-06-27 06:15</div>
+            <div class="timeline-body"><blockquote>
+<p>@XuehaiPan -- are you interested in trying this, to see if it fixes #14269? (Just a proof-of-concept, it couldn't be merged as-is.)</p>
+</blockquote>
+<p>@charliermarsh It works as expected. The installation is successful, ~~and the build venvs are cleaned after installation~~.</p>
+<details>
+<summary>`cargo run -- pip install -v -e ../pytorch` output</summary>
+
+<pre><code class="language-console">$ pushd ../pytorch
+$ fd -HI 'CMakeCache\.txt|.*\.ninja.*' | xargs -I '{}' bash -c &quot;echo '{}'; rm -rf '{}'&quot;
+$ source venv/bin/activate
+$ popd
+$ cargo run -- pip install -v -e ../pytorch
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s
+     Running `target/debug/uv pip install -v -e ../pytorch`
+DEBUG uv 0.7.15+15 (8ce1bfd35 2025-06-26)
+DEBUG Marking explicit source tree for reinstall: `/Users/PanXuehai/Projects/pytorch`
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.13.5-macos-aarch64-none` at `/Users/PanXuehai/Projects/pytorch/venv/bin/python3` (active virtual environment)
+Using Python 3.13.5 environment at: /Users/PanXuehai/Projects/pytorch/venv
+DEBUG Acquired lock for `/Users/PanXuehai/Projects/pytorch/venv`
+DEBUG Using request timeout of 30s
+DEBUG Found PEP 621 metadata for /Users/PanXuehai/Projects/pytorch in `pyproject.toml` (torch)
+DEBUG No static `pyproject.toml` available for: torch @ file:///Users/PanXuehai/Projects/pytorch (DynamicField(&quot;dependencies&quot;))
+DEBUG Acquired lock for `/Users/PanXuehai/.cache/uv/sdists-v9/editable/86c2841f2a6717aa`
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1751000449, tv_nsec: 686289778 })), None, None, {}, {&quot;src&quot;: None}
+DEBUG Preparing metadata for: torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: &gt;=3.13.5
+DEBUG Adding direct dependency: setuptools&gt;=62.3.0
+DEBUG Adding direct dependency: wheel*
+DEBUG Adding direct dependency: astunparse*
+DEBUG Adding direct dependency: cmake&gt;=3.27
+DEBUG Adding direct dependency: ninja*
+DEBUG Adding direct dependency: numpy*
+DEBUG Adding direct dependency: pyyaml*
+DEBUG Adding direct dependency: requests*
+DEBUG Adding direct dependency: typing-extensions&gt;=4.10.0
+DEBUG &gt; ...
+DEBUG &gt; Environment Resolution ...
+DEBUG &gt; ...
+DEBUG Tried 14 versions: astunparse 1, certifi 1, charset-normalizer 1, cmake 1, idna 1, ninja 1, numpy 1, pyyaml 1, requests 1, setuptools 1, six 1, typing-extensions 1, urllib3 1, wheel 1
+DEBUG marker environment resolution took 0.019s
+DEBUG Installing in idna==3.10, charset-normalizer==3.4.2, pyyaml==6.0.2, astunparse==1.6.3, cmake==4.0.3, urllib3==2.5.0, ninja==1.11.1.4, typing-extensions==4.14.0, six==1.17.0, requests==2.32.4, numpy==2.3.1, certifi==2025.6.15, wheel==0.45.1, setuptools==80.9.0 in /Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0
+DEBUG Registry requirement already cached: idna==3.10
+DEBUG Registry requirement already cached: charset-normalizer==3.4.2
+DEBUG Registry requirement already cached: pyyaml==6.0.2
+DEBUG Registry requirement already cached: astunparse==1.6.3
+DEBUG Registry requirement already cached: cmake==4.0.3
+DEBUG Registry requirement already cached: urllib3==2.5.0
+DEBUG Registry requirement already cached: ninja==1.11.1.4
+DEBUG Registry requirement already cached: typing-extensions==4.14.0
+DEBUG Registry requirement already cached: six==1.17.0
+DEBUG Registry requirement already cached: requests==2.32.4
+DEBUG Registry requirement already cached: numpy==2.3.1
+DEBUG Registry requirement already cached: certifi==2025.6.15
+DEBUG Registry requirement already cached: wheel==0.45.1
+DEBUG Registry requirement already cached: setuptools==80.9.0
+DEBUG Installing build requirements: idna==3.10, charset-normalizer==3.4.2, pyyaml==6.0.2, astunparse==1.6.3, cmake==4.0.3, urllib3==2.5.0, ninja==1.11.1.4, typing-extensions==4.14.0, six==1.17.0, requests==2.32.4, numpy==2.3.1, certifi==2025.6.15, wheel==0.45.1, setuptools==80.9.0
+DEBUG Locking the source tree for setuptools
+DEBUG Acquired lock for `/Users/PanXuehai/Projects/pytorch`
+# DEBUG Creating PEP 517 build environment
+# DEBUG calling `setuptools.build_meta.get_requires_for_build_editable()`
+DEBUG Building wheel torch-2.8.0a0+git78a570d
+# DEBUG running egg_info
+DEBUG writing torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to torch.egg-info/dependency_links.txt
+DEBUG writing entry points to torch.egg-info/entry_points.txt
+DEBUG writing requirements to torch.egg-info/requires.txt
+DEBUG writing top-level names to torch.egg-info/top_level.txt
+DEBUG reading manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG No workspace root found, using project root
+# DEBUG calling `setuptools.build_meta.prepare_metadata_for_build_editable()`
+DEBUG Building wheel torch-2.8.0a0+git78a570d
+DEBUG -- Building version 2.8.0a0+git78a570d
+DEBUG -- The CXX compiler identification is Clang 20.1.7
+DEBUG -- The C compiler identification is Clang 20.1.7
+DEBUG &gt; ...
+DEBUG &gt; CMake Configure Log ...
+DEBUG &gt; ...
+DEBUG -- Configuring done (20.9s)
+DEBUG -- Generating done (1.0s)
+DEBUG -- Build files have been written to: /Users/PanXuehai/Projects/pytorch/build
+DEBUG [1/4] Generating ATen declarations_yaml
+DEBUG [2/4] Generating ATen headers
+DEBUG [3/4] Generating ATen sources
+DEBUG [1/5545] Building CXX object third_party/protobuf/cmake/CMakeFiles/libprotobuf-lite.dir/__/src/google/protobuf/io/io_win32.cc.o
+DEBUG [2/5545] Building CXX object third_party/protobuf/cmake/CMakeFiles/libprotobuf-lite.dir/__/src/google/protobuf/io/strtod.cc.o
+DEBUG [3/5545] Building CXX object third_party/protobuf/cmake/CMakeFiles/libprotobuf-lite.dir/__/src/google/protobuf/io/zero_copy_stream.cc.o
+DEBUG &gt; ...
+DEBUG &gt; CMake Build Log ...
+DEBUG &gt; ...
+DEBUG [5541/5545] Building CXX object caffe2/torch/CMakeFiles/torch_python.dir/csrc/lazy/python/init.cpp.o
+DEBUG [5542/5545] Linking CXX shared library lib/libtorch_python.dylib
+DEBUG [5543/5545] Building CXX object functorch/CMakeFiles/functorch.dir/csrc/init_dim_only.cpp.o
+DEBUG [5544/5545] Linking CXX shared module functorch/functorch.so
+DEBUG [5544/5545] Install the project...
+DEBUG -- Install configuration: &quot;Release&quot;
+DEBUG -- Checkout nccl release tag: v2.27.3-1
+DEBUG cmake -GNinja -DBUILD_PYTHON=True -DBUILD_TEST=True -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/Users/PanXuehai/Projects/pytorch/torch -DCMAKE_PREFIX_PATH=/Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/lib/python3.13/site-packages -DPython_EXECUTABLE=/Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/bin/python -DTORCH_BUILD_VERSION=2.8.0a0+git78a570d -DUSE_NUMPY=True /Users/PanXuehai/Projects/pytorch
+DEBUG cmake --build . --target install --config Release
+# DEBUG running dist_info
+DEBUG creating /Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info
+DEBUG writing /Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to /Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info/dependency_links.txt
+DEBUG writing entry points to /Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info/entry_points.txt
+DEBUG writing requirements to /Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info/requires.txt
+DEBUG writing top-level names to /Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info/top_level.txt
+DEBUG writing manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch.egg-info/SOURCES.txt'
+DEBUG creating '/Users/PanXuehai/.cache/uv/builds-v0/.tmppp3pb0/metadata_directory/torch-2.8.0a0+git78a570d.dist-info'
+DEBUG Released lock at `/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/uv-setuptools-b66b08ef1dac3356.lock`
+DEBUG Prepared metadata for: torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `/Users/PanXuehai/.cache/uv/sdists-v9/editable/86c2841f2a6717aa/.lock`
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: &gt;=3.13.5
+DEBUG Adding direct dependency: torch*
+DEBUG Searching for a compatible version of torch @ file:///Users/PanXuehai/Projects/pytorch (*)
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: filelock*
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: typing-extensions&gt;=4.10.0
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: setuptools{python_full_version &gt;= '3.12'}*
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: sympy&gt;=1.13.3
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: networkx*
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: jinja2*
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: fsspec*
+DEBUG Found installed version of typing-extensions==4.14.0 that satisfies &gt;=4.10.0
+DEBUG &gt; ...
+DEBUG &gt; Environment Resolution ...
+DEBUG &gt; ...
+DEBUG Tried 10 versions: filelock 1, fsspec 1, jinja2 1, markupsafe 1, mpmath 1, networkx 1, setuptools 1, sympy 1, torch 1, typing-extensions 1
+DEBUG marker environment resolution took 0.707s
+Resolved 10 packages in 13m 21s
+DEBUG Requirement already installed: sympy==1.13.3
+DEBUG Requirement already installed: markupsafe==2.1.5
+DEBUG Requirement already installed: filelock==3.13.1
+DEBUG Must revalidate requirement: torch
+DEBUG Requirement already installed: networkx==3.5
+DEBUG Requirement already installed: typing-extensions==4.14.0
+DEBUG Requirement already installed: jinja2==3.1.6
+DEBUG Requirement already installed: fsspec==2025.5.1
+DEBUG Requirement already installed: mpmath==1.3.0
+DEBUG Requirement already installed: setuptools==80.9.0
+DEBUG &gt; ...
+DEBUG &gt; Environment Resolution ...
+DEBUG &gt; ...
+DEBUG Acquired lock for `/Users/PanXuehai/.cache/uv/sdists-v9/editable/86c2841f2a6717aa`
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1751000449, tv_nsec: 686289778 })), None, None, {}, {&quot;src&quot;: None}
+   Building torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG Building: torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: &gt;=3.13.5
+DEBUG Adding direct dependency: setuptools&gt;=62.3.0
+DEBUG Adding direct dependency: wheel*
+DEBUG Adding direct dependency: astunparse*
+DEBUG Adding direct dependency: cmake&gt;=3.27
+DEBUG Adding direct dependency: ninja*
+DEBUG Adding direct dependency: numpy*
+DEBUG Adding direct dependency: pyyaml*
+DEBUG Adding direct dependency: requests*
+DEBUG Adding direct dependency: typing-extensions&gt;=4.10.0
+DEBUG &gt; ...
+DEBUG &gt; Environment Resolution ...
+DEBUG &gt; ...
+DEBUG Tried 14 versions: astunparse 1, certifi 1, charset-normalizer 1, cmake 1, idna 1, ninja 1, numpy 1, pyyaml 1, requests 1, setuptools 1, six 1, typing-extensions 1, urllib3 1, wheel 1
+DEBUG marker environment resolution took 0.002s
+DEBUG Installing in idna==3.10, charset-normalizer==3.4.2, pyyaml==6.0.2, astunparse==1.6.3, cmake==4.0.3, urllib3==2.5.0, ninja==1.11.1.4, typing-extensions==4.14.0, six==1.17.0, requests==2.32.4, numpy==2.3.1, certifi==2025.6.15, wheel==0.45.1, setuptools==80.9.0 in /Users/PanXuehai/.cache/uv/builds-v0/.tmplTSNge
+DEBUG Registry requirement already cached: idna==3.10
+DEBUG Registry requirement already cached: charset-normalizer==3.4.2
+DEBUG Registry requirement already cached: pyyaml==6.0.2
+DEBUG Registry requirement already cached: astunparse==1.6.3
+DEBUG Registry requirement already cached: cmake==4.0.3
+DEBUG Registry requirement already cached: urllib3==2.5.0
+DEBUG Registry requirement already cached: ninja==1.11.1.4
+DEBUG Registry requirement already cached: typing-extensions==4.14.0
+DEBUG Registry requirement already cached: six==1.17.0
+DEBUG Registry requirement already cached: requests==2.32.4
+DEBUG Registry requirement already cached: numpy==2.3.1
+DEBUG Registry requirement already cached: certifi==2025.6.15
+DEBUG Registry requirement already cached: wheel==0.45.1
+DEBUG Registry requirement already cached: setuptools==80.9.0
+DEBUG Installing build requirements: idna==3.10, charset-normalizer==3.4.2, pyyaml==6.0.2, astunparse==1.6.3, cmake==4.0.3, urllib3==2.5.0, ninja==1.11.1.4, typing-extensions==4.14.0, six==1.17.0, requests==2.32.4, numpy==2.3.1, certifi==2025.6.15, wheel==0.45.1, setuptools==80.9.0
+DEBUG Locking the source tree for setuptools
+DEBUG Acquired lock for `/Users/PanXuehai/Projects/pytorch`
+# DEBUG Creating PEP 517 build environment
+# DEBUG calling `setuptools.build_meta.get_requires_for_build_editable()`
+DEBUG Building wheel torch-2.8.0a0+git78a570d
+# DEBUG running egg_info
+DEBUG writing torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to torch.egg-info/dependency_links.txt
+DEBUG writing entry points to torch.egg-info/entry_points.txt
+DEBUG writing requirements to torch.egg-info/requires.txt
+DEBUG writing top-level names to torch.egg-info/top_level.txt
+DEBUG reading manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG No workspace root found, using project root
+# DEBUG calling `setuptools.build_meta.build_editable(&quot;/Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445&quot;, {}, None)`
+DEBUG Building wheel torch-2.8.0a0+git78a570d
+DEBUG -- Building version 2.8.0a0+git78a570d
+DEBUG [1/2] Regenerating version file...
+DEBUG [1/2] Install the project...
+DEBUG -- Install configuration: &quot;Release&quot;
+DEBUG -- Checkout nccl release tag: v2.27.3-1
+DEBUG cmake --build . --target install --config Release
+# DEBUG running editable_wheel
+DEBUG creating /Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info
+DEBUG writing /Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to /Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info/dependency_links.txt
+DEBUG writing entry points to /Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info/entry_points.txt
+DEBUG writing requirements to /Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info/requires.txt
+DEBUG writing top-level names to /Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info/top_level.txt
+DEBUG writing manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch.egg-info/SOURCES.txt'
+DEBUG creating '/Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch-2.8.0a0+git78a570d.dist-info'
+DEBUG creating /Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch-2.8.0a0+git78a570d.dist-info/WHEEL
+# DEBUG running build_py
+# DEBUG running build_ext
+DEBUG -- Building with NumPy bindings
+DEBUG -- Not using cuDNN
+DEBUG -- Not using CUDA
+DEBUG -- Not using XPU
+DEBUG -- Not using MKLDNN
+DEBUG -- Not using NCCL
+DEBUG -- Building with distributed package:
+DEBUG   -- USE_TENSORPIPE=False
+DEBUG   -- USE_GLOO=False
+DEBUG   -- USE_MPI=False
+DEBUG -- Not using ITT
+DEBUG Copying functorch._C from functorch/functorch.so to /private/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/functorch/_C.cpython-313-darwin.so
+DEBUG copying functorch/functorch.so -&gt; /private/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/functorch/_C.cpython-313-darwin.so
+DEBUG building 'torch._C' extension
+DEBUG creating /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch/csrc
+DEBUG clang -fno-strict-overflow -Wsign-compare -Wunreachable-code -fno-common -dynamic -DNDEBUG -g -O3 -Wall -I/Users/PanXuehai/.cache/uv/builds-v0/.tmplTSNge/include -I/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13 -c torch/csrc/stub.c -o /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch/csrc/stub.o -Wall -Wextra -Wno-strict-overflow -Wno-unused-parameter -Wno-missing-field-initializers -Wno-unknown-pragmas -fno-strict-aliasing
+DEBUG creating /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/torch
+DEBUG clang -bundle -undefined dynamic_lookup /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch/csrc/stub.o -L/Users/PanXuehai/Projects/pytorch/torch/lib -ltorch_python -o /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/torch/_C.cpython-313-darwin.so -Wl,-rpath,@loader_path/lib
+DEBUG copying /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/torch/_C.cpython-313-darwin.so -&gt; torch
+DEBUG copying /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/functorch/_C.cpython-313-darwin.so -&gt; functorch
+# DEBUG running egg_info
+DEBUG creating /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info
+DEBUG writing /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info/dependency_links.txt
+DEBUG writing entry points to /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info/entry_points.txt
+DEBUG writing requirements to /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info/requires.txt
+DEBUG writing top-level names to /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info/top_level.txt
+DEBUG writing manifest file '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp00fskxgn.build-temp/torch.egg-info/SOURCES.txt'
+DEBUG setup.py::get_outputs returning ['/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/functorch/_C.cpython-313-darwin.so', '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/torch/_C.cpython-313-darwin.so', '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp65p53_2l.build-lib/caffe2']
+DEBUG Editable install will be performed using a meta path finder.
+DEBUG
+DEBUG Options like `package-data`, `include/exclude-package-data` or
+DEBUG `packages.find.exclude/include` may have no effect.
+DEBUG
+DEBUG adding '__editable___torch_2_8_0a0_git78a570d_finder.py'
+DEBUG adding '__editable__.torch-2.8.0a0+git78a570d.pth'
+DEBUG creating '/Users/PanXuehai/.cache/uv/builds-v0/.tmplF0445/.tmp-rweht81f/torch-2.8.0a0+git78a570d-0.editable-cp313-cp313-macosx_15_0_arm64.whl' and adding '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp_qunbtkdtorch-2.8.0a0+git78a570d-0.editable-cp313-cp313-macosx_15_0_arm64.whl' to it
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/licenses/LICENSE'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/licenses/NOTICE'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/METADATA'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/WHEEL'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/entry_points.txt'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/top_level.txt'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/RECORD'
+DEBUG /Users/PanXuehai/.cache/uv/builds-v0/.tmplTSNge/lib/python3.13/site-packages/setuptools/command/editable_wheel.py:351: InformationOnly: Editable installation.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         Please be careful with folders in your working directory with the same
+DEBUG         name as your package as they may take precedence during imports.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   with strategy, WheelFile(wheel_path, &quot;w&quot;) as wheel_obj:
+DEBUG Released lock at `/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/uv-setuptools-b66b08ef1dac3356.lock`
+DEBUG Finished building: torch @ file:///Users/PanXuehai/Projects/pytorch
+      Built torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG Released lock at `/Users/PanXuehai/.cache/uv/sdists-v9/editable/86c2841f2a6717aa/.lock`
+Prepared 1 package in 14.11s
+DEBUG Uninstalled torch (15 files, 2 directories)
+Uninstalled 1 package in 1ms
+Installed 1 package in 2ms
+ ~ torch==2.8.0a0+git78a570d (from file:///Users/PanXuehai/Projects/pytorch)
+DEBUG Released lock at `/Users/PanXuehai/Projects/pytorch/venv/.lock`
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-27 14:42</div>
+            <div class="timeline-body"><p>@XuehaiPan -- Do you mind testing one more time, whenever convenient?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-06-27 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-06-27 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-06-27 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-06-27 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-06-27 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-27 18:48</div>
+            <div class="timeline-body"><p>I presume</p>
+<blockquote>
+<p>so this can't be merged as-is (but should still fix the bug)</p>
+</blockquote>
+<p>is no longer relevant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-27 18:48</div>
+            <div class="timeline-body"><p>Yes, sorry, I fixed that in a later commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-27 18:49</div>
+            <div class="timeline-body"><p>This feels so questionable, as-in, the mechanism by which it fixes the problem is concerning. I'm a little worried about the long-term consequences, i.e., what if we want to revert this eventually? but it is appealing as an immediate fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2025-06-27 19:12</div>
+            <div class="timeline-body"><blockquote>
+<p>@XuehaiPan -- Do you mind testing one more time, whenever convenient?</p>
+</blockquote>
+<p>The latest commit works as expected. The installation is successful, and the build venvs are cleaned after installation.</p>
+<details>
+<summary>`cargo run -- pip install -v -e ../pytorch` output</summary>
+
+<pre><code class="language-console">$ pushd ../pytorch
+$ fd -HI 'CMakeCache\.txt|.*\.ninja.*' | xargs -I '{}' bash -c &quot;echo '{}'; rm -rf '{}'&quot;
+$ source venv/bin/activate
+$ popd
+$ cargo build
+$ cargo run -- pip install -v -e ../pytorch
+   Compiling uv v0.7.15 (/Users/PanXuehai/Projects/uv/crates/uv)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.48s
+     Running `target/debug/uv pip install -v -e ../pytorch`
+DEBUG uv 0.7.15+16 (ea882b44f 2025-06-27)
+DEBUG Marking explicit source tree for reinstall: `/Users/PanXuehai/Projects/pytorch`
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.13.5-macos-aarch64-none` at `/Users/PanXuehai/Projects/pytorch/venv/bin/python3` (active virtual environment)
+Using Python 3.13.5 environment at: /Users/PanXuehai/Projects/pytorch/venv
+DEBUG Acquired lock for `/Users/PanXuehai/Projects/pytorch/venv`
+DEBUG Using request timeout of 30s
+DEBUG Found PEP 621 metadata for /Users/PanXuehai/Projects/pytorch in `pyproject.toml` (torch)
+DEBUG No static `pyproject.toml` available for: torch @ file:///Users/PanXuehai/Projects/pytorch (DynamicField(&quot;dependencies&quot;))
+DEBUG Acquired lock for `/Users/PanXuehai/.cache/uv/sdists-v9/editable/86c2841f2a6717aa`
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1751050020, tv_nsec: 968805608 })), None, None, {}, {&quot;src&quot;: None}
+DEBUG Preparing metadata for: torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: &gt;=3.13.5
+DEBUG Adding direct dependency: setuptools&gt;=62.3.0
+DEBUG Adding direct dependency: wheel*
+DEBUG Adding direct dependency: astunparse*
+DEBUG Adding direct dependency: cmake&gt;=3.27
+DEBUG Adding direct dependency: ninja*
+DEBUG Adding direct dependency: numpy*
+DEBUG Adding direct dependency: pyyaml*
+DEBUG Adding direct dependency: requests*
+DEBUG Adding direct dependency: typing-extensions&gt;=4.10.0
+DEBUG &gt; ...
+DEBUG &gt; Environment Resolution ...
+DEBUG &gt; ...
+DEBUG Tried 14 versions: astunparse 1, certifi 1, charset-normalizer 1, cmake 1, idna 1, ninja 1, numpy 1, pyyaml 1, requests 1, setuptools 1, six 1, typing-extensions 1, urllib3 1, wheel 1
+DEBUG marker environment resolution took 0.264s
+DEBUG Installing in idna==3.10, charset-normalizer==3.4.2, pyyaml==6.0.2, astunparse==1.6.3, cmake==4.0.3, urllib3==2.5.0, ninja==1.11.1.4, typing-extensions==4.14.0, six==1.17.0, requests==2.32.4, numpy==2.3.1, certifi==2025.6.15, wheel==0.45.1, setuptools==80.9.0 in /Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH
+DEBUG Registry requirement already cached: idna==3.10
+DEBUG Registry requirement already cached: charset-normalizer==3.4.2
+DEBUG Registry requirement already cached: pyyaml==6.0.2
+DEBUG Registry requirement already cached: astunparse==1.6.3
+DEBUG Registry requirement already cached: cmake==4.0.3
+DEBUG Registry requirement already cached: urllib3==2.5.0
+DEBUG Registry requirement already cached: ninja==1.11.1.4
+DEBUG Registry requirement already cached: typing-extensions==4.14.0
+DEBUG Registry requirement already cached: six==1.17.0
+DEBUG Registry requirement already cached: requests==2.32.4
+DEBUG Registry requirement already cached: numpy==2.3.1
+DEBUG Registry requirement already cached: certifi==2025.6.15
+DEBUG Registry requirement already cached: wheel==0.45.1
+DEBUG Registry requirement already cached: setuptools==80.9.0
+DEBUG Installing build requirements: idna==3.10, charset-normalizer==3.4.2, pyyaml==6.0.2, astunparse==1.6.3, cmake==4.0.3, urllib3==2.5.0, ninja==1.11.1.4, typing-extensions==4.14.0, six==1.17.0, requests==2.32.4, numpy==2.3.1, certifi==2025.6.15, wheel==0.45.1, setuptools==80.9.0
+DEBUG Locking the source tree for setuptools
+DEBUG Acquired lock for `/Users/PanXuehai/Projects/pytorch`
+# DEBUG Creating PEP 517 build environment
+# DEBUG Calling `setuptools.build_meta.get_requires_for_build_editable()`
+DEBUG Building wheel torch-2.8.0a0+git78a570d
+# DEBUG running egg_info
+DEBUG creating torch.egg-info
+DEBUG writing torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to torch.egg-info/dependency_links.txt
+DEBUG writing entry points to torch.egg-info/entry_points.txt
+DEBUG writing requirements to torch.egg-info/requires.txt
+DEBUG writing top-level names to torch.egg-info/top_level.txt
+DEBUG writing manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG reading manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.so' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.a' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.dylib' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG No workspace root found, using project root
+# DEBUG Calling `setuptools.build_meta.prepare_metadata_for_build_editable()`
+DEBUG Building wheel torch-2.8.0a0+git78a570d
+DEBUG -- Building version 2.8.0a0+git78a570d
+DEBUG -- The CXX compiler identification is Clang 20.1.7
+DEBUG -- The C compiler identification is Clang 20.1.7
+DEBUG &gt; ...
+DEBUG &gt; CMake Configure Log ...
+DEBUG &gt; ...
+DEBUG -- Configuring done (19.1s)
+DEBUG -- Generating done (0.9s)
+DEBUG -- Build files have been written to: /Users/PanXuehai/Projects/pytorch/build
+DEBUG [1/4] Generating ATen declarations_yaml
+DEBUG [2/4] Generating ATen headers
+DEBUG [3/4] Generating ATen sources
+DEBUG [1/5545] Building CXX object third_party/protobuf/cmake/CMakeFiles/libprotobuf-lite.dir/__/src/google/protobuf/io/io_win32.cc.o
+DEBUG [2/5545] Building CXX object third_party/protobuf/cmake/CMakeFiles/libprotobuf-lite.dir/__/src/google/protobuf/io/strtod.cc.o
+DEBUG [3/5545] Building CXX object third_party/protobuf/cmake/CMakeFiles/libprotobuf-lite.dir/__/src/google/protobuf/io/zero_copy_stream.cc.o
+DEBUG &gt; ...
+DEBUG &gt; CMake Build Log ...
+DEBUG &gt; ...
+DEBUG [5541/5545] Building CXX object caffe2/torch/CMakeFiles/torch_python.dir/csrc/lazy/python/init.cpp.o
+DEBUG [5542/5545] Linking CXX shared library lib/libtorch_python.dylib
+DEBUG [5543/5545] Building CXX object functorch/CMakeFiles/functorch.dir/csrc/init_dim_only.cpp.o
+DEBUG [5544/5545] Linking CXX shared module functorch/functorch.so
+DEBUG [5544/5545] Install the project...
+DEBUG -- Install configuration: &quot;Release&quot;
+DEBUG -- Checkout nccl release tag: v2.27.3-1
+DEBUG cmake -GNinja -DBUILD_PYTHON=True -DBUILD_TEST=True -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/Users/PanXuehai/Projects/pytorch/torch -DCMAKE_PREFIX_PATH=/Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/lib/python3.13/site-packages -DPython_EXECUTABLE=/Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/bin/python -DTORCH_BUILD_VERSION=2.8.0a0+git78a570d -DUSE_NUMPY=True /Users/PanXuehai/Projects/pytorch
+DEBUG cmake --build . --target install --config Release
+# DEBUG running dist_info
+DEBUG creating /Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info
+DEBUG writing /Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to /Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info/dependency_links.txt
+DEBUG writing entry points to /Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info/entry_points.txt
+DEBUG writing requirements to /Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info/requires.txt
+DEBUG writing top-level names to /Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info/top_level.txt
+DEBUG writing manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch.egg-info/SOURCES.txt'
+DEBUG creating '/Users/PanXuehai/.cache/uv/builds-v0/.tmpq0dzIH/metadata_directory/torch-2.8.0a0+git78a570d.dist-info'
+DEBUG Released lock at `/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/uv-setuptools-b66b08ef1dac3356.lock`
+DEBUG Prepared metadata for: torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `/Users/PanXuehai/.cache/uv/sdists-v9/editable/86c2841f2a6717aa/.lock`
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: &gt;=3.13.5
+DEBUG Adding direct dependency: torch*
+DEBUG Searching for a compatible version of torch @ file:///Users/PanXuehai/Projects/pytorch (*)
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: filelock*
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: typing-extensions&gt;=4.10.0
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: setuptools{python_full_version &gt;= '3.12'}*
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: sympy&gt;=1.13.3
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: networkx*
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: jinja2*
+DEBUG Adding transitive dependency for torch==2.8.0a0+git78a570d: fsspec*
+DEBUG Found installed version of typing-extensions==4.14.0 that satisfies &gt;=4.10.0
+DEBUG &gt; ...
+DEBUG &gt; Environment Resolution ...
+DEBUG &gt; ...
+DEBUG Tried 10 versions: filelock 1, fsspec 1, jinja2 1, markupsafe 1, mpmath 1, networkx 1, setuptools 1, sympy 1, torch 1, typing-extensions 1
+DEBUG marker environment resolution took 2.178s
+Resolved 10 packages in 11m 35s
+DEBUG Requirement already installed: sympy==1.13.3
+DEBUG Requirement already installed: markupsafe==2.1.5
+DEBUG Requirement already installed: filelock==3.13.1
+DEBUG Must revalidate requirement: torch
+DEBUG Requirement already installed: networkx==3.5
+DEBUG Requirement already installed: typing-extensions==4.14.0
+DEBUG Requirement already installed: jinja2==3.1.6
+DEBUG Requirement already installed: fsspec==2025.5.1
+DEBUG Requirement already installed: mpmath==1.3.0
+DEBUG Requirement already installed: setuptools==80.9.0
+DEBUG &gt; ...
+DEBUG &gt; Environment Resolution ...
+DEBUG &gt; ...
+DEBUG Acquired lock for `/Users/PanXuehai/.cache/uv/sdists-v9/editable/86c2841f2a6717aa`
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1751050020, tv_nsec: 968805608 })), None, None, {}, {&quot;src&quot;: None}
+   Building torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG Building: torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.5
+DEBUG Solving with target Python version: &gt;=3.13.5
+DEBUG Adding direct dependency: setuptools&gt;=62.3.0
+DEBUG Adding direct dependency: wheel*
+DEBUG Adding direct dependency: astunparse*
+DEBUG Adding direct dependency: cmake&gt;=3.27
+DEBUG Adding direct dependency: ninja*
+DEBUG Adding direct dependency: numpy*
+DEBUG Adding direct dependency: pyyaml*
+DEBUG Adding direct dependency: requests*
+DEBUG Adding direct dependency: typing-extensions&gt;=4.10.0
+DEBUG &gt; ...
+DEBUG &gt; Environment Resolution ...
+DEBUG &gt; ...
+DEBUG Tried 14 versions: astunparse 1, certifi 1, charset-normalizer 1, cmake 1, idna 1, ninja 1, numpy 1, pyyaml 1, requests 1, setuptools 1, six 1, typing-extensions 1, urllib3 1, wheel 1
+DEBUG marker environment resolution took 0.003s
+DEBUG Installing in idna==3.10, charset-normalizer==3.4.2, pyyaml==6.0.2, astunparse==1.6.3, cmake==4.0.3, urllib3==2.5.0, ninja==1.11.1.4, typing-extensions==4.14.0, six==1.17.0, requests==2.32.4, numpy==2.3.1, certifi==2025.6.15, wheel==0.45.1, setuptools==80.9.0 in /Users/PanXuehai/.cache/uv/builds-v0/.tmpMPzOt1
+DEBUG Registry requirement already cached: idna==3.10
+DEBUG Registry requirement already cached: charset-normalizer==3.4.2
+DEBUG Registry requirement already cached: pyyaml==6.0.2
+DEBUG Registry requirement already cached: astunparse==1.6.3
+DEBUG Registry requirement already cached: cmake==4.0.3
+DEBUG Registry requirement already cached: urllib3==2.5.0
+DEBUG Registry requirement already cached: ninja==1.11.1.4
+DEBUG Registry requirement already cached: typing-extensions==4.14.0
+DEBUG Registry requirement already cached: six==1.17.0
+DEBUG Registry requirement already cached: requests==2.32.4
+DEBUG Registry requirement already cached: numpy==2.3.1
+DEBUG Registry requirement already cached: certifi==2025.6.15
+DEBUG Registry requirement already cached: wheel==0.45.1
+DEBUG Registry requirement already cached: setuptools==80.9.0
+DEBUG Installing build requirements: idna==3.10, charset-normalizer==3.4.2, pyyaml==6.0.2, astunparse==1.6.3, cmake==4.0.3, urllib3==2.5.0, ninja==1.11.1.4, typing-extensions==4.14.0, six==1.17.0, requests==2.32.4, numpy==2.3.1, certifi==2025.6.15, wheel==0.45.1, setuptools==80.9.0
+DEBUG Locking the source tree for setuptools
+DEBUG Acquired lock for `/Users/PanXuehai/Projects/pytorch`
+# DEBUG Creating PEP 517 build environment
+# DEBUG Calling `setuptools.build_meta.get_requires_for_build_editable()`
+DEBUG Building wheel torch-2.8.0a0+git78a570d
+# DEBUG running egg_info
+DEBUG writing torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to torch.egg-info/dependency_links.txt
+DEBUG writing entry points to torch.egg-info/entry_points.txt
+DEBUG writing requirements to torch.egg-info/requires.txt
+DEBUG writing top-level names to torch.egg-info/top_level.txt
+DEBUG reading manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file 'torch.egg-info/SOURCES.txt'
+DEBUG No workspace root found, using project root
+# DEBUG Calling `setuptools.build_meta.build_editable(&quot;/Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY&quot;, {}, None)`
+DEBUG Building wheel torch-2.8.0a0+git78a570d
+DEBUG -- Building version 2.8.0a0+git78a570d
+DEBUG [1/2] Regenerating version file...
+DEBUG [1/2] Install the project...
+DEBUG -- Install configuration: &quot;Release&quot;
+DEBUG -- Checkout nccl release tag: v2.27.3-1
+DEBUG cmake --build . --target install --config Release
+# DEBUG running editable_wheel
+DEBUG creating /Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info
+DEBUG writing /Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to /Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info/dependency_links.txt
+DEBUG writing entry points to /Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info/entry_points.txt
+DEBUG writing requirements to /Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info/requires.txt
+DEBUG writing top-level names to /Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info/top_level.txt
+DEBUG writing manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file '/Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch.egg-info/SOURCES.txt'
+DEBUG creating '/Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch-2.8.0a0+git78a570d.dist-info'
+DEBUG creating /Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch-2.8.0a0+git78a570d.dist-info/WHEEL
+# DEBUG running build_py
+# DEBUG running build_ext
+DEBUG -- Building with NumPy bindings
+DEBUG -- Not using cuDNN
+DEBUG -- Not using CUDA
+DEBUG -- Not using XPU
+DEBUG -- Not using MKLDNN
+DEBUG -- Not using NCCL
+DEBUG -- Building with distributed package:
+DEBUG   -- USE_TENSORPIPE=False
+DEBUG   -- USE_GLOO=False
+DEBUG   -- USE_MPI=False
+DEBUG -- Not using ITT
+DEBUG Copying functorch._C from functorch/functorch.so to /private/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/functorch/_C.cpython-313-darwin.so
+DEBUG copying functorch/functorch.so -&gt; /private/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/functorch/_C.cpython-313-darwin.so
+DEBUG building 'torch._C' extension
+DEBUG creating /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch/csrc
+DEBUG clang -fno-strict-overflow -Wsign-compare -Wunreachable-code -fno-common -dynamic -DNDEBUG -g -O3 -Wall -I/Users/PanXuehai/.cache/uv/builds-v0/.tmpMPzOt1/include -I/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/include/python3.13 -c torch/csrc/stub.c -o /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch/csrc/stub.o -Wall -Wextra -Wno-strict-overflow -Wno-unused-parameter -Wno-missing-field-initializers -Wno-unknown-pragmas -fno-strict-aliasing
+DEBUG creating /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/torch
+DEBUG clang -bundle -undefined dynamic_lookup /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch/csrc/stub.o -L/Users/PanXuehai/Projects/pytorch/torch/lib -ltorch_python -o /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/torch/_C.cpython-313-darwin.so -Wl,-rpath,@loader_path/lib
+DEBUG copying /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/torch/_C.cpython-313-darwin.so -&gt; torch
+DEBUG copying /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/functorch/_C.cpython-313-darwin.so -&gt; functorch
+# DEBUG running egg_info
+DEBUG creating /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info
+DEBUG writing /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info/PKG-INFO
+DEBUG writing dependency_links to /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info/dependency_links.txt
+DEBUG writing entry points to /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info/entry_points.txt
+DEBUG writing requirements to /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info/requires.txt
+DEBUG writing top-level names to /var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info/top_level.txt
+DEBUG writing manifest file '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest file '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info/SOURCES.txt'
+DEBUG reading manifest template 'MANIFEST.in'
+DEBUG warning: no previously-included files matching '*.o' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.obj' found anywhere in distribution
+DEBUG no previously-included directories found matching '*/.git'
+DEBUG warning: no previously-included files matching '*~' found anywhere in distribution
+DEBUG warning: no previously-included files matching '*.swp' found anywhere in distribution
+DEBUG adding license file 'LICENSE'
+DEBUG adding license file 'NOTICE'
+DEBUG writing manifest file '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpv1w8yldu.build-temp/torch.egg-info/SOURCES.txt'
+DEBUG
+DEBUG setup.py::get_outputs returning ['/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/functorch/_C.cpython-313-darwin.so', '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/torch/_C.cpython-313-darwin.so', '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmpk7lphe5v.build-lib/caffe2']
+DEBUG Editable install will be performed using a meta path finder.
+DEBUG
+DEBUG Options like `package-data`, `include/exclude-package-data` or
+DEBUG `packages.find.exclude/include` may have no effect.
+DEBUG
+DEBUG adding '__editable___torch_2_8_0a0_git78a570d_finder.py'
+DEBUG adding '__editable__.torch-2.8.0a0+git78a570d.pth'
+DEBUG creating '/Users/PanXuehai/.cache/uv/builds-v0/.tmpnJZ1jY/.tmp-65_g_kuj/torch-2.8.0a0+git78a570d-0.editable-cp313-cp313-macosx_15_0_arm64.whl' and adding '/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/tmp7k_bwphqtorch-2.8.0a0+git78a570d-0.editable-cp313-cp313-macosx_15_0_arm64.whl' to it
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/licenses/LICENSE'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/licenses/NOTICE'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/METADATA'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/WHEEL'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/entry_points.txt'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/top_level.txt'
+DEBUG adding 'torch-2.8.0a0+git78a570d.dist-info/RECORD'
+DEBUG /Users/PanXuehai/.cache/uv/builds-v0/.tmpMPzOt1/lib/python3.13/site-packages/setuptools/command/editable_wheel.py:351: InformationOnly: Editable installation.
+DEBUG !!
+DEBUG
+DEBUG         ********************************************************************************
+DEBUG         Please be careful with folders in your working directory with the same
+DEBUG         name as your package as they may take precedence during imports.
+DEBUG         ********************************************************************************
+DEBUG
+DEBUG !!
+DEBUG   with strategy, WheelFile(wheel_path, &quot;w&quot;) as wheel_obj:
+DEBUG Released lock at `/var/folders/9r/g38s_wqs3kg0cy0n0mcdq92h0000gn/T/uv-setuptools-b66b08ef1dac3356.lock`
+DEBUG Finished building: torch @ file:///Users/PanXuehai/Projects/pytorch
+      Built torch @ file:///Users/PanXuehai/Projects/pytorch
+DEBUG Released lock at `/Users/PanXuehai/.cache/uv/sdists-v9/editable/86c2841f2a6717aa/.lock`
+Prepared 1 package in 13.48s
+Installed 1 package in 1ms
+ + torch==2.8.0a0+git78a570d (from file:///Users/PanXuehai/Projects/pytorch)
+DEBUG Released lock at `/Users/PanXuehai/Projects/pytorch/venv/.lock`
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-01 11:04</div>
+            <div class="timeline-body"><p>This makes sense to me when used in conjunction with #14338 (otherwise we could have one current build env, while cmake actually uses cached installations from the older build env)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-07-01 11:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-07-01 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-01 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-01 16:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:37 UTC
+    </footer>
+</body>
+</html>

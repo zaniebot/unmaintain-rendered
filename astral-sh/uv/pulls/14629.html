@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix --all-arches when paired with --only-downloads - astral-sh/uv #14629</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix --all-arches when paired with --only-downloads</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14629">#14629</a>
+        opened by <a href="https://github.com/alexprengere">@alexprengere</a>
+        on 2025-07-15 15:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/alexprengere">@alexprengere</a> on 2025-07-15 15:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>On current main, and on the latest released version 0.7.21, I have:</p>
+<pre><code>$ uv python list --only-downloads --all-arches
+cpython-3.14.0b4-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.13.5-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-x86_64-gnu      &lt;download available&gt;
+cpython-3.12.11-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.11.13-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.10.18-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.9.23-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                   &lt;download available&gt;
+pypy-3.11.13-linux-x86_64-gnu                     &lt;download available&gt;
+pypy-3.10.16-linux-x86_64-gnu                     &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                      &lt;download available&gt;
+graalpy-3.11.0-linux-x86_64-gnu                   &lt;download available&gt;
+graalpy-3.10.0-linux-x86_64-gnu                   &lt;download available&gt;
+graalpy-3.8.5-linux-x86_64-gnu                    &lt;download available&gt;
+</code></pre>
+<p>As you can see, <code>--all-arches</code> is not respected here.</p>
+<h2>Test Plan</h2>
+<p>With the patch:</p>
+<pre><code>$ cargo run python list --only-downloads --all-arches
+cpython-3.14.0b4-linux-x86_64-gnu                      &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-x86_64-gnu         &lt;download available&gt;
+cpython-3.14.0b4-linux-x86_64_v2-gnu                   &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-x86_64_v2-gnu      &lt;download available&gt;
+cpython-3.14.0b4-linux-x86_64_v3-gnu                   &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-x86_64_v3-gnu      &lt;download available&gt;
+cpython-3.14.0b4-linux-x86_64_v4-gnu                   &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-x86_64_v4-gnu      &lt;download available&gt;
+cpython-3.14.0b4-linux-aarch64-gnu                     &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-aarch64-gnu        &lt;download available&gt;
+cpython-3.14.0b4-linux-powerpc64le-gnu                 &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-powerpc64le-gnu    &lt;download available&gt;
+cpython-3.14.0b4-linux-riscv64gc-gnu                   &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-riscv64gc-gnu      &lt;download available&gt;
+cpython-3.14.0b4-linux-s390x-gnu                       &lt;download available&gt;
+cpython-3.14.0b4+freethreaded-linux-s390x-gnu          &lt;download available&gt;
+cpython-3.13.5-linux-x86_64-gnu                        &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-x86_64-gnu           &lt;download available&gt;
+cpython-3.13.5-linux-x86_64_v2-gnu                     &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-x86_64_v2-gnu        &lt;download available&gt;
+cpython-3.13.5-linux-x86_64_v3-gnu                     &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-x86_64_v3-gnu        &lt;download available&gt;
+cpython-3.13.5-linux-x86_64_v4-gnu                     &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-x86_64_v4-gnu        &lt;download available&gt;
+cpython-3.13.5-linux-aarch64-gnu                       &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-aarch64-gnu          &lt;download available&gt;
+cpython-3.13.5-linux-powerpc64le-gnu                   &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-powerpc64le-gnu      &lt;download available&gt;
+cpython-3.13.5-linux-riscv64gc-gnu                     &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-riscv64gc-gnu        &lt;download available&gt;
+cpython-3.13.5-linux-s390x-gnu                         &lt;download available&gt;
+cpython-3.13.5+freethreaded-linux-s390x-gnu            &lt;download available&gt;
+cpython-3.12.11-linux-x86_64-gnu                       &lt;download available&gt;
+cpython-3.12.11-linux-x86_64_v2-gnu                    &lt;download available&gt;
+cpython-3.12.11-linux-x86_64_v3-gnu                    &lt;download available&gt;
+cpython-3.12.11-linux-x86_64_v4-gnu                    &lt;download available&gt;
+cpython-3.12.11-linux-aarch64-gnu                      &lt;download available&gt;
+cpython-3.12.11-linux-powerpc64le-gnu                  &lt;download available&gt;
+cpython-3.12.11-linux-riscv64gc-gnu                    &lt;download available&gt;
+cpython-3.12.11-linux-s390x-gnu                        &lt;download available&gt;
+cpython-3.11.13-linux-x86_64-gnu                       &lt;download available&gt;
+cpython-3.11.13-linux-x86_64_v2-gnu                    &lt;download available&gt;
+cpython-3.11.13-linux-x86_64_v3-gnu                    &lt;download available&gt;
+cpython-3.11.13-linux-x86_64_v4-gnu                    &lt;download available&gt;
+cpython-3.11.13-linux-aarch64-gnu                      &lt;download available&gt;
+cpython-3.11.13-linux-powerpc64le-gnu                  &lt;download available&gt;
+cpython-3.11.13-linux-riscv64gc-gnu                    &lt;download available&gt;
+cpython-3.11.13-linux-s390x-gnu                        &lt;download available&gt;
+cpython-3.11.5-linux-x86-gnu                           &lt;download available&gt;
+cpython-3.10.18-linux-x86_64-gnu                       &lt;download available&gt;
+cpython-3.10.18-linux-x86_64_v2-gnu                    &lt;download available&gt;
+cpython-3.10.18-linux-x86_64_v3-gnu                    &lt;download available&gt;
+cpython-3.10.18-linux-x86_64_v4-gnu                    &lt;download available&gt;
+cpython-3.10.18-linux-aarch64-gnu                      &lt;download available&gt;
+cpython-3.10.18-linux-powerpc64le-gnu                  &lt;download available&gt;
+cpython-3.10.18-linux-riscv64gc-gnu                    &lt;download available&gt;
+cpython-3.10.18-linux-s390x-gnu                        &lt;download available&gt;
+cpython-3.10.13-linux-x86-gnu                          &lt;download available&gt;
+cpython-3.9.23-linux-x86_64-gnu                        &lt;download available&gt;
+cpython-3.9.23-linux-x86_64_v2-gnu                     &lt;download available&gt;
+cpython-3.9.23-linux-x86_64_v3-gnu                     &lt;download available&gt;
+cpython-3.9.23-linux-x86_64_v4-gnu                     &lt;download available&gt;
+cpython-3.9.23-linux-aarch64-gnu                       &lt;download available&gt;
+cpython-3.9.23-linux-powerpc64le-gnu                   &lt;download available&gt;
+cpython-3.9.23-linux-riscv64gc-gnu                     &lt;download available&gt;
+cpython-3.9.23-linux-s390x-gnu                         &lt;download available&gt;
+cpython-3.9.18-linux-x86-gnu                           &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                        &lt;download available&gt;
+cpython-3.8.20-linux-aarch64-gnu                       &lt;download available&gt;
+cpython-3.8.17-linux-x86-gnu                           &lt;download available&gt;
+pypy-3.11.13-linux-x86_64-gnu                          &lt;download available&gt;
+pypy-3.11.13-linux-aarch64-gnu                         &lt;download available&gt;
+pypy-3.11.13-linux-x86-gnu                             &lt;download available&gt;
+pypy-3.10.16-linux-x86_64-gnu                          &lt;download available&gt;
+pypy-3.10.16-linux-aarch64-gnu                         &lt;download available&gt;
+pypy-3.10.16-linux-x86-gnu                             &lt;download available&gt;
+pypy-3.10.14-linux-s390x-gnu                           &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                           &lt;download available&gt;
+pypy-3.9.19-linux-aarch64-gnu                          &lt;download available&gt;
+pypy-3.9.19-linux-x86-gnu                              &lt;download available&gt;
+pypy-3.9.19-linux-s390x-gnu                            &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                           &lt;download available&gt;
+pypy-3.8.16-linux-aarch64-gnu                          &lt;download available&gt;
+pypy-3.8.16-linux-x86-gnu                              &lt;download available&gt;
+pypy-3.8.16-linux-s390x-gnu                            &lt;download available&gt;
+graalpy-3.11.0-linux-x86_64-gnu                        &lt;download available&gt;
+graalpy-3.11.0-linux-aarch64-gnu                       &lt;download available&gt;
+graalpy-3.10.0-linux-x86_64-gnu                        &lt;download available&gt;
+graalpy-3.10.0-linux-aarch64-gnu                       &lt;download available&gt;
+graalpy-3.8.5-linux-x86_64-gnu                         &lt;download available&gt;
+graalpy-3.8.5-linux-aarch64-gnu                        &lt;download available&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-07-15 17:02</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-15 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-15 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-07-15 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-15 17:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:43 UTC
+    </footer>
+</body>
+</html>

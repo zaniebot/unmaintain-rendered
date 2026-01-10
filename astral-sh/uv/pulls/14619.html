@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>windows_exception: Improve async signal safety - astral-sh/uv #14619</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>windows_exception: Improve async signal safety</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14619">#14619</a>
+        opened by <a href="https://github.com/geofft">@geofft</a>
+        on 2025-07-14 23:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/geofft">@geofft</a> on 2025-07-14 23:24</div>
+            <div class="timeline-body"><p>It's not as bad as I feared to bypass libsys's stderr. (There's still a lock in libsys's backtrace, which might also not be too bad to bypass.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @geofft on 2025-07-14 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-14 23:37</div>
+            <div class="timeline-body"><p>As discussed over in https://github.com/astral-sh/uv/pull/14582#discussion_r2205125048 , this reimplements the important parts of the logic in https://github.com/rust-lang/rust/blob/master/library/std/src/sys/stdio/windows.rs with some simplifying assumptions.</p>
+<blockquote>
+<p>I do not know if the underlying syscall (<code>WriteConsoleW</code>) is async-signal-safe on Windows, but this will at least avoid the possible deadlock that can occur by using <code>eprintln!</code>.</p>
+</blockquote>
+<p>ReactOS's <code>WriteConsole</code> implementation says:</p>
+<pre><code>    /*
+     * For optimization purposes, Windows (and hence ReactOS, too, for
+     * compatibility reasons) uses a static buffer if no more than eighty
+     * bytes are written. Otherwise a new buffer is allocated.
+     * This behaviour is also expected in the server-side.
+     */
+</code></pre>
+<p>&quot;allocated&quot; here means using <code>CsrAllocateCaptureBuffer</code>, which allocates out of some shared heap with CSRSS, which handles the console. I am not sure if it locks. We could constrain our writes to 80 bytes at a time, I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-14 23:41</div>
+            <div class="timeline-body"><p>FWIW I tested with the same forced segfault as in the last PR, with</p>
+<ul>
+<li>running this in a default cmd.exe prompt (codepage 437)</li>
+<li><code>chcp 65001</code> to switch to the UTF-8 code page (which the internet tells me does not work great in the old console host, but it works well enough to test)</li>
+<li><code>target\debug\uv run python 2&gt; file.txt</code> (<code>cmd.exe</code> implements sh-style syntax for this)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @samypr100 by @geofft on 2025-07-15 00:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/windows_exception.rs</code>:79 on 2025-07-15 12:20</div>
+            <div class="timeline-body"><p>Would it make sense to make this a bit smaller? Maybe 512 bytes? The only reason I ask about it is because I know we've have stack size problems on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-07-15 12:25</div>
+            <div class="timeline-body"><p>This is awesome work! Excellent docs and comments. And I appreciate the <code>SAFETY</code> comments. :-)</p>
+<p>I do agree that it might be wise to do better with <code>backtrace</code> if that's possible. If it were just a lock specific to backtrace I don't think I'd be too worried about it (it seems unlikely we'd be in the middle of generating a backtrace when getting a signal), but if it's doing allocs, I guess the allocator could be holding a lock. That's annoying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-07-15 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv/src/windows_exception.rs</code>:79 on 2025-07-15 18:14</div>
+            <div class="timeline-body"><p>Changed this to 80 bytes to avoid allocations (as mentioned above).</p>
+<p>Also, I tried a different tactic for the format strings, wondering if this is more or less readable overall than the previous version. (<code>rustfmt</code> wants to expand the destructuring to one variable per line if it's more than a couple variables, and I didn't think this justified reconfiguring it or opting out.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-15 18:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/windows_exception.rs</code>:79 on 2025-07-15 18:30</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I think I prefer your change weakly over what it was before, since while it takes up more space, it seems more resistant to accidental mistakes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/windows_exception.rs</code>:233 on 2025-07-17 00:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    writeln!(e, &quot; x27={X27 :016x} x28={X28:016x}&quot;)?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-07-17 00:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/windows_exception.rs</code>:79 on 2025-07-17 00:55</div>
+            <div class="timeline-body"><p>Avoding the allocations makes sense to me to avoid a potential secondary crash given the much more limited stack space available in SEH</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-07-17 00:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> approved on 2025-07-17 00:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-07-17 01:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv/src/windows_exception.rs</code>:233 on 2025-07-17 01:31</div>
+            <div class="timeline-body"><p>oh no thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @geofft on 2025-07-17 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @geofft on 2025-07-17 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-17 01:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:43 UTC
+    </footer>
+</body>
+</html>

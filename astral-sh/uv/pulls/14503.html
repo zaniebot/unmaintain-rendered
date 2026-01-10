@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normalize trailing slashes only during lockfile validation - astral-sh/uv #14503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Normalize trailing slashes only during lockfile validation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14503">#14503</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-07-08 09:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-07-08 09:46</div>
+            <div class="timeline-body"><p>NOTE: This is a possible alternative to #14387.</p>
+<p>We were normalizing index URLs to remove trailing slashes, but this is incorrect behavior for <code>find-links</code> URLs (#14367). However, special-casing <code>find-links</code> URLs would require that <a href="https://github.com/astral-sh/uv/pull/14387#issuecomment-3047046094">we stop normalizing URLs when validating lockfiles</a> (or only normalize Simple API URLs at that point). Unfortunately, when parsing lockfiles, we no longer know whether a registry source was a Simple API or <code>find-links</code> URL.</p>
+<p>The purpose of URL normalization was to prevent lockfile validation failure when the only difference is the trailing slash in an index (#13707). This PR moves all normalization to the lockfile validation stage. This way, when performing ordinary operations, we use the URLs as provided.</p>
+<p>Fixes #14367</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jtfmumm on 2025-07-08 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-07-08 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:199 on 2025-07-08 09:52</div>
+            <div class="timeline-body"><p>This mostly duplicates the logic found in <code>UrlString::without_trailing_slash</code>. We could factor out the shared logic, but I'm not sure which crate it would go on (or if it's really worth creating a new crate if that's necessary).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:4832 on 2025-07-08 10:07</div>
+            <div class="timeline-body"><p>We only currently call <code>VerbatimUrl::without_trailing_slash</code> in cases where we need the owned value, so it's not strictly necessary to return a <code>Cow</code>. Instead of <code>VerbatimUrl::from_url(index).without_trailing_slash().into_owned()</code> it could be something like <code>VerbatimUrl::from_url_normalized(index)</code>.</p>
+<p>I haven't made this change because returning a <code>Cow</code> could still be beneficial if we end up needing this elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-07-08 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-08 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/file.rs</code>:181 on 2025-07-08 16:08</div>
+            <div class="timeline-body"><p>Why is this part necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/file.rs</code>:181 on 2025-07-08 17:07</div>
+            <div class="timeline-body"><p>It's not. Removed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-07-08 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-08 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:199 on 2025-07-08 17:25</div>
+            <div class="timeline-body"><p>Can't this just operate on <code>self.url</code> and use <code>pop_if_empty</code> instead of reimplementing it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-07-09 09:48</div>
+            <div class="timeline-body"><p>Closing in favor of #14511.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-07-09 09:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:41 UTC
+    </footer>
+</body>
+</html>

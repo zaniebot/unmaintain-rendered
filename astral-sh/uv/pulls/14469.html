@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add PEX lock file export support - astral-sh/uv #14469</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add PEX lock file export support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14469">#14469</a>
+        opened by <a href="https://github.com/ademariag">@ademariag</a>
+        on 2025-07-05 23:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ademariag">@ademariag</a> on 2025-07-05 23:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds support for exporting UV lock files to the PEX lock
+format, enabling seamless integration with PEX packaging
+tools and Pantsbuild workflows.</p>
+<h2>Changes</h2>
+<h3>Core Implementation</h3>
+<ul>
+<li><strong>New export format</strong>: Added <code>ExportFormat::PexLock</code>
+with format detection for <code>.pex.lock</code> and <code>.pex.json</code>
+files</li>
+<li><strong>PEX lock structure</strong>: Implemented complete PEX lock
+file schema with proper JSON serialization</li>
+<li><strong>Platform compatibility</strong>: Uses universal platform
+tags <code>[&quot;py&quot;, &quot;none&quot;, &quot;any&quot;]</code> for cross-platform
+compatibility</li>
+<li><strong>Hash security</strong>: Skips artifacts without hashes and
+properly extracts algorithm from hash strings</li>
+</ul>
+<h3>Format Features</h3>
+<ul>
+<li><strong>Correct artifact format</strong>: Uses separate <code>algorithm</code>
+and <code>hash</code> fields (not nested <code>hashes</code> object)</li>
+<li><strong>3-component platform tags</strong>: Implements
+<code>[interpreter, abi, platform]</code> format required by PEX
+parser</li>
+<li><strong>Comprehensive metadata</strong>: Includes all required PEX
+fields (pex_version, build settings, etc.)</li>
+<li><strong>Multi-artifact support</strong>: Handles both wheels and
+source distributions with proper URL handling</li>
+</ul>
+<h3>Integration</h3>
+<ul>
+<li><strong>CLI support</strong>: <code>uv export --format pex.lock</code> and
+automatic format detection</li>
+<li><strong>Error handling</strong>: Graceful handling of missing
+artifacts and invalid URLs</li>
+<li><strong>Documentation</strong>: Full module documentation explaining
+PEX format and usage</li>
+</ul>
+<h2>Testing</h2>
+<ul>
+<li>Unit tests for PEX lock serialization and format
+validation</li>
+<li>Comprehensive artifact handling (wheels, source
+distributions, local packages)</li>
+<li>Hash extraction and algorithm detection</li>
+</ul>
+<h2>Usage</h2>
+<pre><code class="language-bash"># Export to PEX format explicitly
+uv export --format pex.lock
+
+# Auto-detect from file extension
+uv export --output-file requirements.pex.lock
+
+Compatibility
+
+- Compatible with PEX 2.44.0+ and Pantsbuild workflows
+- Resolves parsing errors from incorrect artifact and
+platform tag formats
+- Maintains all dependency resolution integrity with
+proper hash verification
+
+Closes: [Issue number if applicable]
+
+## Summary of PR-Ready Changes
+
+✅ **Code Quality**
+- Fixed visibility issues (`pub(crate) mod export`)
+- Added comprehensive documentation
+- Improved error handling (skip artifacts without hashes)
+- Dynamic hash algorithm extraction
+- Proper platform tag format with explanatory comments
+
+✅ **Architecture**
+- Clean module structure following existing patterns
+- Proper re-exports through lock module
+- Integration with existing export infrastructure
+
+✅ **Security**
+- Skip artifacts without hashes for security
+- Proper hash verification preservation
+- Safe URL handling for different source types
+
+✅ **Robustness**
+- Handles missing URLs/filenames gracefully
+- Support for multiple hash algorithms
+- Cross-platform compatibility
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ademariag on 2025-07-06 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsirois">@jsirois</a> on 2025-07-10 18:21</div>
+            <div class="timeline-body"><p>@ademariag as the maintainer of Pex and a former Pants maintainer I'd like to suggest this is not a good approach for several reasons:</p>
+<ol>
+<li>The PEX lock file format is not specified or documented; so taking up the responsibility of maintaining an export to the format is highly undesirable for any project. I assume uv heartily agrees with this.</li>
+<li>There is, in fact, an appropriate export format that is specified in <a href="https://peps.python.org/pep-0751/">PEP-751</a>. This <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#pylock-toml-spec">pylock.toml format</a> is supported for export by uv and for import by Pex. For Pex to be able to subset the lock (which Pants currently needs / leverages heavily), the optional dependencies field needs to be filled in however. This is tracked by uv here: https://github.com/astral-sh/uv/issues/13032.</li>
+<li>IIUC you, as a ~3rd party, are attempting to work around Pants issues not by fixing Pants (for example to use uv directly), but by attempting to push fixes elsewhere. This might be an expedient tactic in general, but it is not usually a good long term approach.</li>
+</ol>
+<p>I'd like to stress that your problem is over in Pants fundamentally and trying to back door a fix through uv or Pex is not optimal. If you were to maintain your tactical approach however, I'd suggest focusing on 2 above is the right way to go. Engage uv to re-affirm their stomach for https://github.com/astral-sh/uv/issues/13032 being fixed and offer help if they are positive on this direction. Although still tactical, at least you'd be improving inter-operation on a community standard in pylock.toml, which has wider benefits than your particular needs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-14 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-14 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>The PEX lock file format is not specified or documented; so taking up the responsibility of maintaining an export to the format is highly undesirable for any project. I assume uv heartily agrees with this.</p>
+</blockquote>
+<p>:thumbsup: While I appreciate the PR, I was already a bit hesitant prior to @jsirois comment as I'm not super familiar with the format (and it hasn't been requested before), so incorporating it would require both significant upfront work and ongoing maintenance. But based on this, I'd prefer not to add support for the PEX lock file. It seems like PEP 751 is the better path forward here for interoperability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-14 17:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:40 UTC
+    </footer>
+</body>
+</html>

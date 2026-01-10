@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support conflicting editable settings across groups - astral-sh/uv #14197</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support conflicting editable settings across groups</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14197">#14197</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-06-22 02:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-22 02:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If a user specifies <code>-e /path/to/dir</code> and <code>/path/to/dir</code> in a <code>uv pip install</code> command, we want the editable to &quot;win&quot; (rather than erroring due to conflicting URLs). Unfortunately, this behavior meant that when you requested a package as editable and non-editable in conflicting groups, the editable version was <em>always</em> used. This PR modifies the requisite types to use <code>Option&lt;bool&gt;</code> rather than <code>bool</code> for the <code>editable</code> field, so we can determine whether a requirement was explicitly requested as editable, explicitly requested as non-editable, or not specified (as in the case of <code>/path/to/dir</code> in a <code>requirements.txt</code> file). In the latter case, we allow editables to override the &quot;unspecified&quot; requirement.</p>
+<p>If a project includes a path dependency twice, once with <code>editable = true</code> and once without any <code>editable</code> annotation, those are now considered conflicting URLs, and lead to an error, so I've marked this change as breaking.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/14139.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-06-22 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-06-22 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-22 13:06</div>
+            <div class="timeline-body"><p>While the new behavior is a strict improvement, the new behavior still allows inactive groups to change the behavior of active groups. For example, the following two are different for <code>uv sync --group bar</code>, even through bar and foo are conflicting groups. I.e., adding an inactive conflicting group can changes defaults for an unchanged active conflicting group.</p>
+<pre><code class="language-toml">[tool.uv]
+conflicts = [[{ group = &quot;foo&quot; }, { group = &quot;bar&quot; }]]
+
+[tool.uv.sources]
+child = [
+  { path = &quot;./child&quot;, editable = true, group = &quot;foo&quot; },
+  { path = &quot;./child&quot;, editable = false, group = &quot;bar&quot; },
+]
+</code></pre>
+<pre><code class="language-console">$ uv venv -q &amp;&amp; uv-debug sync --group bar &amp;&amp; uv-debug pip list
+Resolved 3 packages in 2ms
+Installed 2 packages in 4ms
+ + child==0.1.0 (from file:///home/konsti/projects/uv/debug/child)
+ + debug==0.1.0 (from file:///home/konsti/projects/uv/debug)
+Package Version Editable project location
+------- ------- ------------------------------
+child   0.1.0
+debug   0.1.0   /home/konsti/projects/uv/debug
+</code></pre>
+<pre><code class="language-toml">[tool.uv]
+conflicts = [[{ group = &quot;foo&quot; }, { group = &quot;bar&quot; }]]
+
+[tool.uv.sources]
+child = [
+  { path = &quot;./child&quot;, editable = true, group = &quot;foo&quot; },
+  { path = &quot;./child&quot;, group = &quot;bar&quot; },
+]
+</code></pre>
+<pre><code class="language-console">$ uv venv -q &amp;&amp; uv-debug sync --group bar &amp;&amp; uv-debug pip list
+Resolved 2 packages in 7ms
+      Built debug @ file:///home/konsti/projects/uv/debug
+Prepared 1 package in 140ms
+Installed 2 packages in 1ms
+ + child==0.1.0 (from file:///home/konsti/projects/uv/debug/child)
+ + debug==0.1.0 (from file:///home/konsti/projects/uv/debug)
+Package Version Editable project location
+------- ------- ------------------------------------
+child   0.1.0   /home/konsti/projects/uv/debug/child
+debug   0.1.0   /home/konsti/projects/uv/debug
+</code></pre>
+<p>This is different from other attributes in sources that are usually &quot;sticky&quot;, such as URLs: A URL in one conflicting branch does not influence the other branch:</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+
+[dependency-groups]
+foo = [&quot;tqdm&quot;]
+bar = [&quot;tqdm&quot;]
+
+[tool.uv]
+conflicts = [[{ group = &quot;foo&quot; }, { group = &quot;bar&quot; }]]
+
+[tool.uv.sources]
+tqdm = [
+  { url = &quot;https://files.pythonhosted.org/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl&quot;, group = &quot;foo&quot; },
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-22 14:08</div>
+            <div class="timeline-body"><p>That seems okay though it’s also fixable — do you want me to change it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-23 00:07</div>
+            <div class="timeline-body"><p>@konstin -- Updated and added a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-23 17:14</div>
+            <div class="timeline-body"><p>It looks like <code>lock_editable</code> now fails because we consider it a conflict to request once with <code>editable = true</code> and once without an <code>editable</code> annotation (since that gets treated as <code>editable = false</code>). That suggests to me that maybe we <em>should</em> continue to allow <code>editable = true</code> to override the unset <code>editable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @charliermarsh on 2025-06-23 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-23 17:25</div>
+            <div class="timeline-body"><p>Instead, I just marked this as breaking and changed the test. I think the behavior we have here is more understandable than doing anything with global / implicit overrides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-24 10:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/lock.rs</code>:11032 on 2025-06-24 10:44</div>
+            <div class="timeline-body"><p>I'm confused how this used to pass but now shows two different paths but not a different editable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-24 10:45</div>
+            <div class="timeline-body"><p>I'm really into the new behavior!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-24 10:46</div>
+            <div class="timeline-body"><p>Should we target this at the 0.8 branch?</p>
+<p>We need some clarification on the new error message, otherwise r+</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-06-28 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock.rs</code>:11032 on 2025-06-28 13:23</div>
+            <div class="timeline-body"><p>It used to pass because we let the editable override. Now there's a conflict because one dependency is requesting the editable and another is requesting a non-editable. Should we show <code>-e</code> for one of them, or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-06-28 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.8.0" by @charliermarsh on 2025-06-28 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-30 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-30 14:22</div>
+            <div class="timeline-body"><p>(I think I should still fix this to include the editable information in the error message)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/lock.rs</code>:11032 on 2025-06-30 14:28</div>
+            <div class="timeline-body"><p>maybe <code>/path/to/file (editable)</code>? <code>-e</code> works too but might be hard to read with the existing leading <code>-</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-30 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-07-11 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-11 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-11 02:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:37 UTC
+    </footer>
+</body>
+</html>

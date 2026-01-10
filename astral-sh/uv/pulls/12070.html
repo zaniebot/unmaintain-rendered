@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically infer the PyTorch index via `--torch-backend=auto` - astral-sh/uv #12070</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically infer the PyTorch index via `--torch-backend=auto`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12070">#12070</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-03-09 01:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-09 01:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a prototype that I'm considering shipping under <code>--preview</code>, based on <a href="https://github.com/pmeier/light-the-torch"><code>light-the-torch</code></a>.</p>
+<p><code>light-the-torch</code> patches pip to pull PyTorch packages from the PyTorch indexes automatically. And, in particular, <code>light-the-torch</code> will query the installed CUDA drivers to determine which indexes are compatible with your system.</p>
+<p>This PR implements equivalent behavior under <code>--torch-backend auto</code>, though you can also set <code>--torch-backend cpu</code>, etc. for convenience. When enabled, the registry client will fetch from the appropriate PyTorch index when it sees a package from the PyTorch ecosystem (and ignore any other configured indexes, <em>unless</em> the package is explicitly pinned to a different index).</p>
+<p>Right now, this is only implemented in the <code>uv pip</code> CLI, since it doesn't quite fit into the lockfile APIs given that it relies on feature detection on the currently-running machine.</p>
+<h2>Test Plan</h2>
+<p>On macOS, you can test this with (e.g.):</p>
+<pre><code class="language-shell">UV_TORCH_BACKEND=auto UV_CUDA_DRIVER_VERSION=450.80.2 cargo run \
+  pip install torch --python-platform linux --python-version 3.12
+</code></pre>
+<p>On a GPU-enabled EC2 machine:</p>
+<pre><code class="language-shell">ubuntu@ip-172-31-47-149:~/uv$ UV_TORCH_BACKEND=auto cargo run pip install torch -v
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/uv pip install torch -v`
+DEBUG uv 0.6.6 (e95ca063b 2025-03-14)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.13.0-linux-x86_64-gnu` at `/home/ubuntu/uv/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.13.0 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: torch
+warning: The `--torch-backend` setting is experimental and may change without warning. Pass `--preview` to disable this warning.
+DEBUG Detected CUDA driver version from `/sys/module/nvidia/version`: 550.144.3
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-03-09 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-03-10 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-03-10 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/python/get_interpreter_info.py</code>:420 on 2025-03-10 20:39</div>
+            <div class="timeline-body"><p>This ties a machine-wide information (<code>nvidia-smi</code> output) to each interpreter, even though this information can changes through different operations than an interpreter (updating CUDA vs. updating the Python interpreter binary).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/python/get_interpreter_info.py</code>:421 on 2025-03-10 20:40</div>
+            <div class="timeline-body"><p>This could raise an <code>IndexError</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-03-10 20:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DEKHTIARJonathan">@DEKHTIARJonathan</a> on 2025-03-10 21:42</div>
+            <div class="timeline-body"><p>@charliermarsh : Adapted from a few different sources - namely conda.
+Credit / Code Author: Michael Sarahan</p>
+<p>I hope that illustrates my point better - why you need a plugin interface and you don't want to be the person responsible to maintain that :+1:</p>
+<pre><code class="language-python"># Copyright (C) 2012 Anaconda, Inc
+# SPDX-License-Identifier: BSD-3-Clause
+&quot;&quot;&quot;Detect CUDA version.&quot;&quot;&quot;
+
+import ctypes
+import functools
+import itertools
+import multiprocessing
+import os
+import platform
+from contextlib import suppress
+from dataclasses import dataclass
+from typing import Optional
+
+
+@dataclass()
+class CudaVersion:
+    version: str
+    architectures: list[str]
+
+
+def cuda_version() -&gt; Optional[CudaVersion]:
+    # Do not inherit file descriptors and handles from the parent process.
+    # The `fork` start method should be considered unsafe as it can lead to
+    # crashes of the subprocess. The `spawn` start method is preferred.
+    context = multiprocessing.get_context(&quot;spawn&quot;)
+    queue = context.SimpleQueue()
+    # Spawn a subprocess to detect the CUDA version
+    detector = context.Process(
+        target=_cuda_detector_target,
+        args=(queue,),
+        name=&quot;CUDA driver version detector&quot;,
+        daemon=True,
+    )
+    try:
+        detector.start()
+        detector.join(timeout=60.0)
+    finally:
+        # Always cleanup the subprocess
+        detector.kill()  # requires Python 3.7+
+
+    if queue.empty():
+        return None
+
+    result = queue.get()
+    if result:
+        driver_version, architectures = result.split(&quot;;&quot;)
+        result = CudaVersion(driver_version, architectures.split(&quot;,&quot;))
+    return result
+
+
+@functools.lru_cache(maxsize=None)
+def cached_cuda_version():
+    return cuda_version()
+
+
+def _cuda_detector_target(queue):
+    &quot;&quot;&quot;
+    Attempt to detect the version of CUDA present in the operating system in a
+    subprocess.
+
+    On Windows and Linux, the CUDA library is installed by the NVIDIA
+    driver package, and is typically found in the standard library path,
+    rather than with the CUDA SDK (which is optional for running CUDA apps).
+
+    On macOS, the CUDA library is only installed with the CUDA SDK, and
+    might not be in the library path.
+
+    Returns: version string with CUDA version first, then a set of unique SM's for the GPUs present in the system
+             (e.g., '12.4;8.6,9.0') or None if CUDA is not found.
+             The result is put in the queue rather than a return value.
+    &quot;&quot;&quot;
+    # Platform-specific libcuda location
+    system = platform.system()
+    if system == &quot;Darwin&quot;:
+        lib_filenames = [
+            &quot;libcuda.1.dylib&quot;,  # check library path first
+            &quot;libcuda.dylib&quot;,
+            &quot;/usr/local/cuda/lib/libcuda.1.dylib&quot;,
+            &quot;/usr/local/cuda/lib/libcuda.dylib&quot;,
+        ]
+    elif system == &quot;Linux&quot;:
+        lib_filenames = [
+            &quot;libcuda.so&quot;,  # check library path first
+            &quot;/usr/lib64/nvidia/libcuda.so&quot;,  # RHEL/Centos/Fedora
+            &quot;/usr/lib/x86_64-linux-gnu/libcuda.so&quot;,  # Ubuntu
+            &quot;/usr/lib/wsl/lib/libcuda.so&quot;,  # WSL
+        ]
+        # Also add libraries with version suffix `.1`
+        lib_filenames = list(
+            itertools.chain.from_iterable((f&quot;{lib}.1&quot;, lib) for lib in lib_filenames)
+        )
+    elif system == &quot;Windows&quot;:
+        bits = platform.architecture()[0].replace(&quot;bit&quot;, &quot;&quot;)  # e.g. &quot;64&quot; or &quot;32&quot;
+        lib_filenames = [f&quot;nvcuda{bits}.dll&quot;, &quot;nvcuda.dll&quot;]
+    else:
+        queue.put(None)  # CUDA not available for other operating systems
+        return
+
+    # Open library
+    if system == &quot;Windows&quot;:
+        dll = ctypes.windll
+    else:
+        dll = ctypes.cdll
+    for lib_filename in lib_filenames:
+        with suppress(Exception):
+            libcuda = dll.LoadLibrary(lib_filename)
+            break
+    else:
+        queue.put(None)
+        return
+
+    # Empty `CUDA_VISIBLE_DEVICES` can cause `cuInit()` returns `CUDA_ERROR_NO_DEVICE`
+    # Invalid `CUDA_VISIBLE_DEVICES` can cause `cuInit()` returns `CUDA_ERROR_INVALID_DEVICE`
+    # Unset this environment variable to avoid these errors
+    os.environ.pop(&quot;CUDA_VISIBLE_DEVICES&quot;, None)
+
+    # Get CUDA version
+    try:
+        cuInit = libcuda.cuInit
+        flags = ctypes.c_uint(0)
+        ret = cuInit(flags)
+        if ret != 0:
+            queue.put(None)
+            return
+
+        cuDriverGetVersion = libcuda.cuDriverGetVersion
+        version_int = ctypes.c_int(0)
+        ret = cuDriverGetVersion(ctypes.byref(version_int))
+        if ret != 0:
+            queue.put(None)
+            return
+
+        # Convert version integer to version string
+        value = version_int.value
+        version_value = f&quot;{value // 1000}.{(value % 1000) // 10}&quot;
+
+        count = ctypes.c_int(0)
+        libcuda.cuDeviceGetCount(ctypes.pointer(count))
+
+        architectures = set()
+        for device in range(count.value):
+            major = ctypes.c_int(0)
+            minor = ctypes.c_int(0)
+            libcuda.cuDeviceComputeCapability(
+                ctypes.pointer(major),
+                ctypes.pointer(minor),
+                device)
+            architectures.add(f&quot;{major.value}.{minor.value}&quot;)
+        queue.put(f&quot;{version_value};{','.join(architectures)}&quot;)
+    except Exception:
+        queue.put(None)
+        return
+
+if __name__ == &quot;__main__&quot;:
+    print(cuda_version())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-torch/src/lib.rs</code>:174 on 2025-03-11 12:00</div>
+            <div class="timeline-body"><p>Can we add this list to some documentation? Reading the high-level overview I didn't realize we were hardcoding a package list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-03-11 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/python/get_interpreter_info.py</code>:420 on 2025-03-11 17:12</div>
+            <div class="timeline-body"><p>I think we should get this via <code>/sys/module/nvidia/version</code>, and also not cache it - it ought to be pretty cheap to do one file read whenever we need it, much faster than actually loading the CUDA libraries and doing stuff. (I don't think there's a good way to get proactively notified if it changes; you can of course invalidate on a reboot but you can also unload/load drivers without a reboot.) I think I've also run into cases where nvidia-smi isn't installed right but the actual kernel driver is fine.</p>
+<p>That is to say, I think this logic should move out of the Python interpreter discovery code and into the Rust code at the point where we need it.</p>
+<p>Minor point but I want to mention it because the terminology is confusing: the information we're specifically getting here is the driver version, not the CUDA version. PyTorch ships the relevant CUDA runtime (libcudart.so.12 or .11 or whatever) and it doesn't have to match the CUDA version installed systemwide (if any). libcudart, in turn, requires a libcuda.so.1 from either the systemwide driver installation or a &quot;cuda-compat&quot; package if libcudart.so.N is sufficiently newer than the system version of libcuda.so.1. (So you could come up with a scheme where libcuda.so.1 itself is also distributed via e.g. a wheel and so everything is decoupled from the system except the kernel driver, though I don't remember off hand whether NVIDIA's license allows redistributing it. This sort of setup is particularly helpful for containerized environments, where it's annoying that the &quot;driver&quot; installation is split between a kernel driver, which is trivially accessible in the container, and the userspace libcuda.so.1, which requires more effort to bind mount into the container.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv/tests/it/lock.rs</code>:15226 on 2025-03-11 17:23</div>
+            <div class="timeline-body"><p>Is this change fine? (As in, are there real-world users who would have benefited from the hint and are losing it?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>docs/reference/cli.md</code>:5949 on 2025-03-11 17:24</div>
+            <div class="timeline-body"><p>I wonder if it would be helpful to put the full giant list behind a <code>&lt;summary&gt;...&lt;/summary&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-torch/src/lib.rs</code>:174 on 2025-03-11 17:26</div>
+            <div class="timeline-body"><p>Can we generate this by querying the PyTorch indices to see what they have? (Maybe a manually-run script that queries them and updates this list, or an automatically-run integration tests that makes sure this list is in sync with what's currently on their indices?)</p>
+<p>Along those lines it would be helpful to have this list somewhere declarative. It might also be helpful to allow user-controlled overrides of this list if the set of packages changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-03-11 17:31</div>
+            <div class="timeline-body"><p>I think this is a great idea.</p>
+<p>Would it be worth naming this feature something like <code>uv-specialized-index</code> instead of <code>uv-torch</code> with an eye to extending it to other libraries in the future? (jaxlib and tensorflow, for instance, have current/popular versions on PyPI, but I think also have their own indees)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-11 19:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/reference/cli.md</code>:5949 on 2025-03-11 19:42</div>
+            <div class="timeline-body"><p>(Generally non-trivial because this is generated and then rendered via mkdocs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-03-12 01:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is a great idea.</p>
+<p>Would it be worth naming this feature something like <code>uv-specialized-index</code> instead of <code>uv-torch</code> with an eye to extending it to other libraries in the future? (jaxlib and tensorflow, for instance, have current/popular versions on PyPI, but I think also have their own indees)?</p>
+</blockquote>
+<p>I had a similar thought, I think this is one of many cases. Also considering when such indexes are mirrored or vendored internally. I was thinking what would be the right naming. I know some avenues refers to this as a <code>suffixed</code> index, so maybe <code>uv-suffixed-index</code>? Same with <code>--torch-backend</code>, maybe something more generic of it's intent would be more future proof, such as <code>--index-suffix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-03-12 01:50</div>
+            <div class="timeline-body"><blockquote>
+<p>though I don't remember off hand whether NVIDIA's license allows redistributing it</p>
+</blockquote>
+<p>~~iirc this is no longer an issue with the new open source drivers (e.g. <code>nvidia-driver-{ver}-open</code>)~~</p>
+<p>Nevermind, didn't notice you were referring to CUDA.</p>
+<blockquote>
+<p>I think we should get this via /sys/module/nvidia/version</p>
+</blockquote>
+<p>💯 In my experience nvidia-smi can also take a long time depending on gpu load.</p>
+<p>Although there multiple locations depending on how (e.g. dkms) and environment (windows, osx) it's installed. For example, WSL 2 its even weirder due to the shared drivers with the host situation. So nvidia-smi might be the most sure-fire low risk way (assuming no issues with install).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-12 02:19</div>
+            <div class="timeline-body"><p>Definitely agree with moving this out of the interpreter query (and possibly reading it from outside <code>nvidia-smi</code> -- I need to do some research).</p>
+<p>I'm a <em>little</em> wary of trying to brand this as something more general than <code>torch</code>, because I'll likely want to reconsider the mechanism and design entirely as we generalize it. So it seems nice to keep it as an experimental <code>torch</code>-specific feature, then modify it as we generalize.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-15 01:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock.rs</code>:15226 on 2025-03-15 01:19</div>
+            <div class="timeline-body"><p>Yeah, I think the hint here is actually wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/python/get_interpreter_info.py</code>:420 on 2025-03-15 02:16</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-15 02:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-15 02:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/python/get_interpreter_info.py</code>:421 on 2025-03-15 02:16</div>
+            <div class="timeline-body"><p>(Removed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-03-15 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @geofft by @charliermarsh on 2025-03-15 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-15 02:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-torch/src/lib.rs</code>:174 on 2025-03-15 02:22</div>
+            <div class="timeline-body"><p>Unfortunately I don't know that we can... We don't want <em>all</em> packages on these indexes, because they include things like <code>jinja2</code>. And in some cases, they include <em>incomplete</em> packages like <code>markupsafe</code> (where they only have a few wheels).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-15 02:25</div>
+            <div class="timeline-body"><p>@konstin @geofft -- I believe I've addressed all feedback: we now query from <code>/sys/module/nvidia/version</code> and fall back to <code>nvidia-smi</code>; and all the accelerator stuff is decoupled from the Python interpreter (and no longer cached).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-03-17 10:21</div>
+            <div class="timeline-body"><p>deferring to @geofft for the new detect logic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-torch/src/accelerator.rs</code>:72 on 2025-03-18 23:02</div>
+            <div class="timeline-body"><p>Should this case return an error instead of falling through to <code>nvidia-smi</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-torch/src/accelerator.rs</code>:90 on 2025-03-18 23:04</div>
+            <div class="timeline-body"><p><code>else {debug!(&quot;nvidia-smi returned error {output.status}: {output.stderr}&quot;)}</code> might be nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> approved on 2025-03-18 23:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-19 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-torch/src/accelerator.rs</code>:72 on 2025-03-19 02:29</div>
+            <div class="timeline-body"><p>I'm not confident enough in the format of this one... It seems like it varies across machines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-03-19 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-19 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-19 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/coezbek">@coezbek</a> on <code>crates/uv-torch/src/accelerator.rs</code>:87 on 2025-07-16 10:15</div>
+            <div class="timeline-body"><p>On a system with multiple GPUs this line will return multiple driver versions, e.g. on my system:</p>
+<pre><code>$ nvidia-smi --query-gpu=driver_version --format=csv,noheader
+572.60
+572.60
+</code></pre>
+<p>This will make <code>uv pip install with --torch-backend=auto</code> fail with the following error:</p>
+<pre><code>uv pip install -U &quot;vllm[audio]&quot; --torch-backend=auto
+error: after parsing `572.60
+`, found `572.60
+`, which is not part of a valid version
+</code></pre>
+<p><code>nvidia-smi</code> does not respect NVIDIA_VISIBLE_DEVICES, so there is no way from the outside to use <code>--torch-backend=auto</code> with two graphics cards at the moment.</p>
+<p>Workaround is to run nvidia-smi, identify CUDA version there and run with <code>--torch-backend=cuXXX</code> as indicated by <code>nvidia-smi</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/coezbek">@coezbek</a> reviewed on 2025-07-16 10:17</div>
+            <div class="timeline-body"><p>--torch-backend=auto fails for multiple GPU systems which don't have <code>/sys/module/nvidia/version</code> or <code>/proc/driver/nvidia/version</code> (e.g. WSL)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DEKHTIARJonathan">@DEKHTIARJonathan</a> on 2025-07-16 16:08</div>
+            <div class="timeline-body"><p>@charliermarsh I recommend you to use <code>nvml</code> - that's what we decided to use for the variant plugin.
+It's guaranteed to be present if the driver is installed</p>
+<p>Example:
+https://github.com/wheelnext/nvidia-variant-provider/blob/dev/nvidia_variant_provider/detect_cuda.py</p>
+<p>This is using the Python bindings - but NVML is C library you can directly dlopen. The python example should tell you what functions to call for SM, UMD and KMD ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-16 16:16</div>
+            <div class="timeline-body"><p>Awesome, thanks @DEKHTIARJonathan. I filed an issue here: https://github.com/astral-sh/uv/issues/14664</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hamzaq2000">@hamzaq2000</a> on 2025-07-18 22:00</div>
+            <div class="timeline-body"><p>Tested the following command on a system with a GTX 1080 Ti and CUDA 12.8 driver (what shows in <code>nvidia-smi</code>) installed.</p>
+<pre><code>uv pip install torch --torch-backend=auto --preview
+</code></pre>
+<p>Then ran this test script:</p>
+<pre><code class="language-python">import torch
+tensor = torch.randn(3, 4, device='cuda')
+print(tensor)
+</code></pre>
+<p>And got this:</p>
+<pre><code>  cpu = _conversion_method_template(device=torch.device(&quot;cpu&quot;))
+/root/env/lib/python3.11/site-packages/torch/cuda/__init__.py:262: UserWarning:
+    Found GPU0 NVIDIA GeForce GTX 1080 Ti which is of cuda capability 6.1.
+    PyTorch no longer supports this GPU because it is too old.
+    The minimum cuda capability supported by this library is 7.5.
+
+  warnings.warn(
+/root/env/lib/python3.11/site-packages/torch/cuda/__init__.py:287: UserWarning:
+NVIDIA GeForce GTX 1080 Ti with CUDA capability sm_61 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_75 sm_80 sm_86 sm_90 sm_100 sm_120 compute_120.
+If you want to use the NVIDIA GeForce GTX 1080 Ti GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(
+Traceback (most recent call last):
+  File &quot;/root/torch_test.py&quot;, line 4, in &lt;module&gt;
+    tensor = torch.randn(3, 4, device='cuda')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: no kernel image is available for execution on the device
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+</code></pre>
+<p>I think just looking at the installed CUDA version/driver might not be enough, the CUDA compute capability supported by different torch versions is of relevance as well. In this case, a GTX 1080 Ti has drivers installed that show CUDA 12.8 in <code>nvidia-smi</code> but we can't actually use the <code>cu128</code> torch wheel, which <code>--torch-backend=auto</code> installs, as it doesn't support GPUs with CUDA compute capability &lt; 7.5.</p>
+<p>Some relevant discussion I found:
+https://discuss.pytorch.org/t/gpu-compute-capability-support-for-each-pytorch-version/62434/4
+https://github.com/moi90/pytorch_compute_capabilities</p>
+<p>I then also tested without <code>--torch-backend=auto</code>, so simply:</p>
+<pre><code>uv pip install torch
+</code></pre>
+<p>This seems to install the <code>cu126</code> wheel, and with this the test script worked just fine, meaning the <code>cu126</code> wheel has not yet dropped support for CUDA compute capability 6.1 devices.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-18 22:33</div>
+            <div class="timeline-body"><p>Do you mind filing a separate issue? We tend to prefer that over commenting on closed issues or pull requests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DEKHTIARJonathan">@DEKHTIARJonathan</a> on 2025-07-18 22:40</div>
+            <div class="timeline-body"><p>@hamzaq2000</p>
+<blockquote>
+<p>a GTX 1080 Ti has drivers installed that show CUDA 12.8 in nvidia-smi but we can't actually use the cu128 torch wheel, which --torch-backend=auto installs, as it doesn't support GPUs with CUDA compute capability &lt; 7.5.</p>
+</blockquote>
+<p>It's not entirely accurate. It's deprecated starting from CUDA 12.8 but not incompatible (otherwise you wouldn't have been to install it).
+What happens is that PyTorch stopped building SM &lt; 7.5 with their newer releases.</p>
+<p>I don't think @charliermarsh can fix it without having a massive headache of if/else conditions (it's on a per-library/package basis). @hamzaq2000 Just install <code>CUDA 12.6</code>, it won't be of any use to you to be on a newer release and you won't stumble into such issues ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hamzaq2000">@hamzaq2000</a> on 2025-07-18 23:08</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<blockquote>
+<p>Do you mind filing a separate issue? We tend to prefer that over commenting on closed issues or pull requests.</p>
+</blockquote>
+<p>Certainly, sorry about that! #14742</p>
+<p>@DEKHTIARJonathan</p>
+<p>Unfortunately I'm not knowledgeable enough to comment on the feasibility of this, so I won't. But I thought it was worth putting out there; hopefully it is fixable and <code>--torch-backend=auto</code> can cleanly install the the correct torch wheel from the correct index for all NVIDIA GPUs.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:35 UTC
+    </footer>
+</body>
+</html>

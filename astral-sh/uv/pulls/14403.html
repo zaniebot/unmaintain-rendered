@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Includes `sys.prefix` in cached environment keys to avoid `--with` collisions across projects - astral-sh/uv #14403</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Includes `sys.prefix` in cached environment keys to avoid `--with` collisions across projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14403">#14403</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-07-01 19:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-01 19:59</div>
+            <div class="timeline-body"><p>Fixes https://github.com/astral-sh/uv/issues/12889.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-02 16:45</div>
+            <div class="timeline-body"><p>Now using both the sys_executable and the sys_prefix in the cache key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @oconnor663 on 2025-07-02 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @oconnor663 on 2025-07-02 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-02 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/environment.rs</code>:80 on 2025-07-02 16:47</div>
+            <div class="timeline-body"><p>Just wondering, why <code>sys_prefix</code> instead of just <code>sys_executable</code> of the non-base interpreter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-07-02 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv/src/commands/project/environment.rs</code>:80 on 2025-07-02 17:18</div>
+            <div class="timeline-body"><p>For that to work, we'd have to avoid canonicalizing it, right? It didn't feel right to use an un-canonicalized path in a cache key, but my intuition about this stuff is still quite weak, so I'll definitely do whichever feels better to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-02 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/environment.rs</code>:80 on 2025-07-02 17:20</div>
+            <div class="timeline-body"><p>Ah that's an interesting point. It's probably fine either way, that makes sense though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use sys_prefix instead of the canonicalized sys_executable in CachedEnvironment keys" to "Includes `sys.prefix` in cached environment keys to avoid `--with` collisions across projects" by @zanieb on 2025-07-02 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-02 19:36</div>
+            <div class="timeline-body"><p>Here's re-running @tjni's repro from the original ticket:</p>
+<pre><code>mkdir p1
+mkdir p2
+
+cat &gt; p1/pyproject.toml &lt;&lt;EOF
+[project]
+name = &quot;p1&quot;
+version = &quot;0.0.0&quot;
+dependencies = [&quot;aiofiles&quot;]
+EOF
+
+cat &gt; p2/pyproject.toml &lt;&lt;EOF
+[project]
+name = &quot;p2&quot;
+version = &quot;0.0.0&quot;
+dependencies = [&quot;requests&quot;]
+EOF
+
+cat &gt; main.py &lt;&lt;EOF
+import sys
+
+print(f&quot;Python is {sys.executable}&quot;)
+EOF
+
+mkdir build
+mkdir build/p1
+mkdir build/p2
+
+pushd p1
+UV_PROJECT_ENVIRONMENT=../build/p1 uv sync
+UV_PROJECT_ENVIRONMENT=../build/p1 uv run --no-sync --with pip ../main.py
+popd
+
+pushd p2
+UV_PROJECT_ENVIRONMENT=../build/p2 uv sync
+UV_PROJECT_ENVIRONMENT=../build/p2 uv run --no-sync --with pip ../main.py
+popd
+</code></pre>
+<pre><code>...
+Python is /home/jacko/.cache/uv/archive-v0/7_KzAfQN3YAC9K8jGIfCr/bin/python3
+...
+Python is /home/jacko/.cache/uv/archive-v0/RxWxGaxHuTMc7uLjZ6SiI/bin/python3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-02 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-02 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-02 19:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:39 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix reachable panic in CLI flag handling - astral-sh/uv #14299</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix reachable panic in CLI flag handling</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14299">#14299</a>
+        opened by <a href="https://github.com/gesslerpd">@gesslerpd</a>
+        on 2025-06-26 21:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/gesslerpd">@gesslerpd</a> on 2025-06-26 21:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Previously it was possible to reach panic condition in CLI flag handling when opposing flags were passed at different subcommand levels.</p>
+<p>For example <code>uv self --offline version --no-offline</code> panics with the following <code>RUST_BACKTRACE</code>.</p>
+<pre><code>thread 'main2' panicked at crates\uv-cli\src\options.rs:17:17:
+internal error: entered unreachable code: Clap should make this impossible
+stack backtrace:
+   0:     0x7ff6ee2a2ffc - &lt;unknown&gt;
+   1:     0x7ff6ede968da - &lt;unknown&gt;
+   2:     0x7ff6ee2a2557 - &lt;unknown&gt;
+   3:     0x7ff6ee2a2e54 - &lt;unknown&gt;
+   4:     0x7ff6ee2a2195 - &lt;unknown&gt;
+   5:     0x7ff6ee2c96d2 - &lt;unknown&gt;
+   6:     0x7ff6ee2c965f - &lt;unknown&gt;
+   7:     0x7ff6ee2ccd4e - &lt;unknown&gt;
+   8:     0x7ff6f031b941 - &lt;unknown&gt;
+   9:     0x7ff6ee4e434a - &lt;unknown&gt;
+  10:     0x7ff6ee674184 - &lt;unknown&gt;
+  11:     0x7ff6ee65ebde - &lt;unknown&gt;
+  12:     0x7ff6ef495290 - &lt;unknown&gt;
+  13:     0x7ff6edcc6622 - &lt;unknown&gt;
+  14:     0x7ff6ee2c40bd - &lt;unknown&gt;
+  15:     0x7ff852477374 - BaseThreadInitThunk
+  16:     0x7ff8527dcc91 - RtlUserThreadStart
+
+thread 'main' panicked at C:\a\uv\uv\crates\uv\src\lib.rs:2275:10:
+Tokio executor failed, was there a panic?: Any { .. }
+stack backtrace:
+   0:     0x7ff6ee2a2ffc - &lt;unknown&gt;
+   1:     0x7ff6ede968da - &lt;unknown&gt;
+   2:     0x7ff6ee2a2557 - &lt;unknown&gt;
+   3:     0x7ff6ee2a2e54 - &lt;unknown&gt;
+   4:     0x7ff6ee2a2195 - &lt;unknown&gt;
+   5:     0x7ff6ee2c9709 - &lt;unknown&gt;
+   6:     0x7ff6ee2c965f - &lt;unknown&gt;
+   7:     0x7ff6ee2ccd4e - &lt;unknown&gt;
+   8:     0x7ff6f031b941 - &lt;unknown&gt;
+   9:     0x7ff6f031bd10 - &lt;unknown&gt;
+  10:     0x7ff6edda51a2 - &lt;unknown&gt;
+  11:     0x7ff6ef494186 - &lt;unknown&gt;
+  12:     0x7ff6edda5f92 - &lt;unknown&gt;
+  13:     0x7ff6f02f544c - &lt;unknown&gt;
+  14:     0x7ff852477374 - BaseThreadInitThunk
+  15:     0x7ff8527dcc91 - RtlUserThreadStart
+</code></pre>
+<h2>Test Plan</h2>
+<p>The panic condition is removed in favor of <code>None</code> so should be impossible to reach condition now.</p>
+<p>Based on the unreachable message, not sure if this is some issue with Clap or uv's usage of it but seems reasonable they would cancel out to <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 21:57</div>
+            <div class="timeline-body"><p>Hm, but this <em>should</em> be unreachable since these use <code>overrides_with</code>?</p>
+<p>https://github.com/astral-sh/uv/blob/5b2c3595a7afe4539a41702aaaf0409fe571f3ff/crates/uv-cli/src/lib.rs#L239-L244</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 21:59</div>
+            <div class="timeline-body"><p>I guess this is a Clap bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gesslerpd">@gesslerpd</a> on 2025-06-26 22:02</div>
+            <div class="timeline-body"><p>Yeah it could be a Clap issue, seems reasonable for UV to make them cancel out for now. Purposely used a non-destructive example to show it but think it has to do with when opposing flags exist at different subcommand levels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 22:11</div>
+            <div class="timeline-body"><p>Yeah that makes sense. I don't think they should cancel out though, the latter one should &quot;win&quot;. If they cancel out, we'll use the default value instead so I think this is a correctness bug if we don't panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gesslerpd">@gesslerpd</a> on 2025-06-26 22:30</div>
+            <div class="timeline-body"><p>I'm not familiar with Clap, since these options are shared across levels I think that following should be equivalent (using harmless repro command)</p>
+<ul>
+<li><code>uv --offline --no-offline self version</code></li>
+<li><code>uv --offline self version --no-offline</code></li>
+</ul>
+<p>Possibly the top example is not currently a cancel out scenario though, when clap is doing its normal overrides_with behavior?</p>
+<p>It's a whatever is last wins?</p>
+<p>In that case, I guess then only way to workaround this would be fixing in Clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gesslerpd">@gesslerpd</a> on 2025-06-26 23:49</div>
+            <div class="timeline-body"><p>Closing in favor of issue/pr in https://github.com/clap-rs/clap</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @gesslerpd on 2025-06-26 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-27 10:12</div>
+            <div class="timeline-body"><p>Filed upstream: https://github.com/clap-rs/clap/issues/6049</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:37 UTC
+    </footer>
+</body>
+</html>

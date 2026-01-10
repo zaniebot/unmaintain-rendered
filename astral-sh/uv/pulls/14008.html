@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warn users on `~=` python version specifier - astral-sh/uv #14008</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warn users on `~=` python version specifier</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14008">#14008</a>
+        opened by <a href="https://github.com/aaron-ang">@aaron-ang</a>
+        on 2025-06-12 22:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/aaron-ang">@aaron-ang</a> on 2025-06-12 22:07</div>
+            <div class="timeline-body"><p>Close #7426</p>
+<h2>Summary</h2>
+<p>Picking up on #8284, I noticed that the <code>requires_python</code> object already has its specifiers canonicalized in the <code>intersection</code> method, meaning <code>~=3.12</code> is converted to <code>&gt;=3.12, &lt;4</code>. To fix this, we check and warn in <code>intersection</code>.</p>
+<h2>Test Plan</h2>
+<p>Used the same tests from #8284.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @aaron-ang on 2025-06-13 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aaron-ang">@aaron-ang</a> reviewed on 2025-06-13 05:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/aaron-ang">@aaron-ang</a> on <code>crates/uv/tests/it/lock.rs</code>:4559 on 2025-06-13 05:28</div>
+            <div class="timeline-body"><p>How do I hardcode <code>0</code> as the patch version? The test converts the patch version to <code>[X]</code>, for example <code>~=3.12.0</code> to <code>~=3.12.[X]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-13 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:4559 on 2025-06-13 12:45</div>
+            <div class="timeline-body"><p>The test suite is agnostic to patch versions by default, to allow testing against a wider range of versions downstream.</p>
+<p>Do you need the patch version to be represented in this snapshot?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-13 12:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:4559 on 2025-06-13 12:49</div>
+            <div class="timeline-body"><p>I see, you want the literal <code>.0</code> to show. There are a couple things</p>
+<ol>
+<li><p>We should consider updating https://github.com/astral-sh/uv/blob/a748336a0983aee884eb91600b8ebc24fc850e0f/crates/uv/tests/it/common/mod.rs#L571-L576 to only filter the actual patch version used in the test, rather than an arbitrary <code>\d</code> — that seems separate from this change.</p>
+</li>
+<li><p>You can select a specific patch version from https://github.com/astral-sh/uv/blob/56ce40b0f4139539f345987f7d5bf88236ae2909/.python-versions then request it in test context construction and add the <code>#[cfg(feature = &quot;python-patch&quot;)]</code> feature to the test</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-06-13 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/aaron-ang">@aaron-ang</a> on <code>crates/uv/tests/it/lock.rs</code>:4559 on 2025-06-13 18:26</div>
+            <div class="timeline-body"><p>I couldn't figure out a straightforward way to get the patch version in <code>crates/uv/tests/it/common/mod.rs</code>, so I went with the second option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aaron-ang">@aaron-ang</a> reviewed on 2025-06-13 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaron-ang">@aaron-ang</a> on 2025-06-13 23:21</div>
+            <div class="timeline-body"><p>rebased with <code>main</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @aaron-ang on 2025-06-13 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaron-ang">@aaron-ang</a> on 2025-06-23 15:10</div>
+            <div class="timeline-body"><p>hi @zanieb, any updates on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-06-27 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-27 20:48</div>
+            <div class="timeline-body"><p>Thanks for you patience :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-06-27 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-06-27 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2025-07-02 14:27</div>
+            <div class="timeline-body"><p>Any chance we could revert this @zanieb @aaron-ang?</p>
+<p>As discussed in https://github.com/astral-sh/uv/pull/14335#issuecomment-3027249935 this handling and warning of using <code>~=3.12</code> goes counter to the documented Python Version Specifier behaviour, and this is warning rejects something that is</p>
+<ol>
+<li>Valid</li>
+<li>Well defined and specified, and not actually ambiguous.</li>
+<li>Was already behind handled as per the spec and in line with other tools</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-02 14:35</div>
+            <div class="timeline-body"><p>I've opened an issue for discussion so we can centralize things instead of commenting across pull requests: https://github.com/astral-sh/uv/issues/14422</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-07-02 15:49</div>
+            <div class="timeline-body"><blockquote>
+<p>As discussed in <a href="https://github.com/astral-sh/uv/pull/14335#issuecomment-3027249935">#14335 (comment)</a> this handling and warning of using <code>~=3.12</code> goes counter to the documented Python Version Specifier behaviour, and this is warning rejects something that is</p>
+<pre><code>1. Valid
+
+2. Well defined and specified, and not actually ambiguous.
+
+3. Was already behind handled as per the spec and in line with other tools</code></pre>
+</blockquote>
+<p>Unfortunately 1 is true, but 2 and 3 are incorrect.</p>
+<p>The spec on <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#requires-python">pyproject.toml</a> says:</p>
+<blockquote>
+<pre><code>Corresponding core metadata field: Requires-Python</code></pre>
+<p>The Python version requirements of the project.</p>
+</blockquote>
+<p>And the <a href="https://packaging.python.org/en/latest/specifications/core-metadata/#core-metadata-requires-python">core metadata field</a> says:</p>
+<blockquote>
+<p>This field specifies the Python version(s) that the distribution is compatible with. Installation tools may look at this when picking which version of a project to install.</p>
+<p>The value must be in the format specified in Version specifiers.</p>
+</blockquote>
+<p>Note that it says <em>format</em> of a Version specifier, not semantics of a Version specifier.</p>
+<p>The semantics of what requires-python in the pyproject.toml and Requires-Python in the core metadata field are not specified. And this has led to different tools implementing them differently. There are multiple discussions threads on this:</p>
+<ul>
+<li>https://discuss.python.org/t/requires-python-and-pre-release-python-versions/62959</li>
+<li>https://discuss.python.org/t/requires-python-upper-limits/12663</li>
+</ul>
+<p>It clear from the discussions that:</p>
+<ul>
+<li>The intention was that requires-python should only specify the minimum</li>
+<li>The intention was requires-python should only specify the language version (e.g. it should not encode CPython patch information).</li>
+</ul>
+<p>I believe the pylock.toml specification explicitly encodes these intentions in it's specification of requires-python.</p>
+<p>It should also be noted that NO tool treats requires-python nor Requires-Python exactly like a PEP 440 Version specifier.</p>
+<p>I was hoping to write a PEP this year on standardizing this, but I've found so many different use cases I'm concerned it's not easily possible.</p>
+<p>I have no objections to uv handling requires-python on how it best fits it's user. But be aware this is not defined by the specification and interoperability between different tools will continue to be an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-02 21:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately 1 is true, but 2 and 3 are incorrect.</p>
+</blockquote>
+<p>Thanks @notatallshaw -&gt; TIL. That's a very sad state of affairs.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:36 UTC
+    </footer>
+</body>
+</html>

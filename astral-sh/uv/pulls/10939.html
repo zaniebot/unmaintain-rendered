@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `UV_PYTHON_DOWNLOADS_JSON_URL` to set custom managed python sources - astral-sh/uv #10939</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `UV_PYTHON_DOWNLOADS_JSON_URL` to set custom managed python sources</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10939">#10939</a>
+        opened by <a href="https://github.com/MeitarR">@MeitarR</a>
+        on 2025-01-24 15:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-01-24 15:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add an option to overwrite the list of available Python downloads from a local JSON file by using the environment variable <code>UV_PYTHON_DOWNLOADS_JSON_URL</code></p>
+<p>as an experimental support for providing custom sources for Python distribution binaries #8015</p>
+<p>related #10203</p>
+<p>I probably should make the JSON to be fetched from a remote URL instead of a local file.
+please let me know what you think and I will modify the code accordingly.</p>
+<h2>Test Plan</h2>
+<h3>normal run</h3>
+<pre><code>root@75c66494ba8b:/# /code/target/release/uv python list
+cpython-3.14.0a4+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.14.0a4-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.13.1+freethreaded-linux-x86_64-gnu      &lt;download available&gt;
+cpython-3.13.1-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.12.8-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.11.11-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.10.16-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.9.21-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.10.14-linux-x86_64-gnu                     &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                      &lt;download available&gt;
+</code></pre>
+<h3>empty JSON file</h3>
+<pre><code class="language-sh">root@75c66494ba8b:/# export UV_PYTHON_DOWNLOADS_JSON_URL=/code/crates/uv-python/my-download-metadata.json 
+root@75c66494ba8b:/# cat $UV_PYTHON_DOWNLOADS_JSON_URL 
+{}
+root@75c66494ba8b:/# /code/target/release/uv python list
+root@75c66494ba8b:/# 
+</code></pre>
+<h3>JSON file with valid version</h3>
+<pre><code class="language-sh">root@75c66494ba8b:/# export UV_PYTHON_DOWNLOADS_JSON_URL=/code/crates/uv-python/my-download-metadata.json 
+root@75c66494ba8b:/# cat $UV_PYTHON_DOWNLOADS_JSON_URL 
+{
+  &quot;cpython-3.11.9-linux-x86_64-gnu&quot;: {
+    &quot;name&quot;: &quot;cpython&quot;,
+    &quot;arch&quot;: {
+      &quot;family&quot;: &quot;x86_64&quot;,
+      &quot;variant&quot;: null
+    },
+    &quot;os&quot;: &quot;linux&quot;,
+    &quot;libc&quot;: &quot;gnu&quot;,
+    &quot;major&quot;: 3,
+    &quot;minor&quot;: 11,
+    &quot;patch&quot;: 9,
+    &quot;prerelease&quot;: &quot;&quot;,
+    &quot;url&quot;: &quot;https://github.com/astral-sh/python-build-standalone/releases/download/20240814/cpython-3.11.9%2B20240814-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz&quot;,
+    &quot;sha256&quot;: &quot;daa487c7e73005c4426ac393273117cf0e2dc4ab9b2eeda366e04cd00eea00c9&quot;,
+    &quot;variant&quot;: null
+  }
+}
+root@75c66494ba8b:/# /code/target/release/uv python list
+cpython-3.11.9-linux-x86_64-gnu    &lt;download available&gt;
+root@75c66494ba8b:/# 
+</code></pre>
+<h3>Remote Path</h3>
+<pre><code class="language-sh">root@75c66494ba8b:/# export UV_PYTHON_DOWNLOADS_JSON_URL=http://a.com/file.json 
+root@75c66494ba8b:/# /code/target/release/uv python list
+error: Remote python downloads JSON is not yet supported, please use a local path (without `file://` prefix)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-24 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-24 22:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:476 on 2025-01-24 22:32</div>
+            <div class="timeline-body"><p>Note this variable will need to be defined in <code>crates/uv-static/src/env_vars.rs</code></p>
+<p>I wonder if we should call it <code>_URL</code> or <code>_URI</code>? We can assume a local path and error with an informative message about the lack of remote file support for now, but we should have a forward-looking name.</p>
+<p>We also need to be considerate about how the fetch is implemented, e.g., if we're making a network request it should probably be async which would mean this this function needs to be async (which I would be disappointed by). What kind of change would we need to make to avoid that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-24 22:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:487 on 2025-01-24 22:34</div>
+            <div class="timeline-body"><p>Maybe a bit of a silly question, but is there a reason we shouldn't deserialize directly into <code>ManagedPythonDownload</code>? Why the intermediate type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-24 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:476 on 2025-01-24 22:35</div>
+            <div class="timeline-body"><p>(I don't think we need remote file support to add this feature — but I would like to know how invasive it would be)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-24 22:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:486 on 2025-01-24 22:36</div>
+            <div class="timeline-body"><p>A panic is probably not acceptable here. We'd need to handle this gracefully, i.e., by surfacing the error to the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-24 22:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:476 on 2025-01-24 22:38</div>
+            <div class="timeline-body"><p>A remote file also introduces the complexity of caching 🤔 though perhaps we could avoid that since installs don't happen <em>that</em> often.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-01-25 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/downloads.rs</code>:487 on 2025-01-25 21:32</div>
+            <div class="timeline-body"><p>TBH, that's what the AI suggested, but I had the same thought as you, so I tried to derive the <code>Deserialize</code> on <code>ManagedPythonDownload</code> and then on <code>PythonInstallationKey</code>. I understood that <code>target_lexicon</code>'s enums do not implement the <code>Deserialize</code> trait, and even if I overcome this, the conversion from JSON will not be as is. So the only way to improve it (the way I see it) is to implement <code>Deserialize</code> on our own and define the JSON structs inside the implementation.</p>
+<p>If you see a better way, please let me know</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-01-25 21:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/downloads.rs</code>:476 on 2025-01-25 21:45</div>
+            <div class="timeline-body"><p>looks like it won't be that bad to make it async.
+we would also need to make the following async:</p>
+<ul>
+<li><code>iter_downloads</code></li>
+<li><code>from_request</code></li>
+<li><code>PytestRequest::new</code></li>
+</ul>
+<p><img src="https://github.com/user-attachments/assets/1bb78b40-cea4-49ba-8f42-839386757513" alt="image" /></p>
+<p>But maybe we could use <code>tokio::runtime::Handle::current().block_on</code> or construct a new runtime for the request only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @MeitarR on 2025-01-25 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-27 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:487 on 2025-01-27 16:55</div>
+            <div class="timeline-body"><p>It looks like there's a <code>serde</code> feature for <code>target_lexicon</code>, did you try that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-27 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:487 on 2025-01-27 16:55</div>
+            <div class="timeline-body"><p>What part is not &quot;as-is&quot;? Like some custom mapping of architectures or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-01-27 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/downloads.rs</code>:487 on 2025-01-27 20:48</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like there's a serde feature for target_lexicon, did you try that?</p>
+</blockquote>
+<p>from the <a href="https://github.com/bytecodealliance/target-lexicon/blob/c3f72c4ced783523aba166d1c52f1b355de8c81a/src/lib.rs#L67">code</a>, I understood that they only implemented it for the <code>Triple</code> struct, so it not useful here :(</p>
+<blockquote>
+<p>What part is not &quot;as-is&quot;? Like some custom mapping of architectures or something?</p>
+</blockquote>
+<p>yes, it's small details, like the <code>implementation</code> that will need special implementation, or the <code>arch</code>. the main problem here is the structs of <code>target_lexicon</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "custom sources for Python distribution binaries" to "Add `UV_PYTHON_DOWNLOADS_JSON_URL` to set custom managed python sources" by @MeitarR on 2025-01-27 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-01-30 18:44</div>
+            <div class="timeline-body"><p>@zanieb is there something left for me to do to get this merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 21:55</div>
+            <div class="timeline-body"><p>Just need to find the time to review it carefully and make sure we're happy maintaining / supporting this in perpetuity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-21 16:19</div>
+            <div class="timeline-body"><p>Apologies for the delay! I pushed up a tweak to the design to make it remain totally static and cheap when the environment variable isn't set. My main hesitation with this solution now is just that we are maintaining two copies of this &quot;raw json&quot; =&gt; &quot;digested rust types&quot; logic: One copy in python, and one copy in Rust.</p>
+<p>This would be really easy to accept if this digestion code was shared, but it's a lot of work to do that.</p>
+<p>The <em>easiest</em> path forward would be drop the python translation script, directly embed the json statically, and just parse it at runtime (still caching it in a Once so it's a one-time-cost). The only barrier to accepting that solution is someone doing profiling to verify the performance impact is negligible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-02-22 21:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Apologies for the delay! I pushed up a tweak to the design to make it remain totally static and cheap when the environment variable isn't set. My main hesitation with this solution now is just that we are maintaining two copies of this &quot;raw json&quot; =&gt; &quot;digested rust types&quot; logic: One copy in python, and one copy in Rust.</p>
+<p>This would be really easy to accept if this digestion code was shared, but it's a lot of work to do that.</p>
+<p>The <em>easiest</em> path forward would be drop the python translation script, directly embed the json statically, and just parse it at runtime (still caching it in a Once so it's a one-time-cost). The only barrier to accepting that solution is someone doing profiling to verify the performance impact is negligible.</p>
+</blockquote>
+<p>@Gankra, I agree with you.</p>
+<p>I implemented the &quot;<em>easiest</em> path&quot; and pushed it to this branch.
+I'm concerned about the size that is added to the binary (~~810K~~ 501K~).
+and about the implementation, it will probably be better to minify the file on compile time and not save a duplicate. another option is to only save the minified version in the repo, I leave it for you to decide.</p>
+<p>About the profiling part, I do not know how to do it (would be happy to learn). is it something that you will take care of?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MeitarR on 2025-02-28 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MeitarR on 2025-02-28 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-18 13:20</div>
+            <div class="timeline-body"><p>Performance-wise this seems to have negligible impact -- hyperfine shows no real difference before and after on trivial workfloads. This is good.</p>
+<p>The main concern then is whether we're ok with bloat on the uv binary. On my macos release builds the difference is actually only 200KB? (31.9MB vs 31.7MB). That difference seems pretty acceptable, especially since we could optimize it later if we really wanted. It's less than 1% size bloat.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-18 13:22</div>
+            <div class="timeline-body"><p>I'll rereview/rebase on the assumption that we're happy with the perf and want to land this approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/minify-download-metadata.py</code>:11 on 2025-03-18 18:09</div>
+            <div class="timeline-body"><p>ooh i like this approach as a compromise!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/src/downloads.rs</code>:472 on 2025-03-18 18:12</div>
+            <div class="timeline-body"><p>Surely these should be more like u64?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/src/downloads.rs</code>:776 on 2025-03-18 18:30</div>
+            <div class="timeline-body"><p>Interesting, in the old implementation an unknown name was treated as a hard error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/src/downloads.rs</code>:819 on 2025-03-18 18:36</div>
+            <div class="timeline-body"><p>Another instance of us becoming more lenient -- and also probably a mistake? This debug suggests we're skipping the entry but actually you just continue on with PythonVariant::Default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> had review dismissed on 2025-03-18 18:55</div>
+            <div class="timeline-body"><p>Alright, I'm supportive of this change. I think we'll want to be <em>really</em> sure that the ordering has not regressed here. We don't have exhaustive test coverage for the ordering of managed Python versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 18:56</div>
+            <div class="timeline-body"><p>@MeitarR could you write a script that demonstrates that the sorted parsed Python installations list is equivalent to the one from <code>downloads.inc</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/template-download-metadata.py</code>:80 on 2025-03-18 18:59</div>
+            <div class="timeline-body"><p>This logic appears to be getting dropped in this PR. target-lexicon bottoms out in <code>Riscv64(Riscv64)</code> for this input instead of <code>Riscv64(Riscv64gc)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/template-download-metadata.py</code>:73 on 2025-03-18 19:02</div>
+            <div class="timeline-body"><p>This logic appears to be getting dropped in this PR. target_lexicon only recognizes</p>
+<pre><code class="language-rust">            &quot;armv5t&quot; =&gt; Armv5t,
+            &quot;armv5te&quot; =&gt; Armv5te,
+            &quot;armv5tej&quot; =&gt; Armv5tej,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/src/installation.rs</code>:485 on 2025-03-18 19:07</div>
+            <div class="timeline-body"><p>Why did this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/src/downloads.rs</code>:518 on 2025-03-18 19:08</div>
+            <div class="timeline-body"><p>We try to add additional context to these kinds of errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/src/download-metadata-minified.json</code>:1 on 2025-03-18 19:09</div>
+            <div class="timeline-body"><p>We'll have to make sure we regenerate this before merging, in case any releases have happened in the interim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> requested changes on 2025-03-18 19:11</div>
+            <div class="timeline-body"><p>The general approach seems good now, but I found a lot of changes in behaviour in my code review.</p>
+<p>We definitely should have some kind of test for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-18 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:472 on 2025-03-18 19:16</div>
+            <div class="timeline-body"><p>I'm not sure we need a u64 for Python version, do we? I feel like we're many years from 3.256.0?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-18 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/src/downloads.rs</code>:472 on 2025-03-18 19:20</div>
+            <div class="timeline-body"><p>Hm fair. Still u8 feels needlessly spicey, especially for a temp deserialization format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-18 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/download-metadata-minified.json</code>:1 on 2025-03-18 19:21</div>
+            <div class="timeline-body"><p>(changes have already occurred yeah)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 19:21</div>
+            <div class="timeline-body"><p>Thanks @Gankra</p>
+<p>We don't have a ton of test coverage because it requires installing managed Python versions which is fairly expensive. We added a feature flag for that though, so we can add tests to the <code>python_find</code> and <code>python_install</code> suites.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-18 19:42</div>
+            <div class="timeline-body"><p>We could probably add some unit tests for some of the corner cases I noticed. Or one that checks that the static json has no substantial losses. (Hmm could we debug_assert that none of these misparse warnings are ever hit?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-03-18 20:53</div>
+            <div class="timeline-body"><p>@zanieb @Gankra Thank you for the review! I will try to get the fixes by Sunday</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-03-18 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/downloads.rs</code>:776 on 2025-03-18 20:54</div>
+            <div class="timeline-body"><p>Do you want to preserve the &quot;hard error&quot;, or leave it as it is now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-03-18 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/installation.rs</code>:485 on 2025-03-18 20:58</div>
+            <div class="timeline-body"><p>without this change, some tests fail as we choose the wrong version, I tried to investigate why and because what I saw was that we will get rc versions instead of what we wanted, this was the right change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-18 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:472 on 2025-03-18 21:44</div>
+            <div class="timeline-body"><p>The <code>PythonInstallationKey</code> uses too u8s though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-18 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:472 on 2025-03-18 21:44</div>
+            <div class="timeline-body"><p>What failure mode are you worried about? I'm open to changing it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:472 on 2025-03-18 21:45</div>
+            <div class="timeline-body"><p>We also use u8s for arbitrary Python versions, e.g.,</p>
+<p>https://github.com/astral-sh/uv/blob/d712ff243e9f360d6409d0e6855d6f8f93d29d5b/crates/uv-python/src/python_version.rs#L158-L175</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-18 21:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-03-22 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p>@MeitarR could you write a script that demonstrates that the sorted parsed Python installations list is equivalent to the one from <code>downloads.inc</code>?</p>
+</blockquote>
+<p>@zanieb</p>
+<p>well, it don't exactly match but only because different ordering by the <code>os</code> / <code>arch</code> / <code>libc</code>, which for my understanding is neglectable (please correct me here if I'm wrong).</p>
+<p>So I wrote 2 scripts
+<code>split_files.sh</code></p>
+<pre><code class="language-sh">#!/bin/sh
+
+os_list=`jq -r 'map(.os) | unique | .[]' downloads.json`
+os_array=`echo $os_list`
+
+arch_list=`jq -r 'map(.arch) | unique | .[]' downloads.json`
+arch_array=`echo $arch_list`
+
+libc_list=`jq -r 'map(.libc) | unique | .[]' downloads.json`
+libc_array=`echo $libc_list`
+
+# Iterate over the bash array
+for os in $os_array; do
+  for arch in $arch_array; do
+    for libc in $libc_array; do
+      jq &quot;[.[] | select(.os == \&quot;$os\&quot; and .arch == \&quot;$arch\&quot; and .libc == \&quot;$libc\&quot;)]&quot; downloads.json &gt; downloads_${os}_${arch}_${libc}.json
+    done
+  done
+done
+
+# save all os, arch, libc the unique values as lists in a single json
+jq '{  os: map(.os) | unique,  arch: map(.arch) | unique,  libc: map(.libc) | unique}' downloads.json &gt; downloads_unique.json
+</code></pre>
+<p>and <code>diff_all_files.sh</code></p>
+<pre><code class="language-sh">#!/bin/bash
+verbose=false
+
+usage() {
+    echo &quot;Usage: $0 [-v] TARGET_DIR&quot;
+    echo &quot;  -v: verbose mode&quot;
+    echo &quot;  TARGET_DIR: directory to compare files against&quot;
+    exit 1
+}
+
+while getopts &quot;v&quot; opt; do
+    case $opt in
+        v) verbose=true ;;
+        ?) usage ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ $# -ne 1 ]; then
+    usage
+fi
+
+target_dir=&quot;$1&quot;
+
+if [ ! -d &quot;$target_dir&quot; ]; then
+    echo &quot;Error: Target directory '$target_dir' does not exist&quot;
+    exit 1
+fi
+
+for file in downloads_*.json; do
+    if [ -f &quot;$file&quot; ]; then
+        diff_output=$(diff &quot;$file&quot; &quot;$target_dir/$file&quot;)
+        if [ -n &quot;$diff_output&quot; ]; then
+            echo &quot;Differences found in $file:&quot;
+            if [ &quot;$verbose&quot; = true ]; then
+                code --diff &quot;$file&quot; &quot;$target_dir/$file&quot;
+            fi
+        else
+            echo &quot;No differences found in $file&quot;
+        fi
+    fi
+done
+</code></pre>
+<p>and apply this patch to your code in both versions you want to compare (do it in 2 different worktrees)</p>
+<pre><code class="language-diff">diff --git a/crates/uv-python/src/downloads.rs b/crates/uv-python/src/downloads.rs
+index aa5ca64fd..c6d4f0508 100644
+--- a/crates/uv-python/src/downloads.rs
++++ b/crates/uv-python/src/downloads.rs
+@@ -466,7 +466,29 @@ impl ManagedPythonDownload {
+ 
+     /// Iterate over all [`ManagedPythonDownload`]s.
+     pub fn iter_all() -&gt; impl Iterator&lt;Item = &amp;'static ManagedPythonDownload&gt; {
+-        PYTHON_DOWNLOADS.iter()
++        let result = PYTHON_DOWNLOADS;
++
++        use std::fs::File;
++        use std::io::Write;
++        let json_downloads: Vec&lt;_&gt; = result
++            .iter()
++            .map(|download| {
++                serde_json::json!({
++                    &quot;url&quot;: download.url,
++                    &quot;os&quot;: download.key.os.to_string(),
++                    &quot;arch&quot;: download.key.arch.to_string(),
++                    &quot;libc&quot;: download.key.libc.to_string(),
++                    &quot;version&quot;: download.key.version().to_string(),
++                })
++            })
++            .collect();
++        let json_downloads =
++            serde_json::to_string(&amp;json_downloads).expect(&quot;Failed to serialize downloads&quot;);
++        let mut file = File::create(&quot;downloads.json&quot;).expect(&quot;Failed to create file&quot;);
++        file.write_all(json_downloads.as_bytes())
++            .expect(&quot;Failed to write to file&quot;);
++
++        result.iter()
+     }
+ 
+     pub fn url(&amp;self) -&gt; &amp;'static str {
+
+</code></pre>
+<p>then it expects you to run this on both of the worktrees</p>
+<pre><code class="language-sh">cargo run -- -v python list; ../uv/split_files.sh
+</code></pre>
+<p>and then on one of them</p>
+<pre><code class="language-sh">./diff_all_files.sh -v &lt;path to the other worktree&gt;
+</code></pre>
+<p>if there was changes it will also opens them in vscode diff</p>
+<h5>example good output</h5>
+<pre><code>No differences found in downloads_linux_aarch64_gnu.json
+No differences found in downloads_linux_aarch64_gnueabi.json
+No differences found in downloads_linux_aarch64_gnueabihf.json
+No differences found in downloads_linux_aarch64_musl.json
+No differences found in downloads_linux_aarch64_none.json
+No differences found in downloads_linux_armv7_gnu.json
+No differences found in downloads_linux_armv7_gnueabi.json
+No differences found in downloads_linux_armv7_gnueabihf.json
+No differences found in downloads_linux_armv7_musl.json
+No differences found in downloads_linux_armv7_none.json
+No differences found in downloads_linux_powerpc64le_gnu.json
+No differences found in downloads_linux_powerpc64le_gnueabi.json
+No differences found in downloads_linux_powerpc64le_gnueabihf.json
+No differences found in downloads_linux_powerpc64le_musl.json
+No differences found in downloads_linux_powerpc64le_none.json
+No differences found in downloads_linux_riscv64gc_gnu.json
+No differences found in downloads_linux_riscv64gc_gnueabi.json
+No differences found in downloads_linux_riscv64gc_gnueabihf.json
+No differences found in downloads_linux_riscv64gc_musl.json
+No differences found in downloads_linux_riscv64gc_none.json
+No differences found in downloads_linux_s390x_gnu.json
+No differences found in downloads_linux_s390x_gnueabi.json
+No differences found in downloads_linux_s390x_gnueabihf.json
+No differences found in downloads_linux_s390x_musl.json
+No differences found in downloads_linux_s390x_none.json
+No differences found in downloads_linux_x86_64_gnu.json
+No differences found in downloads_linux_x86_64_gnueabi.json
+No differences found in downloads_linux_x86_64_gnueabihf.json
+No differences found in downloads_linux_x86_64_musl.json
+No differences found in downloads_linux_x86_64_none.json
+No differences found in downloads_linux_x86_64_v2_gnu.json
+No differences found in downloads_linux_x86_64_v2_gnueabi.json
+No differences found in downloads_linux_x86_64_v2_gnueabihf.json
+No differences found in downloads_linux_x86_64_v2_musl.json
+No differences found in downloads_linux_x86_64_v2_none.json
+No differences found in downloads_linux_x86_64_v3_gnu.json
+No differences found in downloads_linux_x86_64_v3_gnueabi.json
+No differences found in downloads_linux_x86_64_v3_gnueabihf.json
+No differences found in downloads_linux_x86_64_v3_musl.json
+No differences found in downloads_linux_x86_64_v3_none.json
+No differences found in downloads_linux_x86_64_v4_gnu.json
+No differences found in downloads_linux_x86_64_v4_gnueabi.json
+No differences found in downloads_linux_x86_64_v4_gnueabihf.json
+No differences found in downloads_linux_x86_64_v4_musl.json
+No differences found in downloads_linux_x86_64_v4_none.json
+No differences found in downloads_linux_x86_gnu.json
+No differences found in downloads_linux_x86_gnueabi.json
+No differences found in downloads_linux_x86_gnueabihf.json
+No differences found in downloads_linux_x86_musl.json
+No differences found in downloads_linux_x86_none.json
+No differences found in downloads_macos_aarch64_gnu.json
+No differences found in downloads_macos_aarch64_gnueabi.json
+No differences found in downloads_macos_aarch64_gnueabihf.json
+No differences found in downloads_macos_aarch64_musl.json
+No differences found in downloads_macos_aarch64_none.json
+No differences found in downloads_macos_armv7_gnu.json
+No differences found in downloads_macos_armv7_gnueabi.json
+No differences found in downloads_macos_armv7_gnueabihf.json
+No differences found in downloads_macos_armv7_musl.json
+No differences found in downloads_macos_armv7_none.json
+No differences found in downloads_macos_powerpc64le_gnu.json
+No differences found in downloads_macos_powerpc64le_gnueabi.json
+No differences found in downloads_macos_powerpc64le_gnueabihf.json
+No differences found in downloads_macos_powerpc64le_musl.json
+No differences found in downloads_macos_powerpc64le_none.json
+No differences found in downloads_macos_riscv64gc_gnu.json
+No differences found in downloads_macos_riscv64gc_gnueabi.json
+No differences found in downloads_macos_riscv64gc_gnueabihf.json
+No differences found in downloads_macos_riscv64gc_musl.json
+No differences found in downloads_macos_riscv64gc_none.json
+No differences found in downloads_macos_s390x_gnu.json
+No differences found in downloads_macos_s390x_gnueabi.json
+No differences found in downloads_macos_s390x_gnueabihf.json
+No differences found in downloads_macos_s390x_musl.json
+No differences found in downloads_macos_s390x_none.json
+No differences found in downloads_macos_x86_64_gnu.json
+No differences found in downloads_macos_x86_64_gnueabi.json
+No differences found in downloads_macos_x86_64_gnueabihf.json
+No differences found in downloads_macos_x86_64_musl.json
+No differences found in downloads_macos_x86_64_none.json
+No differences found in downloads_macos_x86_64_v2_gnu.json
+No differences found in downloads_macos_x86_64_v2_gnueabi.json
+No differences found in downloads_macos_x86_64_v2_gnueabihf.json
+No differences found in downloads_macos_x86_64_v2_musl.json
+No differences found in downloads_macos_x86_64_v2_none.json
+No differences found in downloads_macos_x86_64_v3_gnu.json
+No differences found in downloads_macos_x86_64_v3_gnueabi.json
+No differences found in downloads_macos_x86_64_v3_gnueabihf.json
+No differences found in downloads_macos_x86_64_v3_musl.json
+No differences found in downloads_macos_x86_64_v3_none.json
+No differences found in downloads_macos_x86_64_v4_gnu.json
+No differences found in downloads_macos_x86_64_v4_gnueabi.json
+No differences found in downloads_macos_x86_64_v4_gnueabihf.json
+No differences found in downloads_macos_x86_64_v4_musl.json
+No differences found in downloads_macos_x86_64_v4_none.json
+No differences found in downloads_macos_x86_gnu.json
+No differences found in downloads_macos_x86_gnueabi.json
+No differences found in downloads_macos_x86_gnueabihf.json
+No differences found in downloads_macos_x86_musl.json
+No differences found in downloads_macos_x86_none.json
+No differences found in downloads_unique.json
+No differences found in downloads_windows_aarch64_gnu.json
+No differences found in downloads_windows_aarch64_gnueabi.json
+No differences found in downloads_windows_aarch64_gnueabihf.json
+No differences found in downloads_windows_aarch64_musl.json
+No differences found in downloads_windows_aarch64_none.json
+No differences found in downloads_windows_armv7_gnu.json
+No differences found in downloads_windows_armv7_gnueabi.json
+No differences found in downloads_windows_armv7_gnueabihf.json
+No differences found in downloads_windows_armv7_musl.json
+No differences found in downloads_windows_armv7_none.json
+No differences found in downloads_windows_powerpc64le_gnu.json
+No differences found in downloads_windows_powerpc64le_gnueabi.json
+No differences found in downloads_windows_powerpc64le_gnueabihf.json
+No differences found in downloads_windows_powerpc64le_musl.json
+No differences found in downloads_windows_powerpc64le_none.json
+No differences found in downloads_windows_riscv64gc_gnu.json
+No differences found in downloads_windows_riscv64gc_gnueabi.json
+No differences found in downloads_windows_riscv64gc_gnueabihf.json
+No differences found in downloads_windows_riscv64gc_musl.json
+No differences found in downloads_windows_riscv64gc_none.json
+No differences found in downloads_windows_s390x_gnu.json
+No differences found in downloads_windows_s390x_gnueabi.json
+No differences found in downloads_windows_s390x_gnueabihf.json
+No differences found in downloads_windows_s390x_musl.json
+No differences found in downloads_windows_s390x_none.json
+No differences found in downloads_windows_x86_64_gnu.json
+No differences found in downloads_windows_x86_64_gnueabi.json
+No differences found in downloads_windows_x86_64_gnueabihf.json
+No differences found in downloads_windows_x86_64_musl.json
+No differences found in downloads_windows_x86_64_none.json
+No differences found in downloads_windows_x86_64_v2_gnu.json
+No differences found in downloads_windows_x86_64_v2_gnueabi.json
+No differences found in downloads_windows_x86_64_v2_gnueabihf.json
+No differences found in downloads_windows_x86_64_v2_musl.json
+No differences found in downloads_windows_x86_64_v2_none.json
+No differences found in downloads_windows_x86_64_v3_gnu.json
+No differences found in downloads_windows_x86_64_v3_gnueabi.json
+No differences found in downloads_windows_x86_64_v3_gnueabihf.json
+No differences found in downloads_windows_x86_64_v3_musl.json
+No differences found in downloads_windows_x86_64_v3_none.json
+No differences found in downloads_windows_x86_64_v4_gnu.json
+No differences found in downloads_windows_x86_64_v4_gnueabi.json
+No differences found in downloads_windows_x86_64_v4_gnueabihf.json
+No differences found in downloads_windows_x86_64_v4_musl.json
+No differences found in downloads_windows_x86_64_v4_none.json
+No differences found in downloads_windows_x86_gnu.json
+No differences found in downloads_windows_x86_gnueabi.json
+No differences found in downloads_windows_x86_gnueabihf.json
+No differences found in downloads_windows_x86_musl.json
+No differences found in downloads_windows_x86_none.json
+</code></pre>
+<h5>example output before the riscv fix</h5>
+<pre><code>No differences found in downloads_linux_aarch64_gnu.json
+No differences found in downloads_linux_aarch64_gnueabi.json
+No differences found in downloads_linux_aarch64_gnueabihf.json
+No differences found in downloads_linux_aarch64_musl.json
+No differences found in downloads_linux_aarch64_none.json
+No differences found in downloads_linux_armv7_gnu.json
+No differences found in downloads_linux_armv7_gnueabi.json
+No differences found in downloads_linux_armv7_gnueabihf.json
+No differences found in downloads_linux_armv7_musl.json
+No differences found in downloads_linux_armv7_none.json
+No differences found in downloads_linux_powerpc64le_gnu.json
+No differences found in downloads_linux_powerpc64le_gnueabi.json
+No differences found in downloads_linux_powerpc64le_gnueabihf.json
+No differences found in downloads_linux_powerpc64le_musl.json
+No differences found in downloads_linux_powerpc64le_none.json
+diff: ../uv2/downloads_linux_riscv64_gnu.json: No such file or directory
+No differences found in downloads_linux_riscv64_gnu.json
+diff: ../uv2/downloads_linux_riscv64_gnueabi.json: No such file or directory
+No differences found in downloads_linux_riscv64_gnueabi.json
+diff: ../uv2/downloads_linux_riscv64_gnueabihf.json: No such file or directory
+No differences found in downloads_linux_riscv64_gnueabihf.json
+diff: ../uv2/downloads_linux_riscv64_musl.json: No such file or directory
+No differences found in downloads_linux_riscv64_musl.json
+diff: ../uv2/downloads_linux_riscv64_none.json: No such file or directory
+No differences found in downloads_linux_riscv64_none.json
+No differences found in downloads_linux_s390x_gnu.json
+No differences found in downloads_linux_s390x_gnueabi.json
+No differences found in downloads_linux_s390x_gnueabihf.json
+No differences found in downloads_linux_s390x_musl.json
+No differences found in downloads_linux_s390x_none.json
+No differences found in downloads_linux_x86_64_gnu.json
+No differences found in downloads_linux_x86_64_gnueabi.json
+No differences found in downloads_linux_x86_64_gnueabihf.json
+No differences found in downloads_linux_x86_64_musl.json
+No differences found in downloads_linux_x86_64_none.json
+No differences found in downloads_linux_x86_64_v2_gnu.json
+No differences found in downloads_linux_x86_64_v2_gnueabi.json
+No differences found in downloads_linux_x86_64_v2_gnueabihf.json
+No differences found in downloads_linux_x86_64_v2_musl.json
+No differences found in downloads_linux_x86_64_v2_none.json
+No differences found in downloads_linux_x86_64_v3_gnu.json
+No differences found in downloads_linux_x86_64_v3_gnueabi.json
+No differences found in downloads_linux_x86_64_v3_gnueabihf.json
+No differences found in downloads_linux_x86_64_v3_musl.json
+No differences found in downloads_linux_x86_64_v3_none.json
+No differences found in downloads_linux_x86_64_v4_gnu.json
+No differences found in downloads_linux_x86_64_v4_gnueabi.json
+No differences found in downloads_linux_x86_64_v4_gnueabihf.json
+No differences found in downloads_linux_x86_64_v4_musl.json
+No differences found in downloads_linux_x86_64_v4_none.json
+No differences found in downloads_linux_x86_gnu.json
+No differences found in downloads_linux_x86_gnueabi.json
+No differences found in downloads_linux_x86_gnueabihf.json
+No differences found in downloads_linux_x86_musl.json
+No differences found in downloads_linux_x86_none.json
+No differences found in downloads_macos_aarch64_gnu.json
+No differences found in downloads_macos_aarch64_gnueabi.json
+No differences found in downloads_macos_aarch64_gnueabihf.json
+No differences found in downloads_macos_aarch64_musl.json
+No differences found in downloads_macos_aarch64_none.json
+No differences found in downloads_macos_armv7_gnu.json
+No differences found in downloads_macos_armv7_gnueabi.json
+No differences found in downloads_macos_armv7_gnueabihf.json
+No differences found in downloads_macos_armv7_musl.json
+No differences found in downloads_macos_armv7_none.json
+No differences found in downloads_macos_powerpc64le_gnu.json
+No differences found in downloads_macos_powerpc64le_gnueabi.json
+No differences found in downloads_macos_powerpc64le_gnueabihf.json
+No differences found in downloads_macos_powerpc64le_musl.json
+No differences found in downloads_macos_powerpc64le_none.json
+diff: ../uv2/downloads_macos_riscv64_gnu.json: No such file or directory
+No differences found in downloads_macos_riscv64_gnu.json
+diff: ../uv2/downloads_macos_riscv64_gnueabi.json: No such file or directory
+No differences found in downloads_macos_riscv64_gnueabi.json
+diff: ../uv2/downloads_macos_riscv64_gnueabihf.json: No such file or directory
+No differences found in downloads_macos_riscv64_gnueabihf.json
+diff: ../uv2/downloads_macos_riscv64_musl.json: No such file or directory
+No differences found in downloads_macos_riscv64_musl.json
+diff: ../uv2/downloads_macos_riscv64_none.json: No such file or directory
+No differences found in downloads_macos_riscv64_none.json
+No differences found in downloads_macos_s390x_gnu.json
+No differences found in downloads_macos_s390x_gnueabi.json
+No differences found in downloads_macos_s390x_gnueabihf.json
+No differences found in downloads_macos_s390x_musl.json
+No differences found in downloads_macos_s390x_none.json
+No differences found in downloads_macos_x86_64_gnu.json
+No differences found in downloads_macos_x86_64_gnueabi.json
+No differences found in downloads_macos_x86_64_gnueabihf.json
+No differences found in downloads_macos_x86_64_musl.json
+No differences found in downloads_macos_x86_64_none.json
+No differences found in downloads_macos_x86_64_v2_gnu.json
+No differences found in downloads_macos_x86_64_v2_gnueabi.json
+No differences found in downloads_macos_x86_64_v2_gnueabihf.json
+No differences found in downloads_macos_x86_64_v2_musl.json
+No differences found in downloads_macos_x86_64_v2_none.json
+No differences found in downloads_macos_x86_64_v3_gnu.json
+No differences found in downloads_macos_x86_64_v3_gnueabi.json
+No differences found in downloads_macos_x86_64_v3_gnueabihf.json
+No differences found in downloads_macos_x86_64_v3_musl.json
+No differences found in downloads_macos_x86_64_v3_none.json
+No differences found in downloads_macos_x86_64_v4_gnu.json
+No differences found in downloads_macos_x86_64_v4_gnueabi.json
+No differences found in downloads_macos_x86_64_v4_gnueabihf.json
+No differences found in downloads_macos_x86_64_v4_musl.json
+No differences found in downloads_macos_x86_64_v4_none.json
+No differences found in downloads_macos_x86_gnu.json
+No differences found in downloads_macos_x86_gnueabi.json
+No differences found in downloads_macos_x86_gnueabihf.json
+No differences found in downloads_macos_x86_musl.json
+No differences found in downloads_macos_x86_none.json
+Differences found in downloads_unique.json:
+No differences found in downloads_windows_aarch64_gnu.json
+No differences found in downloads_windows_aarch64_gnueabi.json
+No differences found in downloads_windows_aarch64_gnueabihf.json
+No differences found in downloads_windows_aarch64_musl.json
+No differences found in downloads_windows_aarch64_none.json
+No differences found in downloads_windows_armv7_gnu.json
+No differences found in downloads_windows_armv7_gnueabi.json
+No differences found in downloads_windows_armv7_gnueabihf.json
+No differences found in downloads_windows_armv7_musl.json
+No differences found in downloads_windows_armv7_none.json
+No differences found in downloads_windows_powerpc64le_gnu.json
+No differences found in downloads_windows_powerpc64le_gnueabi.json
+No differences found in downloads_windows_powerpc64le_gnueabihf.json
+No differences found in downloads_windows_powerpc64le_musl.json
+No differences found in downloads_windows_powerpc64le_none.json
+diff: ../uv2/downloads_windows_riscv64_gnu.json: No such file or directory
+No differences found in downloads_windows_riscv64_gnu.json
+diff: ../uv2/downloads_windows_riscv64_gnueabi.json: No such file or directory
+No differences found in downloads_windows_riscv64_gnueabi.json
+diff: ../uv2/downloads_windows_riscv64_gnueabihf.json: No such file or directory
+No differences found in downloads_windows_riscv64_gnueabihf.json
+diff: ../uv2/downloads_windows_riscv64_musl.json: No such file or directory
+No differences found in downloads_windows_riscv64_musl.json
+diff: ../uv2/downloads_windows_riscv64_none.json: No such file or directory
+No differences found in downloads_windows_riscv64_none.json
+No differences found in downloads_windows_s390x_gnu.json
+No differences found in downloads_windows_s390x_gnueabi.json
+No differences found in downloads_windows_s390x_gnueabihf.json
+No differences found in downloads_windows_s390x_musl.json
+No differences found in downloads_windows_s390x_none.json
+No differences found in downloads_windows_x86_64_gnu.json
+No differences found in downloads_windows_x86_64_gnueabi.json
+No differences found in downloads_windows_x86_64_gnueabihf.json
+No differences found in downloads_windows_x86_64_musl.json
+No differences found in downloads_windows_x86_64_none.json
+No differences found in downloads_windows_x86_64_v2_gnu.json
+No differences found in downloads_windows_x86_64_v2_gnueabi.json
+No differences found in downloads_windows_x86_64_v2_gnueabihf.json
+No differences found in downloads_windows_x86_64_v2_musl.json
+No differences found in downloads_windows_x86_64_v2_none.json
+No differences found in downloads_windows_x86_64_v3_gnu.json
+No differences found in downloads_windows_x86_64_v3_gnueabi.json
+No differences found in downloads_windows_x86_64_v3_gnueabihf.json
+No differences found in downloads_windows_x86_64_v3_musl.json
+No differences found in downloads_windows_x86_64_v3_none.json
+No differences found in downloads_windows_x86_64_v4_gnu.json
+No differences found in downloads_windows_x86_64_v4_gnueabi.json
+No differences found in downloads_windows_x86_64_v4_gnueabihf.json
+No differences found in downloads_windows_x86_64_v4_musl.json
+No differences found in downloads_windows_x86_64_v4_none.json
+No differences found in downloads_windows_x86_gnu.json
+No differences found in downloads_windows_x86_gnueabi.json
+No differences found in downloads_windows_x86_gnueabihf.json
+No differences found in downloads_windows_x86_musl.json
+No differences found in downloads_windows_x86_none.json
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/39c65698-d41e-47a6-8497-ffc5497bfa2a" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-03-22 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/minify-download-metadata.py</code>:11 on 2025-03-22 21:10</div>
+            <div class="timeline-body"><p>BTW we can later improve it by moving this logic to the compile time and then select only the versions that are relevant to the compiled platform</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-03-22 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/downloads.rs</code>:819 on 2025-03-22 21:12</div>
+            <div class="timeline-body"><p>fixed d06cbc0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-03-22 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/template-download-metadata.py</code>:80 on 2025-03-22 21:13</div>
+            <div class="timeline-body"><p>fixed 2e44711</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-03-22 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/template-download-metadata.py</code>:73 on 2025-03-22 21:13</div>
+            <div class="timeline-body"><p>fixed 2e44711</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-03-22 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/downloads.rs</code>:518 on 2025-03-22 21:15</div>
+            <div class="timeline-body"><p>nice catch! added for the <code>Serde</code> error a5f1bae. the <code>Io</code> one felt to me enough as the path is already included in the print from <code>Io</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @MeitarR on 2025-03-22 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @MeitarR on 2025-03-28 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-04-01 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-python/src/downloads.rs</code>:776 on 2025-04-04 14:08</div>
+            <div class="timeline-body"><p>If this was just processing our input I'd be strict to make sure that upstream PBS features get proper support in uv. But when taking user input being lenient is probably fair... maybe this function can take a boolean flag so the two differ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-04-04 14:11</div>
+            <div class="timeline-body"><p>I think this looks good now! Just one minor improvement but I could take it or leave it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j178">@j178</a> reviewed on 2025-04-04 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>crates/uv-python/src/downloads.rs</code>:13 on 2025-04-04 14:42</div>
+            <div class="timeline-body"><p>Should we use <code>std::cell::OnceCell</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-04-04 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/downloads.rs</code>:776 on 2025-04-04 15:00</div>
+            <div class="timeline-body"><p>I think adding a Boolean parameter to this function is not so clean (what would it be called?), but I don't have a strong feeling about it, so feel free to modify it as you wish</p>
+<p>Also, I'm not sure if it's the right place to enforce it; maybe a unit test will be a better fit (that that check we support all the wanted implementations)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a> reviewed on 2025-04-04 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeitarR">@MeitarR</a> on <code>crates/uv-python/src/downloads.rs</code>:13 on 2025-04-04 15:01</div>
+            <div class="timeline-body"><p>I wanted to, but <a href="https://doc.rust-lang.org/std/cell/struct.OnceCell.html#method.get_or_try_init">get_or_try_init</a> is nightly-only</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-04-07 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-07 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-07 17:56</div>
+            <div class="timeline-body"><p>Huge kudos for the extreme diligence on landing this!</p>
+<p>(security note: i deleted and regenerated the artifacts locally, produced the exact same result)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-11 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-17 19:22</div>
+            <div class="timeline-body"><p>I'm adding remote URL support in #14687, for the use case of making rollbacks easier if we break something in python-build-standalone, but likely also useful for maintaining your own mirror of Python builds.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:35 UTC
+    </footer>
+</body>
+</html>

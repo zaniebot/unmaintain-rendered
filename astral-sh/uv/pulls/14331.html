@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include the canonical path in the interpreter query cache key - astral-sh/uv #14331</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include the canonical path in the interpreter query cache key</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14331">#14331</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-06-27 20:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-27 20:21</div>
+            <div class="timeline-body"><p>This fixes an obscure cache collision in Python interpreter queries, which we believe to be the root cause of CI flakes we've been seeing where a project environment is invalidated and recreated.</p>
+<p>This work follows from the logs in <a href="https://github.com/astral-sh/uv/actions/runs/15934322410/job/44950599993?pr=14326">this CI run</a> which captured one of the flakes with tracing enabled. There, we can see that the project environment is invalidated because the Python interpreter in the environment has a different version than expected:</p>
+<pre><code>DEBUG Checking for Python environment at `.venv`
+TRACE Cached interpreter info for Python 3.12.9, skipping probing: .venv/bin/python3
+DEBUG The interpreter in the project environment has different version (3.12.9) than it was created with (3.9.21)
+</code></pre>
+<p>(this message is updated to reflect #14329)</p>
+<p>The flow is roughly:</p>
+<ul>
+<li>We create an environment with 3.12.9</li>
+<li>We query the environment, and cache the interpreter version for <code>.venv/bin/python</code></li>
+<li>We create an environment for 3.9.12, replacing the existing one</li>
+<li>We query the environment, and read the cached information</li>
+</ul>
+<p>The Python cache entries are keyed by the absolute path to the interpreter, and rely on the modification time (ctime, nsec resolution) of the canonicalized path to determine if the cache entry should be invalidated. The key is a hex representation of a u64 sea hasher output — which is very unlikely to collide.</p>
+<p>After an audit of the Python query caching logic, we determined that the most likely cause of a collision in cache entries is that the modification times of underlying interpreters are identical. This seems pretty feasible, especially if the file system does not support nanosecond precision — though it appears that the GitHub runners do support it.</p>
+<p>The fix here is to include the canonicalized path in the cache key, which ensures we're looking at the modification time of the <em>same</em> underlying interpreter.</p>
+<p>This will &quot;invalidate&quot; all existing interpreter cache entries but that's not a big deal.</p>
+<p>This should also have the effect of reducing cache churn for interpreters in virtual environments. Now, when you change Python versions, we won't invalidate the previous cache entry so if you change <em>back</em> to the old version we can re-use our cached information.</p>
+<p>It's a bit speculative, since we don't have a deterministic reproduction in CI, but this is the strongest candidate given the logs and should increase correctness regardless.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/14160
+Closes https://github.com/astral-sh/uv/issues/13744
+Closes https://github.com/astral-sh/uv/issues/13745</p>
+<p>Once it's confirmed the flakes are resolved, we should revert</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/14275</li>
+<li>#13817</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-06-27 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-06-27 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-06-27 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-06-27 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-30 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-06-30 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-06-30 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-30 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:38 UTC
+    </footer>
+</body>
+</html>

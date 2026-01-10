@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update `toml` to v0.9 - astral-sh/uv #14571</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update `toml` to v0.9</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14571">#14571</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-07-11 22:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-07-11 22:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This should give us some performance and error message improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ibraheemdev on 2025-07-11 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-07-11 22:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>Cargo.toml</code>:175 on 2025-07-11 22:59</div>
+            <div class="timeline-body"><p>This also transitively enables the <code>preserve_order</code>, which <a href="https://epage.github.io/blog/2025/07/toml-09/">is apparently faster</a>, not really sure why it's not enabled by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-07-11 23:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-build-frontend/src/lib.rs</code>:514 on 2025-07-11 23:00</div>
+            <div class="timeline-body"><p>I tried to use <code>toml</code> for the initial parse to avoid the <code>toml_edit</code> overhead, but that seemed to regress error messages because <code>toml::Value</code> does not retain the original raw spans. Probably not very relevant because we're doing a double parse anyways.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-07-11 23:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/it/edit.rs</code>:10906 on 2025-07-11 23:01</div>
+            <div class="timeline-body"><p>Fairly sure this is a bug in <code>toml_edit</code>, because the actual parsed <code>DocumentMut</code> drops the comments. Opened https://github.com/toml-rs/toml/issues/1007.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-07-12 04:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>Cargo.toml</code>:175 on 2025-07-12 04:18</div>
+            <div class="timeline-body"><p>Apparently it's for build times, but indexmap is already in our tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-07-12 05:36</div>
+            <div class="timeline-body"><p>With a ~3000 line lockfile, this makes a no-op <code>uv lock</code> ~20% faster.</p>
+<pre><code class="language-console">taskset 1 hyperfine &quot;uv lock&quot; &quot;uv-new lock&quot; --warmup 10 --runs 500
+
+Benchmark 1: uv lock
+  Time (mean ± σ):       8.2 ms ±   0.3 ms    [User: 6.0 ms, System: 2.2 ms]
+  Range (min … max):     8.0 ms …  10.3 ms    500 runs
+ 
+Benchmark 2: uv-new lock
+  Time (mean ± σ):       6.9 ms ±   0.1 ms    [User: 4.9 ms, System: 1.9 ms]
+  Range (min … max):     6.8 ms …   7.2 ms    500 runs
+ 
+Summary
+  uv-new lock ran
+    1.20 ± 0.05 times faster than uv lock
+</code></pre>
+<p>We could probably add benchmarks for lockfile se/deserialization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-17 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/metadata/requires_dist.rs</code>:628 on 2025-07-17 16:20</div>
+            <div class="timeline-body"><p>Alas this looks like a regression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-17 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/edit.rs</code>:10906 on 2025-07-17 16:21</div>
+            <div class="timeline-body"><p>This is a blocking regression, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-17 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:18425 on 2025-07-17 16:21</div>
+            <div class="timeline-body"><p>This also looks like a regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-07-17 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/it/edit.rs</code>:10906 on 2025-07-17 16:28</div>
+            <div class="timeline-body"><p>I think so, yes. There have been user issues about this before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-17 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/metadata/requires_dist.rs</code>:628 on 2025-07-17 16:30</div>
+            <div class="timeline-body"><p>(though a minor one)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/edit.rs</code>:10906 on 2025-07-21 01:40</div>
+            <div class="timeline-body"><p>Looks like it was fixed in 0.23.2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-21 01:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-07-21 01:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-21 01:45</div>
+            <div class="timeline-body"><p>I defer to @zanieb on whether they want to ship with those error messages + file issues in <code>toml</code>, or file issues then wait.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-21 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/metadata/requires_dist.rs</code>:628 on 2025-07-21 13:17</div>
+            <div class="timeline-body"><p>See https://github.com/toml-rs/toml/issues/1013</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-21 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:18425 on 2025-07-21 13:18</div>
+            <div class="timeline-body"><p>See https://github.com/toml-rs/toml/issues/1012</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-21 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-21 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-21 13:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:42 UTC
+    </footer>
+</body>
+</html>

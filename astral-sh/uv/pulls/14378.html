@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keep track of retries in `ManagedPythonDownload::fetch_with_retry` - astral-sh/uv #14378</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Keep track of retries in `ManagedPythonDownload::fetch_with_retry`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14378">#14378</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-06-30 21:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-30 21:54</div>
+            <div class="timeline-body"><p>If/when we see https://github.com/astral-sh/uv/issues/14171 again, this should clarify whether our retry logic was skipped (i.e. a transient error wasn't correctly identified as transient), or whether we exhausted our retries. Previously, if you ran a local example fileserver as in https://github.com/astral-sh/uv/issues/14171#issuecomment-3014580701 and then you tried to install Python from it, you'd get:</p>
+<pre><code>$ export UV_TEST_NO_CLI_PROGRESS=1
+$ uv python install 3.8.20 --mirror http://localhost:8000 2&gt;&amp;1 | cat
+error: Failed to install cpython-3.8.20-linux-x86_64-gnu
+  Caused by: Failed to extract archive: cpython-3.8.20-20241002-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: failed to unpack `/home/jacko/.local/share/uv/python/.temp/.tmpS4sHHZ/python/lib/libpython3.8.so.1.0`
+  Caused by: failed to unpack `python/lib/libpython3.8.so.1.0` into `/home/jacko/.local/share/uv/python/.temp/.tmpS4sHHZ/python/lib/libpython3.8.so.1.0`
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: Connection reset by peer (os error 104)
+</code></pre>
+<p>With this change you get:</p>
+<pre><code>error: Failed to install cpython-3.8.20-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to extract archive: cpython-3.8.20-20241002-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: failed to unpack `/home/jacko/.local/share/uv/python/.temp/.tmp4Ia24w/python/lib/libpython3.8.so.1.0`
+  Caused by: failed to unpack `python/lib/libpython3.8.so.1.0` into `/home/jacko/.local/share/uv/python/.temp/.tmp4Ia24w/python/lib/libpython3.8.so.1.0`
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: Connection reset by peer (os error 104)
+</code></pre>
+<p>At the same time, I'm updating the way we handle the retry count to avoid nested retry loops exceeding the intended number of attempts, as I mentioned at https://github.com/astral-sh/uv/issues/14069#issuecomment-3020634281. It's not clear to me whether we actually want this part of the change, and I need feedback here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-python/src/downloads.rs</code>:124 on 2025-06-30 21:55</div>
+            <div class="timeline-body"><p>The fragility here makes me feel like I'm doing something wrong. @konstin do you have any better ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-06-30 21:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @oconnor663 on 2025-06-30 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:124 on 2025-07-01 09:27</div>
+            <div class="timeline-body"><p>iirc streaming error can show up as different error types (e.g. <code>Error::ExtractError</code>), but we're only attaching the retries if we have a reqwest error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-07-01 09:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @oconnor663 on 2025-07-01 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-07-01 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-07-01 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-python/src/downloads.rs</code>:124 on 2025-07-01 15:52</div>
+            <div class="timeline-body"><p>Yeah if opening the connection (the inner loop) retries a couple times and then ultimately succeeds, we'll never see those counts. Konsti and I talked about it and decided that it's not too big of a problem. It is confusing for folks reading the code and trying to understand how many retries are possible, but it's unlikely that it will bother any users in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-01 16:28</div>
+            <div class="timeline-body"><p>Note sure about <a href="https://github.com/astral-sh/uv/actions/runs/15984494035/job/45147781382?pr=14378">this CI failure</a>:</p>
+<pre><code>  Error: Failed to collect walltime results. This may be due to version incompatibility. Ensure that your compat layer (codspeed-criterion-compat, codspeed-bencher-compat, or codspeed-divan-compat) has the same major version as cargo-codspeed (currently v3.0.2).
+</code></pre>
+<p>Retrying failed a few times in a row. Gonna see if rebasing helps :)</p>
+<p>Edit: That worked. #codemonkeywritecode</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @oconnor663 on 2025-07-01 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-07-01 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-01 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-03 22:12</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/actions/runs/16060816582/job/45326189810 includes this change and does <em>not</em> indicate that it retried. Does that make it the smoking gun for https://github.com/astral-sh/uv/issues/14425 ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:39 UTC
+    </footer>
+</body>
+</html>

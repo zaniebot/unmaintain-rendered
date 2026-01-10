@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workaround for panic due to missing global validation in clap - astral-sh/uv #14368</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workaround for panic due to missing global validation in clap</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14368">#14368</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-06-30 07:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-06-30 07:53</div>
+            <div class="timeline-body"><p>Clap does not perform global validation, so flag that are declared as overriding can be set at the same time: https://github.com/clap-rs/clap/issues/6049. This would previously cause a panic. We work around this by choosing the yes-value always and writing a warning.</p>
+<p>An alternative would be erroring when both are set, but it's unclear to me if this may break things we want to support. (<code>UV_OFFLINE=1 cargo run -q pip --no-offline install tqdm --no-cache</code> is already banned).</p>
+<p>Fixes https://github.com/astral-sh/uv/pull/14299</p>
+<p><strong>Test Plan</strong></p>
+<pre><code>$ cargo run -q pip --offline install --no-offline tqdm --no-cache
+  warning: Boolean flags on different levels are not correctly supported (https://github.com/clap-rs/clap/issues/6049)
+    × No solution found when resolving dependencies:
+    ╰─▶ Because tqdm was not found in the cache and you require tqdm, we can conclude that your requirements are unsatisfiable.
+
+        hint: Packages were unavailable because the network was disabled. When the network is disabled, registry packages may only be read from the cache.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-06-30 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-30 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/options.rs</code>:23 on 2025-06-30 14:50</div>
+            <div class="timeline-body"><p>I think we want <code>None</code> so the default is chosen? I think I prefer the hard error right now though, tbh, the behavior will just be wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-30 14:50</div>
+            <div class="timeline-body"><p>cc @Gankra as this was one of your goals for the month</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-30 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/options.rs</code>:23 on 2025-06-30 20:06</div>
+            <div class="timeline-body"><p>I agree a hard error is preferable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-07-01 12:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/options.rs</code>:31 on 2025-07-01 12:06</div>
+            <div class="timeline-body"><p>Given that this is a clap bug, I don't think it's worth it introducing <code>Result</code>s in the whole resolve chain.</p>
+<p>The exit code is the same that clap uses for parsing errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-07-01 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-01 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-01 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-01 18:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:39 UTC
+    </footer>
+</body>
+</html>

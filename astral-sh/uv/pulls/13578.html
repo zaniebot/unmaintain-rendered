@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expand the functionality of `uv version --bump` to support pre-releases - astral-sh/uv #13578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Expand the functionality of `uv version --bump` to support pre-releases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13578">#13578</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-05-21 14:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-21 14:51</div>
+            <div class="timeline-body"><p>This adds <code>alpha</code>, <code>beta</code>, <code>rc</code>, <code>stable</code>, <code>post</code>, and <code>dev</code> modes to <code>uv version --bump</code>.</p>
+<p>The components that <code>--bump</code> accepts are ordered as follows:</p>
+<pre><code>major &gt; minor &gt; patch &gt; stable &gt; alpha &gt; beta &gt; rc &gt; post &gt; dev</code></pre>
+<p>Bumping a component &quot;clears&quot; all lesser component (<code>alpha</code>, <code>beta</code>, and <code>rc</code> all overwrite each other):</p>
+<ul>
+<li><code>--bump minor</code> on <code>1.2.3a4.post5.dev6</code> =&gt; <code>1.3.0</code></li>
+<li><code>--bump alpha</code> on <code>1.2.3a4.post5.dev6</code> =&gt; <code>1.2.3a5</code></li>
+<li><code>--bump dev  </code> on <code>1.2.3a4.post5.dev6</code> =&gt; <code>1.2.3a4.post5.dev7</code></li>
+</ul>
+<p>In addition, <code>--bump</code> can now be repeated. The primary motivation of this is &quot;bump stable version and also enter a prerelease&quot;, but it technically lets you express other things if you want them:</p>
+<ul>
+<li><code>--bump patch --bump alpha</code> on <code>1.2.3</code> =&gt; <code>1.2.4a1</code> (&quot;bump patch version and go to alpha 1&quot;)</li>
+<li><code>--bump minor --bump patch</code> on <code>1.2.3</code> =&gt; <code>1.3.1</code> (&quot;bump minor version and got to patch 1&quot;)</li>
+<li><code>--bump minor --bump minor</code> on <code>1.2.3</code> =&gt; <code>1.4.0</code> (&quot;bump minor version twice&quot;)</li>
+</ul>
+<p>The <code>--bump</code> flags are sorted by their priority, so that you don't need to remember the priority yourself. This ordering is the only &quot;useful&quot; one that preserves every <code>--bump</code> you passed, so there's no concern about loss of expressiveness. For instance <code>--bump minor --bump major</code> would just be <code>--bump major</code> if we didn't sort, as the major bump clears the minor version. The ordering of <code>beta</code> after <code>alpha</code> means <code>--bump alpha --bump beta</code> will just result in beta 1; this is the one case where a bump request will effectively get overwritten.</p>
+<p>The <code>stable</code> mode &quot;bumps to the next stable release&quot;, clearing the pre (<code>alpha</code>, <code>beta</code>, <code>rc</code>), <code>dev</code>, and <code>post</code> components from a version (<code>1.2.3a4.post5.dev6</code> =&gt; <code>1.2.3</code>). The choice to clear <code>post</code> here is a bit odd, in that <code>1.2.3.post4</code> =&gt; <code>1.2.3</code> is actually a version decrease, but I think this gives a more intuitive model (as preserving <code>post5</code> in the previous example is definitely wrong), and also post-releases are extremely obscure so probably no one will notice. In the cases where this behaviour isn't useful, you probably wanted to pass <code>--bump patch</code> or something anyway which <em>should</em> definitely clear the <code>post5</code> (putting it another way: the only cases where <code>--bump stable</code> has dubious behaviour is when you wanted it to do a noop, which, is a command you could have just not written at all).</p>
+<p>In all cases we preserve the &quot;epoch&quot; and &quot;local&quot; components of a version, so the <code>7!</code> and <code>+local</code> in <code>7!1.2.3+local</code> will never be modified by <code>--bump</code> (you can use the raw version set mode if you want to touch those). The preservation of <code>local</code> is another slightly odd choice, but it's a really obscure feature (so again it mostly won't come up) and when it's used it seems to mostly be used for referring to variant releases, in which case preserving it tends to be correct.</p>
+<p>Fixes #13223</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @Gankra on 2025-05-21 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-21 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-pep440/src/version.rs</code>:4189 on 2025-05-21 14:55</div>
+            <div class="timeline-body"><p>These chunks of the PR should ideally cover any corner case you might want to ask about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-21 15:02</div>
+            <div class="timeline-body"><p>&quot;Did you consider a <code>--bump pre</code> mode&quot; -- yes I don't think it's worth the API space, it seems reasonable to ask a user to know what flavour of prerelease they're using (and if I'm wrong we can add it later).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2025-05-21 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-05-21 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-05-21 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:621 on 2025-05-21 15:18</div>
+            <div class="timeline-body"><p>I'd keep the user-facing docs at basic version numbers without nested suffixes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-21 15:18</div>
+            <div class="timeline-body"><p>For the sake of getting an intrusive thought out of my head: there are several times where I said &quot;maybe you should be able to express <code>--bump minor --bump alpha</code> in a way where the alpha doesn't get reset&quot; (e.g. <code>1.2.3a4</code> =&gt; <code>1.3.0a5</code>) before reminding myself that this makes absolutely no semantic sense (so no we're not supporting that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:625 on 2025-05-21 15:19</div>
+            <div class="timeline-body"><blockquote>
+<p>The choice to clear post here is a bit odd, in that 1.2.3.post4 =&gt; 1.2.3 is actually a version decrease, but I think this gives a more intuitive model (as preserving post5 in the previous example is definitely wrong), and also post-releases are extremely obscure so probably no one will notice.</p>
+</blockquote>
+<p>Clearing post would be a negative bump, imo using stable with a post release should error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-21 15:28</div>
+            <div class="timeline-body"><p>Currently, there can be negative version bumps, where bumping <code>0.1.0b1</code> with <code>uv version --bump alpha</code> lowers the version instead of increasing it, as this isn't the next alpha but the previous alpha before the beta.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/reference/cli.md</code>:1503 on 2025-05-21 15:32</div>
+            <div class="timeline-body"><p>Can you add the lifecycle workflow to the docs? Telling users about the prerelease workflow starting with <code>uv version --bump &lt;patch|minor|major&gt; --bump &lt;alpha|beta|rc&gt;</code> to go to the next prerelease, then using <code>uv version --bump stable</code> to release the final version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/reference/cli.md</code>:1500 on 2025-05-21 15:32</div>
+            <div class="timeline-body"><p>Can you document that the values get sorted?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep440/src/version.rs</code>:681 on 2025-05-21 15:38</div>
+            <div class="timeline-body"><p>typo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-21 15:42</div>
+            <div class="timeline-body"><p>The code looks good, but I'm concerned by how easy it is to decrease the version accidentally, the version is decreased when using a prerelease bump on stable version by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-21 16:39</div>
+            <div class="timeline-body"><p>I've pushed up a separate commit that adds an <code>--allow-decreases</code> flag, and made the code error if a series of bumps fails to increase the version, as well as tests for the 3 cases I know of where this can happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-21 16:59</div>
+            <div class="timeline-body"><p>Updated cli docs a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-21 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-pep440/src/version.rs</code>:681 on 2025-05-21 17:01</div>
+            <div class="timeline-body"><p>...I keep staring at this and I can't find the typo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:547 on 2025-05-21 19:38</div>
+            <div class="timeline-body"><p>nit: This is rendered as markdown, the whitespace alignment will be lost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep440/src/version.rs</code>:681 on 2025-05-21 19:39</div>
+            <div class="timeline-body"><p>i'm confused by the <code>1</code> just after the <code>kind</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-05-21 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:547 on 2025-05-21 19:47</div>
+            <div class="timeline-body"><p>Ah yeah I wanted it to render helpfully in the CLI but I think I need to move these docs off <code>bump</code> and onto the command itself...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-21 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-21 19:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:547 on 2025-05-21 19:52</div>
+            <div class="timeline-body"><p>...no we supress verbose help so much it's web docs or nothing, oh well!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-21 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:547 on 2025-05-21 19:57</div>
+            <div class="timeline-body"><p>we also fix some markdown parsing in https://github.com/astral-sh/uv/pull/13166</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-21 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:547 on 2025-05-21 20:01</div>
+            <div class="timeline-body"><p>We do have verbose help.. <code>uv help version</code> — please make sure it formats nicely everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:547 on 2025-05-21 20:28</div>
+            <div class="timeline-body"><p><img src="https://github.com/user-attachments/assets/6b301e0d-14a8-4ebc-80fc-2271ef261a51" alt="Screenshot 2025-05-21 at 4 28 37 PM" /></p>
+<p>i'm being pranked by pseudo markdown 😭</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-21 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-21 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:547 on 2025-05-21 21:25</div>
+            <div class="timeline-body"><p>:/ another case of https://github.com/clap-rs/clap/issues/5900</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-21 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:547 on 2025-05-21 21:57</div>
+            <div class="timeline-body"><p>I would just move this kind of &quot;workflow example&quot; documentation into the actual docs instead of the CLI reference instead. I'd stick to syntax and semantics here, mostly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/projects.md</code>:166 on 2025-05-22 14:15</div>
+            <div class="timeline-body"><p>I think we'd usually say &quot;publishing guide&quot; here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/projects.md</code>:166 on 2025-05-22 14:15</div>
+            <div class="timeline-body"><p>(and have less of it be a link)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/projects.md</code>:168 on 2025-05-22 14:16</div>
+            <div class="timeline-body"><p>I don't know if you need to say &quot;with no other arguments&quot;, I don't think we do that elsewhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/projects.md</code>:175 on 2025-05-22 14:16</div>
+            <div class="timeline-body"><p>Arbitrary package or workspace member?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/projects.md</code>:182 on 2025-05-22 14:17</div>
+            <div class="timeline-body"><p>Instead of &quot;no other output&quot; maybe &quot;without the package name&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/projects.md</code>:189 on 2025-05-22 14:18</div>
+            <div class="timeline-body"><p>We should probably stylize as &quot;JSON&quot; in prose</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/projects.md</code>:188 on 2025-05-22 14:18</div>
+            <div class="timeline-body"><p>Just wondering... will we ever populate this for project versions? Did we just include this for compatibility with the old command? It seems a bit weird.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cli/src/lib.rs</code>:559 on 2025-05-22 14:20</div>
+            <div class="timeline-body"><p>Is there a use case for this flag? If so, it might be nice to mention it in the docs here. I'm kind of having trouble envisioning one... If there isn't a use case or if it's really obscure, would it make sense to jettison this extra option for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/package.md</code>:64 on 2025-05-22 14:20</div>
+            <div class="timeline-body"><p>&quot;To update to an exact version, provide it as a positional argument:&quot;</p>
+<p>Maybe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/package.md</code>:71 on 2025-05-22 14:21</div>
+            <div class="timeline-body"><p>&quot;To preview the change without updating the <code>pyproject.toml</code>, ...&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cli/src/lib.rs</code>:634 on 2025-05-22 14:21</div>
+            <div class="timeline-body"><p>I might mention here that this could decrease the version number, and therefore, it's common to use this in conjunction with another <code>--bump</code> flag like <code>--bump patch</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/package.md</code>:95 on 2025-05-22 14:22</div>
+            <div class="timeline-body"><p>I don't know if users will be able to reason about this clobbering thing. I wonder if we should just say they're applied in this order?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/version.rs</code>:201 on 2025-05-22 14:24</div>
+            <div class="timeline-body"><p>Perhaps a bit pedantic, but I wonder if this would be better as <code>allow_non_increasing</code> with <code>new_version &lt;= old_version</code>. That is, if my <code>--bump</code> <em>doesn't</em> increase the version number in some way, then I think I'd want to be bleated at. So if the version stays equal, for example, that would error here.</p>
+<p>(<code>allow_non_increasing</code> is kind of a mouthful, so it might make sense to keep the <code>allow_decreases</code> name and just have it be slightly imprecise.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/package.md</code>:95 on 2025-05-22 14:25</div>
+            <div class="timeline-body"><p>Interesting. I presume there was discussion on this, but I'm on my phone so just want to flag it. Why is the patch bump needed too? We fail without it?</p>
+<p>(I'll also just read the rest of the pull request when I'm home)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/package.md</code>:113 on 2025-05-22 14:25</div>
+            <div class="timeline-body"><p>Oh interesting. Why do we want to allow this at all? Seems like added complexity. Is someone asking for it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-05-22 14:25</div>
+            <div class="timeline-body"><p>Nice work!!! I wish this was in Cargo. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/package.md</code>:111 on 2025-05-22 14:26</div>
+            <div class="timeline-body"><p>I would say &quot;it would decrease the current version&quot; not &quot;it will&quot; if you're going to error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-22 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xemnas0">@Xemnas0</a> on 2025-05-25 21:08</div>
+            <div class="timeline-body"><p>Would it be possible to include a functionality of bumping the version in certain files, like <a href="https://github.com/commitizen-tools/commitizen/blob/master/docs/commands/bump.md#version_files-">commitizen does</a>? It also allows to look for what lines to change according to a per-file regex</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/concepts/projects/config.md</code>:163 on 2025-05-28 12:49</div>
+            <div class="timeline-body"><p>Empty heading?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/package.md</code>:98 on 2025-05-28 12:52</div>
+            <div class="timeline-body"><p>This sounds too complex for the guide documentation, I'd guide users towards using either a single <code>--bump</code> or a stable and an unstable bump and leave the rest to the concept/reference documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-28 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-28 14:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Would it be possible to include a functionality of bumping the version in certain files, like <a href="https://github.com/commitizen-tools/commitizen/blob/master/docs/commands/bump.md#version_files-">commitizen does</a>? It also allows to look for what lines to change according to a per-file regex</p>
+</blockquote>
+<p>I've certainly always found those kinds of features useful in similar commands, although it would require non-trivial design work we're definitely not doing in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:976 on 2025-05-28 14:42</div>
+            <div class="timeline-body"><p>It's weird this ends in a question mark. We should be assertive about what they should do, or say &quot;Did you mean ...?&quot;.</p>
+<p>Here, it seems like</p>
+<pre><code class="language-suggestion">    error: 2.3.4 =&gt; 2.3.4a1 didn't increase the version; when bumping to a prerelease you also need to specify a release segment to increase, e.g., by providing `--bump patch`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:949 on 2025-05-28 14:44</div>
+            <div class="timeline-body"><p>Is there not a suggestion to provide here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:243 on 2025-05-28 15:06</div>
+            <div class="timeline-body"><p>This is a bit confusing, it sounds like bump doesn't accept other values!</p>
+<pre><code class="language-suggestion">                &quot;Only one pre-release kind can be provided to `--bump`, got: {...}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:240 on 2025-05-28 15:06</div>
+            <div class="timeline-body"><p>fyi we stylize as <code>pre-releases</code> everywhere outside code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:232 on 2025-05-28 15:06</div>
+            <div class="timeline-body"><p>same as https://github.com/astral-sh/uv/pull/13578/files#r2112148090</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:222 on 2025-05-28 15:07</div>
+            <div class="timeline-body"><p>I guess?</p>
+<pre><code class="language-suggestion">                &quot;`--bump post` cannot be combined with any other `--bump` kind&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:210 on 2025-05-28 15:08</div>
+            <div class="timeline-body"><p>I find this kind of confusing. I might just prefer the later error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:214 on 2025-05-28 15:09</div>
+            <div class="timeline-body"><p>As with https://github.com/astral-sh/uv/pull/13578/files#r2112148090 it seems best to enumerate the values</p>
+<pre><code class="language-suggestion">                &quot;`--bump stable` cannot be combined with any other `--bump` kind, got: {...}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:222 on 2025-05-28 15:09</div>
+            <div class="timeline-body"><p>Same as https://github.com/astral-sh/uv/pull/13578/files#r2112155380 really</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:626 on 2025-05-28 15:10</div>
+            <div class="timeline-body"><p>I would say like..</p>
+<pre><code class="language-suggestion">    /// Move from a pre-release to stable version (1.2.3b4.post5.dev6 =&gt; 1.2.3)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:620 on 2025-05-28 15:10</div>
+            <div class="timeline-body"><p>We might want...</p>
+<pre><code class="language-suggestion">    /// Increase the major version (e.g., 1.2.3 =&gt; 2.0.0)
+</code></pre>
+<p>for all of these</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:628 on 2025-05-28 15:11</div>
+            <div class="timeline-body"><p>Why say &quot;intentionally&quot; here? Can you explain why it does this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-02 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:628 on 2025-06-02 18:03</div>
+            <div class="timeline-body"><p>The mention of <code>post</code> here can probably be thrown out as the one case where it's sus is now an error (<code>1.2.3.postN</code> =&gt; <code>1.2.3</code>). The <code>+local</code> preservation is &quot;this is kinda orthogonal and opaque and we can't meaningfully ever manipulate it so we never touch it, even though there's an argument that it's kinda prereleasey metadata&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-02 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:626 on 2025-06-02 18:04</div>
+            <div class="timeline-body"><p>Pedantically <code>1.2.3.dev6</code> isn't a prerelease but I think that eliding that nuance might be fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-02 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:626 on 2025-06-02 18:38</div>
+            <div class="timeline-body"><p>I think that's probably fine 🙃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-03 09:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:626 on 2025-06-03 09:01</div>
+            <div class="timeline-body"><p>good news, they are now: https://discuss.python.org/t/are-developmental-releases-a-type-of-pre-release/81666/13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VedankPurohit">@VedankPurohit</a> on 2025-06-05 11:40</div>
+            <div class="timeline-body"><p>When will this be merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-05 13:25</div>
+            <div class="timeline-body"><p>When it's done — we're a small team balancing a lot of work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/97k">@97k</a> on 2025-07-08 09:32</div>
+            <div class="timeline-body"><p>Hey @zanieb @Gankra , just checking in - do we have any ETA on this getting merged?
+We've been managing dev versions manually for now, and this feature would really streamline our workflow. Totally understand you're a small team and appreciate all the work you're putting into this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-07-10 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Expand the functionality of `uv version --bump` " to "Expand the functionality of `uv version --bump` to support pre-releases" by @zanieb on 2025-07-10 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-10 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-10 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-10 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2025-07-10 14:25</div>
+            <div class="timeline-body"><p>I wonder if it wouldn't have been better to introduce a new argument instead of allowing repeated <code>--bump</code>. It seems that the only realistic use case here combines one &quot;stable&quot; bump and one &quot;unstable&quot; bump. So, one could have a <code>--pre-bump</code> flag and write the example in the PR description like this:</p>
+<ul>
+<li><code>--bump patch --pre-bump alpha</code> on <code>1.2.3</code> =&gt; <code>1.2.4a1</code> (&quot;bump patch version and go to alpha 1&quot;)</li>
+</ul>
+<p>And this would result in an error:</p>
+<ul>
+<li><code>--bump minor --bump patch</code></li>
+</ul>
+<p>This would remove confusing behavior such as</p>
+<blockquote>
+<p>The ordering of <code>beta</code> after <code>alpha</code> means <code>--bump alpha --bump beta</code> will just result in beta 1; this is the one case where a bump request will effectively get overwritten.</p>
+</blockquote>
+<p><code>--pre-bump</code> would allow <code>alpha</code>, <code>beta</code>, <code>rc</code>, <code>dev</code>, and <code>post</code> as argument.</p>
+<p>Instead of <code>--bump stable</code>, I think something like <code>--clear-suffixes</code> would be clearer, which then also makes the <code>--allow-decreases</code> flag unnecessary, because the name <code>--clear-suffixes</code> doesn't imply an increase in the version, so the user won't be surprised when <code>--clear-suffixes</code> decreases the version (which it always does, I think). ~~<code>--clear-suffixes</code> would be permitted to be used in combination with <code>--bump</code> but not with <code>--pre-bump</code> (because that makes no sense.~~ EDIT: actually, <code>--clear-suffixes</code> should not be combined with any bumps; the stable bumps imply this already.</p>
+<p>EDIT2: one problem with the name &quot;pre-bump&quot; is that <code>.post</code> is not actually a pre-release. Another option might be <code>--bump-suffix</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-10 14:41</div>
+            <div class="timeline-body"><blockquote>
+<p>The ordering of beta after alpha means --bump alpha --bump beta will just result in beta 1; this is the one case where a bump request will effectively get overwritten.</p>
+</blockquote>
+<p>We just ban this now.</p>
+<blockquote>
+<p>which then also makes the --allow-decreases flag unnecessary</p>
+</blockquote>
+<p>We removed this, it's not worth the complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2025-07-10 14:52</div>
+            <div class="timeline-body"><p>Okay, that doesn't sound too bad then. It just seems to me that this commandline interface is &quot;too weakly typed&quot; in the sense that the &quot;signature&quot; seems to allow many things that will actually give a runtime error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-10 14:55</div>
+            <div class="timeline-body"><p>I think the things that will give a runtime error are pretty weird for a user to do though, wouldn't you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2025-07-10 15:02</div>
+            <div class="timeline-body"><p>That's a good point, yes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:55:36 UTC
+    </footer>
+</body>
+</html>
