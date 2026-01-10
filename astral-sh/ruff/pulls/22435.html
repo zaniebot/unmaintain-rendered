@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Include type parameters in generic callable display - astral-sh/ruff #22435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Include type parameters in generic callable display</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22435">#22435</a>
+        opened by <a href="https://github.com/bxff">@bxff</a>
+        on 2026-01-07 12:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/bxff">@bxff</a> on 2026-01-07 12:02</div>
+            <div class="timeline-body"><p>Fixes astral-sh/ty#1207</p>
+<h2>Summary</h2>
+<p>Modified <code>DisplaySignature</code> to show type parameter brackets (e.g., <code>[T]</code>) when displaying generic function and method signatures. Added a <code>generic_context</code> field and updated <code>fmt_detailed()</code> to prepend type parameters, preventing duplication when <code>DisplayFunctionType</code> already renders them.</p>
+<h2>Test Plan</h2>
+<p>Updated expected output in 6 test files. All tests pass: <code>test result: ok. 307 passed; 0 failed; 0 ignored</code></p>
+<h2>Example</h2>
+<pre><code>Before: list[Unknown | ((t: T@f) -&gt; T@f)]
+After:  list[Unknown | ([T](t: T@f) -&gt; T@f)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @bxff on 2026-01-07 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @bxff on 2026-01-07 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @bxff on 2026-01-07 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @bxff on 2026-01-07 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2026-01-07 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md</code>:1170 on 2026-01-07 12:18</div>
+            <div class="timeline-body"><p>Because <code>Wrap</code> has been specialized with <code>int</code> here, the <code>__init__</code> method is arguably no longer generic in this case, so I find the <code>[T]</code> prefix confusing here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md</code>:1183 on 2026-01-07 12:18</div>
+            <div class="timeline-body"><p>Same here: <code>WrappedIntAndExtraData</code> has already been specialized with <code>bytes</code>, so the <code>__init__</code> signature is no longer generic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 12:19</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2026-01-08 20:23:06.186588196 +0000
++++ new-output.txt	2026-01-08 20:23:06.506590094 +0000
+@@ -462,7 +462,7 @@
+ generics_defaults.py:131:1: error[type-assertion-failure] Type `Any` does not match asserted type `int`
+ generics_defaults.py:155:49: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int | float, bool]`?
+ generics_defaults.py:156:58: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[bytes]`?
+-generics_defaults.py:170:1: error[type-assertion-failure] Type `(Foo7[int], /) -&gt; Foo7[int]` does not match asserted type `def meth(self, /) -&gt; Self@meth`
++generics_defaults.py:170:1: error[type-assertion-failure] Type `(Foo7[int], /) -&gt; Foo7[int]` does not match asserted type `def meth[Self](self, /) -&gt; Self`
+ generics_defaults_referential.py:23:1: error[type-assertion-failure] Type `type[slice[int, int, int | None]]` does not match asserted type `&lt;class 'slice'&gt;`
+ generics_defaults_referential.py:36:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[&quot;&quot;]`
+ generics_defaults_referential.py:37:10: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Literal[&quot;&quot;]`
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md</code>:1211 on 2026-01-07 12:20</div>
+            <div class="timeline-body"><p>For clarity, I think this should either be</p>
+<pre><code class="language-suggestion"># revealed: [T](self: ParentDataclass[T], value: T) -&gt; None
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion"># revealed: [T@ChildOfParentDataclass](self: ParentDataclass[T@ChildOfParentDataclass], value: T@ChildOfParentDataclass) -&gt; None
+</code></pre>
+<p>(I prefer the first version, because it's more concise, and I think once you add the generic parameter to the beginning of the display the <code>@&lt;function_name&gt;</code> suffix for the type parameter in the rest of the display becomes unnecessary -- the scoping of the type parameter is now fully explicit through other means)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 12:20</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">more-itertools (https://github.com/more-itertools/more-itertools)
+- more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -&gt; int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -&gt; int, (base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -&gt; int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -&gt; int | float, (base: int, exp: int, mod: None = None) -&gt; Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -&gt; int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -&gt; int | float | complex, (base: int | float, exp: int, mod: None = None) -&gt; int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -&gt; _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -&gt; _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -&gt; _T_co@pow, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -&gt; Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -&gt; int | float | complex]`
++ more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -&gt; int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -&gt; int, (base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -&gt; int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -&gt; int | float, (base: int, exp: int, mod: None = None) -&gt; Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -&gt; int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -&gt; int | float | complex, (base: int | float, exp: int, mod: None = None) -&gt; int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; int | float | complex, [_E_contra, _T_co](base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co, [_E_contra, _T_co](base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co, [_E_contra, _M_contra, _T_co](base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -&gt; _T_co, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -&gt; Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -&gt; int | float | complex]`
+
+scrapy (https://github.com/scrapy/scrapy)
+- scrapy/utils/decorators.py:40:16: error[invalid-assignment] Object of type `(func: (**_P@deprecated) -&gt; _T@deprecated) -&gt; _T@deprecated` is not assignable to `def deco[**_P](func: (**_P@deprecated) -&gt; _T@deprecated) -&gt; (**_P@deprecated) -&gt; _T@deprecated`
++ scrapy/utils/decorators.py:40:16: error[invalid-assignment] Object of type `(func: (**_P@deprecated) -&gt; _T@deprecated) -&gt; _T@deprecated` is not assignable to `def deco[**_P](func: (**_P@deprecated) -&gt; _T) -&gt; (**_P@deprecated) -&gt; _T`
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -&gt; Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT@copyfile, *, follow_symlinks: bool = True) -&gt; _StrOrBytesPathT@copyfile`
++ paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -&gt; Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -&gt; _StrOrBytesPathT`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- test/mitmproxy/proxy/layers/http/test_http3.py:89:41: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T@Placeholder] = ...) -&gt; T@Placeholder | _Placeholder[T@Placeholder]` in type expression
++ test/mitmproxy/proxy/layers/http/test_http3.py:89:41: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T] = ...) -&gt; T | _Placeholder[T]` in type expression
+- test/mitmproxy/proxy/layers/http/test_http3.py:91:35: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T@Placeholder] = ...) -&gt; T@Placeholder | _Placeholder[T@Placeholder]` in type expression
++ test/mitmproxy/proxy/layers/http/test_http3.py:91:35: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T] = ...) -&gt; T | _Placeholder[T]` in type expression
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+
+psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/_typeinfo.py:300:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: str | int) -&gt; TypeInfo, (key: tuple[type[T@__getitem__], int]) -&gt; T@__getitem__]` cannot be called with key of type `str | int | tuple[type, int]` on object of type `Self@get`
++ psycopg/psycopg/_typeinfo.py:300:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: str | int) -&gt; TypeInfo, [T](key: tuple[type[T], int]) -&gt; T]` cannot be called with key of type `str | int | tuple[type, int]` on object of type `Self@get`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/data/entryexitanalysis.py:58:57: error[invalid-argument-type] Method `__getitem__` of type `Overload[(idx: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -&gt; ScalarT@__getitem__), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -&gt; str | bytes | date | ... omitted 9 union elements, (idx: ((DataFrame, /) -&gt; ScalarT@__getitem__) | tuple[slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements, ScalarT@__getitem__ | None] | None) -&gt; Series[Any], (idx: str | bytes | date | ... omitted 9 union elements) -&gt; Series[Any] | DataFrame, (idx: tuple[str | bytes | date | ... omitted 9 union elements, slice[Any, Any, Any]]) -&gt; Series[Any] | DataFrame, (key: slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements) -&gt; DataFrame]` cannot be called with key of type `tuple[Hashable, Literal[&quot;enter_tag&quot;]]` on object of type `_LocIndexerFrame[DataFrame]`
++ freqtrade/data/entryexitanalysis.py:58:57: error[invalid-argument-type] Method `__getitem__` of type `Overload[[ScalarT](idx: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -&gt; ScalarT), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -&gt; str | bytes | date | ... omitted 9 union elements, [ScalarT, HashableT](idx: ((DataFrame, /) -&gt; ScalarT) | tuple[slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements, ScalarT | None] | None) -&gt; Series[Any], (idx: str | bytes | date | ... omitted 9 union elements) -&gt; Series[Any] | DataFrame, (idx: tuple[str | bytes | date | ... omitted 9 union elements, slice[Any, Any, Any]]) -&gt; Series[Any] | DataFrame, [HashableT](key: slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements) -&gt; DataFrame]` cannot be called with key of type `tuple[Hashable, Literal[&quot;enter_tag&quot;]]` on object of type `_LocIndexerFrame[DataFrame]`
+- freqtrade/plot/plotting.py:187:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(idx: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -&gt; ScalarT@__getitem__), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -&gt; str | bytes | date | ... omitted 9 union elements, (idx: ((DataFrame, /) -&gt; ScalarT@__getitem__) | tuple[slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements, ScalarT@__getitem__ | None] | None) -&gt; Series[Any], (idx: str | bytes | date | ... omitted 9 union elements) -&gt; Series[Any] | DataFrame, (idx: tuple[str | bytes | date | ... omitted 9 union elements, slice[Any, Any, Any]]) -&gt; Series[Any] | DataFrame, (key: slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements) -&gt; DataFrame]` cannot be called with key of type `tuple[datetime, Literal[&quot;cum_profit&quot;]]` on object of type `_LocIndexerFrame[DataFrame]`
++ freqtrade/plot/plotting.py:187:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[[ScalarT](idx: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -&gt; ScalarT), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -&gt; str | bytes | date | ... omitted 9 union elements, [ScalarT, HashableT](idx: ((DataFrame, /) -&gt; ScalarT) | tuple[slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements, ScalarT | None] | None) -&gt; Series[Any], (idx: str | bytes | date | ... omitted 9 union elements) -&gt; Series[Any] | DataFrame, (idx: tuple[str | bytes | date | ... omitted 9 union elements, slice[Any, Any, Any]]) -&gt; Series[Any] | DataFrame, [HashableT](key: slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements) -&gt; DataFrame]` cannot be called with key of type `tuple[datetime, Literal[&quot;cum_profit&quot;]]` on object of type `_LocIndexerFrame[DataFrame]`
+- freqtrade/plot/plotting.py:188:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(idx: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -&gt; ScalarT@__getitem__), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -&gt; str | bytes | date | ... omitted 9 union elements, (idx: ((DataFrame, /) -&gt; ScalarT@__getitem__) | tuple[slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements, ScalarT@__getitem__ | None] | None) -&gt; Series[Any], (idx: str | bytes | date | ... omitted 9 union elements) -&gt; Series[Any] | DataFrame, (idx: tuple[str | bytes | date | ... omitted 9 union elements, slice[Any, Any, Any]]) -&gt; Series[Any] | DataFrame, (key: slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements) -&gt; DataFrame]` cannot be called with key of type `tuple[datetime, Literal[&quot;cum_profit&quot;]]` on object of type `_LocIndexerFrame[DataFrame]`
++ freqtrade/plot/plotting.py:188:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[[ScalarT](idx: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -&gt; ScalarT), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -&gt; str | bytes | date | ... omitted 9 union elements, [ScalarT, HashableT](idx: ((DataFrame, /) -&gt; ScalarT) | tuple[slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements, ScalarT | None] | None) -&gt; Series[Any], (idx: str | bytes | date | ... omitted 9 union elements) -&gt; Series[Any] | DataFrame, (idx: tuple[str | bytes | date | ... omitted 9 union elements, slice[Any, Any, Any]]) -&gt; Series[Any] | DataFrame, [HashableT](key: slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements) -&gt; DataFrame]` cannot be called with key of type `tuple[datetime, Literal[&quot;cum_profit&quot;]]` on object of type `_LocIndexerFrame[DataFrame]`
+- freqtrade/strategy/strategy_helper.py:102:42: error[invalid-argument-type] Method `__getitem__` of type `bound method _AtIndexerFrame.__getitem__[ScalarT](key: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -&gt; ScalarT@__getitem__), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -&gt; str | bytes | date | ... omitted 9 union elements` cannot be called with key of type `tuple[(str &amp; ~AlwaysFalsy) | (bytes &amp; ~AlwaysFalsy) | (date &amp; ~AlwaysFalsy) | ... omitted 9 union elements, str]` on object of type `_AtIndexerFrame`
++ freqtrade/strategy/strategy_helper.py:102:42: error[invalid-argument-type] Method `__getitem__` of type `bound method _AtIndexerFrame.__getitem__[ScalarT](key: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -&gt; ScalarT), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -&gt; str | bytes | date | ... omitted 9 union elements` cannot be called with key of type `tuple[(str &amp; ~AlwaysFalsy) | (bytes &amp; ~AlwaysFalsy) | (date &amp; ~AlwaysFalsy) | ... omitted 9 union elements, str]` on object of type `_AtIndexerFrame`
+
+mypy (https://github.com/python/mypy)
+- mypy/typeshed/stdlib/multiprocessing/managers.pyi:328:39: error[invalid-type-form] Invalid subscript of object of type `Overload[(self, iterable: Iterable[_T@list], /) -&gt; ListProxy[_T@list], (self) -&gt; ListProxy[Any]]` in type expression
++ mypy/typeshed/stdlib/multiprocessing/managers.pyi:328:39: error[invalid-type-form] Invalid subscript of object of type `Overload[[_T](self, iterable: Iterable[_T], /) -&gt; ListProxy[_T], (self) -&gt; ListProxy[Any]]` in type expression
+- mypy/typeshed/stdlib/multiprocessing/managers.pyi:330:39: error[invalid-type-form] Invalid subscript of object of type `Overload[(self, iterable: Iterable[_T@list], /) -&gt; ListProxy[_T@list], (self) -&gt; ListProxy[Any]]` in type expression
++ mypy/typeshed/stdlib/multiprocessing/managers.pyi:330:39: error[invalid-type-form] Invalid subscript of object of type `Overload[[_T](self, iterable: Iterable[_T], /) -&gt; ListProxy[_T], (self) -&gt; ListProxy[Any]]` in type expression
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/ext/commands/core.py:2358:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `(Context[object], /) -&gt; bool | Coroutine[Never, object, bool]`, found `def predicate[BotT](ctx: Context[BotT@predicate]) -&gt; bool`
++ discord/ext/commands/core.py:2358:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `(Context[object], /) -&gt; bool | Coroutine[Never, object, bool]`, found `def predicate[BotT](ctx: Context[BotT]) -&gt; bool`
+- discord/ext/commands/core.py:2433:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `(Context[object], /) -&gt; bool | Coroutine[Never, object, bool]`, found `def predicate[BotT](ctx: Context[BotT@predicate]) -&gt; bool`
++ discord/ext/commands/core.py:2433:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `(Context[object], /) -&gt; bool | Coroutine[Never, object, bool]`, found `def predicate[BotT](ctx: Context[BotT]) -&gt; bool`
+- discord/ext/commands/help.py:309:9: error[invalid-assignment] Object of type `def wrapped_get_commands(*, _original: () -&gt; list[Command[Any, (...), Any]] = ...) -&gt; list[Command[Any, (...), Any]]` is not assignable to attribute `get_commands` of type `def get_commands(self) -&gt; list[Command[Self@get_commands, (...), Any]]`
++ discord/ext/commands/help.py:309:9: error[invalid-assignment] Object of type `def wrapped_get_commands(*, _original: () -&gt; list[Command[Any, (...), Any]] = ...) -&gt; list[Command[Any, (...), Any]]` is not assignable to attribute `get_commands` of type `def get_commands[Self](self) -&gt; list[Command[Self, (...), Any]]`
+- discord/ext/commands/help.py:310:9: error[invalid-assignment] Object of type `def wrapped_walk_commands(*, _original: () -&gt; Generator[Command[Any, (...), Any], None, None] = ...) -&gt; Unknown` is not assignable to attribute `walk_commands` of type `def walk_commands(self) -&gt; Generator[Command[Self@walk_commands, (...), Any], None, None]`
++ discord/ext/commands/help.py:310:9: error[invalid-assignment] Object of type `def wrapped_walk_commands(*, _original: () -&gt; Generator[Command[Any, (...), Any], None, None] = ...) -&gt; Unknown` is not assignable to attribute `walk_commands` of type `def walk_commands[Self](self) -&gt; Generator[Command[Self, (...), Any], None, None]`
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_core/_run.py:142:9: error[invalid-assignment] Object of type `def repr_callable[BaseExcT](fun: (BaseExcT@repr_callable, /) -&gt; bool) -&gt; str` is not assignable to attribute `repr_callable` of type `def repr_callable[BaseExcT_1](fun: (BaseExcT_1@repr_callable, /) -&gt; bool) -&gt; str`
++ src/trio/_core/_run.py:142:9: error[invalid-assignment] Object of type `def repr_callable[BaseExcT](fun: (BaseExcT, /) -&gt; bool) -&gt; str` is not assignable to attribute `repr_callable` of type `def repr_callable[BaseExcT_1](fun: (BaseExcT_1, /) -&gt; bool) -&gt; str`
+
+pyodide (https://github.com/pyodide/pyodide)
+- src/py/pyodide/webloop.py:980:5: error[invalid-assignment] Object of type `_Wrapped[(main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None), _T@run, (main, *, debug=None, loop_factory=None), Unknown]` is not assignable to attribute `run` of type `def run[_T](main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None) -&gt; _T@run`
++ src/py/pyodide/webloop.py:980:5: error[invalid-assignment] Object of type `_Wrapped[(main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None), _T@run, (main, *, debug=None, loop_factory=None), Unknown]` is not assignable to attribute `run` of type `def run[_T](main: Coroutine[Any, Any, _T], *, debug: bool | None = None) -&gt; _T`
+
+cloud-init (https://github.com/canonical/cloud-init)
+- tests/unittests/early_patches.py:33:1: error[invalid-assignment] Object of type `def wrapped_lru_cache(...) -&gt; Unknown` is not assignable to attribute `lru_cache` of type `Overload[(maxsize: int | None = 128, typed: bool = False) -&gt; ((...) -&gt; _T@lru_cache, /) -&gt; _lru_cache_wrapper[_T@lru_cache], (maxsize: (...) -&gt; _T@lru_cache, typed: bool = False) -&gt; _lru_cache_wrapper[_T@lru_cache]]`
++ tests/unittests/early_patches.py:33:1: error[invalid-assignment] Object of type `def wrapped_lru_cache(...) -&gt; Unknown` is not assignable to attribute `lru_cache` of type `Overload[[_T](maxsize: int | None = 128, typed: bool = False) -&gt; ((...) -&gt; _T, /) -&gt; _lru_cache_wrapper[_T], [_T](maxsize: (...) -&gt; _T, typed: bool = False) -&gt; _lru_cache_wrapper[_T]]`
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/utils/universal.py:1674:35: error[invalid-assignment] Object of type `Overload[(key: _T@extract_as_list, default: None = None, /) -&gt; _U@extract_as_list | None, (key: _T@extract_as_list, default: _U@extract_as_list, /) -&gt; _U@extract_as_list, (key: _T@extract_as_list, default: _T@get, /) -&gt; _U@extract_as_list | _T@get]` is not assignable to `(_T@extract_as_list, /) -&gt; _U@extract_as_list`
++ mesonbuild/utils/universal.py:1674:35: error[invalid-assignment] Object of type `Overload[(key: _T@extract_as_list, default: None = None, /) -&gt; _U@extract_as_list | None, (key: _T@extract_as_list, default: _U@extract_as_list, /) -&gt; _U@extract_as_list, [_T](key: _T@extract_as_list, default: _T, /) -&gt; _U@extract_as_list | _T]` is not assignable to `(_T@extract_as_list, /) -&gt; _U@extract_as_list`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_distutils/extension.py:123:37: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(str | bytes, /) -&gt; str | bytes`, found `Overload[(path: str) -&gt; str, (path: bytes) -&gt; bytes, (path: PathLike[AnyStr@fspath]) -&gt; AnyStr@fspath]`
++ setuptools/_distutils/extension.py:123:37: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(str | bytes, /) -&gt; str | bytes`, found `Overload[(path: str) -&gt; str, (path: bytes) -&gt; bytes, [AnyStr](path: PathLike[AnyStr]) -&gt; AnyStr]`
+- setuptools/_distutils/tests/test_util.py:103:9: error[invalid-assignment] Object of type `def _splitdrive(path) -&gt; Unknown` is not assignable to attribute `splitdrive` of type `Overload[(p: PathLike[AnyStr@splitdrive]) -&gt; tuple[AnyStr@splitdrive, AnyStr@splitdrive], (p: AnyOrLiteralStr@splitdrive) -&gt; tuple[AnyOrLiteralStr@splitdrive, AnyOrLiteralStr@splitdrive]]`
++ setuptools/_distutils/tests/test_util.py:103:9: error[invalid-assignment] Object of type `def _splitdrive(path) -&gt; Unknown` is not assignable to attribute `splitdrive` of type `Overload[[AnyStr](p: PathLike[AnyStr]) -&gt; tuple[AnyStr, AnyStr], [AnyOrLiteralStr](p: AnyOrLiteralStr) -&gt; tuple[AnyOrLiteralStr, AnyOrLiteralStr]]`
+- setuptools/_vendor/more_itertools/recipes.py:1005:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -&gt; int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -&gt; int, (base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -&gt; int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -&gt; int | float, (base: int, exp: int, mod: None = None) -&gt; Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -&gt; int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -&gt; int | float | complex, (base: int | float, exp: int, mod: None = None) -&gt; int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -&gt; _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -&gt; _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -&gt; _T_co@pow, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -&gt; Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -&gt; int | float | complex]`
++ setuptools/_vendor/more_itertools/recipes.py:1005:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -&gt; int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -&gt; int, (base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -&gt; int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -&gt; int | float, (base: int, exp: int, mod: None = None) -&gt; Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -&gt; int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -&gt; int | float | complex, (base: int | float, exp: int, mod: None = None) -&gt; int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; int | float | complex, [_E_contra, _T_co](base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co, [_E_contra, _T_co](base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -&gt; _T_co, [_E_contra, _M_contra, _T_co](base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -&gt; _T_co, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -&gt; Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -&gt; int | float | complex]`
+- setuptools/command/editable_wheel.py:420:19: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(str | bytes, /) -&gt; str | bytes`, found `Overload[(path: str) -&gt; str, (path: bytes) -&gt; bytes, (path: PathLike[AnyStr@fspath]) -&gt; AnyStr@fspath]`
++ setuptools/command/editable_wheel.py:420:19: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(str | bytes, /) -&gt; str | bytes`, found `Overload[(path: str) -&gt; str, (path: bytes) -&gt; bytes, [AnyStr](path: PathLike[AnyStr]) -&gt; AnyStr]`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 48 diagnostics
++ Found 47 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-docker/tests/test_worker.py:1459:13: error[invalid-assignment] Object of type `def tracking_set_flow_run_state(flow_run_id, state, **kwargs) -&gt; CoroutineType[Any, Any, Unknown]` is not assignable to attribute `set_flow_run_state` of type `def set_flow_run_state[T](self, flow_run_id: UUID | str, state: State[T@set_flow_run_state], force: bool = False) -&gt; CoroutineType[Any, Any, OrchestrationResult[T@set_flow_run_state]]`
++ src/integrations/prefect-docker/tests/test_worker.py:1459:13: error[invalid-assignment] Object of type `def tracking_set_flow_run_state(flow_run_id, state, **kwargs) -&gt; CoroutineType[Any, Any, Unknown]` is not assignable to attribute `set_flow_run_state` of type `def set_flow_run_state[T](self, flow_run_id: UUID | str, state: State[T], force: bool = False) -&gt; CoroutineType[Any, Any, OrchestrationResult[T]]`
+- src/prefect/automations.py:235:5: error[invalid-argument-type] Argument is incorrect: Expected `Overload[(cls, id: UUID, name: str | None = ...) -&gt; Self@aread | Self@aread, (cls, id: None = None, name: str = ...) -&gt; Self@aread | Self@aread]`, found `Overload[(cls, id: UUID, name: str | None = ...) -&gt; CoroutineType[Any, Any, Self@read], (cls, id: None = None, name: str = ...) -&gt; CoroutineType[Any, Any, Self@read]]`
++ src/prefect/automations.py:235:5: error[invalid-argument-type] Argument is incorrect: Expected `Overload[(cls, id: UUID, name: str | None = ...) -&gt; Self@aread | Self@aread, (cls, id: None = None, name: str = ...) -&gt; Self@aread | Self@aread]`, found `Overload[[Self](cls, id: UUID, name: str | None = ...) -&gt; CoroutineType[Any, Any, Self], [Self](cls, id: None = None, name: str = ...) -&gt; CoroutineType[Any, Any, Self]]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/task_runners.py:398:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -&gt; _T@run`, found `def run[_T](main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None) -&gt; _T@run`
++ src/prefect/task_runners.py:398:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -&gt; _T@run`, found `def run[_T](main: Coroutine[Any, Any, _T], *, debug: bool | None = None) -&gt; _T`
+- src/prefect/task_runners.py:404:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -&gt; _T@run`, found `def run_task_sync[**P, R](task: Task[P@run_task_sync, R@run_task_sync], task_run_id: UUID | None = None, task_run: TaskRun | None = None, parameters: dict[str, Any] | None = None, wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, return_type: Literal[&quot;state&quot;, &quot;result&quot;] = &quot;result&quot;, dependencies: dict[str, set[RunInput]] | None = None, context: dict[str, Any] | None = None) -&gt; R@run_task_sync | State[Any] | None`
++ src/prefect/task_runners.py:404:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -&gt; _T@run`, found `def run_task_sync[**P, R](task: Task[P, R], task_run_id: UUID | None = None, task_run: TaskRun | None = None, parameters: dict[str, Any] | None = None, wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, return_type: Literal[&quot;state&quot;, &quot;result&quot;] = &quot;result&quot;, dependencies: dict[str, set[RunInput]] | None = None, context: dict[str, Any] | None = None) -&gt; R | State[Any] | None`
+- src/prefect/task_worker.py:370:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -&gt; _T@run`, found `def run_task_sync[**P, R](task: Task[P@run_task_sync, R@run_task_sync], task_run_id: UUID | None = None, task_run: TaskRun | None = None, parameters: dict[str, Any] | None = None, wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, return_type: Literal[&quot;state&quot;, &quot;result&quot;] = &quot;result&quot;, dependencies: dict[str, set[RunInput]] | None = None, context: dict[str, Any] | None = None) -&gt; R@run_task_sync | State[Any] | None`
++ src/prefect/task_worker.py:370:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -&gt; _T@run`, found `def run_task_sync[**P, R](task: Task[P, R], task_run_id: UUID | None = None, task_run: TaskRun | None = None, parameters: dict[str, Any] | None = None, wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, return_type: Literal[&quot;state&quot;, &quot;result&quot;] = &quot;result&quot;, dependencies: dict[str, set[RunInput]] | None = None, context: dict[str, Any] | None = None) -&gt; R | State[Any] | None`
+- src/prefect/utilities/asyncutils.py:376:1: error[invalid-argument-type] Argument to function `asynccontextmanager` is incorrect: Expected `(...) -&gt; AsyncIterator[Unknown]`, found `Overload[(value: None = None, *args: Any, **kwargs: Any) -&gt; AbstractAsyncContextManager[None, None], (value: R@asyncnullcontext, *args: Any, **kwargs: Any) -&gt; AbstractAsyncContextManager[R@asyncnullcontext, None]]`
++ src/prefect/utilities/asyncutils.py:376:1: error[invalid-argument-type] Argument to function `asynccontextmanager` is incorrect: Expected `(...) -&gt; AsyncIterator[Unknown]`, found `Overload[(value: None = None, *args: Any, **kwargs: Any) -&gt; AbstractAsyncContextManager[None, None], [R](value: R, *args: Any, **kwargs: Any) -&gt; AbstractAsyncContextManager[R, None]]`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/contrib/internal/asyncio/patch.py:39:12: error[invalid-argument-type] Argument to function `unwrap` is incorrect: Expected `WrappedFunction`, found `def create_task[_T](self, coro: Generator[Any, None, _T@create_task] | Coroutine[Any, Any, _T@create_task], *, name: object = None) -&gt; Task[_T@create_task]`
++ ddtrace/contrib/internal/asyncio/patch.py:39:12: error[invalid-argument-type] Argument to function `unwrap` is incorrect: Expected `WrappedFunction`, found `def create_task[_T](self, coro: Generator[Any, None, _T] | Coroutine[Any, Any, _T], *, name: object = None) -&gt; Task[_T]`
+- tests/contrib/integration_registry/registry_update_helpers/integration_registry_manager.py:164:9: error[invalid-assignment] Object of type `def _wrapped_getattr(obj, name, *default) -&gt; Unknown` is not assignable to attribute `getattr` of type `Overload[(o: object, name: str, /) -&gt; Any, (o: object, name: str, default: None, /) -&gt; Any | None, (o: object, name: str, default: bool, /) -&gt; Any | bool, (o: object, name: str, default: list[Any], /) -&gt; Any | list[Any], (o: object, name: str, default: dict[Any, Any], /) -&gt; Any | dict[Any, Any], (o: object, name: str, default: _T@getattr, /) -&gt; Any | _T@getattr]`
++ tests/contrib/integration_registry/registry_update_helpers/integration_registry_manager.py:164:9: error[invalid-assignment] Object of type `def _wrapped_getattr(obj, name, *default) -&gt; Unknown` is not assignable to attribute `getattr` of type `Overload[(o: object, name: str, /) -&gt; Any, (o: object, name: str, default: None, /) -&gt; Any | None, (o: object, name: str, default: bool, /) -&gt; Any | bool, (o: object, name: str, default: list[Any], /) -&gt; Any | list[Any], (o: object, name: str, default: dict[Any, Any], /) -&gt; Any | dict[Any, Any], [_T](o: object, name: str, default: _T, /) -&gt; Any | _T]`
+- tests/debugging/mocking.py:192:9: error[invalid-assignment] Object of type `(_) -&gt; Unknown` is not assignable to attribute `register` of type `def register[**_P, _T](func: (**_P@register) -&gt; _T@register, /, *args: _P@register.args, **kwargs: _P@register.kwargs) -&gt; (**_P@register) -&gt; _T@register`
++ tests/debugging/mocking.py:192:9: error[invalid-assignment] Object of type `(_) -&gt; Unknown` is not assignable to attribute `register` of type `def register[**_P, _T](func: (**_P@register) -&gt; _T, /, *args: _P.args, **kwargs: _P.kwargs) -&gt; (**_P@register) -&gt; _T`
+
+jax (https://github.com/google/jax)
+- jax/_src/checkify.py:242:16: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -&gt; tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -&gt; tuple[Any, ...], (a: _SupportsShape[_ShapeT@shape]) -&gt; _ShapeT@shape, (a: int | float | complex | bytes | str) -&gt; tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -&gt; tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -&gt; tuple[int, int], (a: memoryview[int] | bytearray) -&gt; tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -&gt; tuple[Any, ...]]`
++ jax/_src/checkify.py:242:16: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -&gt; tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -&gt; tuple[Any, ...], [_ShapeT](a: _SupportsShape[_ShapeT]) -&gt; _ShapeT, (a: int | float | complex | bytes | str) -&gt; tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -&gt; tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -&gt; tuple[int, int], (a: memoryview[int] | bytearray) -&gt; tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -&gt; tuple[Any, ...]]`
+- jax/_src/checkify.py:1309:14: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -&gt; tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -&gt; tuple[Any, ...], (a: _SupportsShape[_ShapeT@shape]) -&gt; _ShapeT@shape, (a: int | float | complex | bytes | str) -&gt; tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -&gt; tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -&gt; tuple[int, int], (a: memoryview[int] | bytearray) -&gt; tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -&gt; tuple[Any, ...]]`
++ jax/_src/checkify.py:1309:14: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -&gt; tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -&gt; tuple[Any, ...], [_ShapeT](a: _SupportsShape[_ShapeT]) -&gt; _ShapeT, (a: int | float | complex | bytes | str) -&gt; tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -&gt; tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -&gt; tuple[int, int], (a: memoryview[int] | bytearray) -&gt; tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -&gt; tuple[Any, ...]]`
+- jax/_src/interpreters/partial_eval.py:2448:13: error[invalid-argument-type] Argument to function `foreach` is incorrect: Expected `(Var, None | DynamicJaxprTracer, /) -&gt; Any`, found `Overload[(key: Var, default: None = None, /) -&gt; _T@setdefault | None, (key: Var, default: DynamicJaxprTracer, /) -&gt; DynamicJaxprTracer]`
++ jax/_src/interpreters/partial_eval.py:2448:13: error[invalid-argument-type] Argument to function `foreach` is incorrect: Expected `(Var, None | DynamicJaxprTracer, /) -&gt; Any`, found `Overload[[_T](key: Var, default: None = None, /) -&gt; _T | None, (key: Var, default: DynamicJaxprTracer, /) -&gt; DynamicJaxprTracer]`
+- jax/_src/lax/control_flow/solves.py:201:24: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -&gt; tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -&gt; tuple[Any, ...], (a: _SupportsShape[_ShapeT@shape]) -&gt; _ShapeT@shape, (a: int | float | complex | bytes | str) -&gt; tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -&gt; tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -&gt; tuple[int, int], (a: memoryview[int] | bytearray) -&gt; tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -&gt; tuple[Any, ...]]`
++ jax/_src/lax/control_flow/solves.py:201:24: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -&gt; tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -&gt; tuple[Any, ...], [_ShapeT](a: _SupportsShape[_ShapeT]) -&gt; _ShapeT, (a: int | float | complex | bytes | str) -&gt; tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -&gt; tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -&gt; tuple[int, int], (a: memoryview[int] | bytearray) -&gt; tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -&gt; tuple[Any, ...]]`
+- 
+
+... (truncated 56 lines) ...
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+-     struct fields = ~54MB
++     struct fields = ~52MB
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-07 12:20</div>
+            <div class="timeline-body"><p>Nice, thanks! I think there's a few details here to work out, however:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bxff">@bxff</a> on 2026-01-07 14:09</div>
+            <div class="timeline-body"><p>Hi @AlexWaygood, thanks for the detailed review! I've addressed all your feedback:</p>
+<ol>
+<li><p><strong>Specialized generic classes</strong>: Modified <code>TypeMapping::update_signature_generic_context</code> to filter out type variables that map to concrete types. Methods on specialized classes like <code>Wrap[int].__init__</code> now correctly display without the <code>[T]</code> prefix:</p>
+<pre><code class="language-python"># Before: [T](self: Wrap[int], data: int) -&gt; None
+# After:  (self: Wrap[int], data: int) -&gt; None
+</code></pre>
+</li>
+<li><p><strong>Scope suffix suppression</strong>: Added <code>active_scopes</code> tracking to <code>DisplaySettings</code> and updated <code>DisplayBoundTypeVarIdentity</code> to suppress redundant <code>@{scope}</code> suffixes when the scope is already explicit in the signature prefix (your preferred option):</p>
+<pre><code class="language-python"># Before: (self: ParentDataclass[T@ChildOfParentDataclass], value: T@ChildOfParentDataclass) -&gt; None
+# After:  [T](self: ParentDataclass[T], value: T) -&gt; None
+</code></pre>
+</li>
+</ol>
+<p>Let me know if you have any other suggestions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/methods.md</code>:625 on 2026-01-07 14:09</div>
+            <div class="timeline-body"><p>Shouldn't these be</p>
+<pre><code class="language-suggestion">reveal_type(object.__new__)  # revealed: def __new__[Self](cls) -&gt; Self
+reveal_type(object().__new__)  # revealed: def __new__[Self](cls) -&gt; Self
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-07 14:09</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 14:17</div>
+            <div class="timeline-body"><p>Could you add this test somewhere? I like the new display, but it doesn't look like we have an explicit test for the display of a non-function callable that uses both a type parameter scoped to the callable itself and a type parameter scoped to an outer scope:</p>
+<pre><code class="language-py">from typing import Generic, TypeVar
+from ty_extensions import into_callable
+
+T = TypeVar(&quot;T&quot;)
+S = TypeVar(&quot;S&quot;)
+
+
+class Foo(Generic[T]):
+    def bar(x: T, y: S) -&gt; tuple[T, S]:
+        raise NotImplementedError
+
+
+def f(x: type[Foo[T]]) -&gt; T:
+    # revealed: [S](x: T@f, y: S) -&gt; tuple[T@f, S]
+    reveal_type(into_callable(x.bar))
+    raise NotImplementedError
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bxff">@bxff</a> reviewed on 2026-01-07 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bxff">@bxff</a> on <code>crates/ty_python_semantic/resources/mdtest/call/methods.md</code>:625 on 2026-01-07 16:30</div>
+            <div class="timeline-body"><p>I've investigated and it looks like there's a pre-existing filter that intentionally hides <code>Self</code> from the type parameter display to avoid noise (since it's implicitly added to most methods).</p>
+<p>If I remove that filter, <code>object.__new__</code> would correctly show as <code>def __new__[Self](cls) -&gt; Self</code>. However, this would also cause <code>Self</code> to appear in other places where it might not be helpful:</p>
+<ul>
+<li>For methods on specialized classes like <code>C[int].f</code>, we'd get <code>def f[Self](self, x: int) -&gt; str</code> where <code>Self</code> only exists for the implicit <code>self</code> parameter and doesn't appear elsewhere in the signature</li>
+<li>For bound methods, we'd see <code>[Self]</code> even though the type has been fully resolved, which seems confusing</li>
+</ul>
+<p>What's your preference here? Should I remove the filter and accept the broader display of <code>[Self]</code>, or would you prefer a more targeted approach that only shows <code>Self</code> when it appears meaningfully in the signature (like in the return type or explicit parameters)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-07 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/methods.md</code>:625 on 2026-01-07 16:40</div>
+            <div class="timeline-body"><p>It sounds like the easiest thing to do here (for now) would be to just restore the display for <code>Self</code> typevars specifically to what they are on <code>main</code>? I think applying this patch to your PR would do the trick:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/resources/mdtest/call/methods.md b/crates/ty_python_semantic/resources/mdtest/call/methods.md
+index d3b95d81cd..c15e14a615 100644
+--- a/crates/ty_python_semantic/resources/mdtest/call/methods.md
++++ b/crates/ty_python_semantic/resources/mdtest/call/methods.md
+@@ -621,17 +621,17 @@ argument:
+ ```py
+ from typing_extensions import Self
+ 
+-reveal_type(object.__new__)  # revealed: def __new__(cls) -&gt; Self
+-reveal_type(object().__new__)  # revealed: def __new__(cls) -&gt; Self
+-# revealed: Overload[(cls, x: str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc = 0, /) -&gt; Self, (cls, x: str | bytes | bytearray, /, base: SupportsIndex) -&gt; Self]
++reveal_type(object.__new__)  # revealed: def __new__(cls) -&gt; Self@__new__
++reveal_type(object().__new__)  # revealed: def __new__(cls) -&gt; Self@__new__
++# revealed: Overload[(cls, x: str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc = 0, /) -&gt; Self@__new__, (cls, x: str | bytes | bytearray, /, base: SupportsIndex) -&gt; Self@__new__]
+ reveal_type(int.__new__)
+-# revealed: Overload[(cls, x: str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc = 0, /) -&gt; Self, (cls, x: str | bytes | bytearray, /, base: SupportsIndex) -&gt; Self]
++# revealed: Overload[(cls, x: str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc = 0, /) -&gt; Self@__new__, (cls, x: str | bytes | bytearray, /, base: SupportsIndex) -&gt; Self@__new__]
+ reveal_type((42).__new__)
+ 
+ class X:
+     def __init__(self, val: int): ...
+     def make_another(self) -&gt; Self:
+-        reveal_type(self.__new__)  # revealed: def __new__(cls) -&gt; Self
++        reveal_type(self.__new__)  # revealed: def __new__(cls) -&gt; Self@__new__
+         return self.__new__(type(self))
+ ```
+ 
+diff --git a/crates/ty_python_semantic/src/types/display.rs b/crates/ty_python_semantic/src/types/display.rs
+index 378e93c94e..ff0c4c90af 100644
+--- a/crates/ty_python_semantic/src/types/display.rs
++++ b/crates/ty_python_semantic/src/types/display.rs
+@@ -1092,13 +1092,19 @@ struct DisplayBoundTypeVarIdentity&lt;'db&gt; {
+ impl Display for DisplayBoundTypeVarIdentity&lt;'_&gt; {
+     fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; fmt::Result {
+         f.write_str(self.bound_typevar_identity.identity.name(self.db))?;
+-        if let Some(binding_context_name) = self.bound_typevar_identity.binding_context.name(self.db) {
+-            let mut suppressed = false;
+-            if let BindingContext::Definition(definition) = self.bound_typevar_identity.binding_context {
+-                if self.settings.active_scopes.contains(&amp;definition) {
+-                    suppressed = true;
+-                }
+-            }
++        if let Some(binding_context_name) =
++            self.bound_typevar_identity.binding_context.name(self.db)
++        {
++            let suppressed = if let BindingContext::Definition(definition) =
++                self.bound_typevar_identity.binding_context
++                &amp;&amp; self.settings.active_scopes.contains(&amp;definition)
++                &amp;&amp; !self.bound_typevar_identity.identity.kind(self.db).is_self()
++            {
++                true
++            } else {
++                false
++            };
++
+             if !suppressed {
+                 write!(f, &quot;@{binding_context_name}&quot;)?;
+             }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bxff">@bxff</a> on 2026-01-07 17:55</div>
+            <div class="timeline-body"><p>@AlexWaygood thanks for the patch suggestion, it would certainly restore the old behavior with minimal churn. However, after investigating, I decided to fully remove the Self filter and properly fix the underlying display logic. Here's what that entailed:</p>
+<p><strong>Bound Methods:</strong> The key issue was that bound methods needed <code>[Self]</code> suppressed when <code>Self</code> is bound to a concrete type (the implicit self), but other method-scoped type parameters should still display. I refactored the logic to use <code>bind_self()</code> before collecting type parameters, which correctly handles this. For example:</p>
+<ul>
+<li><code>C[int]().m</code> now shows <code>bound method C[int].m[U](x: int, y: U) -&gt; tuple[int, U]</code> without <code>[Self]</code></li>
+<li><code>C[int].m</code> shows <code>def m[Self, U](self, x: int, y: U) -&gt; tuple[int, U]</code> with <code>[Self]</code> preserved</li>
+</ul>
+<p><strong>Specialized Classes:</strong> For methods on specialized generic classes like <code>C[int].f</code>, <code>[Self]</code> now correctly appears in unbound method displays because <code>Self</code> remains distinct from the specialized class parameter <code>T</code>.</p>
+<p><strong>Mixed-Scope Parameters:</strong> The new test case confirms proper handling: <code>[T]</code> is suppressed when specialized, <code>[Self]</code> appears for unbound methods (and is removed for bound), while <code>[U]</code> always appears.</p>
+<p>The result is modern, consistent <code>[Self]</code> syntax aligned with PEP 695 style, rather than the legacy <code>Self@__new__</code> suffix. While it required updating ~8 test files, the changes are accurate reflections of the type system's state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @bxff on 2026-01-08 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/getattr_static.md</code>:147 on 2026-01-08 15:14</div>
+            <div class="timeline-body"><p><code>[Self]</code> is being prepended here even though it's not displayed as the explicit annotation for any parameter types, nor is it included in the return type. I think we should avoid that, and only prepend <code>[Self]</code> if it's displayed as a parameter annotation or it's displayed in the return type.</p>
+<p>A parameter inferred as being of type <code>Self</code> only has that annotation &quot;hidden&quot; as part of the display if it's the first parameter of the method and this flag is set:</p>
+<p>https://github.com/astral-sh/ruff/blob/701f5134ab7c1a860145dccc8abb3716a3f89fe7/crates/ty_python_semantic/src/types/signatures.rs#L2187-L2192</p>
+<p>In no other situation is the type of a parameter hidden, so this should be fairly easy to fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bxff">@bxff</a> reviewed on 2026-01-08 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bxff">@bxff</a> on <code>crates/ty_python_semantic/resources/mdtest/call/getattr_static.md</code>:147 on 2026-01-08 15:49</div>
+            <div class="timeline-body"><p>@AlexWaygood Implemented your suggestion: <code>[Self]</code> now only appears in the prefix when it's used in an explicit parameter annotation or the return type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @bxff on 2026-01-08 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @bxff on 2026-01-08 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/getattr_static.md</code>:147 on 2026-01-08 16:14</div>
+            <div class="timeline-body"><p>Thanks! the display of this method specifically still seems to include the <code>[Self]</code> prefix though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @bxff on 2026-01-08 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bxff">@bxff</a> reviewed on 2026-01-08 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bxff">@bxff</a> on <code>crates/ty_python_semantic/resources/mdtest/call/getattr_static.md</code>:147 on 2026-01-08 16:31</div>
+            <div class="timeline-body"><p>Oops, I missed the same fix in 3 other display paths, now all updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/scoping.md</code>:362 on 2026-01-08 16:33</div>
+            <div class="timeline-body"><p>I'm interested in this test specifically, because we have tests elsewhere that already show that we have the type parameters prepended when displaying the signature of a bound method that combines type parameters scoped to the method with type parameters from the class. But we don't have a test that explicitly checks how we display the signature of the <em><code>Callable</code> supertype</em> of a bound method that combines type parameters scoped to the method with type parameters from the class.</p>
+<pre><code class="language-suggestion">from typing import Generic, TypeVar
+from ty_extensions import into_callable
+
+T = TypeVar(&quot;T&quot;)
+S = TypeVar(&quot;S&quot;)
+
+
+class Foo(Generic[T]):
+    def bar(x: T, y: S) -&gt; tuple[T, S]:
+        raise NotImplementedError
+
+
+def f(x: type[Foo[T]]) -&gt; T:
+    # revealed: [S](x: T@f, y: S) -&gt; tuple[T@f, S]
+    reveal_type(into_callable(x.bar))
+    raise NotImplementedError
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/getattr_static.md</code>:147 on 2026-01-08 16:36</div>
+            <div class="timeline-body"><p>thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bxff">@bxff</a> reviewed on 2026-01-08 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bxff">@bxff</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/scoping.md</code>:362 on 2026-01-08 16:47</div>
+            <div class="timeline-body"><p>Added the test, output includes <code>self</code> as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @bxff on 2026-01-08 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/scoping.md</code>:362 on 2026-01-08 19:55</div>
+            <div class="timeline-body"><p>thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2026-01-08 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-08 20:22</div>
+            <div class="timeline-body"><p>The changes to functionality look great to me now. I'll try to review the code tomorrow!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-08 20:27</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 0 | 0 | 33 |
+| <code>invalid-assignment</code> | 0 | 0 | 16 |
+| <code>invalid-return-type</code> | 0 | 2 | 3 |
+| <code>invalid-type-form</code> | 0 | 0 | 4 |
+| <code>possibly-missing-attribute</code> | 0 | 0 | 1 |
+| <code>unsupported-operator</code> | 0 | 0 | 1 |
+| <code>unused-ignore-comment</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>1</strong> | <strong>2</strong> | <strong>58</strong> |</p>
+<p><strong><a href="https://6829c456.ty-ecosystem-ext.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://6829c456.ty-ecosystem-ext.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:30:53 UTC
+    </footer>
+</body>
+</html>

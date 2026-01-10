@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve performance of loading range suppressions - astral-sh/ruff #22428</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve performance of loading range suppressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22428">#22428</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2026-01-07 02:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2026-01-07 02:34</div>
+            <div class="timeline-body"><p>WIP, not fully baked, checkpointing progress:</p>
+<ul>
+<li>creates new block range indexer to track indent/dedent ranges</li>
+<li>pass indexer to suppression loader</li>
+<li>new implementation of loading from tokens based on comment ranges and block range index</li>
+<li>doesn't need to walk tokens forward/backward looking for matching indent scopes</li>
+<li>has issue with first comment in block preceding the indent token, and block range index not knowing</li>
+</ul>
+<p>issue #22087</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 02:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2026-01-07 02:43</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fsuppression-perf?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging this PR will <strong>degrade performance by 17.64%</strong></h3>
+<p><sub>Comparing <code>amy/suppression-perf</code> (c7b528e) with <code>main</code> (f97da18)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 5</code> regressed benchmarks<br />
+<code>✅ 48</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fsuppression-perf?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Performance Changes</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fsuppression-perf?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bnumpy%2Fglobals.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[numpy/globals.py]</code></a> | 831.7 µs | 914.3 µs | -9.04% |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fsuppression-perf?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bunicode%2Fpypinyin.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[unicode/pypinyin.py]</code></a> | 2.2 ms | 2.7 ms | -17.64% |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fsuppression-perf?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bnumpy%2Fctypeslib.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[numpy/ctypeslib.py]</code></a> | 5.2 ms | 5.7 ms | -8.8% |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fsuppression-perf?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Blarge%2Fdataset.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[large/dataset.py]</code></a> | 22.3 ms | 23.5 ms | -5.14% |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/amy%2Fsuppression-perf?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bpydantic%2Ftypes.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-with-preview-rules[pydantic/types.py]</code></a> | 10.2 ms | 11 ms | -7.48% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "improve performance of loading range suppressions" to "Improve performance of loading range suppressions" by @amyreese on 2026-01-07 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @amyreese on 2026-01-07 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2026-01-07 02:48</div>
+            <div class="timeline-body"><p>codspeed not happy 🤪</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-07 07:33</div>
+            <div class="timeline-body"><blockquote>
+<p>codspeed not happy 🤪</p>
+</blockquote>
+<p><code>dbg</code> statements are performance killers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-07 07:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_index/src/indexer.rs</code>:31 on 2026-01-07 07:36</div>
+            <div class="timeline-body"><p>I prefer avoiding adding new state to <code>Indexer</code> because it's state that we can't release until the file has finished checking. That's why we generally prefer re-computing information unless doing so is expensive or has to be repeated in many places (recomputing can often also be cheaper).</p>
+<p>Are there cases where the implementation in https://github.com/astral-sh/ruff/pull/21441#pullrequestreview-3503773083 falls short, making computing this information ahead of time necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2026-01-08 19:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:30:53 UTC
+    </footer>
+</body>
+</html>

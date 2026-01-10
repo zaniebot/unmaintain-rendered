@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `fast-test` profile - astral-sh/ruff #22382</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a <code>fast-test</code> profile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22382">#22382</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2026-01-05 01:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 01:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We use this profile in uv to create success, as an optimization for the iterative test loop. We include <code>opt-level=1</code> because it ends up being &quot;worth it&quot; for testing (empirically), even though it means the build is actually a big slower than <code>dev</code> (if you remove <code>opt-level=1</code>, clean compile is about 22% faster than <code>dev</code>).</p>
+<p>Here are some benchmarks I generated with Claude -- the main motivator here is the incremental testing for <code>ty_python_semantic</code> which is 2.4x faster:</p>
+<h3><code>ty_python_semantic</code></h3>
+<p>Full test suite (471 tests):
+| Scenario    | dev   | fast-test | Improvement |
+|-------------|-------|------------|-------------|
+| Clean       | 53s   | 49s        | 8% faster   |
+| Incremental | 17.8s | 6.8s       | 2.4x faster |</p>
+<p>Single test:
+| Scenario    | dev   | fast-test | Improvement |
+|-------------|-------|------------|-------------|
+| Clean       | 42.5s | 55.3s      | 30% slower  |
+| Incremental | 6.5s  | 6.1s       | ~same       |</p>
+<h3><code>ruff_linter</code></h3>
+<p>Full test suite (2622 tests):
+| Scenario    | dev   | fast-test | Improvement |
+|-------------|-------|------------|-------------|
+| Clean       | 31s   | 41s        | 32% slower  |
+| Incremental | 11.9s | 10.5s      | 12% faster  |</p>
+<p>Single test:
+| Scenario    | dev  | fast-test | Improvement |
+|-------------|------|------------|-------------|
+| Clean       | 26s  | 36.5s      | 40% slower  |
+| Incremental | 4.5s | 5.5s       | 22% slower  |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a fast-build profile" to "Add a `fast-build` profile" by @charliermarsh on 2026-01-05 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2026-01-05 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2026-01-05 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-05 02:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2026-01-05 03:45</div>
+            <div class="timeline-body"><p>Might be worth it to test a higher opt-level on the salsa dependency specifically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:343 on 2026-01-05 07:27</div>
+            <div class="timeline-body"><p>I would very much prefer keeping <code>debug</code> on or debug assertions will only hit once you run the normal dev profile. I also wonder if it's necessary to strip <code>debuginfo</code>. It will make backtraces less useful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-05 07:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Might be worth it to test a higher opt-level on the salsa dependency specifically.</p>
+</blockquote>
+<p>We already set opt-level=3 for salsa, but you're right, we only do this for dev builds</p>
+<blockquote>
+<p>We include opt-level=1 because it ends up being &quot;worth it&quot; for testing (empirically), even though it means the build is actually a big slower than dev</p>
+</blockquote>
+<p>What are the numbers in your PR summary. Is this end-to-end compile and test execution time?</p>
+<p>I also find the name confusing. It suggests to me that it is a faster build when it's really about faster execution times. Maybe <code>dev-optimized</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-05 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>Cargo.toml</code>:343 on 2026-01-05 07:56</div>
+            <div class="timeline-body"><p>I agree that debug assertions being on make it much easier to pin down the causes of bugs in ty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 12:45</div>
+            <div class="timeline-body"><blockquote>
+<p>What are the numbers in your PR summary. Is this end-to-end compile and test execution time?</p>
+</blockquote>
+<p>Yes, end-to-end time to build and run the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a `fast-build` profile" to "Add a `fast-test` profile" by @charliermarsh on 2026-01-05 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2026-01-05 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2026-01-05 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2026-01-05 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2026-01-05 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 11:43</div>
+            <div class="timeline-body"><p>If it's generally fast to run the tests using <code>--profile=fast-test</code>, should we set that flag here in mdtest.py?</p>
+<p>https://github.com/astral-sh/ruff/blob/3b7a5e4de81bb1eb594962894224cdacf99c5465/crates/ty_python_semantic/mdtest.py#L59-L70</p>
+<p>(I usually run tests locally by running mdtest.py in an in-editor terminal, as it's by far the easiest way to make incremental updates to mdtests -- you can jump directly to failing mdtest lines, and failing snapshots don't block other mdtest assertions from being executed, the snapshots are just automatically updated behind the scenes when the script runs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-07 12:57</div>
+            <div class="timeline-body"><p>It's a tradeoff between runtime and compile times.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:30:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFC [ruff][ext-lint] 4: codegen for the full AST - astral-sh/ruff #21764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RFC [ruff][ext-lint] 4: codegen for the full AST</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21764">#21764</a>
+        opened by <a href="https://github.com/pieterh-oai">@pieterh-oai</a>
+        on 2025-12-02 20:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/pieterh-oai">@pieterh-oai</a> on 2025-12-02 20:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR extends <code>generate.py</code> to codegen Python shims for the (entire) Ruff AST,
+replacing catchall Node in the previous PR (#21415). The shims work as follows:</p>
+<ul>
+<li>Python AST node classes (and objects) are created entirely on the Rust side
+as PyO3 types.</li>
+<li>From the Python code's point of view, node objects have the expected fields
+with names and types that line up with the Rust AST. The 'API' is a set of <code>pyi</code>
+files in <code>ruff_linter/resources/</code>.</li>
+<li>The majority of AST node fields are lazily loaded (from the Rust AST to the
+projected Python AST) on first use. A subset of fields are marked as 'eager'
+(e.g. <code>op</code> for <code>AugAssign</code> is string rather than a node subclass). The
+configuration of lazy vs. eager projection is configured in <code>ast.toml</code>.</li>
+<li>We use <code>RawNode</code> as a catch-all for any node types that are somehow not
+covered by the projection code. This means it's effectively unused right
+now, but might be in the future if AST changes cause the codegen to be out
+of date.</li>
+</ul>
+<p>The codegen in <code>generate.py</code> needs to generate 3 things:</p>
+<ol>
+<li>PyO3 types for each AST node type; see <code>write_projection_bindings</code> and
+the result in <code>ruff_linter/src/external/ast/python/generated.rs</code>.</li>
+<li>Per-node-type projection code; see <code>write_projection_helpers</code> and
+the corresponding output in <code>projection.rs</code></li>
+<li>Python <code>.pyi</code> interface files; see <code>write_python_stub</code> and
+the output in <code>ruff_linter/resources/ruff_external</code>.</li>
+</ol>
+<h2>Lifetime-related considerations</h2>
+<p>The challenging parts (at least for me) were handling lifetime differences
+between PyO3 AST node objects and the Ruff types that they need to refer to,
+the <code>SourceFile</code> and the corresponding Ruff AST node.</p>
+<p>Once on the Python-side heap,  it's not really possible to limit object lifetime
+(since we can't really make assertions when their refcount will hit 0, or
+if they'll need to be GC'd).  This means that we can't include direct references to the
+shorter-lived Rust-side objects in any PyO3 objects.</p>
+<p>It's not too hard to satisfy the Ruff compiler by cloning Ruff AST nodes and <code>Arc</code>
+references to the source, but that isn't efficient. Copying entire AST subtrees
+defeats the purpose of making field access lazy in the first place, and holding
+references through the <code>SourceFile</code> would mean that any file with at least 1 Python
+rule execution (even if it yields 0 results) will be held in memory until end of process
+(or, at best, a future CPython GC cycle, I guess?).</p>
+<p>On the flip side, if we avoid copying nodes and strong references to the source,
+we need to lifecycle-manage this so that the Python code fails in a predictable
+way. We probably want to fail early if a Python rule does something it shouldn't
+(like storing nodes in a global and then trying to use that across <code>check_expr</code>
+invocations), rather than arbitrarily failing later.</p>
+<p>This is what I ended up doing:</p>
+<ul>
+<li><p><code>AstStore</code> maps ID numbers to Ruff AST nodes to support lazy loading and
+(in a future PR) Semantic calls. This mapping is short-lived (per rule
+invocation), and the <code>ExternalCheckerContext</code> explicitly calls <code>invalidate</code>
+so that, as soon as rule dispatch ends, future access to Python AST nodes
+will fail (* at least for any fields that were not already loaded).</p>
+</li>
+<li><p><code>SourceFileHandle</code> uses a threadlocal global to store the current <code>SourceFile</code>;
+once it goes out of scope, the reference to <code>SourceFile</code> is unset and any
+subsequent calls to <code>locator</code> will fail.</p>
+</li>
+</ul>
+<p>The code in <code>store.rs</code> and <code>source.rs</code> does more or less the same thing; I'd
+be interested in feedback on how to clean this up more / how to make this
+more idiomatic.</p>
+<h2>Other tradeoffs:</h2>
+<ul>
+<li><p>Lazy loading means that we generate very few Python heap objects up front.
+Calls from Python into Rust appear to be relatively inexpensive because
+of the 'single interpreter with multiple attached OS threads that
+don't interact' setup.</p>
+</li>
+<li><p>This exposes the Ruff AST directly (though the codegen is structured
+in a way that could permit some rewriting).</p>
+<ul>
+<li>The downside is that future changes to the AST will directly affect the
+Python API.</li>
+<li>The advantage is that we can expose APIs like <code>Semantic</code> directly
+to Python rules. This means that Python rules look/feel very
+similar to equivalent rules implemented in Rust.</li>
+</ul>
+</li>
+<li><p>This is obviously a big PR, with 1kloc of new stuff in <code>generate.py</code>
+and 10kloc of generated code. I have put some, but not a lot, of work
+into trying to simplify the codegen parts.</p>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<pre><code>cargo test --workspace --exclude ty
+source ./scripts/nogil/nogil_env.sh ~/cpython_3_13_nogil/
+cargo test --workspace --exclude ty --features ext-lint
+uvx pre-commit run --all-files --show-diff-on-failure
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff][ext-lint] 4: codegen for the full AST" to "RFC [ruff][ext-lint] 4: codegen for the full AST" by @pieterh-oai on 2025-12-02 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 01:42</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 01:43</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -&gt; Any) &amp; ((*args: object, **kwargs: object) -&gt; object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -&gt; Any)`
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -&gt; R@Flow) &amp; ((*args: object, **kwargs: object) -&gt; object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -&gt; R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -&gt; R@Flow) &amp; ((*args: object, **kwargs: object) -&gt; object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -&gt; R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5528 diagnostics
++ Found 5533 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
+- Found 1837 diagnostics
++ Found 1836 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
+- Found 5134 diagnostics
++ Found 5131 diagnostics
+
+core (https://github.com/home-assistant/core)
++ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -&gt; _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14473 diagnostics
++ Found 14474 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 01:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -6 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -6 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/conftest.py#L47'>superset-extensions-cli/tests/conftest.py:47:5:</a> D401 First line of docstring should be in imperative mood: "Default parameters for extension creation."
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/test_templates.py#L43'>superset-extensions-cli/tests/test_templates.py:43:5:</a> D401 First line of docstring should be in imperative mood: "Default template context for testing."
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/mcp_service/mcp_config.py#L160'>superset/mcp_service/mcp_config.py:160:5:</a> D401 First line of docstring should be in imperative mood: "Default MCP auth factory using app.config values."
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/decorators.py#L215'>superset/utils/decorators.py:215:5:</a> D401 First line of docstring should be in imperative mood: "Default error handler whenever any exception is caught during a SQLAlchemy nested"
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/machine_auth.py#L62'>superset/utils/machine_auth.py:62:9:</a> D401 First line of docstring should be in imperative mood: "Default AuthDriverFuncType type that sets a session cookie flask-login style"
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/tests/unit_tests/datasets/conftest.py#L27'>tests/unit_tests/datasets/conftest.py:27:5:</a> D401 First line of docstring should be in imperative mood: "Default props for new columns"
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| D401 | 6 | 0 | 6 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -6 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -6 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/conftest.py#L47'>superset-extensions-cli/tests/conftest.py:47:5:</a> D401 First line of docstring should be in imperative mood: "Default parameters for extension creation."
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/test_templates.py#L43'>superset-extensions-cli/tests/test_templates.py:43:5:</a> D401 First line of docstring should be in imperative mood: "Default template context for testing."
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/mcp_service/mcp_config.py#L160'>superset/mcp_service/mcp_config.py:160:5:</a> D401 First line of docstring should be in imperative mood: "Default MCP auth factory using app.config values."
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/decorators.py#L215'>superset/utils/decorators.py:215:5:</a> D401 First line of docstring should be in imperative mood: "Default error handler whenever any exception is caught during a SQLAlchemy nested"
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/machine_auth.py#L62'>superset/utils/machine_auth.py:62:9:</a> D401 First line of docstring should be in imperative mood: "Default AuthDriverFuncType type that sets a session cookie flask-login style"
+- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/tests/unit_tests/datasets/conftest.py#L27'>tests/unit_tests/datasets/conftest.py:27:5:</a> D401 First line of docstring should be in imperative mood: "Default props for new columns"
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| D401 | 6 | 0 | 6 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:30:52 UTC
+    </footer>
+</body>
+</html>

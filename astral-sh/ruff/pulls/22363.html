@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Optimize union building for unions with many enum-literal members - astral-sh/ruff #22363</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Optimize union building for unions with many enum-literal members</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22363">#22363</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2026-01-03 21:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-03 21:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When building unions, we have fast paths for int-literals, bytes-literals and string-literals so that we avoid repeated expensive subtype-of checks. However, we currently have no equivalent fast path for enum literals. This PR adds that fast path.</p>
+<p>This PR leads to a dramatic performance improvement for the snippet in https://github.com/astral-sh/ty/issues/1588#issue-3641475502. (But I would still say our performance is too slow even with this PR, so I wouldn't say it closes that issue.)</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Existing mdtests all pass</li>
+<li>I added a new mdtest for an enum with many members, showing that our reachability analysis still works as expected</li>
+<li><code>QUICKCHECK_TESTS=1000000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code> still passes</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2026-01-03 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2026-01-03 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-03 21:24</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-03 21:25</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:461:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:535:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:610:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:685:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:760:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, None | Unknown]` is not awaitable
++ src/integrations/prefect-dbt/prefect_dbt/cli/commands.py:835:21: error[invalid-await] `Unknown | None | Coroutine[Any, Any, Unknown | None]` is not awaitable
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -&gt; Any) &amp; ((*args: object, **kwargs: object) -&gt; object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -&gt; Any)`
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -&gt; R@Flow) &amp; ((*args: object, **kwargs: object) -&gt; object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -&gt; R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -&gt; R@Flow) &amp; ((*args: object, **kwargs: object) -&gt; object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -&gt; R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5361 diagnostics
++ Found 5366 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 48 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | TypeBlocks | Batch | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | TypeBlocks | Batch | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | TypeBlocks | Batch | ... omitted 7 union elements, TVDtype@SeriesHE]`
+
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
+- Found 2084 diagnostics
++ Found 2083 diagnostics
+
+
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+-     struct fields = ~12MB
++     struct fields = ~11MB
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-03 21:48</div>
+            <div class="timeline-body"><p>This PR gets our execution time on this snippet (adapted from the gist in https://github.com/astral-sh/ty/issues/1588#issue-3641475502) down to ~8.6s for me locally using a <code>--profile=profiling</code> build (it takes around 49s on <code>main</code>):</p>
+<details>
+
+<pre><code class="language-py">from enum import StrEnum, unique
+
+from typing_extensions import assert_never
+
+@unique
+class ExampleEnum(StrEnum):
+    OPTION0 = &quot;0&quot;
+    OPTION1 = &quot;1&quot;
+    OPTION2 = &quot;2&quot;
+    OPTION3 = &quot;3&quot;
+    OPTION4 = &quot;4&quot;
+    OPTION5 = &quot;5&quot;
+    OPTION6 = &quot;6&quot;
+    OPTION7 = &quot;7&quot;
+    OPTION8 = &quot;8&quot;
+    OPTION9 = &quot;9&quot;
+    OPTION10 = &quot;10&quot;
+    OPTION11 = &quot;11&quot;
+    OPTION12 = &quot;12&quot;
+    OPTION13 = &quot;13&quot;
+    OPTION14 = &quot;14&quot;
+    OPTION15 = &quot;15&quot;
+    OPTION16 = &quot;16&quot;
+    OPTION17 = &quot;17&quot;
+    OPTION18 = &quot;18&quot;
+    OPTION19 = &quot;19&quot;
+    OPTION20 = &quot;20&quot;
+    OPTION21 = &quot;21&quot;
+    OPTION22 = &quot;22&quot;
+    OPTION23 = &quot;23&quot;
+    OPTION24 = &quot;24&quot;
+    OPTION25 = &quot;25&quot;
+    OPTION26 = &quot;26&quot;
+    OPTION27 = &quot;27&quot;
+    OPTION28 = &quot;28&quot;
+    OPTION29 = &quot;29&quot;
+    OPTION30 = &quot;30&quot;
+    OPTION31 = &quot;31&quot;
+    OPTION32 = &quot;32&quot;
+    OPTION33 = &quot;33&quot;
+    OPTION34 = &quot;34&quot;
+    OPTION35 = &quot;35&quot;
+    OPTION36 = &quot;36&quot;
+    OPTION37 = &quot;37&quot;
+    OPTION38 = &quot;38&quot;
+    OPTION39 = &quot;39&quot;
+    OPTION40 = &quot;40&quot;
+    OPTION41 = &quot;41&quot;
+    OPTION42 = &quot;42&quot;
+    OPTION43 = &quot;43&quot;
+    OPTION44 = &quot;44&quot;
+    OPTION45 = &quot;45&quot;
+    OPTION46 = &quot;46&quot;
+    OPTION47 = &quot;47&quot;
+    OPTION48 = &quot;48&quot;
+    OPTION49 = &quot;49&quot;
+    OPTION50 = &quot;50&quot;
+    OPTION51 = &quot;51&quot;
+    OPTION52 = &quot;52&quot;
+    OPTION53 = &quot;53&quot;
+    OPTION54 = &quot;54&quot;
+    OPTION55 = &quot;55&quot;
+    OPTION56 = &quot;56&quot;
+    OPTION57 = &quot;57&quot;
+    OPTION58 = &quot;58&quot;
+    OPTION59 = &quot;59&quot;
+    OPTION60 = &quot;60&quot;
+    OPTION61 = &quot;61&quot;
+    OPTION62 = &quot;62&quot;
+    OPTION63 = &quot;63&quot;
+    OPTION64 = &quot;64&quot;
+    OPTION65 = &quot;65&quot;
+    OPTION66 = &quot;66&quot;
+    OPTION67 = &quot;67&quot;
+    OPTION68 = &quot;68&quot;
+    OPTION69 = &quot;69&quot;
+    OPTION70 = &quot;70&quot;
+    OPTION71 = &quot;71&quot;
+    OPTION72 = &quot;72&quot;
+    OPTION73 = &quot;73&quot;
+    OPTION74 = &quot;74&quot;
+    OPTION75 = &quot;75&quot;
+    OPTION76 = &quot;76&quot;
+    OPTION77 = &quot;77&quot;
+    OPTION78 = &quot;78&quot;
+    OPTION79 = &quot;79&quot;
+    OPTION80 = &quot;80&quot;
+    OPTION81 = &quot;81&quot;
+    OPTION82 = &quot;82&quot;
+    OPTION83 = &quot;83&quot;
+    OPTION84 = &quot;84&quot;
+    OPTION85 = &quot;85&quot;
+    OPTION86 = &quot;86&quot;
+    OPTION87 = &quot;87&quot;
+    OPTION88 = &quot;88&quot;
+    OPTION89 = &quot;89&quot;
+    OPTION90 = &quot;90&quot;
+    OPTION91 = &quot;91&quot;
+    OPTION92 = &quot;92&quot;
+    OPTION93 = &quot;93&quot;
+    OPTION94 = &quot;94&quot;
+    OPTION95 = &quot;95&quot;
+    OPTION96 = &quot;96&quot;
+    OPTION97 = &quot;97&quot;
+    OPTION98 = &quot;98&quot;
+    OPTION99 = &quot;99&quot;
+    OPTION100 = &quot;100&quot;
+    OPTION101 = &quot;101&quot;
+    OPTION102 = &quot;102&quot;
+    OPTION103 = &quot;103&quot;
+    OPTION104 = &quot;104&quot;
+    OPTION105 = &quot;105&quot;
+    OPTION106 = &quot;106&quot;
+    OPTION107 = &quot;107&quot;
+    OPTION108 = &quot;108&quot;
+    OPTION109 = &quot;109&quot;
+    OPTION110 = &quot;110&quot;
+    OPTION111 = &quot;111&quot;
+    OPTION112 = &quot;112&quot;
+    OPTION113 = &quot;113&quot;
+    OPTION114 = &quot;114&quot;
+    OPTION115 = &quot;115&quot;
+    OPTION116 = &quot;116&quot;
+    OPTION117 = &quot;117&quot;
+    OPTION118 = &quot;118&quot;
+    OPTION119 = &quot;119&quot;
+    OPTION120 = &quot;120&quot;
+    OPTION121 = &quot;121&quot;
+    OPTION122 = &quot;122&quot;
+    OPTION123 = &quot;123&quot;
+    OPTION124 = &quot;124&quot;
+    OPTION125 = &quot;125&quot;
+    OPTION126 = &quot;126&quot;
+    OPTION127 = &quot;127&quot;
+    OPTION128 = &quot;128&quot;
+    OPTION129 = &quot;129&quot;
+    OPTION130 = &quot;130&quot;
+    OPTION131 = &quot;131&quot;
+    OPTION132 = &quot;132&quot;
+    OPTION133 = &quot;133&quot;
+    OPTION134 = &quot;134&quot;
+    OPTION135 = &quot;135&quot;
+    OPTION136 = &quot;136&quot;
+    OPTION137 = &quot;137&quot;
+    OPTION138 = &quot;138&quot;
+    OPTION139 = &quot;139&quot;
+    OPTION140 = &quot;140&quot;
+    OPTION141 = &quot;141&quot;
+    OPTION142 = &quot;142&quot;
+    OPTION143 = &quot;143&quot;
+    OPTION144 = &quot;144&quot;
+    OPTION145 = &quot;145&quot;
+    OPTION146 = &quot;146&quot;
+    OPTION147 = &quot;147&quot;
+    OPTION148 = &quot;148&quot;
+    OPTION149 = &quot;149&quot;
+    OPTION150 = &quot;150&quot;
+    OPTION151 = &quot;151&quot;
+    OPTION152 = &quot;152&quot;
+    OPTION153 = &quot;153&quot;
+    OPTION154 = &quot;154&quot;
+    OPTION155 = &quot;155&quot;
+    OPTION156 = &quot;156&quot;
+    OPTION157 = &quot;157&quot;
+    OPTION158 = &quot;158&quot;
+    OPTION159 = &quot;159&quot;
+    OPTION160 = &quot;160&quot;
+    OPTION161 = &quot;161&quot;
+    OPTION162 = &quot;162&quot;
+    OPTION163 = &quot;163&quot;
+    OPTION164 = &quot;164&quot;
+    OPTION165 = &quot;165&quot;
+    OPTION166 = &quot;166&quot;
+    OPTION167 = &quot;167&quot;
+    OPTION168 = &quot;168&quot;
+    OPTION169 = &quot;169&quot;
+    OPTION170 = &quot;170&quot;
+    OPTION171 = &quot;171&quot;
+    OPTION172 = &quot;172&quot;
+    OPTION173 = &quot;173&quot;
+    OPTION174 = &quot;174&quot;
+    OPTION175 = &quot;175&quot;
+    OPTION176 = &quot;176&quot;
+    OPTION177 = &quot;177&quot;
+    OPTION178 = &quot;178&quot;
+    OPTION179 = &quot;179&quot;
+    OPTION180 = &quot;180&quot;
+    OPTION181 = &quot;181&quot;
+    OPTION182 = &quot;182&quot;
+    OPTION183 = &quot;183&quot;
+    OPTION184 = &quot;184&quot;
+    OPTION185 = &quot;185&quot;
+    OPTION186 = &quot;186&quot;
+    OPTION187 = &quot;187&quot;
+    OPTION188 = &quot;188&quot;
+    OPTION189 = &quot;189&quot;
+    OPTION190 = &quot;190&quot;
+    OPTION191 = &quot;191&quot;
+    OPTION192 = &quot;192&quot;
+    OPTION193 = &quot;193&quot;
+    OPTION194 = &quot;194&quot;
+    OPTION195 = &quot;195&quot;
+    OPTION196 = &quot;196&quot;
+    OPTION197 = &quot;197&quot;
+    OPTION198 = &quot;198&quot;
+    OPTION199 = &quot;199&quot;
+    OPTION200 = &quot;200&quot;
+    OPTION201 = &quot;201&quot;
+    OPTION202 = &quot;202&quot;
+    OPTION203 = &quot;203&quot;
+    OPTION204 = &quot;204&quot;
+    OPTION205 = &quot;205&quot;
+    OPTION206 = &quot;206&quot;
+    OPTION207 = &quot;207&quot;
+    OPTION208 = &quot;208&quot;
+    OPTION209 = &quot;209&quot;
+    OPTION210 = &quot;210&quot;
+    OPTION211 = &quot;211&quot;
+    OPTION212 = &quot;212&quot;
+    OPTION213 = &quot;213&quot;
+    OPTION214 = &quot;214&quot;
+    OPTION215 = &quot;215&quot;
+    OPTION216 = &quot;216&quot;
+    OPTION217 = &quot;217&quot;
+    OPTION218 = &quot;218&quot;
+    OPTION219 = &quot;219&quot;
+    OPTION220 = &quot;220&quot;
+    OPTION221 = &quot;221&quot;
+    OPTION222 = &quot;222&quot;
+    OPTION223 = &quot;223&quot;
+    OPTION224 = &quot;224&quot;
+    OPTION225 = &quot;225&quot;
+    OPTION226 = &quot;226&quot;
+    OPTION227 = &quot;227&quot;
+    OPTION228 = &quot;228&quot;
+    OPTION229 = &quot;229&quot;
+    OPTION230 = &quot;230&quot;
+    OPTION231 = &quot;231&quot;
+    OPTION232 = &quot;232&quot;
+    OPTION233 = &quot;233&quot;
+    OPTION234 = &quot;234&quot;
+    OPTION235 = &quot;235&quot;
+    OPTION236 = &quot;236&quot;
+    OPTION237 = &quot;237&quot;
+    OPTION238 = &quot;238&quot;
+    OPTION239 = &quot;239&quot;
+    OPTION240 = &quot;240&quot;
+    OPTION241 = &quot;241&quot;
+    OPTION242 = &quot;242&quot;
+    OPTION243 = &quot;243&quot;
+    OPTION244 = &quot;244&quot;
+    OPTION245 = &quot;245&quot;
+    OPTION246 = &quot;246&quot;
+    OPTION247 = &quot;247&quot;
+    OPTION248 = &quot;248&quot;
+    OPTION249 = &quot;249&quot;
+    OPTION250 = &quot;250&quot;
+    OPTION251 = &quot;251&quot;
+    OPTION252 = &quot;252&quot;
+    OPTION253 = &quot;253&quot;
+    OPTION254 = &quot;254&quot;
+    OPTION255 = &quot;255&quot;
+    OPTION256 = &quot;256&quot;
+    OPTION257 = &quot;257&quot;
+    OPTION258 = &quot;258&quot;
+    OPTION259 = &quot;259&quot;
+    OPTION260 = &quot;260&quot;
+    OPTION261 = &quot;261&quot;
+    OPTION262 = &quot;262&quot;
+    OPTION263 = &quot;263&quot;
+    OPTION264 = &quot;264&quot;
+    OPTION265 = &quot;265&quot;
+    OPTION266 = &quot;266&quot;
+    OPTION267 = &quot;267&quot;
+    OPTION268 = &quot;268&quot;
+    OPTION269 = &quot;269&quot;
+    OPTION270 = &quot;270&quot;
+    OPTION271 = &quot;271&quot;
+    OPTION272 = &quot;272&quot;
+    OPTION273 = &quot;273&quot;
+    OPTION274 = &quot;274&quot;
+    OPTION275 = &quot;275&quot;
+    OPTION276 = &quot;276&quot;
+    OPTION277 = &quot;277&quot;
+    OPTION278 = &quot;278&quot;
+    OPTION279 = &quot;279&quot;
+    OPTION280 = &quot;280&quot;
+    OPTION281 = &quot;281&quot;
+    OPTION282 = &quot;282&quot;
+    OPTION283 = &quot;283&quot;
+    OPTION284 = &quot;284&quot;
+    OPTION285 = &quot;285&quot;
+    OPTION286 = &quot;286&quot;
+    OPTION287 = &quot;287&quot;
+    OPTION288 = &quot;288&quot;
+    OPTION289 = &quot;289&quot;
+    OPTION290 = &quot;290&quot;
+    OPTION291 = &quot;291&quot;
+    OPTION292 = &quot;292&quot;
+    OPTION293 = &quot;293&quot;
+    OPTION294 = &quot;294&quot;
+    OPTION295 = &quot;295&quot;
+    OPTION296 = &quot;296&quot;
+    OPTION297 = &quot;297&quot;
+    OPTION298 = &quot;298&quot;
+    OPTION299 = &quot;299&quot;
+    OPTION300 = &quot;300&quot;
+    OPTION301 = &quot;301&quot;
+    OPTION302 = &quot;302&quot;
+    OPTION303 = &quot;303&quot;
+    OPTION304 = &quot;304&quot;
+    OPTION305 = &quot;305&quot;
+    OPTION306 = &quot;306&quot;
+    OPTION307 = &quot;307&quot;
+    OPTION308 = &quot;308&quot;
+    OPTION309 = &quot;309&quot;
+    OPTION310 = &quot;310&quot;
+    OPTION311 = &quot;311&quot;
+    OPTION312 = &quot;312&quot;
+    OPTION313 = &quot;313&quot;
+    OPTION314 = &quot;314&quot;
+    OPTION315 = &quot;315&quot;
+    OPTION316 = &quot;316&quot;
+    OPTION317 = &quot;317&quot;
+    OPTION318 = &quot;318&quot;
+    OPTION319 = &quot;319&quot;
+    OPTION320 = &quot;320&quot;
+    OPTION321 = &quot;321&quot;
+    OPTION322 = &quot;322&quot;
+    OPTION323 = &quot;323&quot;
+    OPTION324 = &quot;324&quot;
+    OPTION325 = &quot;325&quot;
+    OPTION326 = &quot;326&quot;
+    OPTION327 = &quot;327&quot;
+    OPTION328 = &quot;328&quot;
+    OPTION329 = &quot;329&quot;
+    OPTION330 = &quot;330&quot;
+    OPTION331 = &quot;331&quot;
+    OPTION332 = &quot;332&quot;
+    OPTION333 = &quot;333&quot;
+    OPTION334 = &quot;334&quot;
+    OPTION335 = &quot;335&quot;
+    OPTION336 = &quot;336&quot;
+    OPTION337 = &quot;337&quot;
+    OPTION338 = &quot;338&quot;
+    OPTION339 = &quot;339&quot;
+    OPTION340 = &quot;340&quot;
+    OPTION341 = &quot;341&quot;
+    OPTION342 = &quot;342&quot;
+    OPTION343 = &quot;343&quot;
+    OPTION344 = &quot;344&quot;
+    OPTION345 = &quot;345&quot;
+    OPTION346 = &quot;346&quot;
+    OPTION347 = &quot;347&quot;
+    OPTION348 = &quot;348&quot;
+    OPTION349 = &quot;349&quot;
+    OPTION350 = &quot;350&quot;
+    OPTION351 = &quot;351&quot;
+    OPTION352 = &quot;352&quot;
+    OPTION353 = &quot;353&quot;
+    OPTION354 = &quot;354&quot;
+    OPTION355 = &quot;355&quot;
+    OPTION356 = &quot;356&quot;
+    OPTION357 = &quot;357&quot;
+    OPTION358 = &quot;358&quot;
+    OPTION359 = &quot;359&quot;
+    OPTION360 = &quot;360&quot;
+    OPTION361 = &quot;361&quot;
+    OPTION362 = &quot;362&quot;
+    OPTION363 = &quot;363&quot;
+    OPTION364 = &quot;364&quot;
+    OPTION365 = &quot;365&quot;
+    OPTION366 = &quot;366&quot;
+    OPTION367 = &quot;367&quot;
+    OPTION368 = &quot;368&quot;
+    OPTION369 = &quot;369&quot;
+    OPTION370 = &quot;370&quot;
+    OPTION371 = &quot;371&quot;
+    OPTION372 = &quot;372&quot;
+    OPTION373 = &quot;373&quot;
+    OPTION374 = &quot;374&quot;
+    OPTION375 = &quot;375&quot;
+    OPTION376 = &quot;376&quot;
+    OPTION377 = &quot;377&quot;
+    OPTION378 = &quot;378&quot;
+    OPTION379 = &quot;379&quot;
+    OPTION380 = &quot;380&quot;
+    OPTION381 = &quot;381&quot;
+    OPTION382 = &quot;382&quot;
+    OPTION383 = &quot;383&quot;
+    OPTION384 = &quot;384&quot;
+    OPTION385 = &quot;385&quot;
+    OPTION386 = &quot;386&quot;
+    OPTION387 = &quot;387&quot;
+    OPTION388 = &quot;388&quot;
+    OPTION389 = &quot;389&quot;
+    OPTION390 = &quot;390&quot;
+    OPTION391 = &quot;391&quot;
+    OPTION392 = &quot;392&quot;
+    OPTION393 = &quot;393&quot;
+    OPTION394 = &quot;394&quot;
+    OPTION395 = &quot;395&quot;
+    OPTION396 = &quot;396&quot;
+    OPTION397 = &quot;397&quot;
+    OPTION398 = &quot;398&quot;
+    OPTION399 = &quot;399&quot;
+    OPTION400 = &quot;400&quot;
+    OPTION401 = &quot;401&quot;
+    OPTION402 = &quot;402&quot;
+    OPTION403 = &quot;403&quot;
+    OPTION404 = &quot;404&quot;
+    OPTION405 = &quot;405&quot;
+    OPTION406 = &quot;406&quot;
+    OPTION407 = &quot;407&quot;
+    OPTION408 = &quot;408&quot;
+    OPTION409 = &quot;409&quot;
+    OPTION410 = &quot;410&quot;
+    OPTION411 = &quot;411&quot;
+    OPTION412 = &quot;412&quot;
+    OPTION413 = &quot;413&quot;
+    OPTION414 = &quot;414&quot;
+    OPTION415 = &quot;415&quot;
+    OPTION416 = &quot;416&quot;
+    OPTION417 = &quot;417&quot;
+    OPTION418 = &quot;418&quot;
+    OPTION419 = &quot;419&quot;
+    OPTION420 = &quot;420&quot;
+    OPTION421 = &quot;421&quot;
+    OPTION422 = &quot;422&quot;
+    OPTION423 = &quot;423&quot;
+    OPTION424 = &quot;424&quot;
+    OPTION425 = &quot;425&quot;
+    OPTION426 = &quot;426&quot;
+    OPTION427 = &quot;427&quot;
+    OPTION428 = &quot;428&quot;
+    OPTION429 = &quot;429&quot;
+    OPTION430 = &quot;430&quot;
+    OPTION431 = &quot;431&quot;
+    OPTION432 = &quot;432&quot;
+    OPTION433 = &quot;433&quot;
+    OPTION434 = &quot;434&quot;
+    OPTION435 = &quot;435&quot;
+    OPTION436 = &quot;436&quot;
+    OPTION437 = &quot;437&quot;
+    OPTION438 = &quot;438&quot;
+    OPTION439 = &quot;439&quot;
+    OPTION440 = &quot;440&quot;
+    OPTION441 = &quot;441&quot;
+    OPTION442 = &quot;442&quot;
+    OPTION443 = &quot;443&quot;
+    OPTION444 = &quot;444&quot;
+    OPTION445 = &quot;445&quot;
+    OPTION446 = &quot;446&quot;
+    OPTION447 = &quot;447&quot;
+    OPTION448 = &quot;448&quot;
+    OPTION449 = &quot;449&quot;
+    OPTION450 = &quot;450&quot;
+    OPTION451 = &quot;451&quot;
+    OPTION452 = &quot;452&quot;
+    OPTION453 = &quot;453&quot;
+    OPTION454 = &quot;454&quot;
+    OPTION455 = &quot;455&quot;
+    OPTION456 = &quot;456&quot;
+    OPTION457 = &quot;457&quot;
+    OPTION458 = &quot;458&quot;
+    OPTION459 = &quot;459&quot;
+    OPTION460 = &quot;460&quot;
+    OPTION461 = &quot;461&quot;
+    OPTION462 = &quot;462&quot;
+    OPTION463 = &quot;463&quot;
+    OPTION464 = &quot;464&quot;
+    OPTION465 = &quot;465&quot;
+    OPTION466 = &quot;466&quot;
+    OPTION467 = &quot;467&quot;
+    OPTION468 = &quot;468&quot;
+    OPTION469 = &quot;469&quot;
+    OPTION470 = &quot;470&quot;
+    OPTION471 = &quot;471&quot;
+    OPTION472 = &quot;472&quot;
+    OPTION473 = &quot;473&quot;
+    OPTION474 = &quot;474&quot;
+    OPTION475 = &quot;475&quot;
+    OPTION476 = &quot;476&quot;
+    OPTION477 = &quot;477&quot;
+    OPTION478 = &quot;478&quot;
+    OPTION479 = &quot;479&quot;
+    OPTION480 = &quot;480&quot;
+    OPTION481 = &quot;481&quot;
+    OPTION482 = &quot;482&quot;
+    OPTION483 = &quot;483&quot;
+    OPTION484 = &quot;484&quot;
+    OPTION485 = &quot;485&quot;
+    OPTION486 = &quot;486&quot;
+    OPTION487 = &quot;487&quot;
+    OPTION488 = &quot;488&quot;
+    OPTION489 = &quot;489&quot;
+    OPTION490 = &quot;490&quot;
+    OPTION491 = &quot;491&quot;
+    OPTION492 = &quot;492&quot;
+    OPTION493 = &quot;493&quot;
+    OPTION494 = &quot;494&quot;
+    OPTION495 = &quot;495&quot;
+    OPTION496 = &quot;496&quot;
+    OPTION497 = &quot;497&quot;
+    OPTION498 = &quot;498&quot;
+    OPTION499 = &quot;499&quot;
+
+    def derived_value(self) -&gt; int:
+        match self:
+            case ExampleEnum.OPTION0:
+                value = 0
+            case ExampleEnum.OPTION1:
+                value = 1
+            case ExampleEnum.OPTION2:
+                value = 2
+            case ExampleEnum.OPTION3:
+                value = 3
+            case ExampleEnum.OPTION4:
+                value = 4
+            case ExampleEnum.OPTION5:
+                value = 5
+            case ExampleEnum.OPTION6:
+                value = 6
+            case ExampleEnum.OPTION7:
+                value = 7
+            case ExampleEnum.OPTION8:
+                value = 8
+            case ExampleEnum.OPTION9:
+                value = 9
+            case ExampleEnum.OPTION10:
+                value = 10
+            case ExampleEnum.OPTION11:
+                value = 11
+            case ExampleEnum.OPTION12:
+                value = 12
+            case ExampleEnum.OPTION13:
+                value = 13
+            case ExampleEnum.OPTION14:
+                value = 14
+            case ExampleEnum.OPTION15:
+                value = 15
+            case ExampleEnum.OPTION16:
+                value = 16
+            case ExampleEnum.OPTION17:
+                value = 17
+            case ExampleEnum.OPTION18:
+                value = 18
+            case ExampleEnum.OPTION19:
+                value = 19
+            case ExampleEnum.OPTION20:
+                value = 20
+            case ExampleEnum.OPTION21:
+                value = 21
+            case ExampleEnum.OPTION22:
+                value = 22
+            case ExampleEnum.OPTION23:
+                value = 23
+            case ExampleEnum.OPTION24:
+                value = 24
+            case ExampleEnum.OPTION25:
+                value = 25
+            case ExampleEnum.OPTION26:
+                value = 26
+            case ExampleEnum.OPTION27:
+                value = 27
+            case ExampleEnum.OPTION28:
+                value = 28
+            case ExampleEnum.OPTION29:
+                value = 29
+            case ExampleEnum.OPTION30:
+                value = 30
+            case ExampleEnum.OPTION31:
+                value = 31
+            case ExampleEnum.OPTION32:
+                value = 32
+            case ExampleEnum.OPTION33:
+                value = 33
+            case ExampleEnum.OPTION34:
+                value = 34
+            case ExampleEnum.OPTION35:
+                value = 35
+            case ExampleEnum.OPTION36:
+                value = 36
+            case ExampleEnum.OPTION37:
+                value = 37
+            case ExampleEnum.OPTION38:
+                value = 38
+            case ExampleEnum.OPTION39:
+                value = 39
+            case ExampleEnum.OPTION40:
+                value = 40
+            case ExampleEnum.OPTION41:
+                value = 41
+            case ExampleEnum.OPTION42:
+                value = 42
+            case ExampleEnum.OPTION43:
+                value = 43
+            case ExampleEnum.OPTION44:
+                value = 44
+            case ExampleEnum.OPTION45:
+                value = 45
+            case ExampleEnum.OPTION46:
+                value = 46
+            case ExampleEnum.OPTION47:
+                value = 47
+            case ExampleEnum.OPTION48:
+                value = 48
+            case ExampleEnum.OPTION49:
+                value = 49
+            case ExampleEnum.OPTION50:
+                value = 50
+            case ExampleEnum.OPTION51:
+                value = 51
+            case ExampleEnum.OPTION52:
+                value = 52
+            case ExampleEnum.OPTION53:
+                value = 53
+            case ExampleEnum.OPTION54:
+                value = 54
+            case ExampleEnum.OPTION55:
+                value = 55
+            case ExampleEnum.OPTION56:
+                value = 56
+            case ExampleEnum.OPTION57:
+                value = 57
+            case ExampleEnum.OPTION58:
+                value = 58
+            case ExampleEnum.OPTION59:
+                value = 59
+            case ExampleEnum.OPTION60:
+                value = 60
+            case ExampleEnum.OPTION61:
+                value = 61
+            case ExampleEnum.OPTION62:
+                value = 62
+            case ExampleEnum.OPTION63:
+                value = 63
+            case ExampleEnum.OPTION64:
+                value = 64
+            case ExampleEnum.OPTION65:
+                value = 65
+            case ExampleEnum.OPTION66:
+                value = 66
+            case ExampleEnum.OPTION67:
+                value = 67
+            case ExampleEnum.OPTION68:
+                value = 68
+            case ExampleEnum.OPTION69:
+                value = 69
+            case ExampleEnum.OPTION70:
+                value = 70
+            case ExampleEnum.OPTION71:
+                value = 71
+            case ExampleEnum.OPTION72:
+                value = 72
+            case ExampleEnum.OPTION73:
+                value = 73
+            case ExampleEnum.OPTION74:
+                value = 74
+            case ExampleEnum.OPTION75:
+                value = 75
+            case ExampleEnum.OPTION76:
+                value = 76
+            case ExampleEnum.OPTION77:
+                value = 77
+            case ExampleEnum.OPTION78:
+                value = 78
+            case ExampleEnum.OPTION79:
+                value = 79
+            case ExampleEnum.OPTION80:
+                value = 80
+            case ExampleEnum.OPTION81:
+                value = 81
+            case ExampleEnum.OPTION82:
+                value = 82
+            case ExampleEnum.OPTION83:
+                value = 83
+            case ExampleEnum.OPTION84:
+                value = 84
+            case ExampleEnum.OPTION85:
+                value = 85
+            case ExampleEnum.OPTION86:
+                value = 86
+            case ExampleEnum.OPTION87:
+                value = 87
+            case ExampleEnum.OPTION88:
+                value = 88
+            case ExampleEnum.OPTION89:
+                value = 89
+            case ExampleEnum.OPTION90:
+                value = 90
+            case ExampleEnum.OPTION91:
+                value = 91
+            case ExampleEnum.OPTION92:
+                value = 92
+            case ExampleEnum.OPTION93:
+                value = 93
+            case ExampleEnum.OPTION94:
+                value = 94
+            case ExampleEnum.OPTION95:
+                value = 95
+            case ExampleEnum.OPTION96:
+                value = 96
+            case ExampleEnum.OPTION97:
+                value = 97
+            case ExampleEnum.OPTION98:
+                value = 98
+            case ExampleEnum.OPTION99:
+                value = 99
+            case ExampleEnum.OPTION100:
+                value = 100
+            case ExampleEnum.OPTION101:
+                value = 101
+            case ExampleEnum.OPTION102:
+                value = 102
+            case ExampleEnum.OPTION103:
+                value = 103
+            case ExampleEnum.OPTION104:
+                value = 104
+            case ExampleEnum.OPTION105:
+                value = 105
+            case ExampleEnum.OPTION106:
+                value = 106
+            case ExampleEnum.OPTION107:
+                value = 107
+            case ExampleEnum.OPTION108:
+                value = 108
+            case ExampleEnum.OPTION109:
+                value = 109
+            case ExampleEnum.OPTION110:
+                value = 110
+            case ExampleEnum.OPTION111:
+                value = 111
+            case ExampleEnum.OPTION112:
+                value = 112
+            case ExampleEnum.OPTION113:
+                value = 113
+            case ExampleEnum.OPTION114:
+                value = 114
+            case ExampleEnum.OPTION115:
+                value = 115
+            case ExampleEnum.OPTION116:
+                value = 116
+            case ExampleEnum.OPTION117:
+                value = 117
+            case ExampleEnum.OPTION118:
+                value = 118
+            case ExampleEnum.OPTION119:
+                value = 119
+            case ExampleEnum.OPTION120:
+                value = 120
+            case ExampleEnum.OPTION121:
+                value = 121
+            case ExampleEnum.OPTION122:
+                value = 122
+            case ExampleEnum.OPTION123:
+                value = 123
+            case ExampleEnum.OPTION124:
+                value = 124
+            case ExampleEnum.OPTION125:
+                value = 125
+            case ExampleEnum.OPTION126:
+                value = 126
+            case ExampleEnum.OPTION127:
+                value = 127
+            case ExampleEnum.OPTION128:
+                value = 128
+            case ExampleEnum.OPTION129:
+                value = 129
+            case ExampleEnum.OPTION130:
+                value = 130
+            case ExampleEnum.OPTION131:
+                value = 131
+            case ExampleEnum.OPTION132:
+                value = 132
+            case ExampleEnum.OPTION133:
+                value = 133
+            case ExampleEnum.OPTION134:
+                value = 134
+            case ExampleEnum.OPTION135:
+                value = 135
+            case ExampleEnum.OPTION136:
+                value = 136
+            case ExampleEnum.OPTION137:
+                value = 137
+            case ExampleEnum.OPTION138:
+                value = 138
+            case ExampleEnum.OPTION139:
+                value = 139
+            case ExampleEnum.OPTION140:
+                value = 140
+            case ExampleEnum.OPTION141:
+                value = 141
+            case ExampleEnum.OPTION142:
+                value = 142
+            case ExampleEnum.OPTION143:
+                value = 143
+            case ExampleEnum.OPTION144:
+                value = 144
+            case ExampleEnum.OPTION145:
+                value = 145
+            case ExampleEnum.OPTION146:
+                value = 146
+            case ExampleEnum.OPTION147:
+                value = 147
+            case ExampleEnum.OPTION148:
+                value = 148
+            case ExampleEnum.OPTION149:
+                value = 149
+            case ExampleEnum.OPTION150:
+                value = 150
+            case ExampleEnum.OPTION151:
+                value = 151
+            case ExampleEnum.OPTION152:
+                value = 152
+            case ExampleEnum.OPTION153:
+                value = 153
+            case ExampleEnum.OPTION154:
+                value = 154
+            case ExampleEnum.OPTION155:
+                value = 155
+            case ExampleEnum.OPTION156:
+                value = 156
+            case ExampleEnum.OPTION157:
+                value = 157
+            case ExampleEnum.OPTION158:
+                value = 158
+            case ExampleEnum.OPTION159:
+                value = 159
+            case ExampleEnum.OPTION160:
+                value = 160
+            case ExampleEnum.OPTION161:
+                value = 161
+            case ExampleEnum.OPTION162:
+                value = 162
+            case ExampleEnum.OPTION163:
+                value = 163
+            case ExampleEnum.OPTION164:
+                value = 164
+            case ExampleEnum.OPTION165:
+                value = 165
+            case ExampleEnum.OPTION166:
+                value = 166
+            case ExampleEnum.OPTION167:
+                value = 167
+            case ExampleEnum.OPTION168:
+                value = 168
+            case ExampleEnum.OPTION169:
+                value = 169
+            case ExampleEnum.OPTION170:
+                value = 170
+            case ExampleEnum.OPTION171:
+                value = 171
+            case ExampleEnum.OPTION172:
+                value = 172
+            case ExampleEnum.OPTION173:
+                value = 173
+            case ExampleEnum.OPTION174:
+                value = 174
+            case ExampleEnum.OPTION175:
+                value = 175
+            case ExampleEnum.OPTION176:
+                value = 176
+            case ExampleEnum.OPTION177:
+                value = 177
+            case ExampleEnum.OPTION178:
+                value = 178
+            case ExampleEnum.OPTION179:
+                value = 179
+            case ExampleEnum.OPTION180:
+                value = 180
+            case ExampleEnum.OPTION181:
+                value = 181
+            case ExampleEnum.OPTION182:
+                value = 182
+            case ExampleEnum.OPTION183:
+                value = 183
+            case ExampleEnum.OPTION184:
+                value = 184
+            case ExampleEnum.OPTION185:
+                value = 185
+            case ExampleEnum.OPTION186:
+                value = 186
+            case ExampleEnum.OPTION187:
+                value = 187
+            case ExampleEnum.OPTION188:
+                value = 188
+            case ExampleEnum.OPTION189:
+                value = 189
+            case ExampleEnum.OPTION190:
+                value = 190
+            case ExampleEnum.OPTION191:
+                value = 191
+            case ExampleEnum.OPTION192:
+                value = 192
+            case ExampleEnum.OPTION193:
+                value = 193
+            case ExampleEnum.OPTION194:
+                value = 194
+            case ExampleEnum.OPTION195:
+                value = 195
+            case ExampleEnum.OPTION196:
+                value = 196
+            case ExampleEnum.OPTION197:
+                value = 197
+            case ExampleEnum.OPTION198:
+                value = 198
+            case ExampleEnum.OPTION199:
+                value = 199
+            case ExampleEnum.OPTION200:
+                value = 200
+            case ExampleEnum.OPTION201:
+                value = 201
+            case ExampleEnum.OPTION202:
+                value = 202
+            case ExampleEnum.OPTION203:
+                value = 203
+            case ExampleEnum.OPTION204:
+                value = 204
+            case ExampleEnum.OPTION205:
+                value = 205
+            case ExampleEnum.OPTION206:
+                value = 206
+            case ExampleEnum.OPTION207:
+                value = 207
+            case ExampleEnum.OPTION208:
+                value = 208
+            case ExampleEnum.OPTION209:
+                value = 209
+            case ExampleEnum.OPTION210:
+                value = 210
+            case ExampleEnum.OPTION211:
+                value = 211
+            case ExampleEnum.OPTION212:
+                value = 212
+            case ExampleEnum.OPTION213:
+                value = 213
+            case ExampleEnum.OPTION214:
+                value = 214
+            case ExampleEnum.OPTION215:
+                value = 215
+            case ExampleEnum.OPTION216:
+                value = 216
+            case ExampleEnum.OPTION217:
+                value = 217
+            case ExampleEnum.OPTION218:
+                value = 218
+            case ExampleEnum.OPTION219:
+                value = 219
+            case ExampleEnum.OPTION220:
+                value = 220
+            case ExampleEnum.OPTION221:
+                value = 221
+            case ExampleEnum.OPTION222:
+                value = 222
+            case ExampleEnum.OPTION223:
+                value = 223
+            case ExampleEnum.OPTION224:
+                value = 224
+            case ExampleEnum.OPTION225:
+                value = 225
+            case ExampleEnum.OPTION226:
+                value = 226
+            case ExampleEnum.OPTION227:
+                value = 227
+            case ExampleEnum.OPTION228:
+                value = 228
+            case ExampleEnum.OPTION229:
+                value = 229
+            case ExampleEnum.OPTION230:
+                value = 230
+            case ExampleEnum.OPTION231:
+                value = 231
+            case ExampleEnum.OPTION232:
+                value = 232
+            case ExampleEnum.OPTION233:
+                value = 233
+            case ExampleEnum.OPTION234:
+                value = 234
+            case ExampleEnum.OPTION235:
+                value = 235
+            case ExampleEnum.OPTION236:
+                value = 236
+            case ExampleEnum.OPTION237:
+                value = 237
+            case ExampleEnum.OPTION238:
+                value = 238
+            case ExampleEnum.OPTION239:
+                value = 239
+            case ExampleEnum.OPTION240:
+                value = 240
+            case ExampleEnum.OPTION241:
+                value = 241
+            case ExampleEnum.OPTION242:
+                value = 242
+            case ExampleEnum.OPTION243:
+                value = 243
+            case ExampleEnum.OPTION244:
+                value = 244
+            case ExampleEnum.OPTION245:
+                value = 245
+            case ExampleEnum.OPTION246:
+                value = 246
+            case ExampleEnum.OPTION247:
+                value = 247
+            case ExampleEnum.OPTION248:
+                value = 248
+            case ExampleEnum.OPTION249:
+                value = 249
+            case ExampleEnum.OPTION250:
+                value = 250
+            case ExampleEnum.OPTION251:
+                value = 251
+            case ExampleEnum.OPTION252:
+                value = 252
+            case ExampleEnum.OPTION253:
+                value = 253
+            case ExampleEnum.OPTION254:
+                value = 254
+            case ExampleEnum.OPTION255:
+                value = 255
+            case ExampleEnum.OPTION256:
+                value = 256
+            case ExampleEnum.OPTION257:
+                value = 257
+            case ExampleEnum.OPTION258:
+                value = 258
+            case ExampleEnum.OPTION259:
+                value = 259
+            case ExampleEnum.OPTION260:
+                value = 260
+            case ExampleEnum.OPTION261:
+                value = 261
+            case ExampleEnum.OPTION262:
+                value = 262
+            case ExampleEnum.OPTION263:
+                value = 263
+            case ExampleEnum.OPTION264:
+                value = 264
+            case ExampleEnum.OPTION265:
+                value = 265
+            case ExampleEnum.OPTION266:
+                value = 266
+            case ExampleEnum.OPTION267:
+                value = 267
+            case ExampleEnum.OPTION268:
+                value = 268
+            case ExampleEnum.OPTION269:
+                value = 269
+            case ExampleEnum.OPTION270:
+                value = 270
+            case ExampleEnum.OPTION271:
+                value = 271
+            case ExampleEnum.OPTION272:
+                value = 272
+            case ExampleEnum.OPTION273:
+                value = 273
+            case ExampleEnum.OPTION274:
+                value = 274
+            case ExampleEnum.OPTION275:
+                value = 275
+            case ExampleEnum.OPTION276:
+                value = 276
+            case ExampleEnum.OPTION277:
+                value = 277
+            case ExampleEnum.OPTION278:
+                value = 278
+            case ExampleEnum.OPTION279:
+                value = 279
+            case ExampleEnum.OPTION280:
+                value = 280
+            case ExampleEnum.OPTION281:
+                value = 281
+            case ExampleEnum.OPTION282:
+                value = 282
+            case ExampleEnum.OPTION283:
+                value = 283
+            case ExampleEnum.OPTION284:
+                value = 284
+            case ExampleEnum.OPTION285:
+                value = 285
+            case ExampleEnum.OPTION286:
+                value = 286
+            case ExampleEnum.OPTION287:
+                value = 287
+            case ExampleEnum.OPTION288:
+                value = 288
+            case ExampleEnum.OPTION289:
+                value = 289
+            case ExampleEnum.OPTION290:
+                value = 290
+            case ExampleEnum.OPTION291:
+                value = 291
+            case ExampleEnum.OPTION292:
+                value = 292
+            case ExampleEnum.OPTION293:
+                value = 293
+            case ExampleEnum.OPTION294:
+                value = 294
+            case ExampleEnum.OPTION295:
+                value = 295
+            case ExampleEnum.OPTION296:
+                value = 296
+            case ExampleEnum.OPTION297:
+                value = 297
+            case ExampleEnum.OPTION298:
+                value = 298
+            case ExampleEnum.OPTION299:
+                value = 299
+            case ExampleEnum.OPTION300:
+                value = 300
+            case ExampleEnum.OPTION301:
+                value = 301
+            case ExampleEnum.OPTION302:
+                value = 302
+            case ExampleEnum.OPTION303:
+                value = 303
+            case ExampleEnum.OPTION304:
+                value = 304
+            case ExampleEnum.OPTION305:
+                value = 305
+            case ExampleEnum.OPTION306:
+                value = 306
+            case ExampleEnum.OPTION307:
+                value = 307
+            case ExampleEnum.OPTION308:
+                value = 308
+            case ExampleEnum.OPTION309:
+                value = 309
+            case ExampleEnum.OPTION310:
+                value = 310
+            case ExampleEnum.OPTION311:
+                value = 311
+            case ExampleEnum.OPTION312:
+                value = 312
+            case ExampleEnum.OPTION313:
+                value = 313
+            case ExampleEnum.OPTION314:
+                value = 314
+            case ExampleEnum.OPTION315:
+                value = 315
+            case ExampleEnum.OPTION316:
+                value = 316
+            case ExampleEnum.OPTION317:
+                value = 317
+            case ExampleEnum.OPTION318:
+                value = 318
+            case ExampleEnum.OPTION319:
+                value = 319
+            case ExampleEnum.OPTION320:
+                value = 320
+            case ExampleEnum.OPTION321:
+                value = 321
+            case ExampleEnum.OPTION322:
+                value = 322
+            case ExampleEnum.OPTION323:
+                value = 323
+            case ExampleEnum.OPTION324:
+                value = 324
+            case ExampleEnum.OPTION325:
+                value = 325
+            case ExampleEnum.OPTION326:
+                value = 326
+            case ExampleEnum.OPTION327:
+                value = 327
+            case ExampleEnum.OPTION328:
+                value = 328
+            case ExampleEnum.OPTION329:
+                value = 329
+            case ExampleEnum.OPTION330:
+                value = 330
+            case ExampleEnum.OPTION331:
+                value = 331
+            case ExampleEnum.OPTION332:
+                value = 332
+            case ExampleEnum.OPTION333:
+                value = 333
+            case ExampleEnum.OPTION334:
+                value = 334
+            case ExampleEnum.OPTION335:
+                value = 335
+            case ExampleEnum.OPTION336:
+                value = 336
+            case ExampleEnum.OPTION337:
+                value = 337
+            case ExampleEnum.OPTION338:
+                value = 338
+            case ExampleEnum.OPTION339:
+                value = 339
+            case ExampleEnum.OPTION340:
+                value = 340
+            case ExampleEnum.OPTION341:
+                value = 341
+            case ExampleEnum.OPTION342:
+                value = 342
+            case ExampleEnum.OPTION343:
+                value = 343
+            case ExampleEnum.OPTION344:
+                value = 344
+            case ExampleEnum.OPTION345:
+                value = 345
+            case ExampleEnum.OPTION346:
+                value = 346
+            case ExampleEnum.OPTION347:
+                value = 347
+            case ExampleEnum.OPTION348:
+                value = 348
+            case ExampleEnum.OPTION349:
+                value = 349
+            case ExampleEnum.OPTION350:
+                value = 350
+            case ExampleEnum.OPTION351:
+                value = 351
+            case ExampleEnum.OPTION352:
+                value = 352
+            case ExampleEnum.OPTION353:
+                value = 353
+            case ExampleEnum.OPTION354:
+                value = 354
+            case ExampleEnum.OPTION355:
+                value = 355
+            case ExampleEnum.OPTION356:
+                value = 356
+            case ExampleEnum.OPTION357:
+                value = 357
+            case ExampleEnum.OPTION358:
+                value = 358
+            case ExampleEnum.OPTION359:
+                value = 359
+            case ExampleEnum.OPTION360:
+                value = 360
+            case ExampleEnum.OPTION361:
+                value = 361
+            case ExampleEnum.OPTION362:
+                value = 362
+            case ExampleEnum.OPTION363:
+                value = 363
+            case ExampleEnum.OPTION364:
+                value = 364
+            case ExampleEnum.OPTION365:
+                value = 365
+            case ExampleEnum.OPTION366:
+                value = 366
+            case ExampleEnum.OPTION367:
+                value = 367
+            case ExampleEnum.OPTION368:
+                value = 368
+            case ExampleEnum.OPTION369:
+                value = 369
+            case ExampleEnum.OPTION370:
+                value = 370
+            case ExampleEnum.OPTION371:
+                value = 371
+            case ExampleEnum.OPTION372:
+                value = 372
+            case ExampleEnum.OPTION373:
+                value = 373
+            case ExampleEnum.OPTION374:
+                value = 374
+            case ExampleEnum.OPTION375:
+                value = 375
+            case ExampleEnum.OPTION376:
+                value = 376
+            case ExampleEnum.OPTION377:
+                value = 377
+            case ExampleEnum.OPTION378:
+                value = 378
+            case ExampleEnum.OPTION379:
+                value = 379
+            case ExampleEnum.OPTION380:
+                value = 380
+            case ExampleEnum.OPTION381:
+                value = 381
+            case ExampleEnum.OPTION382:
+                value = 382
+            case ExampleEnum.OPTION383:
+                value = 383
+            case ExampleEnum.OPTION384:
+                value = 384
+            case ExampleEnum.OPTION385:
+                value = 385
+            case ExampleEnum.OPTION386:
+                value = 386
+            case ExampleEnum.OPTION387:
+                value = 387
+            case ExampleEnum.OPTION388:
+                value = 388
+            case ExampleEnum.OPTION389:
+                value = 389
+            case ExampleEnum.OPTION390:
+                value = 390
+            case ExampleEnum.OPTION391:
+                value = 391
+            case ExampleEnum.OPTION392:
+                value = 392
+            case ExampleEnum.OPTION393:
+                value = 393
+            case ExampleEnum.OPTION394:
+                value = 394
+            case ExampleEnum.OPTION395:
+                value = 395
+            case ExampleEnum.OPTION396:
+                value = 396
+            case ExampleEnum.OPTION397:
+                value = 397
+            case ExampleEnum.OPTION398:
+                value = 398
+            case ExampleEnum.OPTION399:
+                value = 399
+            case ExampleEnum.OPTION400:
+                value = 400
+            case ExampleEnum.OPTION401:
+                value = 401
+            case ExampleEnum.OPTION402:
+                value = 402
+            case ExampleEnum.OPTION403:
+                value = 403
+            case ExampleEnum.OPTION404:
+                value = 404
+            case ExampleEnum.OPTION405:
+                value = 405
+            case ExampleEnum.OPTION406:
+                value = 406
+            case ExampleEnum.OPTION407:
+                value = 407
+            case ExampleEnum.OPTION408:
+                value = 408
+            case ExampleEnum.OPTION409:
+                value = 409
+            case ExampleEnum.OPTION410:
+                value = 410
+            case ExampleEnum.OPTION411:
+                value = 411
+            case ExampleEnum.OPTION412:
+                value = 412
+            case ExampleEnum.OPTION413:
+                value = 413
+            case ExampleEnum.OPTION414:
+                value = 414
+            case ExampleEnum.OPTION415:
+                value = 415
+            case ExampleEnum.OPTION416:
+                value = 416
+            case ExampleEnum.OPTION417:
+                value = 417
+            case ExampleEnum.OPTION418:
+                value = 418
+            case ExampleEnum.OPTION419:
+                value = 419
+            case ExampleEnum.OPTION420:
+                value = 420
+            case ExampleEnum.OPTION421:
+                value = 421
+            case ExampleEnum.OPTION422:
+                value = 422
+            case ExampleEnum.OPTION423:
+                value = 423
+            case ExampleEnum.OPTION424:
+                value = 424
+            case ExampleEnum.OPTION425:
+                value = 425
+            case ExampleEnum.OPTION426:
+                value = 426
+            case ExampleEnum.OPTION427:
+                value = 427
+            case ExampleEnum.OPTION428:
+                value = 428
+            case ExampleEnum.OPTION429:
+                value = 429
+            case ExampleEnum.OPTION430:
+                value = 430
+            case ExampleEnum.OPTION431:
+                value = 431
+            case ExampleEnum.OPTION432:
+                value = 432
+            case ExampleEnum.OPTION433:
+                value = 433
+            case ExampleEnum.OPTION434:
+                value = 434
+            case ExampleEnum.OPTION435:
+                value = 435
+            case ExampleEnum.OPTION436:
+                value = 436
+            case ExampleEnum.OPTION437:
+                value = 437
+            case ExampleEnum.OPTION438:
+                value = 438
+            case ExampleEnum.OPTION439:
+                value = 439
+            case ExampleEnum.OPTION440:
+                value = 440
+            case ExampleEnum.OPTION441:
+                value = 441
+            case ExampleEnum.OPTION442:
+                value = 442
+            case ExampleEnum.OPTION443:
+                value = 443
+            case ExampleEnum.OPTION444:
+                value = 444
+            case ExampleEnum.OPTION445:
+                value = 445
+            case ExampleEnum.OPTION446:
+                value = 446
+            case ExampleEnum.OPTION447:
+                value = 447
+            case ExampleEnum.OPTION448:
+                value = 448
+            case ExampleEnum.OPTION449:
+                value = 449
+            case ExampleEnum.OPTION450:
+                value = 450
+            case ExampleEnum.OPTION451:
+                value = 451
+            case ExampleEnum.OPTION452:
+                value = 452
+            case ExampleEnum.OPTION453:
+                value = 453
+            case ExampleEnum.OPTION454:
+                value = 454
+            case ExampleEnum.OPTION455:
+                value = 455
+            case ExampleEnum.OPTION456:
+                value = 456
+            case ExampleEnum.OPTION457:
+                value = 457
+            case ExampleEnum.OPTION458:
+                value = 458
+            case ExampleEnum.OPTION459:
+                value = 459
+            case ExampleEnum.OPTION460:
+                value = 460
+            case ExampleEnum.OPTION461:
+                value = 461
+            case ExampleEnum.OPTION462:
+                value = 462
+            case ExampleEnum.OPTION463:
+                value = 463
+            case ExampleEnum.OPTION464:
+                value = 464
+            case ExampleEnum.OPTION465:
+                value = 465
+            case ExampleEnum.OPTION466:
+                value = 466
+            case ExampleEnum.OPTION467:
+                value = 467
+            case ExampleEnum.OPTION468:
+                value = 468
+            case ExampleEnum.OPTION469:
+                value = 469
+            case ExampleEnum.OPTION470:
+                value = 470
+            case ExampleEnum.OPTION471:
+                value = 471
+            case ExampleEnum.OPTION472:
+                value = 472
+            case ExampleEnum.OPTION473:
+                value = 473
+            case ExampleEnum.OPTION474:
+                value = 474
+            case ExampleEnum.OPTION475:
+                value = 475
+            case ExampleEnum.OPTION476:
+                value = 476
+            case ExampleEnum.OPTION477:
+                value = 477
+            case ExampleEnum.OPTION478:
+                value = 478
+            case ExampleEnum.OPTION479:
+                value = 479
+            case ExampleEnum.OPTION480:
+                value = 480
+            case ExampleEnum.OPTION481:
+                value = 481
+            case ExampleEnum.OPTION482:
+                value = 482
+            case ExampleEnum.OPTION483:
+                value = 483
+            case ExampleEnum.OPTION484:
+                value = 484
+            case ExampleEnum.OPTION485:
+                value = 485
+            case ExampleEnum.OPTION486:
+                value = 486
+            case ExampleEnum.OPTION487:
+                value = 487
+            case ExampleEnum.OPTION488:
+                value = 488
+            case ExampleEnum.OPTION489:
+                value = 489
+            case ExampleEnum.OPTION490:
+                value = 490
+            case ExampleEnum.OPTION491:
+                value = 491
+            case ExampleEnum.OPTION492:
+                value = 492
+            case ExampleEnum.OPTION493:
+                value = 493
+            case ExampleEnum.OPTION494:
+                value = 494
+            case ExampleEnum.OPTION495:
+                value = 495
+            case ExampleEnum.OPTION496:
+                value = 496
+            case ExampleEnum.OPTION497:
+                value = 497
+            case ExampleEnum.OPTION498:
+                value = 498
+            case ExampleEnum.OPTION499:
+                value = 499
+            case _:
+                assert_never(self)
+        return value
+</code></pre>
+</details>
+
+<p>But... there's a bug here somewhere. We don't emit any diagnostics on that snippet on <code>main</code>, but we emit a diagnostic on the <code>assert_never()</code> call on this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-03 22:11</div>
+            <div class="timeline-body"><p>Ah... it's not technically a bug. We're running into the limit here: https://github.com/astral-sh/ruff/blob/8464aca795bc3580ca15fcb52b21616939cea9a9/crates/ty_python_semantic/src/types/builder.rs#L226-L228</p>
+<p>The bug only appears if there are 257 enum members or more.</p>
+<p>The reason why that limit is relevant to the execution time on the above snippet is this line here, where we construct a (potentially huge) union of enum literals in order to simplify an intersection that has enum literals in its negative set: https://github.com/astral-sh/ruff/blob/8464aca795bc3580ca15fcb52b21616939cea9a9/crates/ty_python_semantic/src/types/builder.rs#L768-L785</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-04 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2026-01-04 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2026-01-04 17:18</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h3>Merging this PR will <strong>improve performance by ×2.2</strong></h3>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improved benchmark<br />
+<code>✅ 22</code> untouched benchmarks<br />
+<code>⏩ 30</code> skipped benchmarks[^skipped]</p>
+<h3>Performance Changes</h3>
+<h2>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ⚡ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fenum-literal-unions?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_many_enum_members_2%3A%3Aty_micro%5Bmany_enum_members_2%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment-v2&amp;utm_content=benchmark"><code>ty_micro[many_enum_members_2]</code></a> | 340.7 ms | 152.5 ms | ×2.2 |</h2>
+<p><sub>Comparing <code>alex/enum-literal-unions</code> (9186059) with <code>main</code> (7319c37)</sub></p>
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fenum-literal-unions?utm_source=github&utm_medium=comment-v2&utm_content=button">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://codspeed.io/pr-report/open-in-codspeed-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://codspeed.io/pr-report/open-in-codspeed-light.svg">
+    <img alt="Open in CodSpeed" src="https://codspeed.io/pr-report/open-in-codspeed-light.svg" width="169" height="32">
+  </picture>
+</a>
+
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fenum-literal-unions?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment-v2&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2026-01-04 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2026-01-04 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2026-01-04 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2026-01-04 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 09:39</div>
+            <div class="timeline-body"><p>Nice, this is a huge improvement for <code>discord.py</code> (and a small improvement for homeassistant)</p>
+<pre><code>❯ uv run benchmark --tool ty --ty-path ~/astral/ruff/target/profiling/ty-main --ty-path ~/astral/ruff/target/profiling/ty
+      Built ty-benchmark @ file:///Users/micha/astral/ruff/scripts/ty_benchmark
+Uninstalled 1 package in 1ms
+Installed 1 package in 1ms
+discord.py
+----------
+
+Benchmark 1: /Users/micha/astral/ruff/target/profiling/ty-main
+  Time (mean ± σ):     242.9 ms ±   5.0 ms    [User: 1423.4 ms, System: 114.8 ms]
+  Range (min … max):   238.1 ms … 256.1 ms    12 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Benchmark 2: /Users/micha/astral/ruff/target/profiling/ty
+  Time (mean ± σ):     175.7 ms ±   3.1 ms    [User: 1324.9 ms, System: 111.3 ms]
+  Range (min … max):   171.6 ms … 181.2 ms    16 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Summary
+  /Users/micha/astral/ruff/target/profiling/ty ran
+    1.38 ± 0.04 times faster than /Users/micha/astral/ruff/target/profiling/ty-main
+
+-------------------------------------------------------------------------------
+
+homeassistant
+-------------
+
+Benchmark 1: /Users/micha/astral/ruff/target/profiling/ty-main
+  Time (mean ± σ):      2.218 s ±  0.067 s    [User: 22.101 s, System: 3.110 s]
+  Range (min … max):    2.128 s …  2.347 s    10 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Benchmark 2: /Users/micha/astral/ruff/target/profiling/ty
+  Time (mean ± σ):      2.116 s ±  0.088 s    [User: 21.415 s, System: 3.123 s]
+  Range (min … max):    1.998 s …  2.245 s    10 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Summary
+  /Users/micha/astral/ruff/target/profiling/ty ran
+    1.05 ± 0.05 times faster than /Users/micha/astral/ruff/target/profiling/ty-main
+
+-------------------------------------------------------------------------------
+</code></pre>
+<p>However, it's also a substantial regression for pytorch. Do you think this is because of the now higher limit?</p>
+<pre><code> uv run benchmark --tool ty --ty-path ~/astral/ruff/target/profiling/ty-main --ty-path ~/astral/ruff/target/profiling/ty --project pytorch
+pytorch
+-------
+
+Benchmark 1: /Users/micha/astral/ruff/target/profiling/ty-main
+  Time (mean ± σ):      1.201 s ±  0.085 s    [User: 11.724 s, System: 1.407 s]
+  Range (min … max):    1.113 s …  1.375 s    10 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Benchmark 2: /Users/micha/astral/ruff/target/profiling/ty
+  Time (mean ± σ):      1.294 s ±  0.089 s    [User: 12.175 s, System: 1.437 s]
+  Range (min … max):    1.144 s …  1.423 s    10 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Summary
+  /Users/micha/astral/ruff/target/profiling/ty-main ran
+    1.08 ± 0.11 times faster than /Users/micha/astral/ruff/target/profiling/ty
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-05 09:45</div>
+            <div class="timeline-body"><blockquote>
+<p>However, it's also a substantial regression for pytorch. Do you think this is because of the now higher limit?</p>
+</blockquote>
+<p>Hmm, we currently have no limit at all for enum literals on <code>main</code>, so I don't think that can be the cause. The more probable cause is that by rewriting all our enum-literal logic in the union builder to add the new fast path for pathological cases where there are many enum literals in the union, I also made some cases slower. (Our existing logic for enum Literals in the union builder is non-trivial; it's very possible I accidentally got rid of an optimisation we already had on <code>main</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-05 15:01</div>
+            <div class="timeline-body"><p>@MichaReiser, I can reproduce the speedup on discord.py locally but I can't reproduce the slowdown on pytorch. When I run ty_benchmark, it reports a 3% speedup for this PR on pytorch:</p>
+<pre><code>pytorch
+-------
+
+Benchmark 1: /Users/alexw/dev/ruff/target/profiling/ty-main
+  Time (mean ± σ):      1.230 s ±  0.073 s    [User: 12.440 s, System: 1.419 s]
+  Range (min … max):    1.158 s …  1.371 s    10 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+Benchmark 2: /Users/alexw/dev/ruff/target/profiling/ty
+  Time (mean ± σ):      1.196 s ±  0.055 s    [User: 12.499 s, System: 1.374 s]
+  Range (min … max):    1.149 s …  1.294 s    10 runs
+ 
+  Warning: Ignoring non-zero exit code.
+ 
+Summary
+  /Users/alexw/dev/ruff/target/profiling/ty ran
+    1.03 ± 0.08 times faster than /Users/alexw/dev/ruff/target/profiling/ty-main
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 16:58</div>
+            <div class="timeline-body"><p>Hmm. I did ran the benchmark twice before, but I'm now unable to reproduce. So maybe just a flake on my machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:316 on 2026-01-07 19:06</div>
+            <div class="timeline-body"><p>I'm not aware of anything that prevents enum classes from being generic, so I expect this should not directly construct a <code>ClassType::NonGeneric</code>, but should use a constructor that inspects the class instead. (IIRC we aim to maintain an invariant that we never represent an unspecialized generic class with <code>ClassType::NonGeneric</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:533 on 2026-01-07 19:07</div>
+            <div class="timeline-body"><p>Similar here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:554 on 2026-01-07 19:10</div>
+            <div class="timeline-body"><p>Do we have any tests involving a recursively-defined union with more than 10 enum elements in it? (Or one with less than 10, for that matter). Could probably look at the PR that introduced this constant to find similar tests for other kinds of literals, to work from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:549 on 2026-01-07 19:16</div>
+            <div class="timeline-body"><p>Could this be a match guard condition? Shouldn't really matter either way, would just be slightly more concise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:559 on 2026-01-07 19:16</div>
+            <div class="timeline-body"><p>Same comment here about <code>ClassType::NonGeneric</code>.</p>
+<p>It seems like this (make an instance type out of an enum class and add it in place) is something we do a lot of different places in this diff. I'm not sure it can be abstracted smaller than the two lines to do those two things, but it would be nice if this particular repeated line didn't repeat non-germane assumptions about genericness in any way (whether they are correct assumptions or not.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:568 on 2026-01-07 19:21</div>
+            <div class="timeline-body"><p>I assume this PR just pre-dated your other one, but probably this should be <code>is_redundant_with</code> instead? (Or that could be changed in your other PR, if you land this one first.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:573 on 2026-01-07 19:21</div>
+            <div class="timeline-body"><p>Same here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2026-01-07 19:22</div>
+            <div class="timeline-body"><p>This is great, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:316 on 2026-01-07 21:59</div>
+            <div class="timeline-body"><p>The concept of a generic enum class is inherently incoherent.</p>
+<p>Apart from that, attempting to create a generic enum class usually fails at runtime:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from enum import Enum
+&gt;&gt;&gt; class Foo[T](Enum):
+...     X: T
+...     
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    class Foo[T](Enum):
+        X: T
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;generic parameters of Foo&gt;
+    class Foo[T](Enum):
+        X: T
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/enum.py&quot;, line 491, in __prepare__
+    member_type, first_enum = metacls._get_mixins_(cls, bases)
+                              ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/enum.py&quot;, line 956, in _get_mixins_
+    raise TypeError(&quot;new enumerations should be created as &quot;
+            &quot;`EnumName([mixin_type, ...] [data_type,] enum_type)`&quot;)
+TypeError: new enumerations should be created as `EnumName([mixin_type, ...] [data_type,] enum_type)`
+&gt;&gt;&gt; from typing import Generic, TypeVar
+&gt;&gt;&gt; T = TypeVar(&quot;T&quot;)
+&gt;&gt;&gt; class Foo(Enum, Generic[T]):
+...     X: T
+...     
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    class Foo(Enum, Generic[T]):
+        X: T
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/enum.py&quot;, line 491, in __prepare__
+    member_type, first_enum = metacls._get_mixins_(cls, bases)
+                              ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/enum.py&quot;, line 956, in _get_mixins_
+    raise TypeError(&quot;new enumerations should be created as &quot;
+            &quot;`EnumName([mixin_type, ...] [data_type,] enum_type)`&quot;)
+TypeError: new enumerations should be created as `EnumName([mixin_type, ...] [data_type,] enum_type)`
+</code></pre>
+<p>even when the class creation does not immediately fail at runtime, it does not work in the way you'd expect, because of the fact that <code>Generic.__class_getitem__</code> is clobbered by <code>EnumMeta.__getitem__</code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from enum import Enum
+&gt;&gt;&gt; from typing import Generic, TypeVar
+&gt;&gt;&gt; T = TypeVar(&quot;T&quot;)
+&gt;&gt;&gt; class Foo(Generic[T], Enum):
+...     X: T
+...     
+&gt;&gt;&gt; Foo[int]
+Traceback (most recent call last):
+  File &quot;&lt;python-input-6&gt;&quot;, line 1, in &lt;module&gt;
+    Foo[int]
+    ~~~^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/enum.py&quot;, line 789, in __getitem__
+    return cls._member_map_[name]
+           ~~~~~~~~~~~~~~~~^^^^^^
+KeyError: &lt;class 'int'&gt;
+</code></pre>
+<p>Generic enums are explicitly forbidden by mypy and pyrefly:</p>
+<ul>
+<li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=35ef91038c460dd48cd557bb8704076d</li>
+<li>https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0BxGOhiUIAYwA0dACrMYANVSUAOujDV6wgK70uPPnQCi6XWrUy6AXlnyllABQqQM5wEpz6cVFRw4dADFcXAchETFxAG0ZAF1pE103RDU6VLp8RFk1EEkQbQZoOBJyRBAAYjoAVQKoCCY6MG0vAtx0OE9MGDAG3hpUBgB9UxpsUQcMznQGNzoAWgA%2BOjgGSmT0NLpKGAZtSnWwZwA5XVHVumB8AF9nbNyyLbAoUkIGWigKCoAFUgenpYwcAQ6OJWpA2Lt%2BhBWoQ1BUAMowGB0AAWDAYxDgiAA9Fj7l0noReGwscIsZhcOI4FiQeoIODKJDWliepQ6KgAG6oaCobCwYGgukQlrrXDEYVFNRkBjI1qzdmiOBQ9Y2ZwAZkIAEYAEw3dAgS65VDiArygLQGAUNBYPBEMj6oA</li>
+</ul>
+<p>and while we do not yet explicitly forbid them, we also make it impossible for generic enums to exist in our model due to the way we represent enum-literal types -- <code>EnumLiteralType</code> wraps a <code>ClassLiteral</code> rather than a <code>ClassType</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/c02d164357d51e57e80703ceb3a72c5ae368077a/crates/ty_python_semantic/src/types.rs#L12696-L12704</p>
+<p>So I do not believe that generic enums are a concept that we can or should support, and I would instead view this as a missing lint that we should implement in a separate PR (where we explicitly forbid enum classes to multiple-inherit from <code>Generic[]</code> or have PEP-695 type parameters)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-07 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-07 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:568 on 2026-01-07 22:00</div>
+            <div class="timeline-body"><p>yeah, I'm well aware that the two PRs cause merge conflicts with each other 😆 but thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-07 22:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:549 on 2026-01-07 22:26</div>
+            <div class="timeline-body"><p>It could be, yeah. I personally prefer find it more readable how it is, though I don't feel strongly :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-07 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:559 on 2026-01-07 22:27</div>
+            <div class="timeline-body"><p>yeah, I can extract this out into a method on <code>EnumLiteralType</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2026-01-07 22:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:316 on 2026-01-07 22:32</div>
+            <div class="timeline-body"><p>Fair enough, that works for me! Looks like I just picked the wrong type checker to test in (pyright supports generic enums to at least some extent.) The one part of an enum that could be coherently generic is methods, maybe? But I'm happy to just say we don't support generic enums and never will.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:559 on 2026-01-08 10:28</div>
+            <div class="timeline-body"><p>Oh, we actually already have the helper method you're asking for, I just didn't know about it/forgot about it:</p>
+<p>https://github.com/astral-sh/ruff/blob/7319c37f4eb063e9590e1f09c8e92d7dabc63403/crates/ty_python_semantic/src/types.rs#L12709-L12713</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-08 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:554 on 2026-01-08 10:45</div>
+            <div class="timeline-body"><p>It doesn't look to me like we have any tests for recursively defined unions with lots of <code>Literal</code> elements in them. I looked at https://github.com/astral-sh/ruff/commit/c7b5067ef89de735beb7a88dd813e259ad4a0972, which originally introduced the size limit on the number of <code>Literal</code> elements we allow to coexist in a union before widening the <code>Literal</code>s, and https://github.com/astral-sh/ruff/commit/f3e5713d90f0b1bfcba9bfe3a3ab0c3df33ece83, which increased the limit for non-recursive unions -- neither commit appeared to include tests of the kind you're asking about here.</p>
+<p>Happy to look into this more as a followup if you think it's important, but for now I'm going to move on!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2026-01-08 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-08 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2026-01-08 10:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:30:53 UTC
+    </footer>
+</body>
+</html>

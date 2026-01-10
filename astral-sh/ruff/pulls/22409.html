@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Ensure the ty playground module is only ever loaded once - astral-sh/ruff #22409</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Ensure the ty playground module is only ever loaded once</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22409">#22409</a>
+        opened by <a href="https://github.com/RasmusNygren">@RasmusNygren</a>
+        on 2026-01-05 20:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/RasmusNygren">@RasmusNygren</a> on 2026-01-05 20:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes a bug where the ty_wasm module was loaded twice when running locally. Most noticeably causing duplicate files.</p>
+<p><img width="1112" height="332" alt="image" src="https://github.com/user-attachments/assets/e7024f32-3a8b-44a9-9624-4d6a3505ebf7" /></p>
+<p>Looking at the git history it seems like we did exactly this previously to ensure we only started the playground once but it seems to have gotten lost along the way.</p>
+<h2>Test Plan</h2>
+<p>Run the playground locally and ensure that the bug no longer exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 20:24</div>
+            <div class="timeline-body"><p>Oh, so I broke this with the ESLint upgrade. I think ESLint will get mad at you for reading the <code>ref</code> during render.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RasmusNygren">@RasmusNygren</a> on 2026-01-05 20:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, so I broke this with the ESLint upgrade. I think ESLint will get mad at you for reading the <code>ref</code> during render.</p>
+</blockquote>
+<p>Oh that's why it was changed, that makes a lot of sense. The other approach it is then :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @AlexWaygood on 2026-01-05 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2026-01-05 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2026-01-06 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RasmusNygren">@RasmusNygren</a> reviewed on 2026-01-06 08:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RasmusNygren">@RasmusNygren</a> on <code>playground/ty/src/Playground.tsx</code>:33 on 2026-01-06 08:58</div>
+            <div class="timeline-body"><p>Can't say that I like this but not running <code>restoreWorkspace</code> multiple times seems to be what's actually important to not get the weird behaviour and I'm not sure if there's a much better way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Ensure the ty playground is only ever started once" to "[ty] Ensure the ty playground module is only ever loaded once" by @RasmusNygren on 2026-01-06 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @RasmusNygren on 2026-01-06 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-06 09:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>playground/ty/src/Playground.tsx</code>:33 on 2026-01-06 09:12</div>
+            <div class="timeline-body"><p>Agree, this seems bad.</p>
+<p>Could we dispatch a <code>reset</code> action (using <code>dispatchFiles</code>) instead?</p>
+<p>The alternative is we use <code>useRef</code> and suppress the lint as I think it's a false positive anyway, given that we write to it exactly once</p>
+<p>https://react.dev/reference/react/useRef#avoiding-recreating-the-ref-contents</p>
+<p>Or we could try if something as mentioned in the React docs both satisfy TypeScript and ESLint:</p>
+<pre><code class="language-js">function Video() {
+  const playerRef = useRef(null);
+
+  function getPlayer() {
+    if (playerRef.current !== null) {
+      return playerRef.current;
+    }
+    const player = new VideoPlayer();
+    playerRef.current = player;
+    return player;
+  }
+
+  // ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RasmusNygren">@RasmusNygren</a> reviewed on 2026-01-06 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RasmusNygren">@RasmusNygren</a> on <code>playground/ty/src/Playground.tsx</code>:33 on 2026-01-06 09:16</div>
+            <div class="timeline-body"><p>Ye I'm starting to think this is one of those cases where there's probably not enough reason to add workarounds just to satisfy the linter. I think I would prefer useRef and suppress the lint</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-06 09:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>playground/ty/src/Playground.tsx</code>:33 on 2026-01-06 09:19</div>
+            <div class="timeline-body"><p>Makes sense to me. We can add a comment explaining why</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @RasmusNygren on 2026-01-06 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @RasmusNygren on 2026-01-06 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @RasmusNygren on 2026-01-06 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @RasmusNygren on 2026-01-06 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @RasmusNygren on 2026-01-06 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-06 09:40</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RasmusNygren">@RasmusNygren</a> on 2026-01-06 09:40</div>
+            <div class="timeline-body"><p>Whoops, that's a poor rebase from my side, sorry for pinging your review :D Please ignore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @AlexWaygood on 2026-01-06 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @AlexWaygood on 2026-01-06 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @AlexWaygood on 2026-01-06 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-06 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @RasmusNygren on 2026-01-06 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2026-01-06 09:51</div>
+            <div class="timeline-body"><p>Thank you, and sorry for the back-and-forth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2026-01-06 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-06 09:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:30:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat(ty): Recognize string literals as subtypes of Sequence[Literal[chars]] - astral-sh/ruff #22413</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat(ty): Recognize string literals as subtypes of Sequence[Literal[chars]]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22413">#22413</a>
+        opened by <a href="https://github.com/jhartum">@jhartum</a>
+        on 2026-01-06 09:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jhartum">@jhartum</a> on 2026-01-06 09:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implements https://github.com/astral-sh/ty/issues/2128: <code>Literal[&quot;abba&quot;]</code> is now recognized as a subtype of <code>Sequence[Literal[&quot;a&quot;, &quot;b&quot;]]</code>.</p>
+<h2>Changes</h2>
+<ul>
+<li><strong>Add <code>KnownClass::Sequence</code></strong> - New known class for <code>typing.Sequence</code>, properly integrated as a protocol</li>
+<li><strong>Extend <code>has_relation_to_impl</code></strong> - When checking if a string literal is a subtype of <code>Sequence[X]</code>, verify that each unique character in the string is a subtype of <code>X</code></li>
+<li><strong>Add mdtests</strong> - Cover positive cases, negative cases, and edge cases (empty strings, unicode, multi-char literals)</li>
+</ul>
+<h2>Example</h2>
+<pre><code class="language-python">from collections.abc import Sequence
+from typing import Literal
+
+def func(tags: Sequence[Literal[&quot;a&quot;, &quot;b&quot;]]) -&gt; None:
+    pass
+
+func(&quot;abba&quot;)  # Now OK - was incorrectly flagged as error
+</code></pre>
+<h2>Implementation Details</h2>
+<p>The implementation in <code>has_relation_to_impl</code>:</p>
+<ol>
+<li>First tries the standard <code>str</code> fallback (for cases like <code>Sequence[str]</code>)</li>
+<li>If that fails and the target is <code>Sequence[X]</code>, extracts unique characters from the string literal</li>
+<li>Verifies each character is a subtype of <code>X</code> using <code>when_all</code> to properly accumulate constraints</li>
+<li>Returns the combined constraint set</li>
+</ol>
+<p>Edge cases handled:</p>
+<ul>
+<li>Empty strings (always valid)</li>
+<li>Unicode characters</li>
+<li>Multi-char literals in element type (correctly rejected - <code>Literal[&quot;ab&quot;]</code> ≠ <code>Literal[&quot;a&quot;, &quot;b&quot;]</code>)</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li>Added mdtests in <code>is_subtype_of.md</code></li>
+<li>All 307 existing mdtests pass</li>
+<li>Manual testing with various edge cases</li>
+</ul>
+<p>Closes https://github.com/astral-sh/ty/issues/2128</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @jhartum on 2026-01-06 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @jhartum on 2026-01-06 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @jhartum on 2026-01-06 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @jhartum on 2026-01-06 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2026-01-06 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhartum">@jhartum</a> on 2026-01-06 09:33</div>
+            <div class="timeline-body"><p>Closing in favor of new PR with rebased branch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jhartum on 2026-01-06 09:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:30:53 UTC
+    </footer>
+</body>
+</html>
