@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-01-21T13:16:27Z
-updated_at: 2026-01-10T11:30:36Z
+updated_at: 2026-01-10T12:29:52Z
 url: https://github.com/astral-sh/uv/issues/10813
-synced_at: 2026-01-10T11:59:57Z
+synced_at: 2026-01-10T12:30:12Z
 ```
 
 # How can I install project dependencies from an existing pyproject.toml?
@@ -114,23 +114,16 @@ Syncing the environment manually is especially useful for ensuring your editor h
 
 _Comment by @alexted on 2026-01-10 11:26_
 
-The tool is functionally capable. The problem is not what it does, but how that functionality is exposed to users.
-
+    The tool is functionally capable. The problem is not what it does, but how that functionality is exposed to users.
 From a user’s perspective, the interface and documentation expose internal implementation concepts rather than user-level tasks. As a result, performing a basic operation - such as installing project dependencies - requires understanding the system’s internal model instead of invoking a clear, intention-driven command.
-
 A user comes with a simple intent:  
 `install project packages`
-
 Instead, they are presented with commands like:  
 `uv sync`, `uv add`, `uv run`
-
-These are internal operations, not task-oriented actions. The interface mirrors how the system works rather than what the user wants to do, forcing the user to infer which internal command matches their goal.
-
-This also breaks established CLI expectations shaped by tools like `pip install`, `npm install`, or `cargo build`, which provide a clear entry point for common workflows. Requiring users to adapt to internal abstractions instead of meeting those expectations increases cognitive load and friction.
-
+    These are internal operations, not task-oriented actions. The interface mirrors how the system works rather than what the user wants to do, forcing the user to infer which internal command matches their goal.
+This also breaks established CLI expectations shaped by tools like `pip install`, `npm install`, or `cargo install`, which provide a clear entry point for common workflows. Requiring users to adapt to internal abstractions instead of meeting those expectations increases cognitive load and friction.
 This is not a documentation problem. Documentation cannot compensate for a missing abstraction in the interface. If users must read architectural explanations, issues, or source code to perform a basic task, the interface is incomplete.
-
-Well-known tools demonstrate that this is avoidable. **Git** explicitly separates user-facing *porcelain* commands from internal *plumbing* operations. **Mercurial (hg)** goes even further by aggressively hiding internal concepts behind an intention-driven interface. Both show that implementation complexity does not have to leak into UX.
+    Well-known tools demonstrate that this is avoidable. **Git** explicitly separates user-facing *porcelain* commands from internal *plumbing* operations. **Mercurial (hg)** goes even further by aggressively hiding internal concepts behind an intention-driven interface. Both show that implementation complexity does not have to leak into UX.
 
 **In short:**  
 The interface exposes internal mechanics instead of user workflows, forcing users to think like system implementers rather than consumers of functionality.
