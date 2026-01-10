@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throws error notification on Claude Code edits - astral-sh/ty #1328</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Throws error notification on Claude Code edits</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1328">#1328</a>
+        opened by <a href="https://github.com/AndrewNolte">@AndrewNolte</a>
+        on 2025-10-09 14:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndrewNolte">@AndrewNolte</a> on 2025-10-09 14:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Logs:</p>
+<pre><code>ERROR Encountered error when routing notification: JSON parsing failure:
+Invalid notification
+Method: workspace/didChangeWatchedFiles
+ error: relative URL without a base: &quot;_claude_fs_right:&lt;some_abs_path_file&gt;&quot;
+ERROR Encountered error when routing notification: JSON parsing failure:
+Invalid notification
+Method: workspace/didChangeWatchedFiles
+ error: relative URL without a base: &quot;_claude_fs_right:&lt;some_abs_path_file&gt;&quot;
+</code></pre>
+<p>&lt;some_abs_path_file&gt; was obfuscated.</p>
+<h3>Version</h3>
+<p>2025.43</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-10-09 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-09 14:50</div>
+            <div class="timeline-body"><p>Potentially related to this (https://github.com/anthropics/claude-code/issues/3381)?</p>
+<blockquote>
+<p>Claude Code's internal path encoding/resolution creates invalid filesystem URIs on Windows. The <strong>_claude_fs_right</strong>: prefix and URL-encoded path (c%3A%5C) suggest incorrect internal path handling.</p>
+</blockquote>
+<p>Are you on Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndrewNolte">@AndrewNolte</a> on 2025-10-21 20:19</div>
+            <div class="timeline-body"><p>No, on mac with remote linux</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndrewNolte">@AndrewNolte</a> on 2025-10-21 20:21</div>
+            <div class="timeline-body"><p>Nothing crashes for me, it ty just shows the error notification</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 09:33</div>
+            <div class="timeline-body"><p>I think we need some more information about your specific setup to see if there is anything that can be done about it. At the very least, can you show us that redacted absolute file path (not the actual path, but its structure)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-11-10 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 10:04</div>
+            <div class="timeline-body"><p>I actually ran into this too when Claude was updating a <code>.txt</code> file (?!)</p>
+<p><img width="485" height="142" alt="Image" src="https://github.com/user-attachments/assets/d58b4747-12e9-4d05-bb4c-3d145fbb1039" /></p>
+<pre><code>2025-12-01 10:56:36.521213415 ERROR Encountered error when routing notification: JSON parsing failure:
+Invalid notification
+Method: workspace/didChangeWatchedFiles
+ error: relative URL without a base: &quot;_claude_fs_right:/home/shark/ruff/crates/ty_python_semantic/resources/primer/good.txt&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 10:06</div>
+            <div class="timeline-body"><p>To reproduce, open the ruff repo in VS Code, enable the ty extension, and run something like</p>
+<pre><code>claude &quot;Add a new line 'foo' at the end of @crates/ty_python_semantic/resources/primer/good.txt&quot;
+</code></pre>
+<p>It's apparently this diff view that is causing the problem:</p>
+<p><img width="1084" height="515" alt="Image" src="https://github.com/user-attachments/assets/38bab15b-7725-4785-9552-6ea8193dc53b" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 10:14</div>
+            <div class="timeline-body"><p>I was a bit confused where we're raising this error, but I suspect it's because we use the <code>Url</code> for <code>FileEvent::uri</code> and deserialization will fail if the <code>uri</code> isn't a valid URI.</p>
+<p>However, this is a client issue because the LSP specification also notes:</p>
+<blockquote>
+<p>Many of the interfaces contain fields that correspond to the URI of a document. For clarity, the type of such a field is declared as a <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#documentUri">DocumentUri</a>. Over the wire, it will still be transferred as a string, but this guarantees that the contents of that string can be parsed as a valid URI.</p>
+</blockquote>
+<p>and <code>_claude_fs_right:/home/shark/ruff/crates/ty_python_semantic/resources/primer/good.txt</code> is not a valid URI</p>
+<p>For what it's worth, prominently warning users about a notification deserialization error seems unfortunate. I think it should be enough to log a warning, without showing a popup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-12-01 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-01 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-18 18:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

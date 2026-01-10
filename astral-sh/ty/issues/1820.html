@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-method-override` false positive when overriding method that uses `Callable` with a paramspec - astral-sh/ty #1820</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`invalid-method-override` false positive when overriding method that uses `Callable` with a paramspec</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1820">#1820</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-12-09 06:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-12-09 06:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from typing import override, Callable
+class Foo:
+    def foo[**P](self, fn: Callable[P, None]): ...
+
+
+class Bar(Foo):
+    @override
+    def foo[**P](self, fn: Callable[P, None]): ... # error: invalid-method-override
+</code></pre>
+<p>https://play.ty.dev/c17aa583-3631-41b3-be6e-79a86d91ac3b</p>
+<h3>Version</h3>
+<p>0.0.1-alpha.32</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-12-09 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @sharkdp on 2025-12-09 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-09 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 17:20</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Verified that the issue doesn't repro with e.g.</p>
+<pre><code class="language-py">from typing import Callable
+
+class Foo:
+    def foo[T](self, fn: Callable[[T], None]): ...
+
+class Bar(Foo):
+    def foo[T](self, fn: Callable[[T], None]): ...
+</code></pre>
+<p>So it seems like an issue with callable-type assignability that's specific to ParamSpec. @dhruvmanila could you take a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @carljm on 2025-12-09 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-09 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dalcinl">@dalcinl</a> on 2025-12-10 20:48</div>
+            <div class="timeline-body"><p>I'm getting the same failure with the following reproducer (conde is in <code>*.pyi</code> stub). Most likely the same issue.</p>
+<pre><code class="language-python">from concurrent.futures import Executor, Future
+from typing import Callable, ParamSpec, TypeVar
+from typing import override
+
+_P = ParamSpec(&quot;_P&quot;)
+_T = TypeVar(&quot;_T&quot;)
+
+class MyExecutor(Executor):
+    def submit(
+        self,
+        fn: Callable[_P, _T],
+        /,
+        *args: _P.args,
+        **kwargs: _P.kwargs,
+    ) -&gt; Future[_T]: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-11 11:28</div>
+            <div class="timeline-body"><p>I'm following the trail of the assignability check:</p>
+<p>| <code>self</code> | <code>target</code> |
+|--------|--------|
+| <code>Bar.foo</code> | <code>Foo.foo</code> |
+| <code>Callable[P@foo, None]</code> | <code>Callable[P@foo, None]</code> |
+| <code>P@foo.args</code> | <code>P@foo.args</code> |
+| <code>tuple[object, ...]</code> | <code>P@foo.args</code> |</p>
+<p>The reason for the final row is that <code>P.args</code> has an upper bound of <code>tuple[object, ...]</code> which is done by <a href="https://github.com/astral-sh/ruff/blob/24ed28e31434106e3d0bcc8d1a1ede50b645c5da/crates/ty_python_semantic/src/types.rs#L2174-L2205">this branch</a>. Pyright also fails at the <a href="https://pyright-play.net/?strict=true&amp;code=CYUwZgBAdg9g5gbQFRIAoF0AUAPAXBAFwFcAHAGxARgCMArEAYwIBoIA6D9VpAQwCc4AZ3yo2-IdyQBrAO7jhEUbPkBKXACgIWiPIgBeCNiA">final assignability check</a> but it might be special casing the <code>ParamSpec</code> somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-11 16:22</div>
+            <div class="timeline-body"><p>If we can't figure out a principled fix in time for the beta, I'd be fine with a quick short-term hack that skips Liskov checks for methods that have ParamSpecs in their generic context. Our Liskov checks are far from comprehensive currently anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 17:39</div>
+            <div class="timeline-body"><p>@dhruvmanila It looks to me like we need special-cased handling for ParamSpec assignability to another ParamSpec, rather than falling back to the generalized upper bound like that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-12-15 05:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:38 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default parameter values should be expressions, not types - astral-sh/ty #1882</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Default parameter values should be expressions, not types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1882">#1882</a>
+        opened by <a href="https://github.com/hamdanal">@hamdanal</a>
+        on 2025-12-14 13:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hamdanal">@hamdanal</a> on 2025-12-14 13:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Notice the default values of <code>Literal[False]</code> instead of <code>False</code>. Also <code>…</code>, which is a very common default parameter value in stub files, is rendered as <code>EllipsisType</code>.</p>
+<p><img width="461" height="221" alt="Image" src="https://github.com/user-attachments/assets/104b7f2c-5a96-4706-b28a-d34c094ce300" /></p>
+<h3>Version</h3>
+<p>Latest VSCode extension and ty version 0.0.1-alpha.34</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-12-14 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-12-14 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-14 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-14 13:45</div>
+            <div class="timeline-body"><p>Thanks! I agree that this is confusing and we should change this. We didn't have an issue before now for it though, so this is useful.</p>
+<p>There's some design work we need to do to decide exactly what heuristics to use when rendering default values as <em>values</em> rather than <em>types</em>. There was some discussion in https://github.com/astral-sh/ruff/pull/20991#issuecomment-3426434202 and the following comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-14 13:46</div>
+            <div class="timeline-body"><p>@MichaReiser I don't just see this as a server issue FWIW — we have the same confusing display in our diagnostics emitted from the <code>ty_python_semantic</code> crate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> removed by @MichaReiser on 2025-12-14 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-12-15 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-16 16:37</div>
+            <div class="timeline-body"><p>I took a quick super-naive crack at this but hit a bit of a road-block on dataclasses:</p>
+<pre><code class="language-py">from dataclasses import dataclass, field
+
+@dataclass
+class Member:
+    name: str
+    role: str = field(default=&quot;user&quot;)
+    tag: str | None = field(default=None, init=False)
+
+# revealed: (self: Member, name: str, role: str = Literal[&quot;user&quot;]) -&gt; None
+reveal_type(Member.__init__)
+</code></pre>
+<p>In this case the default type/expression comes from some deeper recursive analysis, and needs to be bubbled up. I'll try to dig through it more later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-16 16:44</div>
+            <div class="timeline-body"><p>For anything complex (and I'd include &quot;generated methods that don't have source code&quot; in that bucket), I think we can just render the parameter default as <code>...</code>. That's still less confusing than what we have currently, I think, and matches pylance.</p>
+<p>For me the more interesting questions are things like:</p>
+<ul>
+<li>How many elements can a list/dict/set/tuple literal have before we fall back to <code>...</code>?</li>
+<li>How &quot;deep&quot; should containers (lists/sets/dicts) be before we decide they're &quot;too complex&quot; and fall back to <code>...</code>? (E.g. if the default is something like <code>[[[[[[[[[], [], (1, 2, 3), (4, 5, 6), {}], {}, ], {}, ]]]]]]]</code> or whatever, the list only has one item but that's clearly not something we should render as part of a bigger signature display (IMO).</li>
+<li>What heuristics should we use to decide when numbers should be rendered in octal? In hexadecimal? Do we just want to copy what the source code does? Pylance does a poor job here IMO.</li>
+<li>Should we just render all attribute expressions as they appear in the source code? Typeshed uses <code>x: int = sys.maxsize</code> a lot; it would be a shame to have all those just rendered as <code>x: int = ...</code>, the way pylance does.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-12-16 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-16 18:40</div>
+            <div class="timeline-body"><p>reopening. https://github.com/astral-sh/ruff/pull/22010 gets us to a much better state but I think there's still lots of improvements we can and should make to get to parity with Pylance here (and I have dreams of doing better than Pylance in this area).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2025-12-16 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-12-16 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Default parameter values are formatted as types in hover tooltips" to "Default parameter values should be expressions, not types" by @Gankra on 2025-12-16 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-16 19:11</div>
+            <div class="timeline-body"><p>rebranding the issue to be about things like <code>x=sys.maxsize</code>, <code>x = [1, 2, 3]</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> removed by @AlexWaygood on 2025-12-16 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-17 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @Gankra on 2025-12-17 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @Gankra by @Gankra on 2025-12-18 00:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

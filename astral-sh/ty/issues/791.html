@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solid semantic tokens - astral-sh/ty #791</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Solid semantic tokens</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/791">#791</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-09 11:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-09 11:48</div>
+            <div class="timeline-body"><p>Follow up on the TODOs in the semantic tokens provider</p>
+<p>See https://github.com/astral-sh/ruff/blob/278f93022acf4ddbb693510cadf99d0eaa53153a/crates/ty_ide/src/semantic_tokens.rs#L26-L51</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @MichaReiser on 2025-07-09 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-09 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-24 17:32</div>
+            <div class="timeline-body"><p>There are many aspects of the semantic token feature where there is no objectively &quot;correct&quot; answer. For example, if a symbol is a variable whose type is declared as <code>Callable</code>, should it be a &quot;variable&quot; or &quot;function&quot; token? The &quot;correct&quot; answer to these questions typically comes down to &quot;whatever is preferred by the most users&quot;. That means this feature will require adjustments over time based on user feedback. In that sense, this feature will never be &quot;complete&quot;.</p>
+<p>The functionality in the current implementation relies on some semantic analysis features that are not yet complete. The most notable one is support for <code>self</code> and <code>cls</code> parameters and attributes accessed from <code>self</code> or <code>cls</code>. Once the semantic analyzer is able to infer types of expressions like <code>self.foo</code>, the semantic token implementation will start classifying these attributes correctly.</p>
+<p>Here's a checklist of additional work that will likely need to be done.</p>
+<ul>
+<li><p>[x] Improve classification for name tokens that are imported from other modules. Currently, these are classified based on their types, which often means they're classified as variables when they should be classes, etc.</p>
+</li>
+<li><p>[ ] Properly handle <code>Annotated</code> type annotations. All type arguments to an <code>Annotated</code> type form other than the first should be treated as value expressions, not as type expressions. Currently, the code blindly treats all type arguments within all annotations as type expressions.</p>
+</li>
+<li><p>[x] Properly categorize names that are parameters as either <code>parameter</code> ✅ , <code>selfParameter</code> ✅  or <code>clsParameter</code> tokens.</p>
+</li>
+<li><p>[ ] Properties (or perhaps more generally, descriptor objects?) defined within a class should be classified as a <code>property</code> token rather than just a <code>variable</code>.</p>
+</li>
+<li><p>[ ] Special forms like <code>Protocol</code> and <code>TypedDict</code> should probably be classified as <code>class</code> tokens (rather than <code>variable</code> tokens), but this is debatable. Could wait for user feedback.</p>
+</li>
+<li><p>[ ] Type aliases (including those defined within the Python 3.12 <code>type</code> statement) do not currently have a dedicated semantic token type, but maybe they should? Could wait for user feedback.</p>
+</li>
+<li><p>[ ] Additional token modifiers could be added (e.g. for static methods, abstract methods, abstract classes, etc.)? Could wait for user feedback.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucach">@lucach</a> on 2025-11-08 08:22</div>
+            <div class="timeline-body"><p>There's also no dedicated support for unions, which seems a secondary aspect but plays a role even in simple common scenarios. Here's one that I bumped into.</p>
+<p>Given that <a href="https://github.com/astral-sh/ruff/blob/16de4aa3ccc3bb8acfb6e750fad639a767b68a0e/crates/ty_python_semantic/src/types.rs#L6373-L6379">the semantics treats <code>float</code> as a union of <code>int</code> and <code>float</code></a>, out of the three type annotations in this simple example:</p>
+<pre><code class="language-py">def f(a: int, b: float, c: str): pass
+</code></pre>
+<p><code>int</code> and <code>str</code> are correctly identified as <code>SemanticTokenType::Class</code>, while <code>float</code> falls back to <code>SemanticTokenType::Variable</code>. When classes/types have a special color (common in editor themes, but currently not on ty's playground), the difference in coloring becomes a bit annoying.</p>
+<hr />
+<p>Edit: Issue #1470 already covers this specific case (I found this issue first because I searched &quot;semantic tokens&quot;  -- this comment will link the two issues).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-11 19:17</div>
+            <div class="timeline-body"><p>For anyone working on this, VS Code has a debugging tool to inspect the semantic token at any given position, see https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide#scope-inspector</p>
+<p>Relevant for <code>float</code>, a type var <code>U</code> gets classified as <code>Class</code> (Related to <em>Type aliases (including those defined within the Python 3.12 type statement) do not currently have a dedicated semantic token type, but maybe they should? Could wait for user feedback.</em>) and classifying <code>float</code> the same way would fix the &quot;mismatch&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-12 16:21</div>
+            <div class="timeline-body"><blockquote>
+<p>int and str are correctly identified as SemanticTokenType::Class, while float falls back to SemanticTokenType::Variable. When classes/types have a special color (common in editor themes, but currently not on ty's playground), the difference in coloring becomes a bit annoying.</p>
+</blockquote>
+<p>This should be fixed in the next release (<a href="https://github.com/astral-sh/ruff/pull/21399">#21399</a>)</p>
+<p><img width="404" height="197" alt="Image" src="https://github.com/user-attachments/assets/334e79fa-4936-401c-b68f-8eedd6facc28" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Follow up on TODOs in semantic token provider" to "Solid semantic tokens" by @MichaReiser on 2025-11-14 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hamdanal">@hamdanal</a> on 2025-12-14 13:52</div>
+            <div class="timeline-body"><p>Let me know if this needs its own issue but it would be cool if both <code>pandas</code> and its <code>pd</code> alias below are colored the same.
+<img width="839" height="281" alt="Image" src="https://github.com/user-attachments/assets/d9330e7f-abff-40f9-aa6b-f4b40ddbce55" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-15 15:48</div>
+            <div class="timeline-body"><p>Is there any intentionality to us having two different colorings for all these different kinds of variable name?</p>
+<p><img width="328" height="257" alt="Image" src="https://github.com/user-attachments/assets/e094d6e0-b97e-4f95-9531-9081e721b10e" /></p>
+<p>Specifically SCREAMING_CASE variable names that are longer than 2 characters and don't have numbers in their name get the darker treatment which feels extremely arbitrary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-15 16:57</div>
+            <div class="timeline-body"><p>@Gankra probably not. I suggest taking a look at the classification to understand why we classify the names the way we do, see this comment for how to do that</p>
+<p>https://github.com/astral-sh/ruff/blob/6599092e8d4cf9ea196e4c1777acc0ed80d4bb4f/crates/ty_ide/src/semantic_tokens.rs#L6-L11</p>
+<p>It's also worth comparing with what pylance does in that instance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-15 18:02</div>
+            <div class="timeline-body"><p>Something else we can do in some cases without totally bespoke extensions:</p>
+<p>If I put this in a docstring it will render as a link in vscode and clicking it does indeed jump to that file+line:</p>
+<pre><code class="language-markdown">[Test](file:///Users/gankra/dev/tmp/tyerr/main.py#L10)
+</code></pre>
+<p>This would not work in code-blocks (and thus would not work in type signatures) but we could potentially do it for single-tick inline <code>MyClass</code>, which aiui is conventionally supposed to refer to an actual item.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-15 18:04</div>
+            <div class="timeline-body"><p>(Alternatively we could value clickability over syntax highlighting of signatures)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexanderHott">@AlexanderHott</a> on 2025-12-17 16:29</div>
+            <div class="timeline-body"><p>It would be nice if more types of ranges were supplied by the semantic token highlighter. In rust-analyzer, things like keywords and punctuation get their own ranges.</p>
+<p><img width="615" height="479" alt="Image" src="https://github.com/user-attachments/assets/ad732b34-2470-4fe2-b531-0f92e005d7f4" /></p>
+<p><img width="605" height="609" alt="Image" src="https://github.com/user-attachments/assets/c88a7cde-55b3-4e14-bcab-e7248f0f9183" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 16:42</div>
+            <div class="timeline-body"><p>Can you say more about what the benefit is of doing this as part of semantic tokens instead of leaving it to syntatic tokens (which most editors provide anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexanderHott">@AlexanderHott</a> on 2025-12-18 17:13</div>
+            <div class="timeline-body"><p>From my limited understanding of how LSP servers work, I'm under the assumption that the LSP knows the range for each token, but chooses not to output it in the semantic token range request.</p>
+<p>(My guess: IDEs are the primary use case for LSPs. IDEs need syntax highlighting without LSPs, because they can't assume the user has the LSP installed, so LSPs only output the ranges that changed.)</p>
+<p>Developing tools around tokens, highlighting, and semantic analysis outside of IDEs is quite complex because of the multi-layer approach that most IDEs use. VSCode uses TextMate, which is not very standardized. From what I've seen, each language has its own set of scopes. VSCode themes that take advantage of semantic highlighting are about 50-100 lines of styling based on semantic tokens, and 4000+ lines of targeting very language-specific TextMate scopes. From a surface level look, tree-sitter seems much better. The types of CST nodes are standardized between parsers.</p>
+<p>I'm building a tool that interfaces with an LSP outside the context of an IDE (I chose rust-analyzer as my first target), and was surprised when I saw that most other LSPs don't output all the highlighting ranges. I <em>could</em> just use tree-sitter on top of the semantic highlighting ranges, but I'm a bit confused why I need another parser on top of the LSP, which already parses and understands the structure of the source code you give it.</p>
+<p>I haven't looked into it at all for the ty codebase, but it seems like it would be easier for me (or someone else) to add the tokens to the LSP response than to integrate a second parser into my project.</p>
+<p>I'm willing to take a shot at implementing the feature, with a bit of guidance, of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 17:24</div>
+            <div class="timeline-body"><p>The main reason not to do it in the LSP is that it makes the response larger, and most editors already run syntax highlighting, so it's just unnecessary duplication. I'm not saying that it's reason enough not to do it, but there are certainly downsides to it for the common use case of usingt ty in an editor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexanderHott">@AlexanderHott</a> on 2025-12-18 17:38</div>
+            <div class="timeline-body"><p>Do you have an estimate for how much larger the response would be? I think only the first response would be large, otherwise it sends incremental updates. Also, the response is already encoded as a list of integers (5 per token I think), which is pretty compact for json.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexanderHott">@AlexanderHott</a> on 2025-12-18 17:42</div>
+            <div class="timeline-body"><p>rust-analyzer does it, and I haven't noticed a difference in the highlighting speed. However, I'm not aware of any other LSP that do it. The only other LSP I looked into was typescript-language-server, and they also don't output all the ranges.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

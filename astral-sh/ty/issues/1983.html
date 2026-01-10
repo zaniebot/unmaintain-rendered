@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condition on non-zero length of string literal doesn't short circuit `and` statements - astral-sh/ty #1983</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Condition on non-zero length of string literal doesn't short circuit `and` statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1983">#1983</a>
+        opened by <a href="https://github.com/kokes">@kokes</a>
+        on 2025-12-17 08:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kokes">@kokes</a> on 2025-12-17 08:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Code that checks <code>if len(value) and value[0] == ' '</code> should work just fine, but ty reports it as <code>index-out-of-bounds</code> in some cases (when the value is <code>foo | Literal[&quot;&quot;]</code>).</p>
+<p>Minimal code</p>
+<pre><code class="language-py">lines: list[str] = [&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]
+for line in lines:
+    if not line:
+        continue
+
+    value = line if len(line) &lt; 3 else &quot;&quot;
+    if len(value) and value[0] == &quot; &quot;:
+        value = value[1:]
+</code></pre>
+<p>uvx ty check:</p>
+<pre><code>error[index-out-of-bounds]: Index 0 is out of bounds for string `Literal[&quot;&quot;]` with length 0
+ --&gt; foo.py:7:23
+  |
+6 |     value = line if len(line) &lt; 3 else &quot;&quot;
+7 |     if len(value) and value[0] == &quot; &quot;:
+  |                       ^^^^^
+8 |         value = value[1:]
+  |
+info: rule `index-out-of-bounds` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>Changing the <code>if</code> condition to <code>if value and value[0]</code> makes it go away as well. Removing <code>if not line</code> (and turning <code>line</code> to a plain <code>str</code> also makes this go away. Seems like <code>ty</code> doesn't see through <code>Literal</code> and doesn't infer that <code>len(Literal[&quot;&quot;])</code> is <code>AlwaysFalsy</code> (or something along those lines).</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-12-17 09:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-17 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-17 18:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

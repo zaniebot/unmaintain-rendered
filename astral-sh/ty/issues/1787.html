@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing argument (`cls`) error when `classmethod` is mixed with other decorators - astral-sh/ty #1787</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing argument (`cls`) error when `classmethod` is mixed with other decorators</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1787">#1787</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2025-12-05 21:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2025-12-05 21:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I couldn't find an existing issue for this. Error is new in alpha 32, no problems reported in alpha 31.</p>
+<pre><code>error[missing-argument]: No argument provided for required parameter `cls`
+   --&gt; tests\test_intl\test_intl.py:880:10
+    |
+879 |     # see: https://github.com/pytest-dev/pytest/issues/363
+880 |     with pytest.MonkeyPatch.context() as mock:
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+881 |         clock: _MockClock
+882 |         if os.name == 'posix':
+    |
+info: Union variant `(cls) -&gt; _GeneratorContextManager[Unknown, None, None]` is incompatible with this call site
+info: Attempted to call union type `((cls) -&gt; _GeneratorContextManager[Unknown, None, None]) | ((cls) -&gt; _GeneratorContextManager[Unknown, None, None])`
+info: rule `missing-argument` is enabled by default
+</code></pre>
+<p>Minimal reproducer (<a href="https://play.ty.dev/2f60d178-9bc8-497a-99fd-02bf7f581465">playground</a>):</p>
+<pre><code class="language-python">from collections.abc import Generator
+from contextlib import contextmanager
+
+class Spam:
+    @contextmanager
+    @classmethod
+    def context(cls) -&gt; Generator[None]:
+        yield None
+
+
+def func():
+    with Spam.context() as ctx:  # No argument provided for required parameter `cls` (missing-argument) [Ln 12, Col 10]
+        print(&quot;blah&quot;)
+</code></pre>
+<p>I imagine this is a bad interaction between the classmethod decorator and other decorators?</p>
+<p>A</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.32 (84a188116 2025-12-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 22:50</div>
+            <div class="timeline-body"><p>Looks like we need to bind <code>cls</code> on classmethods when solving a paramspec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-05 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-05 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @carljm on 2025-12-05 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-08 06:22</div>
+            <div class="timeline-body"><p>I think this requires https://github.com/astral-sh/ruff/pull/21685, I tried the minimal reproducer on that branch and the diagnostics goes away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @carljm on 2025-12-08 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dhruvmanila by @carljm on 2025-12-08 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidandj">@aidandj</a> on 2025-12-10 05:29</div>
+            <div class="timeline-body"><p>I'm guessing <a href="https://play.ty.dev/9e2b444d-8c62-43e4-bcba-52c9b02d597a">this</a> is the same/similar issue. If not I can open a new issue.</p>
+<pre><code>from typing import overload, Type, Dict, TypeVar, Iterator, Tuple, Union, Set
+from contextlib import contextmanager
+
+class Base: ...
+
+
+class Child(Base): ...
+
+
+T = TypeVar(&quot;T&quot;, bound=Base)
+
+@contextmanager
+def cm(
+    d: Dict[Type[T], int] | Dict[str, int],
+):
+    yield ({},)
+
+
+with cm({Child: 1}) as (): # Argument is incorrect: Expected `dict[type[T@cm], int] | dict[str, int]`, found `dict[Unknown | &lt;class 'Child'&gt;, Unknown | int]` (invalid-argument-type) [Ln 19, Col 9]
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-10 06:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm guessing <a href="https://play.ty.dev/9e2b444d-8c62-43e4-bcba-52c9b02d597a">this</a> is the same/similar issue. If not I can open a new issue.</p>
+</blockquote>
+<p>No, this is related to https://github.com/astral-sh/ty/issues/1729</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-10 18:03</div>
+            <div class="timeline-body"><p>@dhruvmanila https://github.com/astral-sh/ruff/pull/21685 has landed, but the reproducer here still errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @ibraheemdev by @carljm on 2025-12-10 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-11 08:29</div>
+            <div class="timeline-body"><p>I don't think this is related to <code>ParamSpec</code> as the issue exists on <code>main</code> as well https://play.ty.dev/939b003c-20bd-4aeb-b607-54d4113d6221:</p>
+<pre><code class="language-py">from collections.abc import Callable
+from typing import Any
+
+
+def decorator(fn: Callable[[Any], None]) -&gt; Callable[[Any], None]:
+    return fn
+
+
+class Foo:
+	@decorator
+    @classmethod
+    def context(cls) -&gt; None:
+        return None
+
+# ty: No argument provided for required parameter 1 [missing-argument]
+Foo.context()
+</code></pre>
+<p>I think I know where the issue is -- in <code>Type::bindings</code> the type of <code>Foo.context</code> is not <code>BoundMethod</code> but <code>CallableType</code> which is why there's no &quot;bound&quot; type argument that's being added to the <code>CallableBinding</code> <a href="https://github.com/astral-sh/ruff/blob/24ed28e31434106e3d0bcc8d1a1ede50b645c5da/crates/ty_python_semantic/src/types/call/bind.rs#L1567-L1570">here</a> which is required to get an accurate <code>CallArguments</code> <a href="https://github.com/astral-sh/ruff/blob/24ed28e31434106e3d0bcc8d1a1ede50b645c5da/crates/ty_python_semantic/src/types/call/arguments.rs#L127-L142">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty 0.0.1a32: classmethod context manager error with `[missing-argument]`" to "Missing argument error when `classmethod` is mixed with other decorators" by @dhruvmanila on 2025-12-11 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Missing argument error when `classmethod` is mixed with other decorators" to "Missing argument (`cls`) error when `classmethod` is mixed with other decorators" by @dhruvmanila on 2025-12-11 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 18:03</div>
+            <div class="timeline-body"><p>I suspect that we need to start representing <code>@classmethod</code> and <code>@staticmethod</code> as a transformation to a staticmethod/classmethod type (which preserves a reference to the underlying function/callable), rather than via flags on function literal types. This would also contribute to fixing https://github.com/astral-sh/ty/issues/1452</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-12-12 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-13 05:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect that we need to start representing <code>@classmethod</code> and <code>@staticmethod</code> as a transformation to a staticmethod/classmethod type</p>
+</blockquote>
+<p>We may still want to do this, but I realized that it's not a solution to this issue. At least, not a complete one -- it might work for the case where <code>@classmethod</code> is applied above another decorator, but it wouldn't work for the case where a Callable-returning decorator is applied above <code>@classmethod</code>. Such a decorator will not naturally preserve a staticmethod/classmethod type, because it returns a Callable type.</p>
+<p>This problem is fundamentally not solvable in a fully correct/robust way, much like the more general question of whether a Callable type is a bound-method descriptor or not. The Callable type does not clarify this distinction, and there's no general way to tell from the signature whether a decorator that takes in a Callable and returns a Callable will (at runtime) actually return a classmethod or not.</p>
+<p>And it's not correct to apply the self-binding behavior to the classmethod's signature &quot;early&quot; (e.g. when some other decorator is applied) -- that behavior happens only later, via the descriptor protocol.</p>
+<p>So I did what it appears other type checkers also do, and applied a heuristic where we assume that a decorator returning a Callable type &quot;propagates&quot; classmethod-ness, if it is applied using decorator syntax, to a method also decorated with <code>@classmethod</code>. This is also the same heuristic we already use for propagating &quot;function-like-ness&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-16 17:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

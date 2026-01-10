@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pyspark.sql.Column.isNull expects an argument - astral-sh/ty #2058</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pyspark.sql.Column.isNull expects an argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2058">#2058</a>
+        opened by <a href="https://github.com/jdferreira">@jdferreira</a>
+        on 2025-12-18 10:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jdferreira">@jdferreira</a> on 2025-12-18 10:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With this file:</p>
+<pre><code class="language-py">from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+
+
+def fn(df: DataFrame) -&gt; DataFrame:
+    return df.withColumn(&quot;foo&quot;, F.col(&quot;bar&quot;).isNull())
+</code></pre>
+<p>Checking results in 1 found diagnostic:</p>
+<pre><code>$ ty check src/x.py
+error[missing-argument]: No argument provided for required parameter 1
+ --&gt; src/x.py:6:33
+  |
+5 | def fn(df: DataFrame) -&gt; DataFrame:
+6 |     return df.withColumn(&quot;foo&quot;, F.col(&quot;bar&quot;).isNull())
+  |                                 ^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Union variant `(Column, /) -&gt; Column` is incompatible with this call site
+info: Attempted to call union type `Unknown | ((Column, /) -&gt; Column)`
+info: rule `missing-argument` is enabled by default
+</code></pre>
+<p>The correct output should be empty. <code>mypy</code> correctly handles this.</p>
+<p>The issue exists because <code>pyspark</code> does some magical things to define functions. I've attached a <a href="https://github.com/user-attachments/files/24232914/script.py"><code>script.py</code></a> file that contains a minimal working example of this issue (which doesn't require <code>pyspark</code>, at all).</p>
+<p>I don't know for sure that this is an issue with <code>ty</code>, since there are some unconventional definitions happening in <code>pyspark</code>, but my intuition tells me that the fact that the code works at runtime means <code>ty</code> should be able to handle this.</p>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 10:32</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>Have you seen https://github.com/astral-sh/ty/issues/1802#issuecomment-3625969605 (in particular that last comment)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdferreira">@jdferreira</a> on 2025-12-18 12:39</div>
+            <div class="timeline-body"><p>I swear I tried to look for this. It seems the error reported is precisely the same I have. Sorry for the extra issue 🙈. Unfortunately, I'm stuck at a particular <code>pyspark</code> version at work for now, so I guess I'll keep seeing this diagnostic.</p>
+<p>Before we close this, however, I'd like to understand if the diagnostics provided for my script above should be considered correct or incorrect, though, specifically because <code>ty</code> raises a concern that does not translate to a runtime issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 12:49</div>
+            <div class="timeline-body"><p>For older pyspark versions, and for the MRE in your script.py, please see the discussion in https://github.com/astral-sh/ty/issues/491. This is a weak point in Python's type system (not specific to ty, in general): should a <code>Callable</code> attribute (<code>is_null_magic</code>) be considered a method descriptor or not?</p>
+<p>For your example here, you would like it to be (the callable takes a &quot;<code>self</code>&quot; parameter of type <code>Column</code>), but there are some other cases where this is not intended. And there is no way to indicate this in the type of a <code>Callable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdferreira">@jdferreira</a> on 2025-12-18 18:19</div>
+            <div class="timeline-body"><p>Thanks for the explanation. Closing as duplicate of #1802.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jdferreira on 2025-12-18 18:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

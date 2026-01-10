@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possibly missing import - astral-sh/ty #309</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Possibly missing import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/309">#309</a>
+        opened by <a href="https://github.com/ion-elgreco">@ion-elgreco</a>
+        on 2025-05-10 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2025-05-10 16:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty is throwing a possible unbound import, but pyright doesn't do this.</p>
+<p>I have a module <code>package.custom</code> that does this, at runtime it adds a certain class to a module or not, based on the required dependencies. If you don't have the dependency installed, it will not show it on the main module, when someone tries to import directly from <code>package.mod.custom</code> it will throw an import error.</p>
+<pre><code class="language-python">try:
+    from package.mod.custom import CustomManager
+
+    __all__.extend([&quot;CustomManager&quot;])
+except ImportError as e:
+    if &quot;pydantic&quot; in str(e):
+        pass
+    else:
+        raise e
+</code></pre>
+<p>In <code>package.mod.custom</code> we do this:</p>
+<pre><code class="language-python">try:
+    import pydantic
+except ImportError as e:
+    if &quot;pydantic&quot; in str(e):
+        raise ImportError(
+            &quot;Install 'package[pydantic]' to use pydantic functionality&quot;,
+        ) from e
+    else:
+        raise e
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.8 (0474b40e1 2025-05-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-10 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 10:48</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>I can't directly try your example because I don't have the full code and information about the project structure, but if I understand correctly, you basically have a setup similar to <a href="https://play.ty.dev/d5d44eaa-4897-41cf-95a4-f83d1b185380">this</a>:</p>
+<p><code>main.py</code>:</p>
+<pre><code class="language-py">from pydantic_support import CustomPydanticFeature
+
+# Use the feature:
+c = CustomPydanticFeature()
+</code></pre>
+<p><code>pydantic_support.py</code>:</p>
+<pre><code class="language-py">try:
+    import pydantic
+
+    class CustomPydanticFeature: ...
+
+except ImportError:
+    print(&quot;Please install pydantic if you want to use this feature&quot;)
+</code></pre>
+<p>In general, we can not model runtime behavior like whether or not the <code>pydantic</code> import leads to an <code>ImportError</code> or not. This seems like a case for a <a href="https://github.com/astral-sh/ty/blob/main/docs/README.md#suppressions">suppression comment</a> for me? You could add a <code># ty: ignore[possibly-unbound-import]</code> comment in the first line there or generally suppress <code>possibly-unbound-import</code> diagnostics in your <a href="https://github.com/astral-sh/ty/blob/main/docs/reference/configuration.md#configuration">project's configuration</a>.</p>
+<p>We realize that this is a common pattern, however, so we're also happy to take more feedback and opinions here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2025-05-13 10:57</div>
+            <div class="timeline-body"><p>Wouldn't resolving to pydantic tell you that you that <code>CustomPydanticFeature</code> will be available?</p>
+<p>The issue is that this is done in external libraries as well, so when I would import things from external libraries, you would get these errors reported from <code>ty</code>, for example <code>dagster-polars</code>: https://github.com/dagster-io/community-integrations/blob/main/libraries/dagster-polars/dagster_polars/<strong>init</strong>.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 11:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Wouldn't resolving to pydantic tell you that you that <code>CustomPydanticFeature</code> will be available?</p>
+</blockquote>
+<p>For the specific case of a <code>try: import …; except ImportError: …</code>, we might theoretically be able to detect that somehow and check whether the import would resolve or not. For a user of such a feature (<code>main.py</code>), I can definitely see how that would be a desirable outcome. Instead of &quot;possibly unbound&quot;, the <code>CustomPydanticFeature</code> would either be definitively bound or definitely unbound.</p>
+<p>For the author of a package that includes this <code>pydantic_support</code> module, things are maybe a bit more complex? Would they need to run their type checking twice, once with that optional dependency installed, and once without? Or would it be more useful to have the <code>CustomPydanicFeature</code> &quot;possibly unbound&quot;, the way we treat it right now? That way, even if you don't have <code>pydantic</code> installed, you could still get proper type checking of code that makes use of <code>CustomPydanticFeature</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2025-05-13 14:59</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Wouldn't resolving to pydantic tell you that you that <code>CustomPydanticFeature</code> will be available?</p>
+</blockquote>
+<p>For the specific case of a <code>try: import …; except ImportError: …</code>, we might theoretically be able to detect that somehow and check whether the import would resolve or not. For a user of such a feature (<code>main.py</code>), I can definitely see how that would be a desirable outcome. Instead of &quot;possibly unbound&quot;, the <code>CustomPydanticFeature</code> would either be definitively bound or definitely unbound.</p>
+</blockquote>
+<p>I agree!</p>
+<blockquote>
+<p>For the author of a package that includes this <code>pydantic_support</code> module, things are maybe a bit more complex? Would they need to run their type checking twice, once with that optional dependency installed, and once without? Or would it be more useful to have the <code>CustomPydanicFeature</code> &quot;possibly unbound&quot;, the way we treat it right now? That way, even if you don't have <code>pydantic</code> installed, you could still get proper type checking of code that makes use of <code>CustomPydanticFeature</code>.</p>
+</blockquote>
+<p>Usually you would run tests with and without a dependency installed, it's something we do in <code>delta-rs</code> with <code>pandas</code> dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/merlinz01">@merlinz01</a> on 2025-09-22 18:29</div>
+            <div class="timeline-body"><p>I get this error when using <code>opensearchpy</code> module:</p>
+<pre><code class="language-python"># .venv/lib/python3.13/site-packages/opensearchpy/__init__.py
+
+...
+
+try:
+    from ._async.client import AsyncOpenSearch
+    from ._async.http_aiohttp import AIOHttpConnection, AsyncConnection
+    from ._async.transport import AsyncTransport
+    from .connection import AsyncHttpConnection
+    from .helpers import AWSV4SignerAsyncAuth
+
+    __all__ += [
+        &quot;AIOHttpConnection&quot;,
+        &quot;AsyncConnection&quot;,
+        &quot;AsyncTransport&quot;,
+        &quot;AsyncOpenSearch&quot;,
+        &quot;AsyncHttpConnection&quot;,
+        &quot;AWSV4SignerAsyncAuth&quot;,
+    ]
+except (ImportError, SyntaxError):
+    pass
+
+</code></pre>
+<p>And when I do</p>
+<pre><code class="language-python">from opensearchpy import AsyncOpenSearch
+</code></pre>
+<p>ty complains:</p>
+<pre><code>warning[possibly-unbound-import]: Member `AsyncOpenSearch` of module `opensearchpy` is possibly unbound
+  --&gt; backend/settings.py:58:34
+58 |         from opensearchpy import AsyncOpenSearch
+   |                                  ^^^^^^^^^^^^^^^
+info: rule `possibly-unbound-import` is enabled by default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 14:50</div>
+            <div class="timeline-body"><p>I think that unless we can understand such cases better, we should probably silence <code>possibly-unbound-import</code> by default as too noisy with false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Possibly unbound import" to "Possibly missing import" by @carljm on 2025-12-17 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-12-18 20:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

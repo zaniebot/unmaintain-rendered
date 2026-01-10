@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>possibly-missing-import with try: import preferred; except ImportError: import alternative - astral-sh/ty #1911</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>possibly-missing-import with try: import preferred; except ImportError: import alternative</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1911">#1911</a>
+        opened by <a href="https://github.com/emeralddcw">@emeralddcw</a>
+        on 2025-12-15 22:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emeralddcw">@emeralddcw</a> on 2025-12-15 22:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Description</strong>
+<code>ty</code> reports a <code>probably-missing-import</code> on an import line that is wrapped in an <code>try..except ImportError</code> block. Since the except block makes the same imported class name available, I did not expect the missing import warning.</p>
+<p><strong>Reproducer</strong>
+The following example is derived from the <a href="https://pyyaml.org/wiki/PyYAMLDocumentation">pyyaml documentation</a>.</p>
+<pre><code class="language-python">from yaml import load, dump
+import sys
+
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
+data = load(sys.stdin, Loader=Loader)
+print(dump(data, Dumper=Dumper))
+</code></pre>
+<p>Note: I also tried with <code>except (ImportError, ModuleNotFoundError)</code> and <code>except Exception</code>, getting the same outcome both cases.</p>
+<pre><code>% uvx --with pyyaml ty check
+warning[possibly-missing-import]: Member `CLoader` of module `yaml` may be missing
+ --&gt; repro.py:5:22
+  |
+4 | try:
+5 |     from yaml import CLoader as Loader, CDumper as Dumper
+  |                      ^^^^^^^^^^^^^^^^^
+6 | except ImportError:
+7 |     from yaml import Loader, Dumper
+  |
+info: rule `possibly-missing-import` is enabled by default
+
+warning[possibly-missing-import]: Member `CDumper` of module `yaml` may be missing
+ --&gt; repro.py:5:41
+  |
+4 | try:
+5 |     from yaml import CLoader as Loader, CDumper as Dumper
+  |                                         ^^^^^^^^^^^^^^^^^
+6 | except ImportError:
+7 |     from yaml import Loader, Dumper
+  |
+info: rule `possibly-missing-import` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.34 (ef3d48ac4 2025-12-12)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-16 02:00</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>In general, Python type checkers don't currently ever silence diagnostics based on try/except blocks. If there were a case for doing so, it would be this example (and maybe <code>try: d[&quot;key&quot;]; except IndexError: ...</code>).</p>
+<p>ty does differ from some other type checkers in that we emit <code>possibly-missing-import</code> at all; other type checkers will just assume that a possibly-undefined import is always defined. So you can easily get similar behavior to other type checkers in this case by just silencing the <code>possibly-missing-import</code> rule in your configuration. Or you can add <code># ty: ignore[possibly-missing-import]</code> on this line. Or (best option?) you can install the <code>types-PyYaml</code> package, which has type stubs for pyyaml which also pretend that <code>CLoader</code> and <code>CDumper</code> always exist.</p>
+<p>All that said, there are similar cases where the attempted import may not exist at all (in the environment we are type checking against), and it might still be nice to silence errors that we know are &quot;caught&quot; (and/or consider try/except ImportError to be a statically-known control flow, based on what modules we see exist). I don't think this will be an immediate priority, but it is something we could consider.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @carljm on 2025-12-16 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @carljm on 2025-12-16 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emeralddcw">@emeralddcw</a> on 2025-12-16 18:44</div>
+            <div class="timeline-body"><p>Thanks for the explanation about how this works, where it may/may-not fit in the project roadmap, and the suggestions for ways to move forward with my usage of ty. I missed that stubs package, and that sounds like a usable solution for my case. I should probably figure out a way to scrub for other missing stubs packages that cover my dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-17 23:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

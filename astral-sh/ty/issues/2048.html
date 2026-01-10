@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slowdown with large enum `match` - astral-sh/ty #2048</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Slowdown with large enum `match`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2048">#2048</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-12-18 02:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-18 02:06</div>
+            <div class="timeline-body"><p>We received a report of a non-linear slowdown with the following:</p>
+<pre><code class="language-python">from enum import StrEnum
+
+class BigEnum(StrEnum):
+    VALUE_01 = &quot;VALUE_01&quot;
+    VALUE_02 = &quot;VALUE_02&quot;
+    VALUE_03 = &quot;VALUE_03&quot;
+    VALUE_04 = &quot;VALUE_04&quot;
+    VALUE_05 = &quot;VALUE_05&quot;
+    VALUE_06 = &quot;VALUE_06&quot;
+    VALUE_07 = &quot;VALUE_07&quot;
+    VALUE_08 = &quot;VALUE_08&quot;
+    VALUE_09 = &quot;VALUE_09&quot;
+    VALUE_10 = &quot;VALUE_10&quot;
+    VALUE_11 = &quot;VALUE_11&quot;
+    VALUE_12 = &quot;VALUE_12&quot;
+    VALUE_13 = &quot;VALUE_13&quot;
+    VALUE_14 = &quot;VALUE_14&quot;
+    VALUE_15 = &quot;VALUE_15&quot;
+    VALUE_16 = &quot;VALUE_16&quot;
+    VALUE_17 = &quot;VALUE_17&quot;
+    VALUE_18 = &quot;VALUE_18&quot;
+    VALUE_19 = &quot;VALUE_19&quot;
+    VALUE_20 = &quot;VALUE_20&quot;
+    VALUE_21 = &quot;VALUE_21&quot;
+    VALUE_22 = &quot;VALUE_22&quot;
+    VALUE_23 = &quot;VALUE_23&quot;
+    VALUE_24 = &quot;VALUE_24&quot;
+    VALUE_25 = &quot;VALUE_25&quot;
+    VALUE_26 = &quot;VALUE_26&quot;
+    VALUE_27 = &quot;VALUE_27&quot;
+    VALUE_28 = &quot;VALUE_28&quot;
+    VALUE_29 = &quot;VALUE_29&quot;
+    VALUE_30 = &quot;VALUE_30&quot;
+    VALUE_31 = &quot;VALUE_31&quot;
+    VALUE_32 = &quot;VALUE_32&quot;
+    VALUE_33 = &quot;VALUE_33&quot;
+    VALUE_34 = &quot;VALUE_34&quot;
+    VALUE_35 = &quot;VALUE_35&quot;
+    VALUE_36 = &quot;VALUE_36&quot;
+    VALUE_37 = &quot;VALUE_37&quot;
+    VALUE_38 = &quot;VALUE_38&quot;
+    VALUE_39 = &quot;VALUE_39&quot;
+    VALUE_40 = &quot;VALUE_40&quot;
+    VALUE_41 = &quot;VALUE_41&quot;
+    VALUE_42 = &quot;VALUE_42&quot;
+    VALUE_43 = &quot;VALUE_43&quot;
+    VALUE_44 = &quot;VALUE_44&quot;
+    VALUE_45 = &quot;VALUE_45&quot;
+    VALUE_46 = &quot;VALUE_46&quot;
+    VALUE_47 = &quot;VALUE_47&quot;
+    VALUE_48 = &quot;VALUE_48&quot;
+    VALUE_49 = &quot;VALUE_49&quot;
+    VALUE_50 = &quot;VALUE_50&quot;
+    VALUE_51 = &quot;VALUE_51&quot;
+    VALUE_52 = &quot;VALUE_52&quot;
+    VALUE_53 = &quot;VALUE_53&quot;
+    VALUE_54 = &quot;VALUE_54&quot;
+    VALUE_55 = &quot;VALUE_55&quot;
+    VALUE_56 = &quot;VALUE_56&quot;
+    VALUE_57 = &quot;VALUE_57&quot;
+    VALUE_58 = &quot;VALUE_58&quot;
+    VALUE_59 = &quot;VALUE_59&quot;
+    VALUE_60 = &quot;VALUE_60&quot;
+    VALUE_61 = &quot;VALUE_61&quot;
+    VALUE_62 = &quot;VALUE_62&quot;
+    VALUE_63 = &quot;VALUE_63&quot;
+    VALUE_64 = &quot;VALUE_64&quot;
+    VALUE_65 = &quot;VALUE_65&quot;
+    VALUE_66 = &quot;VALUE_66&quot;
+    VALUE_67 = &quot;VALUE_67&quot;
+    VALUE_68 = &quot;VALUE_68&quot;
+    VALUE_69 = &quot;VALUE_69&quot;
+    VALUE_70 = &quot;VALUE_70&quot;
+    VALUE_71 = &quot;VALUE_71&quot;
+    VALUE_72 = &quot;VALUE_72&quot;
+    VALUE_73 = &quot;VALUE_73&quot;
+    VALUE_74 = &quot;VALUE_74&quot;
+    VALUE_75 = &quot;VALUE_75&quot;
+    VALUE_76 = &quot;VALUE_76&quot;
+    VALUE_77 = &quot;VALUE_77&quot;
+    VALUE_78 = &quot;VALUE_78&quot;
+    VALUE_79 = &quot;VALUE_79&quot;
+    VALUE_80 = &quot;VALUE_80&quot;
+    VALUE_81 = &quot;VALUE_81&quot;
+    VALUE_82 = &quot;VALUE_82&quot;
+    VALUE_83 = &quot;VALUE_83&quot;
+    VALUE_84 = &quot;VALUE_84&quot;
+    VALUE_85 = &quot;VALUE_85&quot;
+    VALUE_86 = &quot;VALUE_86&quot;
+    VALUE_87 = &quot;VALUE_87&quot;
+    VALUE_88 = &quot;VALUE_88&quot;
+    VALUE_89 = &quot;VALUE_89&quot;
+    VALUE_90 = &quot;VALUE_90&quot;
+    VALUE_91 = &quot;VALUE_91&quot;
+    VALUE_92 = &quot;VALUE_92&quot;
+    VALUE_93 = &quot;VALUE_93&quot;
+    VALUE_94 = &quot;VALUE_94&quot;
+    VALUE_95 = &quot;VALUE_95&quot;
+    VALUE_96 = &quot;VALUE_96&quot;
+    VALUE_97 = &quot;VALUE_97&quot;
+    VALUE_98 = &quot;VALUE_98&quot;
+    VALUE_99 = &quot;VALUE_99&quot;
+
+    def get_info(self) -&gt; tuple[str, int]:
+        match self:
+            case BigEnum.VALUE_01:
+                return self.value, 1
+            case BigEnum.VALUE_02:
+                return self.value, 2
+            case BigEnum.VALUE_03:
+                return self.value, 3
+            case BigEnum.VALUE_04:
+                return self.value, 4
+            case BigEnum.VALUE_05:
+                return self.value, 5
+            case BigEnum.VALUE_06:
+                return self.value, 6
+            case BigEnum.VALUE_07:
+                return self.value, 7
+            case BigEnum.VALUE_08:
+                return self.value, 8
+            case BigEnum.VALUE_09:
+                return self.value, 9
+            case BigEnum.VALUE_10:
+                return self.value, 10
+            case BigEnum.VALUE_11:
+                return self.value, 11
+            case BigEnum.VALUE_12:
+                return self.value, 12
+            case BigEnum.VALUE_13:
+                return self.value, 13
+            case BigEnum.VALUE_14:
+                return self.value, 14
+            case BigEnum.VALUE_15:
+                return self.value, 15
+            case BigEnum.VALUE_16:
+                return self.value, 16
+            case BigEnum.VALUE_17:
+                return self.value, 17
+            case BigEnum.VALUE_18:
+                return self.value, 18
+            case BigEnum.VALUE_19:
+                return self.value, 19
+            case BigEnum.VALUE_20:
+                return self.value, 20
+            case BigEnum.VALUE_21:
+                return self.value, 21
+            case BigEnum.VALUE_22:
+                return self.value, 22
+            case BigEnum.VALUE_23:
+                return self.value, 23
+            case BigEnum.VALUE_24:
+                return self.value, 24
+            case BigEnum.VALUE_25:
+                return self.value, 25
+            case BigEnum.VALUE_26:
+                return self.value, 26
+            case BigEnum.VALUE_27:
+                return self.value, 27
+            case BigEnum.VALUE_28:
+                return self.value, 28
+            case BigEnum.VALUE_29:
+                return self.value, 29
+            case BigEnum.VALUE_30:
+                return self.value, 30
+            case BigEnum.VALUE_31:
+                return self.value, 31
+            case BigEnum.VALUE_32:
+                return self.value, 32
+            case BigEnum.VALUE_33:
+                return self.value, 33
+            case BigEnum.VALUE_34:
+                return self.value, 34
+            case BigEnum.VALUE_35:
+                return self.value, 35
+            case BigEnum.VALUE_36:
+                return self.value, 36
+            case BigEnum.VALUE_37:
+                return self.value, 37
+            case BigEnum.VALUE_38:
+                return self.value, 38
+            case BigEnum.VALUE_39:
+                return self.value, 39
+            case BigEnum.VALUE_40:
+                return self.value, 40
+            case BigEnum.VALUE_41:
+                return self.value, 41
+            case BigEnum.VALUE_42:
+                return self.value, 42
+            case BigEnum.VALUE_43:
+                return self.value, 43
+            case BigEnum.VALUE_44:
+                return self.value, 44
+            case BigEnum.VALUE_45:
+                return self.value, 45
+            case BigEnum.VALUE_46:
+                return self.value, 46
+            case BigEnum.VALUE_47:
+                return self.value, 47
+            case BigEnum.VALUE_48:
+                return self.value, 48
+            case BigEnum.VALUE_49:
+                return self.value, 49
+            case BigEnum.VALUE_50:
+                return self.value, 50
+            case BigEnum.VALUE_51:
+                return self.value, 51
+            case BigEnum.VALUE_52:
+                return self.value, 52
+            case BigEnum.VALUE_53:
+                return self.value, 53
+            case BigEnum.VALUE_54:
+                return self.value, 54
+            case BigEnum.VALUE_55:
+                return self.value, 55
+            case BigEnum.VALUE_56:
+                return self.value, 56
+            case BigEnum.VALUE_57:
+                return self.value, 57
+            case BigEnum.VALUE_58:
+                return self.value, 58
+            case BigEnum.VALUE_59:
+                return self.value, 59
+            case BigEnum.VALUE_60:
+                return self.value, 60
+            case BigEnum.VALUE_61:
+                return self.value, 61
+            case BigEnum.VALUE_62:
+                return self.value, 62
+            case BigEnum.VALUE_63:
+                return self.value, 63
+            case BigEnum.VALUE_64:
+                return self.value, 64
+            case BigEnum.VALUE_65:
+                return self.value, 65
+            case BigEnum.VALUE_66:
+                return self.value, 66
+            case BigEnum.VALUE_67:
+                return self.value, 67
+            case BigEnum.VALUE_68:
+                return self.value, 68
+            case BigEnum.VALUE_69:
+                return self.value, 69
+            case BigEnum.VALUE_70:
+                return self.value, 70
+            case BigEnum.VALUE_71:
+                return self.value, 71
+            case BigEnum.VALUE_72:
+                return self.value, 72
+            case BigEnum.VALUE_73:
+                return self.value, 73
+            case BigEnum.VALUE_74:
+                return self.value, 74
+            case BigEnum.VALUE_75:
+                return self.value, 75
+            case BigEnum.VALUE_76:
+                return self.value, 76
+            case BigEnum.VALUE_77:
+                return self.value, 77
+            case BigEnum.VALUE_78:
+                return self.value, 78
+            case BigEnum.VALUE_79:
+                return self.value, 79
+            case BigEnum.VALUE_80:
+                return self.value, 80
+            case BigEnum.VALUE_81:
+                return self.value, 81
+            case BigEnum.VALUE_82:
+                return self.value, 82
+            case BigEnum.VALUE_83:
+                return self.value, 83
+            case BigEnum.VALUE_84:
+                return self.value, 84
+            case BigEnum.VALUE_85:
+                return self.value, 85
+            case BigEnum.VALUE_86:
+                return self.value, 86
+            case BigEnum.VALUE_87:
+                return self.value, 87
+            case BigEnum.VALUE_88:
+                return self.value, 88
+            case BigEnum.VALUE_89:
+                return self.value, 89
+            case BigEnum.VALUE_90:
+                return self.value, 90
+            case BigEnum.VALUE_91:
+                return self.value, 91
+            case BigEnum.VALUE_92:
+                return self.value, 92
+            case BigEnum.VALUE_93:
+                return self.value, 93
+            case BigEnum.VALUE_94:
+                return self.value, 94
+            case BigEnum.VALUE_95:
+                return self.value, 95
+            case BigEnum.VALUE_96:
+                return self.value, 96
+            case BigEnum.VALUE_97:
+                return self.value, 97
+            case BigEnum.VALUE_98:
+                return self.value, 98
+            case BigEnum.VALUE_99:
+                return self.value, 99
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-12-18 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-18 03:14</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/ruff/pull/22045.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-18 03:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

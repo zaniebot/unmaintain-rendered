@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Unknown` is overriding explicit type annotations - astral-sh/ty #2064</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Unknown` is overriding explicit type annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2064">#2064</a>
+        opened by <a href="https://github.com/MarkusPielmeier">@MarkusPielmeier</a>
+        on 2025-12-18 12:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MarkusPielmeier">@MarkusPielmeier</a> on 2025-12-18 12:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>A variable with explicit type annotation loses its type information when a value of type <code>Unknown</code> is assigned:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+
+# no type annotation to force ty inferring `Unknown`
+def foo(): ...
+
+
+def int_acceptor(value: int) -&gt; None:
+    print(value)
+
+
+def str_acceptor(value: str) -&gt; None:
+    print(value)
+
+
+def bar() -&gt; None:
+    x: int = foo()
+
+    reveal_type(x)
+
+    int_acceptor(x)
+    str_acceptor(x)
+
+</code></pre>
+<p>In this example, i would expect the revealed type of <code>x</code> to be <code>int</code> due to its explicit annotation.
+In consequence, i would expect ty to detect the type mismatch of calling <code>str_acceptor(x)</code>.</p>
+<p>But actually, ty is revealing <code>x</code> being of type <code>Unknown</code> and no further diagnostics being issued.</p>
+<pre><code class="language-txt">$ uvx ty check sandbox.py
+info[revealed-type]: Revealed type
+  --&gt; sandbox.py:18:17
+   |
+17 |     x: int = foo()
+18 |
+19 |     reveal_type(x)
+   |                 ^ `Unknown`
+20 |
+21 |     int_acceptor(x)
+   |
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.3 (fadfe0966 2025-12-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 12:15</div>
+            <div class="timeline-body"><p>Thanks for the report! Please see #136</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-18 12:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

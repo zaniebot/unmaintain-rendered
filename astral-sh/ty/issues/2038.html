@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error[unresolved-attribute]: Object of type `(...) -&gt; Any` has no attribute `__name__` - astral-sh/ty #2038</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error[unresolved-attribute]: Object of type `(...) -&gt; Any` has no attribute `__name__`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2038">#2038</a>
+        opened by <a href="https://github.com/kracekumar">@kracekumar</a>
+        on 2025-12-17 21:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kracekumar">@kracekumar</a> on 2025-12-17 21:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The Python callable has attribute <code>__name__</code>but ty reports as unresolved-attribute.</p>
+<p>Snippet</p>
+<pre><code class="language-python">def export(defn: Callable[..., Any]) -&gt; Callable[..., Any]:
+    &quot;&quot;&quot;Decorator to explicitly mark functions that are exposed in a lib.&quot;&quot;&quot;
+    globals()[defn.__name__] = defn
+    __all__.append(defn.__name__)
+    return defn
+
+</code></pre>
+<p>Diagnostics</p>
+<pre><code>error[unresolved-attribute]: Object of type `(...) -&gt; Any` has no attribute `__name__`
+  --&gt; litecli/packages/special/__init__.py:12:15
+   |
+10 | def export(defn: Callable[..., Any]) -&gt; Callable[..., Any]:
+11 |     &quot;&quot;&quot;Decorator to explicitly mark functions that are exposed in a lib.&quot;&quot;&quot;
+12 |     globals()[defn.__name__] = defn
+   |               ^^^^^^^^^^^^^
+13 |     __all__.append(defn.__name__)
+14 |     return defn
+   |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>mypy: https://mypy-play.net/?mypy=latest&amp;python=3.9&amp;gist=8fca5c11fe239843ba39dc08aa0132ab
+ty: https://play.ty.dev/01eb2208-8168-444c-a0b7-81bc20be124d</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (4283557 2025-12-16) Python: 3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 21:12</div>
+            <div class="timeline-body"><p>Thanks for the report! ty is alerting you to a real problem in your code here: not all callables have a <code>__name__</code> attribute. Functions and lambdas do, but there are other ways to create a callable in Python:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class C:
+...     def __call__(self):
+...         return None
+...
+&gt;&gt;&gt; C().__name__
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    C().__name__
+AttributeError: 'C' object has no attribute '__name__'. Did you mean: '__ne__'?
+</code></pre>
+<p>You can make your code robust against this by checking <code>isinstance(defn, types.FunctionType)</code>, and ty will then be happy: https://play.ty.dev/725cbad9-14e7-4804-bf57-310cd118c217</p>
+<p>There's further discussion in https://github.com/astral-sh/ty/issues/1495 of ways we could improve this experience in ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-17 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kracekumar">@kracekumar</a> on 2025-12-18 00:49</div>
+            <div class="timeline-body"><p>Thank you for the link and suggestion. I think the <code>if</code> check wouldn't hurt.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kracekumar">@kracekumar</a> on 2025-12-18 13:49</div>
+            <div class="timeline-body"><p>I ended up using <code>isinstance check of callabale and hasattr(defn, &quot;__name__&quot;)</code>.</p>
+<pre><code class="language-python">def export(defn: Callable[..., Any]) -&gt; Callable[..., Any]:
+    &quot;&quot;&quot;Decorator to explicitly mark functions that are exposed in a lib.&quot;&quot;&quot;
+    # ty, not all callable has __name__, so check it's has attr __name__
+    if isinstance(defn, Callable) and hasattr(defn, &quot;__name__&quot;)::
+        # ty, suspects some time the __name__ can refer to an object, so explicitly converting to string to prevent it, error[invalid-argument-type].
+        globals()[str(defn.__name__)] = defn
+        __all__.append(str(defn.__name__))
+    return defn
+
+</code></pre>
+<h3>Example declarations</h3>
+<ol>
+<li>Class decorator</li>
+</ol>
+<pre><code class="language-python">
+@export
+class ArgumentMissing(Exception):
+    pass
+</code></pre>
+<ol start="2">
+<li>function decorator</li>
+</ol>
+<pre><code class="language-python">@export
+def parse_special_command(sql: str) -&gt; tuple[str, &quot;Verbosity&quot;, str]:
+    &quot;&quot;&quot;
+    Parse a special command, extracting the base command name, verbosity
+    (normal, verbose (+), or succinct (-)), and the remaining argument.
+    Mirrors the behavior used in similar CLI tools.
+    &quot;&quot;&quot;
+    command, _, arg = sql.partition(&quot; &quot;)
+    verbosity = Verbosity.NORMAL
+    if &quot;+&quot; in command:
+        verbosity = Verbosity.VERBOSE
+    elif &quot;-&quot; in command:
+        verbosity = Verbosity.SUCCINCT
+    command = command.strip().strip(&quot;+-&quot;)
+    return (command, verbosity, arg.strip())
+
+</code></pre>
+<ol start="3">
+<li>nested decorator</li>
+</ol>
+<pre><code class="language-python">@export
+@special_command(
+    &quot;nopager&quot;,
+    &quot;\\n&quot;,
+    &quot;Disable pager, print to stdout.&quot;,
+    arg_type=NO_QUERY,
+    aliases=(&quot;\\n&quot;,),
+    case_sensitive=True,
+)
+def disable_pager() -&gt; list[tuple]:
+    set_pager_enabled(False)
+    return [(None, None, None, &quot;Pager disabled.&quot;)]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 18:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I ended up using <code>isinstance check of callabale and hasattr(defn, &quot;__name__&quot;)</code>.</p>
+</blockquote>
+<p>Some alternative solutions to this are discussed here: https://docs.astral.sh/ty/reference/typing-faq/#why-does-ty-say-callable-has-no-attribute-<strong>name</strong></p>
+<p>In particular, I don't think you need the <code>isinstance(defn, Callable)</code> check? If you require <code>.__name__</code> to be of type <code>str</code>, you should consider using <code>if isinstance(defn, types.FunctionType):</code></p>
+<blockquote>
+<p>Example declarations</p>
+</blockquote>
+<p>I'm not sure what you are trying to show with those examples?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 19:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure what you are trying to show with those examples?</p>
+</blockquote>
+<p>I think the relevant thing we can take from the examples is that this decorator is also used on classes, which is valid because a class is Callable, but would not pass the <code>types.FunctionType</code> isinstance check. But classes do also have <code>__name__</code>. I think the nicest solution in that case is <code>if isinstance(defn, (type, types.FunctionType)):</code>, which also <a href="https://play.ty.dev/45677d0a-6500-4370-92e3-6aa970f02662">works for ty</a>.</p>
+<p>But if you want to support any arbitrary callable object which happens to have a <code>__name__</code> attribute, then the <code>hasattr</code> solution makes sense. (Though I agree checking <code>isinstance(defn, Callable)</code> is redundant.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kracekumar">@kracekumar</a> on 2025-12-18 23:18</div>
+            <div class="timeline-body"><p>@sharkdp apologies for not being verbose. The intention of the examples were to show that there are other types compared to <code>FunctionType</code> that contains <code>__name__</code>. So in the examples, all of these fall into the types: <code>FunctionType or type</code>. So agreed, checking the callable is redundant and <code>isinstance(defn, (type, FunctionType)):</code>is sufficient!</p>
+<p>Than you both!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

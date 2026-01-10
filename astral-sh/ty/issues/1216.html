@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>don't require overload implementation in `TYPE_CHECKING` block / treat them the same as stub files - astral-sh/ty #1216</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>don't require overload implementation in `TYPE_CHECKING` block / treat them the same as stub files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1216">#1216</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2025-09-20 07:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-20 07:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from typing import TYPE_CHECKING, overload
+
+if TYPE_CHECKING:
+    @overload
+    def f(x: int) -&gt; int: ...
+
+    @overload
+    def f(x: str) -&gt; str: ...  # Overloaded non-stub function `f` must have an implementation
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "don't require overload implementation in `TYPE_CHECKING` block" to "don't require overload implementation in `TYPE_CHECKING` block / treat them the same as stub files" by @KotlinIsland on 2025-09-20 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @sharkdp on 2025-09-22 09:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 09:30</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>I agree that the implementation shouldn't necessarily appear within the <code>TYPE_CHECKING</code> block, but shouldn't there still be <em>some</em> implementation in a non-stub file? We would not issue a diagnostic if the implementation of <code>f</code> would follow somewhere later in that file.</p>
+<p>Mypy, pyright, pyrefly all issue the same diagnostic here. Do you have a concrete use case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-22 12:13</div>
+            <div class="timeline-body"><p>I'm sympathetic to this request. I think the most consistent way to treat <code>if TYPE_CHECKING</code> blocks (even if it's not what mypy/pyright do in all situations) is to treat them as &quot;inlined stub files&quot;. Most special casing we apply to stub files should also be applied to <code>if TYPE_CHECKING</code> blocks, because these blocks of code (like stub files) are not executed at runtime, so not all the &quot;normal&quot; rules of runtime semantics need to apply to them in the same way.</p>
+<blockquote>
+<p>I agree that the implementation shouldn't necessarily appear within the <code>TYPE_CHECKING</code> block, but shouldn't there still be <em>some</em> implementation in a non-stub file? We would not issue a diagnostic if the implementation of <code>f</code> would follow somewhere later in that file.</p>
+</blockquote>
+<p>Right, but something like this seems reasonable? And seems quite analogous to having a stub file that lives separately to the &quot;real&quot; runtime implementation:</p>
+<pre><code class="language-py">if TYPE_CHECKING:
+    @overload
+    def f(a: int) -&gt; str: ...
+    @overload
+    def f(a: str) -&gt; int: ...
+else:
+    def f(a: int | str) -&gt; int | str: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 12:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Right, but something like this seems reasonable?</p>
+</blockquote>
+<p>Maybe? But now it even looks like you're actively trying to hide the implementation from your type checker (it has been argued elsewhere that a typechecker potentially shouldn't even look at the <code>else</code> branch of a <code>if TYPE_CHECKING</code> construct).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-22 12:46</div>
+            <div class="timeline-body"><blockquote>
+<p>it has been argued elsewhere that a typechecker potentially shouldn't even look at the <code>else</code> branch of a <code>if TYPE_CHECKING</code> construct)</p>
+</blockquote>
+<p>Right! That's why I'm saying that we shouldn't emit an error if there's no overload implementation when the overloads are in an <code>if TYPE_CHECKING</code> block. The implementation might be &quot;invisible&quot; to us, because it might be in an <code>else</code> block, or an <code>if not TYPE_CHECKING</code> block.</p>
+<p>It's the same reason why we don't emit an error for there being no overload implementation in a <code>.pyi</code> file -- these overloads do have implementations, but the implementations are &quot;invisible&quot; to us when we're analysing the <code>.pyi</code> file. They're in a totally different file (a <code>.py</code> file).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 13:20</div>
+            <div class="timeline-body"><p>I don't really see the stub file analogy. A stub file is provided as a supplement, or potentially in an entirely different (<code>xyz-types</code>) package. There's a reason why the implementation is not part of the stub.</p>
+<p>But if you are adding type annotations to the very same file that the implementation lives in, then why would you actively try to hide the implementation from the type checker? Why is it inside the <code>else</code> block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-22 13:26</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the most consistent way to treat <code>if TYPE_CHECKING</code> blocks</p>
+</blockquote>
+<p>that's how i handled them in basedmypy</p>
+<p>i think the case of &quot;there should be something in the other branch&quot; is a separate issue</p>
+<p>i consider <code>if TYPE_CHECKING</code> to be a primitive, with structures built on-top of it, not into it</p>
+<p>we could have a separate rule &quot;symbol declared within TYPE_CHECKING requires a declaration outside of it&quot;, there are many use cases for <code>TYPE_CHECKING</code>, and to presume that they <strong>all</strong> need a definition isn't quite right to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-09-22 13:27</div>
+            <div class="timeline-body"><p>i've had many times where i needed to define overloads within <code>TYPE_CHECKING</code> for one reason or another</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-22 13:27</div>
+            <div class="timeline-body"><p>I think the advantage of consistently treating <code>if TYPE_CHECKING</code> blocks as &quot;inlined stub files&quot; everywhere is it provides an easy way to understand our behaviour and it makes it easy to explain our behaviour to users in issues and documentation.</p>
+<p>I also think that using <code>if not TYPE_CHECKING</code> blocks to hide highly dynamic code from a type checker is a valid use of the feature. Not all Python plays well with static type-checking; on some functions, a type checker is going to emit a prohibitive number of false positives, and you just want to silence all errors in that function. But maybe we should just say that the way you should deal with that is to add <code>@no_type_check</code> to the implementation function? I do agree that <em>usually</em> there's no good reason to hide an overload implementation from a type checker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-15 08:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:38 UTC
+    </footer>
+</body>
+</html>

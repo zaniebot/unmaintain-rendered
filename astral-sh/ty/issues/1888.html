@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive when assigning to Final instance attribute in __init__ and adding generics - astral-sh/ty #1888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive when assigning to Final instance attribute in __init__ and adding generics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1888">#1888</a>
+        opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a>
+        on 2025-12-15 13:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2025-12-15 13:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Similar to the closed https://github.com/astral-sh/ty/issues/1409, but when adding generics.</p>
+<pre><code class="language-python">import asyncio
+from typing import Final
+
+
+class AsyncConcurrentDictionary[TKey, TValue]:
+    _dict: Final[dict[TKey, TValue]]
+    _lock: Final[asyncio.Lock]
+
+    def __init__(self) -&gt; None:
+        self._dict = {}  # error[invalid-assignment]: Cannot assign to final attribute `_dict` on type `Self@__init__`
+        self._lock = asyncio.Lock()  # error[invalid-assignment]: Cannot assign to final attribute `_lock` on type `Self@__init__`
+</code></pre>
+<p>https://play.ty.dev/2cb2f484-013d-4da2-a7f4-32a0144f5273</p>
+<p>After some experiments, I figured out that if you remove the generics or repeat the type hints in <code>__init__</code>, the errors disappear, i.e.:</p>
+<pre><code class="language-python">import asyncio
+from typing import Final
+
+
+class AsyncConcurrentDictionary:
+    _dict: Final[dict[int, int]]
+    _lock: Final[asyncio.Lock]
+
+    def __init__(self) -&gt; None:
+        self._dict = {}
+        self._lock = asyncio.Lock()
+
+# or
+
+class AsyncConcurrentDictionary[TKey, TValue]:
+    _dict: Final[dict[TKey, TValue]]
+    _lock: Final[asyncio.Lock]
+
+    def __init__(self) -&gt; None:
+        self._dict: dict[TKey, TValue] = {}
+        self._lock: asyncio.Lock = asyncio.Lock()
+</code></pre>
+<h3>Version</h3>
+<p>0.0.1a34</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-16 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-12-16 01:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

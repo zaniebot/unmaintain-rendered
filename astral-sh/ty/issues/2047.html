@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covariant protocols confuse generic type inference - astral-sh/ty #2047</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Covariant protocols confuse generic type inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2047">#2047</a>
+        opened by <a href="https://github.com/refi64">@refi64</a>
+        on 2025-12-18 01:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/refi64">@refi64</a> on 2025-12-18 01:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I don't <em>think</em> this is a duplicate, but honestly this is really strange to search and thus I might not be doing it correctly.</p>
+<p>https://play.ty.dev/4c5a6497-d459-4ad9-8b51-11ea091cd1cb</p>
+<pre><code class="language-python">from typing import Protocol
+
+# This *needs* to be a protocol. If you:
+# - Remove the (Protocol) base.
+# - `...` -&gt; `assert False` (so ty doesn't complain about the missing return value).
+# then this all *works*.
+class Co[T](Protocol):
+    def x(self) -&gt; T:
+        ...
+
+# ===== EXAMPLE 1 =====
+
+class X[T]:
+    def __init__(self, a: Co[T], b: T) -&gt; None:
+        pass
+
+def example_1(a: Co[str], b: int) -&gt; None:
+    # This line results in:
+    # - Revealed type: `X[Unknown]`
+    # - Argument to bound method `__init__` is incorrect: Expected `Co[int]`, found `Co[str]`
+    # even though a is Co[str] and thus T could be inferred as `str | int`.
+    # Pyright *does* infer it as `X[str | int]`, and mypy infers it as `X[object]`.
+    reveal_type(X(a, b))
+
+    # If we explicitly set the type of T, this passes type checking:
+    # - Revealed type: `X[int | str]`
+    reveal_type(X[int | str](a, b))
+
+# ===== EXAMPLE 2 =====
+# This one swaps out the constructor invocation for a regular function.
+
+def f[T](a: Co[T], b: T) -&gt; T:
+    assert False
+
+def id1(x: Co[int | str]) -&gt; Co[int | str]: return x
+def id2(x: int | str) -&gt; int | str: return x
+
+def example_2(a: Co[str], b: int) -&gt; None:
+    # - Revealed type: `int`
+    # - Argument to function `f` is incorrect: Expected `Co[int]`, found `Co[str]`
+    # Similar to the above, pyright infers `str | int` and mypy `object`.
+    reveal_type(f(a, b))
+
+    # We can't explicitly set T for a function, so this passes `a` and `b` into
+    # two identity functions to force T to be `int | str`.
+    # - Revealed type: `int | str`
+    reveal_type(f(id1(a), id2(b)))
+</code></pre>
+<p>This is a &quot;reduced&quot; (lol) example that I got from this smaller failure (https://play.ty.dev/33bb9cbc-5d32-4966-b7c5-3645a166140a):</p>
+<pre><code class="language-python">from typing import reveal_type
+reveal_type(dict({'a': 'b'}, c=1))
+</code></pre>
+<p>which passes under pyright with <code>dict[str, str | int]</code> and mypy with <code>dict[str, object]</code> but fails under ty.</p>
+<p><strong>EDIT:</strong> specifically, the <code>dict</code> constructor takes an <code>Iterable[tuple[...]]</code>, and <code>Iterable</code> is a covariant protocol.</p>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/refi64">@refi64</a> on 2025-12-18 01:58</div>
+            <div class="timeline-body"><p>argh and just a few minutes later I find #1714, this might be the same issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 09:48</div>
+            <div class="timeline-body"><p>Thank you for reporting this. This looks very much related to #1714, yes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-18 09:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

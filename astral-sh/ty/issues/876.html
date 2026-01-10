@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enums: advanced features - astral-sh/ty #876</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enums: advanced features</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/876">#876</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-23 06:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 06:51</div>
+            <div class="timeline-body"><p>We have basic support for enums, but there is a long tail of things that could be improved:</p>
+<ul>
+<li>[x] Infer type for <a href="https://typing.python.org/en/latest/spec/enums.html#member-names">member names</a> and <a href="https://typing.python.org/en/latest/spec/enums.html#member-values">member values</a>.</li>
+<li>[x] Special-case handling of <code>IntEnum</code>, <code>StrEnum</code>, or other custom classes that derive from both <code>Enum</code> and some other class (infer appropriate types for member values)</li>
+<li>[x] <code>auto()</code> values</li>
+<li>[ ] Handling of <code>enum.Flag</code> (enum expansion may not be performed for subclasses of <code>enum.Flag</code>)</li>
+<li>[ ] Custom <code>__new__</code> or <code>__init__</code> methods in enums.</li>
+<li>[ ] Support for <code>_generate_next_value_</code></li>
+<li>[ ] Special-case handling for call to enum class to retrieve member by value (e.g. <code>Color(&quot;red&quot;)</code>)</li>
+<li>[ ] Function syntax to create Enums</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @sharkdp on 2025-07-23 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andre-Medina">@Andre-Medina</a> on 2025-09-03 01:48</div>
+            <div class="timeline-body"><p>Noticed enums weren't typed quite right in the <code>ty</code> VSC extension, glad to see it being worked on.</p>
+<p>should also consider <code>EnumClass.ITEM.name</code> being type <code>str</code></p>
+<pre><code class="language-python">from enum import StrEnum, IntEnum
+
+class TempTest(StrEnum):
+    ITEM = &quot;data&quot;
+    ITEM_2 = &quot;more_data&quot;
+
+
+should_be_enum_type = TempTest.ITEM
+should_be_str = TempTest.ITEM.value
+should_be_str_also = TempTest.ITEM.name
+
+class TestInt(IntEnum):
+
+    ITEM = 1
+    ITEM_2 = 2
+
+should_be_enum_type_also = TestInt.ITEM
+should_be_int = TestInt.ITEM.value
+should_be_str_still = TestInt.ITEM.name
+</code></pre>
+<p>With the extension in its current state, <code>ty</code> confusing some type hints:
+<img width="993" height="686" alt="Image" src="https://github.com/user-attachments/assets/a5962c6f-20ec-4f6c-816f-98c63ed7d786" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-03 07:15</div>
+            <div class="timeline-body"><p>@Andre-Medina It looks like <code>StrEnum</code> can't be imported? It's only available on 3.11 and later. How did you configure your Python version?</p>
+<p>Once you have fixed that, <code>should_be_enum_type</code> should indeed be of type <code>Literal[TempTest.ITEM]</code>. Accessing <code>.value</code> and <code>.name</code> with more precise types is not yet supported, but it's listed as the first item in the enumeration above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andre-Medina">@Andre-Medina</a> on 2025-09-03 09:11</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like StrEnum can't be imported? It's only available on 3.11 and later. How did you configure your Python version?</p>
+</blockquote>
+<p>Unsure, probably an issue with my local env, but good to hear <code>.value</code> and <code>.name</code> will be supported :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidandj">@aidandj</a> on 2025-09-18 20:14</div>
+            <div class="timeline-body"><p>There is a backported package <a href="https://pypi.org/project/backports.strenum/">backports.strenum</a> that I've been using for legacy code.</p>
+<p>I was testing out the latest main, and there is a regression. Using that <code>StrEnum</code> package, I used to get a <code>str</code> for the revealed type on alpha20. But on the latest main (in ruff) I get <code>Literal[&lt;index of item&gt;]</code></p>
+<pre><code>if sys.version_info &gt;= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
+from enum import Enum, auto
+
+
+class SomeEnum(StrEnum):
+    A = auto()
+    B = auto()
+    C = auto()
+    D = auto()
+
+
+reveal_type(SomeEnum.A.value)
+</code></pre>
+<p>With alpha 20, I get type string. With ruff commit: <code>706be0a6e7e09936511198f2ff8982915520d138</code> I get <code>Literal[1]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-09-19 00:59</div>
+            <div class="timeline-body"><p>ah - <a href="https://github.com/thejchap/ruff/blob/bc89d0394ca2ee3161df37b8fa3de307d001e54f/crates/ty_python_semantic/src/types/enums.rs#L151">this</a> is being exposed now</p>
+<p>it does look like the type could actually be <code>Literal['a']</code> instead of <code>builtins.str</code></p>
+<p>from the docs:</p>
+<blockquote>
+<p>Note Using <a href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a> with <a href="https://docs.python.org/3/library/enum.html#enum.StrEnum">StrEnum</a> results in the lower-cased member name as the value.</p>
+</blockquote>
+<p>https://docs.python.org/3/library/enum.html#enum.StrEnum</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidandj">@aidandj</a> on 2025-09-19 01:07</div>
+            <div class="timeline-body"><p>I didn't actually test it with 3.11 I'm realizing. I'll do that later.</p>
+<p>Confirmed same behavior on 3.12 and commit <code>706be0a6e7e09936511198f2ff8982915520d138</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-19 07:11</div>
+            <div class="timeline-body"><p>Thank you for reporting this. We should fix this. That's why the <em>&quot;Special-case handling of IntEnum, StrEnum&quot;</em> and <em>&quot;auto() values&quot;</em> items are still unchecked in the description above. We could either patch this by not inferring a precise type for <code>.value</code> if we derive from <code>StrEnum</code>. Or we could implement the actual <code>auto</code> behavior for <code>StrEnum</code>, like @thejchap suggested, if it's not too hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-09-19 12:57</div>
+            <div class="timeline-body"><p>i can take a look at this next week</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enums</span> added by @AlexWaygood on 2025-09-23 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-12 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 11:35</div>
+            <div class="timeline-body"><p>I guess another example for this issue is:</p>
+<pre><code class="language-sh">$ ty check t.py 
+t.py:10:22: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+Found 1 diagnostic
+$ cat t.py
+</code></pre>
+<pre><code class="language-python">import enum
+from typing import Literal
+
+
+class Foo(enum.IntEnum):
+    foo = 1
+    bar = 2
+
+
+def foo(bar: Literal[Foo.foo | Foo.bar]) -&gt; None:
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 12:03</div>
+            <div class="timeline-body"><p>@spaceone that looks like a true positive to me. <code>Foo.foo | Foo.bar</code> is not an enum member. <code>|</code> unions are not allowed inside <code>Literal[]</code> slices. You probably meant to write <code>Literal[Foo.foo, Foo.bar]</code> (a comma instead of a <code>|</code>).</p>
+<p>We could probably improve our diagnostic for that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 12:12</div>
+            <div class="timeline-body"><p>@AlexWaygood ah thank you. Then it's a undetected case of mypy.</p>
+<p>→https://github.com/python/mypy/issues/20438</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

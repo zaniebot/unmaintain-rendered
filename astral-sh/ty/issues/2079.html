@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infer correct `Protocol` adherence when mixing explicit args and `ParamSpec` - astral-sh/ty #2079</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Infer correct `Protocol` adherence when mixing explicit args and `ParamSpec`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2079">#2079</a>
+        opened by <a href="https://github.com/oliverlambson">@oliverlambson</a>
+        on 2025-12-18 16:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oliverlambson">@oliverlambson</a> on 2025-12-18 16:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When mixing explicit args and a ParamSpec in a protocol, functions that correctly implement the protocol are reported as not adhering to it.</p>
+<p>Minimal reproduction:</p>
+<pre><code class="language-python">&quot;&quot;&quot;ty doesn't infer correct protocol adherence when mixing paramspec with additional args&quot;&quot;&quot;
+
+from typing import Any, Protocol
+
+
+class MyFuncProto[T, **P](Protocol):
+    def __call__(self, ctx: dict[str, Any], *args: P.args, **kwargs: P.kwargs) -&gt; T: ...
+
+
+def handle_func[T, **P](
+    fn: MyFuncProto[T, P],
+    ctx: dict[str, Any] | None = None,
+    *args: P.args,
+    **kwargs: P.kwargs,
+) -&gt; T:
+    if ctx is None:
+        ctx = {}
+    return fn(ctx, *args, **kwargs)
+
+
+def foo_basic(ctx: dict[str, Any]) -&gt; None:
+    pass
+
+
+handle_func(foo_basic)
+
+
+def foo_arg(ctx: dict[str, Any], name: str) -&gt; None:
+    pass
+
+
+handle_func(foo_arg, name=&quot;test&quot;)
+
+
+def foo_kwarg(ctx: dict[str, Any], name: str = &quot;default&quot;) -&gt; None:
+    pass
+
+
+handle_func(foo_kwarg)
+handle_func(foo_kwarg, name=&quot;test&quot;)
+</code></pre>
+<p>MyPy validates this as passing, but ty produces the following errors:</p>
+<pre><code>error[invalid-argument-type]: Argument to function `handle_func` is incorrect
+  --&gt; repro.py:25:13
+   |
+25 | handle_func(foo_basic)
+   |             ^^^^^^^^^ Expected `MyFuncProto[Unknown, (...)]`, found `def foo_basic(ctx: dict[str, Any]) -&gt; None`
+   |
+info: Function defined here
+  --&gt; repro.py:10:5
+   |
+10 | def handle_func[T, **P](
+   |     ^^^^^^^^^^^
+11 |     fn: MyFuncProto[T, P],
+   |     --------------------- Parameter declared here
+12 |     ctx: dict[str, Any] | None = None,
+13 |     *args: P.args,
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to function `handle_func` is incorrect
+  --&gt; repro.py:32:13
+   |
+32 | handle_func(foo_arg, name=&quot;test&quot;)
+   |             ^^^^^^^ Expected `MyFuncProto[Unknown, (...)]`, found `def foo_arg(ctx: dict[str, Any], name: str) -&gt; None`
+   |
+info: Function defined here
+  --&gt; repro.py:10:5
+   |
+10 | def handle_func[T, **P](
+   |     ^^^^^^^^^^^
+11 |     fn: MyFuncProto[T, P],
+   |     --------------------- Parameter declared here
+12 |     ctx: dict[str, Any] | None = None,
+13 |     *args: P.args,
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to function `handle_func` is incorrect
+  --&gt; repro.py:39:13
+   |
+39 | handle_func(foo_kwarg)
+   |             ^^^^^^^^^ Expected `MyFuncProto[Unknown, (...)]`, found `def foo_kwarg(ctx: dict[str, Any], name: str = &quot;default&quot;) -&gt; None`
+40 | handle_func(foo_kwarg, name=&quot;test&quot;)
+   |
+info: Function defined here
+  --&gt; repro.py:10:5
+   |
+10 | def handle_func[T, **P](
+   |     ^^^^^^^^^^^
+11 |     fn: MyFuncProto[T, P],
+   |     --------------------- Parameter declared here
+12 |     ctx: dict[str, Any] | None = None,
+13 |     *args: P.args,
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to function `handle_func` is incorrect
+  --&gt; repro.py:40:13
+   |
+39 | handle_func(foo_kwarg)
+40 | handle_func(foo_kwarg, name=&quot;test&quot;)
+   |             ^^^^^^^^^ Expected `MyFuncProto[Unknown, (...)]`, found `def foo_kwarg(ctx: dict[str, Any], name: str = &quot;default&quot;) -&gt; None`
+   |
+info: Function defined here
+  --&gt; repro.py:10:5
+   |
+10 | def handle_func[T, **P](
+   |     ^^^^^^^^^^^
+11 |     fn: MyFuncProto[T, P],
+   |     --------------------- Parameter declared here
+12 |     ctx: dict[str, Any] | None = None,
+13 |     *args: P.args,
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 4 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>0.0.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 17:09</div>
+            <div class="timeline-body"><p>Thanks for the report! I think this is https://github.com/astral-sh/ty/issues/1714</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-18 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oliverlambson">@oliverlambson</a> on 2025-12-18 18:53</div>
+            <div class="timeline-body"><p>@AlexWaygood thanks that looks good, sorry I missed it</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

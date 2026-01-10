@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Large match/case on enum causes slowdown (exhaustiveness checks?) - astral-sh/ty #1980</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Large match/case on enum causes slowdown (exhaustiveness checks?)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1980">#1980</a>
+        opened by <a href="https://github.com/indigoviolet">@indigoviolet</a>
+        on 2025-12-17 06:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/indigoviolet">@indigoviolet</a> on 2025-12-17 06:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from enum import StrEnum
+
+
+class ExampleEnum(StrEnum):
+    item_0 = &quot;item_0&quot;
+    item_1 = &quot;item_1&quot;
+    item_2 = &quot;item_2&quot;
+    item_3 = &quot;item_3&quot;
+    item_4 = &quot;item_4&quot;
+    item_5 = &quot;item_5&quot;
+    item_6 = &quot;item_6&quot;
+    item_7 = &quot;item_7&quot;
+    item_8 = &quot;item_8&quot;
+    item_9 = &quot;item_9&quot;
+    item_10 = &quot;item_10&quot;
+    item_11 = &quot;item_11&quot;
+    item_12 = &quot;item_12&quot;
+    item_13 = &quot;item_13&quot;
+    item_14 = &quot;item_14&quot;
+    item_15 = &quot;item_15&quot;
+    item_16 = &quot;item_16&quot;
+    item_17 = &quot;item_17&quot;
+    item_18 = &quot;item_18&quot;
+    item_19 = &quot;item_19&quot;
+    item_20 = &quot;item_20&quot;
+    item_21 = &quot;item_21&quot;
+    item_22 = &quot;item_22&quot;
+    item_23 = &quot;item_23&quot;
+    item_24 = &quot;item_24&quot;
+    item_25 = &quot;item_25&quot;
+    item_26 = &quot;item_26&quot;
+    item_27 = &quot;item_27&quot;
+    item_28 = &quot;item_28&quot;
+    item_29 = &quot;item_29&quot;
+    item_30 = &quot;item_30&quot;
+    item_31 = &quot;item_31&quot;
+    item_32 = &quot;item_32&quot;
+    item_33 = &quot;item_33&quot;
+    item_34 = &quot;item_34&quot;
+    item_35 = &quot;item_35&quot;
+    item_36 = &quot;item_36&quot;
+    item_37 = &quot;item_37&quot;
+    item_38 = &quot;item_38&quot;
+    item_39 = &quot;item_39&quot;
+    item_40 = &quot;item_40&quot;
+    item_41 = &quot;item_41&quot;
+    item_42 = &quot;item_42&quot;
+    item_43 = &quot;item_43&quot;
+    item_44 = &quot;item_44&quot;
+    item_45 = &quot;item_45&quot;
+    item_46 = &quot;item_46&quot;
+    item_47 = &quot;item_47&quot;
+    item_48 = &quot;item_48&quot;
+    item_49 = &quot;item_49&quot;
+    item_50 = &quot;item_50&quot;
+    item_51 = &quot;item_51&quot;
+    item_52 = &quot;item_52&quot;
+    item_53 = &quot;item_53&quot;
+    item_54 = &quot;item_54&quot;
+    item_55 = &quot;item_55&quot;
+    item_56 = &quot;item_56&quot;
+    item_57 = &quot;item_57&quot;
+    item_58 = &quot;item_58&quot;
+    item_59 = &quot;item_59&quot;
+    item_60 = &quot;item_60&quot;
+    item_61 = &quot;item_61&quot;
+    item_62 = &quot;item_62&quot;
+    item_63 = &quot;item_63&quot;
+    item_64 = &quot;item_64&quot;
+    item_65 = &quot;item_65&quot;
+    item_66 = &quot;item_66&quot;
+    item_67 = &quot;item_67&quot;
+    item_68 = &quot;item_68&quot;
+    item_69 = &quot;item_69&quot;
+    item_70 = &quot;item_70&quot;
+    item_71 = &quot;item_71&quot;
+    item_72 = &quot;item_72&quot;
+    item_73 = &quot;item_73&quot;
+    item_74 = &quot;item_74&quot;
+    item_75 = &quot;item_75&quot;
+    item_76 = &quot;item_76&quot;
+    item_77 = &quot;item_77&quot;
+    item_78 = &quot;item_78&quot;
+    item_79 = &quot;item_79&quot;
+    item_80 = &quot;item_80&quot;
+    item_81 = &quot;item_81&quot;
+    item_82 = &quot;item_82&quot;
+    item_83 = &quot;item_83&quot;
+    item_84 = &quot;item_84&quot;
+    item_85 = &quot;item_85&quot;
+    item_86 = &quot;item_86&quot;
+    item_87 = &quot;item_87&quot;
+    item_88 = &quot;item_88&quot;
+    item_89 = &quot;item_89&quot;
+    item_90 = &quot;item_90&quot;
+    item_91 = &quot;item_91&quot;
+    item_92 = &quot;item_92&quot;
+    item_93 = &quot;item_93&quot;
+    item_94 = &quot;item_94&quot;
+    item_95 = &quot;item_95&quot;
+    item_96 = &quot;item_96&quot;
+    item_97 = &quot;item_97&quot;
+    item_98 = &quot;item_98&quot;
+    item_99 = &quot;item_99&quot;
+
+
+def describe(doc: ExampleEnum) -&gt; str:
+    match doc:
+        case ExampleEnum.item_0:
+            return &quot;Handled item_0&quot;
+        case ExampleEnum.item_1:
+            return &quot;Handled item_1&quot;
+        case ExampleEnum.item_2:
+            return &quot;Handled item_2&quot;
+        case ExampleEnum.item_3:
+            return &quot;Handled item_3&quot;
+        case ExampleEnum.item_4:
+            return &quot;Handled item_4&quot;
+        case ExampleEnum.item_5:
+            return &quot;Handled item_5&quot;
+        case ExampleEnum.item_6:
+            return &quot;Handled item_6&quot;
+        case ExampleEnum.item_7:
+            return &quot;Handled item_7&quot;
+        case ExampleEnum.item_8:
+            return &quot;Handled item_8&quot;
+        case ExampleEnum.item_9:
+            return &quot;Handled item_9&quot;
+        case ExampleEnum.item_10:
+            return &quot;Handled item_10&quot;
+        case ExampleEnum.item_11:
+            return &quot;Handled item_11&quot;
+        case ExampleEnum.item_12:
+            return &quot;Handled item_12&quot;
+        case ExampleEnum.item_13:
+            return &quot;Handled item_13&quot;
+        case ExampleEnum.item_14:
+            return &quot;Handled item_14&quot;
+        case ExampleEnum.item_15:
+            return &quot;Handled item_15&quot;
+        case ExampleEnum.item_16:
+            return &quot;Handled item_16&quot;
+        case ExampleEnum.item_17:
+            return &quot;Handled item_17&quot;
+        case ExampleEnum.item_18:
+            return &quot;Handled item_18&quot;
+        case ExampleEnum.item_19:
+            return &quot;Handled item_19&quot;
+        case ExampleEnum.item_20:
+            return &quot;Handled item_20&quot;
+        case ExampleEnum.item_21:
+            return &quot;Handled item_21&quot;
+        case ExampleEnum.item_22:
+            return &quot;Handled item_22&quot;
+        case ExampleEnum.item_23:
+            return &quot;Handled item_23&quot;
+        case ExampleEnum.item_24:
+            return &quot;Handled item_24&quot;
+        case ExampleEnum.item_25:
+            return &quot;Handled item_25&quot;
+        case ExampleEnum.item_26:
+            return &quot;Handled item_26&quot;
+        case ExampleEnum.item_27:
+            return &quot;Handled item_27&quot;
+        case ExampleEnum.item_28:
+            return &quot;Handled item_28&quot;
+        case ExampleEnum.item_29:
+            return &quot;Handled item_29&quot;
+        case ExampleEnum.item_30:
+            return &quot;Handled item_30&quot;
+        case ExampleEnum.item_31:
+            return &quot;Handled item_31&quot;
+        case ExampleEnum.item_32:
+            return &quot;Handled item_32&quot;
+        case ExampleEnum.item_33:
+            return &quot;Handled item_33&quot;
+        case ExampleEnum.item_34:
+            return &quot;Handled item_34&quot;
+        case ExampleEnum.item_35:
+            return &quot;Handled item_35&quot;
+        case ExampleEnum.item_36:
+            return &quot;Handled item_36&quot;
+        case ExampleEnum.item_37:
+            return &quot;Handled item_37&quot;
+        case ExampleEnum.item_38:
+            return &quot;Handled item_38&quot;
+        case ExampleEnum.item_39:
+            return &quot;Handled item_39&quot;
+        case ExampleEnum.item_40:
+            return &quot;Handled item_40&quot;
+        case ExampleEnum.item_41:
+            return &quot;Handled item_41&quot;
+        case ExampleEnum.item_42:
+            return &quot;Handled item_42&quot;
+        case ExampleEnum.item_43:
+            return &quot;Handled item_43&quot;
+        case ExampleEnum.item_44:
+            return &quot;Handled item_44&quot;
+        case ExampleEnum.item_45:
+            return &quot;Handled item_45&quot;
+        case ExampleEnum.item_46:
+            return &quot;Handled item_46&quot;
+        case ExampleEnum.item_47:
+            return &quot;Handled item_47&quot;
+        case ExampleEnum.item_48:
+            return &quot;Handled item_48&quot;
+        case ExampleEnum.item_49:
+            return &quot;Handled item_49&quot;
+
+    return 2
+
+</code></pre>
+<p>https://play.ty.dev/f3be0b59-0593-4ecc-8c23-0cea276ac514</p>
+<p>The slowness gets worse as the number of <code>case</code> arms increases.</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-12-17 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enums</span> added by @AlexWaygood on 2025-12-17 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-17 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/indigoviolet">@indigoviolet</a> on 2025-12-17 18:54</div>
+            <div class="timeline-body"><p>Same issue as #1588</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 21:40</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-17 21:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

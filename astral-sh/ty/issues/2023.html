@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type narrowing for discriminated type unions - astral-sh/ty #2023</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type narrowing for discriminated type unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2023">#2023</a>
+        opened by <a href="https://github.com/konst-aa">@konst-aa</a>
+        on 2025-12-17 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konst-aa">@konst-aa</a> on 2025-12-17 17:29</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello all, I've been really liking ty so far, it's substantially faster than any other python tooling I've used, and it's very stable</p>
+<p>However, there have been some regressions since switching from mypy. The most prominent one is how ty handles discriminated type unions. When checked with mypy (<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=7ddb75c6262bd3c443be41feabf6b789">gist</a>), this snippet gets a type error in the second case of the if statement. <code>ClassB</code> does not have the attribute <code>n</code>. However, ty does not recognize that <code>arg</code> has been constrainted to <code>ClassB</code>, and instead warns:</p>
+<p><code>2. Attribute `n` may be missing on object of type `ClassA | ClassB | ClassC` [possibly-missing-attribute]</code></p>
+<p>My colleagues and I use many discriminated unions in our codebase, so we have to <code>type: ignore</code> a fair bit. Do you plan to support this functionality? or are such unions unstandardized</p>
+<pre><code class="language-python3">from enum import StrEnum
+from typing import Any, assert_never, Literal
+
+
+class MyEnum(StrEnum):
+    A = &quot;A&quot;
+    B = &quot;B&quot;
+    C = &quot;C&quot;
+
+class ClassA:
+    t: Literal[MyEnum.A] = MyEnum.A
+    n: int
+
+class ClassB:
+    t: Literal[MyEnum.B] = MyEnum.B
+
+class ClassC:
+    t: Literal[MyEnum.C] = MyEnum.C
+
+def fn(arg: ClassA | ClassB | ClassC):
+    if arg.t is MyEnum.A:
+        arg.n
+    elif arg.t is MyEnum.B:
+        print(arg.t)
+        arg.n
+    elif arg.t is MyEnum.C:
+        print(&quot;C&quot;)
+    else:
+        assert_never(arg.t)
+</code></pre>
+<p>I hope this isn't a duplicate. I did a few searches and couldn't find a similar issue, though</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.34 (Homebrew 2025-12-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konst-aa on 2025-12-17 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arthur-st">@arthur-st</a> on 2025-12-17 17:33</div>
+            <div class="timeline-body"><p>I'm afraid we may have reported the same thing at the same time, but it's all good. 👍</p>
+<p>#2022</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 17:47</div>
+            <div class="timeline-body"><p>Hey, thanks for the report. We do indeed intend to support this! Please see #1479</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-17 17:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support try/except imports of typing special forms - astral-sh/ty #1585</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support try/except imports of typing special forms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1585">#1585</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-11-18 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 18:40</div>
+            <div class="timeline-body"><p>Some projects (at least graphql-core) import typing special forms like this, rather than using <code>sys.version_info</code> checks:</p>
+<pre><code class="language-py">try:
+    from typing import TypeGuard
+except ImportError:
+    from typing_extensions import TypeGuard
+</code></pre>
+<p>We handle this fine on Python versions in which <code>typing.TypeGuard</code> exists (in that case <code>typing.TypeGuard</code> and <code>typing_extensions.TypeGuard</code> are the same object, so the union resolves to just that object.) We don't handle it when checking on an older Python where the <code>typing_extensions</code> fallback is necessary. In that case we emit a diagnostic on the import from <code>typing</code>, of course, and then we end up with a union of <code>Unknown | typing_extensions.TypeGuard</code>, which our special-form-handling code does not treat as <code>TypeGuard</code>.</p>
+<p>Mypy, pyright, and pyrefly don't handle this either.</p>
+<p>The one thing we do differently (since https://github.com/astral-sh/ruff/pull/21503) is that we also emit a diagnostic on e.g. <code>TypeGuard[int]</code> in an annotation, when the <code>TypeGuard</code> symbol is <code>Unknown | typing_extensions.TypeGuard</code>. Arguably this is good, since it alerts you to the fact that your typeguard function is not actually doing any narrowing, and gives you a better clue as to why? But we could also silence this.</p>
+<p>If we wanted to support this pattern, some options could be:</p>
+<ol>
+<li>Understand <code>try... except ImportError</code> as a statically-known branch, given existence / non-existence of the import. This would also help us in other similar import-fallback cases.</li>
+<li>Handle the union with Unknown as a special case in our type expression parsing. (This might result in false negatives if the union with Unknown comes from a weirder source that we wouldn't want to support?)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-11-18 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leon-sony">@leon-sony</a> on 2025-12-18 00:30</div>
+            <div class="timeline-body"><p>I encountered a case of this with library <code>mypy_boto3_s3</code> (<a href="https://pypi.org/project/mypy-boto3-s3/">pypi</a>, <a href="https://github.com/youtype/mypy_boto3_builder">github generator code</a>). It uses a <code>try / except ImportError</code> pattern, I think for Python backwards compatibility?</p>
+<pre><code class="language-python"># mypy_boto3_s3/__init__.py
+try:
+    from .service_resource import S3ServiceResource
+except ImportError:
+    from builtins import object as S3ServiceResource  # type: ignore[assignment]
+</code></pre>
+<p>Unfortunately, ty doesn't handle this as gracefully as mypy. Mypy seems to recognize my <code>var: mypy_boto3_s3.S3ServiceResource</code> as an instance of <code>mypy_boto3_s3.service_resource.S3ServiceResource</code>, but ty instead widens it to <code>object</code>, and then it doesn't type check my code correctly.</p>
+<p>I have no suggestion on how to handle this correctly, I am simply reporting that I encountered this issue in the wild.</p>
+<p>Here's a basic reproduction case:</p>
+<pre><code class="language-python"># mypy_boto3_s3_test.py
+from mypy_boto3_s3 import S3ServiceResource
+
+def f() -&gt; S3ServiceResource:
+    &quot;&quot;&quot;Fake making an S3ServiceResource&quot;&quot;&quot;
+    return None  # type: ignore
+
+s = f()
+s.get_available_subresources()  # ty thinks this is an error
+
+</code></pre>
+<pre><code>$ uvx ty version
+ty 0.0.2
+
+$ uvx ty check mypy_boto3_s3_test.py 
+error[unresolved-attribute]: Object of type `object` has no attribute `get_available_subresources`
+ --&gt; mypy_boto3_s3_test.py:9:1
+  |
+8 | s = f()
+9 | s.get_available_subresources()  # ty thinks this is an error
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 09:59</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-python"># mypy_boto3_s3/__init__.py
+try:
+    from .service_resource import S3ServiceResource
+except ImportError:
+    from builtins import object as S3ServiceResource  # type: ignore[assignment]
+</code></pre>
+</blockquote>
+<p>I can't find this code anywhere in the linked repository?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-19 01:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I can't find this code anywhere in the linked repository?</p>
+</blockquote>
+<p>I think the linked package is a code generator, which generates code like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-19 01:09</div>
+            <div class="timeline-body"><p>I created #2096 to discuss/track the issue reported by @leon-sony, since it's not actually the same as what this issue is about. (This issue is specifically about handling special form types from the <code>typing</code> module which are imported using a try/except fallback; mypy also doesn't handle this.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

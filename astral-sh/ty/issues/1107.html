@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NamedTuple fields should check as actual type, instead of property - astral-sh/ty #1107</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>NamedTuple fields should check as actual type, instead of property</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1107">#1107</a>
+        opened by <a href="https://github.com/y2kbugger">@y2kbugger</a>
+        on 2025-08-30 05:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/y2kbugger">@y2kbugger</a> on 2025-08-30 05:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ty.dev/8241691f-6963-4d4d-8dac-31876e2bd78e</p>
+<p>pyright already has this behavior</p>
+<p>Code sample in <a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoByAhhAKYAmAKgK4IA2pANFEQM6ul4D68CpAUIIDGdNqygBZOACUwAdwCCACmJkqtBgEoAXPyj7M5bZhQw9BlCVLHWMEIP4ixkmaVEwKsuSqvr6pHXN9JCMTMwMWYykvBQciIigAXhcYpQBGZgAiBTokIVJMzX4QECSUtyIPci905iJE%2BKLBMU4YHkRSJRLmaIqqryKW7l5OkoA6Ih6ZeQVB9lb2viVe9095CamYzSA">pyright playground</a></p>
+<pre><code class="language-python">from typing import NamedTuple, assert_type
+
+
+class MyRowA(NamedTuple):
+    id: int
+    name: str
+
+
+class MyRelatedRow(NamedTuple):
+    id: int
+    a: MyRowA
+
+
+aa = MyRowA(1, &quot;Alice&quot;)
+rr = MyRelatedRow(1, a=aa)
+
+
+assert_type(rr, MyRelatedRow)
+assert_type(rr.a, MyRowA)
+assert_type(MyRelatedRow.a, MyRowA)
+</code></pre>
+<h3>Version</h3>
+<p>6f2b874d6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 15:26</div>
+            <div class="timeline-body"><p>Thanks for the report! However, ty is correct here, and pyright is incorrect. It's quite easy to demonstrate that accessing the <code>NamedTuple</code> field from the class object itself (rather than an instance of the class) does not return an instance of the annotated type. Instead, it returns a property-like descriptor:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import NamedTuple, assert_type
+... 
+... 
+... class MyRowA(NamedTuple):
+...     id: int
+...     name: str
+... 
+... 
+... class MyRelatedRow(NamedTuple):
+...     id: int
+...     a: MyRowA
+... 
+... 
+... aa = MyRowA(1, &quot;Alice&quot;)
+... rr = MyRelatedRow(1, a=aa)
+... 
+&gt;&gt;&gt; MyRelatedRow.a
+_tuplegetter(1, 'Alias for field number 1')
+</code></pre>
+<p>To be fully accurate, perhaps ty should infer the type of <code>MyRelatedRow.a</code> as <code>_tuplegetter</code> when it's accessed from the class object. But I think <code>property</code> is probably close enough here; <code>_tuplegetter</code> acts like a read-only property in almost every way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-30 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/y2kbugger">@y2kbugger</a> on 2025-08-30 18:15</div>
+            <div class="timeline-body"><p>Hmm, I guess I assumed it was a purposeful/useful lie, and so I ~~ab~~used it. But now I wonder if they it is just over looked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/y2kbugger">@y2kbugger</a> on 2025-12-15 05:30</div>
+            <div class="timeline-body"><p>Dataclasses statically resolve fields on the Class to match the type of the instance field, however accessing that field at runtime is an attribute error.</p>
+<p>edit: updated
+https://play.ty.dev/12f60d0d-9075-439c-a403-cb26684fb670</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-15 08:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Dataclasses statically resolve fields on the Class to match the type of the instance field, however accessing that field at runtime is an attribute error.</p>
+<p>edit: updated https://play.ty.dev/12f60d0d-9075-439c-a403-cb26684fb670</p>
+</blockquote>
+<p>https://github.com/astral-sh/ty/issues/1522 is the issue for discussing whether that behaviour is desirable or not</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:38 UTC
+    </footer>
+</body>
+</html>

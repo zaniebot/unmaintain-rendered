@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warn on (accidentally) unreachable code blocks - astral-sh/ty #1948</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warn on (accidentally) unreachable code blocks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1948">#1948</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-16 17:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-16 17:36</div>
+            <div class="timeline-body"><p>Mypy and pyright both offer opt-in lints which, when enabled, cause them to complain about the <code>else</code> branch in this snippet:</p>
+<pre><code class="language-py">def f(x: int | str):
+    if isinstance(x, int):
+        print(&quot;It's an int&quot;)
+    elif isinstance(x, str):
+        print(&quot;It's a string&quot;)
+    else:
+        print(&quot;It's something else&quot;)
+</code></pre>
+<p>They can both detect that the <code>else</code> branch is unreachable, and that this is probably an accident, indicating a logic error somewhere in the function. Mypy's version can be opted into using <code>--warn-unreachable</code> on the command line; pyright's version requires <code>reportUnreachable=true</code>.</p>
+<p>For feature parity with these tools, we should aim to provide a similar lint.</p>
+<p>Note that the lint should only complain about <em>accidentally</em> unreachable code. There's a lot of code that ty infers as being unreachable that is nonetheless <em>deliberately</em> unreachable, which we should <em>not</em> complain about:</p>
+<ul>
+<li>Any unreachable branches that consist solely of a <code>raise</code> statement should not be reported</li>
+<li>Any unreachable branches that consist solely of an <code>assert_never()</code> call should not be reported</li>
+<li>Any branches that are unreachable due to a <code>sys.version_info</code>, <code>sys.platform</code>, or <code>if TYPE_CHECKING</code> check should not be reported</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-12-16 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">unreachable-code</span> added by @AlexWaygood on 2025-12-16 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lint</span> added by @AlexWaygood on 2025-12-16 18:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

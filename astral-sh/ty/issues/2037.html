@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefer declared type when conflicting with `Unknown` from an untyped lib - astral-sh/ty #2037</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prefer declared type when conflicting with `Unknown` from an untyped lib</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2037">#2037</a>
+        opened by <a href="https://github.com/NickCrews">@NickCrews</a>
+        on 2025-12-17 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NickCrews">@NickCrews</a> on 2025-12-17 20:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This may be related to https://github.com/astral-sh/ty/issues/136, but this might be a sub-pattern that I think is more straightforward, whereas that issue looks a lot more difficult in the general case.</p>
+<p>See this example. The <code>markdown</code> library's<code>Markdown</code> instance doesn't &quot;look&quot; to ty as though it has a <code>toc_tokens</code> attribute, but the <a href="https://github.com/Python-Markdown/markdown/blob/89112c293f7b399ae8808f3a06306f46601e9684/markdown/extensions/toc.py#L414">&quot;toc&quot; extension DOES add one</a>. So I want to tell ty to trust me, that this attribute exists.</p>
+<p>So I tell it to <code># type: ignore[attr-defined]</code>, and that solves the error, but it still infers the type as Unknown, which appears to trump my declared type.</p>
+<pre><code class="language-python">from typing import TypedDict
+
+import markdown
+
+
+class TocToken(TypedDict):
+    level: int
+    id: str
+    name: str
+    children: list[TocToken]
+
+
+md = markdown.Markdown(extensions=[&quot;toc&quot;])
+md.convert(&quot;# Title\n\n## Section 1\n\nContent here.\n\n## Section 2\n\nMore content.&quot;)
+# The &quot;toc&quot; extension monkeypatches in a &quot;toc_tokens&quot; attribute to the Markdown instance
+# that follows the TocToken structure defined above.
+
+toc_tokens_no_ignore: list[TocToken] = md.toc_tokens
+# type inferred as Unknown, but I get the attr-defined error. So in the next version, I ignore it...
+toc_tokens_ignore: list[TocToken] = md.toc_tokens  # type: ignore[attr-defined]
+# still, type inferred as Unknown
+</code></pre>
+<p>If we are explicitly declaring a type where none exists (eg we are adding a <code># type: ignore[attr-defined]</code>) , can we get ty to just trust us here? If we are declaring a type that is in conflict with an inferred type, then as #136 discusses, perhaps we need to be more careful.</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 21:05</div>
+            <div class="timeline-body"><p>Thanks for the clearly presented report, and for searching for related issues! Yes, this is #136, and we do plan to make a fix there which will fix this case, so I'll close this as duplicate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-17 21:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Concatenate special form - astral-sh/ty #1535</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support Concatenate special form</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1535">#1535</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-11-12 23:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-11-12 23:51</div>
+            <div class="timeline-body"><p>https://typing.python.org/en/latest/spec/generics.html#paramspec</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-12 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @carljm on 2025-11-12 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @dhruvmanila on 2025-11-13 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlashada">@vlashada</a> on 2025-12-14 08:54</div>
+            <div class="timeline-body"><p><code>ty</code> fails to infer the return type (<code>T</code>) for a generic method whose first parameter is a callable typed with <code>Callable[Concatenate[SelfType, P], T]</code>. In practice this shows up in <code>polars.DataFrame.pipe</code>, where <code>reveal_type(df.pipe(f))</code> becomes <code>Unknown</code> even when <code>f</code> is fully annotated to return <code>DataFrame</code>.</p>
+<p>Polars documents <code>DataFrame.pipe</code> as:</p>
+<pre><code class="language-py">DataFrame.pipe(
+    function: Callable[Concatenate[DataFrame, P], T],
+    *args: P.args,
+    **kwargs: P.kwargs,
+) -&gt; T
+</code></pre>
+<h2>Reproduction (no third-party deps)</h2>
+<p>https://play.ty.dev/60c9407f-0310-4b4e-b078-fba3d381f132</p>
+<pre><code class="language-py">from typing import Callable, Concatenate, ParamSpec, TypeVar, reveal_type
+
+P = ParamSpec(&quot;P&quot;)
+T = TypeVar(&quot;T&quot;)
+
+class DF:
+    def pipe(self, function: Callable[Concatenate[&quot;DF&quot;, P], T], *args: P.args, **kwargs: P.kwargs) -&gt; T:
+        return function(self, *args, **kwargs)
+
+def f(df: DF) -&gt; DF:
+    return df
+
+reveal_type(DF())          # expected: DF
+reveal_type(DF().pipe(f))  # expected: DF; actual (ty): Unknown
+</code></pre>
+<h2>Reproduction (real-world: Polars)</h2>
+<pre><code class="language-py">import polars as pl
+from typing import reveal_type
+
+def f(df: pl.DataFrame) -&gt; pl.DataFrame:
+    return df
+
+reveal_type(pl.DataFrame())          # expected: DataFrame
+reveal_type(pl.DataFrame().pipe(f))  # expected: DataFrame; actual (ty): Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-15 05:37</div>
+            <div class="timeline-body"><p>@vlashada Thanks for the report. The issue that you're highlighting is actually https://github.com/astral-sh/ruff/pull/21551. I tried out your example (the &quot;no third-party deps&quot; one) and it works:</p>
+<pre><code>info[revealed-type]: Revealed type
+  --&gt; /Users/dhruv/playground/ty/bug-report/main.py:21:13
+   |
+21 | reveal_type(DF())  # expected: DF
+   |             ^^^^ `DF`
+22 | reveal_type(DF().pipe(f))  # expected: DF; actual (ty): Unknown
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; /Users/dhruv/playground/ty/bug-report/main.py:22:13
+   |
+21 | reveal_type(DF())  # expected: DF
+22 | reveal_type(DF().pipe(f))  # expected: DF; actual (ty): Unknown
+   |             ^^^^^^^^^^^^ `DF`
+   |
+
+Found 2 diagnostics
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-15 09:05</div>
+            <div class="timeline-body"><p>Related to https://github.com/astral-sh/ruff/pull/21958, it might be useful to try modeling <code>classmethod</code> using typeshed's definition once <code>Concatenate</code> support has landed because it's used to define the callable type as <code>Callable[Concatenate[type[_T], _P], _R_co]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-15 19:35</div>
+            <div class="timeline-body"><p>After looking more at classmethod recently for https://github.com/astral-sh/ruff/pull/21958, I am skeptical that we will be able to implement classmethod support solely using the typeshed definition -- but I suspect we could use it more than we do today.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

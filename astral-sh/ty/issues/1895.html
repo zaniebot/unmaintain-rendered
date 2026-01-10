@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Self` revealed as Never yet `invalid-return-type` error is reported - astral-sh/ty #1895</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Self` revealed as Never yet `invalid-return-type` error is reported</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1895">#1895</a>
+        opened by <a href="https://github.com/stefanboca">@stefanboca</a>
+        on 2025-12-15 18:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stefanboca">@stefanboca</a> on 2025-12-15 18:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In this example, ty reveals a type of <code>Never</code> for <code>other</code> in <code>baz</code>, but still reports an <code>invalid-return-type</code> error.</p>
+<pre><code class="language-python">from typing import Self, final, reveal_type
+
+@final
+class Foo:
+    def bar(self, other: Foo) -&gt; bool:
+        if isinstance(other, Foo): return True
+
+    def baz(self, other: Self) -&gt; bool:
+        #                         ^^^^ Function can implicitly return `None`, which is not assignable to return type `bool` (invalid-return-type)
+        if isinstance(other, Foo): return True
+        reveal_type(other) # revealed: Never
+</code></pre>
+<p><code>basedpyright</code> and<code>mypy</code>report no errors on this code snippet.</p>
+<p>https://play.ty.dev/866a48cf-0624-49ba-b1cf-fb57a57cfd76</p>
+<h3>Version</h3>
+<p>ty ruff/0.14.9+38 (4e1cf5747 2025-12-15)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-16 01:24</div>
+            <div class="timeline-body"><p>Ah, thanks for the report. What this indicates is that we are accurately recognizing the narrowing effect of the test <code>isinstance(other, Foo)</code> on the type of <code>other</code> (resulting in a type of <code>Never</code>), but we are not recognizing in type inference that the <code>isinstance</code> call will always return <code>True</code>. This should be easy to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-16 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @sharkdp on 2025-12-16 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @sharkdp on 2025-12-16 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-12-16 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-16 09:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

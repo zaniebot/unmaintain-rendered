@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Go to Definition&quot; for keyword arguments in function call - astral-sh/ty #1881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Go to Definition&quot; for keyword arguments in function call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1881">#1881</a>
+        opened by <a href="https://github.com/injust">@injust</a>
+        on 2025-12-14 06:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/injust">@injust</a> on 2025-12-14 06:47</div>
+            <div class="timeline-body"><p>basedpyright (I tested in Zed) supports &quot;Go to Definition&quot; (cmd-click or F12) for argument names in a function call.</p>
+<p>In ty, this is currently a no-op, so you have to use &quot;Go to Definition&quot; on the function, and then find the parameter in its type signature.</p>
+<p>Supporting argument names is useful for this pattern, which is used in types-boto3:</p>
+<pre><code class="language-python">class BarTypeDef(TypedDict):
+    thing: str
+
+
+def foo(**kwargs: Unpack[BarTypeDef]) -&gt; None:
+    pass
+
+
+foo(thing=&quot;abcd&quot;)
+#   ^^^^^ cmd-click here
+</code></pre>
+<p>In basedpyright, &quot;Go to Definition&quot; on <code>thing</code> takes you to its definition in <code>BarTypeDef</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-14 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-14 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-15 05:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Supporting kwarg keys is useful for functions with a signature like <code>def foo(**kwargs: Unpack[BarTypeDef])</code>, where <code>BarTypeDef</code> is a TypedDict. In basedpyright, &quot;Go to Definition&quot; on a kwarg key takes you to the definition of that key in <code>BarTypeDef</code>.</p>
+</blockquote>
+<p>Can you clarify what does this mean? Are you saying that when the cursor is at <code>kwargs</code> (not the annotated type but the parameter name), basedpyright takes you to <code>BarTypeDef</code>?</p>
+<pre><code class="language-py">from typing import TypedDict, Unpack
+
+class BarTypeDef(TypedDict):
+    first: int
+    second: int
+
+
+def foo(**kwargs: Unpack[BarTypeDef]): ...
+#         ^^^^^^
+</code></pre>
+<p>Or, is it that when the cursor is at &quot;first&quot; in <code>kwargs.first</code> inside the function body, when you &quot;goto definition&quot;, it takes you to the location of the <code>first</code> attribute in <code>BarTypeDef</code>?</p>
+<p>If it's the latter, then for this specific case, it requires https://github.com/astral-sh/ty/issues/1746.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/injust">@injust</a> on 2025-12-15 05:47</div>
+            <div class="timeline-body"><p>Sorry, it was confusing when I called it a kwarg. I meant keyword/named arguments.</p>
+<p>I edited to clarify.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ""Go to Definition" for kwarg keys" to ""Go to Definition" for argument name in function call" by @injust on 2025-12-15 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ""Go to Definition" for argument name in function call" to ""Go to Definition" for argument names in function call" by @injust on 2025-12-15 05:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/injust">@injust</a> on 2025-12-15 05:58</div>
+            <div class="timeline-body"><p>My specific example would need https://github.com/astral-sh/ty/issues/1746 first, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-15 06:28</div>
+            <div class="timeline-body"><p>Thanks for clarifying. I think we already support goto definition for argument names considering the following example and trying to invoke goto definition on <code>b</code>, <code>c</code>:</p>
+<pre><code class="language-py">from typing import TypedDict, Unpack
+
+class BarTypeDef(TypedDict):
+    thing: str
+
+
+def foo(a: int, /, b: int, *, c: int, **kwargs: Unpack[BarTypeDef]) -&gt; None:
+    pass
+
+
+foo(1, b=2, c=3 thing=&quot;abcd&quot;)
+</code></pre>
+<p>So, I think this is more specific to supporting variadic arguments or even more specific to keyword variadic that's typed as <code>Unpack[&lt;TypedDict&gt;]</code> because I don't think there's any other remaining type here that would allow keyword arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ""Go to Definition" for argument names in function call" to ""Go to Definition" for variadic argument names in function call" by @dhruvmanila on 2025-12-15 06:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ""Go to Definition" for variadic argument names in function call" to ""Go to Definition" for keyword arguments in function call" by @dhruvmanila on 2025-12-15 06:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:38 UTC
+    </footer>
+</body>
+</html>

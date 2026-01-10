@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`textDocument/signatureHelp` not returning results where Pylance does - astral-sh/ty #2089</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`textDocument/signatureHelp` not returning results where Pylance does</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2089">#2089</a>
+        opened by <a href="https://github.com/KevinMusgrave">@KevinMusgrave</a>
+        on 2025-12-18 21:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KevinMusgrave">@KevinMusgrave</a> on 2025-12-18 21:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>ty</code> doesn't return a signature for <a href="https://github.com/BerriAI/litellm/blob/main/litellm/main.py#L989"><code>litellm.completion</code></a>:</p>
+<p><img width="285" height="74" alt="Image" src="https://github.com/user-attachments/assets/0ee93ac7-e0ad-4534-8c73-ad8d7c463207" /></p>
+<p>But <code>pylance</code> does:</p>
+<p><img width="604" height="323" alt="Image" src="https://github.com/user-attachments/assets/295045ef-e5fc-4c82-9c96-25f1343a72e0" /></p>
+<p>I've confirmed that <code>ty</code> is functioning because it does provide signature help for <code>torch.nn.CrossEntropyLoss</code>:</p>
+<p><img width="649" height="121" alt="Image" src="https://github.com/user-attachments/assets/a4d8a215-4a7b-4544-a38c-bdd2c9913d11" /></p>
+<h2>Steps to reproduce</h2>
+<ol>
+<li>Install <code>ty</code> in VS Code as an extension.</li>
+<li>Set <code>&quot;python.languageServer&quot;: &quot;None&quot;</code> in <code>.vscode/settings.json</code>.</li>
+<li><code>uv pip install litellm==1.80.10</code></li>
+<li>Create a test file:</li>
+</ol>
+<pre><code class="language-python">import litellm
+
+litellm.completion()
+</code></pre>
+<p>Here is the definition of <code>litellm.completion</code>: https://github.com/BerriAI/litellm/blob/5230e97448db5b6c207f1fb85b5669e1a64769d1/litellm/main.py#L989</p>
+<h2>ty playground</h2>
+<p>I'm not sure how to add custom packages to the ty playground. If it's possible, please let me know how and I can provide a reproduction.</p>
+<h3>Version</h3>
+<p>2025.74.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-18 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 21:52</div>
+            <div class="timeline-body"><p>The issue here is that <code>completion</code> is decorated with two untyped decorators which we don't currently see through, so we just see its type as <code>Unknown</code>. We could do #1971 to just assume that those decorators have no effect on the signature, which is what I think pylance is doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-18 21:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

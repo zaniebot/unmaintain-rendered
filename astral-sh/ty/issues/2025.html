@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overload not found when calling method that uses Unpack - astral-sh/ty #2025</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overload not found when calling method that uses Unpack</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2025">#2025</a>
+        opened by <a href="https://github.com/steved-stripe">@steved-stripe</a>
+        on 2025-12-17 17:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/steved-stripe">@steved-stripe</a> on 2025-12-17 17:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">import stripe
+# ---snip---
+customer_id: str = customer.id
+payment_method = stripe.PaymentMethod.create(
+    type=&quot;card&quot;,
+    card={
+        &quot;number&quot;: &quot;4242424242424242&quot;,
+        &quot;exp_month&quot;: 8,
+        &quot;exp_year&quot;: 2027,
+        &quot;cvc&quot;: &quot;314&quot;,
+    },
+)
+payment_method.attach(customer=customer)
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+<pre><code>No overload of function `attach` matches argumentsty[no-matching-overload](https://ty.dev/rules#no-matching-overload)
+_payment_method.py(2463, 9): First overload defined here
+_payment_method.py(2505, 9): Overload implementation defined here
+</code></pre>
+<p>where the <code>attach</code> method looks like:</p>
+<pre><code class="language-py">    @overload
+    def attach(
+        self, **params: Unpack[&quot;PaymentMethod.AttachParams&quot;]
+    ) -&gt; &quot;PaymentMethod&quot;:
+        ...
+</code></pre>
+<p>and then:</p>
+<pre><code class="language-py">class PaymentMethod(
+    CreateableAPIResource[&quot;PaymentMethod&quot;],
+    ListableAPIResource[&quot;PaymentMethod&quot;],
+    UpdateableAPIResource[&quot;PaymentMethod&quot;],
+):
+    # ---snip---
+    class AttachParams(RequestOptions):
+        customer: str
+        expand: NotRequired[List[str]]
+</code></pre>
+<p>https://play.ty.dev/bd02de97-6f9c-42ec-8031-961704966f24</p>
+<p>hovering over the params I see:</p>
+<pre><code class="language-py">(
+    payment_method: str,
+    **params: @Todo
+) -&gt; PaymentMethod
+(
+    self,
+    **params: @Todo
+) -&gt; PaymentMethod
+</code></pre>
+<h3>Version</h3>
+<p>astral-sh.ty 2025.72.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 17:46</div>
+            <div class="timeline-body"><p>Thanks for the report. I think this can be folded into #1746</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-17 17:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`docker.types` reported as `possibly-missing-attribute` after `import docker; from docker.types import Ulimit` - astral-sh/ty #1654</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`docker.types` reported as `possibly-missing-attribute` after `import docker; from docker.types import Ulimit`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1654">#1654</a>
+        opened by <a href="https://github.com/sitsofe">@sitsofe</a>
+        on 2025-11-27 10:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sitsofe">@sitsofe</a> on 2025-11-27 10:45</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello,</p>
+<p>I have the following <code>test.py</code>:</p>
+<pre><code class="language-python">import docker
+from docker.types import Ulimit
+
+docker.types.Ulimit(name='nproc', soft=1024)
+Ulimit(name='nproc', soft=1024)
+</code></pre>
+<p>and I have <code>docker==7.1.0</code> installed in an activte venv.</p>
+<p>When I run <code>ty</code> (ty 0.0.1-alpha.28 (8c342496a 2025-11-25)) I get:</p>
+<pre><code>&gt; ty check test.py
+warning[possibly-missing-attribute]: Submodule `types` may not be available as an attribute on module `docker`
+ --&gt; test.py:4:1
+  |
+2 | from docker.types import Ulimit
+3 |
+4 | docker.types.Ulimit(name='nproc', soft=1024)
+  | ^^^^^^^^^^^^
+5 | Ulimit(name='nproc', soft=1024)
+  |
+help: Consider explicitly importing `docker.types`
+info: rule `possibly-missing-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>pyright (pyright 1.1.407) also complains:</p>
+<pre><code>pyright test.py
+/private/tmp/q/test.py
+  /private/tmp/q/test.py:4:8 - error: &quot;types&quot; is not a known attribute of module &quot;docker&quot; (reportAttributeAccessIssue)
+</code></pre>
+<p>After installing stubs, mypy (mypy 1.18.2 (compiled: yes)) doesn't complain:</p>
+<pre><code>&gt; mypy test.py
+Success: no issues found in 1 source file
+</code></pre>
+<p>python (Python 3.12.11 on macOS) itself doesn't complain:</p>
+<pre><code>&gt; python test.py 
+&gt;
+</code></pre>
+<p>Looking at https://github.com/docker/docker-py/blob/7.1.0/docker/<strong>init</strong>.py there is no import that create <code>types</code> but there is an adjacent <code>types/</code> directory that contains https://github.com/docker/docker-py/blob/7.1.0/docker/types/<strong>init</strong>.py and that imports <code>Ulimit</code>.</p>
+<p>I have done searches https://github.com/astral-sh/ty/issues?q=unresolved-attribute and https://github.com/astral-sh/ty/issues?q=possibly-missing-attribute but I can't find an existing duplicate but I'm sure one must already exist. Can you point me in the right direction?</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.28 (8c342496a 2025-11-25)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sitsofe on 2025-11-27 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-27 10:55</div>
+            <div class="timeline-body"><p>We don't have an issue for this currently, but this would be fixed by https://github.com/astral-sh/ruff/pull/21583, which is a joint effort by me and @Gankra :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-11-27 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Which existing issue covers "Missing attribute error" behaviour when using docker submodule?" to "`docker.types` reported as `possibly-missing-attribute` after `import docker; from dockter.types import Ulimit`" by @AlexWaygood on 2025-11-27 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-11-27 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`docker.types` reported as `possibly-missing-attribute` after `import docker; from dockter.types import Ulimit`" to "`docker.types` reported as `possibly-missing-attribute` after `import docker; from docker.types import Ulimit`" by @sitsofe on 2025-11-27 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sitsofe">@sitsofe</a> on 2025-11-27 14:57</div>
+            <div class="timeline-body"><p>@AlexWaygood Ah a PR is even better! Thanks for pointing me towards it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-02 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 12:01</div>
+            <div class="timeline-body"><p>This issue is probably the most common one found in my projects.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

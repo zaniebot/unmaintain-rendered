@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support calls to intersection types - astral-sh/ty #1858</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support calls to intersection types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1858">#1858</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-11 19:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 19:45</div>
+            <div class="timeline-body"><p>Right now we infer a todo type, which suppresses false positives. But intersections arise reasonably frequently in narrowing, and often don't simplify (especially with negative or dynamic elements). So this can lead to a lot of false negatives.</p>
+<p>The algorithm here isn't particularly hard. We should try to call each element of the intersection. We can probably short-circuit some cases (most negative intersection elements will simply fallback to <code>object</code>, and we know <code>object</code> is not callable). If calls to any element(s) succeed, the return type is the intersection of their returns, and we should ignore errors from those that failed. If all fail, we probably want to discard errors from some very general types (the same cases we considered short-circuiting above) and display the other errors. (Handling the diagnostics is probably the most complex piece of this issue.)</p>
+<p>We could also do a very simple initial version here where we try to short-circuit negative elements and if that reduces the intersection to a single type, call it normally. That would already improve things a lot for narrowing cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-11 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @carljm on 2025-12-11 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @carljm on 2025-12-11 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-11 19:47</div>
+            <div class="timeline-body"><p>IIRC, according to https://jellezijlstra.github.io/negation-types.html we should just ignore negative elements altogether for most operations on intersection types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 19:56</div>
+            <div class="timeline-body"><p>Yes, that's for the reason I mentioned: except for negation of some special very broad types like <code>AlwaysTruthy</code> and <code>AlwaysFalsy</code> in very particular scenarios (boolean checks), a negative intersection element generally can't be treated any differently from <code>object</code> -- and if it were <code>object</code> it would simplify out of the intersection anyway.</p>
+<p>I think it would be a fairly easy and worthwhile experiment to just eagerly strip negative elements from intersection types altogether and see where that degrades our inference in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-11 19:59</div>
+            <div class="timeline-body"><p>sorry, should have read more carefully :( blame it on the fever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-12-12 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-12-16 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-16 21:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

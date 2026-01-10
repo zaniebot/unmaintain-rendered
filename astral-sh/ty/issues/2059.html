@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[idea] Create a configurable rule to ban access to certain APIs - astral-sh/ty #2059</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[idea] Create a configurable rule to ban access to certain APIs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2059">#2059</a>
+        opened by <a href="https://github.com/danielgafni">@danielgafni</a>
+        on 2025-12-18 10:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielgafni">@danielgafni</a> on 2025-12-18 10:38</div>
+            <div class="timeline-body"><p>I have the following use case: I'm using <a href="https://narwhals-dev.github.io/narwhals/">Narwhals</a> for my library code, and accessing <code>narwhals.LazyFrame.columns</code> emits a <code>PerformanceWarning</code> that advises to access <code>narwhals.LazyFrame.collect_schema().names()</code> instead.</p>
+<p>It would be nice if I could ban <code>narwhals.LazyFrame.columns</code> access in my codebase and configure it in <code>ty.toml/pyproject.toml</code>, similarly to how <a href="https://docs.astral.sh/ruff/rules/banned-module-level-imports/">banned-module-level-imports</a> works in Ruff.</p>
+<p>Example:</p>
+<pre><code class="language-toml">[rules]
+banned-apis = [
+  &quot;narwhals.LazyFrame.columns&quot;
+]
+</code></pre>
+<p>this should fail:</p>
+<pre><code class="language-py">import narwhals as nw
+from narwhals.typing import Frame
+
+def my_func(df: Frame): 
+    # Frame is `nw.LazyFrame[Any] | nw.DataFrame[Any]`
+    # so this should fail because nw.LazyFrame.columns is banned
+    _ = df.columns  
+</code></pre>
+<p>This should pass:</p>
+<pre><code class="language-py">import narwhals as nw
+from narwhals.typing import Frame
+
+def my_func(df: Frame): 
+    if isinstance(df, nw.DataFrame):
+        columns = df.columns  # nw.DataFrame.columns is not banned
+    elif isinstance(df, nw.LazyFrame):
+        columns = df.collect_schema().names()
+    else:
+        raise NotImplementedError()
+</code></pre>
+<hr />
+<p>Another very common use case would be banning deprectated APIs (at object method/attribute level)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 10:40</div>
+            <div class="timeline-body"><p>Thanks for the suggestion. We don't plan on adding any rules for now that overlap with what Ruff already provides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-18 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2025-12-18 10:41</div>
+            <div class="timeline-body"><p>@MichaReiser this is different from Ruff. It doesn't target a <strong>module</strong>, it would allow targeting <strong>methods</strong>, <strong>attributes</strong>, and so on, which can only be recognized by <code>ty</code> as it requires typing information. Ruff cannot handle this.</p>
+<p>Maybe take a look at my example use case again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 11:05</div>
+            <div class="timeline-body"><p>I think https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_banned-api does what you want</p>
+<p>But it's certainly more limited than what ty could do here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2025-12-18 11:17</div>
+            <div class="timeline-body"><p>Yes, I think the scope of <code>banned-api</code> in <code>flake8-tidy-imports</code> are module members at most.</p>
+<p>I'm looking for a more sophisticated algorithm here, it should respect the actual types and not just import paths.</p>
+<p>It should work with the rest of the type system such as <code>Union</code> and others.</p>
+<p>Perhaps this example may shed more light:</p>
+<pre><code class="language-py">import narwhals as nw
+from narwhals.typing import Frame
+
+def my_func(df: Frame): 
+    # Frame is `nw.LazyFrame[Any] | nw.DataFrame[Any]`
+    # so this should fail because nw.LazyFrame.columns is banned
+    _ = df.columns  
+</code></pre>
+<p>This should pass:</p>
+<pre><code class="language-py">import narwhals as nw
+from narwhals.typing import Frame
+
+def my_func(df: Frame): 
+    if isinstance(df, nw.DataFrame):
+        columns = df.columns  # nw.DataFrame.columns is not banned
+    elif isinstance(df, nw.LazyFrame):
+        columns = df.collect_schema().names()
+    else:
+        raise NotImplementedError()
+</code></pre>
+<p>As you can see, this requires digging into types rather just import paths.</p>
+<p>Do you mind reopening the issue in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-12-18 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lint</span> added by @MichaReiser on 2025-12-18 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 11:25</div>
+            <div class="timeline-body"><p>I'm still leaning towards closing this issue because I'd like to keep our issues actionable. The reason this issue isn't actionable is that we first need to decide whether we want Ruff to start using ty's semantic analysis or accept more lint-like rules in ty. This is something on our mind and we plan to tackle this after the stable release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2025-12-18 11:32</div>
+            <div class="timeline-body"><p>Thank you, this makes a lot of sense.</p>
+<p>I've noticed your beta release blog post mentioned features such as &quot;dead code analysis&quot; and a few others, these are going to be part of <code>ty</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 11:37</div>
+            <div class="timeline-body"><p>Adding dead-code analysis is something we plan to do in the near future, as Ruff doesn't support it today. I believe there's an issue for it somewhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 12:42</div>
+            <div class="timeline-body"><p>We can already recognize parts of the code as being reachable or not (https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/unreachable.md), but we do not have a special lint rule for it (see #1948), and we also don't support &quot;graying it out&quot; in editors (see #784)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

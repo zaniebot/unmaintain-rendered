@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeIs fails to narrow when used as a method - astral-sh/ty #2004</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TypeIs fails to narrow when used as a method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2004">#2004</a>
+        opened by <a href="https://github.com/EnzoAgosta">@EnzoAgosta</a>
+        on 2025-12-17 12:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/EnzoAgosta">@EnzoAgosta</a> on 2025-12-17 12:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When a generic TypeIs narrowing helper is defined as an instance method it stops narrowing; the identical logic in a standalone function works correctly.</p>
+<p>I used all defaults settings by running <code>uvx ty check</code>, my pyproject.toml has no ty related settings yet as I am evaluating changing to ty.</p>
+<p>Minimal reproducer</p>
+<pre><code class="language-python">from typing import Any, TypeIs, reveal_type
+
+
+class Foo:
+  def method_narrow_type[S](self, obj: Any, expected_type: type[S]) -&gt; TypeIs[S]:
+    return isinstance(obj, expected_type)
+
+
+def function_narrow_type[S](obj: Any, expected_type: type[S]) -&gt; TypeIs[S]:
+  return isinstance(obj, expected_type)
+
+
+def return_any() -&gt; Any:
+  pass
+
+
+unknown = return_any()
+foo = Foo()
+
+if foo.method_narrow_type(unknown, int):
+  reveal_type(unknown)  # Any
+if function_narrow_type(unknown, int):
+  reveal_type(unknown)  # Any &amp; int
+</code></pre>
+<p>I also tested it with Pyright and Mypy and both narrow the type to int correctly in both cases. Pyrefly however has the same behavior as Ty.</p>
+<p>playground link: https://play.ty.dev/ecbc66c4-b832-4bbf-bd68-55ce0e8ca664</p>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-17 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 12:34</div>
+            <div class="timeline-body"><p>Thanks! Please see #1569</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

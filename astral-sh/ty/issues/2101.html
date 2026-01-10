@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty confuses class name and locally defined methods, emitting false-positive `invalid-type-form` - astral-sh/ty #2101</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ty confuses class name and locally defined methods, emitting false-positive `invalid-type-form`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2101">#2101</a>
+        opened by <a href="https://github.com/konn">@konn</a>
+        on 2025-12-19 06:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konn">@konn</a> on 2025-12-19 06:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty confuses method name and class name, and gives a false-positive invalid-type-form.</p>
+<h3>Reproduction</h3>
+<p>Consider the following stub file (ng_typehint.pyi)</p>
+<pre><code class="language-ng_typehint.py">class A: ...
+
+class B:
+    def A(self, name: str) -&gt; A: ...
+    def take_a(self, a: A) -&gt; str: ...
+    def return_a(self) -&gt; A: ...
+</code></pre>
+<p>Pyright successfully typechecks with this module:</p>
+<pre><code class="language-sh">$ uvx pyright  ng_typehint.pyi
+0 errors, 0 warnings, 0 informations
+</code></pre>
+<p>On the other hand, ty won't type check on this:</p>
+<pre><code class="language-sh">$ uvx ty check ng_typehint.pyi
+error[invalid-type-form]: Variable of type `def A(self, name: str) -&gt; Unknown` is not allowed in a type expression
+ --&gt; ng_typehint.pyi:4:31
+  |
+3 | class B:
+4 |     def A(self, name: str) -&gt; A: ...
+  |                               ^
+5 |     def take_a(self, a: A) -&gt; str: ...
+6 |     def return_a(self) -&gt; A: ...
+  |
+info: rule `invalid-type-form` is enabled by default
+
+error[invalid-type-form]: Variable of type `def A(self, name: str) -&gt; Unknown` is not allowed in a type expression
+ --&gt; ng_typehint.pyi:5:25
+  |
+3 | class B:
+4 |     def A(self, name: str) -&gt; A: ...
+5 |     def take_a(self, a: A) -&gt; str: ...
+  |                         ^
+6 |     def return_a(self) -&gt; A: ...
+  |
+info: rule `invalid-type-form` is enabled by default
+
+error[invalid-type-form]: Variable of type `def A(self, name: str) -&gt; Unknown` is not allowed in a type expression
+ --&gt; ng_typehint.pyi:6:27
+  |
+4 |     def A(self, name: str) -&gt; A: ...
+5 |     def take_a(self, a: A) -&gt; str: ...
+6 |     def return_a(self) -&gt; A: ...
+  |                           ^
+  |
+info: rule `invalid-type-form` is enabled by default
+
+Found 3 diagnostics
+</code></pre>
+<h3>Discussion</h3>
+<p>As the first glance, the stub code might seem to have code-smell issue - but this pattern of aliasing can completely make sense because there are legitimate case to provide the smart constructors methods with the same name as the original class.
+More concretely, we are developing some EDSL library in Python like this:</p>
+<pre><code class="language-py">class Type: ...
+
+class Variable:
+  # Cannot be initialized without resorting to interpreter.
+  @property
+  def name(self) -&gt; str: ...
+  def type(self) -&gt; Type: ...
+
+class Interpreter:
+  def Variable(self, name: str, type: Type) -&gt; Variable:
+    ...
+
+  def IntegerVariable(self, name: str) -&gt; Variable: ...
+</code></pre>
+<p>... And actually pyright allows such a definition, and our library have been providing such feature for a long time.
+So renaming smart constructors can break the entire API just to convince type checker sounds inapplicable.</p>
+<h3>Version</h3>
+<p>ty 0.0.4 (c1e6188b1 2025-12-18)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 08:06</div>
+            <div class="timeline-body"><p>Thanks for the report! Please see the discussion in #1747</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-19 08:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

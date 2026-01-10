@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty and None values unclear when using object initialisation logic - astral-sh/ty #2011</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ty and None values unclear when using object initialisation logic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2011">#2011</a>
+        opened by <a href="https://github.com/laurensnaturalis">@laurensnaturalis</a>
+        on 2025-12-17 13:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/laurensnaturalis">@laurensnaturalis</a> on 2025-12-17 13:52</div>
+            <div class="timeline-body"><h3>Question</h3>
+<pre><code class="language-py">
+from numpy._typing import NDArray
+import numpy as np
+
+
+class SomeClass(object):
+    features: NDArray[np.float64] | None = None
+
+    def __init__(self):
+        self.loaded = False
+
+    def load_data(self):
+        self.features = np.zeros((1,))
+        self.loaded = True
+
+a = SomeClass()
+if not a.loaded:
+    a.load_data()
+else:
+    if len(a.features) &gt; 0:
+        # do something with a.features
+        pass
+
+</code></pre>
+<p>gives for the line <code>if len(a.features) &gt; 0:</code></p>
+<pre><code>Argument to function `len` is incorrect: Expected `Sized`, found `ndarray[Any, dtype[floating[_64Bit]]] | None` ty(invalid-argument-type)
+</code></pre>
+<p>The above pattern seems to be fairly common. How can I fix this without resorting to either <code>ty: ignore</code> or default values other than None?</p>
+<p>I tried</p>
+<p>(a) removing the `| None' for features which gives as error</p>
+<pre><code>Object of type `None` is not assignable to `ndarray[Any, dtype[floating[_64Bit]]]` ty(invalid-assignment)
+</code></pre>
+<p>(b) Using a property for <code>features</code> which gives as error</p>
+<pre><code>return type does not match returned value: expected ndarray[Any, dtype[floating[_64Bit]]]', found `ndarray[Any, dtype[floating[_64Bit]]] | None ty(invalid-return-type)
+</code></pre>
+<p>(c) <code>features: NDArray[np.float64] = np.zeros(0)</code> works, but is ugly and it's not possible to have sensible default values for different kinds of objects</p>
+<h3>Version</h3>
+<p>ty 0.02</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @laurensnaturalis on 2025-12-17 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-17 14:15</div>
+            <div class="timeline-body"><p>Thank you for your interest in ty!</p>
+<p>You filed two very similar issues earlier today (https://github.com/astral-sh/ty/issues/2002, https://github.com/astral-sh/ty/issues/2005). All of these questions seem to originate from a misunderstanding of union types. When an object has type <code>A | B</code>, it means the object could <em>either</em> be of type <code>A</code> <em>or</em> of type <code>B</code>. You can therefore not expect it to have all behaviors of type <code>A</code>.</p>
+<p>More concretely for your cases, if an object has type <code>Array | None</code>, you can not treat it like an <code>Array</code>. You first need to exclude the possibility that it might be <code>None</code> first.</p>
+<p>It might be useful to read https://mypy.readthedocs.io/en/stable/kinds_of_types.html#alternative-union-syntax and https://mypy.readthedocs.io/en/stable/kinds_of_types.html#optional-types-and-the-none-type before coming back with more questions. Also, if you have general questions about Python typing, the <a href="https://discord.com/invite/python">Python discord</a> or the Typing section on <a href="https://discuss.python.org/c/typing/32">discuss.python.org</a> might be more suited. If you think you've found a bug in ty, you can certainly report it here, but please consider checking with another type-checker before doing so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @laurensnaturalis on 2025-12-17 14:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

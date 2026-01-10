@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to configure per-module ignores? - astral-sh/ty #2050</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to configure per-module ignores?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2050">#2050</a>
+        opened by <a href="https://github.com/AlecThomson">@AlecThomson</a>
+        on 2025-12-18 02:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlecThomson">@AlecThomson</a> on 2025-12-18 02:24</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi there,</p>
+<p>Thanks for the huge amount of effort on this, and congrats on the v0.2 release!</p>
+<p>I'm wanting to configure <code>ty</code> to ignore issues for a specific module. For example, I have a <code>mypy</code> configuration like:</p>
+<pre><code>[[tool.mypy.overrides]]
+module = &quot;astropy.*&quot;
+</code></pre>
+<p>In truth, I'd rather be able to ignore a <em>specific</em> error on a per-module basis. For example, here I'd like to ignore just <code>unresolved-attribute</code> errors from <code>astropy.units</code>. Is it possible to configure this, currently? Thanks!</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlecThomson on 2025-12-18 02:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 07:16</div>
+            <div class="timeline-body"><p>You can use <code>tool.ty.overrides</code> to change the severity (enable or disable rules) for a subset of files:</p>
+<pre><code class="language-toml">[[tool.ty.overrides]]
+include = [&quot;tests/**&quot;, &quot;**/test_*.py&quot;]
+
+[tool.ty.overrides.rules]
+possibly-unresolved-reference = &quot;warn&quot;
+</code></pre>
+<p>Unlike mypy, it isn't module-based, but it should allow you to accomplish the same.</p>
+<p>Unless you want to disable attribute errors anywhere in the code base if accessed on an object with a type from any <code>astrolpy.*</code> module.</p>
+<p>https://docs.astral.sh/ty/reference/configuration/#overrides</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlecThomson">@AlecThomson</a> on 2025-12-18 12:32</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser.</p>
+<blockquote>
+<p>Unless you want to disable attribute errors anywhere in the code base if accessed on an object with a type from any astrolpy.* module.</p>
+</blockquote>
+<p>That's indeed what I'd be after. I don't want to disable the error globally, rather just for external modules that cause issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 12:34</div>
+            <div class="timeline-body"><p>Great. I'll close this issue then. But let us know if you run into any problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-18 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlecThomson">@AlecThomson</a> on 2025-12-18 12:38</div>
+            <div class="timeline-body"><p>Oh sorry, just to check. Is it just the case that its not possible at the moment to do per-module ignores?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-12-18 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 12:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh sorry, just to check. Is it just the case that its not possible at the moment to do per-module ignores?</p>
+</blockquote>
+<p>Can you say more about what you mean by per-module ignores?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-19 00:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Unless you want to disable attribute errors anywhere in the code base if accessed on an object with a type from any <code>astrolpy.*</code> module.</p>
+</blockquote>
+<p>Is this really a feature mypy offers? I'm not clear, because the config in the OP doesn't seem to be complete? It shows that you're overriding something for a certain set of modules, but it's not clear what config options you are setting for those modules.</p>
+<p>This almost sounds like a use case for #2082 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlecThomson">@AlecThomson</a> on 2025-12-19 02:12</div>
+            <div class="timeline-body"><p>Sorry for any confusion. Indeed, the mypy configuration above simply ignores <em>all</em> errors from the specified module. I was curious to know if it was possible to configure something similar in <code>ty</code>.</p>
+<p>My follow up question, which perhaps confused matters, was that it would potentially be preferable to have more granularity on a per-issue + per module basis. As far as I know this isn't possible MyPy, however.</p>
+<p>In that sense, I think my question is a duplicate of #1354</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 07:25</div>
+            <div class="timeline-body"><p>I'll close this as I considere it covered by #2082 and #1354</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-19 07:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

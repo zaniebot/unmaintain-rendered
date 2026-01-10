@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`dict` literal not accepted as `Mapping` argument - astral-sh/ty #1975</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`dict` literal not accepted as `Mapping` argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1975">#1975</a>
+        opened by <a href="https://github.com/tibdex">@tibdex</a>
+        on 2025-12-17 05:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tibdex">@tibdex</a> on 2025-12-17 05:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In:</p>
+<pre><code class="language-python">from collections.abc import Mapping
+from typing import Literal
+
+type DataType = Literal[&quot;BOOL&quot;, &quot;INT&quot;, &quot;FLOAT&quot;]
+
+def process(data_types: Mapping[str, DataType], /) -&gt; None:
+    ...
+
+process({&quot;foo&quot;:&quot;BOOL&quot;})
+</code></pre>
+<p>I would expect the type checker to see that <code>{&quot;foo&quot;:&quot;BOOL&quot;}</code> conforms to <code>Mapping[str, DataType]</code> when it is declared, and since it is not assigned anywhere, it cannot be mutated in a way that would modify its type before being passed as an argument.</p>
+<p>However, I get:</p>
+<pre><code>Argument to function `process` is incorrect: Expected `Mapping[str, DataType]`, found `dict[Unknown | str, Unknown | str]` (invalid-argument-type) [Ln 9, Col 9]
+</code></pre>
+<p><a href="https://www.typescriptlang.org/play/?#code/C4TwDgpgBAIghsOAVc0C8UBEAhA8rgGUygB8sBJAOSWLMwDEDcBBGgKDYGMB7AOwGdgUMACdunCP35QMACgAmCZKn4AuKACUIceXwA2IADwBvANq84AWwirBIgJa8A5gF118RCkgBfAHwBKGV8oY28Abg5RcUl+WWNuAGt1HHwib382KIkpON5uYFwkrBhWAFFMdI4eASF+bmtcACMAKwhOIQx4opTCCoismNk6hpa24H8woA">TypeScript 5.9.3 behaves like I expect</a>:</p>
+<pre><code class="language-typescript">type DataType = &quot;BOOL&quot; | &quot;INT&quot; | &quot;FLOAT&quot;
+
+const process = (dataTypes: Readonly&lt;{[name:string]: DataType}&gt;) =&gt; {};
+
+// This is accepted, but ty rejects it :(
+process({ok: &quot;BOOL&quot;})
+
+// Type '&quot;DATE&quot;' is not assignable to type 'DataType'
+process({notOk: &quot;DATE&quot;})
+
+const someObject = {ok: &quot;BOOL&quot;};
+// Argument of type '{ ok: string; }' is not assignable to parameter of type // 'Readonly&lt;{ [name: string]: DataType; }&gt;'.
+//   Property 'ok' is incompatible with index signature.
+//    Type 'string' is not assignable to type 'DataType'.
+process(someObject);
+</code></pre>
+<h3>Version</h3>
+<p>0.0.2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 07:02</div>
+            <div class="timeline-body"><p>Thanks! Please see #1576. We're working on solutions to this :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-17 07:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibdex">@tibdex</a> on 2025-12-17 13:39</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

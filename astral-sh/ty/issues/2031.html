@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad VIRTUAL_ENV environment variable causes a panic - astral-sh/ty #2031</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bad VIRTUAL_ENV environment variable causes a panic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2031">#2031</a>
+        opened by <a href="https://github.com/joshzcold">@joshzcold</a>
+        on 2025-12-17 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshzcold">@joshzcold</a> on 2025-12-17 19:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If <code>VIRTUAL_ENV</code> has a value that doesn't resolve properly <code>ty</code> will panic and exit.</p>
+<pre><code>ERROR panicked at crates/ty_server/src/session.rs:519:30:\nDefault configuration to be valid: Failed to discover local Python environment\n\nCaused by:\n    0: Invalid `VIRTUAL_ENV` environment variable `/home/joshua/git/neovim/python.nvim/examples/python_projects/uv/.venv`: does not point to a directory on disk\n    1: No such file or directory (os error 2)\n   0: &lt;unknown&gt;\n   1: &lt;unknown&gt;\n   2: &lt;unknown&gt;\n   3: &lt;unknown&gt;\n   4: &lt;unknown&gt;\n   5: &lt;unknown&gt;\n   6: &lt;unknown&gt;\n   7: &lt;unknown&gt;\n   8: &lt;unknown&gt;\n   9: &lt;unknown&gt;\n  10: &lt;unknown&gt;\n  11: start_thread\n             at ./nptl/pthread_create.c:447:8\n  12: clone3\n             at ./misc/../sysdeps/unix/sysv/linux/x86_64/clone3.S:78:0\n\npanicked at crates/ty_server/src/session.rs:519:30:\nDefault configuration to be valid: Failed to discover local Python environment\n\nCaused by:\n    0: Invalid `VIRTUAL_ENV` environment variable `/home/joshua/git/neovim/python.nvim/examples/python_projects/uv/.venv`: does not point to a directory on disk\n    1: No such file or directory (os error 2)\n   0: &lt;unknown&gt;\n   1: &lt;unknown&gt;\n   2: &lt;unknown&gt;&quot;
+</code></pre>
+<p><strong>Expected Behavior</strong>:
+<code>ty</code> should see this issue in <code>VIRTUAL_ENV</code>, log a warning and fail back to the next available python environment (i.e system)</p>
+<p>This would add flexability in code editors that need to add/delete/change their venv and still have <code>ty</code> be attached/detached without issue.</p>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 19:59</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-12-17 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 20:48</div>
+            <div class="timeline-body"><p>There are two concerns here</p>
+<ol>
+<li>Generally, what should we do when <code>VIRTUAL_ENV</code> refers to a path that does not exist?</li>
+<li>We should not panic when the default settings are not valid. See https://github.com/astral-sh/ty/issues/859</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 20:57</div>
+            <div class="timeline-body"><p>Can you share how you were running ty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @carljm on 2025-12-17 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 21:58</div>
+            <div class="timeline-body"><p>I think all that is needed here is to have VIRTUAL_ENV set to an incorrect path</p>
+<p>I'm not sure if it's even worth erroring if the VIRTUAL_ENV path is incorrect. Just logging a warning is probably fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 22:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure if it's even worth erroring if the VIRTUAL_ENV path is incorrect. Just logging a warning is probably fine</p>
+</blockquote>
+<p>I think I'd much prefer a hard exit when invoked on the CLI. I don't see a use case for setting an invalid <code>VIRTUAL_ENV</code> from the CLI and I'd want to fix that immediately as a user, since the type-checking results could make very little sense in that situation.</p>
+<p>The LSP case seems different; I think logging a warning and continuing could make sense there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 23:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I think I'd much prefer a hard exit when invoked on the CLI. I don't see a use case for setting an invalid VIRTUAL_ENV from the CLI and I'd want to fix that immediately as a user, since the type-checking results could make very little sense in that situation.</p>
+</blockquote>
+<p>I'm not sure if I agree. <code>uv pip install</code> doesn't hard exit here — and from experience there it's unfortunately common for people to have invalid <code>VIRTUAL_ENV</code> variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshzcold">@joshzcold</a> on 2025-12-17 23:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share how you were running ty?</p>
+</blockquote>
+<p>unique use case here. Running <code>ty</code> as an lsp server in neovim.</p>
+<p>I maintain a python dev neovim plugin.
+https://github.com/joshzcold/python.nvim/tree/main</p>
+<p>Ran into this issue where I started with a good <code>VIRTUAL_ENV</code> path. My plugin allows the user to delete their venv (for whatever reason, maybe they were stuck).
+My plugin did not clear out <code>VIRTUAL_ENV</code> (probably a good thing for me to fix) and after restarting the lsp server I ran into this issue.</p>
+<p>In my mind an lsp server should avoid crashing if possible. I do think the cli might be a seperate ballpark.</p>
+<p>In my plugin the user would re-install the venv, restart the lsp server and continue as normal. but a crashed lsp I think would interrupt the user without them knowing why (without going to logs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 23:38</div>
+            <div class="timeline-body"><p>@AlexWaygood moving that discussion to https://github.com/astral-sh/ty/issues/2044</p>
+<p>Thanks for the details @joshzcold — we should definitely not have the server fail and can track that here. https://github.com/astral-sh/ruff/pull/22040 will resolve that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-12-18 14:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vscode extension -- Getting `WARN Received unknown options for workspace` warning message - astral-sh/ty #1965</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>vscode extension -- Getting `WARN Received unknown options for workspace` warning message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1965">#1965</a>
+        opened by <a href="https://github.com/ColemanDunn">@ColemanDunn</a>
+        on 2025-12-16 23:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ColemanDunn">@ColemanDunn</a> on 2025-12-16 23:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here are the logs</p>
+<pre><code>2025-12-16 16:26:21.217586000  INFO Server shut down
+[Error - 4:26:21 PM] Server process exited with code 0.
+2025-12-16 16:26:21.257436000  INFO Version: 0.0.1-alpha.26 (b225fd8b4 2025-11-10)
+2025-12-16 16:26:21.260505000  WARN Received unknown options for workspace `file:///[PATH TTO MY PROJECT]`: {
+  &quot;completions&quot;: {
+    &quot;autoImport&quot;: true
+  }
+}
+2025-12-16 16:26:21.261001000  INFO Defaulting to python-platform `darwin`
+2025-12-16 16:26:21.261411000  INFO Python version: Python 3.13, platform: darwin
+2025-12-16 16:26:21.262207000  INFO Initializing the default project
+2025-12-16 16:26:21.262316000  INFO Defaulting to python-platform `darwin`
+2025-12-16 16:26:21.262479000  INFO Python version: Python 3.13, platform: darwin
+2025-12-16 16:26:21.268630000  INFO Indexed 108 file(s) in 0.006s
+</code></pre>
+<p>Where <code>[PATH TO MY PROJECT]</code> is a directory, not a file, which results in the following image when trying to open it by clicking the path on the log file:</p>
+<p><img width="455" height="201" alt="Image" src="https://github.com/user-attachments/assets/94370a58-0d54-4e95-8b13-4c3a3356e1e5" /></p>
+<p>Thank you for your time! Excited to try the newly released ty beta!</p>
+<h3>Version</h3>
+<p><code>The extension ships with ty==0.0.2.</code> from the extension description</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-12-16 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paw-lu">@paw-lu</a> on 2025-12-17 00:59</div>
+            <div class="timeline-body"><p>got this too. i did 0 effort to look into implementation but solution was to remove old autoimport in settings, in my editor it was</p>
+<pre><code class="language-diff">- &quot;python.analysis.autoImportCompletions&quot;: true, // Conflicts with ty
+</code></pre>
+<p>ty has its own namespace for this setting (<code>ty.completions.autoImport</code>), it's set to <code>true</code> already by default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-17 01:08</div>
+            <div class="timeline-body"><p>@BurntSushi I'm guessing this is fallout from stabilizing the feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 08:52</div>
+            <div class="timeline-body"><p>Thanks for sharing the logs. They're very insightful.</p>
+<p>It looks like the extension is using an older ty version that doesn't yet support this option:</p>
+<pre><code>2025-12-16 16:26:21.257436000  INFO Version: 0.0.1-alpha.26 (b225fd8b4 2025-11-10)
+</code></pre>
+<p>If you open the &quot;Output&quot; panel and select ty, then the logs should show you which binary the extension picked:</p>
+<pre><code>2025-12-17 09:22:39.781 [info] Name: ty
+2025-12-17 09:22:39.781 [info] Module: ty
+2025-12-17 09:22:39.781 [info] Python extension loading
+2025-12-17 09:22:39.781 [info] Waiting for interpreter from python extension.
+2025-12-17 09:22:40.449 [info] Python extension loaded
+2025-12-17 09:22:40.450 [info] Using interpreter: /Users/micha/astral/test/.venv/bin/python
+2025-12-17 09:22:40.450 [info] Initialization options: {
+    &quot;logLevel&quot;: &quot;debug&quot;
+}
+2025-12-17 09:22:40.520 [info] Using the ty binary: /Users/micha/.local/bin/ty
+2025-12-17 09:22:40.521 [info] Found executable at /Users/micha/.local/bin/ty
+</code></pre>
+<p>Most likely, it's because the extension finds an older ty version in your virtual environment or PATH</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-12-17 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacobeturpin">@jacobeturpin</a> on 2025-12-17 14:53</div>
+            <div class="timeline-body"><p>I was experiencing the same issue and can anecdotally confirm this appears to be a versioning issue with the extension requiring local ty installs to be &gt;=0.0.2. I had previously used <code>uv add ty</code> to install a <code>0.0.1aXX</code> build. When I upgraded to <code>0.0.2</code>, the extension immediately began working as intended without OP's error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ColemanDunn">@ColemanDunn</a> on 2025-12-17 19:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I was experiencing the same issue and can anecdotally confirm this appears to be a versioning issue with the extension requiring local ty installs to be &gt;=0.0.2. I had previously used <code>uv add ty</code> to install a <code>0.0.1aXX</code> build. When I upgraded to <code>0.0.2</code>, the extension immediately began working as intended without OP's error.</p>
+</blockquote>
+<p>Nice catch! This fixed it for me! I totally missed that someone had already added it to our dev dependencies so it was using an older version!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ColemanDunn on 2025-12-17 19:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

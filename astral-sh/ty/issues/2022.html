@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>possibly-missing-attribute warning on Union type narrowing based on Literal values - astral-sh/ty #2022</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>possibly-missing-attribute warning on Union type narrowing based on Literal values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2022">#2022</a>
+        opened by <a href="https://github.com/arthur-st">@arthur-st</a>
+        on 2025-12-17 17:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arthur-st">@arthur-st</a> on 2025-12-17 17:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">from pydantic import BaseModel
+from typing import Literal
+
+class Foo(BaseModel):
+
+    foo: str
+    kind: Literal[&quot;foo&quot;] = &quot;foo&quot;
+
+class Bar(BaseModel):
+
+    bar: str
+    kind: Literal[&quot;bar&quot;] = &quot;bar&quot;
+
+FooBar = Foo | Bar
+
+def baz(thing: FooBar):
+    if thing.kind == &quot;bar&quot;:
+        print(thing.bar)
+</code></pre>
+<p>This code shows the following warning:</p>
+<pre><code>❯ ty check ty-test.py
+warning[possibly-missing-attribute]: Attribute `bar` may be missing on object of type `Foo | Bar`
+  --&gt; ty-test.py:18:15
+   |
+16 | def baz(thing: FooBar):
+17 |     if thing.kind == &quot;bar&quot;:
+18 |         print(thing.bar)
+   |               ^^^^^^^^^
+   |
+info: rule `possibly-missing-attribute` is enabled by default
+</code></pre>
+<p>This warning is not correct, since <code>Bar</code> is the only type with the <code>kind=&quot;bar&quot;</code> attribute.</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (Homebrew 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arthur-st">@arthur-st</a> on 2025-12-17 17:34</div>
+            <div class="timeline-body"><p>Related #2023</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 17:48</div>
+            <div class="timeline-body"><p>Thanks for the report. Please see #1479</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-17 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

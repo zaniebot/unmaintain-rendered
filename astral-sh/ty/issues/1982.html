@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typing.Never return function yields incorrect type inference - astral-sh/ty #1982</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>typing.Never return function yields incorrect type inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1982">#1982</a>
+        opened by <a href="https://github.com/SadoP">@SadoP</a>
+        on 2025-12-17 08:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SadoP">@SadoP</a> on 2025-12-17 08:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hei</p>
+<p>Suppose you have a variable with a union type, check for the type at runtime and raise a <code>TypeError</code> if it's the incorrect type. This is correctly recognized by ty. If you replace the raise statement with a function with return type <code>Never</code>, for example if you have some repetitive error handling outsourced there, ty does not recognize that the type of the variable has changed. Here's a code snippet, I've used mypy to verify that the typing is actually correct.</p>
+<p><a href="https://play.ty.dev/46fdf394-2c5f-4f42-9388-e3d1b60b535f">https://play.ty.dev/46fdf394-2c5f-4f42-9388-e3d1b60b535f</a></p>
+<pre><code class="language-python">from typing import Never, reveal_type
+
+
+def raise_err() -&gt; Never:
+    raise TypeError
+
+
+def foo(val: str | int) -&gt; int:
+    if isinstance(val, str):
+        raise TypeError
+    reveal_type(val)
+    return val
+
+
+def bar(val: str | int) -&gt; int:
+    if isinstance(val, str):
+        raise_err()
+    reveal_type(val)
+    return val
+</code></pre>
+<p>Here's the output from ty check:</p>
+<pre><code>info[revealed-type]: Revealed type
+  --&gt; ty_test.py:11:17
+   |
+ 9 |     if isinstance(val, str):
+10 |         raise TypeError
+11 |     reveal_type(val)
+   |                 ^^^ `int`
+12 |     return val
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; ty_test.py:18:17
+   |
+16 |     if isinstance(val, str):
+17 |         raise_err()
+18 |     reveal_type(val)
+   |                 ^^^ `str | int`
+19 |     return val
+   |
+
+error[invalid-return-type]: Return type does not match returned value
+  --&gt; ty_test.py:15:28
+   |
+15 | def bar(val: str | int) -&gt; int:
+   |                            --- Expected `int` because of return type
+16 |     if isinstance(val, str):
+17 |         raise_err()
+18 |     reveal_type(val)
+19 |     return val
+   |            ^^^ expected `int`, found `str | int`
+   |
+info: rule `invalid-return-type` is enabled by default
+
+Found 3 diagnostics
+</code></pre>
+<p>And here the output from mypy on the same file:</p>
+<pre><code>ty_test.py:11: note: Revealed type is &quot;builtins.int&quot;
+ty_test.py:18: note: Revealed type is &quot;builtins.int&quot;
+Success: no issues found in 1 source file
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 08:21</div>
+            <div class="timeline-body"><p>Thanks! It's high-priority for us to fix this. Please see #690</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-17 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SadoP">@SadoP</a> on 2025-12-17 08:28</div>
+            <div class="timeline-body"><p>Oh, sorry for the duplicate in that case. I've searched but didn't find that particular issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

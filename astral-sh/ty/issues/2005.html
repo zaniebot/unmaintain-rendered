@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixed return types - astral-sh/ty #2005</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Mixed return types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2005">#2005</a>
+        opened by <a href="https://github.com/laurensnaturalis">@laurensnaturalis</a>
+        on 2025-12-17 12:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/laurensnaturalis">@laurensnaturalis</a> on 2025-12-17 12:34</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When using the following code</p>
+<pre><code class="language-py">cache_batch_features: Array = feature_cache.get(&quot;features&quot;)[start:end]
+</code></pre>
+<p>Where <code>feature_cache.get</code> is a from the <code>zarr</code> package with signature</p>
+<pre><code class="language-py">def get(self, path: str, default: DefaultT | None = None) -&gt; Array | Group | DefaultT | None:
+</code></pre>
+<p>I get</p>
+<pre><code>Method `__getitem__` of type `bound method Group.__getitem__(path: str) -&gt; Array | Group` cannot be called with key of type `slice[Any, Any, Any]` on object of type `Group`
+</code></pre>
+<p>Should I change this to</p>
+<pre><code class="language-py">tmp_ = feature_cache.get(&quot;features&quot;)[start:end]
+if isinstance(tmp_, Array):
+    tmp_[start:end]
+</code></pre>
+<p>?</p>
+<p>And if yes, is this a consequence of the design of the <code>.get</code> function of 'zarr'?</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @laurensnaturalis on 2025-12-17 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-17 12:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Should I change this to</p>
+</blockquote>
+<p>Yes, you need to narrow the type somehow to exclude <code>None</code> (and possibly <code>DefaultT</code>, depending on what it specializes to). So it might be enough to do <code>if tmp_ is not None</code>.</p>
+<blockquote>
+<p>And if yes, is this a consequence of the design of the <code>.get</code> function of 'zarr'?</p>
+</blockquote>
+<p>Yes. This function is annotated as possibly returning <code>None</code>, so this is something you need to exclude before subscripting the returned object.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-17 14:49</div>
+            <div class="timeline-body"><p>Closing this based on the comment in #2011, but feel free to comment here if it's not resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-17 14:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

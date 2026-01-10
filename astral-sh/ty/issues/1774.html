@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter out language-keyword completions in places where only an expression can be valid syntax - astral-sh/ty #1774</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter out language-keyword completions in places where only an expression can be valid syntax</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1774">#1774</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-05 14:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-05 14:33</div>
+            <div class="timeline-body"><p>For example, in this situation, <code>raise</code> should not be included as a completion suggestion, because <code>for x in raise</code> is invalid syntax (Python's grammar dictates that only an expression can follow the sequence <code>for &lt;EXPR&gt; in </code>):</p>
+<p><img width="1332" height="734" alt="Image" src="https://github.com/user-attachments/assets/26dd05d9-bd11-4fc1-a14d-d1b329cf3ac1" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-05 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @AlexWaygood on 2025-12-05 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Filter out keyword completions in places where only an expression can be valid syntax" to "Filter out language-keyword completions in places where only an expression can be valid syntax" by @AlexWaygood on 2025-12-13 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-13 21:42</div>
+            <div class="timeline-body"><p>Similarly, it's a bit annoying that <code>finally</code> is at the top of the list here when syntactically it would only ever be invalid syntax for a keyword to appear in this position:</p>
+<p><img width="1360" height="288" alt="Image" src="https://github.com/user-attachments/assets/2aad15ea-da36-466f-8b19-480b05d92b9b" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-15 18:59</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/21979 did this for <code>for ... in &lt;CURSOR&gt;</code>.</p>
+<p>I wonder if it make senses to approach this issue more methodically. That is, enumerate all classes of &quot;must be an expression&quot; locations, and then try to convert that to code so that we can more holistically rule out things that aren't expressions (or can't become expressions).</p>
+<p>Otherwise it seems likely this will just be a whack-a-mole kind of thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gablank">@gablank</a> on 2025-12-17 07:43</div>
+            <div class="timeline-body"><blockquote>
+<p>enumerate all classes of &quot;must be an expression&quot; locations</p>
+</blockquote>
+<p>Why not just use the formal Python grammar for this, then you can avoid suggesting something that leads to invalid syntax in all cases? Should also make it easy to support different Python versions (maintaining https://github.com/astral-sh/ruff/pull/22002 as the grammar grows is going to lead to a lot of conditionals, I imagine).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-17 13:00</div>
+            <div class="timeline-body"><p>@gablank Can you elaborate? What specifically are you suggesting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gablank">@gablank</a> on 2025-12-17 13:46</div>
+            <div class="timeline-body"><p>I am making quite a few assumptions on how <code>ty</code> works here, but reading https://github.com/astral-sh/ruff/pull/22002 it seems to me like what <code>ty</code> lists as valid next keywords is just based on &quot;hardcoding&quot;, i.e. &quot;if the current state is <code>for x in &lt;iter&gt;:&lt;CURSOR&gt;</code>, then yield, return, await etc. are valid keywords&quot;.</p>
+<p>What I'm asking is why the grammar itself isn't used to generate up all this, instead of encoding that logic by hand?</p>
+<p>I guess you're kind of suggesting the same in this comment, although maybe a special case of what I'm asking about?</p>
+<blockquote>
+<p>I wonder if it make senses to approach this issue more methodically. That is, enumerate all classes of &quot;must be an expression&quot; locations, and then try to convert that to code so that we can more holistically rule out things that aren't expressions (or can't become expressions).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 13:59</div>
+            <div class="timeline-body"><blockquote>
+<p>What I'm asking is why the grammar itself isn't used to generate up all this, instead of encoding that logic by hand?</p>
+</blockquote>
+<p>generating some kind of schema from the formal grammar at https://github.com/python/cpython/blob/3.14/Grammar/python.gram is an interesting idea. It sounds hard, though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-18 17:28</div>
+            <div class="timeline-body"><p>I believe this should now be closed by https://github.com/astral-sh/ruff/pull/22002</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-18 17:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

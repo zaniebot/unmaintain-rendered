@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscripted generic classes should not be considered instances of `type` - astral-sh/ty #116</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subscripted generic classes should not be considered instances of `type`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/116">#116</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-22 13:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-22 13:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ty currently emits no error on the following code, but it should:</p>
+<pre><code class="language-py">class Foo[T]: ...
+
+def requires_type(x: type): ...
+
+requires_type(Foo[int])
+</code></pre>
+<p><code>Foo[int]</code> here is not an instance of <code>type</code>. In the long run, it'll be quite important for us to understand this, as the runtime frequently distinguishes between generic aliases and instances of types:</p>
+<details>
+<summary>REPL session demonstrating several places where generic aliases are not accepted as instances of `type`</summary>
+
+<pre><code class="language-pycon">Python 3.13.1 (main, Jan  3 2025, 12:04:03) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; class Foo[T]: ...
+... 
+&gt;&gt;&gt; isinstance(object(), Foo[int])
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    isinstance(object(), Foo[int])
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/typing.py&quot;, line 1375, in __instancecheck__
+    return self.__subclasscheck__(type(obj))
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/typing.py&quot;, line 1378, in __subclasscheck__
+    raise TypeError(&quot;Subscripted generics cannot be used with&quot;
+                    &quot; class and instance checks&quot;)
+TypeError: Subscripted generics cannot be used with class and instance checks
+&gt;&gt;&gt; issubclass(object, Foo[int])
+Traceback (most recent call last):
+  File &quot;&lt;python-input-2&gt;&quot;, line 1, in &lt;module&gt;
+    issubclass(object, Foo[int])
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/typing.py&quot;, line 1378, in __subclasscheck__
+    raise TypeError(&quot;Subscripted generics cannot be used with&quot;
+                    &quot; class and instance checks&quot;)
+TypeError: Subscripted generics cannot be used with class and instance checks
+&gt;&gt;&gt; from functools import singledispatch
+&gt;&gt;&gt; @singledispatch
+... def f(arg): ...
+... 
+&gt;&gt;&gt; @f.register(list[int])
+... def f(arg): ...
+... 
+Traceback (most recent call last):
+  File &quot;&lt;python-input-5&gt;&quot;, line 1, in &lt;module&gt;
+    @f.register(list[int])
+     ~~~~~~~~~~^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/functools.py&quot;, line 893, in register
+    raise TypeError(
+    ...&lt;3 lines&gt;...
+    )
+TypeError: Invalid first argument to `register()`: list[int]. Use either `@register(some_class)` or plain `@register` on an annotated function.
+</code></pre>
+</details>
+
+<p>This bug can also be seen in that both these assertions currently pass, when they should fail:</p>
+<pre><code class="language-py">from ty_extensions import static_assert, is_subtype_of, is_assignable_to, TypeOf
+
+class Foo[T]: ...
+
+static_assert(is_subtype_of(TypeOf[Foo[int]], type))
+static_assert(is_assignable_to(TypeOf[Foo[int]], type))
+</code></pre>
+<p>https://play.ty.dev/d373a056-b58c-451b-a136-323e76970454</p>
+<p>Cc. @dcreager for generics!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-04-22 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Subscripted generic classes should not be considered instances of `type`" to "Subscripted generic classes should not be considered instances of `type`" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-10 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">subtyping/assignability</span> added by @AlexWaygood on 2025-05-10 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kroppeb">@Kroppeb</a> on 2025-06-17 22:50</div>
+            <div class="timeline-body"><p>Are you sure? Pyright and MyPy have the same behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-06-18 14:30</div>
+            <div class="timeline-body"><p>Yes, Alex is correct here and mypy and pyright are wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-08-15 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-08-15 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 20:34</div>
+            <div class="timeline-body"><p>Adding a note here (for the benefit of issue search) that this is how we should also emit a diagnostic on e.g. <code>isinstance(x, list[str])</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

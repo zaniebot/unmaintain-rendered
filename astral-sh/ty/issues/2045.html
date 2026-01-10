@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle &quot;deep&quot; mutual typevar constraints - astral-sh/ty #2045</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle &quot;deep&quot; mutual typevar constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2045">#2045</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-12-18 00:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-18 00:42</div>
+            <div class="timeline-body"><p>Pulling this out from https://github.com/astral-sh/ruff/pull/21551#discussion_r2566717765 into a standalone issue.</p>
+<p>Now that we're using the new constraint solver for <code>Callable</code> types, we can create constraint sets with an interesting pattern that we don't yet support. The failing mdtest is:</p>
+<pre><code class="language-py">def invoke[A, B](fn: Callable[[A], B], value: A) -&gt; B:
+    return fn(value)
+
+def head[T](xs: list[T]) -&gt; T:
+    return xs[0]
+
+# TODO: this should be `Unknown | int`
+reveal_type(invoke(head, [1, 2, 3]))
+</code></pre>
+<p>We end up inferring this constraint set when comparing <code>head</code> to <code>Callable[[A], B]</code>:</p>
+<pre><code>(B@invoke ≤ T@head) ∧ (list[T@head] ≤ A@invoke)
+</code></pre>
+<p>We then try to remove <code>T@head</code> from the constraint set by calculating</p>
+<pre><code>∃T@head ⋅ (B@invoke ≤ T@head) ∧ (list[T@head] ≤ A@invoke)
+</code></pre>
+<p>We should be able to pick <code>T@head = B@invoke</code> and simplify that to</p>
+<pre><code>(B@invoke = *) ∧ (list[B@invoke] ≤ A@invoke)
+</code></pre>
+<p>which would then be enough to propagate through the return type to discharge this TODO. This will require adding more derived facts to the sequent map.</p>
+<p>For co- and contravariant uses of the typevar, this will be straightforward, because the subtyping will carry through monotonically. For invariant uses, we will probably need a new <code>Type</code> variant to encode/remember the constraints from the abstracted-away typevar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @dcreager on 2025-12-18 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2025-12-18 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @dcreager on 2025-12-18 00:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

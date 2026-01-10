@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typevars considered inferable when they shouldn't be - astral-sh/ty #1898</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>typevars considered inferable when they shouldn't be</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1898">#1898</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-15 18:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-15 18:35</div>
+            <div class="timeline-body"><pre><code class="language-py">class Container[T]:
+    def method(self, x: T) -&gt; T:
+        return x
+
+    def try_assign[U](self, x: U) -&gt; U:
+        result = self.method(x)  # false negative here
+        reveal_type(result)  # revealed: `T@Container`
+        return result  # we correctly emit a diagnostic here
+</code></pre>
+<p>https://play.ty.dev/8b3bb7c8-d7a7-447a-9318-7ff50e896f90</p>
+<p>I think the <code>self.method(x)</code> call should be a type error, but currently is not. <code>U</code> and <code>T</code> are independent type variables, and neither of them is inferable in the context of this call. <code>T</code> is already bound because we are in a method of <code>Container</code>; <code>U</code> is bound because we are inside <code>try_assign</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-15 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-12-15 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-15 18:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

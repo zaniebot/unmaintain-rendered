@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom dataclasses with `__dataclass_{fields,params}__` fields are not considered `DataclassInstance` - astral-sh/ty #1987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Custom dataclasses with `__dataclass_{fields,params}__` fields are not considered `DataclassInstance`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1987">#1987</a>
+        opened by <a href="https://github.com/jeertmans">@jeertmans</a>
+        on 2025-12-17 08:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jeertmans">@jeertmans</a> on 2025-12-17 08:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi!</p>
+<p>First of all, thank you very much for this tool!</p>
+<p>I use <a href="https://docs.kidger.site/equinox/api/module/module/#equinox.Module"><code>equinox.Module</code></a> to create Python objects that are both dataclasses and PyTrees (to be compatible with JAX). However, it looks like running <code>ty check</code> emits a lot of errors that should not occur, at least from what I understood: a Python class is a <code>DataclassInstance</code> if it has both <code>__dataclass_fields__</code> and <code>__dataclass_params__</code> attributes. Another issue is that <code>ty</code> will raise an error about missing required arguments, whereas they are not missing.</p>
+<p>I looked at other issues on this repo and couldn't find a similar one, but maybe I missed it.</p>
+<p>FYI, I tried to used the playground but I don't see how we can include external dependencies, and the <code>equinox</code> module is too complex to be included manually.</p>
+<h2>MWE (<code>check.py</code>)</h2>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.11&quot;
+# dependencies = [
+#     &quot;equinox&quot;,
+# ]
+# ///
+from dataclasses import dataclass, replace, asdict, field
+
+import equinox as eqx
+
+
+@dataclass
+class MyBuiltinDataClass(eqx.Module):
+    a: int
+    b: float
+    c: str = field(default=&quot;default_value&quot;)
+
+
+class MyEqxDataClass(eqx.Module):
+    a: int
+    b: float
+    c: str = eqx.field(default=&quot;default_value&quot;)
+
+
+m = MyBuiltinDataClass(a=1, b=2.0)
+
+print(m)
+print(replace(m, b=3.5))
+print(asdict(m))
+print(hasattr(m, &quot;__dataclass_fields__&quot;))  # True
+print(hasattr(m, &quot;__dataclass_params__&quot;))  # True
+
+m = MyEqxDataClass(a=1, b=2.0)
+
+print(m)
+print(replace(m, b=3.5))
+print(asdict(m))
+print(hasattr(m, &quot;__dataclass_fields__&quot;))  # True
+print(hasattr(m, &quot;__dataclass_params__&quot;))  # True
+</code></pre>
+<h2><code>uv run python check.py</code>'s output</h2>
+<pre><code>MyBuiltinDataClass(a=1, b=2.0, c='default_value')
+MyBuiltinDataClass(a=1, b=3.5, c='default_value')
+{'a': 1, 'b': 2.0, 'c': 'default_value'}
+True
+True
+MyEqxDataClass(a=1, b=2.0)
+MyEqxDataClass(a=1, b=3.5)
+{'a': 1, 'b': 2.0, 'c': 'default_value'}
+True
+True
+</code></pre>
+<h2><code>ty check check.py</code>'s output</h2>
+<pre><code>error[missing-argument]: No argument provided for required parameter `c`
+  --&gt; check.py:26:5
+   |
+24 | print(hasattr(m, &quot;__dataclass_params__&quot;))  # True
+25 |
+26 | m = MyEqxDataClass(a=1, b=2.0)
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+27 |
+28 | print(m)
+   |
+info: rule `missing-argument` is enabled by default
+
+error[invalid-argument-type]: Argument to function `replace` is incorrect
+  --&gt; check.py:29:15
+   |
+28 | print(m)
+29 | print(replace(m, b=3.5))
+   |               ^ Argument type `MyEqxDataClass` does not satisfy upper bound `DataclassInstance` of type variable `_DataclassT`
+30 | print(asdict(m))
+31 | print(hasattr(m, &quot;__dataclass_fields__&quot;))  # True
+   |
+info: Type variable defined here
+  --&gt; stdlib/dataclasses.pyi:32:1
+   |
+30 |     __all__ += [&quot;KW_ONLY&quot;]
+31 |
+32 | _DataclassT = TypeVar(&quot;_DataclassT&quot;, bound=DataclassInstance)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+33 |
+34 | @type_check_only
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to function `asdict` is incorrect
+  --&gt; check.py:30:14
+   |
+28 | print(m)
+29 | print(replace(m, b=3.5))
+30 | print(asdict(m))
+   |              ^ Expected `DataclassInstance`, found `MyEqxDataClass`
+31 | print(hasattr(m, &quot;__dataclass_fields__&quot;))  # True
+32 | print(hasattr(m, &quot;__dataclass_params__&quot;))  # True
+   |
+info: Matching overload defined here
+  --&gt; stdlib/dataclasses.pyi:67:5
+   |
+66 | @overload
+67 | def asdict(obj: DataclassInstance) -&gt; dict[str, Any]:
+   |     ^^^^^^ ---------------------- Parameter declared here
+68 |     &quot;&quot;&quot;Return the fields of a dataclass instance as a new dictionary mapping
+69 |     field names to field values.
+   |
+info: Non-matching overloads for function `asdict`:
+info:   (obj: DataclassInstance, *, dict_factory: (list[tuple[str, Any]], /) -&gt; _T@asdict) -&gt; _T@asdict
+info: rule `invalid-argument-type` is enabled by default
+
+Found 3 diagnostics
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @sharkdp on 2025-12-17 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">library</span> added by @sharkdp on 2025-12-17 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-12-17 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @sharkdp on 2025-12-17 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-17 09:23</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p><code>equinox.Module</code> is a <a href="https://github.com/patrick-kidger/equinox/blob/2540dc3f54aa962e001ba826ab14c6f08bf64a6f/equinox/_module/_module.py#L443">metaclass-based <code>dataclass_transform</code>er</a>. We should be recognizing this. And in fact we do (partially?) recognize <code>MyEqxDataClass</code> as a dataclass. For example, <code>reveal_type(MyEqxDataClass.__init__)</code> yields <code>(self: MyEqxDataClass, a: int, b: int | float, c: str) -&gt; None</code>. But other parts are not working. The <code>c</code> parameter should have a default (apparently we do not recognize the field specifier <a href="https://github.com/patrick-kidger/equinox/blob/2540dc3f54aa962e001ba826ab14c6f08bf64a6f/equinox/_module/_module.py#L269">declared here</a>. And the special dunder attributes should also be available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-12-17 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2025-12-17 10:38</div>
+            <div class="timeline-body"><p>Thanks for reply @sharkdp and also for the upcoming patch! 🔥 (https://github.com/astral-sh/ruff/pull/22018 👀 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-17 13:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

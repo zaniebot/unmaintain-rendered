@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to typecheck nested protocol - astral-sh/ty #2080</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to typecheck nested protocol</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2080">#2080</a>
+        opened by <a href="https://github.com/xxchan">@xxchan</a>
+        on 2025-12-18 16:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xxchan">@xxchan</a> on 2025-12-18 16:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">from typing import Protocol, runtime_checkable
+
+@runtime_checkable
+class Outer(Protocol):
+    name: str
+    
+    class Inner(Protocol):
+        def foo(self) -&gt; int: ...
+    
+    def get_inner(self) -&gt; Inner: ...
+
+class MyOuter:
+    name: str = &quot;test&quot;
+    
+    class Inner:
+        def foo(self) -&gt; int:
+            return 1
+    
+    def get_inner(self) -&gt; Inner:
+        return MyOuter.Inner()
+
+def use_outer(o: Outer) -&gt; None:
+    pass
+
+use_outer(MyOuter())  # ty error, pyright passes
+</code></pre>
+<pre><code>Exit code 1
+error[invalid-argument-type]: Argument to function `use_outer` is incorrect
+  --&gt; /tmp/ty_nested_with_inner.py:25:11
+   |
+23 |     pass
+24 |
+25 | use_outer(MyOuter())
+   |           ^^^^^^^^^ Expected `Outer`, found `MyOuter`
+   |
+info: Function defined here
+  --&gt; /tmp/ty_nested_with_inner.py:22:5
+   |
+20 |         return MyOuter.Inner()
+21 |
+22 | def use_outer(o: Outer) -&gt; None:
+   |     ^^^^^^^^^ -------- Parameter declared here
+23 |     pass
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.3 (fadfe0966 2025-12-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @carljm on 2025-12-18 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 17:07</div>
+            <div class="timeline-body"><p>Thanks for the report! Looks like a bug. Removing the <code>get_inner()</code> methods does not fix the error, so the issue is not with the use of the nested protocols, it's that we don't think <code>MyOuter.Inner</code> itself satisfies <code>Outer.Inner</code>. I suspect this is related to #903.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-18 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 17:59</div>
+            <div class="timeline-body"><p>FWIW, while mypy and pyright are okay with this, pyrefly also rejects this code.</p>
+<p>If we add a call to our helper function <code>reveal_protocol_interface</code> here, it's easy to see what's going on:</p>
+<pre><code class="language-py">from typing import Protocol, runtime_checkable
+from ty_extensions import reveal_protocol_interface
+
+@runtime_checkable
+class Outer(Protocol):
+    name: str
+    
+    class Inner(Protocol):
+        def foo(self) -&gt; int: ...
+
+    def get_inner(self) -&gt; Inner: ...
+
+class MyOuter:
+    name: str = &quot;test&quot;
+
+    class Inner:
+        def foo(self) -&gt; int:
+            return 1
+
+    def get_inner(self) -&gt; Inner:
+        return MyOuter.Inner()
+
+def use_outer(o: Outer) -&gt; None:
+    pass
+
+# Revealed protocol interface: `{&quot;Inner&quot;: AttributeMember(`&lt;class 'Inner'&gt;`), &quot;get_inner&quot;: MethodMember(`(self, /) -&gt; Inner`), &quot;name&quot;: AttributeMember(`str`)}`
+reveal_protocol_interface(Outer)
+use_outer(MyOuter())  # ty error, pyright passes
+</code></pre>
+<p>In other words, ty has inferred that the protocol <code>Outer</code> has a member <code>Inner</code>, where the type of the <code>Inner</code> member is <code>&lt;class 'Outer.Inner'&gt;</code>. Instances of <code>MyOuter</code>, meanwhile, have an <code>Inner</code> attribute available, but that <code>Inner</code> attribute does not have a type that is assignable to <code>&lt;class Outer.Inner&gt;</code>. There is only one runtime value that inhabits the type <code>&lt;class Outer.Inner&gt;</code>, and that is the class <code>Outer.Inner</code>.</p>
+<p>I think that this is a reasonable interpretation of the user's code here, given that it's totally unspecified what type checkers are meant to do if they see nested classes inside <code>Protocol</code> classes. We should probably consider emitting an error when we see nested classes inside <code>Protocol</code> classes, as part of our <a href="https://docs.astral.sh/ty/reference/rules/#ambiguous-protocol-member"><code>ambiguous-protocol-member</code></a> check.</p>
+<p>I think the correct way to write this code would be to move the <code>Inner</code> protocol to the global namespace:</p>
+<pre><code class="language-py">from typing import Protocol, runtime_checkable
+
+class Inner(Protocol):
+    def foo(self) -&gt; int: ...
+
+@runtime_checkable
+class Outer(Protocol):
+    name: str
+    
+    def get_inner(self) -&gt; Inner: ...
+
+class MyOuter:
+    name: str = &quot;test&quot;
+
+    class Inner:
+        def foo(self) -&gt; int:
+            return 1
+
+    def get_inner(self) -&gt; Inner:
+        return MyOuter.Inner()
+
+def use_outer(o: Outer) -&gt; None:
+    pass
+
+use_outer(MyOuter())
+</code></pre>
+<p>This modified version of the snippet passes ty, pyright, mypy and pyrefly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 18:10</div>
+            <div class="timeline-body"><p>I also think the mypy/pyright interpretation (which I roughly guess to be that a nested protocol class in a protocol is effectively the same as <code>Inner: ClassVar[type[GloballyDefinedInner]]</code> as an attribute on the protocol) is a reasonable interpretation of this, but I agree this is not specified anywhere.</p>
+<p>Your version also makes an assumption that the <code>Inner</code> attribute itself is not intended to be part of the protocol, but it may be that the user intent of the OP is that implementers of the protocol are required to have an <code>Inner</code> class implementing the <code>Inner</code> protocol.</p>
+<p>If we get reports indicating that this usage is common, then it seems worth matching the mypy/pyright behavior. If not, maybe not. For now, I'll take this out of stable milestone but leave it open?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-18 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 18:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Your version also makes an assumption that the <code>Inner</code> attribute itself is not intended to be part of the protocol, but it may be that the user intent of the OP is that implementers of the protocol are required to have an <code>Inner</code> class implementing the <code>Inner</code> protocol.</p>
+</blockquote>
+<p>Right. A variant that does not make that assumption, but still passes all four type checkers, would be:</p>
+<pre><code class="language-py">from typing import Protocol, runtime_checkable
+
+class InnerProtocol(Protocol):
+    def foo(self) -&gt; int: ...
+
+@runtime_checkable
+class Outer(Protocol):
+    name: str
+
+    @property
+    def Inner(self) -&gt; type[InnerProtocol]: ...
+    
+    def get_inner(self) -&gt; InnerProtocol: ...
+
+class MyOuter:
+    name: str = &quot;test&quot;
+
+    class Inner:
+        def foo(self) -&gt; int:
+            return 1
+
+    def get_inner(self) -&gt; Inner:
+        return MyOuter.Inner()
+
+def use_outer(o: Outer) -&gt; None:
+    pass
+
+use_outer(MyOuter())
+</code></pre>
+<p>I tried doing something like this, but if you do this then mypy/pyright/pyrefly all complain that <code>Outer</code> declares its <code>Inner</code> attribute must be settable, and apparently they all see <code>MyOuter.Inner</code> as implicitly read-only? Not sure why</p>
+<pre><code class="language-py">class InnerProtocol(Protocol):
+    def foo(self) -&gt; int: ...
+
+@runtime_checkable
+class Outer(Protocol):
+    name: str
+
+    Inner: type[InnerProtocol]
+    
+    def get_inner(self) -&gt; InnerProtocol: ...
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

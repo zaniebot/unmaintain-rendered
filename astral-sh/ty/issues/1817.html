@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider allowing variables of type `type[...]` in explicit specializations - astral-sh/ty #1817</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider allowing variables of type `type[...]` in explicit specializations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1817">#1817</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-12-09 01:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 01:49</div>
+            <div class="timeline-body"><p>Here is the original use case presented at https://discord.com/channels/1039017663004942429/1279201882337705994/1446534091901108355</p>
+<pre><code class="language-py"># INEResponse is a generic BaseModel that accepts a BaseDataPoint type, thus changing what kind of response it attempts to validate
+
+class _INEResponse[TData: BaseDataPoint](BaseModel):
+   ...
+
+# &quot;Indicator&quot; is the metadata of the dataset being retrieved from the API, including its ID
+
+class Indicator[TRow: _RowType](BaseModel):
+    model: type[BaseDataPoint[TRow]]
+
+# _get_indicator should accept an Indicator with an expected row model to validate the response
+# and then create a parametrized _INEResponse[expected_response_type] so that it can call .model_validate on the response
+
+async def _get_indicator[TRow: _RowType](
+    indicator: Indicator[TRow],
+) -&gt; _INEResponse[BaseDataPoint[TRow]]:
+
+    ... # Response is retrieved from an API call
+
+    # we emit `[invalid-type-form] Variable of type `type[...]` is not allowed in a type expression`
+    return _INEResponse[indicator.model].model_validate(response)
+</code></pre>
+<p>Simplified version that still demonstrates the core issue:</p>
+<pre><code class="language-py">class Base:
+    pass
+
+class Response[TData: Base]:
+   ...
+
+class Indicator:
+    model: type[Base]
+
+def get_indicator(indicator: Indicator) -&gt; Response[Base]:
+    # we emit `[invalid-type-form] Variable of type `type[Base]` is not allowed in a type expression`
+    return Response[indicator.model]()
+</code></pre>
+<p>https://play.ty.dev/4373a5c6-734d-463a-b744-3bf0955ffe35</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-09 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-12-09 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-09 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 01:54</div>
+            <div class="timeline-body"><p>Pyright and pyrefly both allow this; mypy does not. (And mypy's error message is even stranger; it claims that <code>indicator.model</code> is not defined.)</p>
+<p>It's a little strange to allow this, in that it makes explicit specializations kind of a hybrid type-expression/value-expression. <code>indicator.model</code> is not allowed as an annotation by either pyright or pyrefly.</p>
+<p>I think it's also unsound to allow it if <code>Response</code> is invariant in <code>TData</code>. Since <code>type[Base]</code> includes subclasses of <code>Base</code>, this means we could be specializing <code>Response</code> to a specialization that is not actually a subtype of <code>Response[Base]</code> at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-09 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-09 13:24</div>
+            <div class="timeline-body"><p>To me this just seems like a bug report we should file with pyright and Pyrefly. But I imagine we might do better here due to the fact that no other type checker has the concept of class-literal types as first-class types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 18:32</div>
+            <div class="timeline-body"><p>Discussed this with a pyrefly maintainer, it sounds like we are agreed that this should not be allowed. The typing spec currently says that if <code>a.b</code> is a type expression, <code>a</code> should be a module or package. https://github.com/python/typing/issues/1884 aims to clarify that it can also be a class, but it cannot be an instance. (And the name must ultimately reference &quot;a valid in-scope class, type alias, or TypeVar&quot;, which does not include a variable of type <code>type[...]</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-09 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/5j9">@5j9</a> on 2025-12-16 15:13</div>
+            <div class="timeline-body"><p>I had a code like this which I believe has the same issue as the one being discussed:</p>
+<pre><code class="language-python">from typing import Any, Literal, reveal_type
+
+from pydantic import BaseModel
+
+
+class Resp[Data](BaseModel):
+    isSuccess: Literal[True]
+    message: str
+    errorCode: int
+    problemDetail: None
+    data: Data
+
+
+class C:
+    def _call_api_and_return_model_instance[T: BaseModel](
+        self,
+        api_call_params: Any,
+        expected_response_model: type[T],
+    ) -&gt; T:
+        text: str = 'API response obtained after processing api_call_params'
+        return expected_response_model.model_validate_json(text)
+
+    def get_data[DataModel](
+        self,
+        api_call_params: Any,
+        expected_data_model: type[DataModel],
+    ):
+        m = self._call_api_and_return_model_instance(
+            api_call_params,
+            Resp[expected_data_model],
+        )
+        return m.data
+
+
+reveal_type(C().get_data(any, str))
+</code></pre>
+<s>
+As a workaround I introduced `make_resp` as follows:
+
+<pre><code class="language-python">from typing import Any, Literal, reveal_type
+
+from pydantic import BaseModel
+
+
+class Resp[Data](BaseModel):
+    isSuccess: Literal[True]
+    message: str
+    errorCode: int
+    problemDetail: None
+    data: Data
+
+
+class C:
+    def _call_api_and_return_model_instance[T: BaseModel](
+        self,
+        api_call_params: Any,
+        expected_response_model: type[T],
+    ) -&gt; T:
+        text: str = 'API response obtained after processing api_call_params'
+        return expected_response_model.model_validate_json(text)
+
+    def get_data[DataModel](
+        self,
+        api_call_params: Any,
+        expected_data_model: type[DataModel],
+    ):
+        resp_type = make_resp(expected_data_model)
+        m = self._call_api_and_return_model_instance(
+            api_call_params,
+            resp_type,
+        )
+        return m.data
+
+
+def make_resp[T](model: type[T]) -&gt; type[Resp[T]]:
+    return Resp[T]
+
+
+reveal_type(C().get_data(any, str))
+</code></pre>
+<p>Now ty is revealing <code>unknown</code> instead of <code>str</code> at the last line. I don't understand why.</s> Any clues or other workarounds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-16 16:25</div>
+            <div class="timeline-body"><p>@5j9 You have no return type annotation on your <code>get_data</code> method. Until #128 is closed, we don't do return type inference on un-annotated methods, so if there is no annotated return type, the return type is <code>Unknown</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

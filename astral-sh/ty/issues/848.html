@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Differentiate between identically named (but distinct) types in diagnostics - astral-sh/ty #848</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Differentiate between identically named (but distinct) types in diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/848">#848</a>
+        opened by <a href="https://github.com/Andre-Medina">@Andre-Medina</a>
+        on 2025-07-18 04:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Andre-Medina">@Andre-Medina</a> on 2025-07-18 04:49</div>
+            <div class="timeline-body"><h2>Context</h2>
+<p>When you have two types of the same name from different packages/ parts of the code base <code>Ty</code> will only give the error based on type name, and not its dir, leading to ambiguous errors.</p>
+<p>I suggest adding some extra logic to be able to easier differentiate between identically named types, so in the case that it finds this issue, it appends something about the dir of the type.</p>
+<h2>Example</h2>
+<p>Say I have a function which expects a <code>polars</code> dataframe but a <code>pandas</code> dataframe is passed:</p>
+<pre><code>import polars as pl
+import pandas as pd
+
+def polars_function(df: pl.DataFrame) -&gt; pl.DataFrame:
+    return df
+
+df_pd = pd.DataFrame()
+polars_function(df_pd)
+</code></pre>
+<p>Will receive this ambiguous error:
+<img width="939" height="339" alt="Image" src="https://github.com/user-attachments/assets/cb569638-b4f5-4313-b90e-68534650f6f6" /></p>
+<h2>Solution</h2>
+<p>Would be very helpful if <code>ty</code> noticed that <code>DataFrame</code> and <code>DataFrame</code> are the same name and then appended the package name/ dir as follows:</p>
+<pre><code> --&gt; test_file.py:8:17
+  |
+7 | df_pd = pd.DataFrame()
+8 | polars_function(df_pd)
+  |                 ^^^^^ Expected `polars.DataFrame`, found `pandas.DataFrame`
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Andre-Medina on 2025-07-18 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-07-20 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-07-20 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Differentiate between identically named types" to "Differentiate between identically named (but distinct) types in diagnostics" by @AlexWaygood on 2025-07-20 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-07 09:47</div>
+            <div class="timeline-body"><p>Here's another great example from #950:</p>
+<pre><code class="language-py">class A:
+    class B:
+        pass
+
+class C:
+    class B:
+        pass
+
+
+a: A.B = C.B()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-10 23:18</div>
+            <div class="timeline-body"><p>I'l add one more example:</p>
+<pre><code class="language-python"># t.py
+from __future__ import annotations
+
+
+def my_function() -&gt; A:
+    class A:
+        pass
+
+    return A()
+
+
+class A:
+    pass
+
+
+a: A = my_function()
+</code></pre>
+<p>In this case <code>ty</code>:</p>
+<ol>
+<li>it's not differentiating the class names</li>
+<li>it's resolving the return type to the global class instead of the function-local</li>
+</ol>
+<p>Is 2. the expected behavior? Should we open a new issue?</p>
+<h4>mypy</h4>
+<pre><code class="language-console">t.py:8: error: Incompatible return value type (got &quot;t.A@5&quot;, expected &quot;t.A&quot;)  [return-value]
+</code></pre>
+<p>From my tests the number in <code>A@5</code> comes from the line number.</p>
+<h4>ty</h4>
+<pre><code class="language-console">error[invalid-return-type]: Return type does not match returned value
+ --&gt; teste.py:4:19
+  |
+4 | def my_function() -&gt; A:
+  |                   - Expected `A` because of return type
+5 |     class A:
+6 |         pass
+7 |
+8 |     return A()
+  |            ^^^ expected `A`, found `A`
+  |
+info: rule `invalid-return-type` is enabled by default
+</code></pre>
+<p>I believe we should have
+error: [invalid-assignment] &quot;Object of type <code>t.&lt;local in my_function&gt;.A</code> is not assignable to <code>t.A</code>&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 13:27</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py"># t.py
+from __future__ import annotations
+
+
+def my_function() -&gt; A:
+    class A:
+        pass
+
+    return A()
+
+
+class A:
+    pass
+
+
+a: A = my_function()
+</code></pre>
+<p>In this case <code>ty</code>:</p>
+<pre><code>1. it's not differentiating the class names
+2. it's resolving the return type to the global class instead of the function-local</code></pre>
+<p>Is 2. the expected behavior? Should we open a new issue?</p>
+</blockquote>
+<p>(2) is expected behaviour here. It matches Python's name-resolution rules at runtime: names in function annotations are resolved at function-definition time (before any of the body of the function has been executed), so the <code>A</code> in the function return annotation must refer to the global name <code>A</code> rather than the function local <code>A</code>. It also matches what mypy and pyright do here.</p>
+<p>Mypy seems to do much better than <a href="https://pyright-play.net/?pythonVersion=3.13&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=MQAgLgdADgngUAMwE4HsC2ID6mEFcy5ICm2IAlmlCkmCAIYB2DKYdYZKDAznLwCZEEINDBy4GAY3acAFAEoQAWgB8IAIIAuOCB0gJAGzpcu6rbvMgoRntt3ECSBuvm84B66ds6rx13Q3qIAC8wqJ4ktIMLkA">pyright</a> here when it comes to distinguishing between the function-local <code>A</code> and the global <code>A</code> in its diagnostics. However, I still don't consider the <code>A@5</code> notation to be very user-friendly -- where does <code>5</code> come from?? Pyrefly seems to do a similar thing to mypy.</p>
+<p>What if we did something similar to the repr given to these classes at runtime? E.g.</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f():
+...     class A: ...
+...     return A()
+...     
+&gt;&gt;&gt; f()
+&lt;__main__.f.&lt;locals&gt;.A object at 0x100e10c20&gt;
+</code></pre>
+<p>In the example above, the fully qualified name of <code>A</code> could be something like <code>t.&lt;locals of function 'f'&gt;.A</code>. It's a bit wordy but it has the advantage of being clear (I think?), and it's similar to what Python users will be used to from CPython at runtime</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andre-Medina">@Andre-Medina</a> on 2025-08-11 23:38</div>
+            <div class="timeline-body"><blockquote>
+<p>It's a bit wordy but it has the advantage of being clear</p>
+</blockquote>
+<p>As this is an edge case of an edge case, definitely worth the tradeoff for the sake of clarity. Could slightly simplify mimicking the above formatting of <code>t.f.&lt;locals&gt;.A</code>. But much better than a random <code>@5</code> (which is probably from the line number)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-12 01:29</div>
+            <div class="timeline-body"><p>I ended implementing the &lt;locals of function 'f'&gt; but I couldn't come up with a test that trigger it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-27 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-27 21:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I ended implementing the &lt;locals of function 'f'&gt; but I couldn't come up with a test that trigger it.</p>
+</blockquote>
+<p>I added a test that triggers this. It requires doing the assignment inside the function that defines the nested class.</p>
+<p>Re-opening this issue since we still need to support functions, and nested types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-08-27 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-28 09:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-08-28 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-28 17:06</div>
+            <div class="timeline-body"><p>Something that occurred to me today: although in general I think our fully-qualified-name approach is clearer than mypy's <code>@line-number</code> approach, there are cases that are still ambiguous with fully-qualified names, and unambiguous with mypy's version: https://play.ty.dev/627d5c8a-ab85-43bd-87d3-025eaaf1486e</p>
+<p>I think I'm OK sticking with our approach for now and seeing if that kind of weird case ever occurs in the real world. It wouldn't be a hard change to make if we ever decide to switch to mypy's approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-28 17:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Something that occurred to me today: although in general I think our fully-qualified-name approach is clearer than mypy's <code>@line-number</code> approach, there are cases that are still ambiguous with fully-qualified names, and unambiguous with mypy's version: https://play.ty.dev/627d5c8a-ab85-43bd-87d3-025eaaf1486e</p>
+<p>I think I'm OK sticking with our approach for now and seeing if that kind of weird case ever occurs in the real world. It wouldn't be a hard change to make if we ever decide to switch to mypy's approach.</p>
+</blockquote>
+<p>It's not exclusive to function local, it seems to be a very niche situation where both fully qualified name and the regular name collides.
+https://play.ty.dev/302166b4-a93c-443f-a731-c7fc46d2fa36</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 11:44</div>
+            <div class="timeline-body"><p><code>mypy</code> doesn't detect this one:</p>
+<pre><code>$ ty check t.py 
+t.py:7:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `Foo.__eq__`
+Found 1 diagnostic
+$ cat t.py
+</code></pre>
+<pre><code class="language-python">class Foo:
+    def __eq__(self, other: object) -&gt; bool:
+        return False
+
+
+class Bar(Foo):
+    def __eq__(self, value: object) -&gt; bool:
+        return False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 12:57</div>
+            <div class="timeline-body"><p>@spaceone that's unrelated to this issue. I gave an explanation of why that error occurs in https://github.com/astral-sh/ty/issues/2000#issuecomment-3665052994, however</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 13:44</div>
+            <div class="timeline-body"><p>Following https://github.com/astral-sh/ruff/pull/22019 being merged, I think we can close this now. There are probably still some diagnostics where we're not using the fully qualified names of types in situations where we should be, but let's open targeted bug reports regarding those specific diagnostics when and if we encounter them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-18 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

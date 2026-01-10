@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty and None values usage unclear - astral-sh/ty #2002</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ty and None values usage unclear</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2002">#2002</a>
+        opened by <a href="https://github.com/laurensnaturalis">@laurensnaturalis</a>
+        on 2025-12-17 12:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/laurensnaturalis">@laurensnaturalis</a> on 2025-12-17 12:14</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When doing</p>
+<pre><code class="language-py">other_probs: NDArray = None
+if other_probs is not None:
+    other_probs[indices] = ...
+</code></pre>
+<p>I get</p>
+<pre><code>Object of type `None` is not assignable to `ndarray[Any, dtype[Unknown]]`
+</code></pre>
+<p>for the first line. But when doing</p>
+<pre><code class="language-py">other_probs: NDArray | None  = None
+if other_probs is not None:
+    other_probs[indices] = ...
+</code></pre>
+<p>I get on the 3rd line</p>
+<pre><code>Cannot assign to a subscript on an object of type `None` ty(invalid-assignment)
+</code></pre>
+<p>I'm getting started with ty but I do this kind of stuff in Python all the time. I don't know how to fix this without using ignore statements.</p>
+<h3>Version</h3>
+<p>ty 0.02</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @laurensnaturalis on 2025-12-17 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradezard131">@bradezard131</a> on 2025-12-17 12:54</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py">other_probs: NDArray | None = None
+if other_probs is None:
+    other_probs[indices] = ...
+</code></pre>
+</blockquote>
+<p>Have you just flubbed this and meant <code>if other probs is not None</code>? Indexing into <code>None</code> will throw an exception, the error looks correct to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laurensnaturalis">@laurensnaturalis</a> on 2025-12-17 12:57</div>
+            <div class="timeline-body"><p>Sorry, yes, it should be <code>not None</code>.</p>
+<p>My problem is that I don't know how to write (the now correct code) without error messages from <code>ty</code></p>
+<p>Here the screenshots from pycharm with ty as language server</p>
+<p><img width="693" height="249" alt="Image" src="https://github.com/user-attachments/assets/6e661de2-52cd-4f2a-a222-7dab3096cc1f" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/730f762d-c2e9-468b-b5b7-91336d026ea7" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradezard131">@bradezard131</a> on 2025-12-17 13:04</div>
+            <div class="timeline-body"><p>You have the same mistake in your code: <code>if other_probs is None</code> instead of <code>if other_probs is not None</code>. If you have the condition correct then it works fine with the <code>NDArray | None</code> type, at least from what I can see:</p>
+<pre><code>❯ cat code.py
+from numpy.typing import NDArray
+
+other_probs: NDArray | None  = None
+if other_probs is not None:
+    other_probs[indices] = 1
+
+❯ uvx ty check
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @laurensnaturalis on 2025-12-17 13:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

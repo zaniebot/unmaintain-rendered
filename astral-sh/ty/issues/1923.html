@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit diagnostic on unsound `super()` call to abstract method with trivial body - astral-sh/ty #1923</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit diagnostic on unsound `super()` call to abstract method with trivial body</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1923">#1923</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-16 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-16 12:47</div>
+            <div class="timeline-body"><p><a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=2cc45538a0bb162f1f4ecd996515d985">Mypy</a>, <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;pythonVersion=3.13&amp;reportUnreachable=true&amp;code=GYJw9gtgBAhgRgYygSwgBzCALrOBnLEGBLCAUywAswATAKDoQBsY88oAxALjqj6gAC8AkRLkqtXvxplgUcdRoAKPGSbAAlFAC0APhQA7LFygA6cw2at2AcSUcNPflBlyFtFWs079yI0%2Bd%2BEAoAVxADKDwQtDIQJQ1Td2UNOiA">pyright</a> and <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEq2AxnRDcbpQC4PZxeVUTLjRhcAFrkwAddLKZRUcOHQBiiWXS10AAo36DhoiVM3bMMMHWOTMACjgwoYAJR0AtAD5W6LojqEgbLyisp0AOJ2qi4a6Np0FlY2Ug5Orh7eEL6x8fGUYgCulHFwBcQwlHYuhMn2LiAANCAFXNBwJOSIIADEdACqrVAQXKR0YAXowhC46HDBWJZjnDSoXAD66AU02BV2%2BP5ZXG5edAY52vlcRXFg0iAAcls7lP7A%2BAC%2Bd7KNIGT5YFBSIQuLQoBRegAFUj-QGnDA4Ah0JgzSAAcyKq2m6EIsl6AGUYDA6OIuFxiHBEAB6Sl-SyAwicVGUmDoSmYXBMOCU5HoNEY1ozSlLSgMABuqGgjFgSJREHRggFcVwxEV7VkZBM6HcooqcCxdAAvHQ7gBmQgARgATF90CB3k0hK0dapoDAKGgsHgiGQ7UA">pyrefly</a> all detect the unsoundness here. We should too:</p>
+<pre><code class="language-py">from abc import abstractmethod
+
+class F:
+    @abstractmethod
+    def method(self) -&gt; int: ...
+
+class G(F):
+    def method(self) -&gt; int:
+        # mypy: error: Call to abstract method &quot;method&quot; of &quot;F&quot; with trivial body via super() is unsafe  [safe-super]
+        return super().method()
+</code></pre>
+<p>This is similar to, but distinct from, https://github.com/astral-sh/ty/issues/1877.</p>
+<p>We should ensure that abstract properties are also covered, e.g.</p>
+<pre><code class="language-py">from abc import abstractmethod
+
+class F:
+    @property
+    @abstractmethod
+    def prop(self) -&gt; int: ...
+
+class G(F):
+    @property
+    def prop(self) -&gt; int:
+        # mypy: error: Call to abstract method &quot;method&quot; of &quot;F&quot; with trivial body via super() is unsafe  [safe-super]
+        return super().prop
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-12-16 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-12-16 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-16 14:17</div>
+            <div class="timeline-body"><p>Note that the &quot;with trivial body&quot; part of this is important. For example, this is fine, because the abstract method has a default implementation:</p>
+<pre><code class="language-py">from abc import abstractmethod
+
+class F:
+    @abstractmethod
+    def method(self) -&gt; int:
+        return 42
+
+class G(F):
+    def method(self) -&gt; int:
+        return super().method()
+</code></pre>
+<p>As a result of the above being fine, however, this means that we must also reject <code>super()</code> calls to abstract methods even if the <code>super()</code> call occurs in the body of an overriding method that is also abstract. To see why, consider this example below:</p>
+<pre><code class="language-py">from abc import abstractmethod
+
+class F:
+    @abstractmethod
+    def method(self) -&gt; int: ...
+
+class G(F):
+    @abstractmethod
+    def method(self) -&gt; int:
+        return super().method()
+
+class H(G):
+    def method(self) -&gt; int:
+        return super().method()
+</code></pre>
+<p><code>H.method()</code> says it will return <code>int</code>, but it actually returns <code>None</code>. But <code>H.method</code> doesn't break the rule outlined above: it calls <code>super()</code> on <code>G.method</code>, which is an abstract method that has a default implementation. Therefore the only way to prevent this unsoundness is to forbid the <code>super()</code> call in <code>G.method</code>, despite the fact that <code>G.method</code> is also an abstract method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-16 16:16</div>
+            <div class="timeline-body"><p>Mypy and pyrefly also emit a diagnostic on <code>G.method</code> in this snippet, where <code>F.method</code> is not explicitly abstract, but <em>is</em> a protocol method with a trivial body. The same soundness issues occur with this, so it makes sense that we should also emit a diagnostic here:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class F(Protocol):
+    def method(self) -&gt; int: ...
+
+class G(F):
+    def method(self) -&gt; int:
+        return super().method()
+</code></pre>
+<p>Pyright does not emit a diagnostic on this variation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>

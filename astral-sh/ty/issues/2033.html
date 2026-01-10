@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error[unresolved-attribute]: Module `signal` has no member `CTRL_C_EVENT` - astral-sh/ty #2033</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error[unresolved-attribute]: Module `signal` has no member `CTRL_C_EVENT`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2033">#2033</a>
+        opened by <a href="https://github.com/kracekumar">@kracekumar</a>
+        on 2025-12-17 20:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kracekumar">@kracekumar</a> on 2025-12-17 20:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am trying to replace mypy with ty in litecli library. The <code>signal</code>in stdlib module has platform specific code. ty is unable to figure this out.</p>
+<p>Code</p>
+<pre><code class="language-python">
+def send_ctrl_c_to_pid(pid, wait_seconds):
+    &quot;&quot;&quot;Sends a Ctrl-C like signal to the given `pid` after `wait_seconds`
+    seconds.&quot;&quot;&quot;
+    time.sleep(wait_seconds)
+    system_name = platform.system()
+    if system_name == &quot;Windows&quot;:
+        os.kill(pid, signal.CTRL_C_EVENT)
+    else:
+        os.kill(pid, signal.SIGINT)
+</code></pre>
+<p>Diagnostics</p>
+<pre><code>error[unresolved-attribute]: Module `signal` has no member `CTRL_C_EVENT`
+  --&gt; tests/utils.py:81:22
+   |
+79 |     system_name = platform.system()
+80 |     if system_name == &quot;Windows&quot;:
+81 |         os.kill(pid, signal.CTRL_C_EVENT)
+   |                      ^^^^^^^^^^^^^^^^^^^
+82 |     else:
+83 |         os.kill(pid, signal.SIGINT)
+   |
+info: The member may be available on other Python versions or platforms
+info: Python 3.9 was assumed when resolving the `CTRL_C_EVENT` attribute
+  --&gt; pyproject.toml:96:18
+   |
+95 | [tool.ty.environment]
+96 | python-version = &quot;3.9&quot;
+   |                  ^^^^^ Python version configuration
+97 | root = [&quot;litecli&quot;]
+   |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>mypy in the playground: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=522d6c41ceace3c5f037d4543a3e4e6b
+ty playground: https://play.ty.dev/8d9108ff-0369-4a19-bfb1-734a4d125648</p>
+<p>This issue is similar to https://github.com/astral-sh/ty/issues/1990</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)
+Python: 3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 20:55</div>
+            <div class="timeline-body"><p>Thanks for the report! There are a few inter-related things happening here.</p>
+<ol>
+<li>ty doesn't understand <code>system_name = platform.system(); if system_name == &quot;Windows&quot;:</code> as establishing a platform-guarded section of code. No other type checker understands this either. The form that all type-checkers understand is <code>if sys.platform == &quot;win32&quot;</code> -- switching to that <a href="https://play.ty.dev/55589b3d-6012-4d56-86be-3d20b6c8c3cb">fixes the issue</a>.</li>
+<li>I think both pyright and mypy playgrounds default to platform &quot;all&quot;; we currently default to <code>linux</code> in the playground. (Probably we should also default to <code>&quot;all&quot;</code> instead.) Mypy playground doesn't seem to support setting a specific platform. If you set pyright playground to Linux or Darwin platform, in strict mode it gives the same <code>unresolved-attribute</code> error that we do. Locally we default to the platform you are running on; I'm not sure how mypy/pyright default it.</li>
+<li>If you add <code>&quot;python-platform&quot;: &quot;all&quot;</code> in the ty config, <a href="https://play.ty.dev/82aa9027-2ab0-47cb-bac4-3bd166ebfd11">the error switches</a> from <code>[unresolved-attribute]</code> to a <code>[possibly-missing-attribute]</code> warning. (If we are checking for all platforms, we still want to warn you that the attribute may not exist on some platforms.) This is a warning that mypy and pyright do not provide. If you don't want it, you can suppress it, either on that specific line, or by disabling the warning entirely in your config.</li>
+</ol>
+<p>I think ty is working as expected here, so I'll close this issue for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-17 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 21:03</div>
+            <div class="timeline-body"><blockquote>
+<p>2. I think both pyright and mypy playgrounds default to platform &quot;all&quot;; we currently default to <code>linux</code> in the playground. (Probably we should also default to <code>&quot;all&quot;</code> instead.)</p>
+</blockquote>
+<p>Oh, i thought they defaulted to the platform they were being executed on, like us. I might be wrong though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 21:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, i thought they defaulted to the platform they were being executed on, like us</p>
+</blockquote>
+<p>I was specifically talking here about their playgrounds, which seem to default to &quot;all&quot; (at least pyright's explicitly does, mypy I was just guessing based on behavior).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kracekumar">@kracekumar</a> on 2025-12-18 00:51</div>
+            <div class="timeline-body"><p>Thanks for the deep dive here!:-)  I think option one should work <code>if sys.platform == &quot;win32&quot;</code>. I agree it is useful to warn against other platforms since it's good to catch these different behaviors early.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:54:35 UTC
+    </footer>
+</body>
+</html>
