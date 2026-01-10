@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for sorting diagnostics without a range - astral-sh/ruff #20257</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for sorting diagnostics without a range</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20257">#20257</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2025-09-05 00:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-05 00:06</div>
+            <div class="timeline-body"><ul>
+<li>Update ruff ordering compare to work with optional ranges (treating
+them as starting from zero)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @amyreese on 2025-09-05 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-09-05 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @amyreese on 2025-09-05 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @amyreese on 2025-09-05 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-05 18:43</div>
+            <div class="timeline-body"><p>Updated docstring. @ntBre am I correct that there aren't any unit tests covering the ordering of diagnostics where I could add test cases? Is that worth taking the time to add?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @amyreese on 2025-09-05 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-05 18:54</div>
+            <div class="timeline-body"><p>It looks like <code>test_contents</code> calls <code>ruff_start_ordering</code>, so I'm pretty sure all of our snapshot tests actually exercise this behavior, at least the range part since they're mostly single-file tests:</p>
+<p>https://github.com/astral-sh/ruff/blob/16d674e63264acdf640349c81ec6263e813a3234/crates/ruff_linter/src/test.rs#L405</p>
+<p>I'm guessing some of our CLI tests probably have multiple files and thus use the file part too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:509 on 2025-09-05 18:55</div>
+            <div class="timeline-body"><p>I think we could avoid the <code>map</code> calls if we just <code>unwrap</code> the range first:</p>
+<pre><code class="language-rust">            self.range().unwrap_or_default().start(),
+</code></pre>
+<p>Alternatively, we can probably just drop the <code>unwrap_or_default</code>. I think <code>None</code> will sort below <code>Some(...)</code>, just like unwrapping to a <code>start</code> of zero.</p>
+<pre><code class="language-rust">            self.range().map(|range| range.start()),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-05 19:04</div>
+            <div class="timeline-body"><p>Thanks! I thought of two more ideas for very, very slight simplifications. Feel free to apply one of them or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-09-05 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-09-05 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @amyreese on 2025-09-05 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2025-09-05 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-05 22:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

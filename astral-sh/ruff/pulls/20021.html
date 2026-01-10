@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix incorrect docstring in call signature completion - astral-sh/ruff #20021</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix incorrect docstring in call signature completion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20021">#20021</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-21 12:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 12:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes https://github.com/astral-sh/ty/issues/1071</p>
+<p>The core issue is that <code>CallableType</code> is a salsa interned but <code>Signature</code> (which <code>CallableType</code> stores) ignores the <code>Definition</code> in its <code>Eq</code> and <code>Hash</code> implementation.</p>
+<p>This PR tries to simplest fix by removing the custom <code>Eq</code> and <code>Hash</code> implementation. The main downside of this fix is that it can increase memory usage because <code>CallableType</code>s that are equal except for their <code>Definition</code> are now interned separately.</p>
+<p>The alternative is to remove <code>Definition</code> from <code>CallableType</code> and instead, call <code>bindings</code> directly on the callee (call_expression.func). However, this would require
+addressing the TODO</p>
+<p>here https://github.com/astral-sh/ruff/blob/39ee71c2a57bd6c51482430ba8bfe3728b4ca443/crates/ty_python_semantic/src/types.rs#L4582-L4586</p>
+<p>This might probably be worth addressing anyway, but is the more involved fix. That's why I opted for removing the custom <code>Eq</code> implementation.</p>
+<p>We already &quot;ignore&quot; the definition during normalization, thank's to Alex's work in https://github.com/astral-sh/ruff/pull/19615</p>
+<h2>Test Plan</h2>
+<p>https://github.com/user-attachments/assets/248d1cb1-12fd-4441-adab-b7e0866d23eb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-08-21 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-08-21 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-08-21 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-21 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-08-21 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-08-21 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-08-21 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @MichaReiser on 2025-08-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @UnboundVariable by @MichaReiser on 2025-08-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-08-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-08-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-21 12:22</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-21 12:25</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-21 12:33</div>
+            <div class="timeline-body"><p>Makes sense to me!</p>
+<p>I agree that we need to do some work cleaning up <code>Type::bindings()</code>, but I think both @sharkdp and I have tried several times at this point and every time we found it surprisingly hard 🙃 so this is definitely the easier fix for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Fix wrong docstring in call signature completion" to "[ty] Fix incorrect docstring in call signature completion" by @MichaReiser on 2025-08-21 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-08-21 14:54</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 15:00</div>
+            <div class="timeline-body"><p>I'll give @carljm a chance to chime in, as he reasoned that we should remove <code>Definition</code> from <code>CallableType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-21 17:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll give @carljm a chance to chime in, as he reasoned that we should remove <code>Definition</code> from <code>CallableType</code>.</p>
+</blockquote>
+<p>I do think that's what we should do eventually, but it doesn't have to be done right now -- this fix improves the behavior in the short term and I don't think makes anything more difficult for removing the definition in future, so I'm in favor of it.</p>
+<p>(Also it removes code, and all else equal I'm always in favor of that 😆 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-21 20:36</div>
+            <div class="timeline-body"><p>I'm gonna land this since it's a important/pervasive bugfix, makes it easier to test/debug other function handling features.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-08-21 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-08-21 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-21 20:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

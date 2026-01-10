@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`perflint`] Handle tuples in dictionary comprehensions (`PERF403`) - astral-sh/ruff #19934</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>perflint</code>] Handle tuples in dictionary comprehensions (<code>PERF403</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19934">#19934</a>
+        opened by <a href="https://github.com/liortct">@liortct</a>
+        on 2025-08-16 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/liortct">@liortct</a> on 2025-08-16 09:03</div>
+            <div class="timeline-body"><p>This pull request fixes the bug described in issue <a href="https://github.com/astral-sh/ruff/issues/19153">#19153</a>.</p>
+<p>The issue occurred when <code>PERF403</code> incorrectly flagged cases involving tuple unpacking in a for loop. For example:</p>
+<pre><code class="language-python">def f():
+    v = {}
+    for (o, p), x in [(&quot;op&quot;, &quot;x&quot;)]:
+        v[x] = o, p
+</code></pre>
+<p>This code was wrongly suggested to be rewritten into a dictionary comprehension, which changes the semantics.</p>
+<p>Changes in this PR:</p>
+<p>Updated the <code>PERF403</code> rule to correctly handle tuple unpacking in loop targets.</p>
+<p>Added regression tests to ensure this case (and similar ones) are no longer flagged incorrectly.</p>
+<p>Why:
+This ensures that <code>PERF403</code> only triggers when a dictionary comprehension is semantically equivalent to the original loop, preventing false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liortct">@liortct</a> on 2025-08-18 19:39</div>
+            <div class="timeline-body"><p>@ntBre
+Hello 👋 just a gentle reminder about this PR. I’d be happy to make any changes if needed. Thanks for reviewing when you get the chance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-08-18 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-18 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-18 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-18 22:29</div>
+            <div class="timeline-body"><p>Thank you! I'll try to get to it this week :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-18 22:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:364 on 2025-08-19 17:25</div>
+            <div class="timeline-body"><p>What do you think about something like this?</p>
+<pre><code class="language-suggestion">    let key_str = if let Expr::Tuple(ast::ExprTuple {
+        elts,
+        parenthesized,
+        ..
+    }) = key
+    {
+        if elts.len() != 1 {
+            return None;
+        };
+
+        if *parenthesized {
+            locator.slice(key).to_string()
+        } else {
+            format!(&quot;({})&quot;, locator.slice(key))
+        }
+    } else {
+        locator.slice(key).to_string()
+    };
+</code></pre>
+<p>That uses the same kind of <code>parenthesized</code> check as for <code>value_str</code>. I also used a small trick with <code>slice</code>: <code>Expr</code>s implement <code>Ranged</code> directly, so you can just pass them instead of having to call <code>key.range()</code>, for example. It also restores the <code>elts</code> check, although I don't really see why it shouldn't apply if there are multiple elements in the slice. That's also checked here, but I guess we might as well preserve it:</p>
+<p>https://github.com/astral-sh/ruff/blob/59b078b1bf3a9482e08fe5a00a41076efbbc3974/crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs#L130-L139</p>
+<p>It's a bit unfortunate to have to call <code>format!</code> and <code>to_string</code> everywhere, but I believe that is the typical way to add parentheses when needed. We <em>could</em> use a <code>Cow</code> if we really want to avoid it, but I think it's probably okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:374 on 2025-08-19 17:26</div>
+            <div class="timeline-body"><p>Similar to the case above, I think we can just do this instead of having a mutable variable:</p>
+<pre><code class="language-suggestion">    // If the value is a tuple without parentheses, add them
+    let value_str = if let Expr::Tuple(ast::ExprTuple {
+        parenthesized: false,
+        ..
+    }) = value
+    {
+        format!(&quot;({})&quot;, locator.slice(value))
+    } else {
+        locator.slice(value).to_string()
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/perflint/PERF403.py</code>:201 on 2025-08-19 17:27</div>
+            <div class="timeline-body"><p>Your implementation already covers this (nice work!), but we may also want to add a test for the case where the key is already parenthesized just to make sure we don't add a second set:</p>
+<pre><code class="language-py">def issue_19153_3():
+    v = {}
+    for o, (x,) in [&quot;ox&quot;]:
+        v[(x,)] = o
+    return v
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:376 on 2025-08-19 17:29</div>
+            <div class="timeline-body"><p>This call already existed, but if we wanted to avoid one string allocation, we could fold this into the <code>format!</code> below:</p>
+<pre><code class="language-rust">let comprehension_str = format!(&quot;{{{key_str}: {value_str} {for_type} {target_str} in {iter_str}{if_str}}}&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-19 17:31</div>
+            <div class="timeline-body"><p>Thank you, this looks great! I just had a few small suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/liortct">@liortct</a> reviewed on 2025-08-23 10:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/liortct">@liortct</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:364 on 2025-08-23 10:33</div>
+            <div class="timeline-body"><p>Thanks for the comment, Fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/liortct">@liortct</a> reviewed on 2025-08-23 10:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/liortct">@liortct</a> on <code>crates/ruff_linter/resources/test/fixtures/perflint/PERF403.py</code>:201 on 2025-08-23 10:33</div>
+            <div class="timeline-body"><p>You are absolutely right, I added this test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/liortct">@liortct</a> reviewed on 2025-08-23 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/liortct">@liortct</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:374 on 2025-08-23 10:34</div>
+            <div class="timeline-body"><p>Fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/liortct">@liortct</a> reviewed on 2025-08-23 10:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/liortct">@liortct</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:376 on 2025-08-23 10:37</div>
+            <div class="timeline-body"><p>Nice tip, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liortct">@liortct</a> on 2025-08-23 10:40</div>
+            <div class="timeline-body"><p>@ntBre
+Thanks a lot for the review and comments!<br />
+I’ve addressed all the issues, and the PR is ready for another review.<br />
+If there’s anything else that needs to be adjusted, please let me know and I’ll update it promptly.</p>
+<p>Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-08-28 21:10</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[perf403] bug handle tuple in dictionary compression" to "[`perflint`] Handle tuples in dictionary comprehensions (`PERF403`)" by @ntBre on 2025-08-28 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-28 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-28 21:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

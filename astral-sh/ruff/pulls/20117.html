@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move GitLab output rendering to `ruff_db` - astral-sh/ruff #20117</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move GitLab output rendering to <code>ruff_db</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20117">#20117</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-08-27 16:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-27 16:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is a first step toward adding a GitLab output format to ty. It converts the <code>GitlabEmitter</code> from <code>ruff_linter</code> to a <code>GitlabRenderer</code> in <code>ruff_db</code> and updates its implementation to handle non-Ruff files and diagnostics without primary spans. I tried to break up the changes here so that they're easy to review commit-by-commit, or at least in groups of commits:</p>
+<ul>
+<li><a href="https://github.com/astral-sh/ruff/pull/20117/files/0761b73a615537fe75fc54ba8f7d5f52c28b2a2a">preparatory changes in-place in <code>ruff_linter</code> and a <code>ruff_db</code> skeleton</a></li>
+<li><a href="https://github.com/astral-sh/ruff/pull/20117/files/0761b73a615537fe75fc54ba8f7d5f52c28b2a2a..8f909ea0bb0892107824b311f3982eb3cb1833ed">moving the code over with no implementation changes mixed in</a></li>
+<li><a href="https://github.com/astral-sh/ruff/pull/20117/files/9f047c4f9f1c826b963f0fa82ca2411d01d6ec83..e5e217fcd611ab24f516b2af4fa21e25eadc5645">tidying up the code now in <code>ruff_db</code></a></li>
+</ul>
+<p>This wasn't strictly necessary, but I also added some <code>Serialize</code> structs instead of calling <code>json!</code> to make it a little clearer that we weren't modifying the schema (e4c4bee35d39eb0aff4cae4a62823279b99c6d9c).</p>
+<p>I plan to follow this up with a separate PR exposing this output format in the ty CLI, which should be quite straightforward.</p>
+<h2>Test Plan</h2>
+<p>Existing tests, especially the two that show up in the diff as renamed nearly without changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-08-27 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-08-27 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-27 16:45</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-27 16:47</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-27 17:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-27 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/gitlab.rs</code>:172 on 2025-08-27 17:18</div>
+            <div class="timeline-body"><p>I suspect that we could just use our <code>render::relativize_path</code> helper here and drop this dependency,  but I kept it around for now. We don't have any existing tests covering the <code>CI_PROJECT_DIR</code> case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-08-27 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render/gitlab.rs</code>:43 on 2025-08-27 19:05</div>
+            <div class="timeline-body"><p>How come <code>serde_json::json!</code> here instead of <code>serde_json::to_string</code>? I'd expect the latter to be faster since it doesn't have to construct an intermediate <code>serde_json::Value</code>, but that's just a wild guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render/gitlab.rs</code>:43 on 2025-08-27 19:08</div>
+            <div class="timeline-body"><p>I guess it's a shame we can't just stream this right to a <code>std::fmt::Write</code> without going through some intermediate value first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render/gitlab.rs</code>:172 on 2025-08-27 19:09</div>
+            <div class="timeline-body"><p>Dropping a dependency sounds great. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-08-27 19:11</div>
+            <div class="timeline-body"><p>LGTM.</p>
+<p>Possible idea for next time: if you have 3 logical groupings of commits, it might make sense to just squash that into 3 commits. Then you can write a commit message for that grouping and it should hopefully make review easier. (And avoid needing to write out the links for the individual groups of commits. Which I assume will go bad if you rebase.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-27 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/gitlab.rs</code>:43 on 2025-08-27 19:27</div>
+            <div class="timeline-body"><p><code>json!</code> hides the <code>unwrap</code> call in the macro and we used it in the other JSON formats, but those aren't very good reasons :grimacing:</p>
+<p>But yeah, the <code>Emitter</code>s in <code>ruff_linter</code> take <code>std::io::Write</code>s instead of <code>std::fmt::Write</code>s, making this a little easier. We added an adapter in the <code>junit</code> PR, but I haven't used it any of the other formats yet:</p>
+<p>https://github.com/astral-sh/ruff/blob/ef0586d0da0f04b73e0f53b375497c99eeb6ef18/crates/ruff_db/src/diagnostic/render/junit.rs#L150-L154</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-27 19:29</div>
+            <div class="timeline-body"><p>Thanks for the review!</p>
+<blockquote>
+<p>Possible idea for next time: if you have 3 logical groupings of commits, it might make sense to just squash that into 3 commits. Then you can write a commit message for that grouping and it should hopefully make review easier. (And avoid needing to write out the links for the individual groups of commits. Which I assume will go bad if you rebase.)</p>
+</blockquote>
+<p>Will do, sorry about that. I thought each commit would be helpful initially, but then they got a bit too small. I should have squashed after identifying the groups. It's definitely a pain to maintain the links!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-27 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/gitlab.rs</code>:43 on 2025-08-27 20:44</div>
+            <div class="timeline-body"><p>I switched it over to <code>to_string</code> for now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-27 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/gitlab.rs</code>:172 on 2025-08-27 20:44</div>
+            <div class="timeline-body"><p>I think I'll open a follow-up issue here. I'm <em>pretty</em> sure that we can drop this entirely and just use the CWD-relative path, but I'm not 100% sure and don't want to break GitLab users.</p>
+<p>It's a <a href="https://docs.rs/pathdiff/0.2.3/src/pathdiff/lib.rs.html#43-86">one-function</a> dependency, so we could also vendor it. The behavior seems a bit different from our <code>relativize_path</code> if the <code>project_root</code> isn't a prefix, if we really need that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-28 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-28 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-28 12:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

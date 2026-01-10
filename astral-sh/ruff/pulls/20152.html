@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Less confidently mark f-strings as empty when inferring truthiness - astral-sh/ruff #20152</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Less confidently mark f-strings as empty when inferring truthiness</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20152">#20152</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-08-29 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-08-29 14:10</div>
+            <div class="timeline-body"><p>When computing the boolean value of an f-string, we over-eagerly interpreted some f-string interpolations as empty. In this PR we now mark the truthiness of f-strings involving format specs, debug text, and bytes literals as &quot;unknown&quot;.</p>
+<p>This will probably result in some false negatives, which may be further refined (for example - there are probably many cases where <code>is_not_empty_f_string</code> should be modified to return <code>true</code>), but for now at least we should have fewer false positives.</p>
+<p>Affected rules (may not be an exhaustive list):</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-empty-iterable-within-deque-call/#unnecessary-empty-iterable-within-deque-call-ruf037">unnecessary-empty-iterable-within-deque-call (RUF037)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/falsy-dict-get-fallback/#falsy-dict-get-fallback-ruf056">falsy-dict-get-fallback (RUF056)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/pytest-assert-always-false/#pytest-assert-always-false-pt015">pytest-assert-always-false (PT015)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/expr-or-not-expr/#expr-or-not-expr-sim221">expr-or-not-expr (SIM221)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/expr-or-true/#expr-or-true-sim222">expr-or-true (SIM222)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/expr-and-false/#expr-and-false-sim223">expr-and-false (SIM223)</a></li>
+</ul>
+<p>Closes #19935</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-08-29 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-08-29 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-29 14:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-29 14:27</div>
+            <div class="timeline-body"><p>Thanks! I'll take a look at this after planning. Do you think we can still use <code>is_empty_f_string</code> for RUF037 (#20109), or will we need a slightly different version? I just suggested using that yesterday :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1413 on 2025-08-29 15:48</div>
+            <div class="timeline-body"><p>This did seem confusing initially, but this cleared it up a bit for me:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; f&quot;{b&quot;&quot;}&quot;
+&quot;b''&quot;
+&gt;&gt;&gt; str(b'')
+&quot;b''&quot;
+</code></pre>
+<p>So this is actually correct for RUF037 too:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from collections import deque
+&gt;&gt;&gt; deque(f&quot;&quot;)
+deque([])
+&gt;&gt;&gt; deque(f&quot;{b&quot;&quot;}&quot;)
+deque(['b', &quot;'&quot;, &quot;'&quot;])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1419 on 2025-08-29 15:56</div>
+            <div class="timeline-body"><p>Should we factor out this closure now that it's more complicated? It looks the same as below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-08-29 15:57</div>
+            <div class="timeline-body"><p>Thanks! I tested all of these cases with <code>deque</code>, and I think this is a fix for RUF037 too!</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; deque(f&quot;{b&quot;&quot;}&quot;)
+deque(['b', &quot;'&quot;, &quot;'&quot;])
+&gt;&gt;&gt; deque(f&quot;{&quot;&quot;=}&quot;)
+deque(['&quot;', '&quot;', '=', &quot;'&quot;, &quot;'&quot;])
+&gt;&gt;&gt; deque(f&quot;{&quot;&quot;!a}&quot;)
+deque([&quot;'&quot;, &quot;'&quot;])
+&gt;&gt;&gt; deque(f&quot;{&quot;&quot;!r}&quot;)
+deque([&quot;'&quot;, &quot;'&quot;])
+&gt;&gt;&gt; deque(f&quot;{&quot;&quot;:1}&quot;)
+deque([' '])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-pytest-style`] Less confidently mark f-strings as empty for e.g. `pytest-assert-always-false` (`PT015`)" to "Less confidently mark f-strings as empty when inferring truthiness" by @dylwil3 on 2025-08-29 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-08-29 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-08-29 22:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

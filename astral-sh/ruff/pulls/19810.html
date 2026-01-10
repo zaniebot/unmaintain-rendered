@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] validate constructor call of `TypedDict` - astral-sh/ruff #19810</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] validate constructor call of <code>TypedDict</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19810">#19810</a>
+        opened by <a href="https://github.com/PrettyWood">@PrettyWood</a>
+        on 2025-08-07 15:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-07 15:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implement validation for <code>TypedDict</code> constructor calls and dictionary literal assignments, including support for <code>total=False</code> and proper field management.
+Also add support for <code>Required</code> and <code>NotRequired</code> type qualifiers in <code>TypedDict</code> classes, along with proper inheritance behavior and the <code>total=</code> parameter.
+Support both constructor calls and dict literal syntax</p>
+<p>part of https://github.com/astral-sh/ty/issues/154</p>
+<h3>Basic Required Field Validation</h3>
+<pre><code class="language-py">class Person(TypedDict):
+    name: str
+    age: int | None
+
+# Error: Missing required field 'name' in TypedDict `Person` constructor
+incomplete = Person(age=25)
+
+# Error: Invalid argument to key &quot;name&quot; with declared type `str` on TypedDict `Person`
+wrong_type = Person(name=123, age=25)
+
+# Error: Invalid key access on TypedDict `Person`: Unknown key &quot;extra&quot;
+extra_field = Person(name=&quot;Bob&quot;, age=25, extra=True)
+</code></pre>
+<p><img width="773" height="191" alt="Screenshot 2025-08-07 at 17 59 22" src="https://github.com/user-attachments/assets/79076d98-e85f-4495-93d6-a731aa72a5c9" /></p>
+<h3>Support for <code>total=False</code></h3>
+<pre><code class="language-py">class OptionalPerson(TypedDict, total=False):
+    name: str
+    age: int | None
+
+# All valid - all fields are optional with total=False
+charlie = OptionalPerson()
+david = OptionalPerson(name=&quot;David&quot;)
+emily = OptionalPerson(age=30)
+frank = OptionalPerson(name=&quot;Frank&quot;, age=25)
+
+# But type validation and extra fields still apply
+invalid_type = OptionalPerson(name=123)  # Error: Invalid argument type
+invalid_extra = OptionalPerson(extra=True)  # Error: Invalid key access
+</code></pre>
+<h3>Dictionary Literal Validation</h3>
+<pre><code class="language-py"># Type checking works for both constructors and dict literals
+person: Person = {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30}
+
+reveal_type(person[&quot;name&quot;])  # revealed: str
+reveal_type(person[&quot;age&quot;])   # revealed: int | None
+
+# Error: Invalid key access on TypedDict `Person`: Unknown key &quot;non_existing&quot;
+reveal_type(person[&quot;non_existing&quot;])  # revealed: Unknown
+</code></pre>
+<h3><code>Required</code>, <code>NotRequired</code>, <code>total</code></h3>
+<pre><code class="language-python">from typing import TypedDict
+from typing_extensions import Required, NotRequired
+
+class PartialUser(TypedDict, total=False):
+    name: Required[str]      # Required despite total=False
+    age: int                 # Optional due to total=False
+    email: NotRequired[str]  # Explicitly optional (redundant)
+
+class User(TypedDict):
+    name: Required[str]      # Explicitly required (redundant)
+    age: int                 # Required due to total=True
+    bio: NotRequired[str]    # Optional despite total=True
+
+# Valid constructions
+partial = PartialUser(name=&quot;Alice&quot;)  # name required, age optional
+full = User(name=&quot;Bob&quot;, age=25)      # name and age required, bio optional
+
+# Inheritance maintains original field requirements
+class Employee(PartialUser):
+    department: str                  # Required (new field)
+    # name: still Required (inherited)
+    # age: still optional (inherited)
+
+emp = Employee(name=&quot;Charlie&quot;, department=&quot;Engineering&quot;)  # ✅
+Employee(department=&quot;Engineering&quot;)  # ❌
+e: Employee = {&quot;age&quot;: 1}  # ❌
+</code></pre>
+<p><img width="898" height="683" alt="Screenshot 2025-08-11 at 22 02 57" src="https://github.com/user-attachments/assets/4c1b18cd-cb2e-493a-a948-51589d121738" /></p>
+<h2>Implementation</h2>
+<p>The implementation reuses existing validation logic done in https://github.com/astral-sh/ruff/pull/19782</p>
+<h3>ℹ️ Why I did NOT synthesize an <code>__init__</code> for <code>TypedDict</code>:</h3>
+<p><code>TypedDict</code> inherits <code>dict.__init__(self, *args, **kwargs)</code> that accepts all arguments.
+The type resolution system finds this inherited signature <strong>before</strong> looking for synthesized members.
+So <code>own_synthesized_member()</code> is never called because a signature already exists.</p>
+<p>To force synthesis, you'd have to override Python’s inheritance mechanism,  which would break compatibility with the existing ecosystem.</p>
+<p>This is why I went with ad-hoc validation. IMO it's the only viable approach that respects Python’s<br />
+inheritance semantics while providing the required validation.</p>
+<h3>Refacto of <code>Field</code></h3>
+<p><strong>Before:</strong></p>
+<pre><code class="language-rust">struct Field&lt;'db&gt; {
+    declared_ty: Type&lt;'db&gt;,
+    default_ty: Option&lt;Type&lt;'db&gt;&gt;,     // NamedTuple and dataclass only
+    init_only: bool,                   // dataclass only  
+    init: bool,                        // dataclass only
+    is_required: Option&lt;bool&gt;,         // TypedDict only
+}
+</code></pre>
+<p><strong>After:</strong></p>
+<pre><code class="language-rust">struct Field&lt;'db&gt; {
+    declared_ty: Type&lt;'db&gt;,
+    kind: FieldKind&lt;'db&gt;,
+}
+
+enum FieldKind&lt;'db&gt; {
+    NamedTuple { default_ty: Option&lt;Type&lt;'db&gt;&gt; },
+    Dataclass { default_ty: Option&lt;Type&lt;'db&gt;&gt;, init_only: bool, init: bool },
+    TypedDict { is_required: bool },
+}
+</code></pre>
+<h2>Test Plan</h2>
+<p>Updated Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @PrettyWood on 2025-08-07 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @PrettyWood on 2025-08-07 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @PrettyWood on 2025-08-07 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @PrettyWood on 2025-08-07 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] validate constructor call of TypedDict" to "[ty] validate constructor call of `TypedDict`" by @PrettyWood on 2025-08-07 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 16:02</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-25 12:37:55.634200073 +0000
++++ new-output.txt	2025-08-25 12:37:58.166200560 +0000
+@@ -847,8 +847,16 @@
+ tuples_type_form.py:15:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[&quot;&quot;]]` is not assignable to `tuple[int, int]`
+ tuples_type_form.py:25:1: error[invalid-assignment] Object of type `tuple[Literal[1]]` is not assignable to `tuple[()]`
+ tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
++typeddicts_operations.py:37:5: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
++typeddicts_operations.py:62:1: error[unresolved-attribute] Type `MovieOptional` has no attribute `clear`
++typeddicts_readonly_inheritance.py:65:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `RequiredName` constructor
++typeddicts_type_consistency.py:69:21: error[invalid-key] Invalid key access on TypedDict `A3`: Unknown key &quot;y&quot;
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
++typeddicts_usage.py:23:7: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;director&quot;
++typeddicts_usage.py:24:17: error[invalid-assignment] Invalid assignment to key &quot;year&quot; with declared type `int` on TypedDict `Movie`: value of type `Literal[&quot;1982&quot;]`
++typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
++typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 851 diagnostics
++Found 859 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 16:04</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">aioredis (https://github.com/aio-libs/aioredis)
+- aioredis/connection.py:1201:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- aioredis/connection.py:1205:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 17 diagnostics
++ Found 15 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- chess/engine.py:1778:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- chess/engine.py:1799:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 16 diagnostics
++ Found 14 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ pydantic/types.py:3090:52: warning[possibly-unbound-attribute] Attribute `get` on type `(Unknown &amp; ~tuple[Unknown, ...]) | (tuple[Unknown, str] &amp; ~tuple[Unknown, ...]) | @Todo(Type::Intersection.call())` is possibly unbound
++ pydantic/v1/networks.py:232:13: error[invalid-key] Invalid key access on TypedDict `Parts`: Unknown key &quot;host&quot; - did you mean &quot;port&quot;?
+- Found 767 diagnostics
++ Found 769 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ tests/integration_tests/assets/dropins/cc_custom_module_24_1.py:24:5: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;name&quot;
++ tests/integration_tests/assets/dropins/cc_custom_module_24_1.py:25:5: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;title&quot;
++ tests/integration_tests/assets/dropins/cc_custom_module_24_1.py:26:5: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;description&quot;
++ tests/integration_tests/assets/dropins/cc_custom_module_24_1.py:30:5: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;examples&quot;
++ tests/unittests/config/test_modules.py:73:13: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;name&quot;
++ tests/unittests/config/test_modules.py:75:13: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;title&quot;
++ tests/unittests/config/test_modules.py:76:13: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;description&quot;
++ tests/unittests/config/test_modules.py:78:13: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;examples&quot;
++ tests/unittests/config/test_modules.py:113:13: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;name&quot;
++ tests/unittests/config/test_modules.py:115:13: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;title&quot;
++ tests/unittests/config/test_modules.py:116:13: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;description&quot;
++ tests/unittests/config/test_modules.py:118:13: error[invalid-key] Invalid key access on TypedDict `MetaSchema`: Unknown key &quot;examples&quot;
+- Found 619 diagnostics
++ Found 631 diagnostics
+
+AutoSplit (https://github.com/Toufool/AutoSplit)
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'split_hotkey' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'reset_hotkey' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'undo_split_hotkey' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'skip_split_hotkey' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'pause_hotkey' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'screenshot_hotkey' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'toggle_auto_reset_image_hotkey' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'fps_limit' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'live_capture_region' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'capture_method' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'capture_device_id' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'capture_device_name' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'default_comparison_method' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'default_similarity_threshold' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'default_delay_time' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'default_pause_time' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'loop_splits' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'start_also_resets' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'enable_auto_reset' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'split_image_directory' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'screenshot_directory' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'open_screenshot' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'screenshot_on' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'captured_window_title' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'capture_region' in TypedDict `UserProfileDict` constructor
+- Found 110 diagnostics
++ Found 135 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'id' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'pair' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'lock_time' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'lock_timestamp' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'lock_end_time' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'lock_end_timestamp' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'reason' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'side' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'active' in TypedDict `RPCProtectionMsg` constructor
+- Found 375 diagnostics
++ Found 384 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/primary_guild.py:86:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 541 diagnostics
++ Found 540 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/interpreter/interpreter.py:861:32: error[invalid-argument-type] Invalid argument to key &quot;default_options&quot; with declared type `list[str] | dict[str, @Todo(Support for `typing.TypeAlias`)] | str` on TypedDict `DoSubproject`: value of type `dict[OptionKey, @Todo(Support for `typing.TypeAlias`)]`
+- mesonbuild/interpreter/interpreter.py:3408:9: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;export_dynamic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;gui_app&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;implib&quot;], value: str | bool | None, /) -&gt; None, (key: Literal[&quot;pie&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;win_subsystem&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;android_exe_type&quot;], value: Literal[&quot;application&quot;, &quot;executable&quot;] | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;prelink&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;pic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;darwin_versions&quot;], value: tuple[str, str] | None, /) -&gt; None, (key: Literal[&quot;soversion&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;version&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;main_class&quot;], value: str, /) -&gt; None, (key: Literal[&quot;java_resources&quot;], value: StructuredSources | None, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: str | File | CustomTarget | CustomTargetIndex | GeneratedList | ExtractedObjects | BuildTarget, /) -&gt; None, (key: Literal[&quot;java_args&quot;], value: list[str], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;dependencies&quot;]` and a value of type `list[Unknown]` on object of type `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
++ mesonbuild/interpreter/interpreter.py:3408:9: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;export_dynamic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;gui_app&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;implib&quot;], value: str | bool | None, /) -&gt; None, (key: Literal[&quot;pie&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;win_subsystem&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;android_exe_type&quot;], value: Literal[&quot;application&quot;, &quot;executable&quot;] | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;prelink&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;pic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;darwin_versions&quot;], value: tuple[str, str] | None, /) -&gt; None, (key: Literal[&quot;soversion&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;version&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;main_class&quot;], value: str, /) -&gt; None, (key: Literal[&quot;java_resources&quot;], value: StructuredSources | None, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: str | File | CustomTarget | CustomTargetIndex | GeneratedList | ExtractedObjects | BuildTarget, /) -&gt; None, (key: Literal[&quot;java_args&quot;], value: list[str], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;dependencies&quot;]` and a value of type `list[Unknown]` on object of type `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
+- mesonbuild/interpreter/interpreter.py:3427:13: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;export_dynamic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;gui_app&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;implib&quot;], value: str | bool | None, /) -&gt; None, (key: Literal[&quot;pie&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;win_subsystem&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;android_exe_type&quot;], value: Literal[&quot;application&quot;, &quot;executable&quot;] | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;prelink&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;pic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;darwin_versions&quot;], value: tuple[str, str] | None, /) -&gt; None, (key: Literal[&quot;soversion&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;version&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: @Todo(`NotRequired[]` type qualifier), /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;main_class&quot;], value: str, /) -&gt; None, (key: Literal[&quot;java_resources&quot;], value: StructuredSources | None, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: str | File | CustomTarget | CustomTargetIndex | GeneratedList | ExtractedObjects | BuildTarget, /) -&gt; None, (key: Literal[&quot;java_args&quot;], value: list[str], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;d_import_dirs&quot;]` and a value of type `Unknown` on object of type `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
++ mesonbuild/interpreter/interpreter.py:3427:13: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;export_dynamic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;gui_app&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;implib&quot;], value: str | bool | None, /) -&gt; None, (key: Literal[&quot;pie&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;win_subsystem&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;android_exe_type&quot;], value: Literal[&quot;application&quot;, &quot;executable&quot;] | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;prelink&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;pic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;darwin_versions&quot;], value: tuple[str, str] | None, /) -&gt; None, (key: Literal[&quot;soversion&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;version&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Unknown, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[Unknown], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo(Support for `typing.TypeAlias`)], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;main_class&quot;], value: str, /) -&gt; None, (key: Literal[&quot;java_resources&quot;], value: StructuredSources | None, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: str | File | CustomTarget | CustomTargetIndex | GeneratedList | ExtractedObjects | BuildTarget, /) -&gt; None, (key: Literal[&quot;java_args&quot;], value: list[str], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;d_import_dirs&quot;]` and a value of type `Unknown` on object of type `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
+- Found 807 diagnostics
++ Found 808 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/runner.py:324:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2949 diagnostics
++ Found 2948 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key 'input_data' in TypedDict `DatasetRecord` constructor
++ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key 'expected_output' in TypedDict `DatasetRecord` constructor
++ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ ddtrace/llmobs/_llmobs.py:1646:43: error[invalid-key] Invalid key access on TypedDict `LLMObsEvaluationMetricEvent`: Unknown key &quot;metadata&quot;
++ ddtrace/llmobs/_llmobs.py:1784:43: error[invalid-key] Invalid key access on TypedDict `LLMObsEvaluationMetricEvent`: Unknown key &quot;metadata&quot;
++ tests/llmobs/test_experiments.py:73:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:73:9: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:339:13: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:339:13: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:340:13: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:340:13: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key 'expected_output' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:421:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:421:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:428:9: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:428:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:458:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:458:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:473:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:473:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:509:13: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:549:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:549:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:553:9: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:553:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:583:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:583:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `Datas...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-07 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-08-08 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @PrettyWood on 2025-08-10 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 01:06</div>
+            <div class="timeline-body"><p>This is very cool. Sorry I haven't gotten a chance to review it yet; will try to soon, or may leave it at this point for @sharkdp to look at next week when he's back from vacation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-18 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:226 on 2025-08-18 13:10</div>
+            <div class="timeline-body"><p>Maybe add a TODO comment here that we might consider emitting a diagnostic? For example, pyright does:</p>
+<pre><code>  /home/shark/playground/test.py:15:13 - error: Could not access item in TypedDict
+    &quot;name&quot; is not a required key in &quot;OptionalPerson&quot;, so access may result in runtime exception (reportTypedDictNotRequiredAccess)
+  /home/shark/playground/test.py:15:13 - information: Type of &quot;charlie[&quot;name&quot;]&quot; is &quot;str&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-18 13:14</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>missing-typed-dict-required-field</code> | 86 | 0 | 0 |
+| <code>invalid-key</code> | 15 | 0 | 0 |
+| <code>unused-ignore-comment</code> | 0 | 7 | 0 |
+| <code>invalid-argument-type</code> | 2 | 0 | 0 |
+| <code>invalid-assignment</code> | 0 | 0 | 2 |
+| <code>possibly-unbound-attribute</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>104</strong> | <strong>7</strong> | <strong>2</strong> |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1728 on 2025-08-18 13:29</div>
+            <div class="timeline-body"><p>I'm wondering if the rule name should mention <code>TypedDict</code> somehow? Or do we anticipate other use cases for this rule that are not <code>TypedDict</code>-specific?</p>
+<p>For comparison, mypy uses <code>typeddict-item</code>, and pyrefly uses <code>typed-dict-key-error</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1162 on 2025-08-18 13:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// `NamedTuple` field metadata
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1593 on 2025-08-18 13:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// This does **not** consider Python default values on parameters — only whether
+    /// a type annotation specifies them as required or not.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1596 on 2025-08-18 13:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// - `NamedTuple` / dataclass: Always `true` (all fields are required).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1600 on 2025-08-18 13:33</div>
+            <div class="timeline-body"><p>I think I prefer removing this:</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1590 on 2025-08-18 13:34</div>
+            <div class="timeline-body"><p>I the term &quot;type-required&quot; an official one? If not, I think I'd just go with &quot;required&quot; (throughout this doc-comment and in the method name). Or maybe just <code>is_total_typed_dict</code>? Or reverse the logic and call it <code>is_non_total_typed_dict</code>? This way, the doc-comment could also be simplified a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1597 on 2025-08-18 13:36</div>
+            <div class="timeline-body"><p>Should this be:</p>
+<pre><code class="language-suggestion">    /// - `TypedDict`: Defaults to `true` unless `total=False`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1609 on 2025-08-18 13:38</div>
+            <div class="timeline-body"><p>Maybe</p>
+<pre><code class="language-suggestion">        // Look for `total=False` in class keyword arguments. Note that it is fine to only check for
+        // Boolean literals here (https://typing.python.org/en/latest/spec/typeddict.html#totality)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4703 on 2025-08-18 14:04</div>
+            <div class="timeline-body"><p>This leads to some immediate benefits (see updated &quot;alice&quot; tests), but it contradicts our usual splitting of declared type and inferred type, where the inferred type can be more precise than the declared type.</p>
+<p>Admittedly, I'm struggling to find real-world examples where this might lead to observable differences (let alone actual problems). The best I came up with is the following exampel, which makes use of PEP-728 <a href="https://peps.python.org/pep-0728/#the-extra-items-class-parameter"><code>extra_items</code></a>:</p>
+<pre><code class="language-py">from typing import TypedDict
+
+class OnlyA(TypedDict, extra_items=bool):
+    a: int
+
+class Both(TypedDict):
+    a: int
+    b: bool
+
+only_a: OnlyA = {&quot;a&quot;: 1, &quot;b&quot;: True}
+both: Both = only_a
+</code></pre>
+<p>In this constructed example, we would lose the information that <code>&quot;b&quot;</code> is a key of the dict literal because the inferred type for <code>only_a</code> would be <code>OnlyA</code> instead of the type of the dict literal (which we can't really represent right now, but that's beside the point). This would lead to an error on the <code>both: Both = only_a</code> assignment, which some might consider correct, but that's how ty works in other cases as well:</p>
+<pre><code class="language-py">a: int = 1
+b: Literal[1] = a  # okay!
+</code></pre>
+<p>So I guess the benefits far outweigh the drawbacks? But it would be good to get some feedback from others on the team.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-18 14:08</div>
+            <div class="timeline-body"><p>Thank you very much — this looks great.</p>
+<p>I fixed some merge conflicts on your branch to see the update ecosystem impact.</p>
+<p>It's unfortunate that this causes a lot of new false positives, since <code>NotRequired</code> is not supported yet (on this branch). I think we should probably rebase https://github.com/astral-sh/ruff/pull/19865 on top of this and consider merging it into this branch before we merge this to <code>main</code> (thank you for splitting them in the first place though!). I think you should be able to change the merge base of https://github.com/astral-sh/ruff/pull/19865 to the branch of this PR, so it's easier to review? Or does that only work for branches inside the ruff repo? If so, I could also open an integration branch that we could merge both of these into.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PrettyWood">@PrettyWood</a> reviewed on 2025-08-18 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1728 on 2025-08-18 14:36</div>
+            <div class="timeline-body"><p>Yes in my head Namedtuples, dataclasses and typeddict have a lot in common and IMO it made sense to have common errors. But if other libs split into specific errors, I guess it's best to do as well and see later if things should be merged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-18 14:45</div>
+            <div class="timeline-body"><p>Thank you very much @sharkdp for the merge conflict + review! (btw huge fan of your work, I use daily <code>bat</code> and <code>fd</code>! &lt;3)
+I rebased the 6 commits to support <code>Required</code> and <code>NotRequired</code> and added a last commit with your feedbacks (most of them didn't apply because they were on <code>are_fields_type_required()</code>, which I replaced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PrettyWood">@PrettyWood</a> reviewed on 2025-08-18 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4703 on 2025-08-18 14:47</div>
+            <div class="timeline-body"><p>Yes I was wondering if this was the expected way (I guess not haha)
+But it made the implementation way easier for my little mind. Happy to change that if needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:846 on 2025-08-19 01:06</div>
+            <div class="timeline-body"><p>nit: let's put all this TypedDict-specific stuff in its own submodule (separate-file submodule, this file is already massive)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4703 on 2025-08-19 01:23</div>
+            <div class="timeline-body"><p>Yes, I think we should go ahead with this; I think it's the behavior we want in this case. It may be that the implementation is subsumed in future by a more general implementation of bidirectional checking where we instead pass in the <code>TypedDict</code> context to the initial type inference of the dict literal, but it's OK if this particular implementation turns out to be temporary; it makes <code>TypedDict</code> much more useful immediately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-19 01:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PrettyWood">@PrettyWood</a> reviewed on 2025-08-19 07:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:846 on 2025-08-19 07:53</div>
+            <div class="timeline-body"><p>Done in <a href="https://github.com/astral-sh/ruff/pull/19810/commits/1983227abfa45a56484160d32f9f4dce844a182d">1983227</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-19 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-19 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> requested changes on 2025-08-19 09:57</div>
+            <div class="timeline-body"><p>Thank you for merging the <code>Required</code>/<code>NonRequired</code> changes into this.</p>
+<p>I was now able to take a look at the full ecosystem impact. I noticed two problems:</p>
+<ul>
+<li>There are some true positives which users tried to <code># type: ignore</code>. It seems that the way the ignore-comments are placed is not compatible with the diagnostic ranges that we create. It would be good to look into a few of these examples and to create some tests. Maybe we can adapt the diagnostic range to get rid of some of these new diagnostics.</li>
+<li>The errors on <code>strawberry</code> are false positives. The code there constructs a TypedDict using <code>MyTypedDict({&quot;my_field&quot;: 1})</code>, i.e. there is an additional <code>{…}</code> layer. This does not seem to be supported yet. I added some tests to demonstrate the current behavior.</li>
+</ul>
+<p>While writing these tests, I also noticed that this approach here has some severe limitations. For example, we don't verify a function call like <code>accepts_person({&quot;name&quot;: &quot;Alice&quot;})</code> where <code>accepts_person</code> takes a <code>Person</code> <code>TypedDict</code>. Also, <code>TypedDict</code> construction does not seem to be validated if the left hand side is a non-name target (<code>house.person = {&quot;name&quot;: &quot;Alice&quot;}</code>). I think we should try to understand these cases better. It might be fine to start with an initial version here that has some false negatives. But maybe this indicates that we should go for a completely different solution here where we infer a new <code>Type::DictLiteral</code> type for <code>{…}</code> dict literals, that we can then use in normal assignability checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-19 22:16</div>
+            <div class="timeline-body"><blockquote>
+<p>The code there constructs a TypedDict using MyTypedDict({&quot;my_field&quot;: 1}), i.e. there is an additional {…} layer.</p>
+</blockquote>
+<p>This is technically not allowed by the spec, but it probably should be. I'll open a discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-19 22:26</div>
+            <div class="timeline-body"><p>Refer to https://discuss.python.org/t/allow-typeddict-construction-with-typename/102974 . To be clear, though the spec doesn't currently discuss this syntax, I'd recommend ty add support for it, because it's used in practice and we'll likely add it to the spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 08:14</div>
+            <div class="timeline-body"><p>@carljm and I talked about this PR yesterday. The main conclusion is that we would like to go ahead with what you have. To extend / clarify / correct my comments from above:</p>
+<ul>
+<li>The <code># type: ignore</code> thing =&gt; this is not the most important part, but I think we should at least write some tests. It seems to be quite common to suppress type checker errors on <code>TypedDict</code> construction.</li>
+<li>The <code>MyTypedDict({&quot;my_field&quot;: 1})</code> syntax =&gt; see Jelle's comment (thank you!). We don't have to support <em>checking</em> these constructions, but it would be good not to emit N_keys diagnostics for every such construction. In general, I'm wondering if we should summarize multiple missing keys into a single diagnostic message.</li>
+<li>Concerning the limitation of your approach: we think this is a valuable step anyway. We currently anticipate solving the remaining cases using a variant of https://github.com/astral-sh/ty/issues/168. Your change here is basically a &quot;light&quot; version of adding contextual information that only works for annotated assignments. So we think that large parts of the implementation can be reused when we implement bidirectional type checking.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-20 14:58</div>
+            <div class="timeline-body"><p>Thank you for the valuable feedback. I'll work on the type ignore and construction via dict tonight or tomorrow.
+The goal is to make this PR mergeable without raising false negatives.</p>
+<p>I already started to work on a new <code>DictLiteral</code> type yesterday. But maybe you had something in mind to implement bidirectional checking. You'll tell me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 15:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I already started to work on a new <code>DictLiteral</code> type yesterday. But maybe you had something in mind to implement bidirectional checking. You'll tell me!</p>
+</blockquote>
+<p>Sorry for my misleading comment earlier. I think we basically decided yesterday that bidirectional type inference is a more promising and more general solution here (compared to the <code>DictLiteral</code> type), mostly because we're going to need it for other use cases anyway. So it's not clear if adding a <code>DictLiteral</code> type would be beneficial long-term. We might not need it anymore once we have bidirectional type inference. And therefore, it's probably not very helpful to invest time into it right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-20 15:17</div>
+            <div class="timeline-body"><p>Perfect! No problem! Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-20 21:52</div>
+            <div class="timeline-body"><p>@sharkdp @carljm Update done! I'll update with <code>main</code> once I have your approval</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 21:54</div>
+            <div class="timeline-body"><p>I'll let @sharkdp take the lead on review of this one. We won't be able to fully evaluate the PR until it is updated with main (so we can get ecosystem and conformance suite results from it), but it should be possible to give feedback on the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-22 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:226 on 2025-08-22 15:39</div>
+            <div class="timeline-body"><p>This has been marked as resolved, but I don't see a comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-22 15:43</div>
+            <div class="timeline-body"><p>Thank you very much for the detailed updates! I am planning to do a full review on Monday. Seeing the updated ecosystem results would be great, but I can also fix the conflicts myself, if the branch hasn't been updated by then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-25 09:15</div>
+            <div class="timeline-body"><p>@sharkdp I just pushed the merge conflict. I won't be there later today. Feel free to change directly whatever you want.
+Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-08-25 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-25 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-25 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1696 on 2025-08-25 09:39</div>
+            <div class="timeline-body"><p>Minor: I think I would prefer to strip the <code>compute_</code> prefix from this function name. Same for <code>compute_typed_dict_params_from_class_def</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2525 on 2025-08-25 09:42</div>
+            <div class="timeline-body"><p>Maybe</p>
+<pre><code class="language-suggestion">                                .expect(&quot;TypedDictParams should be available for CodeGeneratorKind::TypedDict&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1769 on 2025-08-25 09:45</div>
+            <div class="timeline-body"><p>I think I would prefer something slightly shorter. I think we can maybe leave &quot;required&quot; out of the rule name? And use &quot;key&quot; instead of &quot;field&quot;?</p>
+<pre><code class="language-suggestion">    pub(crate) static MISSING_TYPED_DICT_KEY = {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/typed_dict.rs</code>:18 on 2025-08-25 09:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Keeps track of the keyword arguments that were passed-in during class definition.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/typed_dict.rs</code>:26 on 2025-08-25 09:52</div>
+            <div class="timeline-body"><p>It looks like <code>extra_items</code> will not be a simple flag, so maybe let's just remove this for now?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/typed_dict.rs</code>:111 on 2025-08-25 09:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// For constructor arguments like `MyTypedDict(key=value)`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:37 on 2025-08-25 09:59</div>
+            <div class="timeline-body"><p>This seems to be in the wrong position?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:556 on 2025-08-25 11:48</div>
+            <div class="timeline-body"><p>Minor</p>
+<pre><code class="language-suggestion">When inheriting from a `TypedDict` with a different `total` setting, inherited fields maintain
+their original requirement status, while new fields follow the child class's `total` setting:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-08-25 12:03</div>
+            <div class="timeline-body"><p>Thank you very much. This is great.</p>
+<p>The typing conformance diff shows that there is a problem with annotations like <code>y: ReadOnly[NotRequired[str]]</code>, where we currently emit an error (&quot;Type qualifier <code>typing.NotRequired</code> is not allowed in type expressions&quot;). I think that can be fixed by recognizing <code>ReadOnly</code> as a special form / type qualifier as well, making sure that the argument is inferred as a <a href="https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions">type annotation, not as a type expression</a>. I can look into this (and the remaining minor comments).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-25 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-25 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-08-25 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-08-25 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-25 17:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

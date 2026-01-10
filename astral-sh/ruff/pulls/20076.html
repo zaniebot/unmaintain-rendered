@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Introduce a representation for the top/bottom materialization of an invariant generic - astral-sh/ruff #20076</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Introduce a representation for the top/bottom materialization of an invariant generic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20076">#20076</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2025-08-25 03:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-25 03:59</div>
+            <div class="timeline-body"><p>Part of #994. This adds a new field to the Specialization struct to record when we're dealing with the top or bottom materialization of an invariant generic. It also implements subtyping and assignability for these objects.</p>
+<p>Next planned steps after this is done are to implement other operations on top/bottom materializations; probably attribute access is an important one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-25 04:01</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-25 04:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-25 04:14</div>
+            <div class="timeline-body"><p>The mypy-primer report suggests this breaks some aspect of overload resolution; <a href="https://github.com/optuna/optuna/blob/233a12906ed3632c12bdc30e732f209612945730/tests/samplers_tests/test_partial_fixed.py#L84">the code</a> in optuna calls <a href="https://github.com/optuna/optuna/blob/233a12906ed3632c12bdc30e732f209612945730/optuna/trial/_trial.py#L332">suggest_categorical</a> which is overloaded. It makes sense overloads would be affected since overload resolution already uses the top materialization. I'll have to look harder to see what's going wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-25 04:17</div>
+            <div class="timeline-body"><p>Oh maybe it's because ty still doesn't infer precise types for list displays?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-25 04:41</div>
+            <div class="timeline-body"><p>The overload issue in mypy-primer can be reduced to this:</p>
+<pre><code class="language-python">from typing import overload, Sequence
+from typing_extensions import reveal_type
+
+@overload
+def f(x: Sequence[None]) -&gt; None: ...
+@overload
+def f(x: Sequence[int]) -&gt; int: ...
+def f(x: Sequence[None] | Sequence[int]) -&gt; None | int: raise NotImplementedError
+
+def caller() -&gt; None:
+    reveal_type(f([1, 2, 3]))
+</code></pre>
+<p>On my PR this outputs None; previously it was Unknown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-25 04:44</div>
+            <div class="timeline-body"><p>And that's because now <code>static_assert(is_assignable_to(Top[list[Any]], Sequence[None]))</code> succeeds, which is wrong. Probably something to do with how assignability interacts with looking at subclasses; I'll have to look into it tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-25 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @JelleZijlstra on 2025-08-25 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @JelleZijlstra on 2025-08-25 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @JelleZijlstra on 2025-08-25 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @JelleZijlstra on 2025-08-25 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @JelleZijlstra on 2025-08-25 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @JelleZijlstra on 2025-08-25 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-26 00:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:592 on 2025-08-26 00:10</div>
+            <div class="timeline-body"><p>This feels not great and I tried to implement it in <code>apply_specialization</code> instead, but couldn't get that to work for a reason I don't fully understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @JelleZijlstra on 2025-08-26 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:210 on 2025-08-27 17:08</div>
+            <div class="timeline-body"><p>naming nit: <code>Type</code> is already so overloaded in a type-checker codebase that we try pretty hard to avoid overloading it even more, so we avoid using it to mean generally &quot;kind&quot; or &quot;variety&quot; (not a representation of a type-system type). Maybe <code>MaterializationKind</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:521 on 2025-08-27 17:21</div>
+            <div class="timeline-body"><p>Not convinced there's a TODO here, but I could be wrong? The invariance of a generic property instance with setter (if it is part of a generic class/protocol) derives from the use of its type variable in both covariant (return type of getter) and contravariant (argument type of setter) positions. Since in this case we materialize both the getter and the setter independently, we will get the right (structural) result from either materialization here: e.g. a property that returns <code>object</code> but accepts <code>Never</code>, or vice versa.</p>
+<p>(I don't think we should ever materialize a property instance with un-substituted free typevars from a containing generic protocol; we should always apply a specialization first. This part may be a TODO?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:520 on 2025-08-27 17:23</div>
+            <div class="timeline-body"><p>Similarly suggest <code>materialization_kind</code> over <code>materialization_type</code> throughout</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:893 on 2025-08-27 17:29</div>
+            <div class="timeline-body"><p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:515 on 2025-08-27 17:33</div>
+            <div class="timeline-body"><p>Why do we need to store this separately in the <code>DisplayGenericAlias</code> when it's available from the <code>specialization</code> itself, which we already have? (And the <code>DisplayGenericAlias</code> also has access to the db.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:411 on 2025-08-27 17:39</div>
+            <div class="timeline-body"><p>This is a field of a <code>Specialization</code>, so clearly it applies to a <code>Specialization</code>; prefixing the field name with <code>specialization_</code> thus seems redundant. (I think clippy has a warning for this, not sure under what circumstances it chooses to fire.)</p>
+<p>I would find <code>materialization_kind</code> or just <code>materialization</code> to be a clearer name here. It is only set if this specialization represents a materialized generic type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:693 on 2025-08-27 17:43</div>
+            <div class="timeline-body"><p>This does look a bit involved. I also suspect this method might go away in the new constraint solver @dcreager is working on, so probably a good choice to defer considering it if we can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6671 on 2025-08-27 17:46</div>
+            <div class="timeline-body"><p>Related to another naming comment: <code>get_materialization_kind</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:641 on 2025-08-27 18:03</div>
+            <div class="timeline-body"><p>It's a bit obscured by the current choice of match patterns, but I think the current form of this match simplifies to &quot;if there is an existing materialization, always prefer it&quot; (makes sense, an existing materialization is fully static already, new materialization can't affect it), &quot;otherwise, use new materialization if any.&quot;</p>
+<p>All mdtests pass if we replace with this:</p>
+<pre><code class="language-py">        let new_specialization_type = self.specialization_type(db).or(applied_specialization_type);
+</code></pre>
+<p>Notably, the <code>has_invariant_dynamic_typevar</code> variable is not actually relevant to the currently implemented logic.</p>
+<p>That said, I think the currently-implemented logic could be improved; it can result in us keeping around a materialization that is unnecessary, because all typevars have been successfully materialized. That would suggest this instead:</p>
+<pre><code class="language-suggestion">        let new_specialization_type = if has_dynamic_invariant_typevar { 
+            self.specialization_type(db).or(applied_specialization_type)
+        } else {
+            None
+        };
+</code></pre>
+<p>Which also passes all tests. Not sure if the difference between this and the above can be detected in a test or not.</p>
+<p>I think there's some reason to consider whether <code>Specialization</code> should have a <code>Vec&lt;Option&lt;MaterializationKind&gt;&gt;</code> (one per typevar) rather than an <code>Option&lt;MaterializationKind&gt;</code>. It would simplify this logic somewhat (each typevar would retain its <code>MaterializationKind</code> only if needed, rather than &quot;retain the materialization if any typevar needs it&quot;). But it may not be worth the extra memory used. Maybe depends whether it would also simplify other handling (e.g. for subtyping). (ETA: after looking at the subtyping logic, I think tracking materialization-kind per-typevar might optimize subtype/assignability checking, because it would reduce the cases where we have to re-materialize already-materialized types in a specialization, just because some <em>other</em> typevar in the same specialization is dynamic-and-invariant. Whether this is in practice a good tradeoff for the extra memory is not clear. Something to explore in a future PR, I think.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:592 on 2025-08-27 18:33</div>
+            <div class="timeline-body"><p>I suspect the reason it didn't work is because <code>apply_specialization</code> is not called recursively, only <code>apply_type_mapping_impl</code> is? I think this would be difficult to change, so I suspect this is the way it needs to be done.</p>
+<p>Maybe this would feel clearer if instead there were a top-level conditional here &quot;are we applying a specialization?&quot; (or it could be &quot;are we applying a specialization with a materialization?&quot; which I think is less conceptually clear but practically equivalent), and then bifurcate into the previous simple logic (if not) or the more complex logic accounting for specializations if so. (The latter could even be extracted into its own method.) This would duplicate the core &quot;map over types&quot; -- not really sure if it would feel like an improvement without trying it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:486 on 2025-08-27 18:37</div>
+            <div class="timeline-body"><p>Should this doc comment mention the &quot;in invariant position&quot; part?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:540 on 2025-08-27 18:39</div>
+            <div class="timeline-body"><p>Neat implementation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:449 on 2025-08-27 18:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // `Derived` is a subtype of `Base` if the range of materializations covered by `Derived`
+        // is a subset of the range covered by `Base`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:451 on 2025-08-27 18:44</div>
+            <div class="timeline-body"><p>These two lines also seem out of place here; there's no handling for <code>None</code> materialization anywhere in this routine.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:447 on 2025-08-27 18:45</div>
+            <div class="timeline-body"><p>This seems out of place in a routine that only handles subtyping?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:476 on 2025-08-27 18:52</div>
+            <div class="timeline-body"><p>The wording of this comment suggests that <code>derived_top.is_equivalent_to(db, base_bottom)</code> would be an adequate implementation here, but it's not. I think the issue with the wording is that the referents of &quot;both&quot; are not clear. It is not adequate that the &quot;top materialization&quot; and the &quot;bottom materialization&quot; previously mentioned are the same fully static type -- the original (unmaterialized) type must be fully static.</p>
+<pre><code class="language-suggestion">        // A top materialization is a subtype of a bottom materialization only if both original
+        // un-materialized types are  the same fully static type.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:465 on 2025-08-27 19:01</div>
+            <div class="timeline-body"><p>I think the referent of &quot;it's&quot; in the first phrase here is not clear. It is not the case that &quot;the bottom materialization&quot; mentioned previously must be &quot;a subtype of some part of the range of materializations covered by top.&quot; (That would be a simpler implementation, which uses only <code>derived_bottom</code> and not <code>derived_top</code>.)</p>
+<p>I think what is implemented here (and described after the &quot;i.e.&quot;) is &quot;some materialization of derived must be a subtype of some materialization of base.&quot;</p>
+<p>Also, &quot;top and derived of base&quot; should be &quot;top and bottom of base&quot;.</p>
+<pre><code class="language-suggestion">        // The bottom materialization of `Derived` is a subtype of the top materialization of `Base` if some
+        // materialization of `Derived` is a subtype of some materialization of `Base`, i.e. either the top or
+        // bottom of `Derived` is between the top and bottom of `Base`, or both materialization of `Base`
+        // are between the top and bottom of `Derived`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:726 on 2025-08-27 19:08</div>
+            <div class="timeline-body"><p>I'm not sure what this TODO refers to. I think what was previously handled by <code>variance_with_polarity</code> here (that is, respecting the passed in polarity of the materialization desired) is now correctly handled by the use of <code>materialization_type</code> and <code>materialization_type.flip()</code> in the covariant/contravariant branches below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:846 on 2025-08-27 19:13</div>
+            <div class="timeline-body"><p>For this to be correct, it is important that we do ensure that we never preserve a materialization in the <code>Specialization</code> unless there is some invariant typevar in it with a non-fully-static type. As discussed above, I don't think <code>apply_type_mapping_impl</code> currently does that. (This might suggest a possible test to expose that issue?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 19:13</div>
+            <div class="timeline-body"><p>Fantastic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-27 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6671 on 2025-08-27 19:27</div>
+            <div class="timeline-body"><p>I think if Micha weren't on holiday he'd tell us that Rust naming conventions are such that you rarely prefix methods with <code>get_</code> 😄 maybe just <code>materialization_type</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6671 on 2025-08-27 19:30</div>
+            <div class="timeline-body"><blockquote>
+<p>maybe just <code>materialization_type</code></p>
+</blockquote>
+<p>yes, except <code>materialization_kind</code> :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:592 on 2025-08-27 21:46</div>
+            <div class="timeline-body"><p>What I tried was this:</p>
+<pre><code>--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -5971,7 +5971,11 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+         db: &amp;'db dyn Db,
+         specialization: Specialization&lt;'db&gt;,
+     ) -&gt; Type&lt;'db&gt; {
+-        self.apply_type_mapping(db, &amp;TypeMapping::Specialization(specialization))
++        let new_specialization = self.apply_type_mapping(db, &amp;TypeMapping::Specialization(specialization));
++        match specialization.specialization_type(db) {
++            None =&gt; new_specialization,
++            Some(materialization_type) =&gt; new_specialization.materialize(db, materialization_type)
++        }
+     }
+ 
+     fn apply_type_mapping&lt;'a&gt;(
+</code></pre>
+<p>Which should apply recursively since <code>materialize</code> is recursive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:210 on 2025-08-27 21:46</div>
+            <div class="timeline-body"><p>Sure, I can switch to kind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:521 on 2025-08-27 21:48</div>
+            <div class="timeline-body"><p>Oh yes, that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 21:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:411 on 2025-08-27 21:53</div>
+            <div class="timeline-body"><p>I consistently used <code>specialization_type</code> for a variable of type <code>Option&lt;MaterializationType&gt;</code>, on the theory that None doesn't represent a specific materialization. But maybe that's too subtle a difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:411 on 2025-08-27 21:57</div>
+            <div class="timeline-body"><p>In that case it could be <code>maybe_materialization</code> -- but I don't think that's necessary. I think it is common to have a variable of <code>Option</code> type named as if it is <code>Some</code>, where the semantics of <code>None</code> are implied by absence. I think that applies pretty well here -- if <code>materialization</code> or <code>materialization_kind</code> is <code>None</code>, then this doesn't represent any materialization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:641 on 2025-08-27 21:59</div>
+            <div class="timeline-body"><p>I think the variant you propose (dropping use of <code>has_dynamic_invariant_typevar</code>) would have the result that we'd set the materialization_type (or kind, I'll change that) on the synthesized base class, so we'd represent the base class of <code>Top[list[Any]]</code> as <code>Top[Sequence[object]]</code> instead of <code>Sequence[object]</code>. But that may not actually have any visible effect, so maybe it's fine? I imagine it's worse for caching though.</p>
+<p>Regarding using a <code>Vec&lt;Option&lt;MaterializationKind&gt;&gt;</code>: I think conceptually you could have a different materialization kind per TypeVar. For example, a <code>dict[Any, Any]</code> with Top applied to its first TypeVar but not its second would represents all dicts of any key type, mapped to an unknown value type. But we don't have a use case for such a type, or a way to represent it using the <code>Top[]</code> syntax, so I think it makes more sense to stick with a single flag for the whole specialization.</p>
+<p>It may be worth it to cache the <code>materialize</code> method so we can return quickly when materializing a type that's already fully static.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:451 on 2025-08-27 22:00</div>
+            <div class="timeline-body"><p>Leftover from before I split the two functions :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 22:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:726 on 2025-08-27 22:02</div>
+            <div class="timeline-body"><p>The old code used polarity and I didn't fully understand what it meant. Perhaps we can just drop the <code>variance_with_polarity</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 22:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:846 on 2025-08-27 22:02</div>
+            <div class="timeline-body"><p>I think it currently does, through <code>has_dynamic_invariant_typevar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:592 on 2025-08-27 22:03</div>
+            <div class="timeline-body"><p>Ah, I see, interesting. Yes, I see how that would be a lot nicer if it works; would eliminate the significant redundancy we currently have between <code>apply_type_mapping_impl</code> and <code>materialize</code> implementations.</p>
+<p>It's not immediately clear to me why that wouldn't work. I think it's worth putting a TODO here to investigate this further, but it doesn't have to block this PR. What was the failure symptom? Was it widespread or just one or two specific cases?</p>
+<p>If you have the failing version and want to push it up as a draft stacked PR, I can take a look and see if anything is apparent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:465 on 2025-08-27 22:08</div>
+            <div class="timeline-body"><p>I had this rewritten comment locally, which I think is clearer:</p>
+<pre><code>        // The bottom materialization of `Derived` is a subtype of the top materialization
+        // of `Base` if there is some type that is both within the
+        // range of types covered by derived and within the range covered by base, because if such a type
+        // exists, it's a subtype of `Top[base]` and a supertype of `Bottom[derived]`.
+</code></pre>
+<p>(After I had written the current version of the PR, I thought I could simplify it to something like <code>(Top[Derived] - Bottom[Derived]) &amp; (Top[Base] - Bottom[Base]) != Never</code>. But that's wrong, because we need to consider sets of <em>types</em> here, not sets of <em>values</em>, which is what standard intersection logic would do.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:641 on 2025-08-27 22:08</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the variant you propose (dropping use of <code>has_dynamic_invariant_typevar</code>) would have the result that we'd set the materialization_type (or kind, I'll change that) on the synthesized base class, so we'd represent the base class of <code>Top[list[Any]]</code> as <code>Top[Sequence[object]]</code> instead of <code>Sequence[object]</code>. But that may not actually have any visible effect, so maybe it's fine?</p>
+</blockquote>
+<p>I mentioned in another comment that I think it might be detectable in unusual cases via the current implementation of equivalence (which assumes that differing materializations can't be equivalent).</p>
+<p>But to be clear, I'm not proposing the implementation without <code>has_dynamic_invariant_typevar</code>, just a) observing that it passes all tests, and b) asserting that I think the current <code>match</code> is actually equivalent to it, if you trace through all the cases. I don't think its result ever depends on <code>has_dynamic_invariant_typevar</code>.</p>
+<p>The implementation I actually propose is a simpler if/else that does respect <code>has_dynamic_invariant_typevar</code>, ensuring we never store a materialization at all if its <code>false</code>, which I think is the desired behavior?</p>
+<p>Makes sense re single vs multiple materialization kinds; caching is probably a better answer if re-materializing fully static types is a problem in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:592 on 2025-08-27 22:17</div>
+            <div class="timeline-body"><p>#20121</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:726 on 2025-08-27 22:20</div>
+            <div class="timeline-body"><p>Yes, it looks like in this PR that method is now redundant; it can just be renamed <code>variance</code> and assume covariant context.</p>
+<p>The meaning of &quot;polarity&quot; in that method name is just that you could get the variance of a bound typevar given some outer variance context (e.g. it might be in covariant context, which would &quot;flip&quot; the result). But that's not an operation we need (at that level) anymore.</p>
+<p>The word &quot;polarity&quot; is still used in a <code>with_polarity</code> method that's heavily used in PEP 695 variance inference, so if it's confusing maybe we should change that too. But not in this PR :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 22:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:846 on 2025-08-27 22:23</div>
+            <div class="timeline-body"><p>I don't think so (I think the current <code>match</code> there never actually depends on <code>has_dynamic_invariant_typevar</code>), but I could be analyzing it wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 22:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:893 on 2025-08-27 22:24</div>
+            <div class="timeline-body"><p>I'm actually not sure how top/bottom materializations of a TypeIs should work, but I think that can be a problem for another day.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-08-27 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:641 on 2025-08-27 22:35</div>
+            <div class="timeline-body"><p>The result does currently depend on <code>has_dynamic_invariant_typevar</code>: if <code>applied_materialization_kind</code> is Some but <code>has_dynamic_invariant_typevar</code> is False, we end up with None. But if <code>has_dynamic_invariant_typevar</code> is True in that case, we use the applied materialization.</p>
+<p>You're right that your proposed implementation is equivalent to what I currently have but simpler; I'll change that.</p>
+<p>We're still in the situation then where no tests fail if we remove the <code>has_dynamic_invariant_typevar</code> branching. I think that's because currently, this logic primarily gets exercised when specializing base classes in an MRO, and that logic only gets used in contexts where it doesn't matter if we put in an unnecessary top/bottom. As you observed, it matters for equivalence, but I am not sure you can construct two types that are equivalent except for this issue. Maybe you can think of a situation where this would matter?</p>
+<p>I'll add comments regarding the invariant that <code>materialization_kind</code> should be set only if there are dynamic, invariant type variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 22:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:641 on 2025-08-27 22:39</div>
+            <div class="timeline-body"><blockquote>
+<p>The result does currently depend on <code>has_dynamic_invariant_typevar</code>: if <code>applied_materialization_kind</code> is Some but <code>has_dynamic_invariant_typevar</code> is False, we end up with None. But if <code>has_dynamic_invariant_typevar</code> is True in that case, we use the applied materialization.</p>
+</blockquote>
+<p>Ah yes, true, I missed that,  but only if the existing materialization is <code>None</code> -- otherwise we'd end up with the existing materialization. (I think the first arm should probably have been <code>(existing, false, _) =&gt; None</code> instead of <code>(existing, false, _) =&gt; existing</code>? But that probably only applies in much rarer cases. And it doesn't matter anyway, if we'll switch to the simpler version.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:641 on 2025-08-27 22:43</div>
+            <div class="timeline-body"><p>I don't think we need to spend more time trying to come up with a test case that fails without this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 22:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:592 on 2025-08-28 00:12</div>
+            <div class="timeline-body"><p>It has something to do with how bases are specialized. Given this test code:</p>
+<pre><code class="language-py">def _(y: Top[InvariantChild[Any]]) -&gt; None:
+    reveal_type(y.__mro__)
+</code></pre>
+<p>In the working branch, this reveals <code>tuple[&lt;class 'Top[InvariantChild[Any]]'&gt;, &lt;class 'CovariantBase[object]'&gt;, typing.Generic, &lt;class 'object'&gt;]</code>, which is expected: the covariant base class materializes the typevar to <code>object</code>.</p>
+<p>In the non-working branch, this reveals <code>tuple[&lt;class 'Top[InvariantChild[Any]]'&gt;, &lt;class 'CovariantBase[object]'&gt;, typing.Generic, &lt;class 'object'&gt;, &lt;class 'CovariantBase[Any]'&gt;]</code> -- for some reason we have both <code>CovariantBase[object]</code> and <code>CovariantBase[Any]</code> still in the MRO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-28 00:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-28 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:592 on 2025-08-28 00:44</div>
+            <div class="timeline-body"><p>I'm out of time to look into this for now; I think we should go ahead and land this with a TODO comment. I'll add the comment and then merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-28 00:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-08-28 00:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-28 00:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

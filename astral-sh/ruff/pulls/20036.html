@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve diff rendering for notebooks - astral-sh/ruff #20036</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve diff rendering for notebooks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20036">#20036</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-08-21 23:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-21 23:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As noted in a code TODO, our <code>Diff</code> rendering code previously didn't have any
+special handling for notebooks. This was particularly obvious when the diffs
+were rendered right next to the corresponding diagnostic because the diagnostic
+used cell-based line numbers, while the diff was still using line numbers from
+the concatenated source. This PR updates the diff rendering to handle notebooks
+too.</p>
+<p>The main improvements shown in the example below are:</p>
+<ul>
+<li>Line numbers are now remapped to be relative to their cell</li>
+<li>Context lines from other cells are suppressed</li>
+</ul>
+<pre><code>error[unused-import][*]: `math` imported but unused                             
+ --&gt; notebook.ipynb:cell 2:2:8                                                  
+  |                                                                             
+1 | # cell 2                                                                    
+2 | import math                                                                 
+  |        ^^^^                                                                 
+3 |                                                                             
+4 | print('hello world')                                                        
+  |                                                                             
+help: Remove unused import: `math`                                              
+                                                                                
+ℹ Safe fix                                                                      
+1 1 | # cell 2                                                                  
+2   |-import math                                                               
+3 2 |                                                                           
+4 3 | print('hello world')                                                      
+</code></pre>
+<p>I tried a few different approaches here before finally just splitting the notebook into separate text ranges by cell and diffing each one separately. It seems to work and passes all of our tests, but I don't know if it's actually enforced anywhere that a single edit doesn't span cells. Such an edit would silently be dropped right now since it would fail the <code>contains_range</code> check. I also feel like I may have overlooked an existing way to partition a file into cells like this.</p>
+<h2>Test Plan</h2>
+<p>Existing notebook tests, plus a new one in <code>ruff_db</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-08-21 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-08-21 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-21 23:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-22 05:02</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems to work and passes all of our tests, but I don't know if it's actually enforced anywhere that a single edit doesn't span cells.</p>
+</blockquote>
+<p>It is enforced, just not in a good way ;)</p>
+<p>Related issue: https://github.com/astral-sh/ruff/issues/14445</p>
+<p>https://github.com/astral-sh/ruff/blob/7a44ea680e55f10af6e566eb5d9928244f79edd1/crates/ruff_notebook/src/notebook.rs#L278-L284</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/full.rs</code>:115 on 2025-08-22 07:46</div>
+            <div class="timeline-body"><p>A few thoughts here:</p>
+<ul>
+<li>Iterating over all lines seems especially unfortunate if this isn't a notebook. Can't we just push a single entry if the notebook index is absent that spans the entire source code range instead of iterating over the lines?</li>
+<li>Are there cases where the notebook cells don't appear in source order? I'm asking because we don't need a <code>BTreeMap</code> if it's guaranteed that we iterate over the cells in order anyway</li>
+<li>This data structure seems very similar to <code>Notebook::cell_offsets</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/full.rs</code>:148 on 2025-08-22 07:49</div>
+            <div class="timeline-body"><p>I wonder if we could reduce the overhead for non notebooks by extracing the shared logic for rendering fixes into a separate method and:</p>
+<ul>
+<li>We call that method directly if source isn't a notebook (in which case we can skip all/most of the operations?)</li>
+<li>For notebooks, do whatever mapping is necessary, call that method for each cell</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-22 07:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__unused_variable.snap</code>:50 on 2025-08-22 07:53</div>
+            <div class="timeline-body"><p>I think we have to show the cell number somewhere because I don't think it's guaranteed that the diagnostic cell is the same as the one for fixes.</p>
+<p>I'm also curious on how the rendering looks if a diagnostic has fixes across multiple cells. We should add a test for this.</p>
+<p>The UP049 example that you used to evaluate the fixes rendering could be a good example here too, just extend it so that the fixes span multiple cells.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-22 07:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-22 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__unused_variable.snap</code>:50 on 2025-08-22 12:51</div>
+            <div class="timeline-body"><p>Oh that's a good point, in all of these cases the cell number matched. What do you think about the header lines I removed in this commit: 80f9b55621ba0c42e66a659dc47c0c66c2e80229? I was trying to match the horizontal line we draw for different sections, but I ended up ripping them out because I thought they were too noisy, especially for the single-cell cases in our tests. Another option I considered was something like the <code>:::</code> in our diagnostics:</p>
+<pre><code>error[unused-import]: `os` imported but unused
+ --&gt; notebook.ipynb:cell 1:2:8                
+  |                                           
+1 | # cell 1                                  
+2 | import os                                 
+  |        ^^                                 
+  |                                           
+ ::: notebook.ipynb:cell 2:2:8                
+  |                                           
+1 | # cell 2                                  
+2 | import math                               
+  |        ---- second cell                   
+3 |                                           
+4 | print('hello world')                      
+  |                                           
+help: Remove unused import: `os`              
+</code></pre>
+<p>I'll work on a test for these. Unfortunately I don't think we can use UP049 because the PEP-695 generics are restricted to a single class or function body, which I don't think can span cells. I'm sure I can find another rule, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-22 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__unused_variable.snap</code>:50 on 2025-08-22 13:01</div>
+            <div class="timeline-body"><p>I like <code>::: notebook.ipynb:cell 2:2:8</code> except that I would strip everything except the cell number because it feels redundant</p>
+<pre><code>--&gt; notebook.ipynb:cell 1:2:8                
+  |                                           
+1 | # cell 1                                  
+2 | import os                                 
+  |        ^^                                 
+  |                                           
+ ::: cell 2
+  |                                           
+1 | # cell 2                                  
+2 | import math                               
+  |        ---- second cell                   
+3 |                                           
+4 | print('hello world')                      
+  |                                           
+help: Remove unused import: `os`              
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-22 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/full.rs</code>:115 on 2025-08-22 15:34</div>
+            <div class="timeline-body"><p>Ah thanks, <code>Notebook::cell_offsets</code> does seem like what I need. I looked into adding a <code>FileResolver</code> method to get a <code>CellOffsets</code>, but it only works, or at least works easily, for ty files. Ruff's <code>FileResolver</code> only has access to a <code>NotebookIndex</code>, not the <code>Notebook</code> itself. Should I try to pass that down through <code>Diagnostics</code>, and <code>EmitterContext</code>?</p>
+<p>I don't think we want to clone a whole <code>Notebook</code>, so I'm thinking of adding a new struct wrapping only the index and the cell offsets to store in the (renamed) <code>Diagnostics::notebook_indexes</code> field.</p>
+<p>https://github.com/astral-sh/ruff/blob/0b6ce1c788bceea13afeac63ec25894a5edd4435/crates/ruff/src/diagnostics.rs#L338-L342</p>
+<p>I guess we could also considering moving the <code>CellOffsets</code> into the <code>NotebookIndex</code>, making it the wrapper struct. They're mostly accessed via <code>Notebook::cell_offsets</code> anyway.</p>
+<p>But yes, we definitely don't need to iterate the lines for a normal file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-22 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/full.rs</code>:115 on 2025-08-22 15:41</div>
+            <div class="timeline-body"><p>Another idea, I think we can reconstruct something more efficient than looping over all the lines by only looking at the unique entries in <code>NotebookIndex::row_to_cell</code>. That's probably the easiest thing to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-22 22:54</div>
+            <div class="timeline-body"><p>I've updated the output formatting, and I believe also resolved Micha's other suggestions. As I mentioned <a href="https://github.com/astral-sh/ruff/pull/20036#discussion_r2294063712">here</a> it seems a bit tricky to get access to a <code>Notebook</code> to call <code>Notebook::cell_offsets</code> directly, but I think I've reconstructed something similar here.</p>
+<p>I didn't extract any code as suggested <a href="https://github.com/astral-sh/ruff/pull/20036#discussion_r2292995749">here</a>, but I think most of the overhead for non-notebooks, and for notebooks too really, should be resolved by getting rid of the <code>BTreeMap</code> and the loop over all of the source lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-08-22 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-08-22 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-08-22 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-08-22 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-08-22 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-08-22 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-08-22 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-08-22 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/full.rs</code>:716 on 2025-08-23 12:47</div>
+            <div class="timeline-body"><p>Not something we have to change as part of this PR. But I only just realized that our fix infrastructure always assumes that all changes belong to the file from the primary span.</p>
+<p>How would the rendered diagnostic look like if we had a sub-diagnostic with a span pointing to a different file? I don't think it's something we have to solve now but it might be worth documenting if the rendered output looks confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-23 12:48</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-25 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/full.rs</code>:716 on 2025-08-25 13:20</div>
+            <div class="timeline-body"><p>Opened an issue to track this here: https://github.com/astral-sh/ruff/issues/20080.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-25 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-25 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-25 13:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Optimize TDD atom ordering - astral-sh/ruff #20098</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Optimize TDD atom ordering</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20098">#20098</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-08-26 15:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-26 15:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>While looking at some logging output that I added to <code>ReachabilityConstraintBuilder::add_and_constraint</code> in order to debug https://github.com/astral-sh/ty/issues/1091, I noticed that it seemed to suggest that the TDD was built in an imbalanced way for code like the following, where we have a sequence of non-nested <code>if</code> conditions:</p>
+<pre><code class="language-py">def f(t1, t2, t3, t4, …):
+    x = 0
+    if t1:
+        x = 1
+    if t2:
+        x = 2
+    if t3:
+        x = 3
+    if t4:
+        x = 4
+    …
+</code></pre>
+<p>To understand this a bit better, I added some code to the <code>ReachabilityConstraintBuilder</code> to render the resulting TDD. On <code>main</code>, we get a tree that looks like the following, where you can see a pattern of N sub-trees that grow linearly with N (number of <code>if</code> statements). This results in an overall tree structure that has N² nodes (see graph below):</p>
+<p><img alt="normal order" src="https://github.com/user-attachments/assets/aab40ce9-e82a-4fcd-823a-811f05f15f66" /></p>
+<p>If we zoom in to one of these subgraphs, we can see what the problem is. When we add new constraints that represent combinations like <code>t1 AND ~t2 AND ~t3 AND t4 AND …</code>, they start with the evaluation of &quot;early&quot; conditions (<code>t1</code>, <code>t2</code>, …). This means that we have to create new subgraphs for each new <code>if</code> condition because there is little sharing with the previous structure. We evaluate the Boolean condition in a right-associative way: <code>t1 AND (~t2 AND (~t3 AND t4)))</code>:</p>
+<p><img width="500" align="center" src="https://github.com/user-attachments/assets/31ea7182-9e00-4975-83df-d980464f545d" /></p>
+<p>If we change the ordering of TDD atoms, we can change that to a left-associative evaluation: <code>(((t1 AND ~t2) AND ~t3) AND t4) …</code>. This means that we can re-use previous subgraphs <code>(t1 AND ~t2)</code>, which results in a much more compact graph structure overall (note how &quot;late&quot; conditions are now at the top, and &quot;early&quot; conditions are further down in the graph):</p>
+<p><img alt="reverse order" src="https://github.com/user-attachments/assets/96a6b7c1-3d35-4192-a917-0b2d24c6b144" /></p>
+<p>If we count the number of TDD nodes for a growing number if <code>if</code> statements, we can see that this change results in a slower growth. It's worth noting that the growth is still superlinear, though:</p>
+<p><img width="800" height="600" alt="plot" src="https://github.com/user-attachments/assets/22e8394f-e74e-4a9e-9687-0d41f94f2303" /></p>
+<p>On the actual code from the referenced ticket (the <code>t_main.py</code> file reduced to its main function, with the main function limited to 2000 lines instead of 11000 to allow the version on <code>main</code> to run to completion), the effect is much more dramatic. Instead of 26 million TDD nodes (<code>main</code>), we now only create 250 thousand (this branch), which is slightly less than 1%.</p>
+<p>The change in this PR allows us to build the semantic index and type-check the problematic <code>t_main.py</code> file in https://github.com/astral-sh/ty/issues/1091 in 9 seconds. This is still not great, but an obvious improvement compared to running out of memory after <em>minutes</em> of execution.</p>
+<p>An open question remains whether this change is beneficial for all kinds of code patterns, or just this linear sequence of <code>if</code> statements. It does not seem unreasonable to think that referring to &quot;earlier&quot; conditions is generally a good idea, but I learned from Doug that it's generally not possible to find a TDD-construction heuristic that is non-pathological for all kinds of inputs. Fortunately, it seems like this change here results in performance improvements across <em>all of our benchmarks</em>, which should increase the confidence in this change:</p>
+<p>| Benchmark           | Improvement |
+|---------------------|-------------------------|
+| hydra-zen           | +13%                    |
+| DateType            | +5%                     |
+| sympy (walltime)    | +4%                     |
+| attrs               | +4%                     |
+| pydantic (walltime) | +2%                     |
+| pandas (walltime)   | +2%                     |
+| altair (walltime)   | +2%                     |
+| static-frame        | +2%                     |
+| anyio               | +1%                     |
+| freqtrade           | +1%                     |
+| colour-science      | +1%                     |
+| tanjun              | +1%                     |</p>
+<p>closes https://github.com/astral-sh/ty/issues/1091</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-08-26 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-26 15:35</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-26 15:36</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~273MB
++ TOTAL MEMORY USAGE: ~260MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-26 15:42</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Ffix-1091?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #20098 will <strong>improve performances by 13.81%</strong></h3>
+<p><sub>Comparing <code>david/fix-1091</code> (8e988ae) with <code>main</code> (5663426)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements<br />
+<code>✅ 40</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>attrs</code> | 375.1 ms | 360.4 ms | +4.09% |
+| ⚡ | <code>hydra-zen</code> | 803.6 ms | 706.1 ms | +13.81% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Reverse TDD node ordering" to "[ty] Optimize TDD atom ordering" by @sharkdp on 2025-08-27 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-08-27 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-08-27 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-08-27 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-08-27 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-08-27 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:429 on 2025-08-27 14:29</div>
+            <div class="timeline-body"><p>I think this comment is now quite confusing.</p>
+<p>Would it be equivalent here if we compared interiors in the &quot;forward&quot; direction, swapped the <code>Greater</code> and <code>Less</code> cases below, and then reversed the direction in which we use this ordering? It seems like that would make it possible to describe the behavior of this method more straightforwardly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-27 14:30</div>
+            <div class="timeline-body"><p>Awesome investigation and results!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-27 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:429 on 2025-08-27 15:34</div>
+            <div class="timeline-body"><p>The problem is that the terminal nodes need to be larger than anything else. If we swap the <code>Greater</code> and <code>Less</code> cases below instead, that would also invert the logic for terminal nodes (which violates invariants and leads to panics). But maybe I haven't understood what you meant by this:</p>
+<blockquote>
+<p>and then reversed the direction in which we use this ordering</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:429 on 2025-08-27 15:49</div>
+            <div class="timeline-body"><p>What I meant was that in each of the two places we call <code>.cmp_atoms</code> we would also swap the match arms for <code>Greater</code> and <code>Less</code>, so the invariant becomes that interior nodes can only have edges to &quot;smaller&quot; nodes and terminals are considered &quot;smaller&quot; than any internal node. Then I think we get the same effect but eliminate the confusing idea that a &quot;larger&quot; node has a &quot;smaller&quot; atom.</p>
+<p>This change passes mdtests for me locally:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs b/crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs
+index 9042e919be..2545413f0e 100644
+--- a/crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs
++++ b/crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs
+@@ -435,9 +435,9 @@ impl ReachabilityConstraintsBuilder {
+         if a == b || (a.is_terminal() &amp;&amp; b.is_terminal()) {
+             Ordering::Equal
+         } else if a.is_terminal() {
+-            Ordering::Greater
+-        } else if b.is_terminal() {
+             Ordering::Less
++        } else if b.is_terminal() {
++            Ordering::Greater
+         } else {
+             self.interiors[a].atom.cmp(&amp;self.interiors[b].atom)
+         }
+@@ -549,7 +549,7 @@ impl ReachabilityConstraintsBuilder {
+                 };
+                 (a_node.atom, if_true, if_ambiguous, if_false)
+             }
+-            Ordering::Less =&gt; {
++            Ordering::Greater =&gt; {
+                 let a_node = self.interiors[a];
+                 let if_true = self.add_or_constraint(a_node.if_true, b);
+                 let if_false = self.add_or_constraint(a_node.if_false, b);
+@@ -560,7 +560,7 @@ impl ReachabilityConstraintsBuilder {
+                 };
+                 (a_node.atom, if_true, if_ambiguous, if_false)
+             }
+-            Ordering::Greater =&gt; {
++            Ordering::Less =&gt; {
+                 let b_node = self.interiors[b];
+                 let if_true = self.add_or_constraint(a, b_node.if_true);
+                 let if_false = self.add_or_constraint(a, b_node.if_false);
+@@ -615,7 +615,7 @@ impl ReachabilityConstraintsBuilder {
+                 };
+                 (a_node.atom, if_true, if_ambiguous, if_false)
+             }
+-            Ordering::Less =&gt; {
++            Ordering::Greater =&gt; {
+                 let a_node = self.interiors[a];
+                 let if_true = self.add_and_constraint(a_node.if_true, b);
+                 let if_false = self.add_and_constraint(a_node.if_false, b);
+@@ -626,7 +626,7 @@ impl ReachabilityConstraintsBuilder {
+                 };
+                 (a_node.atom, if_true, if_ambiguous, if_false)
+             }
+-            Ordering::Greater =&gt; {
++            Ordering::Less =&gt; {
+                 let b_node = self.interiors[b];
+                 let if_true = self.add_and_constraint(a, b_node.if_true);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:429 on 2025-08-27 15:52</div>
+            <div class="timeline-body"><p>But I don't think this is worth a lot of bother. If there's an issue with that code change and we need to leave the code the same, and accept that &quot;smaller atom&quot; means &quot;larger node&quot;, then I think there's still something confusing/wrong that we should fix in the docs here -- it currently says &quot;Terminals are considered to have a larger atom than any internal node&quot; but I think that's backwards, it should say &quot;Terminals are considered to be larger than any internal node.&quot; Because being a larger node implies &quot;smaller atom&quot; under the current &quot;reversed&quot; semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:444 on 2025-08-27 15:59</div>
+            <div class="timeline-body"><p>nit: What do you think about this instead?</p>
+<pre><code class="language-suggestion">            // See https://github.com/astral-sh/ruff/pull/20098 for an explanation of why this
+            // ordering is reversed.
+            self.interiors[a].atom.cmp(&amp;self.interiors[b].atom).reverse()
+</code></pre>
+<p>To me that stands out more clearly that we are doing a reversal, rather than having to notice that <code>a</code> and <code>b</code> are reversed compared to how they appear in the parameter list.</p>
+<p>(I'm also completely fine leaving this as-is if you prefer it that way)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:429 on 2025-08-27 16:11</div>
+            <div class="timeline-body"><p>How about something like</p>
+<pre><code>Implements the ordering that determines which level a TDD node appears at.
+
+Each interior node checks the value of a single variable (for us, a `Predicate`).
+TDDs are ordered such that every path from the root of the graph to the leaves
+must check each variable at most once, and must check each variable in the same
+order.
+
+We can choose any ordering that we want, as long as it's consistent — with the
+caveat that terminal nodes must always be last in the ordering, since they are
+the leaf nodes of the graph.
+
+We currently compare interior nodes by looking at the Salsa IDs of each variable's
+`Predicate`, since this is already available and easy to compare. We also
+_reverse_ the comparison of those Salsa IDs. The Salsa IDs are assigned roughly
+sequentially while traversing the source code. Reversing the comparison means
+`Predicate`s that appear later in the source will tend to be placed &quot;higher&quot;
+(closer to the root) in the TDD graph. We have [found empirically](https://github.com/astral-sh/ruff/pull/20098)
+that this leads to smaller TDD graphs, since there are often repeated
+combinations of `Predicate`s from earlier in the file.
+</code></pre>
+<p>(You'd have to reflow that to appease the pre-commit gremlin)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-27 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-08-27 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-27 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:429 on 2025-08-27 18:13</div>
+            <div class="timeline-body"><blockquote>
+<p>How about something like</p>
+</blockquote>
+<p>That is great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-27 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/semantic_index/reachability_constraints.rs</code>:444 on 2025-08-27 18:16</div>
+            <div class="timeline-body"><p>I changed the <code>.reverse()</code> call to <code>b.cmp(a)</code> because I was worried about it being an additional operation, since this function is called <em>a lot</em>. But it's probably negligible compared to the hashmap operations and everything else that we do in <code>add_{and,or}_constraint</code>. And maybe it's a no-op after optimization anyway.</p>
+<p>Changed back to <code>.reverse()</code> now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-08-27 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-08-27 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-27 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-08-28 00:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

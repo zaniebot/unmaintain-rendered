@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move Azure output format to the new diagnostic format - astral-sh/ruff #19129</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move Azure output format to the new diagnostic format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19129">#19129</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-07-03 18:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-03 18:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a dummy <code>FileResolver</code> to Ruff to enable using the <code>ruff_db::Diagnostic</code> rendering code and ports one of the simplest output formats (<code>azure</code>) to a <code>ruff_db::DiagnosticFormat</code>. This also made it very easy to add support for this output format to ty.</p>
+<p>I think this will eventually allow us to rework, or even remove, the <code>Emitter</code> infrastructure in Ruff, but my plan for now is just to port the internals of each <code>Emitter</code>.</p>
+<p>We didn't have any tests for this, but I removed this check:</p>
+<p>https://github.com/astral-sh/ruff/blob/333191b7f7d78473a4ee88f6a24e199b29b01070/crates/ruff_linter/src/message/azure.rs#L22-L28</p>
+<p>because the line numbers in notebooks look sensible to me. This matches the current behavior of ty too.</p>
+<h2>Test Plan</h2>
+<p>Existing Ruff tests and a new ty CLI test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-07-03 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-07-03 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ntBre on 2025-07-03 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @ntBre on 2025-07-03 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-03 18:26</div>
+            <div class="timeline-body"><p>Not sure about the labels here :laughing: it should be <code>internal</code> for Ruff, but I guess it's a new feature for <code>ty</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-03 18:28</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+-     memo fields = ~45MB
++     memo fields = ~41MB
+
+Expression (https://github.com/cognitedata/Expression)
+-     memo fields = ~54MB
++     memo fields = ~49MB
+
+trio (https://github.com/python-trio/trio)
+-     memo fields = ~156MB
++     memo fields = ~142MB
+
+discord.py (https://github.com/Rapptz/discord.py)
+-     memo fields = ~189MB
++     memo fields = ~207MB
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- TOTAL MEMORY USAGE: ~80MB
++ TOTAL MEMORY USAGE: ~88MB
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+-     memo fields = ~171MB
++     memo fields = ~156MB
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+-     memo fields = ~66MB
++     memo fields = ~72MB
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+-     memo fields = ~97MB
++     memo fields = ~106MB
+
+psycopg (https://github.com/psycopg/psycopg)
+- TOTAL MEMORY USAGE: ~228MB
++ TOTAL MEMORY USAGE: ~207MB
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- TOTAL MEMORY USAGE: ~171MB
++ TOTAL MEMORY USAGE: ~189MB
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- TOTAL MEMORY USAGE: ~228MB
++ TOTAL MEMORY USAGE: ~207MB
+
+scipy (https://github.com/scipy/scipy)
+- TOTAL MEMORY USAGE: ~1156MB
++ TOTAL MEMORY USAGE: ~1271MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-03 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:109 on 2025-07-03 18:31</div>
+            <div class="timeline-body"><p>It <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/logging-commands?view=azure-devops&amp;tabs=bash#properties">looks</a> like we could get by without nesting these, much like the <code>Concise</code> format above, but I'm not totally sure. These should both always be <code>Some</code> for Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-03 18:34</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:109 on 2025-07-03 18:40</div>
+            <div class="timeline-body"><p>Never mind, I needed to scroll up a bit for the general <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/logging-commands?view=azure-devops&amp;tabs=bash#logging-command-format">format</a>. I'm confident we can handle this like the <code>Concise</code> format now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-03 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-07-03 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-03 21:48</div>
+            <div class="timeline-body"><p>I started working on JSON output after this, and I think we may end up needing the <code>NotebookIndex</code> anyway, so I should probably not delete that section of code. I'll convert this back to a draft while I figure it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ntBre on 2025-07-03 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-04 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-03 19:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

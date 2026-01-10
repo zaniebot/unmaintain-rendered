@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add precise inference for unpacking a TypeVar if the TypeVar has an upper bound with a precise tuple spec - astral-sh/ruff #19985</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add precise inference for unpacking a TypeVar if the TypeVar has an upper bound with a precise tuple spec</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19985">#19985</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-19 09:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 09:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If the upper bound of a TypeVar can be unpacked, then so can the TypeVar, because no solutions of the TypeVar exist that would not be assignable to the TypeVar's upper bound.</p>
+<p>This is similar in spirit to https://github.com/astral-sh/ruff/pull/19981!</p>
+<h2>Test Plan</h2>
+<p>Mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-19 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-19 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-19 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-19 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 09:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4879 on 2025-08-19 09:39</div>
+            <div class="timeline-body"><p>Possibly I should also be adding a branch for <code>Type::TypeVar</code> here too...? I couldn't immediately find any tests that would fail without that branch, though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/functions.md</code>:493 on 2025-08-19 09:40</div>
+            <div class="timeline-body"><p>I enjoyed writing this test. So cool to see the number of features that are coming together here 😃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-19 09:41</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-19 09:42</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/functions.md</code>:473 on 2025-08-19 20:43</div>
+            <div class="timeline-body"><p>As written, this is a useless use of a typevar (since it appears only once in the signature), which we might at some point want to emit a diagnostic on? This annotation should just be replaced with a direct <code>tuple[int, str]</code> instead.</p>
+<p>I think we should either have a TODO comment about that, or (maybe less distracting) change this signature so the function e.g. also returns a <code>T</code>.</p>
+<pre><code class="language-suggestion">def f(x: T) -&gt; T:
+    a, b = x
+    reveal_type(a)  # revealed: int
+    reveal_type(b)  # revealed: str
+    return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/functions.md</code>:462 on 2025-08-19 20:44</div>
+            <div class="timeline-body"><p>very nit: I've only been using the camel-case spelling to refer to <code>TypeVar</code> the Python entity. In prose like this I've been using &quot;type variable&quot; or &quot;typevar&quot; (lowercase)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/functions.md</code>:479 on 2025-08-19 20:45</div>
+            <div class="timeline-body"><p>Same as above, this function probably should be written <code>def x(team: Team[tuple[int, str]]):</code> instead, unless there's a second use of <code>T</code> somewhere in the signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/functions.md</code>:479 on 2025-08-19 20:46</div>
+            <div class="timeline-body"><p>Same comment as above on these two functions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4879 on 2025-08-19 20:47</div>
+            <div class="timeline-body"><p>I don't think you should — if anything I think you want a <code>debug_assert</code> that it's not possible to iterate a typevar in an inferable position, like we have here for instance member access:</p>
+<p>https://github.com/astral-sh/ruff/blob/c82e255ca8570a683fcd0cde1e62bd1086837c12/crates/ty_python_semantic/src/types.rs#L2791-L2799</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-08-19 20:48</div>
+            <div class="timeline-body"><p>Love it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4879 on 2025-08-19 20:49</div>
+            <div class="timeline-body"><p>In general, I think if we encounter a <code>Type::TypeVar</code> type in any position where we'd end up trying to iterate or unpack it, it means we have a bug elsewhere. So I think if anything, here and probably various other places, if we wanted to add a branch for <code>Type::TypeVar</code> it should just contain an <code>unreachable!(...)</code> (or maybe to avoid end-user crashes, a <code>debug_assert!(false, ...)</code>) to help us catch such bugs early. CC @dcreager to correct me if I'm wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-19 20:49</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4879 on 2025-08-19 21:00</div>
+            <div class="timeline-body"><p>Great -- thanks both!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/functions.md</code>:462 on 2025-08-19 21:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Unpacking a TypeVar
+
+We can infer precise heterogeneous types from the result of an unpacking operation applied to a
+type variable if the type variable's upper bound is a type with a precise tuple spec:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/functions.md</code>:482 on 2025-08-19 21:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">def x(team: Team[T]) -&gt; Team[T]:
+    age, name = team.employees[0]
+    reveal_type(age)  # revealed: int
+    reveal_type(name)  # revealed: str
+    return team
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/functions.md</code>:479 on 2025-08-19 21:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">def f[T: tuple[int, str]](x: T) -&gt; T:
+    a, b = x
+    reveal_type(a)  # revealed: int
+    reveal_type(b)  # revealed: str
+    return x
+
+@dataclass
+class Team[T: tuple[int, str]]:
+    employees: list[T]
+
+def x[T: tuple[int, str]](team: Team[T]) -&gt; Team[T]:
+    age, name = team.employees[0]
+    reveal_type(age)  # revealed: int
+    reveal_type(name)  # revealed: str
+    return team
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-08-19 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-19 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-19 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-19 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4879 on 2025-08-19 21:30</div>
+            <div class="timeline-body"><p>Oops, hadn't seen Doug's comment yet when I wrote and submitted mine! Glad we agree, anyway 😆</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

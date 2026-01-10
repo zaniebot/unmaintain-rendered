@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add completion support for `import` and `from ... import` statements - astral-sh/ruff #19883</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add completion support for <code>import</code> and <code>from ... import</code> statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19883">#19883</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-08-12 18:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-12 18:42</div>
+            <div class="timeline-body"><p>This required adding what is effectively a second implementation of
+module resolution in order to facilitate asking for &quot;list modules&quot;
+instead of &quot;resolve this module.&quot; While this does create some
+duplication of some pretty hairy logic, there is also a substantial bit
+of reuse. For example, <code>SearchPath</code> and <code>ModulePath</code> encapsulate a fair
+bit of logic that we are able to reuse here.</p>
+<p>Most of the work in this PR was in writing the tests and occasionally
+fixing problems that they uncovered.</p>
+<p>One thing this PR does not handle is caching. There are known cache
+invalidation problems here. That is, if one adds a module to a search
+path, completions may become stale. Similarly for deletions. I intend
+to address this in another PR.</p>
+<p>(This PR is best reviewed commit by commit.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @BurntSushi on 2025-08-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-12 18:42</div>
+            <div class="timeline-body"><p>Demo:</p>
+<p>https://github.com/user-attachments/assets/5cc6b303-f09e-4cc8-a59a-62558115f1be</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-12 18:44</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-12 18:46</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/completion.rs</code>:68 on 2025-08-13 08:01</div>
+            <div class="timeline-body"><p>I feel like something's missing in this sentence</p>
+<pre><code class="language-suggestion">        /// for other things, like only returning completions
+        /// that start with a prefix corresponding to this token.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:16 on 2025-08-13 08:20</div>
+            <div class="timeline-body"><p>I know that you intentionally &quot;ignored&quot; caching as part of this PR. However, I do think that caching at the <code>db</code> level is undesired and it may change your design (e.g. a global <code>Lister</code> isn't possible).</p>
+<p>The issue with caching <code>list_modules</code> is that any file addition or removal invalidates the entire cache. I think a better approach is to instead cache at the search path level. Whether we need a cache for the aggregated result is less clear to me.</p>
+<p>I think another approach here could be that we have one query for each search path and all it returns is a listing of all entries it contains. A second query than does the aggregation. I think that would somewhat nicely map to your current model, where the entries returned by the search-path-specific-query map to the arguments to <code>add_path</code> (or <code>add_module</code>?). In the future, we could decide to run those queries in parallel. This might also give us better incrementality because:</p>
+<ul>
+<li>We avoid traversing the directories unnecessarily and invalidation is &quot;as easy as&quot; reading the <code>revision</code> of the search path's file root</li>
+<li>The aggregation query only runs if any search path returns a different list of entries.</li>
+<li><code>resolve_file_module</code> already uses <code>File</code>-level APIs, it only invalidates if the specific files chane.</li>
+</ul>
+<p>I don't think it's necessary to address this concern as this PR, unless it invalidates some of the design. I'll leave that up to you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:80 on 2025-08-13 08:25</div>
+            <div class="timeline-body"><p>Is the <code>Into</code> worth it here, given that there are very few call sites (and it's a fairly chunky method)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:50 on 2025-08-13 08:29</div>
+            <div class="timeline-body"><p>Mainly curious because I think I can learn something here :). What's the motivation for using a <code>BTreeMap</code> here over a <code>FxHashMap</code>? Is it because <code>into_modules</code> returns a sorted list or are there other reasons?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:17 on 2025-08-13 08:35</div>
+            <div class="timeline-body"><p>I wonder if we could have some form of integration test for <code>list_modules</code> that ensures that: for every module returned by list module, <code>resolve_module(module.name) == module</code>. Maybe that's something we could run at the end of each mdtest?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:476 on 2025-08-13 08:39</div>
+            <div class="timeline-body"><p>You could extend <code>TestCaseBuilder</code> to allow customizing the underlying <code>System</code>. But I suspect that doesn't make it easier as you know rely on os behavior :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:431 on 2025-08-13 08:41</div>
+            <div class="timeline-body"><p>An alternative to the inline tests here could have been to extend <code>ty_extensions.internal</code> with a <code>list_modules</code> method so that you can then write mdtests for it. But I'm not sure if other folks would agree with this :)</p>
+<p>It just feels a bit unfortunate that we now have some mdtests testing module resolution and a separate set of tests that verify the very same behavior for list modules</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:262 on 2025-08-13 08:44</div>
+            <div class="timeline-body"><p>What do we need <code>Ord</code> for in <code>KnownModule</code>? I'm asking because some of those entries map to multiple actual modules and it doesn't really have a natural ordering.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:158 on 2025-08-13 08:57</div>
+            <div class="timeline-body"><p>I think we now need to make <code>Module</code> a salsa interned or we risk that the same module resolved with <code>resolve_module</code> and its counterpart from <code>list_modules</code> won't compare equal because the identity of a tracked struct not only depends on the tracked struct's values but also the query that creates it. That means, any tracked struct by <code>list_modules</code> won't compare equal to any tracked struct created by <code>resolve_module</code> even if their values are identical.</p>
+<p>You may need to run ty on some larger projects to see if the need to go through a global lock (because interning...) has any negative performance impact (see https://github.com/astral-sh/ruff/pull/19867)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:220 on 2025-08-13 09:05</div>
+            <div class="timeline-body"><p>The comment here explains what the condition right beneath it does without saying why the condition is here in the first place. I think I'd change it to something like: Merging across search paths is only necessary for namespace packages. For all other modules, entries from earlier search paths take precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:268 on 2025-08-13 09:07</div>
+            <div class="timeline-body"><p>Checking whether the file system is case sensitive can be fairly expensive (as expensive as writing a file to disk!). The best case is that it's already cached. Either way, I'm not sure if this is a worthwhile performance optimization or if we should just always call <code>eq_ignore_ascii_case</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:413 on 2025-08-13 09:09</div>
+            <div class="timeline-body"><p>Shouldn't it be enough to sort by module name? I don't think we should ever return multiple modules with the same name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:886 on 2025-08-13 09:13</div>
+            <div class="timeline-body"><p>Nit: You can change the underlying system of a <code>TestDb</code> by using <code>db.use_system(other)</code>. See this test for an example https://github.com/astral-sh/ruff/blob/f34b65b7a00dfc61c5a54e4280b421c94151e677/crates/ty_python_semantic/src/module_resolver/resolver.rs#L2158-L2164</p>
+<p>It's up to you if you think this simplifies anything or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:1657 on 2025-08-13 09:14</div>
+            <div class="timeline-body"><p>That's a lot of tests :) Nice work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-13 09:16</div>
+            <div class="timeline-body"><p>This is so cool. Thank you for working on this.</p>
+<p>I think we should add an experimental LSP setting and use it to gate the completion for now (off by default). We can remove it again once we fix caching. See https://github.com/astral-sh/ruff/commit/7b6abfb030653f81a1d7cdb2b92e78947d4e28c6 on how to do that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:80 on 2025-08-13 11:40</div>
+            <div class="timeline-body"><p>Nice catch. I flipped the <code>.into()</code> to the caller.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 11:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:50 on 2025-08-13 11:42</div>
+            <div class="timeline-body"><p>Yeah it's just for sorting. Nothing deeper. I just reached for the simplest thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:476 on 2025-08-13 13:57</div>
+            <div class="timeline-body"><p>I think you mean threading down a parameter that would allow controlling the sort order of <code>MemoryFileSystem::read_directory</code> right? Yeah idk if it's worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:431 on 2025-08-13 14:03</div>
+            <div class="timeline-body"><p>Not just for listing modules, for <code>resolve_module</code> as well. That's where these tests came from. i.e., I copied the approach to testing <code>resolve_module</code>. The <code>TestCaseBuilder</code> was already there for me to help write tests. This approach also lets us do some things that might be tricky in the context of mdtest, like setting up symlinks. (Although admittedly most tests I think could be written in the style you suggest, assuming the existence of an internal <code>list_modules</code> method.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:262 on 2025-08-13 14:07</div>
+            <div class="timeline-body"><p>It just made it easy to sort <code>Vec&lt;Module&gt;</code> in order to give more sensible snapshots.</p>
+<p>I can certainly use a different approach, but this was simplest and it didn't seem obviously wrong to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:262 on 2025-08-13 14:08</div>
+            <div class="timeline-body"><p>I got rid of these impls and sorted on <code>known.as_str()</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:158 on 2025-08-13 14:13</div>
+            <div class="timeline-body"><p>I've made it an <code>interned</code> struct.</p>
+<p>I'll try it on some larger repos.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:220 on 2025-08-13 14:14</div>
+            <div class="timeline-body"><p>Yes, thank you, that is much clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:268 on 2025-08-13 14:17</div>
+            <div class="timeline-body"><p>Fine with me. I was thinking that if we always used <code>eq_ignore_ascii_case</code>, then we'd consider <code>foo.PY</code> as a module on a case sensitive file system. But maybe that's okay?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:268 on 2025-08-13 14:17</div>
+            <div class="timeline-body"><p>There are also some uses of <code>is_case_sensitive</code> in the <code>resolve_module</code> implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:413 on 2025-08-13 14:20</div>
+            <div class="timeline-body"><p>Yup, you're right. When I wrote this part of the test harness, it came before my <code>Lister</code> abstraction and I was returning multiple modules of the same name. So sorting by more stuff was helpful. But with <code>Lister</code> almost completely ruling that out by construction, it's probably not worth the extra sort criteria.</p>
+<p>This also let me revert my <code>Ord</code> additions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:892 on 2025-08-13 14:22</div>
+            <div class="timeline-body"><p>@MichaReiser RE <a href="https://github.com/astral-sh/ruff/pull/19883/files#r2272642630">https://github.com/astral-sh/ruff/pull/19883/files#r2272642630</a></p>
+<p>That's what I'm doing here? (This test originated from <code>resolver.rs</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:886 on 2025-08-13 14:22</div>
+            <div class="timeline-body"><p>Is this what you mean? https://github.com/astral-sh/ruff/pull/19883/files#r2273636330</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:268 on 2025-08-13 15:07</div>
+            <div class="timeline-body"><p>Turns out that the extension always has to be <code>py</code> or <code>pyi</code>, even on case insensitive file systems (I confirmed this on macOS at least), so this can get even simpler!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-13 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:892 on 2025-08-13 15:09</div>
+            <div class="timeline-body"><p>Lol, right. Blind me. I think the only consideration here would be to add a <code>with_system</code> to the <code>TestBuilder</code> so that we could reuse some code around setting up the <code>ProgramSettings</code> but maybe that's not possible after all</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-13 15:10</div>
+            <div class="timeline-body"><p>I spoke with @MichaReiser offline and we agreed it'd probably be fine to land this without adding an experimental opt-in since I'm going to be working on caching next anyway. Plus, the bug related to caching can technically be worked around by restarting the LSP server (obviously not ideal). But, I'll wait to merge this until after the next release to give the biggest time window.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:892 on 2025-08-13 15:11</div>
+            <div class="timeline-body"><p>Aye. I'll leave it as-is for now, since we only do this in a few places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:158 on 2025-08-13 15:29</div>
+            <div class="timeline-body"><p>I tried on our typical large repo test, and things seem okay:</p>
+<pre><code>$ time ty-main check &gt; /dev/null
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ ?????/????? files                                                                                                                                                 WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+real    21.397
+user    2:34.59
+sys     13.250
+maxmem  20325 MB
+faults  0
+
+$ time ty-ag-import-module check &gt; /dev/null
+WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+Checking ------------------------------------------------------------ ?????/????? files                                                                                                                                                 WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+real    21.490
+user    2:35.97
+sys     13.394
+maxmem  20548 MB
+faults  0
+</code></pre>
+<p>I tried it on several other projects and results were comparable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-13 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-20 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:16 on 2025-08-20 12:56</div>
+            <div class="timeline-body"><p>This is finally done in #19887.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-08-20 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-08-20 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-20 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

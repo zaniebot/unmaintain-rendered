@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: Add `RUF065` rule for binary operator identity simplification - astral-sh/ruff #19518</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: Add <code>RUF065</code> rule for binary operator identity simplification</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19518">#19518</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-07-24 00:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-24 00:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements <code>RUF065</code> (<code>BinaryOperatorIdentity</code>) that detects binary operations between a value and itself and suggests simplifications to their known identities. This rule is inspired by similar functionality in Sourcery and contributes to issue #11060.</p>
+<h2>What it does</h2>
+<p>The rule identifies binary operations where both operands are identical and can be simplified to known mathematical identities:</p>
+<ul>
+<li><code>x | x</code> → <code>x</code> (bitwise OR identity)</li>
+<li><code>x &amp; x</code> → <code>x</code> (bitwise AND identity)</li>
+<li><code>x ^ x</code> → <code>0</code> (bitwise XOR identity)</li>
+<li><code>x - x</code> → <code>0</code> (subtraction identity)</li>
+<li><code>x / x</code> → <code>1</code> (division identity)</li>
+<li><code>x // x</code> → <code>1</code> (floor division identity)</li>
+<li><code>x % x</code> → <code>0</code> (modulo identity)</li>
+</ul>
+<p>@ntBre, @MichaReiser, I wanted to draft this PR as a proof of concept of what this may look like as a custom <code>RUF</code> rule implementation. Please critique and comment as you see fit! I'm sure there are many details to discuss in terms of where we want the rule to live, semantics, opinionatedness, etc. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-24 01:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+104 -0 violations, +0 -0 fixes in 5 projects; 50 projects unchanged)</p>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/backends/tests/test_array.py#L668'>ibis/backends/tests/test_array.py:668:24:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/backends/tests/test_generic.py#L332'>ibis/backends/tests/test_generic.py:332:23:</a> RUF065 Binary operation `&` between a value and itself can be simplified to `t.bool_col`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/backends/tests/test_generic.py#L333'>ibis/backends/tests/test_generic.py:333:24:</a> RUF065 Binary operation `&` between a value and itself can be simplified to `df.bool_col`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/backends/tests/test_generic.py#L342'>ibis/backends/tests/test_generic.py:342:23:</a> RUF065 Binary operation `^` between a value and itself can be simplified to `0`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/backends/tests/test_generic.py#L343'>ibis/backends/tests/test_generic.py:343:24:</a> RUF065 Binary operation `^` between a value and itself can be simplified to `0`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/expr/operations/tests/test_rewrites.py#L100'>ibis/expr/operations/tests/test_rewrites.py:100:10:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/expr/operations/tests/test_rewrites.py#L101'>ibis/expr/operations/tests/test_rewrites.py:101:10:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/expr/operations/tests/test_rewrites.py#L102'>ibis/expr/operations/tests/test_rewrites.py:102:17:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/expr/operations/tests/test_rewrites.py#L103'>ibis/expr/operations/tests/test_rewrites.py:103:17:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
++ <a href='https://github.com/ibis-project/ibis/blob/75a944ba641ee88e21d000ad9ce53e50160f5a3c/ibis/expr/operations/tests/test_rewrites.py#L104'>ibis/expr/operations/tests/test_rewrites.py:104:19:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+62 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/asv_bench/benchmarks/arithmetic.py#L378'>asv_bench/benchmarks/arithmetic.py:378:27:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/asv_bench/benchmarks/arithmetic.py#L382'>asv_bench/benchmarks/arithmetic.py:382:9:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_datetime64.py#L1045'>pandas/tests/arithmetic/test_datetime64.py:1045:20:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_datetime64.py#L1060'>pandas/tests/arithmetic/test_datetime64.py:1060:20:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_datetime64.py#L2157'>pandas/tests/arithmetic/test_datetime64.py:2157:20:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_datetime64.py#L2177'>pandas/tests/arithmetic/test_datetime64.py:2177:18:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_datetime64.py#L2180'>pandas/tests/arithmetic/test_datetime64.py:2180:18:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_numeric.py#L1446'>pandas/tests/arithmetic/test_numeric.py:1446:31:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_numeric.py#L1447'>pandas/tests/arithmetic/test_numeric.py:1447:21:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_numeric.py#L530'>pandas/tests/arithmetic/test_numeric.py:530:18:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_numeric.py#L825'>pandas/tests/arithmetic/test_numeric.py:825:32:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_object.py#L325'>pandas/tests/arithmetic/test_object.py:325:13:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_period.py#L1328'>pandas/tests/arithmetic/test_period.py:1328:20:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_timedelta64.py#L374'>pandas/tests/arithmetic/test_timedelta64.py:374:18:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_timedelta64.py#L431'>pandas/tests/arithmetic/test_timedelta64.py:431:18:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_timedelta64.py#L447'>pandas/tests/arithmetic/test_timedelta64.py:447:18:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_timedelta64.py#L576'>pandas/tests/arithmetic/test_timedelta64.py:576:20:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arithmetic/test_timedelta64.py#L587'>pandas/tests/arithmetic/test_timedelta64.py:587:15:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arrays/integer/test_arithmetic.py#L330'>pandas/tests/arrays/integer/test_arithmetic.py:330:45:</a> RUF065 Binary operation `&` between a value and itself can be simplified to `4`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arrays/integer/test_arithmetic.py#L334'>pandas/tests/arrays/integer/test_arithmetic.py:334:45:</a> RUF065 Binary operation `^` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/arrays/test_datetimelike.py#L823'>pandas/tests/arrays/test_datetimelike.py:823:59:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/dtypes/test_missing.py#L206'>pandas/tests/dtypes/test_missing.py:206:53:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/extension/base/dim2.py#L287'>pandas/tests/extension/base/dim2.py:287:57:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/extension/test_arrow.py#L1258'>pandas/tests/extension/test_arrow.py:1258:46:</a> RUF065 Binary operation `&` between a value and itself can be simplified to `4`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/extension/test_arrow.py#L1262'>pandas/tests/extension/test_arrow.py:1262:46:</a> RUF065 Binary operation `^` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/frame/methods/test_diff.py#L64'>pandas/tests/frame/methods/test_diff.py:64:20:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/frame/methods/test_diff.py#L98'>pandas/tests/frame/methods/test_diff.py:98:20:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/frame/methods/test_values.py#L236'>pandas/tests/frame/methods/test_values.py:236:15:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/pandas-dev/pandas/blob/78ec27668163808b3488da6ed2c64d0b8e9bfbc8/pandas/tests/frame/methods/test_values.py#L237'>pandas/tests/frame/methods/test_values.py:237:15:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
+... 33 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python-trio/trio/blob/732f15744752ccfb8603cdae3f3f49eca7f39df6/src/trio/_tests/type_tests/path.py#L17'>src/trio/_tests/type_tests/path.py:17:17:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/d1e931a9dac3c14833d62a6263478a64ea0c634c/testing/code/test_excinfo.py#L427'>testing/code/test_excinfo.py:427:13:</a> RUF065 Binary operation `//` between a value and itself can be simplified to `1`
++ <a href='https://github.com/pytest-dev/pytest/blob/d1e931a9dac3c14833d62a6263478a64ea0c634c/testing/test_runner.py#L549'>testing/test_runner.py:549:45:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+27 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/coordinates/tests/test_representation_arithmetic.py#L1475'>astropy/coordinates/tests/test_representation_arithmetic.py:1475:9:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/coordinates/tests/test_representation_arithmetic.py#L1481'>astropy/coordinates/tests/test_representation_arithmetic.py:1481:9:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/coordinates/tests/test_representation_arithmetic.py#L215'>astropy/coordinates/tests/test_representation_arithmetic.py:215:14:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/coordinates/tests/test_representation_arithmetic.py#L247'>astropy/coordinates/tests/test_representation_arithmetic.py:247:14:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/coordinates/tests/test_representation_arithmetic.py#L692'>astropy/coordinates/tests/test_representation_arithmetic.py:692:19:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/coordinates/tests/test_representation_arithmetic.py#L862'>astropy/coordinates/tests/test_representation_arithmetic.py:862:19:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/io/misc/tests/test_yaml.py#L246'>astropy/io/misc/tests/test_yaml.py:246:10:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/modeling/tests/test_compound.py#L214'>astropy/modeling/tests/test_compound.py:214:9:</a> RUF065 Binary operation `&` between a value and itself can be simplified to `G`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/modeling/tests/test_compound.py#L235'>astropy/modeling/tests/test_compound.py:235:9:</a> RUF065 Binary operation `-` between a value and itself can be simplified to `0`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/modeling/tests/test_compound.py#L237'>astropy/modeling/tests/test_compound.py:237:9:</a> RUF065 Binary operation `/` between a value and itself can be simplified to `1`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/modeling/tests/test_compound.py#L403'>astropy/modeling/tests/test_compound.py:403:9:</a> RUF065 Binary operation `&` between a value and itself can be simplified to `g1`
++ <a href='https://github.com/astropy/astropy/blob/857fbc9300eb4998b2e56e9c75cae8c82f6d55e5/astropy/modeling/tests/test_models.py#L821'>astropy/modeling/tests/test_models.py:821:9:</a> RUF065 Binary operation `&` between a value and itself can be simplified to `models.Polynomial2D(2)`
+... 15 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF065 | 104 | 104 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-07-24 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-25 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-28 09:59</div>
+            <div class="timeline-body"><p>I haven't looked at the implementation. The rule itself seems reasonable as a Ruff rule because it is about simplification, or even catching potential bugs.</p>
+<p>What's less clear to me is if the rule should provide a fix because it's not clear to me whether <code>x &amp; x</code> was intentional or if they mistyped the variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-28 18:34</div>
+            <div class="timeline-body"><p>I think we should provide the fixes since these are guaranteed mathematical identities (unlike other simplifications that might change behavior), but add a note in the rule description that developers should verify this was their intent.</p>
+<p>We could also consider a separate rule for catching suspicious identity operations without fixes, if that makes more sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-28 20:37</div>
+            <div class="timeline-body"><p>I think Micha's point was more that the user probably meant to write something like <code>x &amp; y</code> rather than just <code>x</code>. The issue isn't that our fix would change behavior but that we could silently preserve the wrong behavior. Instead we should alert the user to the issue so that they can decide what it's supposed to say.</p>
+<p>An unsafe or display-only fix might be a good compromise here so that users can apply the fix in an editor, for example, but we don't silently perform the fix without alerting them.</p>
+<p>I don't think documenting the issue would be enough when the fix is marked as safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-30 02:05</div>
+            <div class="timeline-body"><p>Got it. One thing I'm still trying to figure out is the cases for <code>|</code> and <code>%</code>. Looking into why violations aren't being reported for those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-18 07:41</div>
+            <div class="timeline-body"><p>@danparizher I'll convert this PR to draft. It makes it easier for us to know which PR's are ready to have a look. Let us know if you need any help</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2025-08-18 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-20 20:43</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-20 20:50</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @danparizher on 2025-08-20 21:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

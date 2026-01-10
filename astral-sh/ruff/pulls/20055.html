@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] don't eagerly unpack aliases in user-authored unions - astral-sh/ruff #20055</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] don't eagerly unpack aliases in user-authored unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20055">#20055</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-08-23 13:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-08-23 13:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add a subtly different test case for recursive PEP 695 type aliases, which does require that we relax our union simplification, so we don't eagerly unpack aliases from user-provided union annotations.</p>
+<h2>Test Plan</h2>
+<p>Added mdtest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-08-23 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-08-23 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-08-23 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-08-23 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-23 13:08</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-23 13:10</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:225 on 2025-08-23 15:29</div>
+            <div class="timeline-body"><p>This sort-of feels like a bit of a confusing test to me, because it's not really something anybody would ever write. If you're able to use PEP-695 syntax in your Python code, then you'd surely also use PEP-604 syntax. And if you're using PEP-695 syntax, you'd also surely make use of the fact that the r.h.s. of a PEP-695 alias is lazily evaluated (no need to quote any forward references).</p>
+<pre><code class="language-suggestion">type MarkerAtom = int | list[MarkerAtom]
+type MarkerList = list[MarkerList | MarkerAtom | str]
+
+def f(marker_list: MarkerList):
+    reveal_type(marker_list)  # revealed: list[MarkerList | MarkerAtom | str]
+    for item in marker_list:
+        reveal_type(item)  # revealed: list[MarkerList | MarkerAtom | str] | int | list[MarkerAtom] | str
+</code></pre>
+<p>But it seems like we still panic on ^that rewritten test on this branch. (It looks like it's the switch to PEP-604 unions that makes us panic; we still run fine on that snippet if all I do is unquote the forward references.)</p>
+<p>I'm okay with landing this test as-is (or with just the forward references unquoted) since it definitely demonstrates us making progress towards the goal of full support for recursive type aliases. But it might be worth adding some prose that says why it is the way it is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:236 on 2025-08-23 15:30</div>
+            <div class="timeline-body"><p>don't think it really makes much of a difference, but I'd always do this where it's possible</p>
+<pre><code class="language-suggestion">    const fn should_simplify_full(&amp;self) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:10558 on 2025-08-23 15:34</div>
+            <div class="timeline-body"><p>I think you also need to add this handling to <code>Optional</code> -- this test case still causes us to panic on your branch:</p>
+<pre><code class="language-py">from typing import Optional, Union
+
+type MarkerAtom = Optional[list[&quot;MarkerAtom&quot;]]
+type MarkerList = list[Optional[Union[&quot;MarkerList&quot;, MarkerAtom, str]]]
+
+def f(marker_list: MarkerList):
+    reveal_type(marker_list)
+    for item in marker_list:
+        reveal_type(item)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-23 15:36</div>
+            <div class="timeline-body"><p>🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-23 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:207 on 2025-08-23 16:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum SimplificationStrategy {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-23 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:225 on 2025-08-23 17:59</div>
+            <div class="timeline-body"><p>Ugh, silly oversight -- I just always need to write tests for all forms of the syntax. Good catch! No, I'll fix this in this PR. But I want to include both tests, even the &quot;weird&quot; one -- this is fixing things that will be needed for other kinds of type aliases, too, but I want it tested for all combinations, even the weird ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @carljm on 2025-08-23 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] fix a recursive alias case via less eager union simplification" to "[ty] don't eagerly unpack aliases in user-authored unions" by @carljm on 2025-08-26 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-08-26 23:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-08-26 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-26 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-26 23:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

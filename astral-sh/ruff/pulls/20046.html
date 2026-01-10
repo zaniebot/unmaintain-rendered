@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Disallow std::env and io methods in most ty crates - astral-sh/ruff #20046</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Disallow std::env and io methods in most ty crates</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20046">#20046</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-22 15:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-22 15:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We use the <code>System</code> abstraction in ty to abstract away the host/system on which ty runs.
+This has a few benefits:</p>
+<ul>
+<li>Tests can run in full isolation using a memory system (that uses an in-memory file system)</li>
+<li>The LSP has a custom implementation where <code>read_to_string</code> returns the content as seen by the editor (e.g. unsaved changes) instead of always returning the content as it is stored on disk</li>
+<li>We don't require any file system polyfills for wasm in the browser</li>
+</ul>
+<p>However, it does require extra care that we don't accidentally use <code>std::fs</code> or <code>std::env</code> (etc.) methods in ty's code base (which is very easy).</p>
+<p>This PR sets up Clippy and disallows the most common methods, instead pointing users towards the corresponding <code>System</code> methods.</p>
+<p>The setup is a bit awkward because clippy doesn't support inheriting configurations. That means, a crate can only override the entire workspace configuration or not at all.
+The approach taken in this PR is:</p>
+<ul>
+<li>Configure the disallowed methods at the workspace level</li>
+<li>Allow <code>disallowed_methods</code> at the workspace level</li>
+<li>Enable the lint at the crate level using the warn attribute (in code)</li>
+</ul>
+<p>The obvious downside is that it won't work if we ever want to disallow other methods, but we can figure that out once we reach that point.</p>
+<p>What about false positives: Just add an <code>allow</code> and move on with your life :) This isn't something that we have to enforce strictly; the goal is to catch accidental misuse.</p>
+<h2>Test Plan</h2>
+<p>Clippy found a place where we incorrectly used <code>std::fs::read_to_string</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-08-22 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-22 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-08-22 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-08-22 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-08-22 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-08-22 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-22 15:35</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-22 15:37</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-22 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:846 on 2025-08-22 15:39</div>
+            <div class="timeline-body"><p>This is a bit annoying. I don't love it but the only alternative that I can think of is to a) use a thread local or b) have a global <code>System</code> somewhere (which breaks test isolation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-22 15:40</div>
+            <div class="timeline-body"><p>Feel free to hit merge (or not merge ;))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-22 15:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-22 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:846 on 2025-08-22 17:57</div>
+            <div class="timeline-body"><p>Huh, yeah, I was initially surprised at these changes but I also don't see a better solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-22 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-22 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-08-22 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-22 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-22 18:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

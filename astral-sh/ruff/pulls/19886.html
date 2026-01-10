@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Add sub-diagnostics showing type variable definitions (`UP046`) - astral-sh/ruff #19886</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Add sub-diagnostics showing type variable definitions (<code>UP046</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19886">#19886</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-08-12 21:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-12 21:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Now that we've handled caching for the new diagnostics, I went looking for diagnostics that could use additional annotations or sub-diagnostics that weren't already tracked in #17203. UP046 (and UP040 and UP047 if we like this one) seemed like a reasonable candidate because we check for separate type variable definitions in the same file before emitting a diagnostic. In this case, I added an info-level sub-diagnostic pointing to this type variable definition. I'm not actually sure if this is super helpful information, so I wouldn't mind closing this if others don't think it's useful.</p>
+<p>I also added a helper <code>DiagnosticGuard::info</code> method that I think will be useful for adding this kind of sub-diagnostic in general.</p>
+<p>I spent a while debugging why the snapshots were showing a longer path in the sub-diagnostics before remembering that we overwrite the source file for the main diagnostic here:</p>
+<p>https://github.com/astral-sh/ruff/blob/79c949f0f75f6582782f3d5fddc65089789801d5/crates/ruff_linter/src/test.rs#L280-L288</p>
+<p>As shown below, the sub-diagnostics look as expected in the CLI. I think we <em>could</em> delete this part of the test code, but it results in using the longer test file names (like our new sub-diagnostics) in every snapshot. So alternatively, we may want to apply the same transformation to the sub-diagnostics (and secondary annotations) too.</p>
+<h2>Test Plan</h2>
+<p>Existing UP046 tests with newly expanded snapshots, as well as some manual testing in the CLI:</p>
+<p><img width="748" height="328" alt="image" src="https://github.com/user-attachments/assets/f48a0d1b-8f93-4403-84a8-3aabd660cf8e" /></p>
+<h2>Alternative Idea</h2>
+<p>I don't really love the <code>help:</code> and <code>info:</code> lines stacked so closely together, so I also tried this as a secondary annotation:</p>
+<p><img width="683" height="264" alt="image" src="https://github.com/user-attachments/assets/d51ea0b6-bd0c-4931-ba1f-05ed0bd16277" /></p>
+<p>That's not implemented in the PR but could be a different route with a small change to <code>DiagnosticGuard::info</code> (and a rename of the method).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-12 21:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-12 21:55</div>
+            <div class="timeline-body"><p>Ah, I guess we need to replace all the paths to make the tests work on Windows anyway.</p>
+<p>Also, I'm starting to think the secondary annotation might be a lot better, especially for multiple type variables:</p>
+<p><img width="672" height="295" alt="image" src="https://github.com/user-attachments/assets/0ef57679-0ffb-4b65-b56f-7b759a69e85b" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-13 06:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't really love the help: and info: lines stacked so closely together, so I also tried this as a secondary annotation:</p>
+</blockquote>
+<p>I think what we do in ty is that help texts and notes are always the last sub-diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-08-13 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-13 13:59</div>
+            <div class="timeline-body"><p>Ah, that does look better already. Thanks!</p>
+<p><img width="759" height="550" alt="image" src="https://github.com/user-attachments/assets/403d2d6c-b1bb-4831-b4c7-ca0e7fa582ba" /></p>
+<p>I just did this by sorting the sub-diagnostics in our <code>DiagnosticGuard</code> <code>Drop</code> impl. That seemed like the easiest fix since we push the <code>help</code> diagnostic right when creating the <code>Diagnostic</code> from a <code>Violation</code>, but we might want a better solution longer-term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-13 14:14</div>
+            <div class="timeline-body"><p>I talked with Alex on Discord, and he echoed my concern that this wasn't a very useful piece of information to show to users. I'll go ahead and close this for now and hope to use some of the more general helper code for a different diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-13 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-25 17:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] print diagnostics with fully qualified name to disambiguate some cases - astral-sh/ruff #19850</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] print diagnostics with fully qualified name to disambiguate some cases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19850">#19850</a>
+        opened by <a href="https://github.com/leandrobbraga">@leandrobbraga</a>
+        on 2025-08-10 21:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-10 21:36</div>
+            <div class="timeline-body"><p>There are some situations that we have a confusing diagnostics due to identical class names.</p>
+<h2>Class with same name from different modules</h2>
+<pre><code class="language-python">import pandas
+import polars
+
+df: pandas.DataFrame = polars.DataFrame()
+</code></pre>
+<p>This yields the following error:</p>
+<p><strong>Actual:</strong>
+error: [invalid-assignment] &quot;Object of type <code>DataFrame</code> is not assignable to <code>DataFrame</code>&quot;
+<strong>Expected</strong>:
+error: [invalid-assignment] &quot;Object of type <code>polars.DataFrame</code> is not assignable to <code>pandas.DataFrame</code>&quot;</p>
+<h2>Nested classes</h2>
+<pre><code class="language-python">from enum import Enum
+
+class A:
+    class B(Enum):
+        ACTIVE = &quot;active&quot;
+        INACTIVE = &quot;inactive&quot;
+
+class C:
+    class B(Enum):
+        ACTIVE = &quot;active&quot;
+        INACTIVE = &quot;inactive&quot;
+</code></pre>
+<p><strong>Actual</strong>:
+error: [invalid-assignment] &quot;Object of type <code>Literal[B.ACTIVE]</code> is not assignable to <code>B</code>&quot;
+<strong>Expected</strong>:
+error: [invalid-assignment] &quot;Object of type <code>Literal[my_module.C.B.ACTIVE]</code> is not assignable to <code>my_module.A.B</code>&quot;</p>
+<h2>Solution</h2>
+<p>In this MR we added an heuristics to detect when to use a fully qualified name:</p>
+<ul>
+<li>There is an invalid assignment and;</li>
+<li>They are two different classes and;</li>
+<li>They have the same name</li>
+</ul>
+<p>The fully qualified name always includes:</p>
+<ul>
+<li>module name</li>
+<li>nested classes name</li>
+<li>actual class name</li>
+</ul>
+<p>There was no <code>QualifiedDisplay</code> so I had to implement it from scratch. I'm very new to the codebase, so I might have done things inefficiently, so I appreciate feedback.</p>
+<p>Should we pre-compute the fully qualified name or do it on demand?</p>
+<h2>Not implemented</h2>
+<h3>Function-local classes</h3>
+<p>Should we approach this in a different PR?</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-python"># t.py
+from __future__ import annotations
+
+
+def function() -&gt; A:
+    class A:
+        pass
+
+    return A()
+
+
+class A:
+    pass
+
+
+a: A = function()
+</code></pre>
+<h4>mypy</h4>
+<pre><code class="language-console">t.py:8: error: Incompatible return value type (got &quot;t.A@5&quot;, expected &quot;t.A&quot;)  [return-value]
+</code></pre>
+<p>From my testing the 5 in <code>A@5</code> comes from the like number.</p>
+<h4>ty</h4>
+<pre><code class="language-console">error[invalid-return-type]: Return type does not match returned value
+ --&gt; t.py:4:19
+  |
+4 | def function() -&gt; A:
+  |                   - Expected `A` because of return type
+5 |     class A:
+6 |         pass
+7 |
+8 |     return A()
+  |            ^^^ expected `A`, found `A`
+  |
+info: rule `invalid-return-type` is enabled by default
+</code></pre>
+<p>Fixes https://github.com/astral-sh/ty/issues/848</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @leandrobbraga on 2025-08-10 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @leandrobbraga on 2025-08-10 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @leandrobbraga on 2025-08-10 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @leandrobbraga on 2025-08-10 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-10 21:38</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-10 21:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-10 22:14</div>
+            <div class="timeline-body"><p>It seems there are some false positives, I'll work on those later.</p>
+<p>EDIT: it was an important check that I accidentally deleted while refactoring</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-10 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-08-10 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1880 on 2025-08-11 13:45</div>
+            <div class="timeline-body"><p>There are a few more variants here where the class can pop up in the display:</p>
+<pre><code class="language-suggestion">        Type::NominalInstance(instance) =&gt; type_to_class_literal(Type::from(instance.class)),
+        Type::EnumLiteral(enum_literal) =&gt; Some(enum_literal.enum_class(db)),
+        Type::GenericAlias(alias) =&gt; Some(alias.origin(db)),
+        Type::ProtocolInstance(ProtocolInstanceType { inner: Protocol::FromClass(class) }) =&gt; Some(class),
+        Type::TypedDictType(typed_dict) =&gt; Some(typed_dict.defining_class(db)),
+        Type::SubclassOf(subclass_of) =&gt; type_to_class_literal(Type::from(subclass_of.subclass_of().into_class()?)),
+        _ =&gt; None,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:76 on 2025-08-11 13:46</div>
+            <div class="timeline-body"><p>I'd also add branches for <code>GenericAlias</code>, <code>ProtocolInstance</code>, <code>SubclassOf</code> and <code>TypedDictType</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:78 on 2025-08-11 13:48</div>
+            <div class="timeline-body"><p>this can be slightly more performant than using the macro (though I'd still use the macro whenever it makes the code cleaner, e.g. in your <code>EnumLiteral</code> branch below)</p>
+<pre><code class="language-suggestion">                f.write_str(&amp;self.get_qualified_representation(*literal))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:82 on 2025-08-11 13:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    f.write_str(&amp;self.get_qualified_representation(class))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:89 on 2025-08-11 13:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    f.write_str(
+                        &amp;self.get_qualified_representation(alias.origin(self.db))
+                    )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-11 13:50</div>
+            <div class="timeline-body"><p>Thank you! A few quick things I noticed:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-12 01:23</div>
+            <div class="timeline-body"><p>I had to rebase to solve conflicts, but I think I addressed all the suggestions.</p>
+<p>I tried doing some testing to the <code>&lt;locals of function 'f'&gt;</code> but I couldn't come up with a working test for this situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:76 on 2025-08-12 01:26</div>
+            <div class="timeline-body"><p>Was this that you had in mind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2025-08-12 01:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @leandrobbraga on 2025-08-13 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:184 on 2025-08-19 22:13</div>
+            <div class="timeline-body"><p>Can we also add some tests similar to these where the name that needs qualifying is a nested type, e.g. an assignment fails between <code>list[mod1.A]</code> and <code>list[mod2.A]</code>. (It's OK if these tests remain TODO in this PR, but I want to record the fact that we still need to do this.)</p>
+<p>This should be easy enough to support in the display implementation (especially if we refactor it as I've suggested); it will be a bit harder to detect when types need qualifying. It will probably require a more involved implementation of <code>are_these_types_ambiguously_named</code> which we call after knowing that we need to emit an assignment error, which actually descends into generic contexts when the outer types are matching generic classes. (Rather than just extracting the two top-level class types as the current implementation does.)</p>
+<p>(There might be another possible approach where <code>has_relation_to</code> actually tracks the inner type mismatch and returns this information. It's <em>possible</em> this would mesh nicely with https://github.com/astral-sh/ruff/pull/19838, but I don't think we should pay much extra cost to track information we only will need if emitting an error; it's usually better to do some extra work after we know there's an error. So I'd go with the above approach instead.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2025-08-19 22:14</div>
+            <div class="timeline-body"><p>Thank you for working on this!</p>
+<p>Sorry for coming in on the late side with a new suggestion, but I think we should take a slightly different approach in the <code>display.rs</code> part of the implementation. Rather than introducing a totally separate <code>QualifiedDisplayType</code> struct, I think we should have a <code>qualified: bool</code> attribute on the existing <code>DisplayType</code> and `DisplayRepresentation structs, which we can respect whenever we are emitting the name of a class or function. (The current PR doesn't seem to handle functions, and it doesn't need to be done in this PR, but at some point I think we'll want to do this for function names, too.) I think this will make it much easier to share parts of the implementation that are not related to whether or not names are qualified, without code duplication.</p>
+<p>The <code>qualified</code> flag could be set using a builder pattern, like <code>ty.display(db).qualified()</code> vs just <code>ty.display(db)</code> for the un-qualified display of a type. Though we may also want some form that allows easily passing a boolean value; this will be convenient for when we want to pass along the &quot;qualified&quot; value to display of a nested inner type.</p>
+<p>The recently-merged implementation of a &quot;multiline&quot; display option (which probably needs conflict resolution with this PR anyway) is a good model to follow here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @leandrobbraga on 2025-08-24 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2025-08-24 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:184 on 2025-08-24 19:46</div>
+            <div class="timeline-body"><p>I used the same approach as <code>multline</code> and it ended a much simpler design, I already pushed the commit to this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leandrobbraga">@leandrobbraga</a> reviewed on 2025-08-24 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:184 on 2025-08-24 21:56</div>
+            <div class="timeline-body"><p>I added a test such as: <code>dataframes: list[a.DataFrame] = [b.DataFrame()]</code> and left it as TODO like you mentioned, I can work on it on a different PR.</p>
+<p>This assignment is not even failing, probably because of https://github.com/astral-sh/ty/issues/543</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @leandrobbraga on 2025-08-26 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-08-26 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:184 on 2025-08-27 19:45</div>
+            <div class="timeline-body"><p>Yes, that's why the assignment doesn't fail. I updated the test to use a function argument instead of an inferred literal container type to avoid this issue -- it's better anyway if the test is more independent from the details of container inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1999 on 2025-08-27 19:57</div>
+            <div class="timeline-body"><p>It would be great to have test coverage of all these match arms. I have Claude working on this right now, we'll see how it does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:154 on 2025-08-27 19:59</div>
+            <div class="timeline-body"><p>I don't think we have test coverage of this case. It would require trying to assign a class within the same function where it's defined, as there's no way to reference a class defined inside of a function outside that function. I'll see if Claude can add this next.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:191 on 2025-08-27 20:02</div>
+            <div class="timeline-body"><p>It seems like we do this in several places -- we should define a function for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-27 20:04</div>
+            <div class="timeline-body"><p>Looking good! I think we should increase our test coverage a bit, and try to reduce code boilerplate.</p>
+<p>I think ultimately in order to support nested types we will probably need to change the settings from just having a <code>qualified</code> boolean, to instead having a vector of types whose names should be qualified, so that we can identify the right types to qualify even in nested display. But this can be a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-27 20:40</div>
+            <div class="timeline-body"><p>I went ahead and made those updates, this looks good to go!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-08-27 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-08-27 20:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

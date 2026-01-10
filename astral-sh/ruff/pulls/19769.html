@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Avoid reporting `__future__` features as unnecessary when they are used (`UP010`) - astral-sh/ruff #19769</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Avoid reporting <code>__future__</code> features as unnecessary when they are used (<code>UP010</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19769">#19769</a>
+        opened by <a href="https://github.com/IDrokin117">@IDrokin117</a>
+        on 2025-08-05 18:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-08-05 18:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #19561</p>
+<p>Fixes the <a href="https://docs.astral.sh/ruff/rules/unnecessary-future-import/">unnecessary-future-import (UP010)</a> rule to correctly identify when imported <strong>future</strong> modules are actually used in the code, preventing false positives.</p>
+<p>I assume there is no way to check usage in <code>analyze::statements</code>, because we don't have any usage bindings for imports. To determine unused imports, we have to fully scan the file to create bindings and then check usage, similar to <a href="https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401">unused-import (F401)</a>. So, <code>Rule::UnnecessaryFutureImport</code> was moved from the <code>analyze::statements</code> to the <code>analyze::deferred_scopes</code> stage. This caused the need to change the logic of future import handling to a bindings-based approach.</p>
+<p>Also, the diagnostic report was changed.
+Before</p>
+<pre><code>  |
+1 | from __future__ import nested_scopes, generators
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ UP010
+</code></pre>
+<p>after</p>
+<pre><code>  |
+1 | from __future__ import nested_scopes, generators
+  |                        ^^^^^^^^^^^^^ UP010
+</code></pre>
+<p>I believe this is the correct way, because <code>generators</code> may be used, but <code>nested_scopes</code> is not.</p>
+<h3>Special case</h3>
+<p>I've found out about some specific case.</p>
+<pre><code class="language-python">from __future__ import nested_scopes
+
+nested_scopes = 1
+</code></pre>
+<p>Here we can treat <code>nested_scopes</code> as an unused import because the variable <code>nested_scopes</code> shadows it and we can safely remove the future import (my fix does it).</p>
+<p>But <a href="https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401">F401</a> not triggered for such case (<a href="https://play.ruff.rs/296d9c7e-0f02-4659-b0c0-78cc21f3de76">sandbox</a>)</p>
+<pre><code>from foo import print_function
+
+print_function = 1
+</code></pre>
+<p>In my mind, <code>print_function</code> here is an unused import and should be deleted (my IDE highlight it). What do you think?</p>
+<h2>Test Plan</h2>
+<p>Added test cases and snapshots:</p>
+<ul>
+<li>Split test file into separate _0 and _1 files for appropriate checks.</li>
+<li>Added test cases to verify fixes when future module are used.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 19:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-08-06 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-06 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-06 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 08:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, the diagnostic report was changed.</p>
+</blockquote>
+<p>Note: This requires gating behind preview because it changes the rule's suppression ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-12 15:56</div>
+            <div class="timeline-body"><p>Thanks Micha, that makes sense. Hopefully the preview-gating isn't too involved, so I think I'll still take a look at this. Your special case is also very interesting. Apparently assigning to <code>__future__.print_function</code> will override it but not assigning to <code>print_function</code> alone:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import print_function
+&gt;&gt;&gt; import __future__
+&gt;&gt;&gt; __future__.print_function
+_Feature((2, 6, 0, 'alpha', 2), (3, 0, 0, 'alpha', 0), 1048576)
+&gt;&gt;&gt; print_function = 1
+&gt;&gt;&gt; __future__.print_function
+_Feature((2, 6, 0, 'alpha', 2), (3, 0, 0, 'alpha', 0), 1048576)
+&gt;&gt;&gt; __future__.print_function = 1
+&gt;&gt;&gt; __future__.print_function
+1
+&gt;&gt;&gt; from __future__ import print_function
+&gt;&gt;&gt; print_function
+1
+</code></pre>
+<p>I'm not sure if we need this to be covered by F401, though, since F811 flags it as <code>redefined-while-unused</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:163 on 2025-08-12 16:03</div>
+            <div class="timeline-body"><p>I think we could use <code>std::iter::once</code> here to avoid allocating a <code>Vec</code> just to call <code>into_iter</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:118 on 2025-08-12 16:09</div>
+            <div class="timeline-body"><p>I think it would make more sense to loop over all of the bindings in <code>scope</code> and check if it's one of the future names. That looks more like how F401 is structured:</p>
+<p>https://github.com/astral-sh/ruff/blob/6f42c0d143460adf833caff139c11e9eaff7752d/crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs#L297-L306</p>
+<p>and seems like it should be a bit cheaper too. Plus, it will remove a level of indentation here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:120 on 2025-08-12 16:11</div>
+            <div class="timeline-body"><p>Yeah, I think these checks can be combined with the <code>PY33_PLUS_REMOVE_FUTURES.contains</code> and <code>PY37_PLUS_REMOVE_FUTURES.contains</code> checks we had before, and we can just <code>continue</code> like in F401 if these conditions aren't met.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:140 on 2025-08-12 16:12</div>
+            <div class="timeline-body"><p>I'm not totally sold on splitting off this helper function. I think with judicious use of <code>let-else</code> we could put this back since it won't be too indented. But I don't feel too strongly either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-12 16:18</div>
+            <div class="timeline-body"><p>Thanks, this looks good to me in general. I just had a few minor suggestions on the code itself.</p>
+<p>More broadly, I think we should probably split this into two PRs. Converting to a binding-based rule and checking for uses of the <code>__future__</code> imports is a bug fix that resolves the linked issue. But emitting separate diagnostics for each unused import and updating the ranges accordingly are conceptually separate and need to be preview-gated as Micha said. I think they're separate enough that it would be easier to review them in a separate PR.</p>
+<p>I do think these changes are nice and worth having, just a better fit for a separate patch, in my opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:118 on 2025-08-13 15:20</div>
+            <div class="timeline-body"><p>I made a guess that looping over <code>chain(PY33_PLUS_REMOVE_FUTURES, PY37_PLUS_REMOVE_FUTURES).unique()</code> will be cheaper than looping over all the bindings, because we need to check only 9 names instead of all bindings, which I assume will be more than 9 on average. For <code>F401</code> it makes sense to iterate over all of the bindings because it has to check all unused bindings, not only related to <code>future</code>. So, it might be an optimization. Am I wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:140 on 2025-08-13 15:25</div>
+            <div class="timeline-body"><p>Removed helper function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:163 on 2025-08-13 15:28</div>
+            <div class="timeline-body"><p>Noticed. Replaced with <code>std::iter::once</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-08-13 16:01</div>
+            <div class="timeline-body"><p>@ntBre Thanks for your review.
+I haven't put the rule behind a preview yet. Is setting <code>RuleGroup::Preview</code> sufficient?</p>
+<blockquote>
+<p>More broadly, I think we should probably split this into two PRs. Converting to a binding-based rule and checking for uses of the <code>__future__</code> imports is a bug fix that resolves the linked issue. But emitting separate diagnostics for each unused import and updating the ranges accordingly are conceptually separate and need to be preview-gated as Micha said. I think they're separate enough that it would be easier to review them in a separate PR.</p>
+</blockquote>
+<p>Sorry, but I don't understand how to split the PR into two independent PRs. If I fix the bug which implies determining used names from the <code>__future__</code> module, then I need to have the ability to remove only unused ones. Otherwise, it will introduce a bug. Previously, the fix removes the entire import statement, because there were no exceptions, but now it has to remove only the dedicated one. So, here:</p>
+<pre><code>from __future__ import absolute_import, division
+
+print(division)
+</code></pre>
+<p>only <code>absolute_import</code> must be removed, not the entire line. Please let me know what I'm missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/IDrokin117">@IDrokin117</a> reviewed on 2025-08-13 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-13 16:49</div>
+            <div class="timeline-body"><p>I think you can update the range of the fix without updating the range of the diagnostic itself. The diagnostic range is used for the noqa code and needs to be modified only in <code>preview</code>, but updating the fix to remove only the unused import is a bug fix. Does that help? The old code also had support for removing only part of an import line without emitting multiple diagnostics, as you can see in this snapshot that didn't change on this branch:</p>
+<p>https://github.com/astral-sh/ruff/blob/f0b03c3e8607c686aa03da154c7afa90cdb60a37/crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP010.py.snap#L109-L116</p>
+<p>For the bug fix, I think you'd need to preserve the old behavior of gathering all of the unused imports in the same import line and emitting a single diagnostic. This is work we have to do one way or another because even if we keep the changes in the same PR, we have to preserve the old behavior when preview is disabled.</p>
+<p>One way of implementing this might be grouping the diagnostics by parent statement, which you're already computing. Hopefully it's not too much trouble.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-13 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:118 on 2025-08-13 16:53</div>
+            <div class="timeline-body"><p>Ah I guess that makes sense. I was kind of assuming scopes are small, and we could <code>continue</code> very quickly if the name isn't from <code>__future__</code>. I think I'd feel better in either case if we could short-circuit somehow if there are no <code>__future__</code> imports in scope, but I'm not sure how easy that is to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-13 17:20</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/IDrokin117%3Afix%2Fruff-19561?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #19769 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>IDrokin117:fix/ruff-19561</code> (e85d3d1) with <code>main</code> (df0648a)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 42</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/IDrokin117">@IDrokin117</a> reviewed on 2025-08-13 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:118 on 2025-08-13 18:18</div>
+            <div class="timeline-body"><p>@ntBre During analysis, 161 bindings will be created for this piece of code. So, I think it is a good optimization to only iterate over a list of REMOVE_FUTURE.</p>
+<pre><code class="language-python">from __future__ import nested_scopes, generators
+from __future__ import with_statement, unicode_literals
+
+print(with_statement)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-13 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:118 on 2025-08-13 18:24</div>
+            <div class="timeline-body"><p>Ahhh, I think we inject bindings for all the builtins. Okay, sounds good the way you have it then!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-08-13 18:30</div>
+            <div class="timeline-body"><p>@ntBre</p>
+<blockquote>
+<p>I think you can update the range of the fix without updating the range of the diagnostic itself. The diagnostic range is used for the noqa code and needs to be modified only in <code>preview</code>, but updating the fix to remove only the unused import is a bug fix. Does that help?</p>
+</blockquote>
+<p>It was very helpful, thanks. I believe I implemented what you suggested. So</p>
+<ol>
+<li>I reverted diagnosis changes -&gt; previous test cases didn't change (except filename).</li>
+<li>Current implementation aggregates aliases and applies one diagnosis per stmt (as before).</li>
+</ol>
+<p>I will create a second PR with Preview changes when you approve the current PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @IDrokin117 on 2025-08-17 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-08-20 19:20</div>
+            <div class="timeline-body"><p>Excellent, thank you!</p>
+<p>I'll look forward to the preview PR (if you're still interested, no pressure!). The ranges highlighting only the specific unused import were really nice :) but this neatly avoids a breaking change for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pyupgrade`] Reworked to not report future features as unnecessary when they are used (`UP010`)" to "[`pyupgrade`] Avoid reporting `__future__` features as unnecessary when they are used (`UP010`)" by @ntBre on 2025-08-20 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-20 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-20 19:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

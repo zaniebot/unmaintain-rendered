@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor diagnostic start|end location helpers - astral-sh/ruff #20309</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor diagnostic start|end location helpers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20309">#20309</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2025-09-08 19:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-08 19:43</div>
+            <div class="timeline-body"><ul>
+<li>Renames functions to drop <code>expect_</code> from names.</li>
+<li>Make functions return <code>Option&lt;LineColumn&gt;</code> to appropriately signal
+when range is not available.</li>
+<li>Update existing consumers to use <code>unwrap_or_default()</code>. Uncertain if
+there are better fallback behaviors for individual consumers.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @amyreese on 2025-09-08 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-09-08 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @amyreese on 2025-09-08 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @amyreese on 2025-09-08 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @amyreese on 2025-09-08 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-08 19:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-09-08 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-09-08 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-09-08 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:475 on 2025-09-08 20:06</div>
+            <div class="timeline-body"><p>If we're already returning an <code>Option</code>, could we get rid of some of these other <code>expect</code> calls too? You might have to move them out of the closure, or use <code>and_then</code> instead of <code>map</code>, but ideally we'll actually get to remove <em>all</em> the <code>expect</code> methods eventually and that seems like another step in that direction.</p>
+<p>With a little more work, we could get a <code>SourceCode</code> from a ty file too. Something like this:</p>
+<p>https://github.com/astral-sh/ruff/blob/d55edb3d74b8220dad93eb6f187489c246698089/crates/ruff_db/src/diagnostic/render/gitlab.rs#L73-L77</p>
+<p>Ruff's <code>EmitterContext</code> implements the resolver trait needed by <code>UnifiedFile::diagnostic_source</code>.</p>
+<p>Then we could potentially use this helper in the output formats that have already been ported over to <code>ruff_db</code> too. I'd be okay deferring this part, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-08 20:18</div>
+            <div class="timeline-body"><p>Thanks! I think we could push the refactor a little bit further here.</p>
+<p>We could possibly do something more than <code>unwrap_or_default</code> in all of the output formats too, but I think this is a fine intermediate step on that end. I'll update the handling in the GitHub format when porting it to ty anyway, which will only leave <code>grouped</code> and <code>sarif</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-09-08 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-09-08 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-08 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:475 on 2025-09-08 22:17</div>
+            <div class="timeline-body"><blockquote>
+<p>If we're already returning an <code>Option</code>, could we get rid of some of these other <code>expect</code> calls too? You might have to move them out of the closure, or use <code>and_then</code> instead of <code>map</code>, but ideally we'll actually get to remove <em>all</em> the <code>expect</code> methods eventually and that seems like another step in that direction.</p>
+</blockquote>
+<p>I was initially trying to do that with a couple of chained <code>.map()</code> calls, but ran into some issues with the borrow checker that I don't understand, and resorted to this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-08 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:475 on 2025-09-08 22:28</div>
+            <div class="timeline-body"><p>Something like this should work:</p>
+<pre><code class="language-rust">    pub fn ruff_start_location(&amp;self) -&gt; Option&lt;LineColumn&gt; {
+        let span = self.primary_span()?;
+        let source_file = span.as_ruff_file()?;
+        self.range()
+            .map(|range| source_file.to_source_code().line_column(range.start()))
+    }
+</code></pre>
+<p>or</p>
+<pre><code class="language-rust">    pub fn ruff_start_location(&amp;self) -&gt; Option&lt;LineColumn&gt; {
+        self.range().and_then(|range| {
+            Some(
+                self.primary_span()?
+                    .as_ruff_file()?
+                    .to_source_code()
+                    .line_column(range.start()),
+            )
+        })
+    }
+</code></pre>
+<p>or I guess using question marks everywhere might be better at that point:</p>
+<pre><code class="language-rust">    pub fn ruff_start_location(&amp;self) -&gt; Option&lt;LineColumn&gt; {
+        Some(
+            self.primary_span()?
+                .as_ruff_file()?
+                .to_source_code()
+                .line_column(self.range()?.start()),
+        )
+    }
+</code></pre>
+<p>but yeah, it's easy to run into lifetime issues in this area of the code base, especially with <code>FileResolver</code> and <code>DiagnosticSource</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-08 23:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:475 on 2025-09-08 23:10</div>
+            <div class="timeline-body"><p>Turns out that leaning on <code>ruff_source_file()</code> was the correct path as that already uses <code>primary_span_ref()?.as_ruff_file()</code> to bypass the lifetime issue. Someday I will understand how Rust works... 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-08 23:11</div>
+            <div class="timeline-body"><p>Not sure why the clippy and wasm jobs are failing — do they run from different base revisions or code checkouts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-08 23:16</div>
+            <div class="timeline-body"><p>Ah, there are two very-nearly identical chunks of code in the SARIF format. You've modified the non-WASM code:</p>
+<p>https://github.com/astral-sh/ruff/blob/c3f1f0b9f1ed8e522a6d22c7d1670997c19183de/crates/ruff_linter/src/message/sarif.rs#L159-L162</p>
+<p>but not the WASM code below it:</p>
+<p>https://github.com/astral-sh/ruff/blob/c3f1f0b9f1ed8e522a6d22c7d1670997c19183de/crates/ruff_linter/src/message/sarif.rs#L178-L182</p>
+<p>The <code>#[cfg(...)]</code> stuff is for conditional compilation, so unless you explicitly pass a WASM flag locally that code won't be compiled. That's probably why they pass locally (assuming they do).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-08 23:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah, there are two very-nearly identical chunks of code in the SARIF format. You've modified the non-WASM code:</p>
+</blockquote>
+<p>Weird, I would have expected the <F2> rename refactoring to update those as well, or rust/clippy to complain that the code referenced removed functions, even if the lines weren't enabled in my current build. 🫢</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-09 15:17</div>
+            <div class="timeline-body"><p>Thanks! And nice catch on the docs and using <code>ruff_source_file</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @amyreese on 2025-09-09 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2025-09-09 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-09 18:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

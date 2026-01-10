@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Handle nested `Optional`s (`UP045`) - astral-sh/ruff #19770</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Handle nested <code>Optional</code>s (<code>UP045</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19770">#19770</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-08-05 19:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-08-05 19:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #19746</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 19:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1499 on 2025-08-06 17:46</div>
+            <div class="timeline-body"><p>I don't think we need to put this in a <code>helpers</code> module, especially not in a different crate, if it's only used in one place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1510 on 2025-08-06 17:48</div>
+            <div class="timeline-body"><p>Isn't this the exact body of <code>pep_604_optional</code> where <code>expr</code> is <code>flatten_optional(slice)</code>?</p>
+<pre><code class="language-suggestion">            pep_604_optional(flattened_inner)
+</code></pre>
+<p>at that point, I'd just inline <code>flattened_inner</code> too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs</code>:178 on 2025-08-06 18:02</div>
+            <div class="timeline-body"><p>I think this needs to be combined with the recursive check in <code>flatten_optional</code>. I ran this command on this branch locally, and I believe that this only handles exactly the <code>Optional[Optional[...]]</code> case, not arbitrary nesting:</p>
+<pre><code>cargo run -p ruff --  check --no-cache --select UP045 --diff --target-version py312 - &lt;&lt;&lt;&quot;from typing import Optional;nested_optional: Optional[Optional[Optional[str]]] = None&quot;
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running `target/debug/ruff check --no-cache --select UP045 --diff --target-version py312 -`
+@@ -1 +1 @@
+-from typing import Optional;nested_optional: Optional[Optional[Optional[str]]] = None
++from typing import Optional;nested_optional: str | None | None = None
+
+Would fix 1 error.
+</code></pre>
+<p>This is not clear at all when adding this as a snapshot test. I think we'll need to add a CLI test to make sure that the issue is actually fixed because the snapshots only show one diagnostic and thus one level of fix at a time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-06 18:04</div>
+            <div class="timeline-body"><p>I don't think this fully solves the problem. You may also want to look at a related implementation in another rule:</p>
+<p>https://github.com/astral-sh/ruff/blob/6b9692cab26ef1858e7db686f6a2e12565bffef9/crates/ruff_linter/src/rules/flake8_pyi/rules/duplicate_union_member.rs#L98-L103</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-08-07 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/integration_test.rs</code>:310 on 2025-08-14 14:42</div>
+            <div class="timeline-body"><p>You can write this as a multi-line string literal:</p>
+<pre><code class="language-suggestion">        &quot;\
+from typing import Optional
+nested_optional: Optional[Optional[Optional[str]]] = None
+&quot;
+</code></pre>
+<p>That will make it a little easier to read here and also get rid of the <code>No newline at end of file</code> warnings in the output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs</code>:190 on 2025-08-14 14:46</div>
+            <div class="timeline-body"><p>Do we need this binding?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs</code>:176 on 2025-08-14 14:56</div>
+            <div class="timeline-body"><p>I'm not sure we need this return. Is this just to suppress the fixes for the nested <code>Optional</code>s? I think this should be pretty rare, and we're emitting a diagnostic for each one anyway. I think it might be confusing for the inner ones not to have fixes, even if you're unlikely to want to apply those alone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-14 14:57</div>
+            <div class="timeline-body"><p>Thanks, I think this is working well now. I just had a few small comments left. Could you fix the merge conflicts too? You probably just need to rerun the tests and accept the snapshots to pull in the new diagnostic format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-14 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-14 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-08-15 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-08-19 22:11</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I just pushed one tiny inlining and relocated the CLI test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pyupgrade`] Fix missing `flatten_optional` import in `UP045` rule" to "[`pyupgrade`] Handle nested `Optional`s (`UP045`)" by @ntBre on 2025-08-19 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-19 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-19 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-19 22:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

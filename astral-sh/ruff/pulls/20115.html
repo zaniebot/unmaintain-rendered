@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyflakes`] Fix `allowed-unused-imports` matching for top-level modules (`F401`) - astral-sh/ruff #20115</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyflakes</code>] Fix <code>allowed-unused-imports</code> matching for top-level modules (<code>F401</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20115">#20115</a>
+        opened by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a>
+        on 2025-08-27 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-08-27 15:54</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Fixes #19664</p>
+<p>Fix allowed unused imports matching for top-level modules.</p>
+<p>I've simply replaced <code>from_dotted_name</code> with <code>user_defined</code>. Since QualifiedName for imports is created in crates/ruff_python_semantic/src/imports.rs, I guess it's acceptable to use <code>user_defined</code> here. Please tell me if there is better way.</p>
+<p>https://github.com/astral-sh/ruff/blob/0c5089ed9e180da7bc76733ffe1a1d132e9142b0/crates/ruff_python_semantic/src/imports.rs#L62</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I've added a snapshot test <code>f401_allowed_unused_imports_top_level_module</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-27 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_35.py</code>:7 on 2025-08-27 17:30</div>
+            <div class="timeline-body"><p>Should we add a case that's just <code>import hvplot</code>? I see by comparing to the <a href="https://play.ruff.rs/aafcb007-2f0f-45f9-b75e-a5d46732e7a0">playground</a> that your change is having the intended effect, but that might be a nice one to throw in since it's closest to the original report.</p>
+<p>Based on another <a href="https://github.com/astral-sh/ruff/issues/4656">quirk</a> of F401, and as you can also see on the playground, only a couple of these actually trigger F401 on <code>main</code>. We might have to wrap each test case in a function so that F401 actually tries to trigger in each case:</p>
+<pre><code class="language-py">def f(): import hvplot
+def f(): import hvplot.pandas
+# ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-27 17:36</div>
+            <div class="timeline-body"><p>Thank you! I just had  a couple of suggestions about the tests, but this looks great to me.</p>
+<p>Do you want to test if this fixes https://github.com/astral-sh/ruff/issues/15705 as well? There's no need to extend the PR if not, I just thought it sounded related and had a chance of fixing it already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-27 17:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-08-28 00:35</div>
+            <div class="timeline-body"><p>@ntBre</p>
+<p>Thank you for the review. I have added a simple test case <code>import hvplot</code> and wrapped all test cases in a function.</p>
+<blockquote>
+<p>Do you want to test if this fixes https://github.com/astral-sh/ruff/issues/15705 as well? There's no need to extend the PR if not, I just thought it sounded related and had a chance of fixing it already.</p>
+</blockquote>
+<p>I want to try it and I guess it takes some time to fix it, so can I work on it in a different pull request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_35.py</code>:12 on 2025-08-28 02:01</div>
+            <div class="timeline-body"><p>Sorry, I actually meant to wrap each one in a separate function:</p>
+<pre><code class="language-suggestion">def f():
+    import hvplot
+def f():
+    import hvplot.pandas
+def f():
+    import hvplot.pandas.plots
+def f():
+    from hvplot.pandas import scatter_matrix
+def f():
+    from hvplot.pandas.plots import scatter_matrix
+</code></pre>
+<p>Otherwise each import interferes with the others, like in the first example reported in #4656. Wrapping each import in its own function ensures that the <code>allowed-unused-import</code> setting allows all of these cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-28 02:03</div>
+            <div class="timeline-body"><p>Looks great, just one clarification on the test.</p>
+<blockquote>
+<p>I want to try it and I guess it takes some time to fix it, so can I work on it in a different pull request?</p>
+</blockquote>
+<p>That sounds good! I think your fix here might resolve that issue too without any other code changes, but it makes sense to add a test in a separate PR even so. No pressure to work on this, just an idea :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-08-28 02:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_35.py</code>:12 on 2025-08-28 02:20</div>
+            <div class="timeline-body"><p>I see. I have added separate functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-08-28 12:59</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pyflakes`] Fix allowed unused imports matching for top-level modules" to "[`pyflakes`] Fix `allowed-unused-imports` matching for top-level modules (`F401`)" by @ntBre on 2025-08-28 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-08-28 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-08-28 13:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

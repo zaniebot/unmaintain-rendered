@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] distinguish base conda from child conda - astral-sh/ruff #19990</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] distinguish base conda from child conda</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19990">#19990</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-08-19 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-19 16:11</div>
+            <div class="timeline-body"><p>This is a port of the logic in https://github.com/astral-sh/uv/pull/7691</p>
+<p>The basic idea is we use CONDA_DEFAULT_ENV as a signal for whether CONDA_PREFIX is just the ambient system conda install, or the user has explicitly activated a custom one. If the former, then the conda is treated like a system install (having lowest priority). If the latter, the conda is treated like an activated venv (having priority over everything but an Actual activated venv).</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/611</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Gankra on 2025-08-19 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Gankra on 2025-08-19 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Gankra on 2025-08-19 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Gankra on 2025-08-19 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Gankra on 2025-08-19 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty/tests/cli/python_environment.rs</code>:883 on 2025-08-19 16:12</div>
+            <div class="timeline-body"><p>ngl this is so beautifully evil i might cry if y'all reject this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-08-19 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-08-19 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-19 16:13</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @Gankra on 2025-08-19 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-19 16:15</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-08-19 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-19 17:31</div>
+            <div class="timeline-body"><p>cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-19 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:573 on 2025-08-19 18:28</div>
+            <div class="timeline-body"><p>N.B. this isn't discussed in your commentary but we only allow these names for base environments. I don't know if people use other default environment names, but there's never been a complaint in uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/tests/cli/python_environment.rs</code>:883 on 2025-08-20 08:00</div>
+            <div class="timeline-body"><p>This is fun (and clever). It took me a moment to realise how this all works. An alternative (I don't have a strong preference) which results in fewer diagnostics is to use something like this:</p>
+<p>Each virtual environment defines a <code>package1</code> that defines a single symbol, environment:</p>
+<pre><code class="language-py">from typing import Final
+
+environment: Final = &quot;active_venv&quot;
+</code></pre>
+<p>The main file then becomes</p>
+<pre><code class="language-py">from ty_extensions import static_assert
+from package1 import environment
+
+static_assert(environment == &quot;active_venv&quot;, &quot;Expected `package1` to resolve to the active environment&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-20 08:02</div>
+            <div class="timeline-body"><p>Thank you. Sorry for commenting on your evil but beautiful test setup :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-20 08:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/site_packages.rs</code>:573 on 2025-08-20 08:03</div>
+            <div class="timeline-body"><p>This seems straightforward to change if necessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-20 13:07</div>
+            <div class="timeline-body"><p>Appreciate the suggestion but the evil lives on :)</p>
+<p>(it avoids us having to change the body of main between subtests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-08-20 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-08-20 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-20 13:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

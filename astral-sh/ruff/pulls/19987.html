@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Re-arrange &quot;list modules&quot; implementation for Salsa caching - astral-sh/ruff #19987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Re-arrange &quot;list modules&quot; implementation for Salsa caching</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19987">#19987</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-08-19 11:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-19 11:35</div>
+            <div class="timeline-body"><p>This basically splits <code>list_modules</code> into a higher level &quot;aggregation&quot;
+routine and a lower level &quot;get modules for one search path&quot; routine.
+This permits Salsa to cache the lower level components, e.g., many
+search paths refer to directories that rarely change. This saves us
+interaction with the system.</p>
+<p>This did require a fair bit of surgery in terms of being careful about
+adding file roots. Namely, now that we rely even more on file roots
+existing for correct handling of cache invalidation, there were several
+spots in our code that needed to be updated to add roots (that we
+weren't previously doing). This feels Not Great, and it would be better
+if we had some kind of abstraction that handled this for us. But it
+isn't clear to me at this time what that looks like.</p>
+<p>Note that this PR builds on top of #19883.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-08-19 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-19 11:37</div>
+            <div class="timeline-body"><p>This PR is based on top of #19883. It has a test failure that is <em>not</em> present in #19883:</p>
+<pre><code>$ cargo test -p ty_python_semantic --lib -- module_resolver::list::tests::deleting_file_from_higher_priority_search_path_invalidates_the_query
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running unittests src/lib.rs (target/debug/deps/ty_python_semantic-0f1aad274f1110a3)
+
+running 1 test
+test module_resolver::list::tests::deleting_file_from_higher_priority_search_path_invalidates_the_query ... FAILED
+
+failures:
+
+---- module_resolver::list::tests::deleting_file_from_higher_priority_search_path_invalidates_the_query stdout ----
+
+thread 'module_resolver::list::tests::deleting_file_from_higher_priority_search_path_invalidates_the_query' panicked at /home/andrew/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/interned.rs:774:9:
+Data was not interned in the latest revision for its durability.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    module_resolver::list::tests::deleting_file_from_higher_priority_search_path_invalidates_the_query
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 292 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p ty_python_semantic --lib`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-19 11:38</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-19 11:39</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-19 11:40</div>
+            <div class="timeline-body"><p>(Sorry, this PR is on top of #19883, <em>not</em> #19975.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-08-20 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-20 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @BurntSushi on 2025-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-08-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:48 on 2025-08-20 13:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// List all available top-level modules in the given `SearchPath`.
+</code></pre>
+<p>and maybe make the same changes above. I recall being confused while reviewing the initial implementation, as I incorrectly assumed it would walk directories recursively to find all modules when it only searches for the top-level modules</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-20 13:04</div>
+            <div class="timeline-body"><p>Your initial design makes adding caching look easy. Nice job!</p>
+<p>I assume you tested the cache invalidation with some LSP?</p>
+<p>@Gankra maybe something you want to take a look at too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-20 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/list.rs</code>:48 on 2025-08-20 14:10</div>
+            <div class="timeline-body"><p>Makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-20 14:26</div>
+            <div class="timeline-body"><p>Oh, and here's a demo of the caching working:</p>
+<p>https://github.com/user-attachments/assets/ba5ad560-3f19-4b3c-8a77-6d1908bebd11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-08-20 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-08-20 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-20 14:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

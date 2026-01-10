@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Limit argument expansion size for overload call evaluation - astral-sh/ruff #20041</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Limit argument expansion size for overload call evaluation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20041">#20041</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-08-22 09:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-22 09:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR limits the argument type expansion size for an overload call evaluation to 512.</p>
+<p>The limit chosen is arbitrary but I've taken the 256 limit from Pyright into account and bumped it x2 to start with.</p>
+<p>Initially, I actually started out by trying to refactor the entire argument type expansion to be lazy. Currently, expanding a single argument at any position eagerly creates the combination (argument lists) and returns that (<code>Vec&lt;CallArguments&gt;</code>) but I thought we could make it lazier by converting the return type of <code>expand</code> from <code>Iterator&lt;Item = Vec&lt;CallArguments&gt;&gt;</code> to <code>Iterator&lt;Item = Iterator&lt;Item = CallArguments&gt;&gt;</code> but that's proving to be difficult to implement mainly because we <strong>need</strong> to maintain the previous expansion to generate the next expansion which is the main reason to use <code>std::iter::successors</code> in the first place.</p>
+<p>Another approach would be to eagerly expand all the argument types and then use the <code>combinations</code> from <code>itertools</code> to generate the combinations but we would need to find the &quot;boundary&quot; between arguments lists produced from expanding argument at position 1 and position 2 because that's important for the algorithm.</p>
+<p>Closes: https://github.com/astral-sh/ty/issues/868</p>
+<h2>Test Plan</h2>
+<p>Add test case to demonstrate the limit along with the diagnostic snapshot stating that the limit has been reached.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-08-22 09:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-22 09:28</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-22 09:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-22 09:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:181 on 2025-08-22 09:31</div>
+            <div class="timeline-body"><p>Sorry for commenting on a draft PR. Is there some information that we could include to make it easier for users to narrow down where this is happening (e.g. the full signature of the called function?, or some information about the call site?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-22 09:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:181 on 2025-08-22 09:34</div>
+            <div class="timeline-body"><p>I think we could expand the diagnostic of <code>no-matching-overload</code> to include this information as a note for users to notice this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-22 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/overloads.md_-_Overloads_-_Argument_type_expans…_-_Optimization___Limit_…_(cd61048adbc17331).snap</code>:121 on 2025-08-22 13:55</div>
+            <div class="timeline-body"><p>I'm not exactly sure how best to convey this to the user in a way that they can understand. It seems that this kind of information would require additional context, possibly even linking to the overload call evaluation section of the typing spec. If anyone has any suggestions, I'd appreciate that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-08-22 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-08-22 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-08-22 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-08-22 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-08-22 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/overloads.md</code>:864 on 2025-08-22 18:31</div>
+            <div class="timeline-body"><p>A couple nits:</p>
+<ol>
+<li><code>ab</code> parameter seems unused here</li>
+<li>I think it's pretty implicit / unclear that we infer <code>Unknown | None</code> for <code>a</code> due to lack of annotation, plus default type -- but this is crucial to the test, because that's the union we repeatedly try to expand. Why not explicitly annotate <code>a: int | None</code> and leave out the default?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/overloads.md_-_Overloads_-_Argument_type_expans…_-_Optimization___Limit_…_(cd61048adbc17331).snap</code>:121 on 2025-08-22 18:35</div>
+            <div class="timeline-body"><p>I think the piece of info that might be most useful to the user would be which argument types we were trying to expand. Not sure how hard that would be to add.</p>
+<p>I also think this limit should ideally be high enough that almost no user should ever see it in realistic code, so we maybe don't need to spend much time perfecting the diagnostic; the key thing is not to have runaway execution time / memory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-22 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-22 18:40</div>
+            <div class="timeline-body"><blockquote>
+<p>proving to be difficult to implement mainly because we <strong>need</strong> to maintain the previous expansion to generate the next expansion</p>
+</blockquote>
+<p>I think it is good to move on from this issue now, if the limit takes care of the runaway problem on the fuzzer code sample, and we don't have reports of this in real code. But for future, I'm curious -- why is the above hard to implement? It sounds like a custom-implemented iterator that stores some state, which doesn't seem particularly unusual?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-25 09:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/overloads.md_-_Overloads_-_Argument_type_expans…_-_Optimization___Limit_…_(cd61048adbc17331).snap</code>:121 on 2025-08-25 09:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the piece of info that might be most useful to the user would be which argument types we were trying to expand. Not sure how hard that would be to add.</p>
+</blockquote>
+<p>This isn't too difficult i.e., I can add the argument index value at which point the expansion exceeded the maximum limit.</p>
+<blockquote>
+<p>I also think this limit should ideally be high enough that almost no user should ever see it in realistic code, so we maybe don't need to spend much time perfecting the diagnostic; the key thing is not to have runaway execution time / memory.</p>
+</blockquote>
+<p>Yes, agreed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-25 09:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/call/overloads.md</code>:864 on 2025-08-25 09:17</div>
+            <div class="timeline-body"><p>Thanks! I think that makes sense. I'll also update the parameter type for other functions to have an explicit annotation and not depend on the implicit behavior of having the default value without an annotation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-08-25 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-25 09:31</div>
+            <div class="timeline-body"><blockquote>
+<p>But for future, I'm curious -- why is the above hard to implement? It sounds like a custom-implemented iterator that stores some state, which doesn't seem particularly unusual?</p>
+</blockquote>
+<p>I'll try to explain it using this example: <code>(bool, int | str, A | B | C)</code>, assuming that we're at the final argument in the expansion process, one of the data that we'd need to maintain is all the argument lists that resulted in expanding all the previous arguments i.e., 1 and 2 in this example. This means that when the expansion is at <code>A | B | C</code> argument, the data would contain <code>(True, int, ...), (False, int, ...), (True, str, ...), (False, str, ...)</code> (4) argument lists. Imagine this at a larger scale where the previous iteration could generate 200 argument lists which needs to be kept between iteration.</p>
+<p>One way to resolve this could be that we only maintain the expanded types and generate the combinations for each iteration manually i.e., in the above example, for the first argument, we'd generate 2 combinations by expanding <code>bool</code> to <code>True</code> and <code>False</code> and we'll store the expanded list. Then, for the second argument, we'll expand <code>int | str</code> and generate 4 combinations. In this implementation, we'd save memory but each iteration would have to generate the combinations every time.</p>
+<p>Does this make sense?</p>
+<p>But, now that I think this out loud, maybe the second solution isn't too bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-08-25 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-08-25 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-25 09:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

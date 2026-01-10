@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preserve newlines after nested compound statements - astral-sh/ruff #7608</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Preserve newlines after nested compound statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7608">#7608</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-22 18:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-22 18:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Given:</p>
+<pre><code class="language-python">if True:
+    if True:
+        pass
+    else:
+        pass
+        # a
+
+        # b
+        # c
+
+else:
+    pass
+</code></pre>
+<p>We want to preserve the newline after the <code># c</code> (before the <code>else</code>). However, the <code>last_node</code> ends at the <code>pass</code>, and the comments are trailing comments on the <code>pass</code>, not trailing comments on the <code>last_node</code> (the <code>if</code>). As such, when counting the trailing newlines on the outer <code>if</code>, we abort as soon as we see the comment (<code># a</code>).</p>
+<p>This PR changes the logic to skip <em>all</em> comments (even those with newlines between them). This is safe as we know that there are no &quot;leading&quot; comments on the <code>else</code>, so there's no risk of skipping those accidentally.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7602.</p>
+<h2>Test Plan</h2>
+<p>No change in compatibility.</p>
+<p>Before:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1631 |
+| django       |           0.99983 |              2760 |                36 |
+| transformers |           0.99963 |              2587 |               319 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99979 |              3496 |                22 |
+| warehouse    |           0.99967 |               648 |                15 |
+| zulip        |           0.99972 |              1437 |                21 |</p>
+<p>After:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1631 |
+| django       |           0.99983 |              2760 |                36 |
+| transformers |           0.99963 |              2587 |               319 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99967 |               648 |                15 |
+| zulip        |           0.99972 |              1437 |                21 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-22 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-09-22 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-22 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-22 18:18</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-25 07:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:277 on 2023-09-25 08:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // It's necessary to skip any trailing line comment because our parser doesn't
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-25 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-25 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-25 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-25 14:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

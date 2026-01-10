@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fall back to `object` for attribute access on synthesized protocols - astral-sh/ruff #20286</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fall back to <code>object</code> for attribute access on synthesized protocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20286">#20286</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-07 17:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-07 17:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently we have false positives for things like this:</p>
+<pre><code class="language-py">def f(x: object):
+    if hasattr(x, &quot;__qualname__&quot;):
+        reveal_type(x.__dict__)
+        reveal_type(x.__repr__)
+        reveal_type(x.__reduce__)
+</code></pre>
+<p>We complain that none of these attributes exist on an object of type <code>&lt;Protocol with members '__qualname__'&gt;</code>. But these attributes all exist on typeshed's stub for <code>object</code>, so these complaints don't make much sense.</p>
+<p>It looks like the issue is that <code>ClassLiteral::own_instance_member()</code> returns <code>Place::Unbound</code> for attributes that are declared in the class body but are not bound in any instance methods:</p>
+<p>https://github.com/astral-sh/ruff/blob/2467c4352e0f456e16a068ab5b7d09da009df8e2/crates/ty_python_semantic/src/types/class.rs#L3176-L3204</p>
+<p>So this PR switches the attribute-fallback logic to use <code>Type::object(db).member(...)</code> rather than <code>Type::object(db).instance_member(db)</code>.</p>
+<p>~~I'm not totally sure if this is the correct fix or not, to be honest! It seems like it also leads to some regressions: we no longer understand that these attributes are read-only, and I'm not totally sure why.~~ With @sharkdp's help, I fixed the regressions.</p>
+<h2>Test Plan</h2>
+<p>Mdtests added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-07 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-07 17:10</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-07 17:14</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-07 17:25</div>
+            <div class="timeline-body"><p>Hmm, okay, this definitely isn't quite right... on this branch, we no longer emit <em>any</em> diagnostics for unresolved attributes on synthesized protocols:</p>
+<pre><code class="language-py">def f(x: object):
+    if hasattr(x, '__qualname__'):
+        reveal_type(x)                 # `&lt;Protocol with members '__qualname__'&gt;`
+        reveal_type(x.__qualname__)    # `object` (good!)
+        reveal_type(x.__module__)      # `str` (good!)
+        reveal_type(x.__foo__)         # `Unknown` (good) but no diagnostic (??)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-07 17:28</div>
+            <div class="timeline-body"><p>@sharkdp, I might need your help figuring this one out...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-08 07:47</div>
+            <div class="timeline-body"><blockquote>
+<p>@sharkdp, I might need your help figuring this one out...</p>
+</blockquote>
+<p>The problem is <code>object.__getattribute__</code>. When you access an unknown member (<code>__foo__</code>) on <code>&lt;Protocol with members '__qualname__'&gt;</code>, <code>member_lookup_with_policy</code> will try to fall back to a <code>__getattribute__</code> method on that type. It will do so by looking up <code>__getattribute__</code> with the <code>MRO_NO_OBJECT_FALLBACK</code> policy, because we normally want to skip <code>object.__getattribute__</code>. But with your change here, you explicitly call <code>member</code> without that policy, and so it looks like <code>__getattribute__</code> exists on <code>&lt;Protocol with members '__qualname__'&gt;</code>.</p>
+<p>You can't just pass down that policy here, because otherwise, you would also lose other members of <code>object</code>. I guess you could do something like the following, but there are maybe better solutions here. Let me know if I should take another look</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/protocol_class.rs b/crates/ty_python_semantic/src/types/protocol_class.rs
+index 6b27905a80..c15b1af9cf 100644
+--- a/crates/ty_python_semantic/src/types/protocol_class.rs
++++ b/crates/ty_python_semantic/src/types/protocol_class.rs
+@@ -227,7 +227,13 @@ impl&lt;'db&gt; ProtocolInterface&lt;'db&gt; {
+                 place: Place::bound(member.ty()),
+                 qualifiers: member.qualifiers(),
+             })
+-            .unwrap_or_else(|| Type::object(db).member(db, name))
++            .unwrap_or_else(|| {
++                if name == &quot;__getattribute__&quot; {
++                    Place::Unbound.into()
++                } else {
++                    Type::object(db).member(db, name)
++                }
++            })
+     }
+ 
+     /// Return `true` if if all members on `self` are also members of `other`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-08 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-08 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-08 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-08 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-08 11:51</div>
+            <div class="timeline-body"><blockquote>
+<p>You can't just pass down that policy here, because otherwise, you would also lose other members of <code>object</code>. I guess you could do something like the following, but there are maybe better solutions here. Let me know if I should take another look</p>
+</blockquote>
+<p>Thank you very much! I think I found a cleaner, more generalised solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-09-08 12:01</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-09-08 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-08 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-08 12:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

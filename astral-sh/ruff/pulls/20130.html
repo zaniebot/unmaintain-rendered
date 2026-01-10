@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Unpack variadic argument type in specialization - astral-sh/ruff #20130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Unpack variadic argument type in specialization</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20130">#20130</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-08-28 10:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-28 10:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes various TODOs around overload call when a variadic argument is used.</p>
+<p>The reason this bug existed is because the specialization wouldn't account for unpacking the type of the variadic argument.</p>
+<p>This is fixed by expanding <code>MatchedArgument</code> to contain the type of that argument <em>only</em> when it is a variadic argument. The reason is that there's a split for when the argument type is inferred -- the non-variadic arguments are inferred using <code>infer_argument_types</code> <em>after</em> parameter matching while the variadic argument type is inferred <em>during</em> the parameter matching. And, the <code>MatchedArgument</code> is populated <em>during</em> parameter matching which means the unpacking would need to happen during parameter matching.</p>
+<p>This split seems a bit inconsistent but I don't want to spend a lot of time on trying to merge them such that all argument type inference happens in a single place. I might look into it while adding support for <code>**kwargs</code>.</p>
+<h2>Test Plan</h2>
+<p>Update existing tests by resolving the todos.</p>
+<p>The ecosystem changes looks correct to me except for the <code>slice</code> call but it seems that it's unrelated to this PR as we infer <code>slice[Any, Any, Any]</code> for a <code>slice(1, 2, 3)</code> call on <code>main</code> as well (<a href="https://play.ty.dev/9eacce00-c7d5-4dd5-a932-4265cb2bb4f6">playground</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-08-28 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-28 10:20</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-28 10:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">Expression (https://github.com/cognitedata/Expression)
+- tests/test_pipe.py:88:43: error[invalid-argument-type] Argument to function `gn` is incorrect: Expected `tuple[Literal[1], Literal[2]]`, found `Literal[1]`
+- tests/test_pipe.py:88:43: error[invalid-argument-type] Argument to function `gn` is incorrect: Expected `tuple[Literal[1], Literal[2]]`, found `Literal[2]`
+- tests/test_pipe.py:92:47: error[invalid-argument-type] Argument to function `yn` is incorrect: Expected `tuple[tuple[Literal[1], Literal[2]], tuple[Literal[1], Literal[2]]]`, found `tuple[Literal[1], Literal[2]]`
+- tests/test_pipe.py:92:47: error[invalid-argument-type] Argument to function `yn` is incorrect: Expected `tuple[tuple[Literal[1], Literal[2]], tuple[Literal[1], Literal[2]]]`, found `tuple[Literal[1], Literal[2]]`
+- tests/test_pipe.py:92:51: error[invalid-argument-type] Argument to function `gn` is incorrect: Expected `tuple[Literal[1], Literal[2]]`, found `Literal[1]`
+- tests/test_pipe.py:92:51: error[invalid-argument-type] Argument to function `gn` is incorrect: Expected `tuple[Literal[1], Literal[2]]`, found `Literal[2]`
+- Found 231 diagnostics
++ Found 225 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_model_construction.py:530:14: error[no-matching-overload] No overload of function `__new__` matches arguments
+- Found 770 diagnostics
++ Found 769 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
++ static_frame/core/index_hierarchy.py:2079:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/util.py:2444:16: error[no-matching-overload] No overload of function `__new__` matches arguments
+- static_frame/test/test_case.py:165:46: error[no-matching-overload] No overload of function `__new__` matches arguments
++ static_frame/test/unit/test_index_hierarchy_set_utils.py:42:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ static_frame/test/unit/test_index_hierarchy_set_utils.py:66:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ static_frame/test/unit/test_index_hierarchy_set_utils.py:100:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1789 diagnostics
++ Found 1791 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- sympy/matrices/common.py:3094:25: error[no-matching-overload] No overload of function `__new__` matches arguments
+- sympy/matrices/common.py:3098:25: error[no-matching-overload] No overload of function `__new__` matches arguments
+- Found 13410 diagnostics
++ Found 13408 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-08-28 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-08-28 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-08-28 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-08-28 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-08-28 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1978 on 2025-08-28 23:40</div>
+            <div class="timeline-body"><p>Do we want to leave this in?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2339 on 2025-08-28 23:46</div>
+            <div class="timeline-body"><p>It looks to me like the length of this vector is always the same as the length of the <code>parameters</code> vector -- that is, these are the types assigned to each matched parameter. This isn't necessarily the same as the number of types in the argument type (which might not be a fixed-length iterable). I think this comment could be clearer about this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-28 23:56</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1978 on 2025-08-29 04:06</div>
+            <div class="timeline-body"><p>Nope, thanks for catching that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-29 04:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-08-29 04:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2339 on 2025-08-29 04:18</div>
+            <div class="timeline-body"><p>Thanks, I've expanded the comment to include this and some additional notes around the fact that this is only populated for a variadic argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-08-29 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-08-29 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-29 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-29 13:23</div>
+            <div class="timeline-body"><blockquote>
+<p>This split seems a bit inconsistent but I don't want to spend a lot of time on trying to merge them such that all argument type inference happens in a single place.</p>
+</blockquote>
+<p>I like how you found a simpler solution for this — I was worried this would be a much more invasive change!</p>
+<p>Note that doing argument inference in a single place will require being able to infer the type of a particular expression as both a value form and a type form. Right now we assume that each expression is inferred to a single type, and so we have to <em>choose</em> whether it should be a value form type or a type form type. That's why we're currently doing the argument type inference in two places — for normal arguments, we have to match the argument against a parameter, to see if the parameter is annotated as a <code>TypeForm</code> (which we support synthetically but not via the actual <code>TypeForm</code> Python syntax yet), which tells us whether to call <code>infer_expression</code> or <code>infer_type_expression</code> for that argument. For variadic arguments, we need to know the type of the iterable before we perform parameter matching, which is why we perform that inference early. (That means that we don't currently support splatting an argument into a <code>TypeForm</code> parameter!)</p>
+<p>So the ideal end state for this, I think, would be to update <code>TypeInferenceBuilder</code> to let us track the value-form and type-form inferred types separately. At the moment we only allow ourselves to infer a single type for an expression, and panic if we try to infer more than one. With this change, we would panic if we try to infer more than one value-form type, or more than one type-form type, but would allow ourselves to infer one of each without panicking.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

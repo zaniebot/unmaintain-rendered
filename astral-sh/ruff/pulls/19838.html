@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Perform assignability etc checks using new `Constraints` trait - astral-sh/ruff #19838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Perform assignability etc checks using new <code>Constraints</code> trait</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19838">#19838</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-08-08 20:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-08 20:59</div>
+            <div class="timeline-body"><p>&quot;Why would you do this? This looks like you just replaced <code>bool</code> with an overly complex trait&quot;</p>
+<p>Yes that's correct!</p>
+<p>This should be a no-op refactoring. It replaces all of the logic in our assignability, subtyping, equivalence, and disjointness methods to work over an arbitrary <code>Constraints</code> trait instead of only working on <code>bool</code>.</p>
+<p>The methods that <code>Constraints</code> provides looks very much like what we get from <code>bool</code>. But soon we will add a new impl of this trait, and some new methods, that let us express &quot;fuzzy&quot; constraints that aren't always true or false. (In particular, a constraint will express the upper and lower bounds of the allowed specializations of a typevar.)</p>
+<p>Even once we have that, most of the operations that we perform on constraint sets will be the usual boolean operations, just on sets. (<code>false</code> becomes empty/never; <code>true</code> becomes universe/always; <code>or</code> becomes union; <code>and</code> becomes intersection; <code>not</code> becomes negation.) So it's helpful to have this separate PR to refactor how we invoke those operations without introducing the new functionality yet.</p>
+<p>Note that we also have translations of <code>Option::is_some_and</code> and <code>is_none_or</code>, and of <code>Iterator::any</code> and <code>all</code>, and that the <code>and</code>, <code>or</code>, <code>when_any</code>, and <code>when_all</code> methods are meant to short-circuit, just like the corresponding boolean operations. For constraint sets, that depends on being able to implement the <code>is_always</code> and <code>is_never</code> trait methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-08 21:01</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-08 21:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-08 21:09</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Frelation-with-constraints?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19838 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/relation-with-constraints</code> (f10babf) with <code>main</code> (045cba3)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-08 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:510 on 2025-08-19 18:37</div>
+            <div class="timeline-body"><p>This is a common pattern in this PR, to implement short-circuiting when we can't (easily) use <code>when_all</code> or <code>when_any</code>. This method is (and was) a large intersection. Before, we'd use early <code>return false</code> to implement the short-circuiting. With <code>bool</code>, if any particular element doesn't short-circuit, there's only one possible &quot;current pending result&quot; — <code>true</code>. So we didn't need to explicitly track it, and down at the end of the method, where we know made it all the way through without ever getting a short-circuited <code>false</code>, we can return <code>true</code> directly.</p>
+<p>But with constraint sets, we have to create a <code>result</code> accumulator, and explicitly intersect each element's constraints into the result, since we might end up with something that is neither &quot;always true&quot; nor &quot;always false&quot;. I've structured the return values of <code>intersect</code> and <code>union</code> so that the check always has the form</p>
+<pre><code class="language-rust">if short_circuit {
+    return result;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-08-19 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-08-19 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-08-19 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-08-19 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-19 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] WIP: Perform assignability etc checks using new `Constraints` trait" to "[ty] Perform assignability etc checks using new `Constraints` trait" by @dcreager on 2025-08-19 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1495 on 2025-08-20 23:40</div>
+            <div class="timeline-body"><p>I'm curious how you think the logic can be simplified &quot;once we're using real constraint sets&quot;? To me it appears kind of the opposite -- this duplication is here precisely because we are trying to be correct in a future with real constraint sets, where we need to return the actual accumulated constraints from the inner <code>has_relation_to_impl</code> checks. In this PR, with just bool, we can pass all tests without this duplication, by just changing the sense of the match arm <code>if</code> clause back to a positive <code>.is_always(db)</code> instead of a negated <code>.is_never(db)</code>, and making the body of the match arm be <code>C::always(db)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1495 on 2025-08-20 23:47</div>
+            <div class="timeline-body"><p>Considering this case is actually making me wonder about a more fundamental thing: what about a case where this match arm returns some constraints (neither always nor never), but some later match arm would also have returned some constraints, had we reached it? In an ideal world, wouldn't we OR those constraint sets, if we're trying to express the conditions under which the relation would be true?</p>
+<p>I guess in the real world, we just pick one of them and don't find all solutions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1686 on 2025-08-20 23:50</div>
+            <div class="timeline-body"><p>I guess the change in semantics is safe here because the very next match arm unconditionally returns false/never for <code>(Type::Callable(_), _)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1338 on 2025-08-21 00:02</div>
+            <div class="timeline-body"><p>Do you foresee us needing this genericity over <code>C: Constraints</code> long-term? Or is this just needed for smoothing the transition from bool to real constraint sets, and once we've done that, these methods will in practice be monomorphic over just that &quot;constraint sets&quot; implementation of the trait?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:621 on 2025-08-21 00:08</div>
+            <div class="timeline-body"><p>I find the return value of <code>intersect</code> counter-intuitive here. IIUC this is saying &quot;if this intersection is empty&quot; but it looks like it might be saying &quot;if there is a non-empty intersection&quot;.</p>
+<p>I think I would find it clearer if <code>intersect</code> just returned <code>self</code> and we had to explicitly call <code>is_never()</code> on it -- but maybe that makes other short-circuiting cases more painful?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:8 on 2025-08-21 00:10</div>
+            <div class="timeline-body"><p>There's the obvious name tension with <code>Type::Never</code> here, but I'm not sure I have a better name to offer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:153 on 2025-08-21 00:13</div>
+            <div class="timeline-body"><p>If these two cases are what we mean when we say above that we use the return types of <code>intersect</code> and <code>union</code> for short-circuiting, then my opinion in my other comment is unchanged: I think it would be clearer, and not particularly painful, for <code>union</code> and <code>intersect</code> to return <code>self</code> and require an explicit chained call to <code>.is_always()</code> or <code>.is_never()</code> if you want to use those methods in boolean context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:128 on 2025-08-21 00:15</div>
+            <div class="timeline-body"><p>Thanks for also increasing our visitor coverage in this diff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:510 on 2025-08-21 00:21</div>
+            <div class="timeline-body"><p>Aha, and these cases are why you want <code>union</code> and <code>intersect</code> to return a somewhat-counter-intuitive boolean? But even here, it looks like you'd only need to call <code>is_never()</code> in one place, inside <code>types_inconsistent</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:511 on 2025-08-21 00:22</div>
+            <div class="timeline-body"><p>Not sure I see a good reason for the rename from <code>check_types</code> to <code>types_inconsistent</code> (with the reversed sense). I usually think negatives in method names should be avoided, and <code>if types_inconsistent(...)</code> doesn't seem better to me than <code>if !check_types(...)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-21 00:24</div>
+            <div class="timeline-body"><p>This is quite cool! Very impressed with how you wrangled the Rust API to make the translation fairly mechanical in many cases, even though you're adding significant capability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:621 on 2025-08-21 00:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I think I would find it clearer if <code>intersect</code> just returned <code>self</code> and we had to explicitly call <code>is_never()</code> on it -- but maybe that makes other short-circuiting cases more painful?</p>
+</blockquote>
+<p>It would need to both update <code>self</code> in-place (since it's an accumulator) and also return a clone that the caller would then call <code>is_never</code> on.  I thought that could be inefficient once we have non-<code>bool</code> implementations, and that it would be better for this to return a <code>bool</code>.</p>
+<p>Maybe if I rename the method to <code>intersect_short_circuits</code>, so that it's clearer at the call site what the return value represents?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:510 on 2025-08-21 00:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Aha, and these cases are why you want <code>union</code> and <code>intersect</code> to return a somewhat-counter-intuitive boolean?</p>
+</blockquote>
+<p>Yep, exactly</p>
+<blockquote>
+<p>But even here, it looks like you'd only need to call <code>is_never()</code> in one place, inside <code>types_inconsistent</code>.</p>
+</blockquote>
+<p>That's true for this case, but there are other places where we're doing the short circuit check several times in a single method, so I wanted it to be as ergonomic as possible.</p>
+<p>(But more importantly, the efficiency bit that I mention in the other comment thread)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1686 on 2025-08-21 00:43</div>
+            <div class="timeline-body"><p>Yes that's right, and I wanted to avoid the repetition like I have up in the typevar arm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1338 on 2025-08-21 00:45</div>
+            <div class="timeline-body"><p>Originally I thought that we would eventually be able to remove the trait. But in Discord @AlexWaygood asked about whether this PR's change would be compatible with returning a <code>Result</code> from <code>has_relation_to</code>, etc. I think we could do that by implementing the trait for that <code>Result</code> type, too (possibly wrapping the impl of the <code>T</code> inside the result). So...I'm not sure? Hopefully but maybe not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:8 on 2025-08-21 00:45</div>
+            <div class="timeline-body"><p><code>unsatisfiable</code> or <code>never_satisfiable</code>, but that's longer to type :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:511 on 2025-08-21 00:47</div>
+            <div class="timeline-body"><p>This was an attempt to be consistent that everywhere that does a short-circuit check has the same syntactic form, with a positive <code>if</code> condition check.  Maybe <code>type_check_short_circuits</code>, similar to my other rename suggestion, to keep the positive <code>if</code> condition but so that there's no negative in the name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-21 00:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-21 00:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:621 on 2025-08-21 00:52</div>
+            <div class="timeline-body"><p>Can't it return <code>&amp;Self</code> without needing a clone?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-21 01:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:621 on 2025-08-21 01:12</div>
+            <div class="timeline-body"><p>Hmm, maybe, I can try that.  Does that work if the receiver is <code>&amp;mut self</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-21 01:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1495 on 2025-08-21 01:17</div>
+            <div class="timeline-body"><p>My thinking is not that the stuff inside the match arm would change all that much. The part that I find too complex in its current state is that so much depends on the <em>order</em> of the match arms. My hunch is that the fall-through here won't be needed, and the ordering will no longer matter as much, because we'll be able to better combine the results of each recursive call with the other surrounding constraints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-21 01:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:621 on 2025-08-21 01:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Does that work if the receiver is <code>&amp;mut self</code>?</p>
+</blockquote>
+<p>Looks like <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=1aeb86e1df6189c64731585587673f9d">it does</a>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:510 on 2025-08-21 01:34</div>
+            <div class="timeline-body"><p>These now return more-intuitive values</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:621 on 2025-08-21 01:34</div>
+            <div class="timeline-body"><p>Updated to return <code>&amp;Self</code>, and to use explicit <code>is_never</code> and <code>is_always</code> calls at the call sites</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:153 on 2025-08-21 01:34</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:511 on 2025-08-21 01:36</div>
+            <div class="timeline-body"><p>The name change is reverted back to <code>check_types</code>.  I also opted to keep the meaning of the returned boolean be the same, so the call sites are back to being <code>!check_types</code>, as before. That means that there's technically a double-negation happening, but that doesn't bother me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-21 01:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:19 on 2025-08-21 04:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Updates this constraint set to hold the union of itself and another constraint set.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-21 04:34</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-21 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:8 on 2025-08-21 11:45</div>
+            <div class="timeline-body"><blockquote>
+<p><code>unsatisfiable</code> or <code>never_satisfiable</code>, but that's longer to type 😄</p>
+</blockquote>
+<p>I sort-of prefer those, actually! <code>unsatisfiable</code> doesn't seem too verbose to me. Not a big deal though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1 on 2025-08-21 11:52</div>
+            <div class="timeline-body"><p>It doesn't have to be added in this PR, but I'd love some more documentation about what a constraints set is exactly, with some examples about when it might matter that we return a constraints set rather than a <code>bool</code> from <code>has_relation_to_impl</code>. As it is, I think I'd feel very nervous editing this file if I needed to make updates for a PR of my own; I don't feel like I have a confident enough understanding of everything that's going on here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-21 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-21 12:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:8 on 2025-08-21 12:12</div>
+            <div class="timeline-body"><p>No problem, it's just a couple of <code>sed</code> commands to make the change!</p>
+<p>For the predicates, I've gone with <code>is_{always,never}_satisfied</code>. For the constructors, I want them to be consistent, so I went with <code>unsatisfied</code>/<code>always_satisfied</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-21 12:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1 on 2025-08-21 12:19</div>
+            <div class="timeline-body"><p>Done!</p>
+<blockquote>
+<p>when it might matter that we return a constraints set rather than a <code>bool</code> from <code>has_relation_to_impl</code></p>
+</blockquote>
+<p>This part relates to @carljm's question above https://github.com/astral-sh/ruff/pull/19838#discussion_r2289557108, about whether the trait will stick around long-term or not. My goal is that the <code>bool</code> impl will go away soon (likely in the very next PR https://github.com/astral-sh/ruff/pull/19997)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1 on 2025-08-21 12:30</div>
+            <div class="timeline-body"><p>Thank you, that module doc-comment is exactly what I was looking for!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-21 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:4 on 2025-08-21 12:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! simple answers: one type is either assignable to another type, or it isn't. (The _rules_ for
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:12 on 2025-08-21 12:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! hold for some specializations, but not for others. That means that for types that include
+//! typevars, &quot;Is this type assignable to another?&quot; no longer makes sense as a question. The better
+//! question is: &quot;Under what constraints is this type assignable to another?&quot;.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:15 on 2025-08-21 12:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! question. An individual constraint restricts the specialization of a single typevar to be within a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:17 on 2025-08-21 12:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! union, intersection, and negation operations (just like types themselves).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-21 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-08-21 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-08-21 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-21 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

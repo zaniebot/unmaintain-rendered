@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix protocol interface inference for stub protocols and subprotocols - astral-sh/ruff #19950</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix protocol interface inference for stub protocols and subprotocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19950">#19950</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-08-17 17:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-17 17:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes two bugs in our inference of protocol interfaces.</p>
+<p>Firstly, we currently correctly record whether a protocol member is marked as a <code>ClassVar</code>... but only if the protocol originates from a <code>.py</code> file! If the protocol originated from a <code>.pyi</code> file, we were accidentally throwing this information away -- this is due to the fact that we iterate over both declarations and bindings to infer a protocol interface, and in a stub file <code>x: ClassVar[int]</code> is considered both a declaration <em>and</em> a binding, but the bindings iterator doesn't return any information about the qualifiers, and the information from the bindings iterator was overwriting any qualifiers information we'd obtained from the declarations iterator.</p>
+<p>Secondly, we currently get subprotocols very wrong. For a situation like this, we infer <code>SubProto</code> as having a method member <code>method</code> that returns <code>int</code>, not <code>bool</code>, because we're incorrectly overwriting the information regarding the subprotocol with information about the parent protocol:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class BaseProto(Protocol):
+    def method(self) -&gt; int: ...
+
+class SubProto(BaseProto, Protocol):
+    def method(self) -&gt; bool: ...
+</code></pre>
+<h2>Test Plan</h2>
+<p>Mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-17 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-17 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-17 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-08-17 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-17 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-17 17:12</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-08-19 10:29:21.750235491 +0000
++++ new-output.txt	2025-08-19 10:29:24.220254034 +0000
+@@ -737,7 +737,6 @@
+ overloads_evaluation.py:322:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
+ protocols_class_objects.py:58:1: error[invalid-assignment] Object of type `&lt;class 'ConcreteA'&gt;` is not assignable to `ProtoA1`
+ protocols_class_objects.py:59:1: error[invalid-assignment] Object of type `&lt;class 'ConcreteA'&gt;` is not assignable to `ProtoA2`
+-protocols_definition.py:79:1: error[invalid-assignment] Object of type `Concrete` is not assignable to `Template`
+ protocols_definition.py:114:1: error[invalid-assignment] Object of type `Concrete2_Bad1` is not assignable to `Template2`
+ protocols_definition.py:115:1: error[invalid-assignment] Object of type `Concrete2_Bad2` is not assignable to `Template2`
+ protocols_definition.py:116:1: error[invalid-assignment] Object of type `Concrete2_Bad3` is not assignable to `Template2`
+@@ -860,5 +859,5 @@
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 861 diagnostics
++Found 860 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-17 17:14</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">rich (https://github.com/Textualize/rich)
+- rich/layout.py:113:46: error[invalid-argument-type] Argument to function `ratio_resolve` is incorrect: Expected `Sequence[Edge]`, found `Sequence[Layout]`
+- rich/layout.py:133:48: error[invalid-argument-type] Argument to function `ratio_resolve` is incorrect: Expected `Sequence[Edge]`, found `Sequence[Layout]`
+- Found 312 diagnostics
++ Found 310 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:670 on 2025-08-19 08:47</div>
+            <div class="timeline-body"><p>The polarity of these tests has changed. They previously asserted that <code>Foo</code> was not a a subtype of <code>HasXWithDefault</code>. Indeed, <code>Foo</code> does not have an <code>x</code> attribute with a default, so if the current tests reflect the intended behavior, can we add a comment why this is correct (is the fact that the protocol member has a default value irrelevant?)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:570 on 2025-08-19 08:57</div>
+            <div class="timeline-body"><p>We do this sort of thing a lot in ty's code base: iterating over both bindings and declarations separately, hoping that there is a 1:1 relationship. This is not always the case. For example:</p>
+<pre><code class="language-py">class D: # maybe a protocol, maybe a dataclass with fields, …
+    if condition:
+        attr: int
+    else:
+        attr = &quot;&quot;
+</code></pre>
+<p>This is unlikely to be a problem for protocols in particular, I think. And it's certainly not something specific to this PR. But I think it would be very beneficial in a lot of places if we could somehow iterate over all <em>definitions</em> and then get the declared type (for <code>attr: int</code>), the inferred type (for <code>attr = &quot;&quot;</code>), or both (for <code>attr: int = 0</code>).</p>
+<p>Here, it would eliminate the mutation of the entry. And the bug would probably not have happened in the first place if the iterator would yield either a <code>DeclaredType { ty }</code>, an <code>InferredType { ty }</code>, or <code>Both { declared_ty, inferred_ty }</code>. See https://github.com/astral-sh/ruff/pull/19756 for a somewhat related problem that I fixed a few weeks ago.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-08-19 09:05</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-19 10:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:670 on 2025-08-19 10:14</div>
+            <div class="timeline-body"><p>Yeah, I keep on changing my mind about this, and need to make a decision 😆 thanks for calling it out.</p>
+<p>As the conformance-suite diff shows, the conformance suite tests include an example where a class with implicit instance attributes is considered a subtype of a protocol where the member is bound in the class body. I think you can make that sound, but only if you say that the instance attribute is <em>not</em> present on the meta-protocol (<code>type[HasXWithDefault]</code>), which would obviously imply that we'd do attribute lookup differently for <code>type[]</code> Protocol types than we would for <code>type[]</code> nominal types.</p>
+<p>I was actually confused about why the conformance suite diff changed, though, and you made me look again and realise that this PR was fixing <em>another</em> bug. We were inferring this protocol as having an <code>x: Literal[0]</code> member rather than an <code>x: int</code> member:</p>
+<pre><code class="language-py">class P(Protocol):
+    x: int = 0
+</code></pre>
+<p>I'll add a comment by this test, and add another test that explicitly asserts that we infer the correct interface for members that have default values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-08-19 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-19 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-19 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-08-19 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:570 on 2025-08-19 15:13</div>
+            <div class="timeline-body"><p>Created https://github.com/astral-sh/ty/issues/1051 from this comment</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] propagate visitors and constraints through has_relation_in_invariant_position - astral-sh/ruff #20259</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] propagate visitors and constraints through has_relation_in_invariant_position</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20259">#20259</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-09-05 02:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-09-05 02:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The sub-checks for assignability and subtyping of materializations performed in <code>has_relation_in_invariant_position</code> and <code>is_subtype_in_invariant_position</code> need to propagate the <code>HasRelationToVisitor</code>, or we can stack overflow.</p>
+<p>A side effect of this change is that we also propagate the <code>ConstraintSet</code> through, rather than using <code>C::from_bool</code>, which I think may also become important for correctness in cases involving type variables (though it isn't testable yet, since we aren't yet actually creating constraints other than always-true and always-false.)</p>
+<h2>Test Plan</h2>
+<p>Added mdtest (derived from code found in pydantic) which stack-overflowed before this PR.</p>
+<p>With this change incorporated, pydantic now checks successfully on my draft PR for PEP 613 TypeAlias support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-09-05 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-05 02:09</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-05 02:12</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-09-05 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-09-05 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-09-05 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-09-05 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-05 02:20</div>
+            <div class="timeline-body"><p>@JelleZijlstra I can't request your review here, as a non-member of the GH org, but I wouldn't mind your eyes on this if you have a chance, since this is updating code you wrote.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-09-05 03:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:300 on 2025-09-05 03:34</div>
+            <div class="timeline-body"><p>This test case is a bit weird, because the <code>JsonSchemaExtraCallable</code> alias only contains callables. If this test case fails without your fix, it's fine, but wonder if something important got lost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:484 on 2025-09-05 03:36</div>
+            <div class="timeline-body"><p>This becomes harder and harder to read, which is unfortunate as the logic is a bit tricky. But oh well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-09-05 03:37</div>
+            <div class="timeline-body"><p>Looks good! (I'd approve but I'm not allowed to do that either :) .)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-05 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:300 on 2025-09-05 05:08</div>
+            <div class="timeline-body"><p>Yes -- this doesn't simplify because <code>dict</code> and <code>Callable</code> are not disjoint, so it remains an intersection of <code>Top[dict[Unknown, Unknown]] &amp; JsonSchemaExtraCallable</code> (which unpacks into a union of two intersections, since <code>JsonSchemaExtraCallable</code> is a union of two callable types -- the issue doesn't repro if I simplify it to a single callable type). Calling the overloaded <code>dict.update</code> (calling overloads can trigger materialization) with that union-of-intersections type is necessary to trigger the issue.</p>
+<p>Clearly a lot of the original relevant code &quot;got lost&quot; in minimization. What's left is both sufficient and seemingly necessary to trigger the issue, but doesn't make a lot of sense as a standalone snippet.</p>
+<p>I will spend some more time tomorrow understanding the precise mechanism more fully so I can write some more thorough and low-level tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:484 on 2025-09-05 05:09</div>
+            <div class="timeline-body"><p>I just pushed an update that I think helps a lot by defining an <code>is_subtype_of</code> closure helper, to remove all the repeated <code>TypeRelation::Subtyping, visitor</code> noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-05 05:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-05 05:22</div>
+            <div class="timeline-body"><p>@dcreager One thing to note here is that with invariance we sometimes end up checking type equivalence or subtyping as a sub-part of checking outer assignability, and with this PR we are taking constraints generated in an inner subtype or equivalence check and propagating them up to an outer assignability check. I think this is OK because the constraints we collect always use top and bottom materializations and fully static types, so the constraints should always be valid/interchangeable across assignability and subtyping? And I assume for equivalence we will create constraints with the same upper and lower bound, so those constraints are also valid across type relations. But let me know if there are issues here I'm not seeing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:490 on 2025-09-05 09:14</div>
+            <div class="timeline-body"><p>could this also be written as</p>
+<pre><code class="language-suggestion">            .or(db, || {
+                is_subtype_of(base_bottom, derived_top)
+                    .and(db, || is_subtype_of(derived_top, base_top))
+            })
+            .or(db, || {
+                is_subtype_of(base_top, derived_top)
+                    .and(db, || is_subtype_of(derived_bottom, base_top))
+            })
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-09-05 09:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-05 12:26</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing to note here is that with invariance we sometimes end up checking type equivalence or subtyping as a sub-part of checking outer assignability, and with this PR we are taking constraints generated in an inner subtype or equivalence check and propagating them up to an outer assignability check. I think this is OK because the constraints we collect always use top and bottom materializations and fully static types, so the constraints should always be valid/interchangeable across assignability and subtyping? And I assume for equivalence we will create constraints with the same upper and lower bound, so those constraints are also valid across type relations. But let me know if there are issues here I'm not seeing.</p>
+</blockquote>
+<p>I think that should be okay, because the conditions under which that inner equivalence holds <em>should</em> also be part of the conditions under which the outer assignability holds. (And you're right that we shouldn't end up with incompatible constraints or execution cycles since all of the checks that happen down inside the constraint set machinery work on fully static / materialized types.)</p>
+<p>If we find that :point_up: isn't correct, then you can call <code>C::from_bool(is_equivalent_to)</code> instead of <code>when_equivalent_to</code>. (Though at that point we might consider adding <code>ensure_{always,sometimes}_satisfied</code> helpers on the <code>Constraints</code> trait.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-05 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:484 on 2025-09-05 12:28</div>
+            <div class="timeline-body"><blockquote>
+<p>This becomes harder and harder to read</p>
+</blockquote>
+<p>I had tried to use operator overloading when I first wrote these, but unfortunately you can't overload the short-circuiting <code>&amp;&amp;</code> and <code>||</code> operators. These closures are the only way I know of to get the rhs into a thunk so that it's lazily evaluated.</p>
+<p>(Hmm...maybe a macro that would rewrite the boolean syntax into the right <code>and</code> and <code>or</code> calls? An interesting idea but not something to focus on atm)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-05 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:484 on 2025-09-05 12:55</div>
+            <div class="timeline-body"><p>Short of a macro or operator overloading, I did consider whether in nested cases like this a prefix-form helper would improve readability. So it would change <code>a.or(db, || b)</code> to <code>or(db, a, || b)</code>.</p>
+<p>I do think the prefix form is somewhat better visually for nested conditions. It doesn't allow us to get rid of the <code>||</code> since we still want short circuiting. I decided that limitation made it not worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-05 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:484 on 2025-09-05 14:22</div>
+            <div class="timeline-body"><p>Oh that's a good idea!  I think that will work without changing the trait or adding extra methods if you spell it as <code>C::or(a, db, || b)</code>.  (The weird parameter order is admittedly not great)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-09-05 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:484 on 2025-09-05 15:18</div>
+            <div class="timeline-body"><p>Thanks, this already looks much better with the private helper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-05 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:484 on 2025-09-05 21:44</div>
+            <div class="timeline-body"><p>Yeah I think what I've got is good enough here for now, I probably won't pursue <code>C::or</code> as part of this PR; the fact that we still can't get rid of the <code>db</code> or the <code>||</code> makes it feel less appealing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-09-06 00:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-06 00:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-06 00:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:48 UTC
+    </footer>
+</body>
+</html>

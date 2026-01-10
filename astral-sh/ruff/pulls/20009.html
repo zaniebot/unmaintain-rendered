@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-use-pathlib`] Add autofix for `PTH211` - astral-sh/ruff #20009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-use-pathlib</code>] Add autofix for <code>PTH211</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20009">#20009</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-08-20 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-08-20 19:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of https://github.com/astral-sh/ruff/issues/2331</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run flake8_use_pathlib</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-20 20:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_symlink.rs</code>:128 on 2025-08-22 15:15</div>
+            <div class="timeline-body"><p>Can you add a test where there is some whitespace around <code>False</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_symlink.rs</code>:81 on 2025-08-22 15:23</div>
+            <div class="timeline-body"><p>It looks like we don't offer a fix when <code>dir_fd = None</code>, though - was that intentional? (It's probably okay not to)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> requested changes on 2025-08-22 15:23</div>
+            <div class="timeline-body"><p>Thanks for this! Couple small comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2025-08-22 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_symlink.rs</code>:81 on 2025-08-22 15:39</div>
+            <div class="timeline-body"><p>In other autofixes, we have the same <code>if is_keyword_only_argument_non_default(&amp;call.arguments, &lt;...&gt;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2025-08-22 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_symlink.rs</code>:81 on 2025-08-22 15:43</div>
+            <div class="timeline-body"><p><a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_rmdir.rs">os_rmdir.rs</a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_rmdir.rs">os_rmdir.rs</a> and other files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-08-22 16:02</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_symlink.rs</code>:128 on 2025-08-22 16:26</div>
+            <div class="timeline-body"><p>It looks like you added a test with whitespace around <code>True</code>. I was hoping for a test like this:</p>
+<pre><code class="language-python">os.symlink(&quot;usr/bin/python&quot;,  dst=&quot;tmp/python&quot;, target_is_directory=     False    )
+</code></pre>
+<p>to see whether your expression range that you're slicing includes the whitespace or not.</p>
+<p>In fact: I think it'd probably be better to just replace this code snippet with something like:</p>
+<pre><code class="language-rust">            .and_then(|expr| {
+                let code = locator.slice(expr.range());
+                expr.as_boolean_literal_expr()
+                    .is_some_and(|bl| bl.value == true)
+                    .then(|| format!(&quot;, target_is_directory={code}&quot;))
+            })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-08-22 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2025-08-22 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_symlink.rs</code>:128 on 2025-08-22 16:44</div>
+            <div class="timeline-body"><p><img width="1338" height="487" alt="изображение" src="https://github.com/user-attachments/assets/308cc8a3-6ea1-4f03-9d90-b3e1162e8e18" />
+with these spaces also works without replacing it with this code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a> reviewed on 2025-08-22 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chirizxc">@chirizxc</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_symlink.rs</code>:128 on 2025-08-22 16:48</div>
+            <div class="timeline-body"><p><img width="1187" height="153" alt="изображение" src="https://github.com/user-attachments/assets/cc65afc7-3898-4e1f-9e24-036ec1446ddd" />
+In this case, there are also invalid fixes for the variant with <code>target_is_directory=True</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-08-22 17:07</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-08-22 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-08-22 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-08-22 17:29</div>
+            <div class="timeline-body"><p>Adding a minor edit - it looks like you can pass an arbitrary type to <code>target_is_directory</code> without CPython throwing an error. (I think it evaluates the truthiness of the value). I've skipped the fix in these cases instead of just throwing out the value, since otherwise I think we may change program behavior. If CI passes I'll merge</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-08-22 17:38</div>
+            <div class="timeline-body"><p>For some reason, a lot of <code>Safe fixes</code> are missing from the snapshots</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-08-22 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-08-22 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-08-22 17:39</div>
+            <div class="timeline-body"><p><img width="1777" height="784" alt="изображение" src="https://github.com/user-attachments/assets/7a35e156-6930-4024-9b1d-82e0a681eedf" />
+i mean this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-08-22 18:31</div>
+            <div class="timeline-body"><blockquote>
+<p>For some reason, a lot of <code>Safe fixes</code> are missing from the snapshots</p>
+</blockquote>
+<p>I swear I checked the ecosystem results and everything... maybe they were not updated even when they said they were? Oy. Thank you for the quick followup PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-22 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>

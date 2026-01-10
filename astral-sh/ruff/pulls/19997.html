@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add constraint set implementation - astral-sh/ruff #19997</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add constraint set implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19997">#19997</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-08-19 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-19 22:16</div>
+            <div class="timeline-body"><p>This PR adds an implementation of constraint sets.</p>
+<p>An individual constraint restricts the specialization of a single typevar to be within a particular lower and upper bound: the typevar can only specialize to types that are a supertype of the lower bound, and a subtype of the upper bound. (Note that lower and upper bounds are fully static; we take the bottom and top materializations of the bounds to remove any gradual forms if needed.) Either bound can be “closed” (where the bound is a valid specialization), or “open” (where it is not).</p>
+<p>You can then build up more complex constraint sets using union, intersection, and negation operations. We use a disjunctive normal form (DNF) representation, just like we do for types: a <em>constraint set</em> is the union of zero or more <em>clauses</em>, each of which is the intersection of zero or more individual constraints. Note that the constraint set that contains no clauses is never satisfiable (<code>⋃ {} = 0</code>); and the constraint set that contains a single clause, which contains no constraints, is always satisfiable (<code>⋃ {⋂ {}} = 1</code>).</p>
+<p>One thing to note is that this PR does not change the logic of the actual assignability checks, and in particular, we still aren't ever trying to create an &quot;individual constraint&quot; that constrains a typevar. Technically we're still operating only on <code>bool</code>s, since we only ever instantiate <code>C::always_satisfiable</code> (i.e., <code>true</code>) and <code>C::unsatisfiable</code> (i.e., <code>false</code>) in the <code>has_relation_to</code> methods. So if you thought that #19838 introduced an unnecessarily complex stand-in for <code>bool</code>, well here you go, this one is worse! (But still seemingly not yielding a performance regression!) The next PR in this series, #20093, is where we will actually create some non-trivial constraint sets and use them in anger.</p>
+<p>That said, the PR does go ahead and update the assignability checks to use the new <code>ConstraintSet</code> type instead of <code>bool</code>. That part is fairly straightforward since we had already updated the assignability checks to use the <code>Constraints</code> trait; we just have to actively choose a different impl type. (For the <code>is_whatever</code> variants, which still return a <code>bool</code>, we have to convert the constraint set, but the explicit <code>is_always_satisfiable</code> calls serve as nice documentation of our intent.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-19 22:16</div>
+            <div class="timeline-body"><p>I'm excited to see how much slower this is than <code>bool</code>... :grimacing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-19 22:18</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-19 22:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-19 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-21 01:55</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fdummy-constraint-sets?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19997 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/dummy-constraint-sets</code> (5257624) with <code>main</code> (5c2d4d8)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-08-28 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-08-28 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-08-28 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-08-28 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-28 00:51</div>
+            <div class="timeline-body"><p>This is ready for review! #20093 is the real proof that this representation works well. In some ways, this PR is just a setup for that, even though we're introducing a pretty complex new data structure here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9634 on 2025-08-28 11:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        IntersectionBuilder::new(db).positive_elements(elements).build()
+</code></pre>
+<p>there might be some other existing uses of <code>IntersectionBuilder::positive_elements()</code> that could be switched over to use this new method, too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:19 on 2025-08-28 11:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! particular lower and upper bound: the typevar can only specialize to a type that is a supertype
+//! of the lower bound, and a subtype of the upper bound. (Note that lower and upper bounds are
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion">//! particular lower and upper bound: the typevar can only specialize to types that are supertypes
+//! of the lower bound, and subtypes of the upper bound. (Note that lower and upper bounds are
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:22 on 2025-08-28 11:40</div>
+            <div class="timeline-body"><p>Would it be possible to give Python examples here of the difference between closed and open bounds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:30 on 2025-08-28 11:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! constraint set that contains a single clause, where that clause contains no constraints,
+//! is always satisfiable (`⋃ {⋂ {}} = 1`).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:186 on 2025-08-28 11:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// ### Invariants
+///
+/// - The clauses are simplified as much as possible — there are no two clauses in the set that can
+///   be simplified into a single clause.
+///
+/// [POPL2015]: https://doi.org/10.1145/2676726.2676991
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:231 on 2025-08-28 11:43</div>
+            <div class="timeline-body"><p>Why 2 here? Is it worth adding a comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:240 on 2025-08-28 11:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let mut existing_clauses = std::mem::take(&amp;mut self.clauses).into_iter();
+        for existing in existing_clauses.by_ref() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:308 on 2025-08-28 11:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    #[expect(dead_code)]
+</code></pre>
+<p>what's the reason for having the method at all -- just for debugging? Is it worth adding a comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:383 on 2025-08-28 11:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// ### Invariants
+///
+/// - No two constraints in the clause will constrain the same typevar.
+/// - The constraints are sorted by typevar.
+///
+/// [POPL2015]: https://doi.org/10.1145/2676726.2676991
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:414 on 2025-08-28 12:00</div>
+            <div class="timeline-body"><p>It's a bit surprising to me that this method mutates internal state but then returns a non-<code>Self</code> type -- it's not a pure function but it's also not an in-place mutation exactly. It feels like it might be worth calling out in the doc-comment that it mutates <code>self</code> internally before returning a <code>Satisfiable</code> instance (and stating why it does that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:523 on 2025-08-28 12:04</div>
+            <div class="timeline-body"><p>The comments for this method are great. It would be amazing if we could maybe have some Python examples as well as all the maths, though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:662 on 2025-08-28 12:06</div>
+            <div class="timeline-body"><p>Here again, I feel like an example might be really helpful to illustrate how this relates to type-checking Python code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:660 on 2025-08-28 12:14</div>
+            <div class="timeline-body"><p>&quot;Render&quot; as in &quot;render in <code>Display</code> implementations&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:673 on 2025-08-28 12:16</div>
+            <div class="timeline-body"><p>should we maybe enforce that users have to explicitly <code>.clone()</code> instances of this struct if they want to copy the data? It has several fields; it might be cheaper to take references where possible</p>
+<pre><code class="language-suggestion">#[derive(Clone, Debug, Eq, PartialEq)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:800 on 2025-08-28 12:20</div>
+            <div class="timeline-body"><p>How did you consider the tradeoffs of an enum here vs a struct that wrapped an enum, e.g.</p>
+<pre><code class="language-rs">#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) enum ConstraintBound&lt;'db&gt; {
+    value: Type&lt;'db&gt;,
+    kind: ConstraintBoundKind,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ConstraintBoundKind {
+    Open,
+    Closed,
+}
+</code></pre>
+<p>^That kind of representation might remove the need for the <code>ConstraintBound::bound_type()</code> method, for example -- the information would be right there in the <code>value</code> field</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:822 on 2025-08-28 12:26</div>
+            <div class="timeline-body"><p>Would it be possible to include a short Python snippet in this doc-comment that includes two typevars with upper bounds and explains what <code>.min_upper()</code> would return in that case? And similar for some of the other methods on this enum?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:850 on 2025-08-28 12:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Panics if `lower` and `upper` are not both fully static.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:860 on 2025-08-28 12:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        debug_assert_eq!(lower_type, lower_type.bottom_materialization(db));
+        debug_assert_eq!(upper_type, upper_type.top_materialization(db));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:951 on 2025-08-28 12:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        debug_assert_eq!(self.typevar, other.typevar);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:926 on 2025-08-28 12:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        debug_assert_eq!(self.typevar, other.typevar);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:934 on 2025-08-28 12:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        debug_assert_eq!(self.typevar, other.typevar);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:317 on 2025-08-28 12:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    #[expect(dead_code)]
+</code></pre>
+<p>Could we add a comment to say why we're keeping the method around at all for now, rather than removing it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-28 12:32</div>
+            <div class="timeline-body"><p>This looks cool! I haven't done a deep review of the code for correctness -- this is mainly a docs review :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-28 12:33</div>
+            <div class="timeline-body"><p>Should this PR still have &quot;WIP&quot; in its title? 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1156 on 2025-08-28 12:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    const fn from_one(constraint: Satisfiable&lt;T&gt;) -&gt; Self {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:703 on 2025-08-28 12:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    const fn flip(self) -&gt; Self {
+        match self {
+            ConstraintBound::Open(bound) =&gt; ConstraintBound::Closed(bound),
+            ConstraintBound::Closed(bound) =&gt; ConstraintBound::Open(bound),
+        }
+    }
+
+    const fn bound_type(self) -&gt; Type&lt;'db&gt; {
+        match self {
+            ConstraintBound::Open(bound) =&gt; bound,
+            ConstraintBound::Closed(bound) =&gt; bound,
+        }
+    }
+
+    const fn is_open(self) -&gt; bool {
+        matches!(self, ConstraintBound::Open(_))
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-28 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] WIP: Add constraint set implementation" to "[ty] Add constraint set implementation" by @dcreager on 2025-08-28 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-28 12:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Should this PR still have &quot;WIP&quot; in its title? 😄</p>
+</blockquote>
+<p>Nope! Removed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:308 on 2025-08-28 13:14</div>
+            <div class="timeline-body"><p>Yep, I use <code>printf</code> debugging a lot, and I find it useful for all of our non-trivial types to have <code>display</code> methods or <code>Display</code> impls always available, even if we're not currently using them in anything user-facing.</p>
+<p>I'm happy to add a comment to that effect at each place where there's a <code>dead_code</code> annotation, though I'd also like to suggest this as a team norm if there aren't any objections!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:673 on 2025-08-28 13:15</div>
+            <div class="timeline-body"><p>It was originally clippy that suggested this, but that was back when the bounds were just <code>Type</code>s and not <code>ConstraintBound</code>s. That might make this type big enough that the calculus changes. Will investigate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1156 on 2025-08-28 13:21</div>
+            <div class="timeline-body"><p>Turns out this one can't be <code>const</code> because of a custom <code>Drop</code> impl somewhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:800 on 2025-08-28 14:24</div>
+            <div class="timeline-body"><p>I tried that just now on your recommendation, and it does remove the need for the <code>bound_type</code> method, but there are some match patterns that become more complex. e.g.</p>
+<pre><code class="language-rust">match (self, other) {
+    (ConstraintBound::Closed(other_bound), ConstraintBound::Open(open_bound))
+    | (ConstraintBound::Open(open_bound), ConstraintBound::Closed(other_bound))
+      if ... =&gt;
+</code></pre>
+<p>would become</p>
+<pre><code class="language-rust">match (self, other) {
+    (Self { kind: ConstraintBoundKind::Closed, bound_type: other_bound },
+     Self { kind: ConstraintBoundKind::Open, bound_type: open_bound })
+    | (Self { kind: ConstraintBoundKind::Open, bound_type: open_bound },
+       Self { kind: ConstraintBoundKind::Closed, bound_type: other_bound })
+      if ... =&gt;
+</code></pre>
+<p>I don't think the removal of the <code>bound_type</code> method is worth the extra complexity in that kind of match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:673 on 2025-08-28 14:25</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-28 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:800 on 2025-08-28 14:32</div>
+            <div class="timeline-body"><p>Sounds good, thanks for trying it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:800 on 2025-08-28 14:35</div>
+            <div class="timeline-body"><p>(it could also become</p>
+<pre><code class="language-rust">match (self, other) {
+    (closed @ Self { kind: ConstraintBoundKind::Closed, .. },
+     other @ Self { kind: ConstraintBoundKind::Open, .. })
+    | (open @ Self { kind: ConstraintBoundKind::Open, .. },
+       closed @ Self { kind: ConstraintBoundKind::Closed, .. })
+      if ... =&gt;
+</code></pre>
+<p>and then you'd use <code>open.bound_type</code> instead of <code>open_bound</code> in the body of the arm, but I still find that more complex than the single enum version)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-28 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:308 on 2025-08-28 14:42</div>
+            <div class="timeline-body"><p>I think debuggability is really important! I also think an internal team norm probably isn't sufficient here, though -- without a comment about why we're keeping the dead code, an external contributor coming across this code is probably going to wonder why we're leaving it around, and might even file a PR &quot;cleaning it up&quot;!</p>
+<p>As an alternative to adding an <code>#[expect(dead_code)]</code> or <code>#[allow(dead_code)]</code>, what about adding a new &quot;magic function&quot; to <code>ty_extensions</code> that causes us to print a diagnostic with some of this <code>Display</code> information embedded in the diagnostic? That has two advantages:</p>
+<ul>
+<li>It means we directly test the <code>Display</code> implementation!</li>
+<li>It means you don't have to recompile ty if you want to change one of your <code>printf</code> or <code>dbg</code> calls -- changing a Python or markdown file you're invoking ty on doesn't require any recompilation!</li>
+</ul>
+<p>I did something like this for debugging protocol interfaces recently, and I've found it incredibly useful: https://github.com/astral-sh/ruff/blob/b3c400528944c9e9a77dc41e60cad56b19742683/crates/ty_python_semantic/resources/mdtest/protocols.md?plain=1#L416-L429</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:308 on 2025-08-28 15:29</div>
+            <div class="timeline-body"><blockquote>
+<p>what about adding a new &quot;magic function&quot;</p>
+</blockquote>
+<p>Good idea, I'll give that a shot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:308 on 2025-08-28 18:01</div>
+            <div class="timeline-body"><p>I very much like where this is headed, but it is also looking like it will be very invasive on the current PR diff. So I'm going to pull that part out into a separate PR. For <em>this</em> PR, I'll go with <code>expect</code> + a comment as per your first suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:231 on 2025-08-28 18:02</div>
+            <div class="timeline-body"><p>Added explanatory comment here and at the other <code>SmallVec</code> below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-28 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:308 on 2025-08-28 18:03</div>
+            <div class="timeline-body"><p>SGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:317 on 2025-08-28 18:06</div>
+            <div class="timeline-body"><p>Updated per above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:660 on 2025-08-28 18:22</div>
+            <div class="timeline-body"><p>No, I meant in the doc comments. Updated this to be more clear</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:414 on 2025-08-28 18:23</div>
+            <div class="timeline-body"><p>Described this better in the doc comment. (Note that in this case the <code>Satisfiable</code> being returned is just <code>()</code> — I'm using this as a flag to indicate whether the updated-in-place result is never, always, or sometimes satisfiable.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:22 on 2025-08-28 18:47</div>
+            <div class="timeline-body"><p>It's a bit difficult because Python doesn't have a direct way to construct open bounds (they primarily come up via negation), but I've tried my best. lmkwyt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:523 on 2025-08-28 19:09</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:25 on 2025-08-28 19:10</div>
+            <div class="timeline-body"><p>Isn't DNF &quot;disjunctive normal form&quot;? I haven't heard of &quot;distributed normal form&quot;, and it seems like Google hasn't either.</p>
+<pre><code class="language-suggestion">//! operations. We use a disjunctive normal form (DNF) representation, just like we do for types: a
+</code></pre>
+<p>(Note: may want to fix this also in the PR description, which will become the commit message.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:662 on 2025-08-28 19:11</div>
+            <div class="timeline-body"><p>This is a helper method for <code>simplify_clauses</code>, so I think the Python examples I added there cover this.  I did add a comment here directing the reader to <code>simplify_clauses</code> for more details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:822 on 2025-08-28 19:22</div>
+            <div class="timeline-body"><p>For this one, I'm having a hard time coming up with a Python example that would actually be illustrative. For the <em>types</em> of the bounds, I could use Python to show that we use intersection to combine them. But just as important for this method is that it's determining whether the combined bound should be open or closed, and I'm wracking my brain trying to find easy Python snippets for lower bounds and open bounds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-28 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:822 on 2025-08-28 19:30</div>
+            <div class="timeline-body"><p>no worries, we can leave it for now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-28 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:523 on 2025-08-28 19:30</div>
+            <div class="timeline-body"><p>thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-28 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:22 on 2025-08-28 19:31</div>
+            <div class="timeline-body"><p>the Python examples are great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:289 on 2025-08-28 21:53</div>
+            <div class="timeline-body"><p>Correctness here depends on the invariant that a single new clause can only ever simplify-to-never with one existing clause (i.e. it can't cancel out two different existing clauses.) How do we know that to be the case here? Below with the <code>Simplified</code> case, in contrast, we explicitly handle the possibility that the new clause may simplify with a later clause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:392 on 2025-08-28 21:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.clauses.len() == 1 &amp;&amp; self.clauses[0].is_always()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:543 on 2025-08-28 22:24</div>
+            <div class="timeline-body"><p>I could be missing something here: I can see how we can abstractly say that these constraints apply here, but concretely I don't think this code would ever result in us creating a <code>ConstraintSet</code> at all? There is no assignment here (where we'd create a <code>ConstraintSet</code> ephemerally in <code>has_relation_to_impl</code>, just in order to check if its <code>always_satisfiable</code>), nor is there a call to a generic function or constructor, where we'd create a <code>ConstraintSet</code> across multiple assignability checks (for each argument) and then solve it in order to generate a specialization.</p>
+<p>I think to the extent that there is value in having Python examples (I'm not convinced that it's useful in code at this level of abstraction), it should ideally be examples where we would actually have to exercise the code in question in order to arrive at a correct type-checking answer in the Python example. I'm not quite seeing that in these examples; they are more like re-stating the set theory with a different syntax.</p>
+<p>That said, I also don't think we should spend more time right now on improving these examples, so I'm fine leaving them as-is; this is more of a thought for future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:585 on 2025-08-28 22:32</div>
+            <div class="timeline-body"><p>We do this via two merged iterations, but I think it can be easily done with a single iteration and a tri-valued return?</p>
+<p>Maybe doesn't matter in practice, depends how hot this ends up being in practice, and how many multi-constraint clauses we see.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:975 on 2025-08-28 22:51</div>
+            <div class="timeline-body"><p>Nit: I think you mean &quot;lower is not a subtype of upper&quot; here? That doesn't imply that upper is a subtype of lower (or <code>upper &lt; lower</code>), since types are only partially ordered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-28 23:04</div>
+            <div class="timeline-body"><p>This is really clean and elegant!</p>
+<p>A few thoughts, none of them blocking this PR:</p>
+<ol>
+<li>There will be a lot of <code>has_relation_to</code> checks where we collect constraints but never evaluate them for anything other than always-satisfied or never-satisfied. Will there be opportunities to improve performance on those checks if we know up-front that all we care about is always, or all we care about is never? It seems like it could potentially allow us to short-circuit a lot of work. (Something to explore in a future PR, not now.)</li>
+<li>My recursion spidey-sense tingles a bit about the fact that we use a <code>ConstraintSet</code> in evaluating <code>has_relation_to</code>, and building a <code>ConstraintSet</code> involves a lot of <code>is_subtype_of</code> checks on upper and lower bound types. Is there potential for stack overflow here? Do we need anything additional to prevent that? Can we get into a situation where evaluating a subtype relation causes us to build a constraint set that requires evaluating the original subtype relation? If so, our CycleDetector on <code>has_relation_to</code> wouldn't help, because it would be separate <code>is_subtype_of</code> checks.</li>
+<li>Possibly related to (2): the spec says typevar bounds/constraints cannot be generic, but there's been recent discussion of lifting that requirement, and it sounds like Pyrefly will experiment with that. It seems to me that we're well-positioned for that as well (you'd just end up adding constraints on the nested typevar, too), but maybe something to consider.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:25 on 2025-08-28 23:20</div>
+            <div class="timeline-body"><p>Haha whoops yes it should be &quot;disjunctive&quot; not &quot;distributed&quot; :grimacing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:289 on 2025-08-28 23:23</div>
+            <div class="timeline-body"><p>Any existing clauses must already be simplified relative to each other. So I think that for a new clause to cancel out more than one existing clause, it would have to do it in multiple steps, in a confluent way. So the new clause would &quot;partially&quot; simplify against the first existing clause that we encounter (i.e. simplify a bit but not all the way to 0). (That would trigger the <code>Simplified</code> branch below, where we carry the simplified result over to check against later existing clauses.) Then that partially simplified clause would simplify the &quot;rest of the way&quot; to 0 when we encounter the second (relevant) existing clause. And the &quot;confluent&quot; part means that it would need to happen regardless of the order that the two existing clauses appear in the original result.</p>
+<p>I have not done a proof that :point_up: holds, but that's my intuition for why it should™ work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:585 on 2025-08-28 23:27</div>
+            <div class="timeline-body"><p>Added a TODO to consider this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:975 on 2025-08-28 23:32</div>
+            <div class="timeline-body"><p>Yes, good catch! Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-08-28 23:50</div>
+            <div class="timeline-body"><blockquote>
+<p>There will be a lot of <code>has_relation_to</code> checks where we collect constraints but never evaluate them for anything other than always-satisfied or never-satisfied. Will there be opportunities to improve performance on those checks if we know up-front that all we care about is always, or all we care about is never? It seems like it could potentially allow us to short-circuit a lot of work. (Something to explore in a future PR, not now.)</p>
+</blockquote>
+<p>I don't think this would give correct results. This is related to my comment from last week https://github.com/astral-sh/ruff/pull/19838#discussion_r2289637481, and you can see it in the draft of #20093. In that PR I've moved around the non-inferrable typevar match arms in <code>has_relation_to</code>, because we no longer have to be careful about doing some typevar checks before we handle the connectives, and others after. We can rely on how we combine the constraints from the recursive calls to let partially satisfiable recursive constraint sets either (a) &quot;build up&quot; towards 1, or (b) &quot;cancel out&quot; towards 0. Doing so requires having the full constraint sets available, so that we can look at their structure to see what they do when unioned or intersected together. Doing that on <code>bool</code> loses that detail, leading to wrong answers.</p>
+<blockquote>
+<p>My recursion spidey-sense tingles a bit about the fact that we use a <code>ConstraintSet</code> in evaluating <code>has_relation_to</code>, and building a <code>ConstraintSet</code> involves a lot of <code>is_subtype_of</code> checks on upper and lower bound types. Is there potential for stack overflow here? Do we need anything additional to prevent that? Can we get into a situation where evaluating a subtype relation causes us to build a constraint set that requires evaluating the original subtype relation? If so, our CycleDetector on <code>has_relation_to</code> wouldn't help, because it would be separate <code>is_subtype_of</code> checks.</p>
+</blockquote>
+<p>If the bounds of a constraint don't contain any typevars (a &quot;concrete&quot; type), then I think we're okay, since calculating subtyping of two concrete types can only produce <code>true</code>, <code>false</code>, and combinations of those. (If there are no typevars in the type, then there's nothing to create an <code>AtomicConstraint</code> for.) And so we never hit any of the new logic for combining and simplifying constraints.</p>
+<p>If there are bounds that <em>do</em> contain typevars, we do have to worry about this — and the way POPL15 etc solve this is by introducing an ordering on typevars, and saying that typevar bounds can only reference other typevars that are smaller according to that ordering. That ensures that you don't get cycles in the &quot;bounds graph&quot;. I figure we'll just use Salsa IDs as our ordering when we get to that part.</p>
+<blockquote>
+<p>Possibly related to (2): the spec says typevar bounds/constraints cannot be generic, but there's been recent discussion of lifting that requirement, and it sounds like Pyrefly will experiment with that. It seems to me that we're well-positioned for that as well (you'd just end up adding constraints on the nested typevar, too), but maybe something to consider.</p>
+</blockquote>
+<p>I think we will already have to support typevars that have <em>constraints</em> involving other typevars, to handle things like calling a generic function (and inferring its specialization) from inside another (such that the constraints of the calling function are needed to figure out the valid specializations of the called function). So at that point it should be no problem to have typevar <em>bounds</em> mention other typevars, since that would just translate into a constraint that can already contain other typevars. (Modulo the bit above about using an artificial ordering to keep the bounds graph acyclic.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-08-29 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-08-29 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-29 00:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:46:47 UTC
+    </footer>
+</body>
+</html>
