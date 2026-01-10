@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: uv format from project root - astral-sh/uv #15440</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: uv format from project root</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15440">#15440</a>
+        opened by <a href="https://github.com/jorgehermo9">@jorgehermo9</a>
+        on 2025-08-21 23:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on 2025-08-21 23:04</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/15430</p>
+<p>This PR is a branch from https://github.com/astral-sh/uv/pull/15438, opening it as a draft until that is merged to main and I'll merge main with this branch to have a cleaner diff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/src/commands/project/format.rs</code>:43 on 2025-08-22 18:48</div>
+            <div class="timeline-body"><p>Inspired from https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/project/export.rs#L108</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-22 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/src/commands/project/format.rs</code>:66 on 2025-08-22 18:49</div>
+            <div class="timeline-body"><p>I wonder how this implementation behaves for a workspace with multiple package. running just <code>uv format</code> would always run the format from the workspace root. What is the intended way of working with specific packages of a workspace?
+using <code>uv run format --project package_a</code> and <code>uv run format --project package_b</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-22 18:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-22 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/tests/it/format.rs</code>:84 on 2025-08-22 18:53</div>
+            <div class="timeline-body"><p>Should we add another test similar to this, but using also the <code>--project</code> option? Maybe we could set up something like I depicted in https://github.com/astral-sh/uv/pull/15440/files#r2294435556 and have something like</p>
+<pre><code class="language-bash">.
+├── main.py
+├── package_a
+│   ├── main.py
+│   ├── pyproject.toml
+│   └── README.md
+├── package_b
+│   ├── main.py
+│   ├── pyproject.toml
+│   └── README.md
+├── pyproject.toml
+└── README.md
+</code></pre>
+<p>and check that when running <code>uv run format --project package_a</code> only <code>package_a</code> gets formatted and <code>package_b</code> does not? Maybe this overlaps a bit with the current <code>format_relative_project</code> test so i'm not sure</p>
+<p>Maybe I'm overthinking this :smile: but I'm open to include a test for this if this makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-22 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/tests/it/format.rs</code>:84 on 2025-08-22 19:02</div>
+            <div class="timeline-body"><p>And also, another test such as</p>
+<pre><code class="language-bash">.
+├── main.py
+├── package_a
+│   ├── main.py
+│   ├── package_a_subdir
+│   ├── pyproject.toml
+│   └── README.md
+├── package_b
+│   ├── main.py
+│   ├── pyproject.toml
+│   └── README.md
+├── pyproject.toml
+└── README.md
+</code></pre>
+<p>and runing <code>uv format</code> with current dir as <code>package_a/package_a_subdir</code> only formats <code>package_a</code> files? But this may be testing <code>VirtuslProject::discover</code>'s behaviour, so i'm also not sure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jorgehermo9 on 2025-08-22 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-22 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/format.rs</code>:66 on 2025-08-22 19:08</div>
+            <div class="timeline-body"><p>I think if you wanted to run it in a workspace member it'd be <code>uv format --package &lt;name&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on 2025-08-22 19:08</div>
+            <div class="timeline-body"><p>Marked PR as ready!</p>
+<p>I see the CI is failing for windows https://github.com/astral-sh/uv/actions/runs/17163604154/job/48698604290?pr=15440#step:10:2995 but seems unrelated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-22 19:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/format.rs</code>:84 on 2025-08-22 19:09</div>
+            <div class="timeline-body"><p>It seems helpful to add a test case for a workspace if you're interested! Even if we don't handle workspace members &quot;correctly&quot; yet, having coverage for the behavior is helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-22 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/src/commands/project/format.rs</code>:66 on 2025-08-22 19:16</div>
+            <div class="timeline-body"><p>Okay, perfect then!</p>
+<p>Thanks @zanieb, I'm kind of new with uv and I'm sorry for those basic questions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-22 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/tests/it/format.rs</code>:84 on 2025-08-22 19:18</div>
+            <div class="timeline-body"><p>Okay! Going to add that later/tomorrow (CET timezone). Feel free to merge if you don't want to wait till that, I'll open a new PR for tests if you decide to merge this before</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-22 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/format.rs</code>:85 on 2025-08-22 19:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // Using format from a subdirectory should still run in the project root
+    uv_snapshot!(context.filters(), context.format().current_dir(&amp;subdir), @r&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-22 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/format.rs</code>:110 on 2025-08-22 19:21</div>
+            <div class="timeline-body"><p>We should have a newline here</p>
+<pre><code class="language-suggestion">}
+
+#[test]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-22 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/format.rs</code>:59 on 2025-08-22 19:21</div>
+            <div class="timeline-body"><p>We should also add a <code>--no-project</code>  test case. I'd expect that to <em>not</em> use the project root.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-22 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/format.rs</code>:59 on 2025-08-22 19:22</div>
+            <div class="timeline-body"><p>We don't support that yet actually, so that's a follow-up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-22 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/format.rs</code>:59 on 2025-08-22 19:22</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/15462</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-22 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/tests/it/format.rs</code>:59 on 2025-08-22 19:31</div>
+            <div class="timeline-body"><p>I may implement that as well! if no one takes it first 😃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-22 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/format.rs</code>:66 on 2025-08-22 19:32</div>
+            <div class="timeline-body"><p>No problem!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-08-22 19:33</div>
+            <div class="timeline-body"><p>This looks ready to go besides my nits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on 2025-08-22 19:36</div>
+            <div class="timeline-body"><p>Thanks for your review @zanieb!
+Feel free to merge if you want, if so I'll open another with the remaining tests,otherwise I'll do those changes tomorrow 😀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-08-22 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-22 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2025-08-22 20:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow pinning managed Python versions to specific build versions - astral-sh/uv #15314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow pinning managed Python versions to specific build versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15314">#15314</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-08-15 19:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-15 19:24</div>
+            <div class="timeline-body"><p>Allows pinning the Python build version via environment variables, e.g., <code>UV_PYTHON_CPYTHON_BUILD=...</code>. Each variable is implementation specific, because they use different versioning schemes.</p>
+<p>Updates the Python download metadata to include a <code>build</code> string, so we can filter downloads by the pin. Writes the build version to a file in the managed install, e.g., <code>cpython-3.10.18-macos-aarch64-none/BUILD</code>, so we can filter installed versions by the pin.</p>
+<p>Some important follow-up here:</p>
+<ul>
+<li>Include the build version in not found errors (when pinned)</li>
+<li>Automatically use a remote list of Python downloads to satisfy build versions not present in the latest embedded download metadata</li>
+</ul>
+<p>Some less important follow-ups to consider:</p>
+<ul>
+<li>Allow using ranges for build version pins</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-08-16 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2025-08-16 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-08-20 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-20 20:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/common/mod.rs</code>:222 on 2025-08-20 20:31</div>
+            <div class="timeline-body"><p>Absolutely nightmarish to get the filters working on Windows and Unix. Hopefully this makes them more robust elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:832 on 2025-08-20 22:56</div>
+            <div class="timeline-body"><p>I want to make use of this for some error messages to avoid confusion when this is in a request. I'm not sure what the best way to do so is yet though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-20 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/python_version.rs</code>:20 on 2025-08-21 13:20</div>
+            <div class="timeline-body"><p>This should not use anyhow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/python_version.rs</code>:238 on 2025-08-21 13:21</div>
+            <div class="timeline-body"><p>We should use <code>env::var</code> here, this also avoids using our own error type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:40 on 2025-08-21 13:25</div>
+            <div class="timeline-body"><p>nit: join these two lines</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:1811 on 2025-08-21 13:37</div>
+            <div class="timeline-body"><p>Doesn't that mean we change what we test over time, depending on how or when we re-release? Should we assert that it matches something, and bump the build if it would match nothing anymore?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:1864 on 2025-08-21 13:40</div>
+            <div class="timeline-body"><p>Why are those imports here and not top level?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/managed.rs</code>:352 on 2025-08-21 13:42</div>
+            <div class="timeline-body"><p>We should not leak, we can use a <code>Cow</code> for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/python_version.rs</code>:223 on 2025-08-21 13:43</div>
+            <div class="timeline-body"><p>Should this be a method on implementation name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-08-21 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-21 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:352 on 2025-08-21 13:58</div>
+            <div class="timeline-body"><p>This matches the existing pattern — I definitely didn't come up with this :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-21 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/python_version.rs</code>:223 on 2025-08-21 13:59</div>
+            <div class="timeline-body"><p>It could be 🤔 I wanted to keep all this logic together but I don't feel strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-21 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:1811 on 2025-08-21 14:01</div>
+            <div class="timeline-body"><p>Yeah this one could change. We should use a build number that matches an older patch version because that won't change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-21 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:1811 on 2025-08-21 14:04</div>
+            <div class="timeline-body"><p>Honestly this test is silly. I might replace this entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-21 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:352 on 2025-08-21 14:07</div>
+            <div class="timeline-body"><p>It was done in https://github.com/astral-sh/uv/pull/10939</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-21 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/python_version.rs</code>:20 on 2025-08-21 14:09</div>
+            <div class="timeline-body"><p>Thanks, that was silly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-21 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/python_version.rs</code>:238 on 2025-08-21 14:14</div>
+            <div class="timeline-body"><p>I don't want to use <code>env::var</code> here, it will error if not present and I want that to have different behavior. I also want the dedicated error type for when we perform further validation of these values in the future, e.g., we know what a well formed build version looks like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-08-21 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/managed.rs</code>:352 on 2025-08-21 14:24</div>
+            <div class="timeline-body"><p>This breaks this the pattern in the rest of the code https://github.com/astral-sh/uv/pull/15418</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-08-21 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/python_version.rs</code>:238 on 2025-08-21 14:26</div>
+            <div class="timeline-body"><p>It makes sense if we add our own validation logic on top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-21 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:352 on 2025-08-21 15:11</div>
+            <div class="timeline-body"><p>I'm all for using <code>Cow</code>, it seems better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-08-25 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-25 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-25 21:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:21 UTC
+    </footer>
+</body>
+</html>

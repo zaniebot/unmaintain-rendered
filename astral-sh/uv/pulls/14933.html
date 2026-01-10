@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix symlink preservation in virtual environment creation - astral-sh/uv #14933</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix symlink preservation in virtual environment creation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14933">#14933</a>
+        opened by <a href="https://github.com/yumeminami">@yumeminami</a>
+        on 2025-07-28 06:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-07-28 06:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes inconsistent symlink handling in <code>uv venv</code> command (#14670).</p>
+<h2>Problem</h2>
+<p>https://github.com/astral-sh/uv/blob/00efde06b61756f0f305fcf67b12db71a29063d3/crates/uv-virtualenv/src/virtualenv.rs#L81</p>
+<p>The original code used <code>Path::metadata()</code> which automatically follows symlinks, causing the system to treat symlinked virtual environment paths as regular directories. When a user runs uv venv on an existing symlinked virtual environment <code>(.venv -&gt; foo)</code>, the code incorrectly treats the symlink as a regular directory because <code>location.metadata()</code> automatically follows the symlink and returns metadata for the target directory <code>foo/</code>. This causes the removal logic to delete the symlink itself and permanently breaking the symlink relationship and replacing it with a standard directory  structure.</p>
+<h2>Solution</h2>
+<ul>
+<li>Use canonicalize() to resolve symlinks only when removing and recreating virtual
+environments</li>
+<li>This ensures operations target the actual directory while preserving the symlink
+structure</li>
+<li>Minimal change that fixes the core issue without complex path management</li>
+</ul>
+<h2>Test Plan</h2>
+<pre><code class="language-bash">➜  test-env alias uv-dev='/Users/wingmunfung/workspace/uv/target/debug/uv'
+➜  test-env ln -s dummy foo
+➜  test-env ln -s foo .venv
+➜  test-env ls -lah        
+total 0
+drwxr-xr-x   4 wingmunfung  staff   128B Jul 30 10:39 .
+drwxr-xr-x  48 wingmunfung  staff   1.5K Jul 29 17:08 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 30 10:39 .venv -&gt; foo
+lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
+➜  test-env uv-dev venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+error: Failed to create virtual environment
+  Caused by: failed to create directory `.venv`: File exists (os error 17)
+➜  test-env mkdir dummy
+➜  test-env uv-dev venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+➜  test-env ls -lah
+total 0
+drwxr-xr-x   5 wingmunfung  staff   160B Jul 30 10:39 .
+drwxr-xr-x  48 wingmunfung  staff   1.5K Jul 29 17:08 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 30 10:39 .venv -&gt; foo
+drwxr-xr-x   7 wingmunfung  staff   224B Jul 30 10:39 dummy
+lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
+➜  test-env uv-dev venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+Activate with: source .venv/bin/activate
+➜  test-env ls -lah
+total 0
+drwxr-xr-x   5 wingmunfung  staff   160B Jul 30 10:39 .
+drwxr-xr-x  48 wingmunfung  staff   1.5K Jul 29 17:08 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 30 10:39 .venv -&gt; foo
+drwxr-xr-x@  7 wingmunfung  staff   224B Jul 30 10:39 dummy
+lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
+
+### the symlink still exists
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-28 12:52</div>
+            <div class="timeline-body"><p>Can you explain why</p>
+<blockquote>
+<p>Previously, uv venv would preserve symlinks on the first run but
+replace them with real directories on subsequent runs, causing
+unpredictable behavior and potential data loss.</p>
+</blockquote>
+<p>was happening?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-07-29 01:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain why</p>
+<blockquote>
+<p>Previously, uv venv would preserve symlinks on the first run but
+replace them with real directories on subsequent runs, causing
+unpredictable behavior and potential data loss.</p>
+</blockquote>
+<p>was happening?</p>
+</blockquote>
+<p>@zanieb</p>
+<p>When recreating the venv, the symlink will be broken, just like your comment https://github.com/astral-sh/uv/issues/14670#issuecomment-3079993749, and there is no clear warning to the user. Is this one of the design purposes of uv itself?</p>
+<p>I think the current MR is not good enough, so I redesigned it.</p>
+<p>When the user runs uv venv again, it detects the presence of symbolic links in the virtual environment.</p>
+<p>We can prompt:</p>
+<p>Key information: Warning: The virtual environment at '[path]' contains symbolic links. Preserving symlinks can affect portability and stability if the linked paths change outside the environment.</p>
+<p>Options:</p>
+<p>(K)eep symlinks: Keep all symbolic links unchanged.</p>
+<p>(R)eplace with directories: For example: WARNING: This will replace symlinks with EMPTY directories. Any data expected to be at the symlink location within the venv will be lost or redirected to this new empty directory. Proceed only if you understand the consequences.</p>
+<p>(A)bort: Abort the operation, let the user handle it themselves.</p>
+<p>If you agree with this idea, I can continue to make modifications.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 02:01</div>
+            <div class="timeline-body"><blockquote>
+<p>When recreating the venv, the symlink will be broken, just like your comment https://github.com/astral-sh/uv/issues/14670#issuecomment-3079993749, and there is no clear warning to the user. Is this one of the design purposes of uv itself?</p>
+</blockquote>
+<p>No this is not by design, but I'm confused about the root cause of this abnormal behavior and I think it'd be helpful if your pull request explained that so a reviewer does not need to figure it out.</p>
+<p>I don't think we should prompt here, we should always follow the symlink.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-07-29 06:11</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>Thanks for the feedback! I've updated the PR description to explain the root cause. The issue was that Path::metadata() automatically follows symlinks, so the code treated symlinked venv paths as regular directories and would delete the symlink itself when clearing existing environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-29 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:89 on 2025-07-29 16:37</div>
+            <div class="timeline-body"><p>Should we just canonicalize here? Won't this fail for nested symlinks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-29 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:103 on 2025-07-29 16:41</div>
+            <div class="timeline-body"><p>Could we retain the name <code>location</code> throughout here to reduce the diff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-29 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:135 on 2025-07-29 16:43</div>
+            <div class="timeline-body"><p>Isn't the crux of the issue just that we need to canonicalize the location here, when we remove and create it again? Isn't everything else working fine as-is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/yumeminami">@yumeminami</a> reviewed on 2025-07-30 02:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/yumeminami">@yumeminami</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:135 on 2025-07-30 02:49</div>
+            <div class="timeline-body"><p>you’re right, this wouldn’t handle nested symlinks properly. I’ve updated the code to use <code>canonicalize</code>. Thanks for catching that!  https://github.com/astral-sh/uv/pull/14933/commits/274cbb5f72264f3ba7171355a54a921dc1173794</p>
+<p>I've tested the nested symlinks situation and it can handle it.</p>
+<pre><code class="language-bash">➜  test-env alias uv-dev='/Users/wingmunfung/workspace/uv/target/debug/uv'
+➜  test-env ln -s dummy foo
+➜  test-env ln -s foo .venv
+➜  test-env ls -lah        
+total 0
+drwxr-xr-x   4 wingmunfung  staff   128B Jul 30 10:39 .
+drwxr-xr-x  48 wingmunfung  staff   1.5K Jul 29 17:08 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 30 10:39 .venv -&gt; foo
+lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
+➜  test-env uv-dev venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+error: Failed to create virtual environment
+  Caused by: failed to create directory `.venv`: File exists (os error 17)
+➜  test-env mkdir dummy
+➜  test-env uv-dev venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+➜  test-env ls -lah
+total 0
+drwxr-xr-x   5 wingmunfung  staff   160B Jul 30 10:39 .
+drwxr-xr-x  48 wingmunfung  staff   1.5K Jul 29 17:08 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 30 10:39 .venv -&gt; foo
+drwxr-xr-x   7 wingmunfung  staff   224B Jul 30 10:39 dummy
+lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
+➜  test-env uv-dev venv
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+Activate with: source .venv/bin/activate
+➜  test-env ls -lah
+total 0
+drwxr-xr-x   5 wingmunfung  staff   160B Jul 30 10:39 .
+drwxr-xr-x  48 wingmunfung  staff   1.5K Jul 29 17:08 ..
+lrwxr-xr-x   1 wingmunfung  staff     3B Jul 30 10:39 .venv -&gt; foo
+drwxr-xr-x@  7 wingmunfung  staff   224B Jul 30 10:39 dummy
+lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 13:42</div>
+            <div class="timeline-body"><p>Thanks for making those changes! Can you write a test case that's <code>cfg!</code>'d to unix in <code>crates/uv/tests/it/venv.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-07-31 02:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for making those changes! Can you write a test case that's <code>cfg!</code>'d to unix in <code>crates/uv/tests/it/venv.rs</code>?</p>
+</blockquote>
+<p>@zanieb</p>
+<p>I‘ve added three test cases for symlink preservation:</p>
+<ul>
+<li>Clear operation: symlink preserved after uv venv --clear</li>
+<li>Recreate operation: symlink preserved during repeated uv venv calls</li>
+<li>Nested symlinks: multi-level symlink chains handled correctly</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-07-31 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-07-31 11:47</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-31 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-31 11:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:17 UTC
+    </footer>
+</body>
+</html>

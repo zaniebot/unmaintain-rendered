@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disallow writing symlinks outside the source distribution target directory - astral-sh/uv #12259</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disallow writing symlinks outside the source distribution target directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12259">#12259</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-03-18 02:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 02:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #12163.</p>
+<h2>Test Plan</h2>
+<p>Created an offending source distribution with this script:</p>
+<pre><code class="language-python">import io
+import tarfile
+import textwrap
+import time
+
+PKG_NAME  = &quot;badpkg&quot;
+VERSION   = &quot;0.1&quot;
+DIST_NAME = f&quot;{PKG_NAME}-{VERSION}&quot;
+ARCHIVE   = f&quot;{DIST_NAME}.tar.gz&quot;
+
+
+def _bytes(data: str) -&gt; io.BytesIO:
+    &quot;&quot;&quot;Helper: wrap a text blob as a BytesIO for tarfile.addfile().&quot;&quot;&quot;
+    return io.BytesIO(data.encode())
+
+
+def main(out_path: str = ARCHIVE) -&gt; None:
+    now = int(time.time())
+
+    with tarfile.open(out_path, mode=&quot;w:gz&quot;) as tar:
+
+        def add_file(path: str, data: str, mode: int = 0o644) -&gt; None:
+            &quot;&quot;&quot;Add a regular file whose *content* is supplied as a string.&quot;&quot;&quot;
+            buf  = _bytes(data)
+            info = tarfile.TarInfo(path)
+            info.size   = len(buf.getbuffer())
+            info.mtime  = now
+            info.mode   = mode
+            tar.addfile(info, buf)
+
+        # ── top‑level setup.py ───────────────────────────────────────────────
+        setup_py = textwrap.dedent(f&quot;&quot;&quot;\
+            from setuptools import setup, find_packages
+            setup(
+                name=&quot;{PKG_NAME}&quot;,
+                version=&quot;{VERSION}&quot;,
+                packages=find_packages(),
+            )
+        &quot;&quot;&quot;)
+        add_file(f&quot;{DIST_NAME}/setup.py&quot;, setup_py)
+
+        # ── minimal package code ─────────────────────────────────────────────
+        add_file(f&quot;{DIST_NAME}/{PKG_NAME}/__init__.py&quot;, &quot;# placeholder\\n&quot;)
+
+        # ── the malicious symlink ────────────────────────────────────────────
+        link = tarfile.TarInfo(f&quot;{DIST_NAME}/{PKG_NAME}/evil_link&quot;)
+        link.type     = tarfile.SYMTYPE
+        link.mtime    = now
+        link.mode     = 0o777
+        link.linkname = &quot;../../../outside.txt&quot;
+        tar.addfile(link)
+
+    print(f&quot;Created {out_path}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>Verified that both <code>pip install</code> and <code>uv pip install</code> rejected it.</p>
+<p>I also changed <code>link.linkname = &quot;../../../outside.txt&quot;</code> to <code>link.linkname = &quot;/etc/outside&quot;</code>, and verified that the absolute path was rejected too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2025-03-18 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-21 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/build.rs</code>:1803 on 2025-07-21 17:14</div>
+            <div class="timeline-body"><p>@konstin -- It looks like in this case, we're including the <code>.venv</code> in the sdist. I'm not sure why. Doesn't hatchling typically filter out <code>.gitignore</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-21 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/build.rs</code>:1757 on 2025-07-21 17:15</div>
+            <div class="timeline-body"><p>We should probably reject this when building?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-07-21 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-07-21 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/build.rs</code>:1757 on 2025-07-22 12:29</div>
+            <div class="timeline-body"><p>At least with the uv build backend we support it by adding the real file instead, it's useful when you have e.g. a shared readme or license file in a monorepo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/build.rs</code>:1803 on 2025-07-22 12:31</div>
+            <div class="timeline-body"><p>It's usually respecting the git configuration, maybe it's something about how we're setting up our tests, possibly because we don't have git repo? I'd have to dig a bit to figure that out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-07-22 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-07-22 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-22 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-22 13:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:12 UTC
+    </footer>
+</body>
+</html>

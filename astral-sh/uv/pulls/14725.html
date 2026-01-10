@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add new `uv-keyring` crate that vendors the `keyring-rs` crate - astral-sh/uv #14725</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add new `uv-keyring` crate that vendors the `keyring-rs` crate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14725">#14725</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-07-18 13:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-07-18 13:56</div>
+            <div class="timeline-body"><p>This PR is a first step toward support for storing credentials in the system keyring. The <code>keyring-rs</code> crate is the best option for system keyring integration, but the latest version (v4) requires either that Linux users have <code>libdbus</code> installed or that it is built with <code>libdbus</code> vendored in. This is because v4 depends on <a href="https://github.com/open-source-cooperative/dbus-secret-service">dbus-secret-service</a>, which was created as an alternative to <a href="https://github.com/open-source-cooperative/secret-service-rs">secret-service</a> so that users are not required to use an async runtime. Since uv does use an async runtime, this is not a good tradeoff for uv.</p>
+<p>This PR:</p>
+<ul>
+<li>Vendors <code>keyring-rs</code> crate into a new <code>uv-keyring</code> workspace crate</li>
+<li>Moves to the async <code>secret-service</code> crate that does not require clients on Linux to have <code>libdbus</code> on their machines. This includes updating <code>CredentialsAPI</code> trait (and implementations) to use async methods.</li>
+<li>Adds <code>uv-keyring</code> tests to <code>cargo test</code> jobs. For <code>cargo test | ubuntu</code>, this meant setting up secret service and priming gnome-keyring as an earlier step.</li>
+<li>Removes iOS code paths</li>
+<li>Patches in @oconnor663 's changes from his <a href="https://github.com/open-source-cooperative/keyring-rs/pull/261"><code>keyring-rs</code> PR</a></li>
+<li>Applies many clippy-driven updates</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @jtfmumm on 2025-07-18 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jtfmumm on 2025-08-06 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-08-06 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-keyring/README.md</code>:1 on 2025-08-06 14:07</div>
+            <div class="timeline-body"><p>This is an edited version of the original <code>keyring-rs</code> v4 <code>README</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-08-06 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-keyring/src/credential.rs</code>:22 on 2025-08-06 14:09</div>
+            <div class="timeline-body"><p>Most of these trait methods have been changed to <code>async</code> in this PR due to the switch from <code>dbus-secret-service</code> to <code>secret-service</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-08-06 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-keyring/src/lib.rs</code>:297 on 2025-08-06 14:16</div>
+            <div class="timeline-body"><p><code>async</code> methods on <code>Entry</code> have been updated from the sync versions in <code>keyring-rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-08-06 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-keyring/src/secret_service.rs</code>:479 on 2025-08-06 14:22</div>
+            <div class="timeline-body"><p><code>find_legacy_items</code> and <code>find_unique_legacy_items</code> replace methods in <code>keyring-rs</code> that took a closure and mapped over items. However, with async closures this created lifetime problems. I switched to an approach where we find and return items to the caller, which then applies the function to them directly. The tradeoff is more duplication but I'm not sure if there's a better way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @jtfmumm on 2025-08-11 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @oconnor663 by @jtfmumm on 2025-08-11 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-11 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/secret_service.rs</code>:479 on 2025-08-11 18:53</div>
+            <div class="timeline-body"><p>John was kind enough to put up <a href="https://github.com/astral-sh/uv/tree/jtfm/vendor-keyring-async-lifetimes">a branch where I can play with this</a>. On that branch, I think I can get things working using the new <code>AsyncFn</code> trait like this:</p>
+<pre><code class="language-diff">diff --git i/crates/uv-keyring/src/secret_service.rs w/crates/uv-keyring/src/secret_service.rs
+index ef79f5cb1..de4b96e5f 100644
+--- i/crates/uv-keyring/src/secret_service.rs
++++ w/crates/uv-keyring/src/secret_service.rs
+@@ -456,10 +456,9 @@ impl SsCredential {
+     }
+ 
+     /// JACK
+-    async fn map_matching_items&lt;F, Fut, T&gt;(&amp;self, f: F, require_unique: bool) -&gt; Result&lt;Vec&lt;T&gt;&gt;
++    async fn map_matching_items&lt;F, T&gt;(&amp;self, f: F, require_unique: bool) -&gt; Result&lt;Vec&lt;T&gt;&gt;
+     where
+-        F: for&lt;'a&gt; Fn(&amp;'a Item&lt;'_&gt;) -&gt; Fut,
+-        Fut: std::future::Future&lt;Output = Result&lt;T&gt;&gt;,
++        F: AsyncFn(&amp;Item) -&gt; Result&lt;T&gt;,
+         T: Sized,
+     {
+         let ss = SecretService::connect(EncryptionType::Dh)
+@@ -497,15 +496,14 @@ impl SsCredential {
+     }
+ 
+     /// JACK
+-    pub async fn map_matching_legacy_items&lt;F, Fut, T&gt;(
++    pub async fn map_matching_legacy_items&lt;F, T&gt;(
+         &amp;self,
+         ss: &amp;SecretService&lt;'_&gt;,
+         f: F,
+         require_unique: bool,
+     ) -&gt; Result&lt;Vec&lt;T&gt;&gt;
+     where
+-        F: Fn(&amp;Item) -&gt; Fut,
+-        Fut: std::future::Future&lt;Output = Result&lt;T&gt;&gt;,
++        F: AsyncFn(&amp;Item) -&gt; Result&lt;T&gt;,
+         T: Sized,
+     {
+         let collection = ss.get_default_collection().await.map_err(decode_error)?;
+</code></pre>
+<p>The difference between these two approaches isn't crystal clear to me, but <a href="https://rust-lang.github.io/rfcs/3668-async-closures.html#inability-to-express-higher-ranked-async-function-signatures">this motivating example in the RFC was helpful</a>:</p>
+<blockquote>
+<p>This happens because the type for the <code>Fut</code> generic parameter is chosen by the caller...and it cannot reference the higher-ranked lifetime <code>for&lt;'c&gt;</code> in the <code>FnMut</code> trait bound, but the anonymous future produced by calling <code>do_something</code> does capture a generic lifetime parameter, and <em>must</em> capture it in order to use the <code>&amp;str</code> argument.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-11 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/macos.rs</code>:60 on 2025-08-11 19:48</div>
+            <div class="timeline-body"><p>These underlying platform functions are doing blocking IO, so I lean towards wrapping them with <a href="https://docs.rs/tokio/latest/tokio/task/fn.spawn_blocking.html"><code>spawn_blocking</code></a>. I was kind of on the fence about it, but then if you look at <a href="https://github.com/kornelski/rust-security-framework/blob/5256c398b9576857d91e1df719c8cddae91a4fbd/security-framework/src/passwords.rs#L154-L160">underlying calls that <code>set_generic_password makes</code></a>, and you track down the upstream docs for <a href="https://developer.apple.com/documentation/security/secitemadd(_:_:"><code>SecItemAdd</code></a>) and <a href="https://developer.apple.com/documentation/security/secitemupdate(_:_:"><code>SecItemUpdate</code></a>), Apple actually specifically calls this out:</p>
+<blockquote>
+<p><strong>Performance considerations:</strong> <code>SecItemAdd</code> blocks the calling thread, so it can cause your app’s UI to hang if called from the main thread. Instead, call <code>SecItemAdd</code> from a background dispatch queue or <code>async</code> function</p>
+</blockquote>
+<p>I think we run Tokio single-threaded, so we might have the same concerns a single-threaded UI framework would here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-11 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/tests/threading.rs</code>:143 on 2025-08-11 20:02</div>
+            <div class="timeline-body"><p>I'm not sure exactly what sort of mistakes this test is looking for, but I think wrapping blocking things in <code>spawn_blocking</code> will make it more faithful to the original without requiring any changes here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/windows.rs</code>:432 on 2025-08-11 20:30</div>
+            <div class="timeline-body"><p>Agreed that it's not worth propagating <code>unsafe</code> everywhere, since these are module-private functions in vendored code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-11 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-11 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-keyring/src/macos.rs</code>:60 on 2025-08-11 20:34</div>
+            <div class="timeline-body"><p>I'm definitely a big fan of avoiding unawaited blocking IO in async contexts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-13 01:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/secret_service.rs</code>:322 on 2025-08-13 01:01</div>
+            <div class="timeline-body"><p>Nice :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-08-13 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-keyring/src/macos.rs</code>:60 on 2025-08-13 10:10</div>
+            <div class="timeline-body"><p>Updated for macOS and Windows</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/windows.rs</code>:298 on 2025-08-13 15:47</div>
+            <div class="timeline-body"><p><code>Send</code> is in the &quot;prelude&quot;, so I don't think it needs to be fully qualified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/macos.rs</code>:174 on 2025-08-13 15:51</div>
+            <div class="timeline-body"><p>Should this one get the <code>spawn_blocking</code> treatment too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> approved on 2025-08-13 16:15</div>
+            <div class="timeline-body"><p>LGTM with a couple comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-08-13 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-keyring/src/macos.rs</code>:174 on 2025-08-13 18:44</div>
+            <div class="timeline-body"><p>Yeah, added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-08-15 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-08-15 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-15 13:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv run --watch` for scripts - astral-sh/uv #12847</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `uv run --watch` for scripts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12847">#12847</a>
+        opened by <a href="https://github.com/thejchap">@thejchap</a>
+        on 2025-04-11 22:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-11 22:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>(Closes #9652)</p>
+<p>Adds watch mode for running scripts, enabled via a <code>--watch</code> flag</p>
+<h3>Implementation</h3>
+<ul>
+<li>Currently, on file change, <code>SIGTERM</code>, or <code>SIGINT</code>, the child interpreter process is always killed via <a href="https://docs.rs/tokio/latest/tokio/process/struct.Child.html#method.kill">SIGKILL</a>. Then, is restarted in the case of file change. The watcher process always exists with exit code 0.<ul>
+<li>This omits quite a bit of the complexity in <a href="https://github.com/thejchap/uv/blob/feature/run-watch/crates/uv/src/commands/run.rs#L10-L10">run_to_completion</a> - it seems like there might be a larger refactor lurking there if we want to overload that function to support restarting the script after its killed</li>
+<li>This also ignores any exit code that comes back from the command after it finishes executing - ie if you kill the watcher process while the command is running, its just going to pull the plug on the command and return &quot;ok&quot; rather than sending a signal to the command, then letting the command finish and propagating that exit code back up.</li>
+</ul>
+</li>
+<li>~Clearing the screen~<ul>
+<li>~Bun <a href="https://bun.sh/docs/runtime/hot">does this by default</a> but also provides a flag to turn it off - should we do the same?~</li>
+<li>Added a flag</li>
+</ul>
+</li>
+<li>~Debounce duration~<ul>
+<li>~Bun looks like it has no debounce - need to look at some other examples in the wild to see what other libraries do - picked 100ms for now very arbitrarily~</li>
+<li>Looks like Red Knot <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_project/src/watch/watcher.rs#L69">uses 10</a>, stole this</li>
+</ul>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<p>TODO on real tests, MVP E2E here:</p>
+<p>https://github.com/user-attachments/assets/d576f227-7461-4e4f-b3ed-f81957bc685e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alanmoyano">@alanmoyano</a> on 2025-04-11 23:23</div>
+            <div class="timeline-body"><p>It can handle re-running a script after crashing? A nice use case for my would be spawning back a flask server after fixing the bug that made it crash. In any case, looking great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @Gankra on 2025-04-14 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-04-15 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slhck">@slhck</a> on 2025-04-16 07:09</div>
+            <div class="timeline-body"><p>This would be a great addition!</p>
+<p>Note that <code>tsx</code>, for example, in <a href="https://tsx.is/watch-mode">its <code>--watch</code> mode</a>, also has an option to disable clearing the screen, which is useful for capturing logs from older runs of the same script — and <code>node</code> has <a href="https://nodejs.org/docs/latest/api/cli.html#--watch-preserve-output">the same functionality</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-25 13:53</div>
+            <div class="timeline-body"><p>@Gankra if you want to let me know if this is on the right track i can make some more progress here in the next few days</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BoynChan">@BoynChan</a> on 2025-06-04 08:01</div>
+            <div class="timeline-body"><p>That's cool job, looking forward next move!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-06-22 01:42</div>
+            <div class="timeline-body"><p>closing this - happy to resume work on it after some feedback</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @thejchap on 2025-06-22 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blakerutledge-g">@blakerutledge-g</a> on 2025-07-31 19:45</div>
+            <div class="timeline-body"><p>any update on this? would love to use this right now ha</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:12 UTC
+    </footer>
+</body>
+</html>

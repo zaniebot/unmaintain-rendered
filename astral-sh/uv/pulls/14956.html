@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make the `BuildDispatch` interpreter method async - astral-sh/uv #14956</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make the `BuildDispatch` interpreter method async</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14956">#14956</a>
+        opened by <a href="https://github.com/tdejager">@tdejager</a>
+        on 2025-07-29 14:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tdejager">@tdejager</a> on 2025-07-29 14:40</div>
+            <div class="timeline-body"><p>This is a bit of a weird request, but in <a href="https://pixi.sh">pixi</a> we are making use of this function to lazily instantiate a conda environment. Well, in actuality we are using a shim to the <code>BuildDispatch</code> to actually to only create a conda prefix, if some package needs to be built during the resolution phase. Otherwise we can resolve everything without an enviroment containing a python intepreter.</p>
+<p>We are using a method now - that uses the runtime to run async code inside this function, as <code>interpreter</code> is the first method called on a <code>BuildContext</code> when running a source build - using <code>tokio::Handle::block_on</code>.
+However was causing a deadlock in very specific situations, me and @baszalmstra + @wolfv have investigated this thoroughly, but have not been able to find the root cause. It would hang in a part of the uv code that hits the index, but that is <strong>after</strong> all of our initialization <em>and the blocking call</em> was completed.
+Changing this to be fully async fixes the problem, this requires this method to be async though.</p>
+<p>We get that this is not necessarily required, and we might find a workaround, but I wanted to try it this way first.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 13:01</div>
+            <div class="timeline-body"><p>It perturbs me a little, but I don't really have the heart to say no :)</p>
+<p>Will you fix CI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-31 07:24</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/tdejager%3Afeat%2Fasync-interpreter?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #14956 will <strong>improve performances by 10.72%</strong></h3>
+<p><sub>Comparing <code>tdejager:feat/async-interpreter</code> (2b4112a) with <code>main</code> (3df972f)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 2</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>resolve_warm_jupyter</code> | 70.5 ms | 63.7 ms | +10.72% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2025-07-31 07:32</div>
+            <div class="timeline-body"><p>@zanieb I understand that feeling completely :) I fixed the CI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-31 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-31 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2025-07-31 11:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:17 UTC
+    </footer>
+</body>
+</html>

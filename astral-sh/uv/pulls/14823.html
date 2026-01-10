@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split preview mode into separate feature flags - astral-sh/uv #14823</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Split preview mode into separate feature flags</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14823">#14823</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-07-22 17:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-22 17:15</div>
+            <div class="timeline-body"><p>I think this would give us better hygiene than a global flag. It makes it easier for users to opt-in to overlapping features, such as Python upgrades and Python bin installations and to disable warnings for preview mode without opting in to a bunch of other features. In general, I want to reduce the burden for putting something under preview.</p>
+<p>The <code>--preview</code> and <code>--no-preview</code> flags are retained as global overrides. A new <code>--preview-features</code> option is added which accepts comma separated features or can be passed multiple times, e.g., <code>--preview-features add-bounds,pylock</code>. There's a <code>UV_PREVIEW_FEATURES</code> environment variable for that option (I'm not sure if we should overload <code>UV_PREVIEW</code>, but could be convinced).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 00:24</div>
+            <div class="timeline-body"><p>Why in the world does this fail in CI but not locally?</p>
+<pre><code>        FAIL [   1.540s] uv::it show_settings::preview_features
+  stdout ───
+
+    running 1 test
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: preview_features
+    Source: crates/uv/tests/it/show_settings.rs:7295
+    ────────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ────────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬───────────────────────────────────────────────────────────────────
+       84    84 │                 no_index: false,
+       85    85 │             },
+       86    86 │             index_strategy: FirstIndex,
+       87    87 │             keyring_provider: Disabled,
+       88       │-            link_mode: Clone,
+             88 │+            link_mode: Hardlink,
+       89    89 │             no_build_isolation: false,
+       90    90 │             no_build_isolation_package: [],
+       91    91 │             prerelease: IfNecessaryOrExplicit,
+       92    92 │             resolution: Highest,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2025-07-24 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2025-07-24 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-07-24 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 21:04</div>
+            <div class="timeline-body"><p>I'll update the documentation separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-07-24 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @jtfmumm by @zanieb on 2025-07-24 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-configuration/src/preview.rs</code>:125 on 2025-07-25 07:03</div>
+            <div class="timeline-body"><p>This should be in <code>impl Display for PreviewFeatures</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/add.rs</code>:102 on 2025-07-25 07:05</div>
+            <div class="timeline-body"><p>We should be consistent on whether we use the name inline or <code>as_str()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-07-25 07:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-07-25 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-cli/src/lib.rs</code>:289 on 2025-07-25 11:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Use comma-separated values or pass multiple times to enable multiple features.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-07-25 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-configuration/src/preview.rs</code>:21 on 2025-07-25 11:22</div>
+            <div class="timeline-body"><p>Should this <code>str</code> be capable of including more than one feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-07-25 11:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-configuration/src/preview.rs</code>:21 on 2025-07-25 11:24</div>
+            <div class="timeline-body"><p>May be useful to have one or two unit tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> approved on 2025-07-25 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-25 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/add.rs</code>:102 on 2025-07-25 12:55</div>
+            <div class="timeline-body"><p>I'd like to use <code>as_str</code>, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-25 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/preview.rs</code>:21 on 2025-07-25 15:51</div>
+            <div class="timeline-body"><p>No, it can't be. I updated it to clarify that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-25 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-25 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-25 16:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:15 UTC
+    </footer>
+</body>
+</html>

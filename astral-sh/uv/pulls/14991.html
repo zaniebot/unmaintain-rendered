@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensure consistent indentation when adding dependencies - astral-sh/uv #14991</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ensure consistent indentation when adding dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14991">#14991</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-07-31 11:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-31 11:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The basic problem here is that when we had multiple items in an inline array, and that array expanded to multiple lines, we accidentally changed the indentation part-way through due to how prefixes work in the TOML.</p>
+<p>Here's Claude's explanation of the root cause, which I find pretty decent:</p>
+<pre><code>  Here's what happened step by step:
+
+  1. First item (&quot;iniconfig&quot;): Has empty prefix &quot;&quot; → indentation_prefix stays None → uses default 4 spaces
+  2. Second item (&quot;ruff&quot;): Has empty prefix &quot;&quot; → indentation_prefix stays None → uses default 4 spaces
+  3. Third item (&quot;typing-extensions&quot;): Has prefix &quot; &quot; (single space from inline format) → indentation_prefix becomes
+  Some(&quot; &quot;) → uses only 1 space!
+
+  This produced:
+  [dependency-groups]
+  dev = [
+      &quot;iniconfig&gt;=2.0.0&quot;,
+      &quot;ruff&quot;,
+   &quot;typing-extensions&quot;,  # ← Only 1 space instead of 4!
+  ]
+
+  Why the Third Item Had a Different Prefix
+
+  In inline arrays like [&quot;ruff&quot;, &quot;typing-extensions&quot;], the items are separated by commas and spaces. When parsed by
+  the TOML library:
+  - &quot;ruff&quot; has no prefix (it comes right after [)
+  - &quot;typing-extensions&quot; has a single space prefix (the space after the comma)
+
+  The Fix
+
+  Moving the indentation calculation outside the loop ensures it's calculated only once:
+
+  // Calculate indentation ONCE before the loop
+  if let Some(first_item) = deps.iter().next() {
+      let decor_prefix = /* get prefix from first item */
+      indentation_prefix = (!decor_prefix.is_empty()).then_some(decor_prefix.to_string());
+  }
+
+  // Now use the same indentation for ALL items
+  for item in deps.iter_mut() {
+      // Apply consistent indentation to every item
+  }
+
+  This ensures all items get the same indentation (4 spaces by default when converting from inline arrays), producing
+   the correct output:
+
+  [dependency-groups]
+  dev = [
+      &quot;iniconfig&gt;=2.0.0&quot;,
+      &quot;ruff&quot;,
+      &quot;typing-extensions&quot;,  # ← Correct 4-space indentation
+  ]
+
+  The bug only affected arrays being converted from inline to multiline format, where different items might have
+  different residual formatting from their inline representation.
+</code></pre>
+<p>Closes #14961.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-07-31 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-07-31 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-07-31 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-31 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-31 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-31 11:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:17 UTC
+    </footer>
+</body>
+</html>

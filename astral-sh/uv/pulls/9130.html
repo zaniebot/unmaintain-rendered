@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add support for package level conflicts with groups - astral-sh/uv #9130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add support for package level conflicts with groups</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9130">#9130</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-11-14 19:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-14 19:35</div>
+            <div class="timeline-body"><p>This PR adds support for declaring a conflict between a group
+and a project's &quot;production&quot; dependencies. For example:</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;anyio&gt;=4.6.2.post1&quot;,
+]
+
+[dependency-groups]
+foo = [
+    &quot;anyio&lt;4.6.2.post1&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { group = &quot;foo&quot; },
+    { package = &quot;example&quot; },
+  ],
+]
+</code></pre>
+<p>Before this PR, syntax like <code>{ package = &quot;example&quot; }</code> wasn't allowed.
+This PR enables that syntax, and also tweaks the forking logic a bit
+to support this.</p>
+<p>I don't have 100% confidence in this PR. In particular, I'm not sure
+if my trick adding a parent package to <code>PubGrubDependency</code> is fully
+correct. But I think it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-11-14 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2024-11-14 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-11-14 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-11-15 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-16 16:06</div>
+            <div class="timeline-body"><p>(I think the experience makes sense, not feeling confident about reviewing the implementation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @BurntSushi on 2024-11-23 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-10 19:17</div>
+            <div class="timeline-body"><p>I've done a very dubious update with <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-07-18 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-22 19:37</div>
+            <div class="timeline-body"><p>@BurntSushi does this also enable package &lt;-&gt; package conflicts? I'd expect that for workspace members. I think the use-case there is more important than package &lt;-&gt; group conflicts. (I can investigate this too, we'll want test coverage)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-23 15:26</div>
+            <div class="timeline-body"><p>Hmmm with this updated, the example in the PR description now generates a bunk <code>uv.lock</code>:</p>
+<pre><code class="language-toml">version = 1
+revision = 2
+requires-python = &quot;&gt;=3.12&quot;
+resolution-markers = [
+    &quot;python_version &lt; '0'&quot;,
+]
+conflicts = [[
+    { package = &quot;example&quot;, group = &quot;foo&quot; },
+    { package = &quot;example&quot; },
+]]
+</code></pre>
+<p>Specifically, the <code>python_version &lt; '0'</code> marker.</p>
+<p>I'll take a closer look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-23 18:08</div>
+            <div class="timeline-body"><p>OK, I've pushed up a commit that I think gets this PR into working shape. There was a fair bit missing from <code>UniversalMarker</code> in sections that I think came after this PR was originally written. There was also a test asserting incorrect results (in the same way that the example in the PR description failed).</p>
+<blockquote>
+<p>@BurntSushi does this also enable package &lt;-&gt; package conflicts? I'd expect that for workspace members. I think the use-case there is more important than package &lt;-&gt; group conflicts. (I can investigate this too, we'll want test coverage)</p>
+</blockquote>
+<p>I think all the bones for this are there, but it doesn't seem to be fully working. Here's a simple concrete example. The root <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;sortedcontainers==2.3.0&quot;]
+
+[tool.uv.workspace]
+members = [&quot;subexample&quot;]
+
+[tool.uv]
+conflicts = [
+  [
+    { package = &quot;example&quot; },
+    { package = &quot;subexample&quot; },
+  ],
+]
+
+[build-system]
+requires = [&quot;setuptools&gt;=42&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>And now <code>subexample/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;subexample&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;sortedcontainers==2.4.0&quot;]
+</code></pre>
+<p>Without the conflicts declared here, this would normally fail to generate a lock file. But <em>that</em> part works and seems to generate a correct lock. But syncing fails (ignore the bad error messages for now):</p>
+<pre><code>$ run-uv -q pr1 -- sync
+Resolved 4 packages in 5ms
+error: The project and the project are incompatible with the declared conflicts: {the project, the project}
+
+$ run-uv -q pr1 -- sync --package example
+Resolved 4 packages in 3ms
+error: The project and the project are incompatible with the declared conflicts: {the project, the project}
+
+$ run-uv -q pr1 -- sync --package subexample
+Resolved 4 packages in 6ms
+error: The project and the project are incompatible with the declared conflicts: {the project, the project}
+</code></pre>
+<p>In order for these package level conflicts to work, there has to be way to sync only a specific package or set of packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-23 20:44</div>
+            <div class="timeline-body"><p>(I'm still tagged here from the previous review, let me know if you want me to do another round)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-23 22:18</div>
+            <div class="timeline-body"><p>Thank you for addressing the problems!</p>
+<blockquote>
+<p>there has to be way to sync only a specific package or set of packages.</p>
+</blockquote>
+<p>We do already sync a subset, e.g., I don't think <code>subexample</code> would be installed there without <code>--all-packages</code> since it's not a dependency? I'll look into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-24 22:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock_conflict.rs</code>:1052 on 2025-07-24 22:24</div>
+            <div class="timeline-body"><p>Just insta version churn / noise in this file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-25 20:02</div>
+            <div class="timeline-body"><p>I'm going to move this to another pull request since it's got a pretty different scope now and it's a pain to keep looking up Andrew's PRs instead of my own :)</p>
+<p>See https://github.com/astral-sh/uv/pull/14906</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-25 20:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:11 UTC
+    </footer>
+</body>
+</html>

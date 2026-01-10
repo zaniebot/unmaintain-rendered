@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `uv python install --default` to work with pre-release versions - astral-sh/uv #15240</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `uv python install --default` to work with pre-release versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15240">#15240</a>
+        opened by <a href="https://github.com/tdhopper">@tdhopper</a>
+        on 2025-08-12 15:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tdhopper">@tdhopper</a> on 2025-08-12 15:09</div>
+            <div class="timeline-body"><p><em>I am not a rust dev and this is my first attempted contribution. Feel free to ignore!</em></p>
+<h2>Summary</h2>
+<p>Currently the <code>--default</code> flag for <code>uv python install</code> fails silently when the users specifies 3.14; 3.14rc1 is installed but not made available on the users path. This change correctly sets the release candidate as system Python (i.e. adds <code>python</code> and <code>python3</code> binaries for 3.14 to the path).</p>
+<p>Incorrect behavior was a result of the overly strict check that would not set the pre-release versions as a default.</p>
+<p>Resolves https://github.com/astral-sh/uv/issues/15237</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added unit tests for this behavior.<ul>
+<li>Test behavior may be limited in that once 3.14 is no longer pre-release, the test won't cover the desired behavior (that pre-releases can be set at default). I'm not sure how to work around that.</li>
+</ul>
+</li>
+<li>Tested locally to verify that <code>uv python install --default 3.14</code> works to set 3.14 as my system python.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-12 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:761 on 2025-08-12 17:00</div>
+            <div class="timeline-body"><p>I'm trying to wrap my head around why all of these checks are necessary.</p>
+<p>e.g., why do we need to check <code>default</code> here? That's overlapping with the subsequent <code>let targets</code> logic. Does the behavior change if you remove it?</p>
+<p>Could the entire change just be <code>first_request.download.key() == installation.key()</code>? Are there edge-cases that break from that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-12 17:01</div>
+            <div class="timeline-body"><p>Thanks for the PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-08-12 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tdhopper">@tdhopper</a> reviewed on 2025-08-12 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tdhopper">@tdhopper</a> on <code>crates/uv/src/commands/python/install.rs</code>:761 on 2025-08-12 17:34</div>
+            <div class="timeline-body"><p>Great questions, thanks. I'm trying that and have a few test failures. Trying to dig into those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-12 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:761 on 2025-08-12 17:39</div>
+            <div class="timeline-body"><p>Okay! It's entirely plausible we do need more logic, it's just helpful to understand the reasons. Let me know if you get stuck and I can take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tdhopper">@tdhopper</a> reviewed on 2025-08-12 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tdhopper">@tdhopper</a> on <code>crates/uv/src/commands/python/install.rs</code>:761 on 2025-08-12 19:04</div>
+            <div class="timeline-body"><p>@zanieb it doesn't work with just <code>first_request.download.key() == installation.key()</code>. I <em>think</em> we need this  logic, but my understanding of how installation actually works is a bit limited. If you could take a look at it, I'd appreciate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow uv python install --default to work with pre-release versions" to "Allow `uv python install --default` to work with pre-release versions" by @tdhopper on 2025-08-12 20:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:21 UTC
+    </footer>
+</body>
+</html>

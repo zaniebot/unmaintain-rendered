@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add --editable flag to `uv build` - astral-sh/uv #14922</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add --editable flag to `uv build`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14922">#14922</a>
+        opened by <a href="https://github.com/adisbladis">@adisbladis</a>
+        on 2025-07-28 01:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/adisbladis">@adisbladis</a> on 2025-07-28 01:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Force recompilation of packages installed in editable mode</li>
+</ul>
+<p>It can often be useful to force building of packages with native extensions, for example when working on a package with dynamic recompilation managed by import hooks, such as <code>meson-python</code> where the underlying build system has it's own build caches that may not always work properly and needs some kicking.</p>
+<p>Setuptools used to support <code>python setup.py build_ext -i</code> to accomplish this, but in the PEP-517/PEP-660 worlds we don't have an equivalent CLI.</p>
+<ul>
+<li>Use in low level packaging tooling</li>
+</ul>
+<p>When building packages with Nix the build process is running inside a sandbox with no file system access and no internet access. This is great for security and reproducibility, but it breaks assumptions in the Python ecosystem:</p>
+<ul>
+<li><p>Baking of absolute paths</p>
+<p>Python build systems often (always?) bake in absolute paths pointing to the source directory. where build systems will bake in the absolute path to the build directory.</p>
+<p>This patching is currently handled by a <a href="https://github.com/pyproject-nix/pyproject.nix/blob/d8355c7/build/hooks/editable_hook/editable_hook/patch_editable.py">Python script</a>.</p>
+<p>Note: Script absolute paths are not relevant to this PR, I'm just bringing it up to explain the overall build process of an editable within a Nix context.</p>
+</li>
+<li><p>We want to install the wheel into a custom prefix (the Nix store)</p>
+<p>Within Nix we build each Python package in isolation and install them into their own Nix store prefixes (a requirement for per-package incremental builds). For example the <code>requests</code> package in one of my projects is installed into <code>/nix/store/xhd2c62gj3b5ikwbpsp5kzyb88jc56g5-requests-2.32.3</code>. This directory contains <em>only</em> the installed files from requests, and not their dependencies.</p>
+<p>In the case of editable packages that means we have to produce a wheel to be able to run <code>uv pip install --prefix /nix/store/...</code> on it. Building a wheel is currently handled by a small/janky <a href="https://github.com/pyproject-nix/pyproject.nix/blob/3db43c7/build/hooks/editable_hook/editable_hook/build_editable.py">Python script</a>.</p>
+</li>
+<li><p>Build system side effects</p>
+<p>Some build systems, notably <code>cython</code> &amp; <code>meson-python</code>, uses <a href="https://peps.python.org/pep-0660/#build-editable"><code>build_editable</code></a> side effects to place build results in-place into the source tree. Since the editable wheel was built inside the Nix sandbox with a temporary build directory those side effects are discarded.</p>
+<p>This means that we need a mechanism to trigger an editable build, similarly to the &quot;force recompilation&quot; use case outlined above.</p>
+</li>
+</ul>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Automated test included.
+Also extended the <code>build_wheel</code> test to ensure that it outputs a regular non-editable wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-07-28 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-28 13:46</div>
+            <div class="timeline-body"><p>A problem here is that PEP 660 is very intentional that we must not produce such wheels:</p>
+<blockquote>
+<p>An “editable” wheel uses the wheel format not for distribution but as ephemeral communication between the build system and the front end. This avoids having the build backend install anything directly. This wheel must not be exposed to end users, nor cached, nor distributed.</p>
+</blockquote>
+<p>Partially, this is a bug in uv cause we sometimes cache editable installs when we shouldn't (instead, we just shouldn't reinstall).</p>
+<p>If we want to expose and distribute editable wheels, we should change the spec text to allow this.</p>
+<blockquote>
+<ul>
+<li>Some build systems, notably <code>cython</code> &amp; <code>meson-python</code>, uses <a href="https://peps.python.org/pep-0660/#build-editable"><code>build_editable</code></a> side effects to place build results in-place into the source tree. Since the editable wheel was built inside the Nix sandbox with a temporary build directory those side effects are discarded.</li>
+</ul>
+</blockquote>
+<p>Using the source tree is a core feature of using editable builds. They are a development feature for where a developer has a repo checked out, either their project or a dependency, and wants to be able to run code and run tests without rebuilding each time. It assumes that the source are not in a temporary build directory, but in the user's workspace. Where this is not the case, regular wheel builds should be preferred over editable builds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adisbladis">@adisbladis</a> on 2025-07-28 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>A problem here is that PEP 660 is very intentional that we must not produce such wheels:</p>
+</blockquote>
+<p>I've read that PEP many times but I completely forgot about that section :/
+It's unfortunate that it's worded like that since the PEP authors model of the build process doesn't cover my <code>Use in low level packaging tooling</code>.
+I'm OK with doing my own thing for this particular use case.</p>
+<p>In any case, the key thing I want to achieve here is an equivalent of <code>python setup.py build_ext -i</code>: doing the editable side effects without necessarily mutating a virtual environment.
+What do you think a good approach to achieve this within <code>uv</code> would be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-28 14:18</div>
+            <div class="timeline-body"><p>I don't think <code>uv build</code> counts as low-level tooling - We're intentionally high level, <code>uv build</code> just does a smaller task as it exists for <code>uv publish</code> (or storing the wheel in some other fashion).</p>
+<blockquote>
+<p>In any case, the key thing I want to achieve here is an equivalent of <code>python setup.py build_ext -i</code>: doing the editable side effects without necessarily mutating a virtual environment.</p>
+</blockquote>
+<p>What about doing a regular wheel build instead and using that? The wheel should contain all files you need to install and run the package, just separated from the source tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adisbladis">@adisbladis</a> on 2025-07-28 14:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think uv build counts as low-level tooling</p>
+</blockquote>
+<p>The &quot;lower level&quot; part is within a distro/meta build system context.</p>
+<blockquote>
+<p>What about doing a regular wheel build instead and using that? The wheel should contain all files you need to install and run the package, just separated from the source tree.</p>
+</blockquote>
+<p>You're misunderstanding what I'm trying to achieve.</p>
+<p>I very much <em>need</em> editable packages.
+What is not present in the Python ecosystem today that used to be present when everyone was using setuptools is a way to instruct your build system to &quot;build me my project&quot; while working on something in editable mode without <em>also</em> touching the virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adisbladis">@adisbladis</a> on 2025-07-28 14:32</div>
+            <div class="timeline-body"><p>In any case I will close this particular PR since it's clearly not getting accepted as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @adisbladis on 2025-07-28 14:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:16 UTC
+    </footer>
+</body>
+</html>

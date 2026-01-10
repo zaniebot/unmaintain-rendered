@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search in the user scheme scripts directory last in `find_uv_bin` - astral-sh/uv #14191</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Search in the user scheme scripts directory last in `find_uv_bin`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14191">#14191</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-06-21 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 18:41</div>
+            <div class="timeline-body"><p>We should definitely not pick up user-level installations unless we can't find uv anywhere else. Otherwise, e.g., we would find a uv installed with <code>pipx install uv</code> before the one matching the uv module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-06-21 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 19:44</div>
+            <div class="timeline-body"><p>Arguably breaking, but I'd be surprised if it had real-world implications. We can slot into v0.8 if we want though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-23 07:30</div>
+            <div class="timeline-body"><p>I suggest is searching the relative paths first: When uv is installed into <code>&lt;target&gt;/../uv</code> or <code>&lt;prefix&gt;/lib/python/site-packages/uv</code> you want <code>&lt;target&gt;/bin</code> or <code>&lt;prefix&gt;/bin</code> not <code>/usr/bin</code>, don't you? The latter might be something e.g. installed with apt-get and the former an update installed where the system-prefix isn't writable.</p>
+<p>I can't see where it would find an unrelated &quot;wrong&quot; uv with the first logic. At worst it won't find anything, does it?</p>
+<p>Maybe a more general &quot;fix&quot; is to have the <code>uv</code> binary import the <code>uv</code> module instead of the other way round like other Python &quot;binaries&quot; (actually executable scripts) do. If it really needs an executable binary (i.e. not a library) I guess that could be put next to/into the module in which case it is trivial to find.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssbarnea">@ssbarnea</a> approved on 2025-06-23 15:13</div>
+            <div class="timeline-body"><p>@zanieb I tested this change with 4 combinations and it seems to be working well:</p>
+<ul>
+<li>uv installed at system level for uv python and for mise python, had to use <code>uv run python -m pip install --break-system-packages uv.whl</code> and similar for mise.</li>
+<li>venv created with <code>uv env</code> and with <code>python -m venv</code></li>
+<li>tested only on macOS</li>
+</ul>
+<p>I did not test with <code>pip --user</code> level because that one is known that packages installed like this are not to be available to venvs regardless how they are created.</p>
+<p>All these 4 combinations worked this way as <code>python -m uv</code> was able to return the correct uv. Obviously that the <code>uv</code> executable was not in path for most of them, but that was expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 12:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I suggest is searching the relative paths first: When uv is installed into <target>/../uv or <prefix>/lib/python/site-packages/uv you want <target>/bin or <prefix>/bin not /usr/bin, don't you?</p>
+</blockquote>
+<p>Hm.. I think both the <code>&lt;target&gt;</code> and <code>&lt;prefix&gt;</code> cases are not common and I'm pretty hesitant to prioritize them above the other look up locations, even if there's only a small chance of false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-26 13:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm.. I think both the <code>&lt;target&gt;</code> and <code>&lt;prefix&gt;</code> cases are not common and I'm pretty hesitant to prioritize them above the other look up locations, even if there's only a small chance of false positives.</p>
+</blockquote>
+<p>In which case could there be a false positive? It looks at the location adjacent to the python module. That would work for pretty much all scenarios as this is the same location the binary would be for e.g. user or system installations, isn't it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 13:25</div>
+            <div class="timeline-body"><p>I mean, when we look 4 parents up we could just be looking in an arbitrary directory at that point?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-26 14:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I mean, when we look 4 parents up we could just be looking in an arbitrary directory at that point?</p>
+</blockquote>
+<p>I see. Maybe we can match the parents against <code>lib/python*/site-packages/uv</code> to make this safe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-26 14:45</div>
+            <div class="timeline-body"><p>I considered that, but I was sort of hesitant to add more complexity. I can mull it over some more / seek feedback from more of the team.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-08-07 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> approved on 2025-08-08 11:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-08-08 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-08 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-08 11:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:13 UTC
+    </footer>
+</body>
+</html>

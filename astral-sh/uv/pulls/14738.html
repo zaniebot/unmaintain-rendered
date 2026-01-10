@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add hint to use `uv self version` when `uv version` cannot find a project - astral-sh/uv #14738</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add hint to use `uv self version` when `uv version` cannot find a project</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14738">#14738</a>
+        opened by <a href="https://github.com/copilot-swe-agent">@copilot-swe-agent</a>
+        on 2025-07-18 18:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/copilot-swe-agent">@copilot-swe-agent</a> on 2025-07-18 18:17</div>
+            <div class="timeline-body"><p>When users run <code>uv version</code> in a directory without a <code>pyproject.toml</code> file, they often intend to check uv's own version rather than a project's version. This change adds a helpful hint to guide users to the correct command.</p>
+<p><strong>Before:</strong></p>
+<pre><code>❯ uv version
+error: No `pyproject.toml` found in current directory or any parent directory
+</code></pre>
+<p><strong>After:</strong></p>
+<pre><code>❯ uv version
+error: No `pyproject.toml` found in current directory or any parent directory
+
+hint: If you meant to view uv's version, use `uv self version` instead
+</code></pre>
+<h2>Changes</h2>
+<ul>
+<li>Modified <code>find_target()</code> function in <code>crates/uv/src/commands/project/version.rs</code> to catch <code>WorkspaceError::MissingPyprojectToml</code> specifically and enhance the error message with a helpful hint</li>
+<li>Added import for <code>WorkspaceError</code> to access the specific error type</li>
+<li>Updated existing tests to expect the new hint message in error output</li>
+<li>Added new test case <code>version_get_missing_with_hint()</code> to verify behavior</li>
+</ul>
+<p>The hint appears consistently across all scenarios where <code>uv version</code> fails to find a project:</p>
+<ul>
+<li><code>uv version</code> (normal mode)</li>
+<li><code>uv version --project .</code> (explicit project mode)</li>
+<li><code>uv version --preview</code> (preview mode)</li>
+</ul>
+<p>The change maintains all existing functionality - when a <code>pyproject.toml</code> is found, <code>uv version</code> continues to work normally without showing the hint.</p>
+<p>Fixes #14730.</p>
+<!-- START COPILOT CODING AGENT TIPS -->
+
+<hr />
+<p>💡 You can make Copilot smarter by setting up custom instructions, customizing its development environment and configuring Model Context Protocol (MCP) servers. Learn more <a href="https://gh.io/copilot-coding-agent-tips">Copilot coding agent tips</a> in the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Copilot by @Copilot on 2025-07-18 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @Copilot on 2025-07-18 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[WIP] Add a hint to use `uv self version` if `uv version` cannot find a project" to "Add hint to use `uv self version` when `uv version` cannot find a project" by @Copilot on 2025-07-18 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @Copilot on 2025-07-18 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:1707 on 2025-07-18 18:46</div>
+            <div class="timeline-body"><p>I think we can drop this whole preview test case, that's the stable behavior now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:1686 on 2025-07-18 18:47</div>
+            <div class="timeline-body"><p>I guess we shouldn't hint if <code>--project</code> was passed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:1686 on 2025-07-18 18:47</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/14161 may be helpful for context on the prior implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:370 on 2025-07-18 19:04</div>
+            <div class="timeline-body"><p>I'm surprised we need this error check twice, can we avoid that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 19:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:345 on 2025-07-18 19:05</div>
+            <div class="timeline-body"><p>This doesn't match our usual styling for hints. See other &quot;hint&quot; styling in the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-18 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/tests/it/version.rs</code>:1707 on 2025-07-18 19:06</div>
+            <div class="timeline-body"><p>Done. Removed the preview test case since it's now stable behavior. Changes in commit 0c66f2d.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-18 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/tests/it/version.rs</code>:1686 on 2025-07-18 19:06</div>
+            <div class="timeline-body"><p>You're absolutely right. Updated the logic to only show the hint when <code>--project</code> is not explicitly passed. When users specify <code>--project</code>, they're being intentional about working with a project context. Changes in commit 0c66f2d.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @Copilot on 2025-07-18 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-18 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/src/commands/project/version.rs</code>:370 on 2025-07-18 19:29</div>
+            <div class="timeline-body"><p>Fixed by consolidating the error handling to both code paths (with and without package parameter). Both now consistently handle <code>WorkspaceError::MissingPyprojectToml</code> with the same hint logic. Changes in commit 9dfb59f.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-18 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/src/commands/project/version.rs</code>:345 on 2025-07-18 19:29</div>
+            <div class="timeline-body"><p>Fixed the hint styling to use the standard format with a blank line before &quot;hint:&quot; that matches other error messages in the codebase. Changes in commit 9dfb59f.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 19:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:345 on 2025-07-18 19:51</div>
+            <div class="timeline-body"><p>You're missing the bold styling and such.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 19:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:372 on 2025-07-18 19:51</div>
+            <div class="timeline-body"><p>You said you avoided duplicating this code path but it's still duplicated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-18 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/src/commands/project/version.rs</code>:345 on 2025-07-18 20:03</div>
+            <div class="timeline-body"><p>Fixed the hint styling to use the standard format with <code>&quot;hint&quot;.bold().cyan()</code> and <code>&quot;:&quot;.bold()</code> for the hint label, and <code>.green()</code> for the command name. Updated the test to expect the properly styled output with ANSI codes. Changes in commit 2b7765d.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @Copilot on 2025-07-18 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-18 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/src/commands/project/version.rs</code>:372 on 2025-07-18 20:15</div>
+            <div class="timeline-body"><p>Fixed by creating a helper function <code>enhance_workspace_error()</code> that handles the error formatting logic once and is used by both code paths. This eliminates the duplication. Changes in commit cae0ed1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:1705 on 2025-07-18 20:21</div>
+            <div class="timeline-body"><p>We filter color codes during tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:330 on 2025-07-18 20:22</div>
+            <div class="timeline-body"><p>Let's call this <code>hint_uv_self_version</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-18 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/tests/it/version.rs</code>:1705 on 2025-07-18 20:34</div>
+            <div class="timeline-body"><p>Fixed the test to expect plain text output without ANSI color codes that are filtered by the test framework. Changes in commit f7d7b69.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @Copilot on 2025-07-18 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-18 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/src/commands/project/version.rs</code>:330 on 2025-07-18 20:48</div>
+            <div class="timeline-body"><p>Renamed the function from <code>enhance_workspace_error</code> to <code>hint_uv_self_version</code> as requested. Changes in commit 92666e5.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-20 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:329 on 2025-07-20 16:19</div>
+            <div class="timeline-body"><p>We should probably be more specific here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-20 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:1692 on 2025-07-20 16:20</div>
+            <div class="timeline-body"><p>We should use <code>///</code> for function documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-20 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/src/commands/project/version.rs</code>:329 on 2025-07-20 16:31</div>
+            <div class="timeline-body"><p>Made the function documentation more specific to clearly explain what it does, when it applies the hint, and under what conditions. Updated in commit c74b67c.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @Copilot on 2025-07-20 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-swe-agent[bot]">@copilot-swe-agent[bot]</a> reviewed on 2025-07-20 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>crates/uv/tests/it/version.rs</code>:1692 on 2025-07-20 16:42</div>
+            <div class="timeline-body"><p>Changed the comment to use <code>///</code> for function documentation as requested. Changes in commit 399cf76.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-22 11:22</div>
+            <div class="timeline-body"><p>Lint is still failing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Copilot">@Copilot</a> on 2025-07-22 11:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Lint is still failing.</p>
+</blockquote>
+<p>Fixed the Rust formatting lint issue. The problem was that <code>cargo fmt</code> expected the long function signature to be split across multiple lines and some extra blank lines needed to be removed. Changes in commit 0b2560d.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-07-22 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-07-22 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-22 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-22 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-22 13:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:14 UTC
+    </footer>
+</body>
+</html>

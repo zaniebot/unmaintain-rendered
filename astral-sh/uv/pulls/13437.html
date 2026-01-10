@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warn when two packages write to the same module - astral-sh/uv #13437</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warn when two packages write to the same module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13437">#13437</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-05-13 20:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 20:55</div>
+            <div class="timeline-body"><p>We regularly get confusing bug reports where a package sometimes works and sometimes doesn't and it's not clear to the user why. Ultimately, it turns out that two packages contain the same module and there is a race condition when installing the two packages. Usually, it's one of the opencv-python distributions, but recently it's been z3, too. These error are completely inscrutable to users.</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/10708</li>
+<li>https://github.com/astral-sh/uv/issues/11806</li>
+<li>https://github.com/astral-sh/uv/issues/11659</li>
+<li>https://github.com/astral-sh/uv/issues/13435</li>
+<li>https://github.com/astral-sh/uv/issues/13550</li>
+<li>https://github.com/astral-sh/uv/issues/14030</li>
+<li>https://github.com/astral-sh/uv/issues/15238</li>
+</ul>
+<p>We now warn for top-level modules (pattern: <code>&lt;identifier&gt;/__init__.py</code>) that collide in a single installation, naming the offending wheels. Checking for <code>__init__.py</code> excludes namespace packages.</p>
+<p>Test script:</p>
+<pre><code>uv venv -q &amp;&amp; cargo run -q --profile fast-build pip install --no-progress --link-mode clone opencv-python opencv-contrib-python --no-build --no-deps
+uv venv -q &amp;&amp; cargo run -q --profile fast-build pip install --no-progress --link-mode copy opencv-python opencv-contrib-python --no-build --no-deps
+uv venv -q &amp;&amp; cargo run -q --profile fast-build pip install --no-progress --link-mode hardlink opencv-python opencv-contrib-python --no-build --no-deps
+uv venv -q &amp;&amp; cargo run -q --profile fast-build pip install --no-progress --link-mode symlink opencv-python opencv-contrib-python --no-build --no-deps
+</code></pre>
+<p>We currently only catch conflicts in a single installation. Should we prime the lock database with the site-packages contents, and would that carry overhead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-05-13 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-05-13 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-13 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:33 on 2025-05-13 20:55</div>
+            <div class="timeline-body"><p>This should get &lt;1000 hits so I've implemented the naive approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-05-14 06:14</div>
+            <div class="timeline-body"><p>An example that's vexed me in the past:</p>
+<ol>
+<li>https://pypi.org/project/Flask-Bootstrap/ (original, unmaintained project)</li>
+<li>https://pypi.org/project/Bootstrap-Flask/ (maintained fork, uses same package name but
+different on PyPI)</li>
+</ol>
+<p>both install to <code>flask_bootstrap</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-20 14:16</div>
+            <div class="timeline-body"><p>I don't know that we should make this user-facing, to be honest. Isn't it going to trigger any time anyone installs Jupyter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-20 14:58</div>
+            <div class="timeline-body"><p>I strongly think this should be user-facing, I linked some of the issues this would have prevented above (we had another one just today: #13550), especially since this is otherwise non-deterministic, silent and almost impossible to figure out if you don't know what you're looking for.</p>
+<p>It doesn't warn for <code>uv pip install jupyter</code>, is there a reason we would expect it to? Note that we're checking for an <code>__init__.py</code>, so this does not affect namespace packages that are allowed to interleave.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/atinary-bvollmer">@atinary-bvollmer</a> on 2025-05-21 06:34</div>
+            <div class="timeline-body"><p>Hey @charliermarsh,</p>
+<p>I'm the author of #13550. Thanks to @konstin I found the issue but I would strongly side with here that especially for less experienced users this can lead to very frustrating problems. A warning during the install would have most likely prevented it for me.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-27 21:09</div>
+            <div class="timeline-body"><p>Added a test case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-28 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-30 11:31</div>
+            <div class="timeline-body"><p>One place where this could fail is the Python 2 <code>path = import(&quot;pkgutil&quot;).extend_path(__path__, name)</code> hack, but I haven't seen that one in a while, and we can special case it if necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-30 12:02</div>
+            <div class="timeline-body"><p>(I'll review this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-06-05 10:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-06 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:12147 on 2025-06-06 19:01</div>
+            <div class="timeline-body"><p>Why do we install directly from wheels instead of the source trees?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-06 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-06 19:01</div>
+            <div class="timeline-body"><p>Why do we show the wheel filenames here? Is that an important detail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-06 19:06</div>
+            <div class="timeline-body"><p>For debugging, I usually need to go open the wheel and look inside of it, so I consider this a valuable detail. We should show at least the version though, otherwise we can't find where this is from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-06 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-06 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:42 on 2025-06-06 19:07</div>
+            <div class="timeline-body"><p>I reworded this in https://github.com/astral-sh/uv/pull/13889, curious for your thoughts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-06 19:08</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/pull/13437/files#r2132758628</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-06 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-06 19:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-06 19:09</div>
+            <div class="timeline-body"><p>I worry about this as a user-facing detail in the warning though, isn't the file name going to be in the verbose logs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-06 19:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-06 19:09</div>
+            <div class="timeline-body"><p>Also, aren't the versions included in the install summary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-06 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:557 on 2025-06-06 19:14</div>
+            <div class="timeline-body"><p>What does this look like for modules like <code>foo.bar</code>? Are we only going to show <code>bar</code>? Or are you only checking for the top-level modules because of <code>relative.components.count() == 2</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-06 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:12508 on 2025-06-06 19:15</div>
+            <div class="timeline-body"><p>Can we also demonstrate that installing these wheels one at a time does not warn?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-11 19:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:557 on 2025-06-11 19:28</div>
+            <div class="timeline-body"><p>That's the TODO above, we're only looking for <code>foo/__init__.py</code> rn and don't track <code>foo/bar/__init__.py</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-11 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-11 19:33</div>
+            <div class="timeline-body"><p>The error should by itself contain enough information to track down the problem, so I would like it to at least contain the versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-11 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-11 20:05</div>
+            <div class="timeline-body"><p>I'm okay with the versions, styled as we do elsewhere, e.g., <code>foo (v1.0.0)</code>. I think the filenames sound like a developer-facing rather than user-facing detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-06-11 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-11 20:17</div>
+            <div class="timeline-body"><p>The exclamation mark is a bit much, I don't think we do that anywhere else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-06-11 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:42 on 2025-06-11 20:19</div>
+            <div class="timeline-body"><p>Will this trigger if two packages include <em>the same</em> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-11 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:42 on 2025-06-11 20:27</div>
+            <div class="timeline-body"><p>Yes, do we have a case where this is expected and valid to happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-11 20:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-11 20:31</div>
+            <div class="timeline-body"><p>That's dropped in https://github.com/astral-sh/uv/pull/13889</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-11 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_install.rs</code>:11412 on 2025-06-11 20:40</div>
+            <div class="timeline-body"><p>I updated the error message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-06-11 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:42 on 2025-06-11 20:45</div>
+            <div class="timeline-body"><p>Isn't it a <em>feature</em> that two packages could contain the same shared module, and could just vendor it into their own wheel?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-11 20:55</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/konsti%2Fwarn-on-module-conflicts?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #13437 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>konsti/warn-on-module-conflicts</code> (f18ca49) with <code>main</code> (8968d78)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 3</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-11 21:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:42 on 2025-06-11 21:21</div>
+            <div class="timeline-body"><p>Is it? That seems pretty problematic from a versioning perspective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-12 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-install-wheel/src/linker.rs</code>:42 on 2025-06-12 19:33</div>
+            <div class="timeline-body"><p>I haven't seen any vendoring cases where the vendored modules would overlap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MalteEbner">@MalteEbner</a> on 2025-06-13 16:02</div>
+            <div class="timeline-body"><p>Suggested solution: I think it should be possible for the user to define different packages under the same module name similar to the sources logic. Something similar to this:</p>
+<pre><code>[tool.uv.sources]
+pillow = [
+  { package = &quot;pillow-simd&gt;=9,&lt;10&quot;, marker = &quot;platform_machine == 'x86_64'&quot;},
+  { package = &quot;pillow&gt;=11,&lt;12&quot;, marker = &quot;platform_machine == 'aarch64'&quot;},
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-24 10:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Suggested solution: I think it should be possible for the user to define different packages under the same module name similar to the sources logic. Something similar to this:</p>
+<pre><code>[tool.uv.sources]
+pillow = [
+  { package = &quot;pillow-simd&gt;=9,&lt;10&quot;, marker = &quot;platform_machine == 'x86_64'&quot;},
+  { package = &quot;pillow&gt;=11,&lt;12&quot;, marker = &quot;platform_machine == 'aarch64'&quot;},
+]
+</code></pre>
+</blockquote>
+<p>~~This is already supported and recommended, since this is a valid usage it's not affected by this PR.~~</p>
+<p>Sorry is misread the comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-08-07 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-08-07 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-08-08 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-08-08 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-08 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-08-08 19:30</div>
+            <div class="timeline-body"><p>I sort of thought I've seen pre-PEP-420 namespace packages recently enough. <a href="https://codesearch.debian.net/search?q=path%3A__init__.py+extend_path&amp;literal=1&amp;perpkg=1">Debian Code Search for <code>path:__init__.py extend_path</code></a> shows a good amount of hits, though several are in vendored and possibly old packages. Protobuf has a <code>google/__init__.py</code> in its sources, but it doesn't seem to actually ship it in the wheel. The latest PyQt6 wheel does have a <code>PyQt6/__init__.py</code>, but I'm not sure if anything else installs into that namespace.</p>
+<p>[edit: meant to write &quot;pre-PEP-420&quot;, not &quot;PEP-420&quot;]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-08 19:33</div>
+            <div class="timeline-body"><p>Valid PEP 420 packages that don't clash are not affected by this change.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Python executables on Windows by Python version metadata - astral-sh/uv #15479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter Python executables on Windows by Python version metadata</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15479">#15479</a>
+        opened by <a href="https://github.com/sunfkny">@sunfkny</a>
+        on 2025-08-24 11:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sunfkny">@sunfkny</a> on 2025-08-24 11:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix #13927</p>
+<h2>Test Plan</h2>
+<p>Tested by installing multiple Python versions on Windows, adjusting the PATH order, then running <code>cargo run --bin uv -- run -p 3.12 -v python -V</code> and verifying in the debug logs that mismatched interpreters were skipped and the correct Python 3.12 executable was selected.</p>
+<pre><code>&gt; where.exe python
+C:\Users\root\AppData\Local\Programs\Python\Python314\python.exe
+C:\Users\root\AppData\Local\Programs\Python\Python313\python.exe
+C:\Users\root\AppData\Local\Programs\Python\Python312\python.exe
+
+&gt; cargo run --bin uv -- run -p 3.12 -v python -V
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.92s
+     Running `target\debug\uv.exe run -p 3.12 -v python -V`
+DEBUG uv 0.8.13 (6819ce2b5 2025-08-24)
+DEBUG Found project root: `C:\Code\uv`
+DEBUG Project `uv` is marked as unmanaged
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python 3.12 in virtual environments, managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\root\AppData\Roaming\uv\python`
+DEBUG Skipping managed installation `cpython-3.14.0rc2-windows-x86_64-none`: does not satisfy `3.12`
+DEBUG Skipping managed installation `cpython-3.13.7-windows-x86_64-none`: does not satisfy `3.12`
+DEBUG Skipping interpreter at `C:\Users\root\AppData\Local\Programs\Python\Python314\python.exe`: PE version `3.14.0rc2` does not match `3.12`
+DEBUG Skipping interpreter at `C:\Users\root\AppData\Local\Programs\Python\Python313\python.exe`: PE version `3.13.7` does not match `3.12`
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Users\root\AppData\Local\Programs\Python\Python312\python.exe` (first executable in the search path)
+DEBUG Using Python 3.12.10 interpreter at: C:\Users\root\AppData\Local\Programs\Python\Python312\python.exe
+DEBUG Running `python -V`
+Python 3.12.10
+DEBUG Command exited with code: 0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-24 14:40</div>
+            <div class="timeline-body"><p>Ignore those Docker failures, we're looking into that.</p>
+<p>How does this differ from https://github.com/astral-sh/uv/pull/13948?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sunfkny">@sunfkny</a> on 2025-08-24 14:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Ignore those Docker failures, we're looking into that.</p>
+<p>How does this differ from #13948?</p>
+</blockquote>
+<p><code>file_version.Patch</code> is not patch, it is <code>micro * 1000 + levelnum * 10 + serial</code></p>
+<p>It is actually calculated here:
+https://github.com/python/cpython/blob/96b7a2eba423b42320f15fd4974740e3e930bb8b/PCbuild/python.props#L224-L230
+and set here:
+https://github.com/python/cpython/blob/96b7a2eba423b42320f15fd4974740e3e930bb8b/PCbuild/pyproject.props#L112</p>
+<p>In the Windows resource files for the Python executable, the version is first defined in <code>python_ver_rc.h</code>:
+<code>#define PYVERSION64 PY_MAJOR_VERSION, PY_MINOR_VERSION, FIELD3, PYTHON_API_VERSION</code>
+https://github.com/python/cpython/blob/6fcac09401e336b25833dcef2610d498e73b27a1/PC/python_ver_rc.h#L34</p>
+<p>Then it is used in <code>python_exe.rc</code> in <code>FILEVERSION</code>:
+<code>FILEVERSION PYVERSION64</code>
+https://github.com/python/cpython/blob/6fcac09401e336b25833dcef2610d498e73b27a1/PC/python_exe.rc#L24</p>
+<p>The <code>FILEVERSION</code> statement is structured as:
+<code>HIWORD(dw1), LOWORD(dw1), HIWORD(dw2), LOWORD(dw2)</code>
+https://learn.microsoft.com/en-us/windows/win32/menurc/versioninfo-resource</p>
+<p>Here, <code>file_version.Patch</code> corresponds to <code>HIWORD(dw2)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-24 15:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/pe_version.rs</code>:4 on 2025-08-24 15:05</div>
+            <div class="timeline-body"><p>Maybe we can make this whole module cfg'd for windows like <code>microsoft_store </code> is and drop the <code>try_extract_version_from_pe</code> for non-windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-24 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/pe_version.rs</code>:113 on 2025-08-24 15:06</div>
+            <div class="timeline-body"><p>We should use <code>thiserror </code>for formatting of this error case and have the enum variant be specific to the release level</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-24 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/pe_version.rs</code>:98 on 2025-08-24 15:10</div>
+            <div class="timeline-body"><p>Can these <code>from</code> calls truncate? Do we need to document why they're safe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sunfkny">@sunfkny</a> reviewed on 2025-08-24 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sunfkny">@sunfkny</a> on <code>crates/uv-python/src/pe_version.rs</code>:98 on 2025-08-24 15:34</div>
+            <div class="timeline-body"><p>Converting <code>u16</code> to <code>u64</code> is safe, since <code>Version::new</code> requires an iterator over items of type <code>R</code> where <code>R: Borrow&lt;u64&gt;</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:24 UTC
+    </footer>
+</body>
+</html>

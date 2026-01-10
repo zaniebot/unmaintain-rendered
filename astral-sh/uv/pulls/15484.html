@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reject already-installed wheels that don't match the target platform - astral-sh/uv #15484</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reject already-installed wheels that don't match the target platform</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15484">#15484</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-08-24 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-24 15:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We've received several requests to validate that installed wheels match the current Python platform. This isn't <em>super</em> common, since it requires that your platform changes in some meaningful way (e.g., you switch from x86 to ARM), though in practice, it sounds like it <em>can</em> happen in HPC environments. This seems like a good thing to do regardless, so we now validate that the tags (as recoded in <code>WHEEL</code>) are consistent with the current platform during installs.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/15035.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-08-24 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-08-24 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-08-24 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-08-24 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-08-24 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:274 on 2025-08-25 09:04</div>
+            <div class="timeline-body"><p>We should reuse the tags we just read over of calling the method again without unwrap</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:272 on 2025-08-25 09:04</div>
+            <div class="timeline-body"><p>Is this unwrap-safe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/site_packages.rs</code>:247 on 2025-08-25 09:05</div>
+            <div class="timeline-body"><p>STOPSHIP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/satisfies.rs</code>:64 on 2025-08-25 09:36</div>
+            <div class="timeline-body"><p>STOPSHIP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/satisfies.rs</code>:76 on 2025-08-25 09:37</div>
+            <div class="timeline-body"><p>This check is in every branch, can we move it outside of the match?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-filename/src/expanded_tags.rs</code>:89 on 2025-08-25 10:04</div>
+            <div class="timeline-body"><p>Here, we're ignoring <code>Invalid*Tag</code> error types, while filtering out tags we don't recognise. The same problem exists in the original wheel filename implementation where <code>InvalidLanguageTag</code> is unused (<code>InvalidLanguageTag</code> has two hits in the codebase, this file and <code>wheel.rs</code>). In both cases we have <code>repr: SmallString</code> to cover tags we filtered out in error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-filename/src/expanded_tags.rs</code>:123 on 2025-08-25 10:06</div>
+            <div class="timeline-body"><p>Can you add a test for an invalid segment, that we're using <code>repr</code> to not lose it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-08-25 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-08-25 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:272 on 2025-08-25 12:21</div>
+            <div class="timeline-body"><p>Sorry, no, this should have a STOPSHIP on it. I just wanted to see if this failed anywhere in CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-08-25 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/satisfies.rs</code>:76 on 2025-08-25 12:22</div>
+            <div class="timeline-body"><p>I want it to run last in each branch though. I could put it <em>after</em> the <code>match</code>, but I thought that might be more confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-08-25 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-filename/src/expanded_tags.rs</code>:89 on 2025-08-25 12:22</div>
+            <div class="timeline-body"><p>Yeah this is intentional, because we don't want to error out on tags we don't understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-08-25 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/site_packages.rs</code>:248 on 2025-08-25 12:32</div>
+            <div class="timeline-body"><p>Just wondering, why do we throw the error here but drop it everywhere else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-25 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-25 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/site_packages.rs</code>:250 on 2025-08-25 12:32</div>
+            <div class="timeline-body"><p>👍 this seems nice to have, might be worth opening an issue for it maybe someone can pick it up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-08-25 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-08-25 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/site_packages.rs</code>:248 on 2025-08-25 12:33</div>
+            <div class="timeline-body"><p>Because this is the &quot;diagnostics&quot; method where I think it's useful to see if it failed (it runs if you add <code>--strict</code> or do <code>uv pip check</code>). It should probably be its own diagnostic though rather than failing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-08-25 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-08-25 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-25 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-25 13:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:24 UTC
+    </footer>
+</body>
+</html>

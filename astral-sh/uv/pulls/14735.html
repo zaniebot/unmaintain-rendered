@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `extra-build-dependencies` - astral-sh/uv #14735</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `extra-build-dependencies`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14735">#14735</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-07-18 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 17:37</div>
+            <div class="timeline-body"><p>Replaces https://github.com/astral-sh/uv/pull/14092</p>
+<p>Adds <code>tool.uv.extra-build-dependencies = {package = [dependency, ...]}</code> which extends <code>build-system.requires</code> during package builds.</p>
+<p>These are lowered via workspace sources, are applied to transitive dependencies, and are included in the wheel cache shard hash.</p>
+<p>There are some features we need to follow-up on, but are out of scope here:</p>
+<ul>
+<li>Preferring locked versions for build dependencies</li>
+<li>Settings for requiring locked versions for build depencies</li>
+</ul>
+<p>There are some quality of life follow-ups we should also do:</p>
+<ul>
+<li>Warn on <code>extra-build-dependencies</code> that do not apply to any packages</li>
+<li>Add test cases and improve error messaging when the <code>extra-build-dependencies</code> resolve fails</li>
+</ul>
+<hr />
+<p>There ~are~ were a few open decisions to be made here</p>
+<ol>
+<li>Should we resolve these dependencies alongside the <code>build-system.requires</code> dependencies? Or should we resolve separately? (I think the latter is more powerful? because you can override things? but it opens the door to breaking your build)</li>
+<li>Should we install these dependencies into the same environment? Or should we layer it on top as we do elsewhere? (I think it's fine to install into the same environment)</li>
+<li>Should we respect sources defined in the parent project? (I think yes, but then we need to lower the dependencies earlier — I don't think that's a big deal, but it's not implemented)</li>
+<li>Should we respect sources defined in the child project? (I think no, this gets really complicated and seems weird to allow)</li>
+<li>Should we apply this to transitive dependencies? (I think so)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-07-18 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2025-07-18 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build-frontend/src/lib.rs</code>:559 on 2025-07-18 17:45</div>
+            <div class="timeline-body"><p>There's some unreverted noise in this file from Aria's change. I'll clean it up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:1574 on 2025-07-18 17:46</div>
+            <div class="timeline-body"><p>Thank you &lt;3 @konstin for the deranged test case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-20 17:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Should we resolve these dependencies alongside the build-system.requires dependencies? Or should we resolve separately? (I think the latter is more powerful? because you can override things? but it opens the door to breaking your build)</p>
+</blockquote>
+<p>I would probably resolve them together. At least until we see a use-case to resolve them separately. (We could add build dependency overrides to allow explicit overrides, like we have build dependency constraints.)</p>
+<blockquote>
+<p>Should we install these dependencies into the same environment? Or should we layer it on top as we do elsewhere. (I think it's fine to install into the same environment)</p>
+</blockquote>
+<p>Same environment IMO.</p>
+<blockquote>
+<p>Should we respect sources defined in the parent project? (I think yes, but then we need to lower the dependencies earlier)</p>
+</blockquote>
+<p>I think yes... I think we should respect the sources defined in the same file as the <code>extra-build-dependencies</code> definition, for consistency.</p>
+<blockquote>
+<p>Should we respect sources defined in the child project? (I think no)</p>
+</blockquote>
+<p>I don't think so.</p>
+<blockquote>
+<p>Should we apply this to transitive dependencies? (I think so)</p>
+</blockquote>
+<p>I think so, yeah. Similar to other settings, like <code>--config-settings-package</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-07-28 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-07-29 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @zanieb on 2025-07-29 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-bench/benches/uv.rs</code>:144 on 2025-07-30 01:18</div>
+            <div class="timeline-body"><p>I think you should implement <code>Default</code> on <code>uv_distribution::ExtraBuildRequires</code>, so this can just be <code>ExtraBuildRequires::default</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-30 01:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dispatch/src/lib.rs</code>:226 on 2025-07-30 01:19</div>
+            <div class="timeline-body"><p>Sort of prefer using just <code>ExtraBuildDependencies</code> here rather than the fully-qualified path, for consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-30 01:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-30 01:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/build_requires.rs</code>:291 on 2025-07-30 01:20</div>
+            <div class="timeline-body"><p>Should this just be a <code>From&lt;ExtraBuildDependencies&gt;</code> impl?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-30 01:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/lib.rs</code>:278 on 2025-07-30 01:21</div>
+            <div class="timeline-body"><p>It could make sense to impl it for <code>Version</code> if you feel motivated, to avoid this allocation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-30 01:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/lib.rs</code>:283 on 2025-07-30 01:21</div>
+            <div class="timeline-body"><p>Is the <code>to_string</code> because it's generic? I wonder if we could require <code>Pep508Url</code> to impl <code>CacheKey</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/settings.rs</code>:635 on 2025-07-30 01:22</div>
+            <div class="timeline-body"><p>Extra comma after &quot;like&quot; at the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-30 01:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-30 01:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/mod.rs</code>:2180 on 2025-07-30 01:23</div>
+            <div class="timeline-body"><p>I generally prefer <code>ExtraBuildRequires</code> here rather than the qualified path, unless this is more consistent with the rest of the file and the diff obscures it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-30 01:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/packages/anyio_local/anyio/__init__.py</code>:2 on 2025-07-30 01:24</div>
+            <div class="timeline-body"><p>(Missing newline, doesn't really matter.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-07-30 01:24</div>
+            <div class="timeline-body"><p>Nice work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/reference/settings.md</code>:2699 on 2025-07-30 08:57</div>
+            <div class="timeline-body"><p>This example is wrong</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:783 on 2025-07-30 09:08</div>
+            <div class="timeline-body"><p>dead code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:773 on 2025-07-30 09:09</div>
+            <div class="timeline-body"><p>What about merging those two into a single newtype <code>ExtraBuildDependencies</code> with a <code>Deref</code> on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:790 on 2025-07-30 09:13</div>
+            <div class="timeline-body"><p>We're copy and pasting this snipped for each new map, can we put it in a utility (https://github.com/serde-rs/serde/issues/1607#issuecomment-525577524)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-frontend/src/lib.rs</code>:367 on 2025-07-30 09:28</div>
+            <div class="timeline-body"><p>Can you add an <code>if !extra_build_dependencies.is_empty()</code> &quot;requires and extra-build-requires&quot;? Or change it to something that doesn't mention the field name at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-frontend/src/lib.rs</code>:508 on 2025-07-30 09:31</div>
+            <div class="timeline-body"><p>I think that's always correct to solve in a single, so we get a consistent requirement. We could add an option to ignore the default build deps if we actually need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/metadata/build_requires.rs</code>:291 on 2025-07-30 09:34</div>
+            <div class="timeline-body"><p>This separate method avoids accidentally converting them without lowering</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-07-30 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-30 11:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/metadata/build_requires.rs</code>:291 on 2025-07-30 11:42</div>
+            <div class="timeline-body"><p>Yeah I think a dedicated method makes sense here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-30 11:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep508/src/lib.rs</code>:283 on 2025-07-30 11:44</div>
+            <div class="timeline-body"><p>Yeah I think so, I looked at it briefly and it the generic aspect seemed tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-07-30 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-30 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-30 14:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:14 UTC
+    </footer>
+</body>
+</html>

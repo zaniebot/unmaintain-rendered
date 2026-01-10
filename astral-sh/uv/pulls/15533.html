@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add logging to the uv build backend - astral-sh/uv #15533</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add logging to the uv build backend</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15533">#15533</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-08-26 14:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-08-26 14:01</div>
+            <div class="timeline-body"><p>Add support for <code>RUST_LOG</code> to the uv build backend. While we were previously using logging statements in the uv build backend, they could only be shown when when using the direct build fast path through uv, as there was no tracing subscriber to write log messages out. This means no debug logging when using the build backend through pip, <code>python -m build</code>, an incompatible version of uv, or any other build frontend; No option to figure why includes and excludes behave the way they do.</p>
+<p>This PR closes this gap by adding a tracing subscriber. The only option to enable it is <code>RUST_LOG</code>, as we don't have a CLI. The formatting style is the same as for uv, and color is also support in the same way, albeit only through anstream's support for TTYs and environment variables. We recommend only <code>RUST_LOG=uv=debug</code> and <code>RUST_LOG=uv=verbose</code> in the docs, but this can be used to debug into crates such as <code>glob</code>, too.</p>
+<p><img width="1008" height="325" alt="image" src="https://github.com/user-attachments/assets/d33df219-750b-46a2-b3b4-8895aa137ab9" /></p>
+<p><strong>Before</strong></p>
+<pre><code>$ pip wheel . -v [...]
+Looking in links: /home/konsti/projects/uv/target/wheels/
+Processing /home/konsti/projects/uv/scripts/packages/built-by-uv
+  Running command pip subprocess to install build dependencies
+  Looking in links: /home/konsti/projects/uv/target/wheels/
+  Processing /home/konsti/projects/uv/target/wheels/uv_build-0.8.13-py3-none-manylinux_2_39_x86_64.whl
+  Installing collected packages: uv_build
+  Successfully installed uv_build-0.8.13
+  Installing build dependencies ... done
+  Running command Getting requirements to build wheel
+  Getting requirements to build wheel ... done
+  Running command Preparing metadata (pyproject.toml)
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: built-by-uv
+  Running command Building wheel for built-by-uv (pyproject.toml)
+  Error: Unsupported glob expression in: `tool.uv.build-backend.*-exclude`
+
+  Caused by:
+      Invalid character `!` at position 10 in glob: `**/build-*!$§%!½¼²¼³¬!§%$§%.h`. hint: Characters can be escaped with a backslash
+  error: subprocess-exited-with-error
+
+  × Building wheel for built-by-uv (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─&gt; See above for output.
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  full command: /usr/bin/python3 /usr/lib/python3/dist-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py build_wheel /tmp/tmpow1illc9
+  cwd: /home/konsti/projects/uv/scripts/packages/built-by-uv
+  Building wheel for built-by-uv (pyproject.toml) ... error
+  ERROR: Failed building wheel for built-by-uv
+Failed to build built-by-uv
+ERROR: Failed to build one or more wheels
+</code></pre>
+<p><strong>After</strong></p>
+<pre><code>$ RUST_LOG=uv=debug pip wheel . -v [...]
+Looking in links: /home/konsti/projects/uv/target/wheels/
+Processing /home/konsti/projects/uv/scripts/packages/built-by-uv
+  Running command pip subprocess to install build dependencies
+  Looking in links: /home/konsti/projects/uv/target/wheels/
+  Processing /home/konsti/projects/uv/target/wheels/uv_build-0.8.13-py3-none-manylinux_2_39_x86_64.whl
+  Installing collected packages: uv_build
+  Successfully installed uv_build-0.8.13
+  Installing build dependencies ... done
+  Running command Getting requirements to build wheel
+  Getting requirements to build wheel ... done
+  Running command Preparing metadata (pyproject.toml)
+  DEBUG Writing metadata files to /tmp/pip-modern-metadata-l_kh78cj
+  DEBUG Found PEP 639 license declarations, using METADATA 2.4
+  DEBUG License files match: `LICENSE-APACHE`
+  DEBUG License files match: `LICENSE-MIT`
+  DEBUG License files match: `third-party-licenses/PEP-401.txt`
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: built-by-uv
+  Running command Building wheel for built-by-uv (pyproject.toml)
+  DEBUG Checking metadata directory /tmp/pip-modern-metadata-l_kh78cj/built_by_uv-0.1.0.dist-info
+  DEBUG Found PEP 639 license declarations, using METADATA 2.4
+  DEBUG License files match: `LICENSE-APACHE`
+  DEBUG License files match: `LICENSE-MIT`
+  DEBUG License files match: `third-party-licenses/PEP-401.txt`
+  DEBUG Writing wheel at /tmp/pip-wheel-bu6to9i7/built_by_uv-0.1.0-py3-none-any.whl
+  DEBUG Wheel excludes: [&quot;__pycache__&quot;, &quot;*.pyc&quot;, &quot;*.pyo&quot;, &quot;build-*!$§%!½¼²¼³¬!§%$§%.h&quot;, &quot;/src/built_by_uv/not-packaged.txt&quot;]
+  Error: Unsupported glob expression in: `tool.uv.build-backend.*-exclude`
+
+  Caused by:
+      Invalid character `!` at position 10 in glob: `**/build-*!$§%!½¼²¼³¬!§%$§%.h`. hint: Characters can be escaped with a backslash
+  error: subprocess-exited-with-error
+
+  × Building wheel for built-by-uv (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─&gt; See above for output.
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  full command: /usr/bin/python3 /usr/lib/python3/dist-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py build_wheel /tmp/tmpjrxou13a
+  cwd: /home/konsti/projects/uv/scripts/packages/built-by-uv
+  Building wheel for built-by-uv (pyproject.toml) ... error
+  ERROR: Failed building wheel for built-by-uv
+Failed to build built-by-uv
+ERROR: Failed to build one or more wheels
+</code></pre>
+<p>(There is no color in the above uv log statements, as pip doesn't register as a TTY)</p>
+<p>Fixes #12723</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2025-08-26 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-08-26 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-08-26 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">build-backend</span> added by @konstin on 2025-08-26 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-08-26 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-08-26 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-08-27 07:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-08-27 07:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-27 07:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:47:25 UTC
+    </footer>
+</body>
+</html>
