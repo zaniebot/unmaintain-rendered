@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify install plan to support all distribution types - astral-sh/uv #581</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Modify install plan to support all distribution types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/581">#581</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-06 20:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-06 20:28</div>
+            <div class="timeline-body"><p>This PR adds caching support for built wheels in the installer. Specifically, the <code>RegistryWheelIndex</code> now indexes both downloaded and built wheels (from registries), and we have a new <code>BuiltWheelIndex</code> that takes a subdirectory and returns the &quot;best-matching&quot; compatible wheel.</p>
+<p>Closes #570.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-12-06 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-06 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/tests/pip_sync.rs</code>:1288 on 2023-12-06 21:49</div>
+            <div class="timeline-body"><p>But that's installing a wheel, not a built source dist, isn't it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/index/built_wheel_index.rs</code>:19 on 2023-12-06 21:51</div>
+            <div class="timeline-body"><p>Could you a note what <code>directory</code> looks like / points to? Alternatively we can pass in <code>Cache</code>, <code>WheelCache</code> and <code>SourceDistFilename</code> for it to be self documenting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/index/built_wheel_index.rs</code>:31 on 2023-12-06 21:52</div>
+            <div class="timeline-body"><p>Do you want to add more functions to this struct? Right now i'd make it a static function with two arguments (or four, when passing in the cache path parts) instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/index/mod.rs</code>:12 on 2023-12-06 21:53</div>
+            <div class="timeline-body"><p>What about moving this to <code>puffin-fs</code> or <code>puffin-cache</code>? The whole module might fit better in <code>puffin-cache</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/index/built_wheel_index.rs</code>:53 on 2023-12-06 21:57</div>
+            <div class="timeline-body"><p>Shouldn't they all be guaranteed to have the same version? Theoretically the source dist could <code>randint()</code> the version at build time, but i don't think we should support that, it breaks our assumption that all wheels of the same version have the same metadata</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-06 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/tests/pip_sync.rs</code>:1288 on 2023-12-06 21:59</div>
+            <div class="timeline-body"><p>Correct! We already have a separate test for direct URL wheels. (I forgot to add this variant in the earlier PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-12-06 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2023-12-06 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/index/registry_wheel_index.rs</code>:45 on 2023-12-06 22:17</div>
+            <div class="timeline-body"><p>Could you rename this to make it clearer that <code>subdir</code> is a source dist (if i read that correctly)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/index/registry_wheel_index.rs</code>:63 on 2023-12-06 22:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Add the wheels in a given directory to the index.
+    /// 
+    /// Each subdirectory in the given path is expected to be an unzipped wheel directory.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/index/registry_wheel_index.rs</code>:21 on 2023-12-06 22:22</div>
+            <div class="timeline-body"><p>Maybe <code>RegistryDistIndex</code> instead? I want to make it clear that this is both wheels and built wheels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/plan.rs</code>:123 on 2023-12-06 22:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            // Find the exact wheel from the cache, since we know the wheel
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/plan.rs</code>:144 on 2023-12-06 22:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            // Find the exact wheel from the cache, since we know the wheel
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/plan.rs</code>:166 on 2023-12-06 22:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            // Find the most-compatible built wheel from the cache, since we
+                            // can't tell the built wheel filename from the source dist filename.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-06 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/index/mod.rs</code>:12 on 2023-12-06 23:13</div>
+            <div class="timeline-body"><p>How about in <code>puffin-distribution</code>, alongside the database?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-06 23:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/index/built_wheel_index.rs</code>:53 on 2023-12-06 23:14</div>
+            <div class="timeline-body"><p>Hmm, what if the URL is like <code>https://google.com/foo.tar.gz</code>? The built wheel version could change over time, couldn't it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-06 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-07 04:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/index/built_wheel_index.rs</code>:19 on 2023-12-07 04:35</div>
+            <div class="timeline-body"><p>This gets changed to take <code>CacheShard</code> in the next PR. I will document it further but won't change the type for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-07 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/index/built_wheel_index.rs</code>:31 on 2023-12-07 04:39</div>
+            <div class="timeline-body"><p>Going to change after #583.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-07 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-07 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-07 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 04:44</div>
+            <div class="timeline-body"><p>(Not going rogue, Konsti gave me the sign-off to merge once feedback was addressed.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

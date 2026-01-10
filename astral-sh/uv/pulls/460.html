@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unify distribution operations into a single crate - astral-sh/uv #460</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unify distribution operations into a single crate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/460">#460</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-19 19:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-19 19:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR unifies the behavior that lived in the resolver's <code>distribution</code> crates with the behaviors that were spread between the various structs in the installer crate into a single <code>Fetcher</code> struct that is intended to manage all interactions with distributions. Specifically, the interface of this struct is such that it can access distribution metadata, download distributions, return those downloads, etc., all with a common cache.</p>
+<p>Overall, this is mostly just DRYing up code that was repeated between the two crates, and putting it behind a reasonable shared interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-11-19 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-11-19 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-11-19 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-19 20:17</div>
+            <div class="timeline-body"><p>@konstin - Hopefully not too much overlap with your open PRs. One thing this doesn't yet do is handle the behavior in <code>unzipper.rs</code>, which also means that the <em>unzipped wheel</em> caching isn't centralized in here. But it does centralize the behavior for downloading distributions, building source distributions, and accessing distribution metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-20 09:11</div>
+            <div class="timeline-body"><p>Git is really confused, if i cherry pick the second commit i get https://github.com/astral-sh/puffin/pull/464#pullrequestreview-1739258474 which looks good. I did <code>git reset --hard main &amp;&amp; git cherry-pick 67dd5b321d9ae99c140ea35c807eb656a499cb83</code>, but i don't want to mess up your branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-20 10:04</div>
+            <div class="timeline-body"><p>I’ll rebase this shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-20 11:01</div>
+            <div class="timeline-body"><p>\cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/download.rs</code>:119 on 2023-11-20 11:02</div>
+            <div class="timeline-body"><p>We should give this a proper error type with context on which wheel is invalid</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/fetcher.rs</code>:79 on 2023-11-20 11:02</div>
+            <div class="timeline-body"><p>The part from here downwards i'll have to change a lot</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-11-20 11:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-20 11:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/fetcher.rs</code>:79 on 2023-11-20 11:10</div>
+            <div class="timeline-body"><p>Like <code>fetch_dist</code>? Yeah I assumed they would change quite a bit, though now they're at least centralized here rather than spread and duplicated between three or four structs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/download.rs</code>:119 on 2023-11-20 11:22</div>
+            <div class="timeline-body"><p>Mid-way through this but now deciding I'll put it up as a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-20 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-20 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-20 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-20 11:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

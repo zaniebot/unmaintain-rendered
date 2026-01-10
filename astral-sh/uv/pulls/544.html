@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keep track of in flight unzips using `OnceMap` - astral-sh/uv #544</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Keep track of in flight unzips using <code>OnceMap</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/544">#544</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-12-04 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 14:28</div>
+            <div class="timeline-body"><p>I saw warnings when we were e.g. unzipping wheel and setuptools in two tasks at the same time. We now keep track of in flight unzips.</p>
+<p>This introduces a <code>OnceMap</code> abstraction which we also use in the resolver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-04 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-dispatch/src/lib.rs</code>:40 on 2023-12-04 14:30</div>
+            <div class="timeline-body"><p>This looks like a use case for a parallel datastructure, but otoh this is more than fine for the couple of hundreds unzips with have maximum.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-04 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:39 on 2023-12-04 14:30</div>
+            <div class="timeline-body"><p>@charliermarsh Do we want to run the unzips in parallel or is there a reason why we don't?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-04 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:39 on 2023-12-04 14:32</div>
+            <div class="timeline-body"><p>We do one unzip at a time, but the unzips themselves are parallelized. I believe I profiled parallelizing the unzips (there are some issues around this) and it showed no improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-04 14:33</div>
+            <div class="timeline-body"><p>Does this work across recursive resolutions, and between the top-level resolution and any source distribution resolutions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-04 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:49 on 2023-12-04 14:34</div>
+            <div class="timeline-body"><p>(Nit: I'd prefer this below <code>impl Unzipper</code>, so that the struct and its implementation are uninterrupted and at the top of the file.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 14:38</div>
+            <div class="timeline-body"><p>Is this one instance of a more general problem? Where else might we run into this? E.g., when building source distributions, or from Git? Can we come up with a more general solution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 14:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Does this work across recursive resolutions, and between the top-level resolution and any source distribution resolutions?</p>
+</blockquote>
+<p>yes</p>
+<blockquote>
+<p>Is this one instance of a more general problem? Where else might we run into this? E.g., when building source distributions, or from Git? Can we come up with a more general solution?</p>
+</blockquote>
+<p>This affects all operation through <code>BuildDispatch</code>, we can add the same locks around all operations that might run in parallel:</p>
+<ul>
+<li><code>BuildDispatch::build_source</code>
+https://github.com/astral-sh/puffin/blob/9806901a1603d062c70c14e523ae9058bdb32675/crates/puffin-dispatch/src/lib.rs#L233-L238</li>
+<li><code>DistFinder</code> (or refactor to pass in distributions from resolve, so we don't have to do query something we just queried)
+https://github.com/astral-sh/puffin/blob/9806901a1603d062c70c14e523ae9058bdb32675/crates/puffin-dispatch/src/lib.rs#L152</li>
+<li><code>DistributionDatabase</code>
+https://github.com/astral-sh/puffin/blob/9806901a1603d062c70c14e523ae9058bdb32675/crates/puffin-dispatch/src/lib.rs#L164</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 15:07</div>
+            <div class="timeline-body"><p>What about, e.g., fetching metadata and storing it in the cache? Will that work safely if run in parallel for the same package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 15:08</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #543</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/543?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #545</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/545?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #548</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/548?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #544</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/544?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/544?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-04 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:33 on 2023-12-04 15:13</div>
+            <div class="timeline-body"><p>Should we try to add a struct around this? All the types feel like implementation details. I'd prefer something with a dedicated entry-like API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:33 on 2023-12-04 15:13</div>
+            <div class="timeline-body"><p>Not that the API is so great, but I had something like this in the Resolvo branch, where the wait maps and in-flight structs are internal details of the API: https://github.com/astral-sh/puffin/pull/404/files#diff-6570ee60ef7249b15819a9796189f1098aaf2e0d8f2e3639fa6261a1f10a7401R143</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-04 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 16:10</div>
+            <div class="timeline-body"><blockquote>
+<p>What about, e.g., fetching metadata and storing it in the cache? Will that work safely if run in parallel for the same package?</p>
+</blockquote>
+<p>Safely: Yes, fixed the remaining issues in (#546). We can optimize this by merging the <code>ResolverProvider</code> from #517 into the <code>BuildContext</code>, so the cached client is shared between recursive resolutions. Is that a change you're interested in?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Keep track of in flight unzips" to "Keep track of in flight unzips using `OnceMap`" by @konstin on 2023-12-06 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-06 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/download.rs</code>:71 on 2023-12-06 14:16</div>
+            <div class="timeline-body"><p>There were two impl blocks while we only need one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-06 14:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Should we try to add a struct around this? All the types feel like implementation details. I'd prefer something with a dedicated entry-like API.</p>
+</blockquote>
+<p>I introduced <code>OnceMap</code>, applying it in the resolver. I can split the 2 commits (in flight unzips and <code>OnceMap</code> in resolver) into two PRs if it makes more sense.</p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/2e1389e4-bb1c-4fce-a7e2-f63080091b08" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-06 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:462 on 2023-12-06 16:44</div>
+            <div class="timeline-body"><p>I don't love that the insertions are all now async, is that strictly required?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:91 on 2023-12-06 16:44</div>
+            <div class="timeline-body"><p>Should we move this outside of <code>unzip</code>? Avoid going through the whole <code>tokio::task::spawn_blocking</code> just for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-06 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-06 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:462 on 2023-12-06 16:55</div>
+            <div class="timeline-body"><p>Same, but the locks need to be std locks or we break a send guarantee we need</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-06 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:462 on 2023-12-06 17:01</div>
+            <div class="timeline-body"><p>Previously we didn't have any locks around the inflight stuff (I think?), was that a mistake?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-06 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-traits/src/in_flight.rs</code>:17 on 2023-12-06 17:40</div>
+            <div class="timeline-body"><p><code>FxHashSet</code>, to match the existing implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-traits/src/in_flight.rs</code>:58 on 2023-12-06 17:40</div>
+            <div class="timeline-body"><p>It could be worth taking <code>&amp;K</code> here and only cloning if the item isn't already in the set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-06 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-08 09:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:462 on 2023-12-08 09:14</div>
+            <div class="timeline-body"><p>It worked because we had the waitmap and the in flight hashset split, passing the hashmap around as <code>&amp;mut _</code>. I don't think we can replicate this while using an abstraction over this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-08 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-traits/src/in_flight.rs</code>:58 on 2023-12-08 09:35</div>
+            <div class="timeline-body"><p>Getting fancy with type signatures</p>
+<pre><code class="language-rust">    pub async fn register&lt;Q&gt;(&amp;self, key: &amp;Q) -&gt; bool
+    where
+        K: Borrow&lt;Q&gt;,
+        Q: ?Sized + Hash + Eq + ToOwned&lt;Owned = K&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-traits/src/in_flight.rs</code>:15 on 2023-12-08 14:53</div>
+            <div class="timeline-body"><p>I find it odd that this is in <code>puffin-traits</code> but I don't know of a better home :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-08 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-08 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-08 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-08 20:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

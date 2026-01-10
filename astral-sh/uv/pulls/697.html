@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a dedicated error message to hint users towards enabling pre-releases - astral-sh/uv #697</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a dedicated error message to hint users towards enabling pre-releases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/697">#697</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-19 05:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-19 05:35</div>
+            <div class="timeline-body"><p>This PR adds a dedicated error message for resolutions that fail, but might've succeeded if pre-releases were allowed. Specifically, if we see a failed resolution, and failed to find a version for a package that included a pre-release marker, we add a hint nudging the user to explicitly enable all pre-releases.</p>
+<p>We'd prefer a solution like https://github.com/astral-sh/puffin/pull/666, but believe that it will break some assumptions in PubGrub, so this is the lighter-weight solution.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/659.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-12-19 05:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-12-19 05:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-19 05:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:54 on 2023-12-19 05:35</div>
+            <div class="timeline-body"><p>This requires a change in PubGrub, separate PR:</p>
+<pre><code class="language-diff">diff --git a/src/range.rs b/src/range.rs
+index fc04e8b..b817f23 100644
+--- a/src/range.rs
++++ b/src/range.rs
+@@ -122,6 +122,23 @@ impl&lt;V&gt; Range&lt;V&gt; {
+     pub fn is_empty(&amp;self) -&gt; bool {
+         self.segments.is_empty()
+     }
++
++    pub fn bounds(&amp;self) -&gt; impl Iterator&lt;Item = &amp;V&gt; {
++        self.segments.iter().flat_map(|segment| {
++            let (v1, v2) = segment;
++            let v1 = match v1 {
++                Included(v) =&gt; Some(v),
++                Excluded(v) =&gt; Some(v),
++                Unbounded =&gt; None
++            };
++            let v2 = match v2 {
++                Included(v) =&gt; Some(v),
++                Excluded(v) =&gt; Some(v),
++                Unbounded =&gt; None
++            };
++            v1.into_iter().chain(v2)
++        })
++    }
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-19 09:00</div>
+            <div class="timeline-body"><p>I don't know if we can guarantee that we hit this path, but it's definitely helpful where we hit that path.</p>
+<p>Needs a pubgrub update, otherwise we can merge it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-24 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:54 on 2023-12-24 21:48</div>
+            <div class="timeline-body"><p>@zanieb - I PR'd this here: https://github.com/zanieb/pubgrub/pull/16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-12-28 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-29 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-29 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-29 02:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Python version as a PubGrub package - astral-sh/uv #745</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Model Python version as a PubGrub package</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/745">#745</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-02 22:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 22:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR modifies the resolver to treat the Python version as a package, which allows for better error messages (since we no longer treat incompatible packages as if they &quot;don't exist at all&quot;).</p>
+<p>There are a few tricky pieces here...</p>
+<p>First, we need to track both the interpreter's Python version and the <em>target</em> Python version, because we support resolving for other versions via <code>--python 3.7</code>.</p>
+<p>Second, we allow using incompatible wheels during resolution, as long as there's a compatible source distribution. So we still need to test for <code>requires-python</code> compatibility when selecting distributions.</p>
+<p>This could use more testing, but it feels like an area where <code>packse</code> would be more productive than writing PyPI tests.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/406.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-01-02 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-01-02 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-02 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:673 on 2024-01-02 22:20</div>
+            <div class="timeline-body"><p>I am confused by <code>Python*</code> here 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-02 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:673 on 2024-01-02 22:29</div>
+            <div class="timeline-body"><p>I guess that's the simplified set, based on the <code>simplify</code> docs? &quot;If all the versions are contained in the original than the range will be simplified to full.&quot;?</p>
+<p>I should probably avoid simplifying Python versions then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2024-01-02 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 22:44</div>
+            <div class="timeline-body"><p>This is actually harder than I thought. Consider the case of resolving NumPy with <code>--python-version 3.8</code>. In that case, we want to skip building all the source distributions for versions later than <code>1.24.4</code>. But we want to return them to PubGrub so that they're modeled as incompatibilities and not ignored entirely. So we need some new abstraction around <code>Candidate</code> to indicate whether it's compatible or incompatible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 23:20</div>
+            <div class="timeline-body"><p>I think I know how to solve but will be a bit more work, so marking as draft.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-01-03 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-03 01:38</div>
+            <div class="timeline-body"><p>Okay, should be ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/finder.rs</code>:173 on 2024-01-03 10:54</div>
+            <div class="timeline-body"><p>Shouldn't we explicitly allow the source dist here only to then reject it (with some shortcut before building, e.g. fake metadata that only depends on the python version we know we'll reject) through having the wrong python version requirement? Otherwise this will not be represented in the pubgrub errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:504 on 2024-01-03 11:00</div>
+            <div class="timeline-body"><p>Shouldn't this only be the target version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-03 11:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/finder.rs</code>:173 on 2024-01-03 14:41</div>
+            <div class="timeline-body"><p>The <code>DistFinder</code> is not used in PubGrub -- this assumes that dependencies are already locked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver.rs</code>:504 on 2024-01-03 14:43</div>
+            <div class="timeline-body"><p>What if this is a source distribution that we'll then need to build?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-03 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-03 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-03 15:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable selective cache purging in `puffin clean` - astral-sh/uv #589</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable selective cache purging in <code>puffin clean</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/589">#589</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-08 01:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-08 01:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables <code>puffin clean</code> to accept package names as command line arguments, and selectively purge entries from the cache tied to the given package.</p>
+<p>Relate to #572.</p>
+<h2>Test Plan</h2>
+<p>Modified all the caching tests to run an additional step to (1) purge the cache, and (2) re-install the package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2023-12-08 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-12-08 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-12-08 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-12-08 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cache/src/lib.rs</code>:442 on 2023-12-08 08:26</div>
+            <div class="timeline-body"><p>This captures non-index wheels, but not alternative indices. This is currently not a problem will the lack of html index support, but we need an issue to add that with html indices or we'll forget</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cache/src/lib.rs</code>:511 on 2023-12-08 08:27</div>
+            <div class="timeline-body"><p>I we also need to delete git builds with that name so the wheel is rebuilt, otherwise this confusing for the user (While the source doesn't change, the host environment may have, and the user may still want a rebuild)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/commands/clean.rs</code>:52 on 2023-12-08 08:31</div>
+            <div class="timeline-body"><p>nit: Why don't we <code>remove_dir_all</code> the whole cache dir?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/commands/clean.rs</code>:54 on 2023-12-08 08:35</div>
+            <div class="timeline-body"><p>nit: I'd just go with <code>&quot;Cleared {count} cache entries for package: {}&quot;</code> or <code>&quot;Cleared {count} cache(s) for package {}&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/distribution_database.rs</code>:166 on 2023-12-08 08:36</div>
+            <div class="timeline-body"><p>Commented code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-fs/src/lib.rs</code>:65 on 2023-12-08 08:40</div>
+            <div class="timeline-body"><p>nit: We can skip the stat call by trying <code>remove_dir_all</code> and switching to <code>remove_file</code> if the error is a <code>ErrorKind::NotADirectory</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cache/src/lib.rs</code>:428 on 2023-12-08 08:44</div>
+            <div class="timeline-body"><p>Do we want to add debug logging here which dirs were removed? I expect we'll need that when debugging strange behaviors concerning builds and caching in the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-12-08 08:47</div>
+            <div class="timeline-body"><p>Tried to split my review into required and optional changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-08 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/lib.rs</code>:442 on 2023-12-08 16:44</div>
+            <div class="timeline-body"><p>I think we store alternative indices in this manner right now. It seems odd to me, maybe it was a mistake in a refactor somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-08 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cache/src/lib.rs</code>:442 on 2023-12-08 17:09</div>
+            <div class="timeline-body"><p>They use <code>index</code> and not <code>url</code> as root though</p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/a29dd335-c13f-4604-8741-2d067739ab1c" alt="image" /></p>
+<p>https://github.com/astral-sh/puffin/blob/9806901a1603d062c70c14e523ae9058bdb32675/crates/puffin-cache/src/wheel.rs#L31</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-08 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/lib.rs</code>:442 on 2023-12-08 17:42</div>
+            <div class="timeline-body"><p>I thought I tested this, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-08 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/clean.rs</code>:52 on 2023-12-08 18:44</div>
+            <div class="timeline-body"><p>I honestly don't know. I'll change it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-08 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-fs/src/lib.rs</code>:65 on 2023-12-08 18:44</div>
+            <div class="timeline-body"><p>I think <code>NotADirectory</code> is unstable :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-08 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-08 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-08 19:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

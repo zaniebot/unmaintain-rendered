@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid double-resolving during `pip-install` - astral-sh/uv #610</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid double-resolving during <code>pip-install</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/610">#610</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-12 01:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-12 01:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>At present, when performing a <code>pip-install</code>, we first do a resolution, then take the set of requirements and basically run them through our <code>pip-sync</code>, which itself includes re-resolving the dependencies to get a specific <code>Dist</code> for each package. (E.g., the set of requirements might say <code>flask==3.0.0</code>, but the installer needs a specific <em>wheel</em> or source distribution to install.)</p>
+<p>This PR removes this second resolution by exposing the set of pinned packages from the resolution. The main challenge here is that we have an optimization in the resolver such that we let the resolver read metadata from an incompatible wheel as long as a source distribution exists for a given package. This lets us avoid building source distributions in the resolver under the assumption that we'll be able to install the package later on, if needed. As such, the resolver now needs to track the resolution and installation filenames separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-12-12 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-12-12 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-12-12 04:45</div>
+            <div class="timeline-body"><p>Looks good to me, but I am less familiar with the changes here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/pins.rs</code>:11 on 2023-12-12 11:10</div>
+            <div class="timeline-body"><p>Maybe <code>FilePins</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-12-12 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-12 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-12 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-12 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

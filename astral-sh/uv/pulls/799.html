@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add compare_release fast path - astral-sh/uv #799</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add compare_release fast path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/799">#799</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-05 18:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-05 18:21</div>
+            <div class="timeline-body"><p>Looking at the profile for tf-models-nightly after #789, <code>compare_release</code> is the single biggest item. Adding a fast path, we avoid paying the cost for padding releases with 0s when they are the same length, resulting in a 16% for this pathological case. Note that this mainly happens because tf-models-nightly is almost all large dev releases that hit the slow path.</p>
+<p><strong>Before</strong></p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/0d2b4553-da69-4cdb-966b-0894a6dd5d94" alt="image" /></p>
+<p><strong>After</strong></p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/6d484808-9d16-408d-823e-a12d321802a5" alt="image" /></p>
+<pre><code>$ hyperfine --warmup 1 --runs 3 &quot;target/profiling/main pip-compile -q scripts/requirements/tf-models-nightly.txt&quot;
+ &quot;target/profiling/puffin pip-compile -q scripts/requirements/tf-models-nightly.txt&quot;
+Benchmark 1: target/profiling/main pip-compile -q scripts/requirements/tf-models-nightly.txt
+  Time (mean ± σ):     11.963 s ±  0.225 s    [User: 11.478 s, System: 0.451 s]
+  Range (min … max):   11.747 s … 12.196 s    3 runs
+
+Benchmark 2: target/profiling/puffin pip-compile -q scripts/requirements/tf-models-nightly.txt
+  Time (mean ± σ):     10.317 s ±  0.720 s    [User: 9.885 s, System: 0.404 s]
+  Range (min … max):    9.501 s … 10.860 s    3 runs
+
+Summary
+  target/profiling/puffin pip-compile -q scripts/requirements/tf-models-nightly.txt ran
+    1.16 ± 0.08 times faster than target/profiling/main pip-compile -q scripts/requirements/tf-models-nightly.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-05 18:23</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-01-05 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-05 19:06</div>
+            <div class="timeline-body"><p>w00t</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-05 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-05 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-05 20:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

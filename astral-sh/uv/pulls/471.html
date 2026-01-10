@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for path dependencies - astral-sh/uv #471</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for path dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/471">#471</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-20 23:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-20 23:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for local path dependencies. The approach mostly just falls out of our existing approach and infrastructure for Git and URL dependencies.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/436. (We'll open a separate issue for editable installs.)</p>
+<h2>Test Plan</h2>
+<p>Added <code>pip-compile</code> tests that pre-download a wheel or source distribution, then install it via local path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-11-20 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2023-11-20 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/direct_url.rs</code>:92 on 2023-11-20 23:48</div>
+            <div class="timeline-body"><p>@konstin - One weird thing I noticed is that if you install a wheel via <code>file://</code>, pip uses the the <code>ArchiveUrl</code> format for <code>DirectUrl</code>, like:</p>
+<pre><code class="language-json">{&quot;archive_info&quot;: {&quot;hash&quot;: &quot;sha256=53806937bd3dac4a964cc380d262e18e5687f50125839c18fda3a4b07fdea493&quot;, &quot;hashes&quot;: {&quot;sha256&quot;: &quot;53806937bd3dac4a964cc380d262e18e5687f50125839c18fda3a4b07fdea493&quot;}}, &quot;url&quot;: &quot;file:///Users/crmarsh/Library/Caches/puffin/archives-v0/e0248556cde58846/flake8-6.0.0-py2.py3-none-any.whl&quot;}
+</code></pre>
+<p>This is surprising to me. I stuck with the <code>LocalDirectory</code> pattern:</p>
+<pre><code class="language-json">{&quot;url&quot;:&quot;file:///Users/crmarsh/Library/Caches/puffin/archives-v0/e0248556cde58846/flake8-6.0.0-py2.py3-none-any.whl&quot;,&quot;dir_info&quot;:{}}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-20 23:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-21 07:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure how best to test this.</p>
+</blockquote>
+<p>I'd add a minimal project to the repo, with a single pure dependency (we use <code>boltons</code> in maturin), a simple build system such as flit and a single function that returns/prints a string using boltons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/direct_url.rs</code>:11 on 2023-11-21 07:08</div>
+            <div class="timeline-body"><p>The docstring is unclear between path to a wheel file, path to a source dist file and path to a source directory (vs. those being e.g. in archive url or unsupported)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cache/src/cache_key.rs</code>:201 on 2023-11-21 07:13</div>
+            <div class="timeline-body"><p>Doesn't rust inline single action function calls anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-11-21 07:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-21 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/cache_key.rs</code>:201 on 2023-11-21 11:40</div>
+            <div class="timeline-body"><p>I assume so but this is copied directly from Ruff so I'll leave it as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-21 14:50</div>
+            <div class="timeline-body"><p>LGTM :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

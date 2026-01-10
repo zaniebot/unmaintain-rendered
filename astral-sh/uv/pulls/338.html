@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve error messages for incompatible direct requirements - astral-sh/uv #338</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve error messages for incompatible direct requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/338">#338</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-11-06 16:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-06 16:51</div>
+            <div class="timeline-body"><p>Addresses https://github.com/astral-sh/puffin/issues/309#issuecomment-1792648969</p>
+<p>Instead of running the resolver with a requirement with an empty range of versions, we error early with a message indicating the conflict that resulted in an empty set.</p>
+<p>Example at https://github.com/astral-sh/puffin/pull/338/files#diff-d09432742ed63e9e76729f7fdb52772366e983f14e9551bc6f64e4329bdd20e7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-06 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>vendor/pubgrub/src/range.rs</code>:124 on 2023-11-06 16:53</div>
+            <div class="timeline-body"><p>Needed a way to check for emptiness...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/error.rs</code>:43 on 2023-11-06 16:57</div>
+            <div class="timeline-body"><p>Clippy is upset by the size of this variant. Suggestions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-06 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-06 17:01</div>
+            <div class="timeline-body"><p>There are some limitations here, like we will display the <em>merged</em> version on one side if there has been more than one previous version specifiers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-06 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/error.rs</code>:43 on 2023-11-06 17:02</div>
+            <div class="timeline-body"><p>For e.g. error structs i ignore them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-06 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/error.rs</code>:43 on 2023-11-06 17:06</div>
+            <div class="timeline-body"><p>I think then we also have to ignore in all the methods with <code>#[allow(clippy::result_large_err)]</code>? Seems annoying</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve error messages for incompatible, direct requirements" to "Improve error messages for incompatible direct requirements" by @zanieb on 2023-11-06 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-06 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>vendor/pubgrub/src/range.rs</code>:124 on 2023-11-06 18:53</div>
+            <div class="timeline-body"><p>Note this tweaks the vendored pubgrub</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-06 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/pubgrub/dependencies.rs</code>:195 on 2023-11-06 19:47</div>
+            <div class="timeline-body"><p>I think there's a problem with this approach which I also ran into with the &quot;error if a package is requested under two different URLs&quot; thing, which is that it doesn't let us backtrack out of the error state. So if the resolver <em>ever</em> sees a package with a version that has these conflicting requirements internally, it will immediately fail, rather than rejecting that version and attempting to backtrack to a working state.</p>
+<p>Is that clear? I don't know how to solve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-06 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/pubgrub/dependencies.rs</code>:195 on 2023-11-06 19:54</div>
+            <div class="timeline-body"><p>That makes sense. Do we do <code>try_from_requirements</code> on requirements of dependencies i.e. indirect dependencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-06 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/pubgrub/dependencies.rs</code>:195 on 2023-11-06 20:02</div>
+            <div class="timeline-body"><p>Yeah we do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-06 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/pubgrub/dependencies.rs</code>:195 on 2023-11-06 20:02</div>
+            <div class="timeline-body"><p>(I tend to call those &quot;transitive dependencies&quot;.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-06 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/pubgrub/dependencies.rs</code>:195 on 2023-11-06 20:05</div>
+            <div class="timeline-body"><p>I guess the other issue here is that we won't print out a &quot;tree&quot; of incompatibilities, we'll just tell you which package failed, but not <em>why</em> that package was required. I'm wondering if we can add a new incompatibility kind to support this instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-06 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/pubgrub/dependencies.rs</code>:195 on 2023-11-06 20:05</div>
+            <div class="timeline-body"><p>Ah yes that's a good word for them. Okay... let me look for a better way to handle this then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-06 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/pubgrub/dependencies.rs</code>:195 on 2023-11-06 20:09</div>
+            <div class="timeline-body"><p>Yeah it seems like it should be an incompatibility, I did not realize this was used for transitive dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-07 08:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/error.rs</code>:43 on 2023-11-07 08:46</div>
+            <div class="timeline-body"><p>ugh that is significantly more annoying :/ in that case you might really want to box</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-20 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 15:13</div>
+            <div class="timeline-body"><p>Using #424 instead</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

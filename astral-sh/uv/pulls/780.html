@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pep440: some minor refactoring, mostly around error types - astral-sh/uv #780</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pep440: some minor refactoring, mostly around error types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/780">#780</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-01-04 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-04 14:56</div>
+            <div class="timeline-body"><p>This PR does a bit of refactoring to the pep440 crate, and in
+particular around the erorr types. This PR is meant to be a precursor
+to another PR that does some surgery (both in parsing and in <code>Version</code>
+representation) that benefits somewhat from this refactoring.</p>
+<p>As usual, please review commit-by-commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-01-04 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @charliermarsh removed by @BurntSushi on 2024-01-04 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-01-04 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-01-04 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version.rs</code>:200 on 2024-01-04 15:21</div>
+            <div class="timeline-body"><p>Is that the number of segments in a release?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:585 on 2024-01-04 15:36</div>
+            <div class="timeline-body"><p>nit: Avoid a leading sigil which make it unclear if it's part of the error or coming from somewhere else.</p>
+<pre><code class="language-suggestion">                    &quot;The ~= operator requires at least two segments in the release version&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:631 on 2024-01-04 15:37</div>
+            <div class="timeline-body"><p>What's the motivation for boxing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:1309 on 2024-01-04 15:38</div>
+            <div class="timeline-body"><p>I had these as strings so you can see the error displayed to the user</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:214 on 2024-01-04 15:39</div>
+            <div class="timeline-body"><p>Are these <code>ref</code> required, i thought rustc could infer them nowadays?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-04 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-04 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:200 on 2024-01-04 15:42</div>
+            <div class="timeline-body"><p>Yup!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-04 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:631 on 2024-01-04 15:46</div>
+            <div class="timeline-body"><p>I added this comment:</p>
+<pre><code>    // We box to shrink the error type's size. This in turn keeps Result&lt;T, E&gt;
+    // smaller and should lead to overall better codegen.
+    kind: Box&lt;ParseErrorKind&gt;,
+</code></pre>
+<p>Clippy actually warns about this if the error type gets big enough (there's a commit about that). In this case, the error is a little beefy with <code>String</code>s in it and what not.</p>
+<p>Usually this is overall justified because 1) error cases are usually rare and so the extra alloc is immaterial and 2) it shrinks the size of <code>Result&lt;T, E&gt;</code> which is in the common path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-04 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:631 on 2024-01-04 15:47</div>
+            <div class="timeline-body"><p>It's that clippy lint, makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-04 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:1309 on 2024-01-04 15:50</div>
+            <div class="timeline-body"><p>Hmmm. I personally find it rather tedious to update the user-visible error messages for tests like this. I also find the assertion failures clearer, since it prints the <code>Debug</code> representation of the type and thus gives the full details of what error value is sitting in memory. The display strings are somewhat divorced from that. Moreover, the <code>Display</code> impl of an error doesn't always show the full error message. (It does in this crate since I intentionally did not implement the <a href="https://doc.rust-lang.org/std/error/trait.Error.html#method.source"><code>Error::source</code></a> method to match the status quo.)</p>
+<p>I could add some additional tests for each error variant on the human readable part, but leave the tests checking for the error cases themselves as-is. Would you be okay with that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-04 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:1309 on 2024-01-04 15:53</div>
+            <div class="timeline-body"><p>Yeah the updating is annoying, insta has been a great improvement for that. I'm fine with keeping the structs here as long as we keep the user facing error messages test in other tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-04 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:214 on 2024-01-04 15:53</div>
+            <div class="timeline-body"><p>Right, rustc can. I write them for the human. https://github.com/astral-sh/ruff/pull/8524#discussion_r1383902834</p>
+<p>I wouldn't mind dropping them, but I do sincerely believe it leads to code that's easier to read. Specifically, it makes it clearer whether a particular name binding is a borrow or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-04 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:1309 on 2024-01-04 16:45</div>
+            <div class="timeline-body"><p>OK, this is done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-01-04 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-01-04 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-04 17:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

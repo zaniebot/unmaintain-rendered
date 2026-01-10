@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor `DistFinder` to allow handling errors - astral-sh/uv #709</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor <code>DistFinder</code> to allow handling errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/709">#709</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-12-19 20:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-12-19 20:32</div>
+            <div class="timeline-body"><p>For the install tests, i need the ability to ignore failures in the <code>DistFinder</code>. To avoid just copy&amp;pasting a version that collects errors separately, i followed https://gendignoux.com/blog/2021/04/01/rust-async-streams-futures-part1.html and switched the custom channel over to an async stream yielding <code>Result</code> items.</p>
+<p>I like the async streams mirror the normal iterator api.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2023-12-19 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-19 20:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/finder.rs</code>:97 on 2023-12-19 20:33</div>
+            <div class="timeline-body"><p>I've removed the pre-allocation, the stream size hint should be sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-19 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/finder.rs</code>:94 on 2023-12-19 20:34</div>
+            <div class="timeline-body"><p>Do we still need this shortcut after the refactoring?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/finder.rs</code>:87 on 2023-12-19 20:35</div>
+            <div class="timeline-body"><p>I've removed the chunks here, do we need them specifically when the stream is already parallel?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-19 20:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-19 20:44</div>
+            <div class="timeline-body"><p>I'm trying to see the bigger picture -- how does this enable ignoring failures? And what are those failures that need to be ignored?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-19 20:55</div>
+            <div class="timeline-body"><p>It is similar to the current resolve-many test, that only logs and counts failures in resolutions, but doesn't terminate on the first resolution failure like pip-compile does.</p>
+<p>For the install-many test, let's say i have 10k packages i want to install, but 1k of those don't have an installation candidate in my venv for whatever reason - Many reasons are fine, e.g. windows only packages or those that don't support the active python version. I want to query the 10k requirements in parallel and have an adapter on the stream that collects the 9k that works and logs that 1k didn't work. This is different from the main pip-sync mode, where we want to fail and report once we see the first failure (fail fast). The new <code>Fn(&amp;[Requirement]) -&gt; impl Stream&lt;Item = Result&lt;(PackageName, Dist), ResolveError&gt;&gt;</code> allows both with minimal overhead.</p>
+<p>It's also a +42 −85 with (imho) readable benefits so i'm happy about changing this by itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-19 21:06</div>
+            <div class="timeline-body"><p>👍 Sounds good, I will review this later tonight and merge as appropriate!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-20 04:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-20 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-20 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-20 04:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

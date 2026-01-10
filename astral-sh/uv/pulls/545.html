@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Add test for cache source dist installing  - astral-sh/uv #545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add test for cache source dist installing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/545">#545</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-12-04 14:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 14:59</div>
+            <div class="timeline-body"><p>The code changes are outdated, now it's only adding a test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 14:59</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #543</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/543?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #545</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/545?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #548</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/548?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #544</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/544?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/545?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-04 15:12</div>
+            <div class="timeline-body"><p>Can you walk me through why this is happening, in detail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 16:18</div>
+            <div class="timeline-body"><p>There are three cases for a source distribution in the <code>DistributionDatabase</code>:</p>
+<ul>
+<li>The cache is outdated: Clear the cache and build a source dist, which is first stored as zip.</li>
+<li>The cache is fresh, but we never installed the built wheel: There is a built source dist stored as a zip.</li>
+<li>The cache is fresh, we previously installed the built wheel: There is a built source dist stored as unzipped directory.</li>
+</ul>
+<p>In the first two cases we must unzip, in the last two we must not because there is no more zip to unzip, just the directory (this is where we previously failed). Instead of doing a complex <code>LocalWheel</code>, <code>CachedDist</code> and <code>DistributionDatabase</code> change when i know that i'll have to change this again soon, i'm just checking whether it's a zip (then unzip) or it's a dir (then do nothing, and also report it as cached).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-04 17:07</div>
+            <div class="timeline-body"><p>But does that mean <code>remote</code> ends up including source distributions for which we already have a zipped wheel?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 17:24</div>
+            <div class="timeline-body"><p>Why isn't the unzipped source distribution part of <code>local</code> rather than <code>remote</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 18:06</div>
+            <div class="timeline-body"><p>To me it seems like the bug is that we don't look in <code>built-wheels-v0</code> in the install plan.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:47 on 2023-12-04 18:26</div>
+            <div class="timeline-body"><p>Doesn't this represent a bug? See <code>// If we're replacing an existing directory, warn. If a wheel already exists</code> below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-04 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Correct behaviour when installing cached unpacked source dist" to " Add test for cache source dist installing " by @konstin on 2023-12-06 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-06 11:34</div>
+            <div class="timeline-body"><p>Changed this to only adding a test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-12-06 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-12-06 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-06 11:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

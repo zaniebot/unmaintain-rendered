@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable color output when redirecting stderr - astral-sh/uv #742</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disable color output when redirecting stderr</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/742">#742</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-02 11:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-02 11:08</div>
+            <div class="timeline-body"><p>I'm still confused about it, but this seems to do the right thing?</p>
+<p><code>HierarchicalLayer</code> internally has <a href="https://github.com/davidbarsky/tracing-tree/blob/fcd9eed2528e41cd776b19b9ba45d338ae62a5fc/src/lib.rs#L74"><code>let ansi = io::stderr().is_terminal();</code></a>, so the logging itself is already correctly uncolored, but errors in the log weren't.</p>
+<p>Test command, ran with network deactivated:</p>
+<pre><code class="language-shell">RUST_LOG=debug cargo run --bin puffin -- pip-compile -v ./scripts/popular_packages/pypi_8k_downloads.txt 2&gt; log.txt
+</code></pre>
+<p><strong>Before</strong></p>
+<pre><code>[1;31merror[0m: Request error: error sending request for url (https://pypi.org/simple/apache-airflow-providers-dbt-cloud/): error trying to connect: dns error: failed to lookup address information: Temporary failure in name resolution
+  [1;31mCaused by[0m: error sending request for url (https://pypi.org/simple/apache-airflow-providers-dbt-cloud/): error trying to connect: dns error: failed to lookup address information: Temporary failure in name resolution
+  [1;31mCaused by[0m: error trying to connect: dns error: failed to lookup address information: Temporary failure in name resolution
+  [1;31mCaused by[0m: dns error: failed to lookup address information: Temporary failure in name resolution
+  [1;31mCaused by[0m: failed to lookup address information: Temporary failure in name resolution
+</code></pre>
+<p><strong>After</strong></p>
+<pre><code>error: Request error: error sending request for url (https://pypi.org/simple/fissix/): error trying to connect: dns error: failed to lookup address information: Temporary failure in name resolution
+  Caused by: error sending request for url (https://pypi.org/simple/fissix/): error trying to connect: dns error: failed to lookup address information: Temporary failure in name resolution
+  Caused by: error trying to connect: dns error: failed to lookup address information: Temporary failure in name resolution
+  Caused by: dns error: failed to lookup address information: Temporary failure in name resolution
+  Caused by: failed to lookup address information: Temporary failure in name resolution
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-01-02 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-01-02 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-03 20:37</div>
+            <div class="timeline-body"><p>Can we find a way to do this with anstream?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-04 14:24</div>
+            <div class="timeline-body"><p>I'm fine with this if it fixes the issue, but from a quick look at <code>puffin</code>'s dependencies, it seems like we're using no fewer than three different terminal coloring libraries? (I see <code>anstream</code>, <code>colored</code> and <code>nu-ansi-term</code>.) It'd be nice to fix that, and I agree that we should pick <code>anstream</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-04 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-04 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-04 15:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

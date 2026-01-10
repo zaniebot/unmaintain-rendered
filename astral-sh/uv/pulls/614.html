@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove regular expressions for package name normalization - astral-sh/uv #614</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove regular expressions for package name normalization</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/614">#614</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-12 05:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-12 05:41</div>
+            <div class="timeline-body"><p>Very random but the hand-written version is about 3-4x faster (benchmarked in a standalone repo).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-12-12 05:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 05:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-normalize/src/lib.rs</code>:23 on 2023-12-12 05:47</div>
+            <div class="timeline-body"><p>I looked at changing this to return <code>Cow</code>, so that we could avoid iterating over the characters twice for the <code>validate_and_normalize_owned</code> case, but it ended up being slower. I guess more branches?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-12 05:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-12 05:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-12 05:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 14:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-normalize/src/lib.rs</code>:26 on 2023-12-12 14:18</div>
+            <div class="timeline-body"><p>You should be able to iterate over bytes here, since your case analysis is limited to ASCII characters below. That would let you avoid doing UTF-8 decoding. (Which is what <code>chars()</code> is doing.)</p>
+<p>Same thing for <code>is_normalized</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-normalize/src/lib.rs</code>:23 on 2023-12-12 14:21</div>
+            <div class="timeline-body"><p>Plausibly. My prior is that a <code>Cow</code> would probably be faster here, but I could see it not making much of a difference (or perhaps being slower) if most names didn't need normalization. If most do, then you're doing two passes for most names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-normalize/src/lib.rs</code>:26 on 2023-12-12 14:33</div>
+            <div class="timeline-body"><p>Dumb question, what happens if <code>name</code> <em>does</em> contain a UTF-8 character in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-normalize/src/lib.rs</code>:23 on 2023-12-12 14:35</div>
+            <div class="timeline-body"><p>Maybe I'll try again. How would you typically structure this? Make <code>normalized</code> an <code>Option</code>, and initialize it with the preceding contents as soon as you see a mismatching character?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-normalize/src/lib.rs</code>:26 on 2023-12-12 14:43</div>
+            <div class="timeline-body"><p>Behavior will remain unchanged. You'll hit the same error case.</p>
+<p>The key here is that UTF-8 was specifically designed to be ASCII compatible. That means that any time you see an ASCII byte in valid UTF-8, it's guaranteed to correspond to the equivalent ASCII codepoint. Since here you don't actually care about anything other than ASCII, you can just look at the bytes directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-12 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-normalize/src/lib.rs</code>:26 on 2023-12-12 14:45</div>
+            <div class="timeline-body"><p>But what if the string contains a multi-byte character?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-normalize/src/lib.rs</code>:23 on 2023-12-12 14:45</div>
+            <div class="timeline-body"><p>I think so yeah, that's where I'd start.</p>
+<p>But definitely keep the bigger picture in mind here. Are most names being normalized? If not, it might not help much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-normalize/src/lib.rs</code>:26 on 2023-12-12 14:47</div>
+            <div class="timeline-body"><p>There is no UTF-8 encoding of any Unicode scalar value where any of its code units is equivalent to an ASCII byte. So you'll just trip your error case. Same as what happens in your code today if I'm reading it right.</p>
+<p>This might help: https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=a632ee5d0aa0adb2a154da5475aa3882</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-12 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-normalize/src/lib.rs</code>:26 on 2023-12-12 14:50</div>
+            <div class="timeline-body"><p>The fact that you return an <code>InvalidNameError</code> upon seeing <em>anything</em> that doesn't match <code>[-_.0-9A-Za-z]</code> is what makes the optimization work. The error case doesn't care about <em>what</em> you see, only that it isn't <code>[-_.0-9A-Za-z]</code>. Since <code>[-_.0-9A-Za-z]</code> is all ASCII, the byte version of that class and the codepoint version of that class are precisely equivalent. So in the current code, the error case triggers when you see a <em>codepoint</em> outside of <code>[-_.0-9A-Za-z]</code>. But in the byte version, the error case will trigger when you see a UTF-8 code unit that isn't in <code>[-_.0-9A-Za-z]</code>. The error cases are precisely equivalent because UTF-8 is ASCII compatible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-12 16:52</div>
+            <div class="timeline-body"><p>For posterity: I rewrote this to use <code>Cow</code>.</p>
+<pre><code class="language-rust">pub(crate) fn cow(
+    name: &amp;str,
+) -&gt; Result&lt;Cow&lt;str&gt;&gt; {
+    let mut normalized: Option&lt;String&gt; = None;
+
+    let mut last = None;
+    for (i, char) in name.bytes().enumerate() {
+        match char {
+            b'A'..=b'Z' =&gt; {
+                if let Some(normalized) = normalized.as_mut() {
+                    normalized.push(char.to_ascii_lowercase() as char);
+                } else {
+                    let mut string = String::with_capacity(name.len());
+                    string.push_str(&amp;name[..i]);
+                    string.push(char.to_ascii_lowercase() as char);
+                    normalized = Some(string);
+                }
+            }
+            b'a'..=b'z' | b'0'..=b'9' =&gt; {
+                if let Some(normalized) = normalized.as_mut() {
+                    normalized.push(char as char);
+                }
+            }
+            b'-' =&gt; {
+                match last {
+                    // Names can't start with punctuation.
+                    None =&gt; return Err(anyhow::anyhow!(name.to_string())),
+                    Some(b'-') =&gt; {
+                        // Runs of `-` are normalized to a single `-`.
+                        if normalized.is_none() {
+                            let mut string = String::with_capacity(name.len());
+                            string.push_str(&amp;name[..i]);
+                            normalized = Some(string);
+                        }
+                    }
+                    Some(_) =&gt; {
+                        if let Some(normalized) = normalized.as_mut() {
+                            normalized.push('-');
+                        }
+                    },
+                }
+            }
+            b'_' | b'.' =&gt; {
+                match last {
+                    // Names can't start with punctuation.
+                    None =&gt; return Err(anyhow::anyhow!(name.to_string())),
+                    Some(b'-') | Some(b'_') | Some(b'.') =&gt; {
+                        if normalized.is_none() {
+                            let mut string = String::with_capacity(name.len());
+                            string.push_str(&amp;name[..i]);
+                            normalized = Some(string);
+                        }
+                    }
+                    Some(_) =&gt; {
+                        if let Some(normalized) = normalized.as_mut() {
+                            normalized.push('-');
+                        } else {
+                            let mut string = String::with_capacity(name.len());
+                            string.push_str(&amp;name[..i]);
+                            string.push('-');
+                            normalized = Some(string);
+                        }
+                    }
+                }
+            }
+            _ =&gt; return Err(anyhow::anyhow!(name.to_string())),
+        }
+        last = Some(char);
+    }
+
+    // Names can't end with punctuation.
+    if matches!(last, Some(b'-') | Some(b'_') | Some(b'.')) {
+        return Err(anyhow::anyhow!(name.to_string()));
+    }
+
+    if let Some(normalized) = normalized {
+        Ok(Cow::Owned(normalized))
+    } else {
+        Ok(Cow::Borrowed(name))
+    }
+}
+</code></pre>
+<p>It's much faster in the event that there is no normalization, but a touch slower in other cases. However, importantly, it's also not much of an optimization in practice because we always convert the <code>str</code> to a <code>String</code> after calling this, so it doesn't <em>actually</em> save us an allocation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-12 16:58</div>
+            <div class="timeline-body"><p>It still does save a second pass over the name though? Although perhaps that's marginal here, and especially so if most names are already normalized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-12 17:06</div>
+            <div class="timeline-body"><p>In my criterion benchmark, interestingly, the version where we need to normalize an owned string ends up being <em>slower</em> than doing two passes... E.g., given <code>&quot;meine_stadt_transformers&quot;.to_string()</code>, it's 83ns vs. 77ns for the Cow-based version vs. the two-pass version. Why could that be...?</p>
+<p>Do you think this variant is easier to understand and maintain? Perhaps I'll commit it anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-12 17:12</div>
+            <div class="timeline-body"><p>I'm not sure at a glance honestly. I think I'd have to investigate. The branches and the beefier code could definitely be having an impact.</p>
+<blockquote>
+<p>Do you think this variant is easier to understand and maintain? Perhaps I'll commit it anyway.</p>
+</blockquote>
+<p>I like what's on <code>main</code> right now better than the <code>Cow</code> stuff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-12 17:18</div>
+            <div class="timeline-body"><p>Sounds good, moving on :) Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

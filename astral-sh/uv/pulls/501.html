@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check compatibility for cached unzipped wheels - astral-sh/uv #501</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Check compatibility for cached unzipped wheels</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/501">#501</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-11-26 15:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-11-26 15:56</div>
+            <div class="timeline-body"><p><strong>Motivation</strong> Previously, we would install any wheel with the correct package name and version from the cache, even if it doesn't match the current python interpreter.</p>
+<p><strong>Summary</strong> The unzipped wheel cache for registries now uses the entire wheel filename over the name-version (<code>editables-0.5-py3-none-any.whl</code> over <code>editables-0.5</code>).</p>
+<p>Built wheels are not stored in the <code>wheels-v0</code> unzipped wheels cache anymore. For each source distribution, there can be multiple built wheels (with different compatibility tags), so i argue that we need a different cache structure for them (follow up PR).</p>
+<p>For <code>all-kinds.in</code> with</p>
+<pre><code class="language-bash">rm -rf cache-all-kinds
+virtualenv --clear -p 3.12 .venv
+cargo run --bin puffin -- pip-sync --cache-dir cache-all-kinds target/all-kinds.txt
+</code></pre>
+<p>we get:</p>
+<p><strong>Before</strong></p>
+<pre><code>cache-all-kinds/wheels-v0/
+├── registry
+│   ├── annotated_types-0.6.0
+│   ├── asgiref-3.7.2
+│   ├── blinker-1.7.0
+│   ├── certifi-2023.11.17
+│   ├── cffi-1.16.0
+│   ├── [...]
+│   ├── tzdata-2023.3
+│   ├── urllib3-2.1.0
+│   └── wheel-0.42.0
+└── url
+    ├── 4b8be67c801a7ecb
+    │   ├── flask
+    │   └── flask-3.0.0.dist-info
+    ├── 6781bd6440ae72c2
+    │   ├── werkzeug
+    │   └── werkzeug-3.0.1.dist-info
+    └── a67db8ed076e3814
+        ├── pydantic_extra_types
+        └── pydantic_extra_types-2.1.0.dist-info
+
+48 directories, 0 files
+</code></pre>
+<p><strong>After</strong></p>
+<pre><code>cache-all-kinds/wheels-v0/
+├── registry
+│   ├── annotated_types-0.6.0-py3-none-any.whl
+│   ├── asgiref-3.7.2-py3-none-any.whl
+│   ├── blinker-1.7.0-py3-none-any.whl
+│   ├── certifi-2023.11.17-py3-none-any.whl
+│   ├── cffi-1.16.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+│   ├── [...]
+│   ├── tzdata-2023.3-py2.py3-none-any.whl
+│   ├── urllib3-2.1.0-py3-none-any.whl
+│   └── wheel-0.42.0-py3-none-any.whl
+└── url
+    └── 4b8be67c801a7ecb
+        └── flask-3.0.0-py3-none-any.whl
+
+39 directories, 0 files
+</code></pre>
+<p><strong>Outlook</strong> Part of #477 &quot;Fix wheel caching&quot;. Further tasks:</p>
+<ul>
+<li>Replace the <code>CacheShard</code> with <code>WheelMetadataCache</code> which handles urls properly.</li>
+<li>Delete unzipped wheels when their remote wheel changed</li>
+<li>Store built wheels next to the <code>metadata.json</code> in the source dist directory; delete built wheels when their source dist changed (different cache bucket, but it's the same problem of fixing wheel caching) I'll make stacked PRs for those</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/cache.rs</code>:35 on 2023-11-26 15:57</div>
+            <div class="timeline-body"><p>This is stop gap just to avoid a regression, it'll be rendered unnecessary by using <code>WheelMetadataCache</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-26 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2023-11-26 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-11-26 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-27 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-28 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-28 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-28 00:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

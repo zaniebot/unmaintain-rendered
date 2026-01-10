@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explain ld errors - astral-sh/uv #773</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Explain ld errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/773">#773</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-04 12:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-04 12:19</div>
+            <div class="timeline-body"><p>One of the most common ways source dists fail to build (on linux) is when the linker fails because the shared library of a native dependency is not installed. These errors are hard to understand when you're not a c programmer:</p>
+<pre><code>       In file included from /usr/include/python3.10/unicodeobject.h:1046,
+                        from /usr/include/python3.10/Python.h:83,
+                        from Modules/3.x/readline.c:8:
+       Modules/3.x/readline.c: In function ‘on_completion’:
+       /usr/include/python3.10/cpython/unicodeobject.h:744:29: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+         744 | #define _PyUnicode_AsString PyUnicode_AsUTF8
+             |                             ^~~~~~~~~~~~~~~~
+       Modules/3.x/readline.c:842:23: note: in expansion of macro ‘_PyUnicode_AsString’
+         842 |             char *s = _PyUnicode_AsString(r);
+             |                       ^~~~~~~~~~~~~~~~~~~
+       Modules/3.x/readline.c: In function ‘readline_until_enter_or_signal’:
+       Modules/3.x/readline.c:1044:9: warning: ‘sigrelse’ is deprecated: Use the sigprocmask function instead [-Wdeprecated-declarations]
+        1044 |         sigrelse(SIGINT);
+             |         ^~~~~~~~
+       In file included from Modules/3.x/readline.c:10:
+       /usr/include/signal.h:359:12: note: declared here
+         359 | extern int sigrelse (int __sig) __THROW
+             |            ^~~~~~~~
+       Modules/3.x/readline.c: In function ‘PyInit_readline’:
+       Modules/3.x/readline.c:1179:34: warning: assignment to ‘char * (*)(FILE *, FILE *, const char *)’ from incompatible pointer type ‘char * (*)(FILE *, FILE *, char *)’ [-Wincompatible-pointer-types]
+        1179 |     PyOS_ReadlineFunctionPointer = call_readline;
+             |                                  ^
+       In file included from /usr/include/string.h:535,
+                        from /usr/include/python3.10/Python.h:30,
+                        from Modules/3.x/readline.c:8:
+       In function ‘strncpy’,
+           inlined from ‘call_readline’ at Modules/3.x/readline.c:1124:9:
+       /usr/include/x86_64-linux-gnu/bits/string_fortified.h:95:10: warning: ‘__builtin_strncpy’ output truncated before terminating nul copying as many bytes from a string as its length [-Wstringop-truncation]
+          95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+             |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          96 |                                   __glibc_objsize (__dest));
+             |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+       Modules/3.x/readline.c: In function ‘call_readline’:
+       Modules/3.x/readline.c:1099:9: note: length computed here
+        1099 |     n = strlen(p);
+             |         ^~~~~~~~~
+       /usr/bin/ld: cannot find -lncurses: No such file or directory
+       collect2: error: ld returned 1 exit status
+       error: command '/usr/bin/x86_64-linux-gnu-gcc' failed with exit code 1
+       ---
+</code></pre>
+<p>We parse these errors out, tell the user about the missing shared library and even the most likely debian/ubuntu package name:</p>
+<pre><code>This error likely indicates that you need to install the library that provides a shared library for ncurses for pygraphviz-1.11 (e.g. libncurses-dev)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2024-01-04 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-04 19:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-04 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-04 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-04 19:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

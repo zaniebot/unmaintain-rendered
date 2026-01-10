@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consolidate wheel caches - astral-sh/uv #524</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consolidate wheel caches</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/524">#524</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-12-01 12:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-12-01 12:05</div>
+            <div class="timeline-body"><p>After this change, two wheel caches remain: <code>built-wheels-v0</code> and <code>wheels-v0</code>, docs screenshots below. Each contains both the wheel metadata, cache policy and zip or unzipped wheels under the same name.</p>
+<p>The zipped/unzipped strategy is as follows: In <code>pip-compile</code>, when we build a wheel, we store it zipped. When <code>pip-sync</code> or a source dist build in <code>pip-compile</code> need to install the wheel, we unzip it, remove the file and replace it with the unzipped wheel.</p>
+<p>This removes <code>WheelCache</code> and <code>UrlIndex</code> in favor of <code>Cache</code> plus <code>WheelCache</code>. The non-built wheel cache now considers index urls and the url for url wheels.</p>
+<p>I'm unsure if we need the <code>Unzipper</code> type, this could just be a function.</p>
+<p>I move <code>no_index</code> into <code>IndexUrls</code> and started using <code>IndexUrl</code> up to the clap level.</p>
+<p>I left a number of TODOs in the code, namely performing the actual invalidation of unzipped wheels and making the <code>InstallPlan</code> understand cache invalidation (i.e. uninstall wheels when their remote changed).</p>
+<p><img src="https://github.com/astral-sh/puffin/assets/6826232/c4d45979-485b-4954-848d-fd3347ee2510" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-01 12:06</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #519</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/519?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #524</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/524?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/524?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/wheel_and_metadata.rs</code>:27 on 2023-12-01 18:37</div>
+            <div class="timeline-body"><p>I would be fine calling this <code>WheelCache</code>, and saying that it stores both metadata and built archives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:186 on 2023-12-01 18:37</div>
+            <div class="timeline-body"><p>I find this message a little confusing. I think <code>Failed to download and build distributions</code> is clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:44 on 2023-12-01 18:40</div>
+            <div class="timeline-body"><p>Why was the <code>IndexUrls</code> refactor necessary to enable this? Or is it a semi-unrelated refactor that was included in this PR anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/plan.rs</code>:107 on 2023-12-01 18:42</div>
+            <div class="timeline-body"><p>Noticing that we can probably do this without leaving the <code>Result</code> monad, like <code>if let Ok(...) = </code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:58 on 2023-12-01 18:42</div>
+            <div class="timeline-body"><p>This looks unintentional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:53 on 2023-12-01 18:44</div>
+            <div class="timeline-body"><p>Can you explain this? Why do we remove the zipped wheel? Is this like replacing <code>foo.whl</code> with the unzipped <code>foo</code> directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:63 on 2023-12-01 18:44</div>
+            <div class="timeline-body"><p>Can you explain this part?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:53 on 2023-12-01 19:25</div>
+            <div class="timeline-body"><p>I'd probably vote to just keep both for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:53 on 2023-12-01 20:08</div>
+            <div class="timeline-body"><p>Kept this as-is...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-01 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:63 on 2023-12-01 20:09</div>
+            <div class="timeline-body"><p>Removed this, but let me know if it's necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 20:11</div>
+            <div class="timeline-body"><blockquote>
+<p>The zipped/unzipped strategy is as follows: In pip-compile, when we build a wheel, we store it zipped. When pip-sync or a source dist build in pip-compile need to install the wheel, we unzip it, remove the file and replace it with the unzipped wheel.</p>
+</blockquote>
+<p>@konstin - If we then run <code>pip-compile</code> again, will we read from the metadata from the unzipped wheel?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-01 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-01 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-01 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 20:21</div>
+            <div class="timeline-body"><p>Maybe another question that would help with my understanding: can you walk through the caching story for a PyPI source distribution, assuming we run <code>pip-compile</code>, then <code>pip-sync</code>, then <code>pip-compile</code> again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-04 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/commands/pip_compile.rs</code>:44 on 2023-12-04 08:21</div>
+            <div class="timeline-body"><p>I had to move them anyway and it became a semi-related refactor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 08:49</div>
+            <div class="timeline-body"><blockquote>
+<p>If we then run pip-compile again, will we read from the metadata from the unzipped wheel?</p>
+</blockquote>
+<p>No, we read the <code>.json</code> file next to it.</p>
+<blockquote>
+<p>can you walk through the caching story for a PyPI source distribution, assuming we run pip-compile, then pip-sync, then pip-compile again?</p>
+</blockquote>
+<p>Wheel unzipping happens lazily: On the first <code>pip-compile</code>, we build the wheel, store it zipped and store the metadata as json. On the <code>pip-sync</code>, we unzip the wheel, store the directory (, remove the zip file) and copy the directory. On the next <code>pip-compile</code>, we read the cached metadata from the json. <code>pip-compile</code> doesn't need or look for the actual built wheel, but it has to build the source distribution to determine the metadata so we might all we cache it. We don't eagerly unzip it to avoid the performance impact. On the next <code>pip-sync</code>, we only copy the unzipped directory. When it either command needs to invalidate the cache, it remove the entire source dist directory.</p>
+<p>For comprehensiveness, if we first <code>pip-sync</code> and then <code>pip-compile</code>, the first <code>pip-sync</code> will still write the metadata <code>.json</code> (they share the same code path), so the second <code>pip-compile</code> runs cached.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-04 08:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-installer/src/unzipper.rs</code>:63 on 2023-12-04 08:52</div>
+            <div class="timeline-body"><p>We moved the cache dir in the previous line, so the drop of <code>TempDir</code> wouldn't find it anymore. This errors silently but i'd prefer it not to error at all.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

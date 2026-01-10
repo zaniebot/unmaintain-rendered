@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support granular target Python versions - astral-sh/uv #534</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support granular target Python versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/534">#534</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-04 03:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 03:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Allows, e.g., <code>--python-version 3.7</code> or <code>--python-version 3.7.9</code>. This was also feedback I received in the original PR.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/533.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-12-04 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-12-04 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2023-12-04 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/tests/pip_compile.rs</code>:534 on 2023-12-04 08:56</div>
+            <div class="timeline-body"><p>Do we want to use inline snapshots here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/python_version.rs</code>:13 on 2023-12-04 08:57</div>
+            <div class="timeline-body"><p>I think we should enforce <code>&gt;=3,&lt;4</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/python_version.rs</code>:20 on 2023-12-04 08:59</div>
+            <div class="timeline-body"><p>If we allow patch versions we should allow prereleases too, i have e.g. <code>3.13.0a1+</code> installed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-12-04 09:08</div>
+            <div class="timeline-body"><p>I like the <code>--python-version 3.7</code> syntax, but i wonder whether we should allow patch versions or just match independent of anything more granular than minor version, It would be really confusing to specify <code>--python-version 3.7</code> and then get a strange (or no) resolution because numpy wants <code>&gt;=3.7.1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 14:49</div>
+            <div class="timeline-body"><p>@konstin - How would that work in practice though? I actually <em>did</em> have a case where the source distribution requires 3.7.9 or later (pygls). What would the semantics of <code>--python-version 3.7</code> be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 14:52</div>
+            <div class="timeline-body"><blockquote>
+<p>How would that work in practice though? I actually did have a case where the source distribution requires 3.7.9 or later (pygls). What would the semantics of --python-version 3.7 be?</p>
+</blockquote>
+<p>Good question, i have two ideas: a) The latest python patch version we're aware of, hardcoded until we have an api to query the latest versions b) We treat the version as <code>3.x.&lt;usize::MAX&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 14:54</div>
+            <div class="timeline-body"><p>Option c) Do it poetry style, let the user specify <code>&gt;=3.7</code> or <code>~=3.7</code> and if that's not enough nudge them to specify <code>&gt;=3.7.9</code> or <code>~=3.7.9</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 15:14</div>
+            <div class="timeline-body"><p>I'm unsure... Like, it seems wrong that if you run with <code>--python-version 3.7</code>, we then resolve with <code>3.7.13</code> or whatever, and then that resolution doesn't work on some versions of Python 3.7.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-04 15:24</div>
+            <div class="timeline-body"><p>Alright, well, why don't we do this:</p>
+<ul>
+<li>Allow patch versions...</li>
+<li>If the user only provides a minor version, assume the most recent (hard-coded) minor version.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 15:37</div>
+            <div class="timeline-body"><p>Sounds good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-05 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-05 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-05 02:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>

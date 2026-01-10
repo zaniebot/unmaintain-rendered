@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source dist metadata refactor - astral-sh/uv #468</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Source dist metadata refactor</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/468">#468</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-11-20 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-11-20 11:41</div>
+            <div class="timeline-body"><h2>Summary and motivation</h2>
+<p>For a given source dist, we store the metadata of each wheel built through it in <code>built-wheel-metadata-v0/pypi/&lt;source dist filename&gt;/metadata.json</code>. During resolution, we check the cache status of the source dist. If it is fresh, we check <code>metadata.json</code> for a matching wheel. If there is one we use that metadata, if there isn't, we build one. If the source is stale, we build a wheel and override <code>metadata.json</code> with that single wheel. This PR thereby ties the local built wheel metadata cache to the freshness of the remote source dist. This functionality is available through <code>SourceDistCachedBuilder</code>.</p>
+<p><code>puffin_installer::Builder</code>, <code>puffin_installer::Downloader</code> and <code>Fetcher</code> are removed, instead there are now <code>FetchAndBuild</code> which calls into the also new <code>SourceDistCachedBuilder</code>. <code>FetchAndBuild</code> is the new main high-level abstraction: It spawns parallel fetching/building, for wheel metadata it calls into the registry client, for wheel files it fetches them, for source dists it calls <code>SourceDistCachedBuilder</code>. It handles locks around builds, and newly added also inter-process file locking for git operations.</p>
+<p>Fetching and building source distributions now happens in parallel in <code>pip-sync</code>, i.e. we don't have to wait for the largest wheel to be downloaded to start building source distributions.</p>
+<p>In a follow-up PR, I'll also clear built wheels when they've become stale.</p>
+<p>Another effect is that in a fully cached resolution, we need neither zip reading nor email parsing.</p>
+<p>Closes #473</p>
+<h2>Source dist cache structure</h2>
+<p>Entries by supported sources:</p>
+<ul>
+<li><code>&lt;build wheel metadata cache&gt;/pypi/foo-1.0.0.zip/metadata.json</code></li>
+<li><code>&lt;build wheel metadata cache&gt;/&lt;sha256(index-url)&gt;/foo-1.0.0.zip/metadata.json</code></li>
+<li><code>&lt;build wheel metadata cache&gt;/url/&lt;sha256(url)&gt;/foo-1.0.0.zip/metadata.json</code>
+But the url filename does not need to be a valid source dist filename
+(<a href="https://github.com/search?q=path%3A**%2Frequirements.txt+master.zip&amp;type=code">https://github.com/search?q=path%3A**%2Frequirements.txt+master.zip&amp;type=code</a>),
+so it could also be the following and we have to take any string as filename:</li>
+<li><code>&lt;build wheel metadata cache&gt;/url/&lt;sha256(url)&gt;/master.zip/metadata.json</code></li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-text"># git source dist
+pydantic-extra-types @ git+https://github.com/pydantic/pydantic-extra-types.git
+# pypi source dist
+django_allauth==0.51.0
+# url source dist
+werkzeug @ https://files.pythonhosted.org/packages/0d/cc/ff1904eb5eb4b455e442834dabf9427331ac0fa02853bf83db817a7dd53d/werkzeug-3.0.1.tar.gz
+</code></pre>
+<p>will be stored as</p>
+<pre><code class="language-text">built-wheel-metadata-v0
+├── git
+│   └── 5c56bc1c58c34c11
+│       └── 843b753e9e8cb74e83cac55598719b39a4d5ef1f
+│           └── metadata.json
+├── pypi
+│   └── django-allauth-0.51.0.tar.gz
+│       └── metadata.json
+└── url
+    └── 6781bd6440ae72c2
+        └── werkzeug-3.0.1.tar.gz
+            └── metadata.json
+</code></pre>
+<p>The inside of a <code>metadata.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;data&quot;: {
+    &quot;django_allauth-0.51.0-py3-none-any.whl&quot;: {
+      &quot;metadata-version&quot;: &quot;2.1&quot;,
+      &quot;name&quot;: &quot;django-allauth&quot;,
+      &quot;version&quot;: &quot;0.51.0&quot;,
+      ...
+    }
+  }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-20 14:16</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #462</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/462?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #468</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/468?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/468?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-11-21 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-git/src/source.rs</code>:131 on 2023-11-21 19:30</div>
+            <div class="timeline-body"><p>Why use these rather than the traits?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/source_dist.rs</code>:157 on 2023-11-21 19:34</div>
+            <div class="timeline-body"><p>Why can't we use <code>.filename()</code> here? Isn't this already available as a trait?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/source_dist.rs</code>:117 on 2023-11-21 19:37</div>
+            <div class="timeline-body"><p>Can you talk me through this struct a bit? How does it relate to the <code>Fetcher</code> struct? It looks like it duplicates a lot of the responsibilities and functionality. By introducing this, aren't we again forking behavior, since this doesn't seem to be used in the installer?</p>
+<p>Put differently: why are the behaviors here not part of <code>Fetcher</code> directly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/source_dist.rs</code>:117 on 2023-11-21 19:39</div>
+            <div class="timeline-body"><p>Why is this not being used? This feels slightly off to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:38 on 2023-11-21 19:41</div>
+            <div class="timeline-body"><p>(Minor nit: feel like these dep changes could've been their own PR so that readers don't think these are new.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-21 19:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-22 08:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.toml</code>:38 on 2023-11-22 08:29</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/puffin/pull/483</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-22 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-git/src/source.rs</code>:131 on 2023-11-22 16:36</div>
+            <div class="timeline-body"><p>For me, <code>From</code>/<code>Into</code> are for loss-less conversions and not field access. Do we just want to make those fields public?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-22 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/source_dist.rs</code>:139 on 2023-11-22 16:43</div>
+            <div class="timeline-body"><p>This breaks the pattern from the other reporters cause <code>impl Reporter</code> didn't work here, but i'm happy to switch to a better suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/fetch_and_build.rs</code>:223 on 2023-11-22 17:06</div>
+            <div class="timeline-body"><p>Doesn't <code>wheel</code> already have a <code>filename</code> attribute on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/fetch_and_build.rs</code>:222 on 2023-11-22 17:06</div>
+            <div class="timeline-body"><p>Can this not use <code>wheel.url.filename()?</code>? We have a trait for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/fetch_and_build.rs</code>:77 on 2023-11-22 17:08</div>
+            <div class="timeline-body"><p>What about... <code>DistributionDatabase</code>? We frame it as a database for accessing distribution metadata, contents, and builds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/metadata.rs</code>:129 on 2023-11-22 17:09</div>
+            <div class="timeline-body"><p>I think we can rename this to <code>built_wheel_dir</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/fetch_and_build.rs</code>:362 on 2023-11-22 17:12</div>
+            <div class="timeline-body"><p>Is this strictly necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/metadata.rs</code>:32 on 2023-11-22 17:15</div>
+            <div class="timeline-body"><p>I'm a little confused by what URL is passed-in here vs. what values are rebound the the <code>url</code> variable name in the match below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:229 on 2023-11-22 17:16</div>
+            <div class="timeline-body"><p>Maybe we just stick to this for now and remove the first branch. We already have extra logging so that users know we built any relevant packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:189 on 2023-11-22 17:16</div>
+            <div class="timeline-body"><p>I am assuming that the user-facing output did not change here, so we still show <code>Fetching X</code> and <code>Build X</code> and such, plus a progress bar. Is that correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/metadata.rs</code>:43 on 2023-11-22 17:18</div>
+            <div class="timeline-body"><p>Since every branch here is just appending to <code>cache_with_bucket</code>, I think we should remove that argument. Just return <code>git.join(digest(&amp;CanonicalUrl::new(url)))</code>, and the caller can do the prepend, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/metadata.rs</code>:131 on 2023-11-22 17:18</div>
+            <div class="timeline-body"><p>I would remove the <code>&amp;cache_with_bucket</code> argument. It makes the method less flexible. Instead, we can do <code>cache.join(BUILT_WHEEL_METADATA_CACHE).join(self.append_to_bucket(url)).join(filename)</code> or whatever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/fetch_and_build.rs</code>:38 on 2023-11-22 17:20</div>
+            <div class="timeline-body"><p>Does this caching need to be unified with the built wheel caching...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:20</div>
+            <div class="timeline-body"><p>Left some questions, but I don't think this is too far away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-22 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/commands/pip_sync.rs</code>:189 on 2023-11-22 18:46</div>
+            <div class="timeline-body"><p>pip-compile:</p>
+<p><a href="https://github.com/astral-sh/puffin/assets/6826232/693d00e3-94bd-4d51-a71d-96df9608a6c2">Screencast from 2023-11-22 19-42-02.webm</a></p>
+<p>pip-sync:</p>
+<p><a href="https://github.com/astral-sh/puffin/assets/6826232/55af0455-da41-4dfb-8120-deadeb563e19">Screencast from 2023-11-22 19-45-48.webm</a></p>
+<p>There's no explicit <code>Fetching X</code>, but the output looks right in general</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-22 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/fetch_and_build.rs</code>:38 on 2023-11-22 19:23</div>
+            <div class="timeline-body"><p>Yes, and we also need to fix the storage paths. i added the same todo comment as for the other archives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-22 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/fetch_and_build.rs</code>:362 on 2023-11-22 19:25</div>
+            <div class="timeline-body"><p>Removed it here (with hopes that libgit2's isolation is as good as that stackoverflow answer indicates), kept it in the place where we really need</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-22 19:25</div>
+            <div class="timeline-body"><p>I think i addressed all comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-24 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/source_dist.rs</code>:486 on 2023-11-24 15:43</div>
+            <div class="timeline-body"><p>My question was more: do we need this at all? If so, why? I think the underlying Git abstractions will actually error if you try and manipulate them twice at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-24 15:59</div>
+            <div class="timeline-body"><p>Nice, let's roll with it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/source_dist.rs</code>:486 on 2023-11-24 16:23</div>
+            <div class="timeline-body"><p>Like, I'd kind of rather remove this unless we learn that we need it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-24 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-24 17:44</div>
+            <div class="timeline-body"><p>(Going to merge this to avoid conflicts.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-24 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-24 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-24 17:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:45:06 UTC
+    </footer>
+</body>
+</html>
