@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>provide a good option for users who want callable types with all `FunctionType` attributes - astral-sh/ty #1495</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>provide a good option for users who want callable types with all `FunctionType` attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1495">#1495</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-11-06 16:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-11-06 16:18</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ty/issues/491#issuecomment-3462267064 for more detailed discussion.</p>
+<p>In particular, other type-checkers will assume all Callable types have <code>FunctionType.__get__</code>, while simultaneously assuming that they <em>don't</em> necessarily always behave as a bound-method descriptor. This is of course inconsistent, but we may need to do the same for compatibility.</p>
+<p>Similar for existence of other <code>FunctionType</code> attributes, such as <code>__name__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">callables</span> added by @carljm on 2025-11-06 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-11-06 20:47</div>
+            <div class="timeline-body"><p>My two cents on this is that I would like if there was some way for a warning on these possibly missing attributes to still be issued. I have ran into this several times with using <code>__name__</code> in functions that operate over <code>Callable</code>s, and eventually end up getting a very confusing error on what seems to be fully type safe code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-06 21:30</div>
+            <div class="timeline-body"><p>Just a note as we consider this: intersecting with <code>FunctionType</code> is one way to avoid these errors, and <code>isinstance(typed_as_callable, FunctionType):</code> is one way to synthesize that intersection in ty, without making code incompatible with other type checkers that don't support an explicit spelling for intersections.</p>
+<p><a href="https://play.ty.dev/eadacf84-a529-48a2-90ec-468d69185f7d">playground demo</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-07 16:23</div>
+            <div class="timeline-body"><p>I'm still not clear on whether we should do this. It seems plausible to instead say &quot;what other type checkers are doing here is unsafe, if you want to access these attributes first use <code>isinstance(..., FunctionType)</code>? We do need to implement &quot;call&quot; on intersection types, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-07 16:28</div>
+            <div class="timeline-body"><blockquote>
+<p>if you want to access these attributes first use <code>isinstance(..., FunctionType)</code>?</p>
+</blockquote>
+<p>or narrow the type using a <code>hasattr</code> check, yeah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-07 16:34</div>
+            <div class="timeline-body"><p>The downside of isinstance <code>FunctionType</code> is that currently we'll infer a Todo type if you try to call the intersection, and once we fix that, I think a correct implementation of calling intersections will result in the call return type being an intersection of <code>Any</code> (from the annotated return type on <code>FunctionType.__call__</code>) with the return type from your callable type, which is probably not desirable in this case. We could maybe special-case this to treat the return type from <code>FunctionType.__call__</code> as <code>object</code> instead of <code>Any</code>? In a stricter world that's what <code>FunctionType.__call__</code> should return.</p>
+<p>The downside of using <code>hasattr</code> checks is that we'll treat the attribute as having type <code>object</code>, instead of the annotated attribute type on <code>FunctionType</code>. This is technically correct, because there could be some other callable type with a <code>__name__</code> attribute of some other type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-07 16:48</div>
+            <div class="timeline-body"><blockquote>
+<p>We could maybe special-case this to treat the return type from <code>FunctionType.__call__</code> as <code>object</code> instead of <code>Any</code>? In a stricter world that's what <code>FunctionType.__call__</code> should return.</p>
+</blockquote>
+<p>yes, I think we should apply this special case, definitely if it appears in an intersection with a <code>Callable</code> type and possibly more broadly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-11-13 09:52</div>
+            <div class="timeline-body"><p>I agree with @MeGaGiGaGon, I don't think all <code>Callable</code>s should be treated as <code>FunctionType</code> just because all the other type checkers wrongly do so. If ty does do this for the purpose of backwards compatibility, I think there should be an option to disable it.</p>
+<p>Alternatively, perhaps <code>ty_extensions</code> could export its own versions of <code>Callable</code> and <code>FunctionType</code> that work properly, so users can opt into them with an option to ban usage of the unsafe versions from the standard library</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "assume (with other type checkers) that all Callable types have all typeshed attributes of `FunctionType`" to "provide a good option for users who want callable types with all `FunctionType` attributes" by @carljm on 2025-11-13 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-12-18 03:19</div>
+            <div class="timeline-body"><p>another issue i ran into is that there doesn't seem to be any way to use <code>assert_type</code> with a function type:</p>
+<pre><code class="language-py">def foo() -&gt; None: ...
+
+
+assert_type(foo, Callable[[], None]) # error
+</code></pre>
+<p>using a protocol or an intersection as suggested in https://github.com/astral-sh/ty/issues/599#issuecomment-2952175801 doesn't seem to work either:</p>
+<pre><code class="language-py">from collections.abc import Callable
+from typing import assert_type, Protocol
+from types import FunctionType
+from ty_extensions import Intersection
+
+class FunctionLike[**P, R](Protocol):
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -&gt; R: ...
+
+    __name__: str
+
+def foo() -&gt; None: ...
+
+assert_type(foo, Callable[[], None]) # error
+assert_type(foo, FunctionType[[], None]) # error
+assert_type(foo, Intersection[FunctionType, Callable[[], None]]) # error
+</code></pre>
+<p>https://play.ty.dev/5dcafceb-e48b-4380-a386-60c1a5d5ea58</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 00:20</div>
+            <div class="timeline-body"><p>@DetachHead That's more a https://github.com/astral-sh/ty/issues/1762 issue -- the problem is just that we represent some types internally that are more precise than what can be spelled as a type annotation, and that causes difficulty using those types with <code>assert_type</code>, because we are currently strict about <code>assert_type</code> asserting type equivalence.</p>
+<p>Using a protocol or intersection doesn't help as those aren't any more precise than a <code>Callable</code> type, they still aren't the same &quot;function literal&quot; type that we track internally.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

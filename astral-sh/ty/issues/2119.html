@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSP: PublishDiagnostics missing for dependent files after changes in other files - astral-sh/ty #2119</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>LSP: PublishDiagnostics missing for dependent files after changes in other files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2119">#2119</a>
+        opened by <a href="https://github.com/ficd0">@ficd0</a>
+        on 2025-12-19 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ficd0">@ficd0</a> on 2025-12-19 19:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><em>This bug pertains only to the LSP functionality of <code>ty server</code>, not any of the type checking.</em></p>
+<p>This bug occurs when using an editor that only supports the &quot;push&quot; model for diagnostics.</p>
+<p><strong>What happens</strong>: With files A and B open, and changing B s.t. in should introduce an error in A: No diagnostic is shown in A <em>until I make some arbitrary edit</em> (e.g. insert a space). After that edit, the diagnostic for A appears.</p>
+<p><strong>Expected</strong>: The server should publish updated diagnostics for A as soon as B changes without needing any edit in A, because the server knows that both A and B are opened by the client.</p>
+<p><strong>Steps to reproduce:</strong></p>
+<blockquote>
+<p>[!NOTE]
+This occurs with clients that advertise <em>only</em> the <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_publishDiagnostics">textDocument/publishDiagnostics</a> capability, and cannot <em>pull</em> diagnostics on demand.</p>
+</blockquote>
+<ol>
+<li>Open files A and B.</li>
+<li>Edit B to change something that should affect A (e.g. break an import, API, etc.)</li>
+<li>Observe that diagnostics in A remain stale.</li>
+<li>Make a no-op edit in A (add/remove a space). Observe that the expected diagnostic for A suddenly appears.</li>
+</ol>
+<p>Suppose I have two files open: A and B. They are both known to <code>ty</code> and being watched.</p>
+<p>Suppose that A imports some object from B. Then, I change file B such that it introduces an error in A. But when I switch back to A, there is no diagnostic; <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_publishDiagnostics">textDocument/publishDiagnostics</a> has not been run. In order to get <code>ty</code> to push the updated diagnostic to file A, I need to make an arbitrary edit to file A, so that my client sends <code>textDocument/didChange</code> for A, and that seems to prompt <code>ty</code> to publish the diagnostic.</p>
+<p><strong>Question</strong>: does the server only recompute diagnostics for file A when the file itself has changed, or are the diagnostics recomputed when the dependency changes, and they're just not being pushed to the client?</p>
+<h3>Version</h3>
+<p>ty 0.0.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-19 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 19:53</div>
+            <div class="timeline-body"><p>Thank you. This is tracked in https://github.com/astral-sh/ty/issues/1652</p>
+<p>Out of curiosity, what editor are you using?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-19 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ficd0">@ficd0</a> on 2025-12-19 20:06</div>
+            <div class="timeline-body"><p>Thanks.</p>
+<blockquote>
+<p>Out of curiosity, what editor are you using?</p>
+</blockquote>
+<p>I'm using <a href="https://kakoune.org/">Kakoune</a> with the <a href="https://github.com/kakoune-lsp/kakoune-lsp">kakoune-lsp</a> plugin and the following configuration:</p>
+<pre><code class="language-sh">remove-hooks global lsp-filetype-python
+hook -group lsp-filetype-python global BufSetOption filetype=python %{
+	set-option buffer lsp_servers %{
+		[ty]
+		root_globs = [&quot;requirements.txt&quot;, &quot;setup.py&quot;, &quot;pyproject.toml&quot;, &quot;.git&quot;, &quot;.hg&quot;]
+		args = [&quot;server&quot;]
+		settings_section = &quot;ty&quot;
+		[ty.settings.ty]
+		inlayHints.variableTypes = true
+		diagnosticMode = &quot;workspace&quot;
+		[ruff]
+		root_globs = [&quot;requirements.txt&quot;, &quot;setup.py&quot;, &quot;pyproject.toml&quot;, &quot;.git&quot;, &quot;.hg&quot;]
+		command = &quot;ruff&quot;
+		args = [&quot;server&quot;]
+
+		# leaving commented in case i want to switch back
+
+		# [basedpyright-langserver]
+		# root_globs = [&quot;requirements.txt&quot;, &quot;setup.py&quot;, &quot;pyproject.toml&quot;, &quot;pyrightconfig.json&quot;, &quot;.git&quot;, &quot;.hg&quot;]
+		# args = [&quot;--stdio&quot;]
+		# settings_section = &quot;basedpyright&quot;
+		# [basedpyright-langserver.settings.basedpyright.analysis]
+		# typeCheckingMode = &quot;standard&quot;
+		# inlayHints.genericTypes = true
+	}
+}
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

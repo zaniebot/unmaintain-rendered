@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypedDict discriminated union support - astral-sh/ty #2118</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TypedDict discriminated union support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2118">#2118</a>
+        opened by <a href="https://github.com/scosman">@scosman</a>
+        on 2025-12-19 17:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scosman">@scosman</a> on 2025-12-19 17:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ty has a false positive on TypedDict discriminated unions. Full example below (the error is the last line).</p>
+<p>Expected: since we validate the discriminator, type checking should pass.</p>
+<p>Actual: type checking fails, not recognizing the narrowing.</p>
+<p>For reference, the same code works in pyright without error.</p>
+<pre><code>class VectorStoreType(str, Enum):
+    LANCE_DB_FTS = &quot;lancedb_fts&quot;
+    LANCE_DB_HYBRID = &quot;lancedb_hybrid&quot;
+    LANCE_DB_VECTOR = &quot;lancedb_vector&quot;
+
+
+class LanceDBConfigFTSProperties(TypedDict, total=True):
+    store_type: Literal[VectorStoreType.LANCE_DB_FTS]
+    similarity_top_k: PositiveInt
+    overfetch_factor: PositiveInt
+    vector_column_name: str
+    text_key: str
+    doc_id_key: str
+
+
+class LanceDBConfigVectorProperties(TypedDict, total=True):
+    store_type: Literal[VectorStoreType.LANCE_DB_VECTOR]
+    similarity_top_k: PositiveInt
+    overfetch_factor: PositiveInt
+    vector_column_name: str
+    text_key: str
+    doc_id_key: str
+    nprobes: PositiveInt
+
+
+class LanceDBConfigHybridProperties(LanceDBConfigVectorProperties, total=True):
+    store_type: Literal[VectorStoreType.LANCE_DB_HYBRID]
+    # no additional properties for hybrid, it is the same as the vector properties
+    pass
+
+class VectorStoreConfig(BaseModel):
+    store_type: VectorStoreType = Field(
+        description=&quot;The type of vector store to use.&quot;,
+    )
+    properties: (
+        LanceDBConfigFTSProperties
+        | LanceDBConfigVectorProperties
+        | LanceDBConfigHybridProperties
+    ) = Field(
+        description=&quot;The properties of the vector store config, specific to the selected store_type.&quot;,
+        # the discriminator refers to the properties-&gt;store_type key (not the store_type field on the parent model)
+        discriminator=&quot;store_type&quot;,
+    )
+
+    @property
+    def lancedb_vector_properties(self) -&gt; LanceDBConfigVectorProperties:
+        if self.properties[&quot;store_type&quot;] != VectorStoreType.LANCE_DB_VECTOR:
+            raise ValueError(
+                f&quot;Lancedb vector properties are only available for LanceDB vector store type. Got {self.properties.get('store_type')}&quot;
+            )
+        # Type Error Here! `Return type does not match returned value: expected `LanceDBConfigVectorProperties`, found `LanceDBConfigFTSProperties | LanceDBConfigVectorProperties | LanceDBConfigHybridProperties`ty[invalid-return-type](https://ty.dev/rules#invalid-return-type)`
+        return self.properties
+</code></pre>
+<h3>Version</h3>
+<p>0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 17:40</div>
+            <div class="timeline-body"><p>Thanks! Please see #1479</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-19 17:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

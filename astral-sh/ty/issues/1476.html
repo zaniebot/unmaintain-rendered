@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementing junit style reports - astral-sh/ty #1476</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implementing junit style reports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1476">#1476</a>
+        opened by <a href="https://github.com/cetanu">@cetanu</a>
+        on 2025-11-04 02:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cetanu">@cetanu</a> on 2025-11-04 02:53</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello friends,</p>
+<p>I'd like to contribute some code to this project, which as the title alludes to, is JUnit style XML reports!
+This format is commonly used by CI servers to produce a formatted report that is easy for users to read.</p>
+<p>I thought I would firstly ask if this is something you'd like in your project.
+I anticipate some portion of people moving across from mypy to ty will want this feature (me included)</p>
+<p>The second part of my question, is for guidance as to how and where I would start on this because I assume there may be a preference from the maintainers.</p>
+<p>From a brief glance, it seems that I may have to write this code in rust, and add it to the ruff codebase, in the <code>ty</code> crate, possibly by modifying the Printer? If there is a better crate for this, or a new crate would be required, I am happy to do it in whatever way is desired.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @cetanu on 2025-11-04 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-11-04 04:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-11-04 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-11-04 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> removed by @MichaReiser on 2025-11-04 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-04 13:28</div>
+            <div class="timeline-body"><p>Thanks for offering your help and creating an issue first.</p>
+<p>We already have a <a href="https://github.com/astral-sh/ruff/blob/997dc2e7ccfc378d60e1b98c3fd244eb6b37ba70/crates/ruff_db/src/diagnostic/render/junit.rs#L22">JUnit reporter</a> for Ruff and ty shares that infrastructure with Ruff. That means, adding the JUnit output format should mostly require funneling the CLI option through to where we decide to render the diagnostics and reviewing and generalizing any Ruff-specific logic within the JUnit reporter.</p>
+<p>Another thing worth checking is that the reporter emits all necessary information (e.g. sub diagnostics and multiple spans). It's not something we necessarily have to do in a first version but diagnostics might be hard to understand when omitting some of the details.</p>
+<p>CC: @ntBre</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-04 14:29</div>
+            <div class="timeline-body"><p>This looks like a pretty similar PR wiring up our GitLab output format: astral-sh/ruff#20155, in case it helps.</p>
+<p>But Micha is right, <code>ruff</code> is hard-coded several places in the current version (see the <a href="https://github.com/astral-sh/ruff/blob/fefbec4232ff7de4bddb776788a86c091b3069bd/crates/ruff_db/src/diagnostic/render/github.rs#L3">GitHub renderer</a> for another case where we handled that), and it won't render any sub-diagnostics or additional spans.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cetanu">@cetanu</a> on 2025-11-28 12:46</div>
+            <div class="timeline-body"><p>Took a look and the first few steps are pretty easy, I think I understand what you mean about the sub-diagnostics, and I think I would like to at least attempt to have those in the first implementation, but I'll see how far I get</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cetanu">@cetanu</a> on 2025-12-22 02:51</div>
+            <div class="timeline-body"><p>Progress report:</p>
+<p>Spent yesterday working on this instead of playing video games all day 😄</p>
+<h3>Added sub-diagnostics to the XML report ✅</h3>
+<p>I wasn't previously familiar with what these were, but now I see that they are the info/help/error messages that follow the primary failure/lint problem.</p>
+<p>I was able to get them into the report pretty easily</p>
+<h3>Improved the XML formatting somewhat ✅</h3>
+<p>Basically just made the failure message indented. It seems to be parsed the same way, and is more human readable.</p>
+<h3>Trying to get the code snippets rendered ⚠️</h3>
+<p>I found some part of the codebase which deals with annotating code snippets and have tried to get that working.</p>
+<p>Current problem: the line numbers in the gutter are wrong - they seem to start at the line of the lint problem, rather than their actual lines.</p>
+<h3>Thoughts about generalizing the renderer even more ⚠️</h3>
+<p>I noticed that there are things like <code>org.ruff.{code}</code> and package names which point to ruff as well.</p>
+<p>I added a note, inside the code that adds the sub diagnostics to the output, stating that the report/class/package names could be switched to <code>Ty</code> within that section, but not sure how appropriate it is to do so.</p>
+<p>For me, I thought the alternative would be to get the Ty cli to pass down a small piece of config to the renderer, and have the default set to ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-22 11:18</div>
+            <div class="timeline-body"><p>I replied on the pull request</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

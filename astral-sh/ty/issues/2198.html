@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid diagnostic location for a sub-call to a specialized `ParamSpec` - astral-sh/ty #2198</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invalid diagnostic location for a sub-call to a specialized `ParamSpec`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2198">#2198</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-12-24 07:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-24 07:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given the following example:</p>
+<pre><code class="language-py">from typing import Callable
+
+def fn(a: int) -&gt; None: ...
+
+def foo[**P, T](fn: Callable[P, T], *args: P.args, **kwargs: P.kwargs): ...
+
+foo(fn, a=&quot;a&quot;)
+</code></pre>
+<p>The diagnostic is using the location for <code>fn</code> for highlighting on <code>foo</code>:</p>
+<pre><code class="language-console">❯ ty check .                                                          
+error[invalid-argument-type]: Argument to function `foo` is incorrect
+  --&gt; main.py:10:5
+   |
+10 | foo(fn, a=&quot;a&quot;)
+   |     ^^ Expected `int`, found `Literal[&quot;a&quot;]`
+   |
+info: Function defined here
+ --&gt; main.py:7:5
+  |
+7 | def foo[**P, T](fn: Callable[P, T], *args: P.args, **kwargs: P.kwargs): ...
+  |     ^^^         ------------------ Parameter declared here
+  |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<ul>
+<li>The &quot;Expected <code>...</code>, found <code>...</code>&quot; should be on <code>&quot;a&quot;</code></li>
+<li>It should use the <code>fn</code> function directly for the info diagnostic of &quot;Function defined here&quot;</li>
+<li>And, provide a sub-diagnostic / info to state that this function comes from the argument being matched against a <code>ParamSpec</code> type variable which resolved to this function</li>
+</ul>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-12-24 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-12-24 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve diagnostic for a sub-call to a specialized `ParamSpec`" to "Invalid diagnostic location for a sub-call to a specialized `ParamSpec`" by @dhruvmanila on 2025-12-24 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @dhruvmanila on 2025-12-24 07:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

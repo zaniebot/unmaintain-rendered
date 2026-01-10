@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `cached_property` - astral-sh/ty #1446</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `cached_property`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1446">#1446</a>
+        opened by <a href="https://github.com/graipher">@graipher</a>
+        on 2025-10-27 16:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/graipher">@graipher</a> on 2025-10-27 16:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Currently the type of a <code>functools.cached_property</code> is <code>Unknown</code>, as the standardlibrary <code>functools</code> does not have type annotations.</p>
+<pre><code class="language-python">from functools import cached_property
+from typing import reveal_type
+
+
+class Foo:
+    @cached_property
+    def foo(self) -&gt; str:
+        return &quot;This is expensive&quot;
+
+
+reveal_type(Foo().foo)
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>info[revealed-type]: Revealed type
+  --&gt; main.py:11:11
+   |
+11 | reveal_type(Foo().foo)
+   |             ^^^^^^^^^ `Unknown`
+   |
+</code></pre>
+<p><strong>Expected:</strong>
+Some variant of <code>bound method Foo.foo() -&gt; str</code>, which is what <code>ty</code> reveals without the decorator.</p>
+<p><a href="https://play.ty.dev/15997923-202e-4ca2-a82d-cf8f1a0f5b5a">Playground link</a></p>
+<p>Is this an issue with typeshed?</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.24</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-10-27 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-27 16:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Currently the type of a <code>functools.cached_property</code> is <code>Unknown</code>, as the standardlibrary <code>functools</code> does not have type annotations.</p>
+</blockquote>
+<p>ty vendors a copy of typeshed, which does include type annotations for the standard library: https://github.com/python/typeshed/blob/16f766b754405004471af20eeb9a5cf8dea05b44/stdlib/functools.pyi#L227-L238</p>
+<p>I think the problem is that we do not induct into <code>Callable</code> types when solving type variables while constructing an instance of <code>cached_property</code>:</p>
+<p>https://github.com/python/typeshed/blob/16f766b754405004471af20eeb9a5cf8dea05b44/stdlib/functools.pyi#L230</p>
+<p>So this is probably just related to #623.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jeremiah-England">@Jeremiah-England</a> on 2025-12-19 22:44</div>
+            <div class="timeline-body"><p>For anyone else finding this who uses cached_property many places, I have gotten around this by defining a private module (e.g. <code>my_types.py</code>) with the following code:</p>
+<pre><code class="language-python"># -----------------------------------------------------------------------------
+# cached_property shim for ty type checker compatibility
+# -----------------------------------------------------------------------------
+# `ty` currently fails to infer types through `functools.cached_property` (see
+# https://github.com/astral-sh/ty/issues/1446). The type checker cannot properly
+# solve type variables when constructing instances of cached_property, resulting
+# in `Unknown` types for decorated methods.
+#
+# In practice, you almost always want the same static behavior as `@property`
+# anyway (attribute access reveals the method's return type). So under
+# type-checking we alias `cached_property` to `property`, which allows ty to
+# correctly infer the return type of decorated methods.
+#
+# At runtime, we still use the real `functools.cached_property` for its caching
+# behavior. This shim provides the best of both worlds: correct type inference
+# during static analysis and proper caching at runtime.
+#
+# Usage:
+#     from my_types import cached_property
+#
+#     class MyClass:
+#         @cached_property
+#         def expensive_computation(self) -&gt; str:
+#             return &quot;This is expensive&quot;
+#
+#     # Type checker sees: MyClass().expensive_computation -&gt; str
+#     # Runtime behavior: Result is cached after first access
+if TYPE_CHECKING:
+    cached_property = property
+else:
+    from functools import cached_property  # noqa: F401
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-19 23:25</div>
+            <div class="timeline-body"><p>We do now infer generics properly from inside Callable types, but unfortunately that wasn't enough to fix this. The remaining problem is our known tech debt around the split between <code>Type::try_call_constructor</code> vs <code>Type::bindings</code>. Decorator application just uses <code>Type::try_call</code> which uses <code>Type::bindings</code> and never uses <code>Type::try_call_constructor</code>. So currently we don't get things right when a generic class (like <code>cached_property</code>) is applied as a decorator. We infer the typevar just fine if you do <code>cp = cached_property(some_func)</code>, but not if you use <code>cached_property</code> as a decorator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-19 23:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

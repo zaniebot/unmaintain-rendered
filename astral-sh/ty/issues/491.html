@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assume (with mypy/pyright) that a Callable ClassVar is a bound method descriptor - astral-sh/ty #491</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Assume (with mypy/pyright) that a Callable ClassVar is a bound method descriptor</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/491">#491</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-05-22 19:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 19:22</div>
+            <div class="timeline-body"><p>Currently we assume that Callable types do not implement the descriptor protocol -- specifically, the bound method descriptor behavior that function and lambda objects implement, to bind the first argument to the receiver instance.</p>
+<p>This is a reasonable choice, since the Callable type definitely includes objects which are not bound method descriptors (e.g. you can assign a callable instance or protocol or staticmethod object -- none of which are bound method descriptors -- to a callable type). If you consider the bound-method descriptor behavior as additional behavior that can be provided by a subtype, then our current behavior makes the most sense: <code>Callable</code> implies only <code>__call__</code>, function and lambda objects are subtypes of Callable which add the <code>__get__</code> method as well.</p>
+<p>The problem with this is that adding a bound-method <code>__get__</code> is Liskov-incompatible -- it changes the behavior in an incompatible way, that makes the bound method descriptor object not safely substitutable (as a class attribute) for a callable with the same signature that is not a bound-method descriptor.</p>
+<p>This is a fundamental problem with the Python type system, and there's not much we can do about it. Any choice we make in this area will be unsound; the only sound option would be a wholesale change to Python typing to (in general) not consider adding a <code>__get__</code> method to be a Liskov-compatible change in a subtype; this is not practical.</p>
+<p>Given that we can't be sound, we may want to at least be <em>compatible</em> and match the behavior of existing type checkers. I've created this &quot;test suite&quot; to check the behavior of existing type checkers:</p>
+<details>
+
+<pre><code class="language-py">from typing import Callable, ClassVar, assert_type
+
+class Descriptor:
+    def __get__(self, instance: object, owner: type) -&gt; int:
+        return 1
+
+def impl(self: &quot;C&quot;, x: int) -&gt; int:
+    return x
+
+class C:
+    descriptor: Descriptor = Descriptor()
+    classvar_descriptor: ClassVar[Descriptor] = Descriptor()
+
+    callable: Callable[[&quot;C&quot;, int], int] = impl
+    classvar_callable: ClassVar[Callable[[&quot;C&quot;, int], int]] = impl
+    static_callable: Callable[[&quot;C&quot;, int], int] = staticmethod(impl)
+    static_classvar_callable: ClassVar[Callable[[&quot;C&quot;, int], int]] = staticmethod(impl)
+
+c = C()
+
+# Establish a baseline that type checkers generally respect the descriptor
+# protocol for values assigned in the class body, whether annotated with
+# ClassVar or no:
+assert_type(c.descriptor, int)
+assert_type(c.classvar_descriptor, int)
+
+# The calls and assignments below are all correct per runtime behavior;
+# if a type checker errors on any of them and expects a different
+# signature, that indicates unsound behavior. Note that the static_*
+# variants are annotated exactly the same as the non-static variants,
+# but have different runtime behavior, because Callable does not
+# distinguish descriptor vs non-descriptor. Thus, it's unlikely that any
+# type checker can get all of these correct.
+
+# If a type-checker assumes that callable types are not descriptors,
+# it will (wrongly) error on these calls and assignments:
+
+c.callable(1)
+c.classvar_callable(1)
+
+x1: Callable[[int], int] = c.callable
+x1(1)
+x2: Callable[[int], int] = c.classvar_callable
+x2(1)
+
+# If a type-checker assumes that callable types are descriptors,
+# it will (wrongly) error on these calls and assignments:
+
+c.static_callable(C(), 1)
+c.static_classvar_callable(C(), 1)
+
+y1: Callable[[&quot;C&quot;, int], int] = c.static_callable
+y1(C(), 1)
+y2: Callable[[&quot;C&quot;, int], int] = c.static_classvar_callable
+y2(C(), 1)
+
+# Now let's look specifically at annotated `__call__` attributes:
+
+def cm_impl(self: &quot;CallMethod&quot;, x: int) -&gt; int:
+    return x
+
+class CallMethod:
+    __call__: Callable[[&quot;CallMethod&quot;, int], int] = cm_impl
+
+def cmc_impl(self: &quot;CallMethodClassVar&quot;, x: int) -&gt; int:
+    return x
+
+class CallMethodClassVar:
+    __call__: ClassVar[Callable[[&quot;CallMethodClassVar&quot;, int], int]] = cmc_impl
+
+def cms_impl(self: &quot;CallMethodStatic&quot;, x: int) -&gt; int:
+    return x
+
+class CallMethodStatic:
+    __call__: Callable[[&quot;CallMethodStatic&quot;, int], int] = staticmethod(cms_impl)
+
+def cmcs_impl(self: &quot;CallMethodClassVarStatic&quot;, x: int) -&gt; int:
+    return x
+
+class CallMethodClassVarStatic:
+    __call__: ClassVar[Callable[[&quot;CallMethodClassVarStatic&quot;, int], int]] = staticmethod(cmcs_impl)
+
+# Again, all of these are correct per runtime behavior; type checker
+# errors indicate an unsound interpretation:
+
+# Type checkers which assume callables are not descriptors will (wrongly)
+# error on these:
+
+CallMethod()(1)
+cm: Callable[[int], int] = CallMethod()
+cm(1)
+
+CallMethodClassVar()(1)
+cmc: Callable[[int], int] = CallMethodClassVar()
+cmc(1)
+
+# Type checkers which assume callables are descriptors will (wrongly)
+# error on these:
+
+CallMethodStatic()(CallMethodStatic(), 1)
+cms: Callable[[&quot;CallMethodStatic&quot;, int], int] = CallMethodStatic()
+cms(CallMethodStatic(), 1)
+
+
+CallMethodClassVarStatic()(CallMethodClassVarStatic(), 1)
+cmcs: Callable[[&quot;CallMethodClassVarStatic&quot;, int], int] = CallMethodClassVarStatic()
+cmcs(CallMethodClassVarStatic(), 1)
+
+</code></pre>
+</details>
+
+<p>It seems that both <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDCAhgDYlEBGJApgDSHkDOjAakSPUc9XgPrwJqAKCEBjJoygARao1EgkCGLgBcQqBqgATasCi9eaajAMAKRtRLB6qRjCIpR1FVDAUAVtVEx6YAO4oPC4C1ACUUAC0AHyYKDBqmolQIMYAriAoUACMIjp6WAgk5pbALgBEBGX0AB4uqDDh0bHx6popMOmZ1SLiXJIECZo6cgpKqtKy8orKIFAAvBMj07imoa0avcwAbuy8w1NjIC4EEmwgANoyS4cAuvOLBzOrIomipORUzoTvlDTn5xUqs0bjY4ncFgUSOsoJtGDsQLw3mRfl8Tn0zudiMjPv9AaCYCDgeDMNgoYk7EQYEhRIifp9jnS-gDKvjCfViRSqaIIMYABZgLSmSFrcn2LmIiTw2nYmjHU7sTGM6i4lnA1kcsXUnkwfmC4U9e4EZ5CADEUAAohSqEhGLyoEQoBQuJZUNRYLzKbBEG7RLyvABrHiSIyBEDvODJWSCbzut37UYzU1QBDgZSiMAkKDAXBQHYkVKye3MJBoQJaWKxmESR0CuD0Px%2BnU8e0oFBgMXUct%2BJA6pNo5hnVyzNtqPo8EwhUyiAB08eWHGaazHfEnM9hUrnh3xayTABU-TD3pIHOW%2BiWUDy4pIKJZ-PaUvayDDcCkY4JZiBUnEsG6bx6tkguAANxJkgegOiEMJ%2BqIgazDw4AgJIYCZA4EZgHoTbQCeUDUNU0YwMe2hgcAPDUHESaMOelLpHQ7qeqgWjUpShZfowYBfuWf5EABuDTlAABy7ZujqnpNlAnLUrwABUSbwkgDgEfeboOG2HblrhRDeCQEZiYwRA8kWlZtigEQSaIubsPJV60EmFCpPg-5xsRpFxMkX5UgZXE8QuN5vKkFjfDKcZgIWqlJoxdioGgqQ2nam4zLmkjGRE8W8VA%2B7%2BTYMAAOSSF%2BJBIIG2l0fgqFJpBvoBs2byZEYpVPuhsYBemICvjA04iGaACS4FeoIESVTBzZ9KkPKSCJ%2BBIh8NB9YW7Buqp2iTAmuCMDZZo9lA3ZPqYfjgOg2nhPBObIU1PpHi2p7FqWl4EWoYjTlNKKmFkaxrpKuxPZ8L07tUWQMkF-zsqy9xrkqQh-T9EMAEwA9NyrnMDwKg49H0Il9NAw1DSY9fas0DdBsFFowo2FhNh5BbNx4PqliHrZg%2BDbZmu37Wgh04a1J2ZE2zUXdhZ43WRd09NOZnSvDphGqE9CvQ9Yvrp9SqS6sMs7nA-2BfDKpAkj7Io-L4Pq8r0vZGscCw5rKLa6yIMLDO8to%2BLKJCObxuq51Al3jQOWSCQYBgP64nRmBTFkBGnoqe2zHlgABgYU0GDH9owDACh2TAsj3XkMIQLwkLFFY5RYiQACyfICkCtSLpEMT1IMGjtJ0UDdGI1bF2XOoCvX%2BjiwYcNW8y7wd7qOtgrbOd56SuS6DnNL5xYhdQBUQ-l1o-asOwld1HEjS13E3eNxkzc9G3K%2Bd2v8pHNC8fvH3DDogqxcD8vZDDwK69nKPBLqqDEBz1PQhs7ckYJPQoBdShL3bqvAAypqUQW9q5NDrtCQ%2BXQT59E1m-LQsDKTUm7jfMgd8n44kHq-GBcCv5sjBPcMy2pdRTggCA-UgCZ7clEEw0k4Ci5n11B-dgOCuQIPqLvZoB80hHxbrCTBq8%2BEgAEXg6%2BvdeBygfhcYhTIX6lxkZfeR8CbZEhoXAuhAoGHsNASQHcZoACCaAiCoE4A1DCfoArzWfK1Lw%2BB3xuW-J5ag-5AIgCArNKCVUQBJmOohWIjE3gZxbFAVi7EUDlnqDwFMxhcHIXumaXc3oQlDUiQ2akdoRoGQxnNB8i1aaSCZlAFmyE2ZwDWGaCJrhubOOcCIKB59VhQ25P3EhutqELC6fQt6EBsYjPfpfHpss2H9KZIMgkhoeFTNUc8Nh2Nsm5MGrBapvIinE1JhTeG1M4zLXnNUpAO09r1MOuEzmsxTo8w6UISZ2C4E9LebolWpsxCMPmQjTRWDdGUPHl8j5YzGCSxWe83Bogfmy06TC2R3zQjQrIefFFEL3ZsMYAClUyKdEUP0XrYZhLVGor%2Bew9FWjMVErhQitYQA">pyright</a> and <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=2935159a8183d1929c8a78b1e586059b">mypy</a> implement a heuristic in which callable class attributes explicitly annotated as <code>ClassVar</code> are assumed to be bound-method descriptors, and those not so annotated are assumed not to be. (Note that this distinction is specific to callable types; both mypy and pyright are in general happy to execute the descriptor protocol on class attributes not explicitly annotated as <code>ClassVar</code>.) Mypy appears to add one additional wrinkle: <code>__call__</code> attributes annotated with a callable type are always assumed to be bound-method descriptors, unlike other attributes. Pyright doesn't implement this bit.</p>
+<p><a href="https://pyrefly.org/sandbox/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDCAhgDYlEBGJApgDSHkDOjAakSPUc9XgPrwJqAKCEBjJoygARao1EgkCGLgBcQqBqgATasCi9eaajAMAKRtRLB6qRjCIpR1FVDAUAVtVEx6YAO4oPC4C1ACUUAC0AHyYKDBqmolQIMYAriAoUACMIjp6WAgk5pbALgBEBGX0AB4uqDDh0bHx6popMOmZ1SLiXJIECZo6cgpKqtKy8orKIFAAvBMj07imoa0avcwAbuy8w1NjIC4EEmwgANoyS4cAuvOLBzOrIomipORUzoTvlDTn5xUqs0bjY4ncFgUSOsoJtGDsQLw3mRfl8Tn0zudiMjPv9AaCYCDgeDMNgoYk7EQYEhRIifp9jnS-gDKvjCfViRSqaIIMYABZgLSmSFrcn2LmIiTw2nYmjHU7sTGM6i4lnA1kcsXUnkwfmC4U9e4EZ5CADEUAAohSqEhGLyoEQoBQuJZUNRYLzKbBEG7RLyvABrHiSIyBEDvODJWSCbzut37UYzU1QBDgZSiMAkKDAXBQHYkVKye3MJBoQJaWKxmESR0CuD0Px+nU8e0oFBgMXUct+JA6pNo5hnVyzNtqPo8EwhUyiAB08eWHGaazHfEnM9hUrnh3xayTABU-TD3pIHOW+iWUDy4pIKJZ-PaUvayDDcCkY4JZiBUnEsG6bx6tkguAANxJkgegOiEMJ+qIgazDw4AgJIYCZA4EZgHoTbQCeUDUNU0YwMe2hgcAPDUHESaMOelLpHQ7qeqgWjUpShZfowYBfuWf5EABuDTlAABy7ZujqnpNlAnLUrwABUSbwkgDgEfeboOG2HblrhRDeCQEZiYwRA8kWlZtigEQSaIubsPJV60EmFCpPg-5xsRpFxMkX5UgZXE8QuN5vKkFjfDKcZgIWqlJoxdioGgqQ2nam4zLmkjGRE8W8VA+7+TYMAAOSSF+JBIIG2l0fgqFJpBvoBs2byZEYpVPuhsYBemICvjA04iGaACS4FeoIESVTBzZ9KkPKSCJ+BIh8NB9YW7Buqp2iTAmuCMDZZo9lA3ZPqYfjgOg2nhPBObIU1PpHi2p7FqWl4EWoYjTlNKKmFkaxrpKuxPZ8L07tUWQMkF-zsqy9xrkqQh-T9EMAEwA9NyrnMDwKg49H0Il9NAw1DSY9fas0DdBsFFowo2FhNh5BbNx4PqliHrZg+DbZmu37Wgh04a1J2ZE2zUXdhZ43WRd09NOZnSvDphGqE9CvQ9Yvrp9SqS6sMs7nA-2BfDKpAkj7Io-L4Pq8r0vZGscCw5rKLa6yIMLDO8to+LKJCObxuq51Al3jQOWSCQYBgP64nRmBTFkBGnoqe2zHlgABgYU0GDH9owDACh2TAsj3XkMIQLwkLFFY5RYiQACyfICkCtSLpEMT1IMGjtJ0UDdGI1bF2XOoCvX+jiwYcNW8y7wd7qOtgrbOd56SuS6DnNL5xYhdQBUQ-l1o-asOwld1HEjS13E3eNxkzc9G3K+d2v8pHNC8fvH3DDogqxcD8vZDDwK69nKPBLqqDEBz1PQhs7ckYJPQoBdShL3bqvAAypqUQW9q5NDrtCQ+XQT59E1m-LQsDKTUm7jfMgd8n44kHq-GBcCv5sjBPcMy2pdRTggCA-UgCZ7clEEw0k4Ci5n11B-dgOCuQIPqLvZoB80hHxbrCTBq8+EgAEXg6+vdeBygfhcYhTIX6lxkZfeR8CbZEhoXAuhAoGHsNASQHcZoACCaAiCoE4A1DCfoArzWfK1Lw+B3xuW-J5ag-5AIgCArNKCVUQBJmOohWIjE3gZxbFAVi7EUDlnqDwFMxhcHIXulA8+qwobcn7iQ3W1CFjZPoW9CA2NSnv0vrk2WbCClMiKQSQ0PDqmqOeGwyprTsFwNyVUnpuDRAq1NmIRhDSEaaKwboyh49+m6I6YwyW3T5km1liIfpsiVlLLIefTZvTVnlPYeMlU3S9mDJmcjEppydH7NGew7ZWjdk3MGcM2WQA">Pyrefly</a> currently implements the same thing <a href="https://play.ty.dev/b60ede58-af47-437a-8af0-a492f792095a">we do</a>: callables are never assumed to be bound-method descriptors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @carljm on 2025-05-22 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-05-22 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 19:56</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/18167 has some tests that may be useful to adapt, if/when we decide to do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 21:02</div>
+            <div class="timeline-body"><p>Posted for discussion at https://discuss.python.org/t/when-should-we-assume-callable-types-are-method-descriptors/92938</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-06-07 08:50</div>
+            <div class="timeline-body"><p>from #600</p>
+<h3>Summary</h3>
+<p>descriptors can be unsafe:</p>
+<pre><code class="language-py">class A: 
+    pass
+
+class B(A):
+    def __get__(self, *_) -&gt; 1:
+        return 1
+
+class C:
+    a: A = B()
+
+C.a  # static: A, runtime: 1
+</code></pre>
+<p>we can avoid this be reporting an error on the signature of <code>__get__</code>: &quot;<code>__get__</code>s return type must be assignable to the super classes <code>__get__</code> (defaulting to the type of the superclass in it's absense)&quot;</p>
+<p>unfortunatly, <code>FunctionType</code> commits this sin, and it is an invalid subtype of <code>Callable</code>:</p>
+<pre><code class="language-py">class A:
+    c: Callable[[object], None] = lambda self: None
+A().c  # static: (object) -&gt; None, runtime: () -&gt; None
+</code></pre>
+<p>see: https://play.ty.dev/79255fa6-667e-4fa8-b6f2-32225f783bbd</p>
+<h1>prior art</h1>
+<p>basedmypy resolved this problem fairly well by have special cased errors for these assignments to classes for <code>FunctionType</code> and <code>Callable</code>. the issue is that the corpus of existing code is written under the broken mypy semantics that all <code>Callable</code>s are actually <code>FunctionType</code>s</p>
+<p>perhaps ideally we could just report that <code>FunctionType</code> is incompatible with <code>Callable</code>:</p>
+<pre><code class="language-py">_: Callable[[], None] = lambda: None  # error: FunctionType is incompatible with Callable, please try again in a few minutes
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-06-07 08:51</div>
+            <div class="timeline-body"><p>basedmypy has a lot of work to resolve cases like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-28 09:39</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ty/issues/908 for a case where this leads to a <code>unsupported-operator</code> diagnostic for <a href="https://github.com/pytorch/pytorch/blob/f3913ea641d871f04fa2b6588a77f63efeeb9f10/torch/_tensor.py#L1084-L1092"><code>torch.Tensor.__pow__</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 16:30</div>
+            <div class="timeline-body"><p>In general, this means that methods decorated with a decorator returning a <code>Callable</code> type will not work (they won't bind as methods). This also causes problems with SymPy, which decorates many methods, see https://github.com/astral-sh/ruff/pull/20140</p>
+<p>I think at the very least here we will need to propagate our &quot;is function-like&quot; callable-type flag through function decorators annotated to return <code>Callable</code> types.</p>
+<p>This may be the cause of enough false positives that we need to consider addressing it for the beta?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-08-29 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @carljm on 2025-09-19 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Assume (with mypy/pyright) that a Callable ClassVar is a bound method descriptor?" to "Assume (with mypy/pyright) that a Callable ClassVar is a bound method descriptor" by @carljm on 2025-09-19 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-14 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-14 12:32</div>
+            <div class="timeline-body"><p>I chose to close this for now. I implemented two heuristics to improve the situation here. They are described at the end of <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/call/callables_as_descriptors.md">this document</a>. Together, they removed a lot of diagnostics across the ecosystem (including 3000 diagnostics on <code>sympy</code>). And they solve all of the user-reported bugs that were linked to this ticket.</p>
+<p>I also tried to generally treat <code>ClassVar</code>-qualified <code>Callable</code> attributes as bound-method descriptors (as described in the original post here), but that had zero impact.</p>
+<p>If there are other use cases that I haven't considered, please feel free to comment here and we can reopen the ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-24 18:09</div>
+            <div class="timeline-body"><p>A user gave this use case in Discord: https://gist.github.com/ryanhiebert/7751ad1efac64f735ec231b2ce5b6cc6</p>
+<p>It doesn't appear to be covered by the fix here?</p>
+<p>I suspect we may need to follow other type checkers here and make this assumption more broadly, since using an intersection with <code>FunctionType</code> isn't really a practical option yet, even in ty (unless we were to make <code>ty_extensions</code> exist at runtime), and certainly not for code annotated for compatibility with other type checkers too.</p>
+<p>Reopening this since we don't yet fully &quot;assume (with mypy/pyright) ...&quot; and it seems we still need to evaluate the option of doing so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-10-24 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-10-24 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-29 15:30</div>
+            <div class="timeline-body"><p>Based on a discussion with Carl: It looks like the remaining inconsistency between ty and mypy/pyright/pyrefly comes from the fact that other type checkers assume that all <code>FunctionType</code> attributes exist on a <code>Callable</code>, for example:</p>
+<pre><code class="language-py">from typing import Callable, reveal_type
+
+
+def _(c: Callable):
+    reveal_type(c.__name__)  # mypy/pyright/pyrefly: str, ty: unresolved-attribute
+</code></pre>
+<p>As a consequence of this, other type checkers also assume that (the <code>FunctionType</code> version of) <code>__get__</code> exists on every <code>Callable</code>, but they do <em>not</em> actually call that <code>__get__</code> method (in all cases) when accessing a <code>Callable</code> attribute. This is of course inconsistent, but we should consider doing the same.</p>
+<pre><code class="language-py">from typing import Callable, reveal_type
+
+
+class C:
+    f: Callable[[int], str]
+
+
+C.f(1)  # mypy/pyright/pyrefly: this is fine
+
+c = C()
+c.f(1)  # mypy/pyright/pyrefly: this is also fine
+
+C.f.__get__(c, C)  # mypy/pyright/pyrefly: this is also fine?!?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-06 16:13</div>
+            <div class="timeline-body"><p>It seems like there is a case in <code>discord.py</code> (with an <code>on_error</code> attribute that is assigned dynamically from a callable type) that comes up in #21139 that looks like it also might be related to this? Needs more exploration to minimize an example and compare our behavior to pyright/mypy/pyrefly.</p>
+<p>From @dhruvmanila :</p>
+<p>https://github.com/Rapptz/discord.py/blob/8f2cb6070026bd2be2fd1fe35f978b408490879b/discord/app_commands/commands.py#L807 here is where ty is raising an error after https://github.com/astral-sh/ruff/pull/21139</p>
+<p>Because of this Callable type alias: https://github.com/Rapptz/discord.py/blob/8f2cb6070026bd2be2fd1fe35f978b408490879b/discord/app_commands/commands.py#L78-L78</p>
+<p>which is being assigned here: https://github.com/Rapptz/discord.py/blob/8f2cb6070026bd2be2fd1fe35f978b408490879b/discord/app_commands/commands.py#L1850</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-06 16:19</div>
+            <div class="timeline-body"><p>I filed https://github.com/astral-sh/ty/issues/1495 for the somewhat-separate issue of modeling all <code>FunctionType</code> attributes existing on all <code>Callable</code> types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 11:30</div>
+            <div class="timeline-body"><p>Another example for this issue:</p>
+<pre><code class="language-sh">$ ty check t.py 
+t.py:4:12: error[unresolved-attribute] Object of type `(...) -&gt; int` has no attribute `__name__`
+Found 1 diagnostic
+$ cat t.py
+from typing import Callable
+
+def foo(cb: Callable[..., int]):
+    return cb.__name__
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 11:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Another example for this issue:</p>
+</blockquote>
+<p>I don't think so, this is different. I wrote a <a href="https://github.com/astral-sh/ty/pull/2055">FAQ entry</a> just this morning explaining why that is happening. The PR is not merged yet, but you can see a preview of the rendered version <a href="https://github.com/astral-sh/ty/blob/david/callable-attribute-faq-entry/docs/reference/typing-faq.md#why-does-ty-say-callable-has-no-attribute-__name__">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 12:15</div>
+            <div class="timeline-body"><p>ok, I outsourced it into https://github.com/astral-sh/ty/issues/2065</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @sharkdp on 2025-12-19 11:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

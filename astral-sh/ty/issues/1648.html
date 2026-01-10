@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Literal` not infered as `list[Literal]` after casting it inside a list - astral-sh/ty #1648</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Literal` not infered as `list[Literal]` after casting it inside a list</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1648">#1648</a>
+        opened by <a href="https://github.com/mflova">@mflova</a>
+        on 2025-11-26 17:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mflova">@mflova</a> on 2025-11-26 17:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Errors not raised by <code>mypy</code> nor <code>pyright</code></p>
+<p>It seems that for this specific case, doing <code>[tags]</code> infers <code>list[str]</code> instead of <code>list[Tags]</code>, which makes the assignment invalid.</p>
+<pre><code class="language-py">from collections.abc import Sequence
+from typing import Literal, TypeAlias
+
+Tags: TypeAlias = Literal[&quot;a&quot;, &quot;b&quot;]
+
+def func(tags: Tags | Sequence[Tags]) -&gt; None:
+    tags = [tags] if isinstance(tags, str) else tags  # error[invalid-assignment]: Object of type `list[Unknown | str] | (Sequence[Literal[&quot;a&quot;, &quot;b&quot;]] &amp; ~str)` is not assignable to `Literal[&quot;a&quot;, &quot;b&quot;] | Sequence[Literal[&quot;a&quot;, &quot;b&quot;]]`
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.28 (8c342496a 2025-11-25)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 17:53</div>
+            <div class="timeline-body"><p>Yes, looks like this is a case where we're doing literal promotion and the type context should prevent that; we probably aren't seeing through the union. Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @carljm on 2025-11-26 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-26 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-11-26 23:58</div>
+            <div class="timeline-body"><p>This seems to work if the annotation uses <code>list</code> instead of <code>Sequence</code>, so I think this is another instance of https://github.com/astral-sh/ty/issues/1576.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-11-26 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-20 01:52</div>
+            <div class="timeline-body"><p>Reopening this so we can consider it separately from #1576, since https://github.com/astral-sh/ruff/pull/21930 doesn't seem to be sufficient to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-12-20 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-20 01:55</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems to work if the annotation uses <code>list</code> instead of <code>Sequence</code></p>
+</blockquote>
+<p>I think part of the reason for this is that <code>str</code> is disjoint from <code>list[Literal[&quot;a&quot;, &quot;b&quot;]]</code>, but not disjoint from <code>Sequence[Literal[&quot;a&quot;, &quot;b&quot;]]</code> (since a <code>str</code> is also a sequence of <code>str</code>, but is not a <code>list</code>). So <code>if isinstance(tags, str)</code> can narrow very effectively in the <code>list</code> case (down to just <code>Literal[&quot;a&quot;, &quot;b&quot;]</code>), but in the <code>Sequence</code> case it can't (the type of <code>tags</code> becomes <code>Literal[&quot;a&quot;, &quot;b&quot;] | (Sequence[Literal[&quot;a&quot;, &quot;b&quot;]] &amp; str)</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-20 02:02</div>
+            <div class="timeline-body"><p>Hmm, I think ty is actually finding a bug in the OP code here?</p>
+<p>The string &quot;ababab&quot; is a <code>Sequence[Literal[&quot;a&quot;, &quot;b&quot;]]</code>, so it should be allowed to pass that string to <code>func</code> as annotated. And if that string is passed to <code>func</code>, it won't behave as expected: <code>tags</code> will end up as <code>[&quot;ababab&quot;]</code> at runtime, which violates the type <code>Tags | Sequence[Tags]</code>.</p>
+<p>Currently no type checker, including ty, actually makes <code>Literal[&quot;ababab&quot;]</code> assignable to <code>Sequence[Literal[&quot;a&quot;, &quot;b&quot;]]</code> -- but I think this is a bug, it absolutely should be a subtype.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-20 02:17</div>
+            <div class="timeline-body"><p>Closing this issue, since I believe that ty is correct here. I think to be sound, the OP code either needs to use a more concrete container type (which is disjoint from <code>str</code>) instead of <code>Sequence</code>, or else needs to use the much more specific check <code>if tags is &quot;a&quot; or tags is &quot;b&quot;</code> in place of <code>isinstance(tags, str)</code>. (Note that even <code>tags == &quot;a&quot; or tags == &quot;b&quot;</code> doesn't work, since <code>Sequence</code> can include types with arbitrary <code>__eq__</code> behavior).</p>
+<p>This latter form also does fix the example, with https://github.com/astral-sh/ruff/pull/21930:</p>
+<pre><code class="language-py">from collections.abc import Sequence
+from typing import Literal, TypeAlias
+
+Tags: TypeAlias = Literal[&quot;a&quot;, &quot;b&quot;]
+
+def func(tags: Tags | Sequence[Tags]) -&gt; None:
+    tags = [tags] if tags is &quot;a&quot; or tags is &quot;b&quot; else tags
+</code></pre>
+<p>(Perhaps more realistically, a function returning <code>TypeIs</code> could encapsulate the &quot;is it a <code>Tags</code>&quot; check.)</p>
+<p>Re-closing as duplicate of #1576, since I think with that fixed, ty is otherwise behaving as expected here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-20 02:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

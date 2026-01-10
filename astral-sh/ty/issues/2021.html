@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic token highlighting causes wrong color for first line of Google-style docstrings - astral-sh/ty #2021</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Semantic token highlighting causes wrong color for first line of Google-style docstrings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2021">#2021</a>
+        opened by <a href="https://github.com/willjobs">@willjobs</a>
+        on 2025-12-17 16:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/willjobs">@willjobs</a> on 2025-12-17 16:15</div>
+            <div class="timeline-body"><p>Congratulations on your release! I'm liking the extension so far. This issue not a show-stopper by any means, but a little annoying thing that has to do with how the semantic tokenizing is interacting with coloring in VS Code.</p>
+<p>If you write Python docstrings in this format (the <a href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html">&quot;Google format&quot;</a>):</p>
+<pre><code class="language-py">def my_function(param1: int, param2: str) -&gt; bool:
+    &quot;&quot;&quot;Example function with PEP 484 type annotations.
+
+    Args:
+        param1: The first parameter.
+        param2: The second parameter.
+
+    Returns:
+        The return value. True for success, False otherwise.
+
+    &quot;&quot;&quot;
+</code></pre>
+<p>The first line of the docstring will be interpreted differently by VS Code when the <code>ty</code> extension is on, treating it as a string rather than part of a multi-line docstring, which means it will color the first line of the docstring differently than the rest.</p>
+<p>With the <code>ty</code> extension disabled/uninstalled, if I open the &quot;Developer: Inspect Editor Tokens and Scopes&quot; tool in VS Code and click on the first line of the docstring I see:</p>
+<ul>
+<li>language: <code>python</code></li>
+<li>standard token type: <code>String</code></li>
+<li>values for foreground, background, contrast ratio</li>
+<li>textmate scopes:<ul>
+<li><code>string.quoted.docstring.multi.python</code></li>
+<li><code>source.python</code></li>
+</ul>
+</li>
+<li>foreground:<ul>
+<li><code>string.quoted.docstring.multi</code></li>
+<li><code>{ &quot;foreground&quot;: &quot;#MYHEX1&quot; }</code></li>
+</ul>
+</li>
+</ul>
+<p>But when I turn on the <code>ty</code> extension this changes:</p>
+<ul>
+<li>Same language, standard token type, foreground, background, contrast ratio (but a different hex color for foreground than when <code>ty</code> was turned off)</li>
+<li>New section in the middle:<ul>
+<li>semantic token type: <code>string</code></li>
+<li>foreground:<ul>
+<li><code>string</code></li>
+<li><code>string</code></li>
+<li><code>{ &quot;foreground&quot;: &quot;#MYHEX2&quot; }</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Same textmate section, EXCEPT <strong>the foreground section is now crossed out</strong></li>
+</ul>
+<hr />
+<h1>Things I tried to fix it</h1>
+<ul>
+<li>I tried adding settings to my user settings to change the <code>editor.tokenColorCustomizations.textMateRules</code> for scope &quot;string.quoted.docstring.multi.python&quot;, but that only affected the colors of the remaining lines of the docstring, not the first.</li>
+<li>I tried changing the coloring for <code>editor.semanticTokenColorCustomizations</code>, and that did change the color of that first line of the docstring, but it ALSO changed the color for all strings in the document (as you would expect).</li>
+<li>If I start the docstring text AFTER the line with the triple quotes, then the docstring text itself is correctly formatted with the rest of the text, but the triple quotes are still highlighted the same as other strings in my file.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Semantic token highlighting of docstrings following numpy/Google style" to "Semantic token highlighting causes wrong color for first line of Google-style docstrings" by @willjobs on 2025-12-17 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 16:44</div>
+            <div class="timeline-body"><p>Thanks for the detailed report. This should be easy to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-17 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 16:48</div>
+            <div class="timeline-body"><p>It looks like ty is the only one that classifies the docstring as a string, but the ranges are slightly different</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-17 16:50</div>
+            <div class="timeline-body"><p>Quite perplexing:</p>
+<p><img width="465" height="205" alt="Image" src="https://github.com/user-attachments/assets/23224070-f9ed-45df-aeb6-086bb6453f2b" /></p>
+<p>If I check our semantic tokens for this it seems to consider the whole docstring to be a single entry.</p>
+<p><img width="856" height="195" alt="Image" src="https://github.com/user-attachments/assets/b4c20648-3da7-46d7-925a-39ff2778152b" /></p>
+<p>So I'm a bit perplexed that ty is causing the thing to get split up. But anyway we can mark it as a docstring at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 17:00</div>
+            <div class="timeline-body"><p>I think the issue here is that the logic for the semantic token encoding doesn't handle multiline tokens correctly (it pretends it does but it doesn't). I'll look into it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-12-17 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-12-17 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-17 17:38</div>
+            <div class="timeline-body"><p>Ah yeah <code>supports_multiline_semantic_tokens()</code> is a client capability</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-17 17:39</div>
+            <div class="timeline-body"><p>...And we handle it in a very silly way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-18 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RyanSaxe">@RyanSaxe</a> on 2025-12-19 12:46</div>
+            <div class="timeline-body"><p>@MichaReiser I see this closed as completed, but the solution implemented made those of us who have different highlighting between strings and docstrings break.</p>
+<p>Docstrings are now identified as strings from ty instead of documentation. I have a customization to cover <code>string.documentation.python</code> differently than <code>string.python</code>. This worked with both basedpyright and pyrefly in neovim for context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 13:08</div>
+            <div class="timeline-body"><p>I think this requires <a href="https://github.com/astral-sh/ruff/pull/22031">[ty] Classify docstrings in semantic tokens (syntax highlighting) ruff#22031</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/willjobs">@willjobs</a> on 2025-12-19 16:19</div>
+            <div class="timeline-body"><p>Thank you for addressing this so quickly!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

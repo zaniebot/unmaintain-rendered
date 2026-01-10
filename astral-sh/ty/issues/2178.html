@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty: assert membership doesn't narrow `str` to `Literal` for `TypedDict` key (minimal repro) - astral-sh/ty #2178</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty: assert membership doesn't narrow `str` to `Literal` for `TypedDict` key (minimal repro)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2178">#2178</a>
+        opened by <a href="https://github.com/dsfaccini">@dsfaccini</a>
+        on 2025-12-23 02:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dsfaccini">@dsfaccini</a> on 2025-12-23 02:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Minimal repro of <code>assert</code> not narrowing a <code>str</code> to a <code>Literal</code> before populating a <code>TypedDict</code>.</p>
+<p>Playground link: https://play.ty.dev/28bae877-4f82-452c-95c9-5cf5ba8cd0e2</p>
+<h3>Repro (no external deps)</h3>
+<p><code>ty_repro_assert_literal.py</code>:</p>
+<pre><code class="language-python">from typing import Literal, TypedDict
+from dataclasses import dataclass
+
+class InputAudio(TypedDict):
+    data: str
+    format: Literal['wav', 'mp3']
+
+@dataclass
+class Item:
+    data: str
+    format: str
+
+def build_audio(item: Item) -&gt; InputAudio:
+    assert item.format in ('wav', 'mp3')
+    return InputAudio(data=item.data, format=item.format)
+
+if __name__ == '__main__':
+    print(build_audio(Item('x', 'wav')))
+</code></pre>
+<p>Run:</p>
+<pre><code class="language-bash">uvx ty check ty_repro_assert_literal.py
+</code></pre>
+<h3>Actual result</h3>
+<pre><code>error[invalid-argument-type]: Invalid argument to key &quot;format&quot; with declared type `Literal[&quot;wav&quot;, &quot;mp3&quot;]` on TypedDict `InputAudio`
+  --&gt; ty_repro_assert_literal.py:15:12
+   |
+13 | def build_audio(item: Item) -&gt; InputAudio:
+14 |     assert item.format in ('wav', 'mp3')
+15 |     return InputAudio(data=item.data, format=item.format)
+   |            ----------                 -------^^^^^^^^^^^
+   |            |                          |      |
+   |            |                          |      value of type `str`
+   |            |                          key has declared type `Literal[&quot;wav&quot;, &quot;mp3&quot;]`
+   |            TypedDict `InputAudio`
+</code></pre>
+<h3>Expected result</h3>
+<p>The membership assert should narrow <code>item.format</code> to <code>Literal['wav', 'mp3']</code>, allowing assignment into the <code>TypedDict</code> without diagnostics.</p>
+<h3>Notes</h3>
+<p>Ty 0.0.4 via <code>uvx ty check</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty: assert membership doesn't narrow str to Literal for TypedDict key (minimal repro)" to "ty: assert membership doesn't narrow `str` to `Literal` for `TypedDict` key (minimal repro)" by @dsfaccini on 2025-12-23 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-23 02:25</div>
+            <div class="timeline-body"><p>This is the same as #1566</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsfaccini">@dsfaccini</a> on 2025-12-23 02:35</div>
+            <div class="timeline-body"><p>aahh sorry for that, I wasn't too diligent in my search, I'll close this one too then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dsfaccini on 2025-12-23 02:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

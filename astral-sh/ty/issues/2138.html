@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type is not narrowed for a property with a setter - astral-sh/ty #2138</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type is not narrowed for a property with a setter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2138">#2138</a>
+        opened by <a href="https://github.com/goodspark">@goodspark</a>
+        on 2025-12-21 00:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/goodspark">@goodspark</a> on 2025-12-21 00:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi all,
+I ran into a case where a type didn't seem to get narrowed because its property is technically stating a superset of types. Minimal example: https://play.ty.dev/ab00ad10-93c6-4dee-b0ac-555f6c5688be</p>
+<pre><code>error[invalid-assignment]: Cannot assign to a subscript on an object of type `None`
+  --&gt; asd.py:17:1
+   |
+15 | if a.b is None:
+16 |     a.b = {}
+17 | a.b[&quot;asd&quot;] = True
+   | ^^^^^^^^^^
+   |
+info: The full type of the subscripted object is `dict[Unknown, Unknown] | None`
+info: `None` does not have a `__setitem__` method.
+</code></pre>
+<p>No special ty configuration.</p>
+<p>FWIW pyright seems happy with this as long as <code>a.b</code> is set in the line above. This happens for other objects/mutable types as well. Thinking about it more, I do think ty is being more technically correct here (ex. what if something in the setter decided the given value was not valid and didn't actually change the internal value of <code>_b</code>, as shown below?) but it leads to this odd detection.</p>
+<pre><code class="language-py">    @b.setter
+    def b(self, val: dict | None):
+        if val is not None and len(val) == 0:
+            return
+        self._b = val
+</code></pre>
+<p>I did a search for 'type narrowing property' and saw this issue: https://github.com/astral-sh/ty/issues/628
+It seems related but it's specifically talking about generics, which aren't being used here. So I decided to create a new issue. Feel free to merge/close-as-duplicate if it's actually the same issue!</p>
+<h3>Version</h3>
+<p>0.0.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @mtshiba on 2025-12-21 05:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 20:08</div>
+            <div class="timeline-body"><p>Thanks for the report! This is indeed the same as #628. The mention of generics there is just discussing one possible heuristic that could be used to decide whether it's safe to narrow a descriptor attribute or not. The issue itself is the same: ty currently (intentionally) doesn't ever narrow descriptors, but maybe we should for compatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-22 20:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

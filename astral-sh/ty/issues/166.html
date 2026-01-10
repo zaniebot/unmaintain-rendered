@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking issue for override-related checks (including the Liskov Substitution Principle) - astral-sh/ty #166</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Tracking issue for override-related checks (including the Liskov Substitution Principle)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/166">#166</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-03-20 23:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-03-20 23:03</div>
+            <div class="timeline-body"><p>This means checking that subclass methods are subtypes of the superclass method they override, if any.</p>
+<p>Subclass property getters must return a subtype of the corresponding superclass property getters, and subclass property setters must accept a supertype of the corresponding superclass property setter.</p>
+<p>If we model any mutable attribute as conceptually a property with getter and setter, where the setter accepts the same type that the getter returns, this implies that the type of mutable attributes must be invariant; that is, subclasses may neither widen nor narrow the type of the attribute. Pyright <a href="https://pyright-play.net/?code=MYGwhgzhAEBCkFMBc0B06BQpIwMoFcAjACnggQEoV1UMtwpoBhJDad6ADxTITu0YARYkypsO3aAUIYgA">models this correctly</a>; mypy <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=7aa8cc84b99db33bc8bf58e083aee2bf">does not</a>.</p>
+<p>See https://github.com/astral-sh/ty/issues/167 for a demonstration of a particular case involving ClassVar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-03-21 12:14</div>
+            <div class="timeline-body"><p>Note that the LSP does not apply to <code>Protocol</code> that's marked as <code>@final</code>, because it's a purely structural, and cannot be used nominally. Both pyright and mypy model this incorrectly at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-21 16:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Note that the LSP does not apply to <code>Protocol</code> that's marked as <code>@final</code></p>
+</blockquote>
+<p>If I understand correctly, you are describing a case like this?</p>
+<pre><code class="language-py">from typing import Protocol, final
+
+class A(Protocol):
+    x: int
+
+@final
+class B(A, Protocol):
+    x: str
+</code></pre>
+<p>In this case it does seem intuitive to me to enforce Liskov between <code>B</code> and <code>A</code> (and thus error on <code>B</code> redefining <code>x</code> to <code>str</code>), because it ensures that the structural type <code>B</code> is assignable to the structural type <code>A</code>. This isn't <em>necessary</em>, but I think it matches the usual intuition for what inheritance means.</p>
+<p>I'm also not sure why the <code>@final</code> on <code>B</code> actually matters here; I think the arguments for and against requiring <code>B</code> to match <code>A</code> are the same whether or not <code>B</code> is final?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-03-21 16:54</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Note that the LSP does not apply to <code>Protocol</code> that's marked as <code>@final</code></p>
+</blockquote>
+<p>If I understand correctly, you are describing a case like this?</p>
+<p>from typing import Protocol, final</p>
+<p>class A(Protocol):
+x: int</p>
+<p>@final
+class B(A, Protocol):
+x: str
+In this case it does seem intuitive to me to enforce Liskov between <code>B</code> and <code>A</code> (and thus error on <code>B</code> redefining <code>x</code> to <code>str</code>), because it ensures that the structural type <code>B</code> is assignable to the structural type <code>A</code>. This isn't <em>necessary</em>, but I think it matches the usual intuition for what inheritance means.</p>
+<p>I'm also not sure why the <code>@final</code> on <code>B</code> actually matters here; I think the arguments for and against requiring <code>B</code> to match <code>A</code> are the same whether or not <code>B</code> is final?</p>
+</blockquote>
+<p>Hmm, this example shows that it isn't as easy as I initially thought, so I'll try to explain a bit better what I'm trying to say here.</p>
+<p>One of the use-cases I had in mind, is this one</p>
+<pre><code class="language-py">@final
+class Unhashable(Protocol):
+    __hash__: ClassVar[None]
+</code></pre>
+<p>If you'd enforce LSP here, then the <code>__hash__</code> definition would be flagged as an LSP violation. But because this protocol 1) cannot be instantiated, and 2) cannot be subclassed, I was thinking that this LSP violation will never lead to type-safe unsafe situation.</p>
+<p>But your example shows that these 2 conditions are not sufficient to guarantee type-safety in the absence of LSP — an additional condition is required.</p>
+<hr />
+<p>So how about this:</p>
+<p><em>The LSP does not apply to a method or attribute of a final <code>Protocol</code> when it directly overrides a member of <code>object</code>, and only of <code>object</code>.</em></p>
+<p>Another way to think about it, is that final protocols behave as if they don't have <code>object</code> as a base class.</p>
+<hr />
+<p>To illustrate, let's squash our examples, and apply the updated conditions:</p>
+<pre><code class="language-py">class A(Protocol):
+    x: int
+
+@final
+class UnhashableAndHasX(A, Protocol):
+    __hash__: ClassVar[None]  # LSP doesn't apply =&gt; accept
+    x: str                    # LSP applies       =&gt; reject
+</code></pre>
+<p>Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-21 17:17</div>
+            <div class="timeline-body"><p>In principle, every Python object is an instance of <code>object</code>, and the API surface of<code>object</code> must be true for every Python object.</p>
+<p>Thus, in principle, a protocol that isn't Liskov compatible with <code>object</code> is useless and describes a type that has no inhabitants (equivalent to <code>Never</code>).</p>
+<p>However, as we know, for pragmatic/historical reasons, unfortunately the description of <code>object</code> in typeshed claims some things to be true which are not actually true for all Python objects, and causes Liskov violations in some situations.</p>
+<p>But IMO this means that this is not an issue related specifically to Protocol or structural typing (because, for the <em>accurate</em> parts of the typeshed <code>object</code> definition, there is no value in, or need for, any special case for structural types). Thus I wouldn't support a general rule about Protocols and Liskov compatibility with <code>object</code>, because if we assumed a fully accurate typeshed <code>object</code>, that would be a useless / nonsensical rule.</p>
+<p>Rather, this is an issue of how we handle Liskov for a few particular attributes of <code>object</code> (like <code>__hash__</code>) that are described wrongly in typeshed. I think the problem is specific to those problem attributes, but is not specific to Protocol; it is just as much a problem for non-Protocol inheritance as for Protocol inheritance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] enforce Liskov on subclasses" to "enforce Liskov on subclasses" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-05-11 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "enforce Liskov on subclasses" to "enforce Liskov Substitution Principle on subclasses" by @AlexWaygood on 2025-08-13 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlashada">@vlashada</a> on 2025-11-17 19:51</div>
+            <div class="timeline-body"><p>What is the status on this? Would be really useful to have!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-18 18:21</div>
+            <div class="timeline-body"><blockquote>
+<p>What is the status on this? Would be really useful to have!</p>
+</blockquote>
+<p>The first PR for this is now up: https://github.com/astral-sh/ruff/pull/21436</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlashada">@vlashada</a> on 2025-11-26 19:10</div>
+            <div class="timeline-body"><p>Thank you for starting to enforce Liskov Substitution Principle! It does catch many cases, but it still does not error if I forget to specify the return type for a method on a subclass:</p>
+<pre><code class="language-python">class A:
+    def greet(self) -&gt; str:
+        return &quot;hello from A&quot;
+
+class B(A):
+    def greet(self) -&gt; int:  # error: invalid-method-override (as expected)
+        return 123
+
+class C(A):
+    def greet(self):  # this line does not have an error
+        return 123
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 19:16</div>
+            <div class="timeline-body"><p>@vlashada This checking should come along with return-type inference, see #128. Mypy doesn't do RTI (or catch this unsafe override), pyright does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 19:17</div>
+            <div class="timeline-body"><p>@vlashada our Liskov checks are working as intended here. Currently, we view any function lacking an explicit return-type annotation as implicitly returning <code>Any</code>/<code>Unknown</code> (the two concepts are equivalent), and <code>Any</code>/<code>Unknown</code> are assignable to all types, including <code>str</code>. This may change if https://github.com/astral-sh/ty/issues/128 is implemented, but until then you can prevent this unsoundness by enforcing <a href="https://docs.astral.sh/ruff/rules/#flake8-annotations-ann">Ruff's <code>ANN</code> rules</a> on your code base</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @MichaReiser on 2025-12-05 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-05 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Paul-B98">@Paul-B98</a> on 2025-12-06 20:17</div>
+            <div class="timeline-body"><p>Hey, I'm not sure if I'm in the right place or if I've misunderstood, but could someone advise me on how to handle the following example?</p>
+<pre><code class="language-python">class A:
+    pass
+
+class B(A):
+    pass
+
+class C:
+    def test(self, state: A) -&gt; None:
+        pass
+
+class D(C):
+    def test(self, state: B) -&gt; None:  # Invalid override of method `test`: Definition is incompatible with `C.test` 
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-06 20:49</div>
+            <div class="timeline-body"><p>Hi @Paul-B98 ,</p>
+<p>This is an example of unsafe code that this check is intended to catch. If D is a subtype of C, that means anywhere you annotate as C it should be safe to pass a D. But if C's method accepts A and D's method accepts only B, that's not safe: code that thinks it has a C (but actually has a D at runtime) might try to pass an A to that method, which will blow up as D is only expecting instances of B as argument to that method.</p>
+<p>In general, when you override a method, the parameters of the subclass version need to accept everything the base class method accepts (or more -- but not less). So it's safe to have the base class accept B and the subclass accept A, but not the other way around.</p>
+<p>So your options here are either to write your code differently, or if you are ok with the potential unsafety, use a <code># ty: ignore</code> comment, or globally disable the invalid method override check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Paul-B98">@Paul-B98</a> on 2025-12-06 21:51</div>
+            <div class="timeline-body"><p>Hey @carljm, thanks for the clarification. How would this change if C were to become a protocol or an abstract base class (with an abstract method)? Would it make sense to have the option to create a minimal type for that &quot;interface&quot;, or should I simply remove the type and define it in the subclasses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-08 18:00</div>
+            <div class="timeline-body"><p>@Paul-B98 The core issue here doesn't change at all if C is a protocol or abstract base class. For the type <code>C</code> to be safely usable as an annotation, all subtypes of <code>C</code> that override <code>test</code> must override it with a signature that is a subtype of the signature defined by <code>C.test</code>, which requires that the signature can accept any calls accepted by the signature of <code>C.test</code>.</p>
+<p>I'm not sure what you mean by &quot;option to create a minimal type for that interface.&quot; You do have that option, the problem is that if you define the minimal interface as &quot;has a method <code>test</code> which accepts an instance of <code>A</code>&quot;, then a type which has a method <code>test</code> which does not accept any instance of <code>A</code>, is simply not a type which implements that interface: <code>D</code> in your example above does not implement the interface of <code>C</code>.</p>
+<p>So yes, if you want <code>D.test</code> to only accept <code>B</code> instances, and a hypothetical <code>E.test</code> to only accept <code>B2</code> instances (where <code>E</code> is a subclass of <code>C</code> or implements the <code>C</code> interface and <code>B2</code> is another subclass of <code>A</code>), then the only way to make that type-safe is to remove the <code>test</code> method from the interface defined by <code>C</code> entirely. That eliminates the problem, because it means that code using an instance <code>c</code> of type <code>C</code> won't be able to unsafely call <code>c.test(...)</code> blithely assuming it can pass any <code>A</code> as argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-08 18:09</div>
+            <div class="timeline-body"><p>@Paul-B98, one option you might consider is to make your abstract base class generic, e.g.</p>
+<pre><code class="language-py">class A:
+    pass
+
+class B(A):
+    pass
+
+class Abstract[T: A]:
+    def test(self, state: T) -&gt; None:
+        pass
+
+class Concrete(Abstract[B]):
+    def test(self, state: B) -&gt; None:
+        pass
+</code></pre>
+<p>Or, if you're using Python &lt;3.12:</p>
+<pre><code class="language-py">from typing import TypeVar, Generic
+
+T = TypeVar(&quot;T&quot;, bound=&quot;A&quot;)
+
+class A:
+    pass
+
+class B(A):
+    pass
+
+class Abstract(Generic[T]):
+    def test(self, state: T) -&gt; None:
+        pass
+
+class Concrete(Abstract[B]):
+    def test(self, state: B) -&gt; None:
+        pass
+</code></pre>
+<p>All major type checkers agree that this does not violate the Liskov Substitution Principle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Paul-B98">@Paul-B98</a> on 2025-12-08 18:24</div>
+            <div class="timeline-body"><p>Thanks for the comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "enforce Liskov Substitution Principle on subclasses" to "Tracking issue for override-related checks (including theh Liskov Substitution Principle)" by @AlexWaygood on 2025-12-22 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Tracking issue for override-related checks (including theh Liskov Substitution Principle)" to "Tracking issue for override-related checks (including the Liskov Substitution Principle)" by @AlexWaygood on 2025-12-22 13:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

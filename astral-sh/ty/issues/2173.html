@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Some operations on `NewType`s do not preserve their `NewType`-ness - astral-sh/ty #2173</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Some operations on `NewType`s do not preserve their `NewType`-ness</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2173">#2173</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-12-22 22:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-22 22:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Trying to use <code>NewType</code>s extensively for the first time, I came across this:
+https://play.ty.dev/9d990249-62d6-4ba8-b490-09ab28dd0bf0</p>
+<pre><code class="language-py">from typing import NewType
+
+MyList = NewType(&quot;MyList&quot;, list[int])
+
+reveal_type(MyList([])[:])  # Revealed type: `list[int]`, should still be MyList
+</code></pre>
+<p>Since at runtime a <code>NewType</code> just returns the input, slicing a <code>NewType</code> of a <code>list</code> should still be considered that <code>NewType</code>, since it's all just lists at runtime anyways.</p>
+<p>One additional thing that confused me when I found this, classes do not behave the same as <code>NewType</code>s for this. The slice of a class inheriting from <code>list</code> will be <code>list</code> unless the method is overwritten, so the current behavior is correct for normal classes.</p>
+<h3>Version</h3>
+<p>ty 0.0.5 (d37b7dbd9 2025-12-20) playground 664686bdb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Slicing `NewType` `list`s does not preserve the `NewType`-ness" to "Some operations on `NewType`s do not preserve their `NewType`-ness" by @MeGaGiGaGon on 2025-12-22 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 22:30</div>
+            <div class="timeline-body"><p>Hmm, this is behavior that all type-checkers agree on. It comes directly from the annotation of <code>list.__getitem__</code> in typeshed, which is annotated as returning <code>list[T]</code> (not <code>Self</code>) when it receives a slice as index. As you point out, this is correct for any normal subclass of list. I'm not convinced that <code>NewType</code> of list should be special-cased to behave any differently than a regular subclass. The list returned from slicing at runtime is a new list, it's not the old list. And what would the behavior of slicing a <code>NewType</code> of a subclass of <code>list</code> be? It cannot be the <code>NewType</code>, since at runtime it will be a regular <code>list</code>, which would make for an odd inconsistency.</p>
+<p>We can't really say what the intended semantics of a <code>NewType</code> of <code>list</code> are. It could imply some characteristic of the arrangement of list elements (or the length of the list, etc) which could be violated by slicing. (Though obviously not by a no-op slice as in your example -- but that would be an even more oddly specific thing to special-case.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-22 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-22 22:33</div>
+            <div class="timeline-body"><p>I see, that makes sense. I didn't consider if the <code>NewType</code> had other properties than just being a distinct type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 22:34</div>
+            <div class="timeline-body"><p>Our behaviour here is also explicitly specified in the <a href="https://docs.python.org/3/library/typing.html#newtype">typing-module documentation</a>:</p>
+<blockquote>
+<p>You may still perform all <code>int</code> operations on a variable of type <code>UserId</code>, but the result will always be of type <code>int</code>. This lets you pass in a <code>UserId</code> wherever an <code>int</code> might be expected, but will prevent you from accidentally creating a <code>UserId</code> in an invalid way:</p>
+<pre><code class="language-py"># 'output' is of type 'int', not 'UserId'
+output = UserId(23413) + UserId(54341)
+</code></pre>
+</blockquote>
+<p>There's similar language in the spec at https://typing.python.org/en/latest/spec/aliases.html#newtype too</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

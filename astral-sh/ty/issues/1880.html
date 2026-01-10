@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type `list[...]` containing negated type is not iterable - astral-sh/ty #1880</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type `list[...]` containing negated type is not iterable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1880">#1880</a>
+        opened by <a href="https://github.com/mattgiles">@mattgiles</a>
+        on 2025-12-14 04:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mattgiles">@mattgiles</a> on 2025-12-14 04:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am seeing not-iterable complaints like:</p>
+<pre><code>Object of type `list[Thing | ~str | Unknown]` is not iterable (not-iterable)
+</code></pre>
+<p>As in this <a href="https://play.ty.dev/f8cf1369-0e71-4034-bfde-8c718941d6eb">example</a>.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.34 (ef3d48ac4 2025-12-12)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Object of type list is not iterable" to "Object of type `list[...]` is not iterable" by @mattgiles on 2025-12-14 05:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-15 05:58</div>
+            <div class="timeline-body"><p>It seems to be related to the fact that there's a negation type in it, this is a minimal example:</p>
+<pre><code class="language-py">from ty_extensions import Not
+
+def foo(value: list[Not[str]]):
+    # Object of type `list[~str]` is not iterable (not-iterable)
+    for x in value:
+		reveal_type(x)  # revealed: ~str
+</code></pre>
+<p>The call to <code>list[~str].__iter__() -&gt; Iterator[~str]</code> is failing because of</p>
+<pre><code>Argument type `list[~str]` does not satisfy upper bound `list[_T@list]` of type variable `Self`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-12-15 06:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Object of type `list[...]` is not iterable" to "Type `list[...]` containing negated type is not iterable" by @dhruvmanila on 2025-12-15 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-15 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-19 15:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

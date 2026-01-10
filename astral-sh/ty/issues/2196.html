@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>explicit annotation for `defaultdict(float)` is not accepted - astral-sh/ty #2196</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>explicit annotation for `defaultdict(float)` is not accepted</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2196">#2196</a>
+        opened by <a href="https://github.com/dimbleby">@dimbleby</a>
+        on 2025-12-23 23:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimbleby">@dimbleby</a> on 2025-12-23 23:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Some sort of <code>float | int</code> vs <code>float</code> confusion - I see the related FAQ - I did not find any duplicate issues but perhaps there is one out there</p>
+<pre><code class="language-python">from collections import defaultdict
+
+foo: dict[str, float] = defaultdict(float)
+</code></pre>
+<p>with result</p>
+<pre><code>error[invalid-assignment]: Object of type `defaultdict[Unknown, float]` is not assignable to `dict[str, int | float]`
+ --&gt; foo.py:3:6
+  |
+1 | from collections import defaultdict
+2 |
+3 | foo: dict[str, float] = defaultdict(float)
+  |      ----------------   ^^^^^^^^^^^^^^^^^^ Incompatible value of type `defaultdict[Unknown, float]`
+  |      |
+  |      Declared type
+  |
+info: rule `invalid-assignment` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>awkward if I am also trying to annotate my code in a way that will satisfy mypy, which often insists that it needs a type annotation in such cases</p>
+<h3>Version</h3>
+<p>0.0.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 23:57</div>
+            <div class="timeline-body"><p>Thanks for the report! Yeah, we'll either need to relax the rules around invariance for <code>float</code> vs <code>float | int</code>, or make sure we always have type context available in such cases.</p>
+<p>I think this alternative might make both mypy and ty happy for now?</p>
+<pre><code class="language-py">foo = defaultdict[str, float](float)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-23 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 00:01</div>
+            <div class="timeline-body"><p>Does this still repro on the branch for https://github.com/astral-sh/ruff/pull/21930?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-24 00:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Does this still repro on the branch for <a href="https://github.com/astral-sh/ruff/pull/21930">astral-sh/ruff#21930</a>?</p>
+</blockquote>
+<p>Good call! The last few issues I tried, that PR didn't fix, but it makes sense that it would fix this one, and it does!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-24 00:12</div>
+            <div class="timeline-body"><p>Closing as dupe of #1576, since the PR to close that issue fixes this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-24 00:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

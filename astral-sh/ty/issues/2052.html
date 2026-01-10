@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive `inconsistent-mro` when subclassing `Generic` and a &quot;protocol-like ABC&quot; - astral-sh/ty #2052</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive `inconsistent-mro` when subclassing `Generic` and a &quot;protocol-like ABC&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2052">#2052</a>
+        opened by <a href="https://github.com/gschaffner">@gschaffner</a>
+        on 2025-12-18 06:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gschaffner">@gschaffner</a> on 2025-12-18 06:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Reproducer (<a href="https://play.ty.dev/b69404c6-38c0-4969-b4b8-f3755b668c5a">playground</a>):</p>
+<pre><code class="language-python">from contextlib import AbstractContextManager
+from typing import Generic
+from typing import TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+
+class A(Generic[T], AbstractContextManager):  # error: inconsistent-mro
+    ...
+
+
+class B(AbstractContextManager, Generic[T]):  # no error
+    ...
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-console">$ ty check eg.py
+error[inconsistent-mro]: Cannot create a consistent method resolution order (MRO) for class `A` with bases list `[&lt;special-form 'typing.Generic[T]'&gt;, &lt;class 'AbstractContextManager'&gt;]`
+ --&gt; eg.py:8:1
+  |
+8 | / class A(Generic[T], AbstractContextManager):  # error: inconsistent-mro
+9 | |     ...
+  | |_______^
+  |
+info: rule `inconsistent-mro` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>https://github.com/python/typeshed/pull/13005 is related.</p>
+<h3>Version</h3>
+<p>ty 0.0.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 23:30</div>
+            <div class="timeline-body"><p>Thanks for reporting this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-22 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-12-23 05:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

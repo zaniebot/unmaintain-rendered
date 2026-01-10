@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unannotated dict raises `invalid-argument-type` - astral-sh/ty #2007</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unannotated dict raises `invalid-argument-type`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2007">#2007</a>
+        opened by <a href="https://github.com/jeertmans">@jeertmans</a>
+        on 2025-12-17 12:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jeertmans">@jeertmans</a> on 2025-12-17 12:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi!</p>
+<p>Not sure if this is a bug or a feature (https://github.com/astral-sh/ruff/pull/20927 ?), but an <code>invalid-argument-type</code> error is raise for the <code>**option</code> argument inside <code>baz</code> when it shouldn't (in my opinion).</p>
+<p>Probably related to #1248.</p>
+<p>A possible workaround is to declare an annotated temporary variable, like inside the <code>bar</code> function, but I guess the <code>baz</code> function should also be correct (especially as everything is encapsulated inside the function call, such that the inferred type of <code>options</code> doesn't depend input arguments).</p>
+<p>Thank you very much for your help!</p>
+<pre><code class="language-python">from collections.abc import Mapping, Sequence
+from typing import Any
+
+
+def foo(x: int, option_a: Sequence[str] | None = None, option_b: Mapping[str, Any] | None = None, **other_options: Any) -&gt; int:
+    return x
+
+def bar(x: int, options: Mapping[str, Any] | None = None) -&gt; int:
+    default: dict[str, Any] = {&quot;option_a&quot;: [&quot;a&quot;, &quot;b&quot;]}
+    options = {**default, **(options or {})}
+    return foo(x, **options)
+
+def baz(x: int, options: Mapping[str, Any] | None = None) -&gt; int:
+    options = {&quot;option_a&quot;: [&quot;a&quot;, &quot;b&quot;], **(options or {})}
+    return foo(x, **options)
+</code></pre>
+<p>Link to <a href="https://play.ty.dev/4e105c77-23a6-4c1e-8f63-be1ee13a502b">playground</a>.</p>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 00:18</div>
+            <div class="timeline-body"><p>Interesting, thanks for the report! This is closely related to #1248, but appears to be slightly different in terms of how it's handled by other type checkers. They seem to all infer <code>dict[str, Any]</code> for <code>options</code> in both cases, whereas we preserve more information in the second case about the actual value type we saw, which then causes the error. I'm not totally sure what the heuristic is that results in the <code>dict[str, Any]</code> type in the <code>baz</code> case. The only obvious &quot;source&quot; for <code>Any</code> is the type of the original <code>options</code> (<code>Mapping[str, Any]</code>), but it's not clear why that should erase the type information from the new <code>&quot;option_a&quot;</code> key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @carljm on 2025-12-18 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-18 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-18 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2025-12-19 08:47</div>
+            <div class="timeline-body"><p>Thanks for your reply @carljm!</p>
+<blockquote>
+<p>This is closely related to https://github.com/astral-sh/ty/issues/1248, but appears to be slightly different in terms of how it's handled by other type checkers</p>
+</blockquote>
+<p>Yes, this is why I felt it could be interesting to report in another issue :-)</p>
+<p>Maybe this issue is that <code>{&quot;option_a&quot;: [&quot;a&quot;, &quot;b&quot;]}</code> is typed (by <code>ty</code>) <code>dict[Unknown | str, Unknown | list[Unknown]]</code>, when it could actually be narrowed down to <code>dict[str, list[str]]</code>?</p>
+<p>However, typing <code>default: dict[str, list[str]] = {&quot;option_a&quot;: [&quot;a&quot;, &quot;b&quot;]}</code> in <code>bar</code> makes the type check fail, raising:</p>
+<pre><code>Argument to function `foo` is incorrect: Expected `Mapping[str, Any] | None`, found `Unknown | list[str]` (invalid-argument-type)
+</code></pre>
+<p>Shouldn't <code>T | Any</code> (or <code>T | Unknown</code>) be compatible with <code>Any</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 00:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Shouldn't <code>T | Any</code> (or <code>T | Unknown</code>) be compatible with <code>Any</code>?</p>
+</blockquote>
+<p>The <code>Any</code> in the type of the <code>option_b</code> parameter is inside <code>Mapping[str, Any]</code>, so it doesn't really come into play. It is correct that <code>Unknown | list[str]</code> is not assignable to <code>Mapping[str, Any] | None</code>.</p>
+<blockquote>
+<p>typing <code>default: dict[str, list[str]] = {&quot;option_a&quot;: [&quot;a&quot;, &quot;b&quot;]}</code> in <code>bar</code> makes the type check fail</p>
+</blockquote>
+<p>Yes, this is what I'd expect; the Unknowns aren't causing any problem. The only reason other type checkers are OK with this is because they erase more type information in the creation of <code>options</code> variable than we do. We preserve more of the known type of <code>default</code>; they throw away that information in favor of just <code>Any</code>. So giving a more precise type to <code>default</code> doesn't help us; only giving it a <em>less</em> precise type, with key value of just <code>Any</code>, (like you do in <code>bar</code> above) helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2025-12-23 08:02</div>
+            <div class="timeline-body"><p>I see! Do you think this kind of issue can still be addressed by ty, or if on the user's side to explicitly provide type information?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 20:18</div>
+            <div class="timeline-body"><p>I think we should probably change ty to improve compatibility here.</p>
+<p>After looking at this again, I think the heuristic other type checkers are using here is the one already discussed in #1248 -- if a dict literal would be inferred with a union value type, prefer just falling back to Any instead. So I think we can consider this a duplicate of #1248. Thanks again for reporting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-23 20:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

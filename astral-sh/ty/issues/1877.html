@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit diagnostic on constructor call to class with abstract methods - astral-sh/ty #1877</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit diagnostic on constructor call to class with abstract methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1877">#1877</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-13 13:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-13 13:00</div>
+            <div class="timeline-body"><pre><code class="language-py">from abc import abstractmethod
+
+class Base:
+    @abstractmethod
+    def f(self): ...
+
+class BadChild(Base): ...
+
+class GoodChild(Base):
+    def f(self): ...  # concrete override
+
+Base()  # ❌ has abstract methods
+BadChild()  # ❌ has abstract methods
+GoodChild()  # ✅ abstract methods were overridden
+
+class OtherBase:
+    @property
+    @abstractmethod
+    def prop(self) -&gt; int:
+        return 42
+
+OtherBase()  # ❌ has abstract methods
+
+class ThirdBase:
+    @property
+    def prop(self) -&gt; int:
+        return 42
+
+    @prop.setter
+    @abstractmethod
+    def prop(self, x: int) -&gt; None: ...
+
+ThirdBase()  # ❌ has abstract methods
+</code></pre>
+<p>The runtime only enforces this rule if the class has <code>abc.ABCMeta</code> (or a subclass) as its metaclass. But other type checkers also enforce it even if the decorator is used on a method in a class that does not have that metaclass. That's useful in stubs: there are situations where you want to indicate that you're meant to override a method (so you add the decorator), but the runtime version of the class doesn't have <code>ABCMeta</code> as the metaclass and you don't want to lie about the class's metaclass in the stub file.</p>
+<p>Mypy's tests for this feature are at https://github.com/python/mypy/blob/master/test-data/unit/check-abstract.test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-12-13 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-15 20:34</div>
+            <div class="timeline-body"><p>This check should be implemented here, where we already have a similar check for attempted <code>Protocol</code> instantiations: https://github.com/astral-sh/ruff/blob/7d3b7c57545282cebfe63215d3fba98fca34db4d/crates/ty_python_semantic/src/types/infer/builder.rs#L8505-L8521</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-12-15 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-15 21:39</div>
+            <div class="timeline-body"><p>@AlexWaygood Is this a good candidate for &quot;help wanted&quot; tag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-15 21:45</div>
+            <div class="timeline-body"><p>Not sure. Calculating exactly which methods are still abstract across the whole MRO feels like it could be finnicky. (Any superclass could add an abstract method, but any superclass could also concretize an abstract method from higher up in the hierarchy).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-16 12:19</div>
+            <div class="timeline-body"><p>interestingly, mypy specifically tests that <code>NewType</code>s of abstract classes <em>should</em> be instantiable. I think that makes sense: <a href="https://github.com/python/mypy/blob/d06d3d9cfd6611c0e64c0df59fc0449754e47ed8/test-data/unit/check-abstract.test#L1041-L1051">https://github.com/python/mypy/blob/d06d3d9cfd6611c0e64c0df59fc0449754e47ed8/test-data/unit/check-abstract.test#L1041-L1051</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 14:08</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/2157 notes that as well as considering methods decorated with <code>@abstractmethod</code> as abstract, we also need to consider all methods in <code>Protocol</code> classes as implicitly abstract:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class SomeProto(Protocol):
+    def method(self) -&gt; str: ...
+
+class ExplicitSubclass(SomeProto): ...
+
+ExplicitSubclass()  # ❌ Unsound
+</code></pre>
+<p>Unlike methods explicitly decorated with <code>@abstractmethod</code>, this is never enforced at runtime, but it's necessary for us to enforce this in order to maintain soundness. Because it is a method on a <code>Protocol</code> class (which cannot be instantiated), <code>SomeProto.method</code> is explicitly excluded from the check where we enforce that methods return what they say they return. But this exemption means that we <em>must</em> enforce that the method is overridden on concrete (non-<code>Protocol</code>) subclasses if the user wants those classes to be instantiable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

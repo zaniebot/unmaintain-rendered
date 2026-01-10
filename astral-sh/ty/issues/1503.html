@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Method call on constrained typevar emits invalid-argument-type - astral-sh/ty #1503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Method call on constrained typevar emits invalid-argument-type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1503">#1503</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-11-08 10:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-08 10:14</div>
+            <div class="timeline-body"><p>Consider the following example. ty currently emits two errors for the <code>t.method()</code> call because <code>t.method</code> creates a union of bound method objects where <code>C.method</code> and <code>D.method</code> are bound to <code>T@f</code>, respectively. Instead, attribute access should properly distribute across the union <code>C | D</code> and yield a union of bound method objects where <code>C.method</code> is bound to an instance of <code>C</code>, and <code>D.method</code> is bound to an instance of <code>D</code>:</p>
+<pre><code class="language-py">class C:
+    def method(self) -&gt; int:
+        return 0
+
+class D:
+    def method(self) -&gt; str:
+        return &quot;&quot;
+
+def f[T: (C, D)](t: T):
+    # Argument to bound method `method` is incorrect: Expected `C`, found `T@f` (invalid-argument-type)
+    # Argument to bound method `method` is incorrect: Expected `D`, found `T@f` (invalid-argument-type)
+    reveal_type(t.method())
+</code></pre>
+<p>https://play.ty.dev/c102d2bd-de4d-497c-9144-9f45def4196a</p>
+<p>Related: https://github.com/astral-sh/ty/issues/138</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-11-08 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-11-08 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @sharkdp on 2025-11-08 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-11-10 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wizzerinus">@Wizzerinus</a> on 2025-12-26 09:11</div>
+            <div class="timeline-body"><p>Another example which seems related to this one:</p>
+<pre><code class="language-py">from typing import TypeVar
+
+Num = TypeVar(&quot;Num&quot;, int, float)
+
+def add(x: Num, y: Num):
+    return x + y  # ty emits an error here
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

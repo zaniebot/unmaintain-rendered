@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve `invalid-method-override` diagnostics for overloaded methods - astral-sh/ty #2154</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve `invalid-method-override` diagnostics for overloaded methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2154">#2154</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-22 12:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 12:37</div>
+            <div class="timeline-body"><p>Currently for this file:</p>
+<pre><code class="language-py">from typing import overload
+
+class A:
+    @overload
+    def f(self) -&gt; int: ...
+    @overload
+    def f(self, x: str) -&gt; str: ...
+    @overload
+    def f(self, x: str, y: str) -&gt; bytes: ...
+    def f(self, x=&quot;foo&quot;, y=&quot;bar&quot;):
+        raise NotImplementedError
+
+class B(A):
+    @overload
+    def f(self) -&gt; int: ...
+    @overload
+    def f(self, y: str) -&gt; str: ...
+    @overload
+    def f(self, x: str, y: str) -&gt; bytes: ...
+    def f(self, x=&quot;foo&quot;, y=&quot;bar&quot;):
+        raise NotImplementedError
+</code></pre>
+<p>we emit this diagnostic:</p>
+<p><img width="1410" height="746" alt="Image" src="https://github.com/user-attachments/assets/6cc95379-7305-4abd-a2ec-b221184b59aa" /></p>
+<p>which is extremely confusing, because from the code frame we show you'd think that the subclass method has exactly the same signature as the superclass method.</p>
+<p>The issue here is that the second overload of the subclass method has a different parameter name to the second overload of the superclass method. Ideally we'd say exactly that, but that's very hard without https://github.com/astral-sh/ty/issues/163. In the meantime we should just print the first <code>N</code> overloads as part of the diagnostic, the same as mypy does, and the same as we do for other diagnostics such as <code>no-matching-overload</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-12-22 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-22 17:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

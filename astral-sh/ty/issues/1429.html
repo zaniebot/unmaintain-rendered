@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infers wrong type from numpy's `np.interp` - astral-sh/ty #1429</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Infers wrong type from numpy's `np.interp`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1429">#1429</a>
+        opened by <a href="https://github.com/cooperoptigrid">@cooperoptigrid</a>
+        on 2025-10-24 04:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cooperoptigrid">@cooperoptigrid</a> on 2025-10-24 04:30</div>
+            <div class="timeline-body"><p><code>ty</code>  incorrectly infer <code>numpy.interp</code>’s return type as a scalar <code>float64</code> instead of an <code>NDArray[float64]</code></p>
+<h2>Example code snippet</h2>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+import numpy as np
+
+def main() -&gt; None:
+    x = np.array([0, 1, 2], dtype=np.int64)  # same behaviour with or without this extra dtype (although mypy gives me &quot;Any&quot; without)
+    xp = np.array([0, 2, 4], dtype=np.int64)
+    fp = np.array([0, 1, 2], dtype=np.int64)
+
+    interpolated_values = np.interp(x, xp, fp)
+
+    if TYPE_CHECKING:
+        reveal_type(interpolated_values)  
+
+    print(interpolated_values)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<h2>ty</h2>
+<pre><code class="language-sh">ty check main.py
+info[revealed-type]: Revealed type
+  --&gt; main.py:12:21
+   |
+11 |     if TYPE_CHECKING:
+12 |         reveal_type(interpolated_values)
+   |                     ^^^^^^^^^^^^^^^^^^^ `float64`
+13 |
+14 |     print(interpolated_values)
+   |
+</code></pre>
+<h2>mypy</h2>
+<pre><code class="language-sh">mypy main.py
+main.py:12: note: Revealed type is &quot;numpy.ndarray[builtins.tuple[Any, ...], numpy.dtype[numpy.float64]]&quot;
+</code></pre>
+<h2>pyright &amp; basedpyright</h2>
+<pre><code class="language-sh">pyright main.py  # or basedpyrightmain.py
+...:12:21 - information: Type of &quot;interpolated_values&quot; is &quot;ndarray[tuple[Any, ...], dtype[float64]]&quot;
+</code></pre>
+<h2>venv</h2>
+<pre><code>Package               Version
+--------------------- --------
+basedpyright          1.32.1
+mypy                  1.18.2
+mypy-extensions       1.1.0
+nodeenv               1.9.1
+nodejs-wheel-binaries 22.20.0
+numpy                 2.3.4
+pathspec              0.12.1
+pyright               1.1.406
+ty                    0.0.1a24
+typing-extensions     4.15.0
+</code></pre>
+<h2>numpy type hints</h2>
+<p>From <a href="https://github.com/numpy/numpy/blob/main/numpy/lib/_function_base_impl.pyi#L384">numpy/lib/_function_base_impl.pyi</a> we see</p>
+<pre><code class="language-python">) -&gt; NDArray[complex128 | float64] | complex128 | float64: ...
+</code></pre>
+<p>So rather than choosing the <code>NDArray</code> overload, it picks the <code>float64</code> for some reason.</p>
+<p>I assume similar issues are present with other similarly typed numpy functions.</p>
+<h3>Version</h3>
+<p>0.0.1a24</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-24 07:00</div>
+            <div class="timeline-body"><p>Thanks very much for the thorough report! It looks like numpy uses type aliases for its overload annotations here. We don't support type aliases fully yet, and we end up picking the wrong overload as a result</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-24 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-11-28 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-28 19:42</div>
+            <div class="timeline-body"><p>We now support generic PEP-613 type aliases, but it looks like we will also need to support generic protocols in our constraint solver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-11-28 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Infers wrong type from numpy interp" to "Infers wrong type from numpy's `np.interp`" by @sharkdp on 2025-11-28 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-01 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @MichaReiser on 2025-12-05 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-12-16 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-16 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/feefladder">@feefladder</a> on 2025-12-19 15:30</div>
+            <div class="timeline-body"><p>In a similar vein, it also doesn't understand <code>NDArray</code> types</p>
+<pre><code>info[revealed-type]: Revealed type
+12 |     if TYPE_CHECKING:
+13 |         reveal_type(interpolated_values)
+14 |         reveal_type(x)
+   |                     ^ `Unknown`
+</code></pre>
+<p>when digging through the code a bit, it seemed like it got stuck on <code>TypeAlias</code>, even though I have <code>ty --version 0.0.4</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fanzeyi">@fanzeyi</a> on 2025-12-19 23:07</div>
+            <div class="timeline-body"><p>I think similar issue is happening with <code>pd.DataFrame(columns=...)</code> with <code>list[str]</code>. It expects a <code>SequenceNotStr</code> and ty seems to not be able to deduce the generic parameter: <code>Expected SequenceNotStr[Unknown], found list[str]</code></p>
+<p>https://play.ty.dev/3bdbc25e-91a9-45ad-b88c-0b6143270899</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-20 00:54</div>
+            <div class="timeline-body"><p>Yes, the root cause of these issues is #1714, which we are actively working on</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @AlexWaygood on 2025-12-20 09:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

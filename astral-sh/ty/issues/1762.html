@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type `type[str]` does not match asserted type `&lt;class 'str'&gt;` - astral-sh/ty #1762</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type `type[str]` does not match asserted type `&lt;class 'str'&gt;`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1762">#1762</a>
+        opened by <a href="https://github.com/jorenham">@jorenham</a>
+        on 2025-12-04 21:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-04 21:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ty.dev/a1ec52be-d9dd-4210-b4a6-d5854393201b</p>
+<pre><code class="language-py">from typing import assert_type
+
+assert_type(str, type[str])  # ❌
+assert_type(type(&quot;&quot;), type[str])  # ❌
+assert_type(&quot;&quot;.__class__, type[str])  # ❌
+</code></pre>
+<pre><code>Type `type[str]` does not match asserted type `&lt;class 'str'&gt;` (type-assertion-failure) [Ln 3, Col 1]
+Type `type[str]` does not match asserted type `&lt;class 'str'&gt;` (type-assertion-failure) [Ln 4, Col 1]
+Type `type[str]` does not match asserted type `&lt;class 'str'&gt;` (type-assertion-failure) [Ln 5, Col 1]
+</code></pre>
+<p>eh?</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-04 21:38</div>
+            <div class="timeline-body"><p>We infer a more precise type than <code>type[str]</code>. <code>type[str]</code> is &quot;the class object <code>str</code>, or any subclass of that class&quot;. <code>&lt;class 'str'&gt;</code>, on the other hand, is a singleton type. It has exactly one inhabitant: the class object <code>str</code>. It is not inhabited by any subclasses of <code>str</code>.</p>
+<p>Because we infer a more precise type than the one you're asserting, your assertion fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 21:40</div>
+            <div class="timeline-body"><p>A subtype or assignability check would work fine here -- but in general <code>assert_type</code> requiring exact type equivalence makes it a little too sensitive to details of individual type checker inference.</p>
+<p>In a similar case where it's not possible to soundly infer the more-precise type, we make the inference you are expecting: https://play.ty.dev/75aa6405-2999-47ee-afec-02c7ed914a72</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @carljm on 2025-12-04 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-12-04 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-12-04 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 21:57</div>
+            <div class="timeline-body"><p>I don't think we plan to change this behavior, but we can leave this open for now if there's more discussion needed about the value of compatibility with other type checkers here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-12-04 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-04 22:18</div>
+            <div class="timeline-body"><p>What you're saying makes sense. But how would I then assert that something is a <code>&lt;class 'str'&gt;</code>? I.e.; how can I write <code>assert_type(str, ?)</code> so that ty will accept it?
+Because we use assertions like that quite a lot in the type-tests of numpy and scipy-stubs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-04 23:02</div>
+            <div class="timeline-body"><p>This assertion passes ty, but I don't know if it passes other type checkers:</p>
+<pre><code class="language-py">assert_type(type(&quot;&quot;) is str, Literal[True)
+</code></pre>
+<p>But yeah, we may want to consider proposing something like <code>assert_subtype</code> to be added to the type system. We've found at typeshed that it's often very hard to get this kind of test to pass on both mypy and pyright simultaneously (they'll often pick different overloads when inferring the result of a call expression, for example), so I'd say this is far from the only known example of this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 23:08</div>
+            <div class="timeline-body"><p>We also have a <code>TypeOf</code> helper in ty in our <code>ty_extensions</code> pseudo-module (doesn't exist at runtime, but ty always considers it to exist) that is useful for asserting about non-spellable types:</p>
+<pre><code class="language-py">from ty_extensions import TypeOf
+from typing import assert_type
+
+assert_type(type(&quot;&quot;), TypeOf[str])
+</code></pre>
+<p>https://play.ty.dev/9fda7d43-6c1c-4c18-9f03-49f7ca35003a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-05 10:35</div>
+            <div class="timeline-body"><p>I really like the idea of an <code>assert_subtype</code>. If someone were to officially propose this, then you'll find me (the guy wearing a propeller cap) cheering for it in the front row.</p>
+<p>But what I'm <em>currently</em> looking for is type-agnostic way to type-check my stubs. And up to this point, I thought that <code>assert_type</code> was the obvious way to do this, and wasn't aware of the theoretical inaccuracies involved. But seeing as we don't have an <code>assert_subtype</code> (yet?), and the fact that <code>TypeOf</code> (which I also really like btw) isn't type-checker-agnostic. For context: scipy-stubs currently supports mypy, pyright, basedpyright, pyrefly, and ty (but only for type-checking the stubs, not (yet) for type-testing).</p>
+<p>As far as I can tell, the way I've been (ab)using <code>assert_type</code> so far won't cause any type-unsafe situation at runtime, mostly because <code>assert_type</code> is a purely static check, and because I'm not using it for type-narrowing, but rather for type-testing.
+So even though ty is theoretically absolutely right here, I don't think that it is <em>useful</em> to reject these <code>assert_type</code> uses, especially because there is no type-checker-agnostic alternative here (right now). If that would change, e.g. by adding <code>typing.assert_subtype</code>, then I'd probably be the first one to ditch the slightly unsound <code>assert_type</code>.</p>
+<p>TLDR; I don't think that ty should choose theoretically fidelity over practical utility here, at least not until there's a better type-checker-agnostic alternative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-05 12:12</div>
+            <div class="timeline-body"><p>I assume you're suggesting that we carve out a very narrow exception for the case of class-literal-vs-<code>type[]</code> <code>assert_type</code> calls? I assume you would <em>not</em> want, for example, <code>assert_type(True, int)</code> to pass?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-05 12:25</div>
+            <div class="timeline-body"><p>FWIW, in typeshed where we have a test that only fails on pyright, we use <code># pyright: ignore</code> on that line. And we have a configuration that means that pyright will start failing in CI if the <code># pyright: ignore</code> suppression becomes unused. We also have pyright setup so that it will ignore all <code>type: ignore</code> comments, meaning that they are only respected by mypy, and we have mypy setup to complain about unused <code>type: ignore</code> comments, so if there's a test that only fails on mypy, we can add a <code>type: ignore</code> comment to the line.</p>
+<p>There's no way <em>yet</em> to configure ty to ignore <code>type: ignore</code> comments in the same way as you can with pyright, but you <em>can</em> use <code>ty: ignore</code> comments, which will be respected by ty but ignored by all other type checkers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-05 12:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume you're suggesting that we carve out a very narrow exception for the case of class-literal-vs-<code>type[]</code> <code>assert_type</code> calls? I assume you would <em>not</em> want, for example, <code>assert_type(True, int)</code> to pass?</p>
+</blockquote>
+<p>Exactly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-05 12:51</div>
+            <div class="timeline-body"><blockquote>
+<p>FWIW, in typeshed where we have a test that only fails on pyright, we use <code># pyright: ignore</code> on that line. And we have a configuration that means that pyright will start failing in CI if the <code># pyright: ignore</code> suppression becomes unused. We also have pyright setup so that it will ignore all <code>type: ignore</code> comments, meaning that they are only respected by mypy, and we have mypy setup to complain about unused <code>type: ignore</code> comments, so if there's a test that only fails on mypy, we can add a <code>type: ignore</code> comment to the line.</p>
+</blockquote>
+<p>That's pretty much the same trick we use for the true-positive type-tests in numpy and scipy-stubs. But now that there are 3 ignore comments needed (in scipy-stubs for mypy, pyright and pyrefly) it's becomming a bit annoying, tbh. And soon there also will be <code># ty: ignore</code> comments added to that list. But I'lls top myself there before straying any further off topic haha.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-05 12:56</div>
+            <div class="timeline-body"><p>Yeah, totally agree it's annoying -- I wish we didn't have to do it in typeshed either! But I do feel like the better solution here is to push for more standardised, type-checker-agnostic tools to be introduced to the type system.</p>
+<p>We could add a special case here for compatibility's sake, sure. But that in itself could be confusing for users -- now an <code>assert_type</code> call is passing, appearing to confirm to the user that we infer <em>exactly that type</em>, but when the user calls <code>reveal_type</code>, we'll display something totally different!</p>
+<p>And a special case here wouldn't solve the whole problem either. There are other cases, too, where we infer more precise types than can be expressed in the type system. If you do <code>reveal_type(chr)</code>, you'll find that we infer a function-literal type for that symbol (inhabited by exactly one object at runtime), rather than a <code>Callable</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-05 13:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, totally agree it's annoying -- I wish we didn't have to do it in typeshed either! But I do feel like the better solution here is to push for more standardised, type-checker-agnostic tools to be introduced to the type system.</p>
+<p>We could add a special case here for compatibility's sake, sure. But that in itself could be confusing for users -- now an <code>assert_type</code> call is passing, appearing to confirm to the user that we infer <em>exactly that type</em>, but when the user calls <code>reveal_type</code>, we'll display something totally different!</p>
+<p>And a special case here wouldn't solve the whole problem either. There are other cases, too, where we infer more precise types than can be expressed in the type system. If you do <code>reveal_type(chr)</code>, you'll find that we infer a function-literal type for that symbol (inhabited by exactly one object at runtime), rather than a <code>Callable</code> type.</p>
+</blockquote>
+<p>That's certainly true. I noticed for example that ty requires <code>Literal</code> types on the right-hand-side in case of e.g <code>a = &quot;b&quot;; assert_type(a, ?)</code>, whereas for myrightfly that's be a plain <code>str</code>. For scipy-stubs those cases don't occur very often, so I'm able to live with the couple of <code># ty: ignore</code>s that would require for scipy-stubs. The <code>type</code> cases are more a lot more common though, most of them related to numpy's dtypes. Sp special casing them would help a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-05 13:21</div>
+            <div class="timeline-body"><p>Maybe if we infer a non-spellable subtype of the type you're asserting, we could emit a diagnostic with a different error code (which would have warn-level by default, rather than error-level). Then you would be able to easily switch off just <em>that</em> diagnostic in CI if you wanted to, but we'd still be explicit about the fact that strictly-speaking, the assertion <em>is</em> failing. That feels like it would avoid the potential user confusion from <code>assert_type</code> and <code>reveal_type</code> disagreeing with each other? WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-05 13:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe if we infer a non-spellable subtype of the type you're asserting, we could emit a diagnostic with a different error code (which would have warn-level by default, rather than error-level). Then you would be able to easily switch off just <em>that</em> diagnostic in CI if you wanted to, but we'd still be explicit about the fact that strictly-speaking, the assertion <em>is</em> failing. That feels like it would avoid the potential user confusion from <code>assert_type</code> and <code>reveal_type</code> disagreeing with each other? WDYT?</p>
+</blockquote>
+<p>I can live with that. But I can imagine that most users that encounter this warning will also ignore it, given the lack of an alternative. So I wonder if that warning will actually be helpful in practice 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-05 13:33</div>
+            <div class="timeline-body"><p>IDK. To me it seems almost inevitable that we'd get a bug report complaining about inconsistent behaviour if an <code>assert_type</code> call passes but <code>reveal_type</code> says something very different 🤷</p>
+<p>Maybe lots of users end up switching off the warning. But at least then I can say, &quot;Did you switch off the warning that specifically tells you why <code>assert_type</code> and <code>reveal_type</code> are saying different things here?&quot; when they file their bug reports complaining about the confusing inconsistency ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-05 13:37</div>
+            <div class="timeline-body"><blockquote>
+<p>IDK. To me it seems almost inevitable that we'd get a bug report complaining about inconsistent behaviour if an <code>assert_type</code> call passes but <code>reveal_type</code> says something very different 🤷</p>
+</blockquote>
+<p>If that happens then I'm sure they'll understand that there's no other way to express that in Python's type system at the moment, and that <code>type[_]</code> is the closest thing we have. But I'm probably biased :P</p>
+<p>But then again, I'm fine with a warning like that; as long as I'll be able to use ty for type-testing, I'm happy :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 18:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I noticed for example that ty requires <code>Literal</code> types on the right-hand-side in case of e.g <code>a = &quot;b&quot;; assert_type(a, ?)</code>, whereas for myrightfly that's be a plain <code>str</code>.</p>
+</blockquote>
+<p>I think actually there's a significant amount of difference between mypy, pyright, and pyrefly in this case. For <code>a = &quot;b&quot;</code> (no annotation), mypy is the only type checker that infers <code>str</code>, everyone else (ty, pyrefly, pyright) infer <code>Literal[&quot;b&quot;]</code>. For <code>a: str = &quot;b&quot;</code> (with annotation added), both ty and pyright still infer the narrowed type <code>Literal[&quot;b&quot;]</code>; pyrefly and mypy infer <code>str</code>. (But then for <code>a: str = &quot;b&quot;</code> followed by <code>a = &quot;c&quot;</code>, pyrefly goes back to <code>Literal[&quot;c&quot;]</code> -- this inconsistency between the handling of &quot;initial assignment&quot; vs &quot;subsequent assignment&quot; is the reason ty currently always prefers the narrowed type.)</p>
+<p>So I think in this case there is actually a spectrum of diverse behaviors; ty is not diverging from a consensus of the other type checkers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 18:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe if we infer a non-spellable subtype of the type you're asserting, we could emit a diagnostic with a different error code (which would have warn-level by default, rather than error-level). Then you would be able to easily switch off just <em>that</em> diagnostic in CI if you wanted to, but we'd still be explicit about the fact that strictly-speaking, the assertion <em>is</em> failing.</p>
+</blockquote>
+<p>I like this suggestion as a practical path forward here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-05 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @carljm on 2025-12-05 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @carljm on 2025-12-05 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-05 20:02</div>
+            <div class="timeline-body"><blockquote>
+<p>So I think in this case there is actually a spectrum of diverse behaviors; ty is not diverging from a consensus of the other type checkers.</p>
+</blockquote>
+<p>Ah yea you're right. The example I had in mind was this type-test from scipy-stubs (<a href="https://github.com/scipy/scipy-stubs/blob/d8083513f9d6b5dad6615244dbbe9b56e00e11fd/tests/version/test_version.pyi">src</a>):</p>
+<pre><code class="language-py">v: str = scipy.version.short_version
+assert_type(v, str)
+</code></pre>
+<p>where <code>scipy.version.short_version</code> is <code>short_version: _t.Final = &quot;1.16.3&quot;</code> (<a href="https://github.com/scipy/scipy-stubs/blob/d8083513f9d6b5dad6615244dbbe9b56e00e11fd/scipy-stubs/version.pyi#L5">src</a>).</p>
+<p>Here, ty is the only one that rejects the assertion, reporting that &quot;Type <code>str</code> does not match asserted type <code>Literal[&quot;1.16.3&quot;]</code>&quot;.</p>
+<p>So I forgot about the <code>: str</code> part, which is the key difference here. So ty only differs in the way it doesn't upcast the string literal to <code>str</code> when annotated as such. But that's yet another unrelated story :P</p>
+<p>But don't worry about this; it's admittedly a stupid test anyway 🤭</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 22:24</div>
+            <div class="timeline-body"><p>Ah hm, that's interesting. I wonder why pyright goes with <code>str</code> in that case but <code>Literal[&quot;a&quot;]</code> in the case of <code>a: str = &quot;a&quot;</code>... from ty's perspective they are the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-12-05 22:54</div>
+            <div class="timeline-body"><blockquote>
+<p>from ty's perspective they are the same.</p>
+</blockquote>
+<p>I believe that mypy and pyright can become quite slow in case of large/many literals, so that's probably why they avoid / upcast them. And in case of mypy I'm guessing that its greedy inference algorithm is also a reason (i.e. what <code>--allow-redefinition-new</code> is meant to solve).
+But for pyright performance is the main reason I believe.</p>
+<p>As far as I'm aware, neither of those reasons apply to ty. So I think it makes a lot sense that ty infers string types as specific as possible.
+(I'm not (just) saying that because I'm a typing-idealist: Most of the (reported) typing issues I've had to deal with in scipy-stubs and numpy were related to imprecise types, so it's (also) out of self-interest 😛.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 00:21</div>
+            <div class="timeline-body"><p>@DetachHead observes in #1495 that this also comes up with function-literal types:</p>
+<pre><code class="language-py">def foo() -&gt; None: ...
+
+assert_type(foo, Callable[[], None]) # error
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

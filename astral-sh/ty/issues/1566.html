@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider unsafely narrowing non-literal type to literal based on equality check - astral-sh/ty #1566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider unsafely narrowing non-literal type to literal based on equality check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1566">#1566</a>
+        opened by <a href="https://github.com/alexmacnorthstar">@alexmacnorthstar</a>
+        on 2025-11-14 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexmacnorthstar">@alexmacnorthstar</a> on 2025-11-14 21:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using a guard to check if a str is a value from a list of literals like this:</p>
+<pre><code class="language-py">from typing import Literal
+
+type MyType = Literal['test1', 'test2']
+
+def test(foo:str) -&gt; MyType:
+  valid_vals: list[MyType] = ['test1', 'test2']
+  if foo in valid_vals:
+    return foo
+  return 'test1'
+</code></pre>
+<p>Gives:</p>
+<pre><code>error[invalid-return-type]: Return type does not match returned value
+ --&gt; ty_test.py:5:22
+  |
+3 | type MyType = Literal['test1', 'test2']
+4 |
+5 | def test(foo:str) -&gt; MyType:
+  |                      ------ Expected `MyType` because of return type
+6 |   valid_vals: list[MyType] = ['test1', 'test2']
+7 |   if foo in valid_vals:
+8 |     return foo
+  |            ^^^ expected `MyType`, found `str`
+9 |   return 'test1'
+  |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>But foo is constrained to only valid values of the MyType literal at this point</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.26 (b225fd8b4 2025-11-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 21:45</div>
+            <div class="timeline-body"><p>It's intentional that we haven't so far implemented support for this kind of narrowing, because it is unsound. The type <code>str</code> includes subclasses of <code>str</code>, which are permitted to implement <code>__eq__</code> to compare equal to whatever they like. And a subclass of <code>str</code> that compares equal to <code>&quot;test1&quot;</code> does not inhabit the type <code>Literal[&quot;test1&quot;]</code> -- that type is limited to the instance of the actual <code>str</code> class with value <code>&quot;test1&quot;</code>.</p>
+<pre><code class="language-py">class MyStr(str):
+    def __eq__(self, other):
+        return True  # YOLO
+
+test(MyStr(&quot;something else&quot;))  # returns MyStr(&quot;something else&quot;) at runtime, violating the return type of `test`
+</code></pre>
+<p>If the type of <code>foo</code> were a larger union of literal types, we would eliminate types from that union which we know <em>cannot</em> compare equal to <code>test1</code>. We currently do this for <code>in</code> checks only if the RHS is a tuple, not if its a list.</p>
+<p>Pyright narrows in this case; mypy does not.</p>
+<p>I will leave this issue open for now, to consider whether a change in behavior makes sense (and provide a central place for user feedback on the question.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support narrowing/inferring to literal after check" to "Support narrowing/inferring non-literal type to literal" by @carljm on 2025-11-14 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support narrowing/inferring non-literal type to literal" to "Consider unsafely narrowing non-literal type to literal based on equality check" by @carljm on 2025-11-14 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-11-14 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-11-14 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 02:59</div>
+            <div class="timeline-body"><p>We could add a diagnostic that prohibits overriding <code>__eq__</code> on subclasses of all types for which we have literal types, and then go ahead and implement this kind of narrowing. See #2171 where we plan to do this for tuples. I don't know if overriding <code>__eq__</code> on <code>int</code> or <code>str</code> subclasses is more common than on <code>tuple</code> subclasses.</p>
+<p>The advantage of this approach is that people who aren't worried about the unsoundness and want to match pyright behavior can always just turn off the &quot;unsafe subclass&quot; warning and still get the narrowing.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

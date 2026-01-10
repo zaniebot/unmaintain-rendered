@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>enforce type of `ClassVar` in subclasses - astral-sh/ty #167</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>enforce type of `ClassVar` in subclasses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/167">#167</a>
+        opened by <a href="https://github.com/beauxq">@beauxq</a>
+        on 2025-03-20 13:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/beauxq">@beauxq</a> on 2025-03-20 13:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is for red knot, tested in https://playknot.ruff.rs/</p>
+<pre><code class="language-python">from typing import ClassVar, assert_type, reveal_type
+
+class B:
+    x: ClassVar[int | str] = 0
+
+class C(B):
+    x = &quot;random&quot;
+
+class D(C):
+    x = 1
+
+class E(D):
+    x = b&quot;x&quot;
+
+
+def foo(b: type[B]) -&gt; None:
+    x = b.x
+    reveal_type(x)
+    if isinstance(x, str):
+        print(x + &quot;y&quot;)
+    else:
+        reveal_type(x)
+        print(x + 3)
+
+
+foo(E)
+</code></pre>
+<p>This program crashes with a <code>TypeError</code> because an invalid type is assigned to <code>x</code> in <code>E</code>.
+But that invalid assignment is not reported.</p>
+<h3>Version</h3>
+<p>https://playknot.ruff.rs/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-20 13:47</div>
+            <div class="timeline-body"><p><a href="https://playknot.ruff.rs/a7eef939-906a-4f53-ac84-a64f7f2d1fb6">Here a link</a> to the playground with the given example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-20 23:03</div>
+            <div class="timeline-body"><p>Thanks for the report! Yes, it's a known issue that in general we don't have any checking of Liskov validity of subclasses yet (for any method or attribute, of any type). One of many things that just aren't done yet!</p>
+<p>In fact, it looks like while we have this on our internal roadmap, we don't yet have a GH issue for it. I just created astral-sh/ty#166 so that it's publicly tracked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] enforce type of `ClassVar` in subclasses" to "enforce type of `ClassVar` in subclasses" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-05-11 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-08-15 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-08-15 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 13:55</div>
+            <div class="timeline-body"><p>I've opened https://github.com/astral-sh/ty/issues/2158 with some more details about exactly what we need to support here. I'll close this in favour of that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-22 13:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

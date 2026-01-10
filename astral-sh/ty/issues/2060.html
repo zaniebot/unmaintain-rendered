@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion of abc.Collection[str] to set() becomes set[Unknown] instead of set[str] - astral-sh/ty #2060</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conversion of abc.Collection[str] to set() becomes set[Unknown] instead of set[str]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2060">#2060</a>
+        opened by <a href="https://github.com/sinon">@sinon</a>
+        on 2025-12-18 10:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sinon">@sinon</a> on 2025-12-18 10:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Couldn't find an issue that quite matched (maybe this https://github.com/astral-sh/ty/issues/1473 if so please close this and I will link my suppression comment to reference it instead)</p>
+<p>Problem:
+Conversion of abc.Collection[str] to set() loses type see following code for example</p>
+<pre><code class="language-py">from collections.abc import Collection
+from typing import reveal_type
+
+
+async def some_fn(
+    collect_str: Collection[str] | None = None,
+) -&gt; None:
+    if collect_str is not None:
+        reveal_type(collect_str) # Collection[str]
+        set_of_collection = set(collect_str)
+        reveal_type(set_of_collection)  # set[Unknown]
+</code></pre>
+<p>https://play.ty.dev/08c04eb9-d638-4062-a327-3a75648adcf4</p>
+<p>Pyrefly and Pyright both resolves as <code>set[str]</code></p>
+<h3>Version</h3>
+<p>ty 0.0.3 (fadfe0966 2025-12-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Conversion of abc.Collection[str] to set() becomes Set[Unknown] instead of Set[str]" to "Conversion of abc.Collection[str] to set() becomes set[Unknown] instead of set[str]" by @sinon on 2025-12-18 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-18 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-18 12:40</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>I minified this further to:</p>
+<pre><code class="language-py">from collections.abc import Collection
+from typing import reveal_type
+
+def _(collect_str: Collection[str]):
+    reveal_type(set(collect_str))  # set[Unknown]
+</code></pre>
+<p>Since the <code>set</code> constructor is generic (<code>def __init__(self, iterable: Iterable[_T], /) -&gt; None: ...</code>), I think this is just an instance of #1714.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-18 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @sharkdp on 2025-12-18 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-12-18 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 12:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Since the <code>set</code> constructor is generic (<code>def __init__(self, iterable: Iterable[_T], /) -&gt; None: ...</code>), I think this is just an instance of <a href="https://github.com/astral-sh/ty/issues/1714">#1714</a>.</p>
+</blockquote>
+<p>but our existing generics solver <em>should</em> be able to <em>already</em> handle cases where classes <em>explicitly</em> inherit from generic protocols. It's only cases where types are <em>implicit</em> subtypes of generic protocols where there are still TODOs. And <code>Collection</code> <a href="https://github.com/python/typeshed/blob/8d96801533918957fb194e101cb321bfe1f836f8/stdlib/typing.pyi#L650-L653"><em>explicitly</em> inherits from <code>Iterable</code></a>. So I think there may be something else going on here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-12-18 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-23 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-23 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sinon">@sinon</a> on 2025-12-24 09:21</div>
+            <div class="timeline-body"><p>Not sure if better to open a new issue but the MRE I supplied here turned out not to be quite representative of the <code>Collection[str]</code> losing it's type when converted to <code>set()</code> in the real-life code I was trying to apply <code>ty</code> too. There is a <code>~AlwaysFalsy</code> in the mix which seems to disrupt the fix that @ibraheemdev made for the more general case 🤔</p>
+<pre><code class="language-py">from collections.abc import Collection
+from typing import Mapping, reveal_type
+
+def something(mapping: Collection[str] | None = None):
+    if not mapping:
+        raise ValueError
+    reveal_type(mapping)  # Collection[str] &amp; ~AlwaysFalsy
+    mapping = set(mapping)
+    reveal_type(mapping) # set[Unknown]
+</code></pre>
+<p>https://play.ty.dev/f980f01d-288a-48cc-a04a-759f80d74b9d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 09:24</div>
+            <div class="timeline-body"><p>@sinon if you could open a new issue for that, that would be great — thank you!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

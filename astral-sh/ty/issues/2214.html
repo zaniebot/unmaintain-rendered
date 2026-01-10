@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error message improvement: mark the inconsistent part of the overriding signature - astral-sh/ty #2214</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error message improvement: mark the inconsistent part of the overriding signature</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2214">#2214</a>
+        opened by <a href="https://github.com/pjonsson">@pjonsson</a>
+        on 2025-12-24 23:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pjonsson">@pjonsson</a> on 2025-12-24 23:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This might be a documentation issue, but I'm filing it as a bug since I don't understand what action the error message is prompting me to do.</p>
+<p>I just got:</p>
+<pre><code>error[invalid-method-override]: Invalid override of method `get_by_name_unsafe`
+   --&gt; datacube/index/postgres/_products.py:349:9
+    |
+347 |     # pylint: disable=method-hidden
+348 |     @override
+349 |     def get_by_name_unsafe(self, name: str) -&gt; Product:
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Definition is incompatible with `AbstractProductResource.get_by_name_unsafe`
+350 |         with self._db_connection() as connection:
+351 |             result = connection.get_product_by_name(name)
+    |
+   ::: datacube/index/abstract/_products.py:345:9
+    |
+344 |     @abstractmethod
+345 |     def get_by_name_unsafe(self, name: str) -&gt; Product:
+    |         ---------------------------------------------- `AbstractProductResource.get_by_name_unsafe` defined here
+346 |         &quot;&quot;&quot;
+347 |         Fetch product by name
+    |
+info: This violates the Liskov Substitution Principle
+info: rule `invalid-method-override` is enabled by default
+</code></pre>
+<p>and I'm confused even after reading the documentation. One issue in this repository mentioned something about Pyright implementing the correct semantics for LSP, but mypy does not, but Pyright accepts this particular code without complaints.</p>
+<p>It would be helpful if the error markers pinpointed the incompatible part of the signature instead of the entire definition.</p>
+<h3>Version</h3>
+<p>ty 0.0.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-25 00:42</div>
+            <div class="timeline-body"><p>Thanks for the report, and sorry our diagnostic here was so unhelpful!</p>
+<p>I think this <em>may</em> be a duplicate of https://github.com/astral-sh/ty/issues/1644 and/or https://github.com/astral-sh/ty/issues/2154? Is either the superclass method or the subclass method overloaded, by any chance?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-12-25 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjonsson">@pjonsson</a> on 2025-12-25 10:45</div>
+            <div class="timeline-body"><p>I'm not familiar with the mechanics of overload in Python, but I did a <code>git grep</code> and there is no <code>overload</code> decorator anywhere in the source code (plenty of overrides though, but I assume that wasn't what you meant since you asked about overloads). It predates me, but the code base hasn't had type annotations for that long, so it's not impossible that other decorators are missing if the code would run fine without them.</p>
+<p>It's also possible I'm not reading the error message from Ty right, here is the entire output when type checking the file:</p>
+<pre><code>$ uv run ty check datacube/index/postgres/_products.py
+error[missing-argument]: No argument provided for required parameter `name` of function `get_by_name_unsafe`
+   --&gt; datacube/index/postgres/_products.py:228:20
+    |
+226 |         _LOG.info(&quot;Updating product %s&quot;, product.name)
+227 |
+228 |         existing = self.get_by_name_unsafe(product.name)
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+229 |         changing_metadata_type = (
+230 |             product.metadata_type.name != existing.metadata_type.name
+    |
+info: Union variant `def get_by_name_unsafe(self, name: str) -&gt; Product` is incompatible with this call site
+info: Attempted to call union type `(bound method Self@update.get_by_name_unsafe(name: str) -&gt; Product) | (def get_by_name_unsafe(self, name: str) -&gt; Product)`
+info: rule `missing-argument` is enabled by default
+
+error[invalid-argument-type]: Argument to function `get_by_name_unsafe` is incorrect
+   --&gt; datacube/index/postgres/_products.py:228:44
+    |
+226 |         _LOG.info(&quot;Updating product %s&quot;, product.name)
+227 |
+228 |         existing = self.get_by_name_unsafe(product.name)
+    |                                            ^^^^^^^^^^^^ Expected `ProductResource`, found `str`
+229 |         changing_metadata_type = (
+230 |             product.metadata_type.name != existing.metadata_type.name
+    |
+info: Function defined here
+   --&gt; datacube/index/postgres/_products.py:349:9
+    |
+347 |     # pylint: disable=method-hidden
+348 |     @override
+349 |     def get_by_name_unsafe(self, name: str) -&gt; Product:
+    |         ^^^^^^^^^^^^^^^^^^ ---- Parameter declared here
+350 |         with self._db_connection() as connection:
+351 |             result = connection.get_product_by_name(name)
+    |
+info: Union variant `def get_by_name_unsafe(self, name: str) -&gt; Product` is incompatible with this call site
+info: Attempted to call union type `(bound method Self@update.get_by_name_unsafe(name: str) -&gt; Product) | (def get_by_name_unsafe(self, name: str) -&gt; Product)`
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-method-override]: Invalid override of method `get_unsafe`
+   --&gt; datacube/index/postgres/_products.py:339:9
+    |
+337 |     # pylint: disable=method-hidden
+338 |     @override
+339 |     def get_unsafe(self, id_: int) -&gt; Product:
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Definition is incompatible with `AbstractProductResource.get_unsafe`
+340 |         with self._db_connection() as connection:
+341 |             result = connection.get_product(id_)
+    |
+   ::: datacube/index/abstract/_products.py:335:9
+    |
+334 |     @abstractmethod
+335 |     def get_unsafe(self, id_: int) -&gt; Product:
+    |         ------------------------------------- `AbstractProductResource.get_unsafe` defined here
+336 |         &quot;&quot;&quot;
+337 |         Fetch product by id
+    |
+info: This violates the Liskov Substitution Principle
+info: rule `invalid-method-override` is enabled by default
+
+error[invalid-method-override]: Invalid override of method `get_by_name_unsafe`
+   --&gt; datacube/index/postgres/_products.py:349:9
+    |
+347 |     # pylint: disable=method-hidden
+348 |     @override
+349 |     def get_by_name_unsafe(self, name: str) -&gt; Product:
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Definition is incompatible with `AbstractProductResource.get_by_name_unsafe`
+350 |         with self._db_connection() as connection:
+351 |             result = connection.get_product_by_name(name)
+    |
+   ::: datacube/index/abstract/_products.py:345:9
+    |
+344 |     @abstractmethod
+345 |     def get_by_name_unsafe(self, name: str) -&gt; Product:
+    |         ---------------------------------------------- `AbstractProductResource.get_by_name_unsafe` defined here
+346 |         &quot;&quot;&quot;
+347 |         Fetch product by name
+    |
+info: This violates the Liskov Substitution Principle
+info: rule `invalid-method-override` is enabled by default
+
+Found 4 diagnostics
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-25 10:50</div>
+            <div class="timeline-body"><p>Is it possible that you have two classes named <code>Product</code>, one in one file and one in another...?</p>
+<p>Do mypy and/or pyright complain about this override, or only ty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjonsson">@pjonsson</a> on 2025-12-25 11:10</div>
+            <div class="timeline-body"><p>Yes, there are 3 classes named <code>Product</code>, one in a separate driver that shouldn't leak into the postgres driver, and two other definitions.</p>
+<pre><code>datacube/model/__init__.py:class Product:
+datacube/virtual/impl.py:class Product(VirtualProduct):  # type: ignore[no-redef]
+</code></pre>
+<p>Most of the code base has type annotations now, and all of it type checks with mypy (but there are some ignores as you can see). The file in question also comes out clean when fed into pyright, but pyright has (what looks like valid) complaints for other parts of the code base.</p>
+<p>And I know the virtual stuff predates the type annotations by years, so it does &quot;interesting&quot; things.</p>
+<p>When looking around, I also found this in the constructor of the class that it complains about:</p>
+<pre><code class="language-python">        self.get_unsafe = lru_cache()(self.get_unsafe)  # type: ignore[method-assign]
+        self.get_by_name_unsafe = lru_cache()(self.get_by_name_unsafe)  # type: ignore[method-assign]
+</code></pre>
+<p>which coincides with the methods that Ty is complaining about.</p>
+<p>So I guess I bumped into something that isn't supported by Ty yet, but I think my suggestion to mark the incompatible part of the signature instead of the entire signature would still be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-25 12:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I think my suggestion to mark the incompatible part of the signature instead of the entire signature would still be helpful.</p>
+</blockquote>
+<p>Yes, I agree, and that's already tracked in #1644 :-) I was just trying to see if we could figure out what the cause of this specific diagnostic was.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-25 12:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

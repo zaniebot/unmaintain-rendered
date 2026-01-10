@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect invalid attempts to override `@property`s with mutable attributes - astral-sh/ty #2160</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect invalid attempts to override `@property`s with mutable attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2160">#2160</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-12-22 14:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 14:25</div>
+            <div class="timeline-body"><p>From the perspective of the Liskov Substitution Principle, this is fine[^1], because the attribute on the subclass can do strictly more than the attribute on the superclass (it's read-only on the superclass, but it's writable on the subclass!).</p>
+<p>However, overriding a property like this doesn't actually make the attribute writable at runtime -- so we should detect the unsoundness here:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class A:
+...     @property
+...     def f(self): ...
+...     
+&gt;&gt;&gt; class B(A):
+...     f: int
+...     
+&gt;&gt;&gt; B().f = 42
+Traceback (most recent call last):
+  File &quot;&lt;python-input-11&gt;&quot;, line 1, in &lt;module&gt;
+    B().f = 42
+    ^^^^^
+AttributeError: property 'f' of 'B' object has no setter
+</code></pre>
+<p>In order to make a read-only property in the superclass writable, you <em>must</em> providing an overriding <em>definition</em> in the class body, not just an overriding <em>declaration</em>. This works:</p>
+<pre><code class="language-py">class A:
+    @property
+    def f(self): ...
+
+class B(A):
+    @property
+    def f(self): ...
+
+    @f.setter
+    def f(self, value): ...
+</code></pre>
+<p>As does this:</p>
+<pre><code class="language-py">class A:
+    @property
+    def f(self): ...
+
+class B(A):
+    @A.f.setter
+    def f(self, value): ...
+</code></pre>
+<p>And this too (but see footnote 1 for some caveats):</p>
+<pre><code class="language-py">class A:
+    @property
+    def f(self) -&gt; int:
+        return 42
+
+class B(A):
+    f: int = 42
+</code></pre>
+<p>but this also doesn't work:</p>
+<pre><code class="language-py">class A:
+    @property
+    def f(self) -&gt; int:
+        return 42
+
+class B(A):
+    def __init__(self):
+        self.x: int = 42
+</code></pre>
+<p>This should also be disallowed, since all fields on <code>NamedTuple</code>s are implicitly <code>@property</code>s:</p>
+<pre><code class="language-py">from typing import NamedTuple
+
+class A(NamedTuple):
+    x: int
+
+class B(A):
+    x: int
+</code></pre>
+<p>but I think this should be fine (though pyright and pyrefly seem to disallow it, for some reason). If we do want to disallow it, I think it should be because of the caveat outlined in footnote (1) rather than because of the runtime error described above, because there's no runtime error here:</p>
+<pre><code class="language-py">from typing import NamedTuple
+
+class A(NamedTuple):
+    x: int
+
+class B(A):
+    x: int = 42
+</code></pre>
+<p>[^1]: Well, it's fine if you only consider the type when accessed from instances. It's not fine if you also consider the type as accessed from the class object. But anyway, I don't think that's the most important thing that's wrong about this override, so I don't think it's the thing we should actually complain about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-12-22 14:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid assignability for a generic type using `ParamSpec` - astral-sh/ty #1995</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invalid assignability for a generic type using `ParamSpec`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1995">#1995</a>
+        opened by <a href="https://github.com/tudoroancea">@tudoroancea</a>
+        on 2025-12-17 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tudoroancea">@tudoroancea</a> on 2025-12-17 10:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello there,</p>
+<p>I have noticed the following weird behavior in <code>assert_type</code> when instantiating a generic class using a <code>ParamSpec</code> type variable: the type of the resulting instance of the class is correctly inferred, but the assertion ignores it.</p>
+<p>Consider the minimal example below:</p>
+<pre><code class="language-python">from typing import Callable, assert_type, reveal_type
+
+
+class C[T, **P]:
+  def __init__(self, fn: Callable[P, T]):
+    self.fn = fn
+
+
+def f0(x: int) -&gt; int:
+  return x
+
+
+# correctly passes
+assert_type((x := C(f0)), C[int, [int]])
+reveal_type(x)
+
+# correctly fails
+assert_type((x := C(f0)), C[str, [int]])
+reveal_type(x)
+
+# passing but shouldn't
+assert_type((x := C(f0)), C[int, [str]])
+reveal_type(x)
+</code></pre>
+<p>which gives the following output when running <code>ty check assert_type_ignores_paramspec.py</code> with a Python 3.13</p>
+<pre><code>info[revealed-type]: Revealed type
+  --&gt; assert_type_ignores_paramspec.py:15:13
+   |
+13 | # correctly passes
+14 | assert_type((x := C(f0)), C[int, [int]])
+15 | reveal_type(x)
+   |             ^ `C[int, (x: int)]`
+16 |
+17 | # correctly fails
+   |
+
+error[type-assertion-failure]: Argument does not have asserted type `C[str, (int, /)]`
+  --&gt; assert_type_ignores_paramspec.py:18:1
+   |
+17 | # correctly fails
+18 | assert_type((x := C(f0)), C[str, [int]])
+   | ^^^^^^^^^^^^^----------^^^^^^^^^^^^^^^^^
+   |              |
+   |              Inferred type is `C[int, (x: int)]`
+19 | reveal_type(x)
+   |
+info: `C[str, (int, /)]` and `C[int, (x: int)]` are not equivalent types
+info: rule `type-assertion-failure` is enabled by default
+
+info[revealed-type]: Revealed type
+  --&gt; assert_type_ignores_paramspec.py:19:13
+   |
+17 | # correctly fails
+18 | assert_type((x := C(f0)), C[str, [int]])
+19 | reveal_type(x)
+   |             ^ `C[int, (x: int)]`
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; assert_type_ignores_paramspec.py:24:13
+   |
+22 | # passing but shouldn't
+23 | assert_type((x := C(f0)), C[int, [str]])
+24 | reveal_type(x)
+   |             ^ `C[int, (x: int)]`
+   |
+
+Found 4 diagnostics
+</code></pre>
+<p>You can see that the type of each instance of <code>C</code> is correctly inferred (as shown with the <code>reveal_type</code>) but only changing the output type makes the assertion fail, not the input paramspec type.</p>
+<p>Thank you in advance for your help.</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-17 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "assert_type ignores the inferred type of generic using ParamSpec" to "wrong assignability of generic using ParamSpec" by @carljm on 2025-12-22 23:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 23:02</div>
+            <div class="timeline-body"><p>Thanks for the report! This doesn't seem specific to <code>assert_type</code>, there's something wrong with our determination of assignability for a type that's generic over a ParamSpec: https://play.ty.dev/50ed731b-8458-4651-99e7-90e3c462a33f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-22 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-23 05:24</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py"># correctly passes
+assert_type((x := C(f0)), C[int, [int]])
+reveal_type(x)
+</code></pre>
+</blockquote>
+<p>Even this should fail because the parameter in <code>f0</code> is positional or keyword while the one in <code>C[int, [int]]</code> is positional-only parameter and <code>assert_type</code> performs equivalence check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "wrong assignability of generic using ParamSpec" to "Invalid assignability for a generic type using `ParamSpec`" by @dhruvmanila on 2025-12-23 05:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

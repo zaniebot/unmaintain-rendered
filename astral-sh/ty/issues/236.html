@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>principles for inferring the type of an expression that is a type error - astral-sh/ty #236</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>principles for inferring the type of an expression that is a type error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/236">#236</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-10-25 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-10-25 21:19</div>
+            <div class="timeline-body"><p>When we believe that an expression is a type error, and will raise at runtime, there are several plausible types we could assign to that expression:</p>
+<p>a) We could assign the type <code>Unknown</code> (or <code>Any</code>).
+b) We could assign the type <code>Never</code>.
+c) We could assign the type that we believe the expression should always have, were it not an error.</p>
+<p>It seems that existing type checkers use a mix of all three strategies, in different situations.</p>
+<p>(a) is the most cautious approach. It suggests that we might be wrong in our analysis: perhaps the code actually works at runtime, but we just don't know what the type should be. All existing type checkers infer Unknown/Any for unrecognized imports. Type checkers (by necessity) have a very limited understanding of the Python import system, and may not be configured to be able to find all imports (especially imports of e.g. C extension modules, if type stubs are not available), so it makes sense to assume in this case that the import may be valid at runtime.</p>
+<p>(b) is theoretically correct for an expression that we are confident will raise an exception at runtime. If the expression always raises, evaluation of the expression will always terminate, and thus the expression's type can have no inhabitant. Since <code>Never</code> is assignable to every type, and should be considered to have all attributes (also of type <code>Never</code>), this is also a reasonably &quot;forgiving&quot; approach (in the sense that it shouldn't result in lots of cascading errors.)</p>
+<p>(c) is also a defensible approach in cases where the expression is of a form that should always have the same type, were it not an error. An example here is membership tests: <code>x in y</code> at runtime will <em>always</em> be of type <code>bool</code>, if it doesn't raise an exception. So it's reasonable to simply assign it type <code>bool</code> even if we think the comparison will raise, on the assumption that the invalid test will be fixed, and thus the type <code>bool</code> gives the most accurate downstream type-checking results without requiring multiple iterations (first fix the error, then wait for re-check). Mypy infers <code>bool</code> for an invalid membership test, which is an example of this strategy.</p>
+<p>I think it may make sense to use all three strategies sometimes, but we should have a clear understanding of our principles for deciding which to use in a given situation. I would propose something like the following:</p>
+<ol>
+<li>If the expression form would <em>always</em> result in a certain type if not an error, we just infer that type, on the assumption that the error will most likely be fixed.</li>
+<li>Otherwise, we prefer inferring <code>Never</code> if we consider the error to be high-confidence, or <code>Unknown</code> if low-confidence (an unresolved import, for example.)</li>
+</ol>
+<p>I'm not sure about part (2), though -- it feels difficult to consistently decide what errors are &quot;high-confidence.&quot; Maybe there is little value in using <code>Never</code> in this way, and we should just generally prefer <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-25 21:30</div>
+            <div class="timeline-body"><p>There's also the case of &quot;type errors&quot; which we do <em>not</em> believe will error at runtime, but violate the user's declared type intentions. For example, <code>x: int = &quot;foo&quot;</code> is not a runtime error, but is a type error, and we have to decide how to reconcile it. Our current choice is to preserve the inferred type (which is the type we will reveal, so <code>Literal[&quot;foo&quot;]</code> for <code>x</code> in this case), and relax the declared type to <code>Unknown</code>, meaning we effectively ignore the <code>int</code> annotation and will subsequently allow anything to be assigned to <code>x</code>.</p>
+<p>This choice makes sense in case the inferred type is very high confidence (as it is in this example), but could be wrong in a case like <code>x: int = annotated_to_return_str_but_really_returns_int_at_runtime()</code>. At the moment, I'm comfortable with this tradeoff: the second case will presumably emit two diagnostics (maybe only one if the bad annotation is in a type stub, or badly-annotated third-party library that we aren't checking), and once they are fixed the inferred and declared types for <code>x</code> will be correct. But we'll see how it holds up in real-world code.</p>
+<p>Another option here could be to widen the declared type just enough to accommodate the observed assignment, so for <code>x: int = &quot;foo&quot;</code> we'd emit a diagnostic for invalid assignment and then widen the declared type of <code>x</code> to <code>int | Literal[&quot;foo&quot;]</code>, which is the minimal adjustment needed to maintain the invariant that inferred type is always assignable to declared type. The pro of this is that if the <code>int</code> annotation was actually correct, this will mostly still respect it for subsequent assignments. The downside is if the annotation is wrong, you'll just get more bogus cascading errors. And it's potentially confusing: may not be clear where the type <code>int | Literal[&quot;foo&quot;]</code> came from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-25 22:15</div>
+            <div class="timeline-body"><p>A similar case is &quot;invalid override&quot; errors. We can emit a diagnostic if a class overrides a base class method unsafely (violates Liskov), but this is not a runtime error, so the best we can do is go ahead and use the unsafe method definition as written. (This is what both mypy and pyright do.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-26 18:45</div>
+            <div class="timeline-body"><blockquote>
+<p>This choice makes sense in case the inferred type is very high confidence (as it is in this example), but could be wrong in a case like <code>x: int = annotated_to_return_str_but_really_returns_int_at_runtime()</code>. At the moment, I'm comfortable with this tradeoff: the second case will presumably emit two diagnostics (maybe only one if the bad annotation is in a type stub, or badly-annotated third-party library that we aren't checking), and once they are fixed the inferred and declared types for <code>x</code> will be correct. But we'll see how it holds up in real-world code.</p>
+</blockquote>
+<p>One option the user has here is to use <code>cast</code> to get around the incorrectly annotated function:</p>
+<pre><code class="language-py">from typing import cast
+
+x: int = cast(int, annotated_to_return_str_but_really_returns_int_at_runtime())
+</code></pre>
+<p>But the disadvantage of this is that <code>cast()</code> is highly unsafe, and using it is often discouraged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-26 18:49</div>
+            <div class="timeline-body"><p>Yes, good point. Also, using <code>cast</code> to work around a wrong annotation is no <em>more</em> unsafe than a type checker choosing to always trust the annotation (and treat it like a cast) in case of an invalid assignment. And at least it makes the unsafety more clearly opt-in and explicit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] principles for inferring the type of an expression that is a type error" to "principles for inferring the type of an expression that is a type error" by @MichaReiser on 2025-05-07 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-13 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-19 23:54</div>
+            <div class="timeline-body"><p>I think we already follow the principles discussed here pretty well (though we don't really ever use the &quot;infer Never&quot; option, which I think is OK). Going to close this since I don't think it's actionable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-19 23:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>can’t create a type variable with a default on Python &lt; 3.13 (false positive for invalid-legacy-type-variable) - astral-sh/ty #2070</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>can’t create a type variable with a default on Python &lt; 3.13 (false positive for invalid-legacy-type-variable)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2070">#2070</a>
+        opened by <a href="https://github.com/flying-sheep">@flying-sheep</a>
+        on 2025-12-18 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-12-18 13:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ty.dev/1f971569-26a4-4e0b-bfd4-158f9d46fa7f</p>
+<pre><code class="language-python">if TYPE_CHECKING or sys.version_info &gt; (3, 13):
+    T = TypeVar(&quot;T&quot;, default=int)
+else:  # runtime on Python &lt; 3.13
+    T = TypeVar(&quot;T&quot;)
+</code></pre>
+<p>outputs</p>
+<blockquote>
+<p>The <code>default</code> parameter of <code>typing.TypeVar</code> was added in Python 3.13 (invalid-legacy-type-variable) [Ln 5, Col 22]</p>
+</blockquote>
+<p>yeah I know, that’s why I only specify it in valid contexts.</p>
+<h3>Version</h3>
+<p>0.0.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "can’t create a type variable with a default on Python < 3.13" to "can’t create a type variable with a default on Python < 3.13 (false positive for invalid-legacy-type-variable)" by @flying-sheep on 2025-12-18 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 13:22</div>
+            <div class="timeline-body"><p>Thanks! Definitely a bug. We need to suppress this error when we can see we're in unreachable code blocks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-18 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">unreachable-code</span> added by @AlexWaygood on 2025-12-18 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-12-18 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sinon">@sinon</a> on 2025-12-18 13:34</div>
+            <div class="timeline-body"><p>Is this a bug? If I change the <code>or</code> to an <code>and</code> (or drop TYPE_CHECKING completely) ty detects the correct branch is <code>Never</code> then updating python version in <code>ty.json</code> to 3.14 the <code>Never</code> branches switch places and <code>ty</code> is still happy. 🤔</p>
+<p>https://play.ty.dev/e1f55066-d80f-436a-b7dd-5336c6951107</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 13:42</div>
+            <div class="timeline-body"><p>Ah, good point @sinon.</p>
+<p>Hmm, yes, it looks like we've correctly deduced that the first branch is always reachable, because you've used an <code>or</code> rather than an <code>and</code>, @flying-sheep, and <code>TYPE_CHECKING</code> is treated as always-true by type checkers. Because the first branch is always reachable, we'll therefore emit the diagnostic there. You can make ty happy by doing something like this:</p>
+<pre><code class="language-py">import sys
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # type checkers think typing_extensions is part of the stdlib,
+    # so it's fine to import in an `if TYPE_CHECKING` block
+    # even if it's not a dependency
+    from typing_extensions import TypeVar
+
+    T = TypeVar(&quot;T&quot;, default=int)
+elif sys.version_info &gt;= (3, 13):
+    from typing import TypeVar
+
+    T = TypeVar(&quot;T&quot;, default=int)
+else:
+    from typing import TypeVar
+
+    T = TypeVar(&quot;T&quot;)
+</code></pre>
+<p>But that's admittedly a bit verbose. We could consider just switching this specific rule off if we see you're in an <code>if TYPE_CHECKING</code> block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @AlexWaygood on 2025-12-18 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">unreachable-code</span> removed by @AlexWaygood on 2025-12-18 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2025-12-19 08:23</div>
+            <div class="timeline-body"><p>@sinon, I updated the playground link to show why your suggestion doesn’t work: https://play.ty.dev/1f971569-26a4-4e0b-bfd4-158f9d46fa7f</p>
+<p>I of course want to actually <em>use</em> the TypeVar’s default, which wouldn’t exist anymore if you change the logic to <code>and</code>:</p>
+<blockquote>
+<p>Type <code>int</code> does not match asserted type <code>Unknown</code> (type-assertion-failure) [Ln 12, Col 1]</p>
+</blockquote>
+<p>The <code>else</code> branch is there to be executed at runtime and needs to be be ignored at type checking time.</p>
+<hr />
+<blockquote>
+<p>We could consider just switching this specific rule off if we see you're in an if <code>TYPE_CHECKING</code> block?</p>
+</blockquote>
+<p>@AlexWaygood yeah, that would work! If type checkers treat <code>typing_extensions</code> as special in a type checking block, they can also treat later feature addition to typing APIs (like <code>default</code>) in a special way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 00:02</div>
+            <div class="timeline-body"><p>Yeah, we should just turn off this error in <code>if TYPE_CHECKING</code> -- I think we've run into other contexts where we want to treat <code>if TYPE_CHECKING</code> more like stub code, that we know will never be executed. (Ellipsis function bodies maybe?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-12-23 05:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

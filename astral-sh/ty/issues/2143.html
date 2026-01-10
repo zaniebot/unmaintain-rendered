@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot resolve `win32more` import - astral-sh/ty #2143</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot resolve `win32more` import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2143">#2143</a>
+        opened by <a href="https://github.com/kouhe3">@kouhe3</a>
+        on 2025-12-21 09:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kouhe3">@kouhe3</a> on 2025-12-21 09:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is code</p>
+<pre><code class="language-python">from win32more.Windows.Win32.UI.WindowsAndMessaging import SetProcessDPIAware
+SetProcessDPIAware()
+</code></pre>
+<p>ty intellisense msg</p>
+<pre><code>Unknown of SetProcessDPIAware
+</code></pre>
+<p>and autocomplete do not give suggestion</p>
+<p><img width="608" height="191" alt="Image" src="https://github.com/user-attachments/assets/dd875f19-9776-4f1e-8dd2-034e1c7b9e06" /></p>
+<h3>Version</h3>
+<p>ty 0.0.5 (d37b7dbd9 2025-12-20)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Can not find module" to "Cannot find module" by @AlexWaygood on 2025-12-21 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-12-22 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Cannot find module" to "Cannot resolve `win32more` import" by @AlexWaygood on 2025-12-22 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 14:42</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Unfortunately I can't reproduce this locally. Here are the steps I tried to reproduce this issue:</p>
+<ul>
+<li>I created a new virtual environment: <code>uv venv test-env</code></li>
+<li>I activated that virtual environment: <code>source test-env/bin/activate</code></li>
+<li>I ran <code>uv pip install win32more</code></li>
+<li>I copied the above snippet into a file <code>foo.py</code></li>
+<li>I ran <code>uvx ty check foo.py</code>. There were no diagnostics emitted by ty.</li>
+</ul>
+<p>This suggests to me that we maybe haven't resolved the location of your Python environment correctly. What kind of environment are you using -- a virtual environment, Conda environment, or a global environment? If it's a virtual environment, where is it saved relative to your project?</p>
+<p>@MichaReiser might be able to help with some further commands you can run to debug why the server isn't picking up your installed packages correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kouhe3">@kouhe3</a> on 2025-12-22 15:01</div>
+            <div class="timeline-body"><p>@AlexWaygood</p>
+<p>ty check will not give msg, this msg is in IntelliSense,when you hover on it.</p>
+<p><img width="318" height="83" alt="Image" src="https://github.com/user-attachments/assets/3fcfafb3-8513-43f8-9380-0e7d788bf2da" /></p>
+<p><img width="1220" height="74" alt="Image" src="https://github.com/user-attachments/assets/f1c86f6a-72a3-481d-b6ae-098ebb4dd8c3" /></p>
+<p>But another funny thing is F12 <code>Go to Definition</code> work.</p>
+<p><img width="1460" height="488" alt="Image" src="https://github.com/user-attachments/assets/aadbe8df-f3cb-4cb9-a5ea-2eed3462505d" /></p>
+<p>And, if you hold Ctrl then hover on it. it show both <code>Unknown</code> and definition.</p>
+<p><img width="1077" height="174" alt="Image" src="https://github.com/user-attachments/assets/1a031b48-41d8-4227-bd35-efa407439ab3" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 15:11</div>
+            <div class="timeline-body"><p>Oh I see, so we do <em>resolve</em> the import, we just infer <code>SetProcessDPIAware</code> (and some other symbols) as <code>Unknown</code> from inside the package? Yes, I can reproduce that.</p>
+<p>This is because (in the installed version of this package in my virtual environment's <code>site-packages</code> directory) the definition of <code>SetProcessDPIAware</code> looks like this:</p>
+<pre><code class="language-py">@winfunctype('USER32.dll')
+def SetProcessDPIAware() -&gt; win32more.Windows.Win32.Foundation.BOOL: ...
+</code></pre>
+<p>but the definition of <code>winfunctype</code> in this package doesn't have any type annotations; it looks like this:</p>
+<pre><code class="language-py">def winfunctype(library, entry_point=None):
+    def decorator(prototype):
+        return ForeignFunction(prototype, library, entry_point, False, windll, WINFUNCTYPE)
+
+    return decorator
+</code></pre>
+<p>So this is a duplicate of https://github.com/astral-sh/ty/issues/1971</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-22 15:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

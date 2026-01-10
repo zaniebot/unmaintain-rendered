@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show the type alias's name on hover - astral-sh/ty #1477</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show the type alias's name on hover</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1477">#1477</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-11-04 14:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-04 14:19</div>
+            <div class="timeline-body"><p>Hovering a type alias currently reveals the aliased type.</p>
+<p><img width="313" height="316" alt="Image" src="https://github.com/user-attachments/assets/c2ff2c32-6f9c-4c94-8efc-f5a6ccc74b7a" /></p>
+<p>We should show the type alias's definition instead, similar to pylance and resolve the documentation etc from the target</p>
+<p><img width="885" height="408" alt="Image" src="https://github.com/user-attachments/assets/30f7865c-6464-48e3-ba17-7e289cbb6b15" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-11-04 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-11-04 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Show the type aliase's name on hover" to "Show the type alias's name on hover" by @AlexWaygood on 2025-11-09 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on 2025-11-15 12:39</div>
+            <div class="timeline-body"><p>I'm going to try my hand at this over the weekend :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on 2025-11-16 14:49</div>
+            <div class="timeline-body"><p>Actually postponing working on this, before actually implementing anything I want to confirm the exact hover behavior, esp for PEP 695 type aliases.</p>
+<p>Right now, with Pylance on Python 3.12, I see:</p>
+<pre><code class="language-py">T = int       # hover T: `(type) T = int` + docs for int
+type U = int  # hover U: `(type) U = TypeAliasType` + docs for int
+
+class Test:
+    t: T  # hover t: `(variable) t: int`
+          # hover T: `(type) T = int` + docs for int
+
+    u: U  # hover u: `(variable) u: int`
+          # hover U: `(type) U = type[int]` + docs for int
+</code></pre>
+<p>The only consistent part is that the docs always comes from the aliased target.
+Also Pylance leaks internal representation (<code>TypeAliasType</code> / <code>type[int]</code>).</p>
+<p>However, <code>T = int</code> and <code>type U = int</code> are not the same thing at runtime (the former binds <code>T</code> directly to <code>int</code>, while the latter is a <code>TypeAliasType</code> object), so I think it’s important to hint at that, but without weighing things down by mentioning <code>TypeAliasType</code> in the hover.</p>
+<p>What I'm thinking for ty:</p>
+<pre><code class="language-py">T = int       # hover T: `(type) T = int` + docs for int
+type U = int  # hover U: `(type alias) type U = int` + docs for int
+
+
+class Test:
+    t: T  # hover t: `(variable) t: T (int)`
+          # hover T: `(type) T = int` + docs for int
+
+    u: U  # hover u: `(variable) u: U (int)`
+          # hover U: `(type alias) type U = int` + docs for int
+
+
+type Box[T] = list[T]
+
+x: Box[int]  # hover x: `(variable) x: Box[int] (list[int])`
+             # hover Box: `(type alias) type Box[T] = list[T]` + docs for list
+</code></pre>
+<ul>
+<li><code>T = int</code> presented as a plain type binding: <code>(type) T = int</code>.</li>
+<li><code>type U = int</code> / <code>type Box[T] = ...</code> presented as first-class alias objects: <code>(type alias) type U = int</code>, etc.</li>
+<li>Variables always show <code>user written-annotation (resolved-type)</code>.</li>
+</ul>
+<p>Does this behavior match what you’d like for <code>ty</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type aliases</span> added by @AlexWaygood on 2025-12-19 12:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>

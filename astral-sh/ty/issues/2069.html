@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>functool partial and jax jit decorator interfere with argument types of function - astral-sh/ty #2069</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>functool partial and jax jit decorator interfere with argument types of function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2069">#2069</a>
+        opened by <a href="https://github.com/chris-RNG">@chris-RNG</a>
+        on 2025-12-18 13:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chris-RNG">@chris-RNG</a> on 2025-12-18 13:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm not sure if this is a bug, but since a few ty updates ago, I've started encountering this type error when combining functools.partial with the jax.jit decorator on a function.</p>
+<pre><code class="language-py">from functools import partial
+
+import jax
+import jax.numpy as jnp
+from jax import Array
+
+
+@jax.jit
+def sum_jit(a:Array, scale:float=1.0)-&gt;Array:
+    return jnp.sum(a)*scale
+
+@partial(jax.jit, static_argnames=[&quot;scale&quot;])
+def sum_partial_jit(a:Array, scale:float=1.0)-&gt;Array:
+    return jnp.sum(a)*scale
+
+def main():
+    n=12
+    a= jnp.ones(n)
+    sum1 = sum_jit(a)
+    sum2 = sum_partial_jit(a)
+    print(f&quot;sum1: {sum1}&quot;)
+    print(f&quot;sum1: {sum2}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<pre><code>$ uvx ty check
+error[invalid-argument-type]: Argument is incorrect
+  --&gt; main.py:20:27
+   |
+18 |     a= jnp.ones(n)
+19 |     sum1 = sum_jit(a)
+20 |     sum2= sum_partial_jit(a)
+   |                           ^ Expected `(...) -&gt; Unknown`, found `Array`
+21 |     print(f&quot;sum1: {sum1}&quot;)
+22 |     print(f&quot;sum1: {sum2}&quot;)
+   |
+info: Union variant `((...) -&gt; Unknown, /) -&gt; JitWrapped` is incompatible with this call site
+info: Attempted to call union type `JitWrapped | (((...) -&gt; Unknown, /) -&gt; JitWrapped)`
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-23 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-23 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 21:42</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:53:03 UTC
+    </footer>
+</body>
+</html>
