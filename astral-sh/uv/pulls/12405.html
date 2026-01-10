@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add JSON Output for uv sync --dry-run - astral-sh/uv #12405</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add JSON Output for uv sync --dry-run</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12405">#12405</a>
+        opened by <a href="https://github.com/x0rw">@x0rw</a>
+        on 2025-03-23 23:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/x0rw">@x0rw</a> on 2025-03-23 23:20</div>
+            <div class="timeline-body"><p>UPDATE:</p>
+<h2>Summary</h2>
+<p>This PR adds support for the --format=json flag to the uv sync --dry-run command. When enabled, the command outputs details in JSON format, making it easier to parse and integrate with other tools.</p>
+<p>the dry run output json includes:</p>
+<ul>
+<li>[x] Project directory.</li>
+<li>[x] Environment path &amp; action taken(Create/Update/None).</li>
+<li>[x] Python executable path.</li>
+<li>[x] Python version.</li>
+<li>[x] Lockfile path &amp; action.</li>
+<li>[ ] Packages (would install/download/remove).</li>
+</ul>
+<p>The Json output is currently pretty-printed for readability.</p>
+<h2>Test Plan</h2>
+<p>Manual testing has been performed to verify JSON output.</p>
+<h3>--script</h3>
+<p><code>cargo run sync --dry-run --script foo.py --format=json </code>
+output:</p>
+<pre><code>{
+  &quot;project_dir&quot;: &quot;/home/root/rust/uv/uv&quot;,
+  &quot;environment&quot;: {
+    &quot;path&quot;: &quot;/home/root/.cache/uv/environments-v2/foo-bc19cb0acffe1e16&quot;,
+    &quot;action&quot;: &quot;already_exist&quot;,
+    &quot;python_executable&quot;: &quot;/home/root/.cache/uv/environments-v2/foo-bc19cb0acffe1e16/bin/python3&quot;,
+    &quot;python_version&quot;: &quot;3.13.0&quot;
+  },
+  &quot;lockfile&quot;: null
+}
+</code></pre>
+<h3>--project</h3>
+<p><code>cargo run sync --dry-run --project test_dir --format=json</code>
+output:</p>
+<pre><code>{
+  &quot;project_dir&quot;: &quot;/home/root/rust/uv/uv/test_dir&quot;,
+  &quot;environment&quot;: {
+    &quot;path&quot;: &quot;/home/root/rust/uv/uv/test_dir/.venv&quot;,
+    &quot;action&quot;: &quot;already_exist&quot;,
+    &quot;python_executable&quot;: &quot;/home/root/rust/uv/uv/test_dir/.venv/bin/python3&quot;,
+    &quot;python_version&quot;: &quot;3.13.0&quot;
+  },
+  &quot;lockfile&quot;: {
+    &quot;lockfile_path&quot;: &quot;/home/root/rust/uv/uv/test_dir/uv.lock&quot;,
+    &quot;action&quot;: &quot;create&quot;
+  }
+}
+
+</code></pre>
+<p><strong>Note:</strong> <code>2&gt;/dev/null </code> can be appended to the end of the command to redirect stderr away and show only the stdout(which contains the json only).
+Related Issue
+Resolves #12387.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @x0rw on 2025-03-23 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-03-24 05:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/uv-cli/src/lib.rs</code>:55 on 2025-03-24 05:00</div>
+            <div class="timeline-body"><p>I don't think any other Ruff or uv commands have <code>PrettyJson</code> as a format. It's just unnecessary.</p>
+<p>(Small note: JSON is by definition a data-interchange format intended to be machine-readable, so &quot;a machine-readable JSON format&quot; can be replaced with just &quot;JSON&quot;.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/x0rw">@x0rw</a> reviewed on 2025-03-24 05:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/x0rw">@x0rw</a> on <code>crates/uv-cli/src/lib.rs</code>:55 on 2025-03-24 05:07</div>
+            <div class="timeline-body"><p>Reasonable, the idea behind this is that while testing i tried to serialize a whole struct(i guess <code>Environment</code>, i'm on my phone can't check it now), and it all crammed into one line so i thought about this to make it more readable for testing, i will change it and add tests as well
+Do you think the default json format should be the pretty one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-03-24 05:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/uv-cli/src/lib.rs</code>:55 on 2025-03-24 05:19</div>
+            <div class="timeline-body"><p>I don't; considering its purpose, there's not much of a point in making it slightly more human-readable. Other commands like <code>uv pip list</code> output minified JSON as well.</p>
+<p>But then again, <code>ruff check</code> does prettify its JSON output. No strong feelings from me on this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/x0rw">@x0rw</a> reviewed on 2025-03-24 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/x0rw">@x0rw</a> on <code>crates/uv-cli/src/lib.rs</code>:55 on 2025-03-24 13:27</div>
+            <div class="timeline-body"><p>Addressed in the latest commit, let me know if any further changes are needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-03-25 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-03-25 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/x0rw">@x0rw</a> on 2025-03-25 02:35</div>
+            <div class="timeline-body"><p>I can't fix the failling test for windows atm, the issue arises from filtering directories on windows in the test(<code>sync_dry_run_format</code>), a custom filter or writing another test for windows will solve it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @x0rw on 2025-03-26 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @InSyncWithFoo by @x0rw on 2025-03-28 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/x0rw">@x0rw</a> on 2025-04-09 22:35</div>
+            <div class="timeline-body"><p>Hey @zanieb , this PR is almost complete, with just a small part left to finish. Could you please review it? If a rebase is needed, let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @InSyncWithFoo removed by @Gankra on 2025-04-14 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @Gankra on 2025-04-14 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-27 20:10</div>
+            <div class="timeline-body"><p>I've rebased and continued this impl over here:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/13689</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-14 16:43</div>
+            <div class="timeline-body"><p>Added in https://github.com/astral-sh/uv/pull/13689</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-14 16:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:31 UTC
+    </footer>
+</body>
+</html>

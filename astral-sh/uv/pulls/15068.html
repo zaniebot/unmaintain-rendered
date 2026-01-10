@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `.rcdata` to store trampoline type + path to python binary - astral-sh/uv #15068</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use `.rcdata` to store trampoline type + path to python binary</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15068">#15068</a>
+        opened by <a href="https://github.com/paveldikov">@paveldikov</a>
+        on 2025-08-04 22:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-04 22:42</div>
+            <div class="timeline-body"><p><code>.rsrc</code> is the idiomatic way of storing metadata and non-code resources in PE
+binaries. This should make the resulting binaries more robust as they are no longer
+dependent on the exact location of a certain magic number.</p>
+<p>Addresses: #15022</p>
+<h2>Test Plan</h2>
+<p>Existing integration test for <code>uv-trampoline-builder</code> + addition to ensure robustness
+to code signing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:162 on 2025-08-04 22:50</div>
+            <div class="timeline-body"><p>remark: Sloppy though it may be, I am quite pleased with the overall simplicity of this. LoC for <code>bounce.rs</code> went down (590 -&gt; 488) and there appears to be no significant change in compiled file size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-04 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:529 on 2025-08-04 23:02</div>
+            <div class="timeline-body"><p>we have <code>cfg(windows)</code> already in top <code>mod tests</code> at line 374.</p>
+<p>though I recommend extract this executable signing into new function, so it can be used in <code>console_script_launcher</code> too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-04 23:11</div>
+            <div class="timeline-body"><p>I'm not super qualified to review this idea, cc @samypr100 &amp; @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:55 on 2025-08-04 23:17</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">            _ =&gt; None,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:67 on 2025-08-04 23:19</div>
+            <div class="timeline-body"><p>you could move <code>10</code> as const at module's top and document that it comes from <code>object::pe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-trampoline/Cargo.toml</code>:51 on 2025-08-04 23:30</div>
+            <div class="timeline-body"><p>if it's intentional to not use <code>dunce::canonicalize</code> then we can drop it from deps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-08-04 23:45</div>
+            <div class="timeline-body"><p>LGTM, it's not necessary to done before merging, but can you confirm that it can bring back python3.7 support? (i.e. <code>uvx -p 3.7 ruff</code> most work)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:40 on 2025-08-05 01:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">const RESOURCE_TRAMPOLINE_KIND: &amp;str = &quot;UV_TRAMPOLINE_KIND\0&quot;;
+const RESOURCE_PYTHON_PATH: &amp;str  = &quot;UV_TRAMPOLINE_PYTHON_PATH\0&quot;;
+</code></pre>
+<p>nit: use a namespace for the resource ids</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:91 on 2025-08-05 01:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let trampoline_kind = load_resource(RESOURCE_TRAMPOLINE_KIND)
+        .and_then(|data| TrampolineKind::from_resource(&amp;data))
+        .unwrap_or_else(|| error_and_exit(&quot;Failed to load trampoline kind from resources&quot;));
+</code></pre>
+<p>nit: type vs kind naming change, opt to keep it consistent</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:114 on 2025-08-05 01:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    match trampoline_kind {
+</code></pre>
+<p>nit: naming consistency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:118 on 2025-08-05 01:36</div>
+            <div class="timeline-body"><p>Was dunce removal intentional? iirc we expect path to always be absolute</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @zanieb on 2025-08-05 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-05 01:56</div>
+            <div class="timeline-body"><p>Added an even sloppier (but working) refactor of <code>uv-trampoline-builder</code>. Needs oodles of polish and review.</p>
+<p>It is now verifiably robust to code-signing, so that solves my original problem.</p>
+<p>I have not verified the py3.7 case, though a similar integration test can be added probably very easily? @T-256</p>
+<p>Also note that the Win32 APIs are all really rather <code>unsafe</code>. I'm not sure what the right thing to do here is tbh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:48 on 2025-08-05 02:07</div>
+            <div class="timeline-body"><p>From a historical perspective, I believe the choice to append the script as an archive to the executable was taken from <a href="https://github.com/pypa/distlib/tree/master/PC">distlib</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-05 02:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-05 02:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:529 on 2025-08-05 02:09</div>
+            <div class="timeline-body"><p>agreed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-08-05 02:18</div>
+            <div class="timeline-body"><p>I don't see any immediate issues with using rcdata for the trampoline kind and runnable path, it's mainly a different way to accomplish the same thing. What I'm not very sure of is using it for the script contents. From a code signing perspective is the goal to sign the launcher regardless of what it may end up executing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-05 02:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:162 on 2025-08-05 02:19</div>
+            <div class="timeline-body"><p>It is indeed nice, lots of spooky code removed 😄 although we may get it back in the trampoline builder</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-05 10:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:529 on 2025-08-05 10:16</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-05 10:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:40 on 2025-08-05 10:16</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-05 10:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:67 on 2025-08-05 10:16</div>
+            <div class="timeline-body"><blockquote>
+<p>done</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-05 10:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:91 on 2025-08-05 10:17</div>
+            <div class="timeline-body"><p>done (reverted to 'kind')</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-05 10:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:114 on 2025-08-05 10:17</div>
+            <div class="timeline-body"><p>done (reverted to 'kind')</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-05 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:48 on 2025-08-05 10:18</div>
+            <div class="timeline-body"><p>Added a nugget on the <code>zipimport</code> mechanism in the README. (which already talks about the <code>distlib</code> DNA)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-05 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:55 on 2025-08-05 10:18</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-05 10:53</div>
+            <div class="timeline-body"><blockquote>
+<p>What I'm not very sure of is using it for the script contents. From a code signing perspective is the goal to sign the launcher regardless of what it may end up executing?</p>
+</blockquote>
+<p>The goal is to be able to sign a (finished) entrypoint executable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-05 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:118 on 2025-08-05 11:07</div>
+            <div class="timeline-body"><p>Restored dunce. Path may be relative if the trampoline is supposed to be relocatable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-05 11:49</div>
+            <div class="timeline-body"><p>Getting there...</p>
+<ul>
+<li><code>uv-trampoline</code> is pretty much ready for full review<ul>
+<li>[x] Still need to compile binaries for all platforms, not just x86-64 (is this something I need to do by hand? or there's a job somewhere that compiles 'blessed' copies of these?)</li>
+</ul>
+</li>
+<li><code>uv-trampoline-builder</code> is refactored, but still has a bunch of outstanding things (I might need help with some of them)<ul>
+<li>[x] Figure out the <code>TODO</code>'d code path with <code>is_gui</code> (smells wrong, but I couldn't figure out how the previous version avoided having to know this. Does it end up being a don't-care value? It's only used in one other place -- in <code>uv run</code>.)</li>
+<li>[x] There's a dozen warnings that need sorted</li>
+<li>[x] The integration test seems to be flaky on my personal PC. There's a 1 in 3 chance of success, ENOENT or failure to <code>try_from_path()</code>. Not sure why...</li>
+<li>[x] For some reason the PowerShell snippet complains about missing <code>Cert:</code> drive when run on CI</li>
+</ul>
+</li>
+</ul>
+<p>If anyone is able to give me a hand on any of these, it would be amazing! If not I will try to keep chipping away over the next few days</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @paveldikov on 2025-08-05 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-05 13:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Still need to compile binaries for all platforms, not just x86-64 (is this something I need to do by hand? or there's a job somewhere that compiles 'blessed' copies of these?)</p>
+</blockquote>
+<p>You can build the binaries on your machine for testing and CI (there are cross-compile instructions in the readme), before merging the PR a maintainer will build the binaries on their machine and push them to this branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:68 on 2025-08-06 00:11</div>
+            <div class="timeline-body"><p>Note, for safety we should use the *W variants (e.g. LoadLibraryExW) as the uv binaries don't have a manifest that sets the activeCodePage to UTF-8 unlike the trampoline which does set an active code page.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-06 00:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-06 00:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-06 00:53</div>
+            <div class="timeline-body"><p>I'm not sure gui script metadata is propagated in this code path currently. Seems like a gap (likely out of scope to fix in this PR), but would need to dig into the code to see if that's the case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-06 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-06 20:52</div>
+            <div class="timeline-body"><p>I'm not sure either. Isn't the existing code just copying the existing launcher payload and therefore retaining the content without knowledge of what it is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-06 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:68 on 2025-08-06 20:54</div>
+            <div class="timeline-body"><p>Done. There is some residual usage of the *A variants which I have not touched.</p>
+<p>Also thank you for indirectly prompting me to dig further find out that the <code>PCSTR</code>/<code>PCWSTR</code> types require explicit null-termination in order to interoperate with Rust. I wasted a perfectly good day of my life trying to figure out why 50% of my test runs were failing with 'file not found' :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-06 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-06 22:03</div>
+            <div class="timeline-body"><p>It <em>says</em> it's doing so but I can't for the life of me figure out how it's doing that. Could it be that it's actually using <code>Launcher.payload</code> to also include the PE binary and not just the zip'd segment? I have just re-added a <code>.script_data</code> field in the struct, but maybe I am inadvertently altering its meaning?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-08-06 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-trampoline-builder/Cargo.toml</code>:41 on 2025-08-06 22:05</div>
+            <div class="timeline-body"><p>IIUC, these should be workspace dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-06 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-06 22:06</div>
+            <div class="timeline-body"><p>yeah payload there is not just the zip'd content</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-06 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-06 22:07</div>
+            <div class="timeline-body"><p>I recently added that functionality in https://github.com/astral-sh/uv/pull/14790 where I needed to rewrite the Python interpreter path but not change anything else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-06 22:20</div>
+            <div class="timeline-body"><p>Close...</p>
+<ul>
+<li>[X] Committed binaries for x86-64 and i686</li>
+<li>[x] ...I can't seem to get it to x-compile for aarch64 though, hence the failing CI run for aarch64.</li>
+<li>A bunch of <code>unsafe</code> Win32 API usage.<ul>
+<li>[x] Question to answer: I could try my hand at refactoring it to use the <code>winsafe</code> crate, but current precedent in the codebase seems to steer me away from that. What little Win32 API usage exists right now is <code>unsafe</code> too. Opinions welcome!</li>
+</ul>
+</li>
+<li>[X] Code-signing int test is pretty solid now</li>
+<li>[X] Tests passing on Windows! (almost -- 3 test cases failed with what looks like an unrelated transient.)</li>
+<li>[x] Tests passing on non-Windows.<ul>
+<li>[x] fixed compile on non-Windows. Some serious <code>cfg</code> hole-poking which is not pretty, but it wasn't pretty to begin with, so it's consistent. Some fundamental limitations in cargo workspaces to contend with.</li>
+</ul>
+</li>
+<li>[x] <code>write_to_file()</code> <code>is_gui</code> mystery solved</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-06 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-06 22:28</div>
+            <div class="timeline-body"><p>Maybe I'll just add another flag as a PE resource in the binaries (ergo <code>Launcher.is_gui</code>), so that the resulting binary is clearly identifiable as a console/gui launcher. Then one can reconstruct a binary from pure metadata?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-06 22:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-06 22:59</div>
+            <div class="timeline-body"><p>If we end up adding a resource for that a more technically correct name would likely be <code>subsystem</code> with two possible values (<code>console</code>, or <code>windows</code>) although generally I'm not sure if it's needed as we'd be able to tell between python.exe vs pythonw.exe usage? I thought we checked for pythonw usage somewhere 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-06 23:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-06 23:04</div>
+            <div class="timeline-body"><p>If the previous code just copied the entrypoints without regenerating the entire trampoline, I think it would still behave correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-08-07 00:07</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>I seem to have broken compile on non-Windows as the addition of Win32 API calls now makes <code>uv-trampoline-builder</code> not compile on non-Windows at all. I kinda don't know what the right way of going about this is.</li>
+</ul>
+</blockquote>
+<p>A first step towards unblocking you may be adding <code>#[cfg(windows)]</code>, <code>if cfg!(windows)</code>, or <code>[target.'cfg(target_os = &quot;windows&quot;)'.dependencies]</code> at places where there's references to trampoline builder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-07 00:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-07 00:23</div>
+            <div class="timeline-body"><p>Sorry looking at the code in main now. From what I gather looking at <code>copy_entrypoint</code>, I think what's missing there is a <code>let is_gui = launcher.python_path.ends_with(&quot;pythonw.exe&quot;);</code> and maybe the signature of <code>launcher.write_to_file(&amp;mut file)?;</code> can be updated to pass the is_gui flag or <code>python_executable.to_path_buf()</code> replacing python with pythonw when is_gui is true.</p>
+<p>I think that could be easily fixed in a separate PR (to avoid increasing scope on this one)? Thoughts @zanieb ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-07 08:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/Cargo.toml</code>:41 on 2025-08-07 08:04</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-07 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-07 13:30</div>
+            <div class="timeline-body"><p>Started a PR in https://github.com/astral-sh/uv/pull/15134</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @konstin on 2025-08-07 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-07 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-07 15:47</div>
+            <div class="timeline-body"><p>@paveldikov we should be able to fix this now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-07 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:112 on 2025-08-07 19:21</div>
+            <div class="timeline-body"><p>Thanks! I have rebased on top of yours &amp; I have also decided to use the <code>is_gui</code> value so I can also use the proper base binary (console/window) when re-building the entrypoint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-07 19:34</div>
+            <div class="timeline-body"><p>Ok I'm feeling pretty good about this now. A <strong>big</strong> thank-you in particular to @samypr100 for helping with this -- you could tell I was a wee bit out of my depth...</p>
+<p>Outstanding:</p>
+<ul>
+<li>The aarch64 trampoline test is failing because the binary blob is not the correct one. I just can't get it to x-compile on my home PC setup, and attempts to remedy this by installing further SDKs have just maxed out my hard drive. <em>I guess I'll just wait for a maintainer to build a 'blessed' binary since that's part of the process anyway?</em></li>
+<li>Unless asked otherwise, I assume there is little appetite to refactor Win32 API usage to <code>winsafe</code>, so leaving the <code>unsafe</code>ty as it is.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-trampoline-builder/Cargo.toml</code>:32 on 2025-08-07 21:36</div>
+            <div class="timeline-body"><p><code>workspace = true</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-trampoline/README.md</code>:101 on 2025-08-07 21:38</div>
+            <div class="timeline-body"><p>IMO, it's better to put a reference link to supported formats by <code>zipimport</code> (it seems that also accepts .exe files)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-08-07 22:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Unless asked otherwise, I assume there is little appetite to refactor Win32 API usage to winsafe, so leaving the unsafety as it is.</p>
+</blockquote>
+<p>I believe so, iirc winsafe usage was removed a while ago in preference of normalizing towards a unified window crate</p>
+<blockquote>
+<p>The aarch64 trampoline test is failing because the binary blob is not the correct one. I just can't get it to x-compile on my home PC setup, and attempts to remedy this by installing further SDKs have just maxed out my hard drive. I guess I'll just wait for a maintainer to build a 'blessed' binary since that's part of the process anyway?</p>
+</blockquote>
+<p>If you have windows, easiest is via WSL and cargo-xwin. I'd also be happy to add one for you as well but I don't have push access to your branch 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @paveldikov on 2025-08-08 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> approved on 2025-08-09 13:41</div>
+            <div class="timeline-body"><p>It looks good now,
+in replace of <code>dunce</code> crate, we can consider implement our own (small) function as said in <a href="https://users.rust-lang.org/t/things-in-std-with-strong-alternatives/83998/10">here</a> :</p>
+<blockquote>
+<p>The ultimate reason is that DOS-style paths (like C:\path) in modern Windows are emulated on top of NT paths (e.g. \Device\HarddiskVolume3\path). This emulation is lossy because not all NT paths can be represented as DOS-style paths and DOS-style paths do lossy things like trim trailing spaces and dots (this made more slightly more sense in an old dos shell). In short, canonicalize needs to be able to return a correct path even if it's not representable as a normal DOS-style path. Removing path length limits (well up to i16::MAX u16s) is definitely a useful bonus though.</p>
+<p>So, yeah, canonical uses \?\ as a shorthand for &quot;this is an NT path pretending to be a DOS path, please don't do anything weird with it&quot;. This makes converting NT to DOS simpler and also makes it easy to turn it back into a proper NT path. (side note: the only change is that \?\ is converted to ??\ which is a special NT directory full of symlinks like C: which points to whatever the real path for the C: drive is).</p>
+</blockquote>
+<p>there is already Q&amp;A in stackoverflow for this at <a href="https://stackoverflow.com/questions/50322817/how-do-i-remove-the-prefix-from-a-canonical-windows-path">here</a>, I tested below on Windows machine:</p>
+<pre><code class="language-rs">use std::path::{Component, Path, PathBuf, Prefix};
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let path = Path::new(r&quot;\\?\C:\projects\3rdparty\rust&quot;);
+
+    // Should remove the “\\?” prefix from the canonical path
+    // in order to avoid CMD bailing with “UNC paths are not supported”.
+    let head = path.components().next().ok_or(&quot;empty path?&quot;)?;
+    let disk;
+    let head = if let Component::Prefix(prefix) = head
+        &amp;&amp; let Prefix::VerbatimDisk(d) = prefix.kind() {
+        disk = format!(&quot;{}:&quot;, d as char);
+        Path::new(&amp;disk).components().next().ok_or(&quot;empty path?&quot;)?
+    } else {
+        head
+    };
+
+    let path = std::iter::once(head)
+        .chain(path.components().skip(1))
+        .collect::&lt;PathBuf&gt;();
+
+    println!(&quot;{:?}&quot;, head);  // Prefix(PrefixComponent { raw: &quot;C:&quot;, parsed: Disk(67) })
+    println!(&quot;{:?}&quot;, path);  // &quot;C:\\projects\\3rdparty\\rust&quot;
+
+    Ok(())
+}
+</code></pre>
+<p>and here is output on play.rust-lang.org (non-Windows):</p>
+<pre><code>Normal(&quot;\\\\?\\C:\\projects\\3rdparty\\rust&quot;)
+&quot;\\\\?\\C:\\projects\\3rdparty\\rust&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-08-10 02:34</div>
+            <div class="timeline-body"><blockquote>
+<p>in replace of dunce crate, we can consider implement our own (small) function as said in <a href="https://users.rust-lang.org/t/things-in-std-with-strong-alternatives/83998/10">here</a></p>
+</blockquote>
+<p>It's a good idea to consider. Although the scope of this PR is already big, so I'd propose we investigate this replacement as part of a different PR to ease on the reviewers. It's not clear to me immediately if there will be any substantial space/bloat savings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/README.md</code>:101 on 2025-08-11 15:32</div>
+            <div class="timeline-body"><p>It doesn't seem to be explicitly documented in such terms @ https://docs.python.org/3/library/zipimport.html, though.</p>
+<p>If you read the src, however, you can make a fairly reasonable inference that:</p>
+<ul>
+<li>https://github.com/python/cpython/blob/3.13/Lib/zipimport.py#L372-L422: the nature of the algorithm suggests that zip archive content may be found at any arbitrary location inside the file being imported (as long as it is contiguous)</li>
+<li>https://github.com/python/cpython/blob/3.13/Lib/zipimport.py#L417-L419: <code>pex</code> and self-extracting PE binaries (presumably referring to <code>distlib</code> precedent) are use cases that are deemed important enough to support.</li>
+</ul>
+<p>Not sure if this is reliable enough to merit encoding in the README, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-11 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-11 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/Cargo.toml</code>:32 on 2025-08-11 16:55</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-11 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv/src/windows_exception.rs</code>:311 on 2025-08-11 17:07</div>
+            <div class="timeline-body"><p>caused by harmonisation of <code>windows</code> versions, which in turn brought in: https://github.com/microsoft/windows-rs/pull/3452</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @samypr100 by @paveldikov on 2025-08-11 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-08-11 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/python/install.rs</code>:1045 on 2025-08-14 14:12</div>
+            <div class="timeline-body"><p>nit: you can just do this check and return and then after do <code>let target = fs_err::...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:44 on 2025-08-14 14:17</div>
+            <div class="timeline-body"><p>You can maybe use c-str literals for these: https://doc.rust-lang.org/edition-guide/rust-2021/c-string-literals.html</p>
+<p>(Genuinely a maybe, not sure if it's useful given the APIs these funnel into)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:102 on 2025-08-14 14:22</div>
+            <div class="timeline-body"><p>should ideally have a SAFETY comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:69 on 2025-08-14 14:29</div>
+            <div class="timeline-body"><p>Everything else in trampoline operates on utf8 and uses the <code>A</code> functions because we set a manifest declaring support for utf8 -- does that not work here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:38 on 2025-08-14 14:33</div>
+            <div class="timeline-body"><p>Is enforcing this really no longer relevant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-08-14 14:39</div>
+            <div class="timeline-body"><p>Wow nice work! This looks pretty good to me?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-14 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:102 on 2025-08-14 14:52</div>
+            <div class="timeline-body"><p>Yeah I think we should have a SAFETY comment for all unsafe invocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-14 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:69 on 2025-08-14 21:06</div>
+            <div class="timeline-body"><p>An earlier version used the <code>A</code> varieties but I replaced them with <code>W</code> as @samypr100 suggested those were safer. They all work but to be honest I don't really grok the kinds of edge cases where this stuff would really matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-14 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:38 on 2025-08-14 21:10</div>
+            <div class="timeline-body"><p>A similar, though not identical, constraint remains in <code>uv-trampoline-builder</code>. It appears impossible to even construct a binary with an outsize resource, so it seems moot to defend against such a condition at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:69 on 2025-08-14 21:10</div>
+            <div class="timeline-body"><p>uv-trampoline is safe to use A<em>, but not in uv; I do appreciate the W</em> consistency between both though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-14 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-14 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv/src/commands/python/install.rs</code>:1045 on 2025-08-14 21:12</div>
+            <div class="timeline-body"><p>yeah, my bad, I was dancing around unreachability as I needed to keep this code compiling on non-Windows due to limitations with cargo workspaces</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:44 on 2025-08-14 21:18</div>
+            <div class="timeline-body"><p>ooh, shiny. To be honest the null-terminated strings ate up so much time in troubleshooting that I am scared to touch them too much. (I know, it's silly.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-14 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-14 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:102 on 2025-08-14 21:20</div>
+            <div class="timeline-body"><p>yes, I noticed the existing precedent. Unfortunately I couldn't really come up with a justification that really inspired confidence. Perhaps something like <code>// SAFETY: winapi call; null-terminated strings</code> based on my <code>git grep</code> inferences? To be honest I don't really understand the un-safety implications of win32 api calls... it seems like a 'necessary evil' type of rationale more than actual 'this is properly/verifiably safe'</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-14 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:102 on 2025-08-14 22:05</div>
+            <div class="timeline-body"><p>ok, this was actually good since i found out that a few of the handles/ptrs weren't actually as safe as I'd thought. Added SAFETY comments -- feel free to reopen this if not adequate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:71 on 2025-08-16 02:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let path_str = path
+                .as_os_str()
+                .encode_wide()
+                .chain(std::iter::once(0))
+                .collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+<p>Keeps it immutable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:265 on 2025-08-16 03:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let path_str = path
+                .as_os_str()
+                .encode_wide()
+                .chain(std::iter::once(0))
+                .collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+<p>Keeps it immutable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:265 on 2025-08-16 03:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                let name_null_term = name
+                    .encode_utf16()
+                    .chain(std::iter::once(0))
+                    .collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+<p>Keeps it immutable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:269 on 2025-08-16 03:05</div>
+            <div class="timeline-body"><p>Isn't name already null terminated here given it comes from <code>RESOURCE_</code> consts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:356 on 2025-08-16 03:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let temp_dir = tempfile::TempDir::new()?;
+</code></pre>
+<p>nit: consistency w/ other uv crates</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:400 on 2025-08-16 03:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let temp_dir = tempfile::TempDir::new()?;
+</code></pre>
+<p>nit: consistency w/ other uv crates</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:572 on 2025-08-16 03:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let temp_dir = tempfile::TempDir::new().expect(&quot;Failed to create temporary directory&quot;);
+</code></pre>
+<p>nit: consistency w/ other uv crates</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:65 on 2025-08-16 03:10</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let resource_id_null_term = resource_id
+            .encode_utf16()
+            .chain(std::iter::once(0))
+            .collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+<p>keeps it immutable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:64 on 2025-08-16 03:12</div>
+            <div class="timeline-body"><p>resource_id is already null terminated, do we need to null terminate it again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-16 03:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-16 03:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.lock</code>:84 on 2025-08-16 03:28</div>
+            <div class="timeline-body"><p>It seems all dependencies were updated rather than the specific ones changed, was that intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-16 03:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:78 on 2025-08-16 03:43</div>
+            <div class="timeline-body"><p>I'd also add this check to uv-trampoline-builder for consistency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-16 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>Cargo.lock</code>:84 on 2025-08-16 12:51</div>
+            <div class="timeline-body"><p>Ah, it came out of a merge conflict resolution. I tried my best fixing up the lockfile by hand to minimise disruption, but cargo was not happy and insisted that I needed to regenerate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-16 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:64 on 2025-08-16 12:52</div>
+            <div class="timeline-body"><p>i think i might actually try the cstring type so i can have a more structural guarantee of null-termination</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-16 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.lock</code>:84 on 2025-08-16 13:15</div>
+            <div class="timeline-body"><p>Easiest way might be to pull the one from main and run cargo build</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-16 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:64 on 2025-08-16 13:23</div>
+            <div class="timeline-body"><p>In that case it might be easier to use the <code>w!</code> helper from windows crate which yields a terminated PCWSTR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-08-16 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:64 on 2025-08-16 13:26</div>
+            <div class="timeline-body"><p>e.g.</p>
+<pre><code class="language-rust">// Resource IDs matching uv-trampoline
+const RESOURCE_TRAMPOLINE_KIND: PCWSTR = w!(&quot;UV_TRAMPOLINE_KIND&quot;);
+const RESOURCE_PYTHON_PATH: PCWSTR = w!(&quot;UV_PYTHON_PATH&quot;);
+// Note: This does not need to be looked up as a resource, as we rely on `zipimport`
+// to do the loading work. Still, keeping the content under a resource means that it
+// sits nicely under the PE format.
+const RESOURCE_SCRIPT_DATA: PCWSTR = w!(&quot;UV_SCRIPT_DATA&quot;);
+...
+fn read_resource(handle: windows::Win32::Foundation::HMODULE, name: PCWSTR) -&gt; Option&lt;Vec&lt;u8&gt;&gt; {
+...
+        let resource = FindResourceW(
+            Some(handle),
+            name,
+            windows::core::PCWSTR(RT_RCDATA as *const _),
+        );
+...
+fn write_resources(path: &amp;Path, resources: &amp;[(PCWSTR, &amp;[u8])]) -&gt; Result&lt;(), Error&gt; {
+...
+                UpdateResourceW(
+                    handle,
+                    windows::core::PCWSTR(RT_RCDATA as *const _),
+                    *name,
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-16 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:269 on 2025-08-16 15:53</div>
+            <div class="timeline-body"><p>yeah this simplifies thanks to making the consts <code>PCWSTR</code> to begin with</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline-builder/src/lib.rs</code>:44 on 2025-08-16 16:17</div>
+            <div class="timeline-body"><p>ended up using <code>PCWSTR</code> literals thanks to @samypr100's hint. That worked well although its presence in signatures leads to even more stuff having to be <code>cfg</code>'d out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-16 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-16 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:69 on 2025-08-16 16:18</div>
+            <div class="timeline-body"><p>Assuming it's fine to leave <code>W</code> variants be, but feel free to unresolve thread if any objections</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> approved on 2025-08-16 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-18 18:22</div>
+            <div class="timeline-body"><p>@zanieb @Gankra let me know if there's anything you need from me on this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-18 19:30</div>
+            <div class="timeline-body"><p>It's on my list to review and merge this week!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/managed.rs</code>:911 on 2025-08-25 19:48</div>
+            <div class="timeline-body"><p>We can clean this up now, right? (In a followup PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> approved on 2025-08-25 22:59</div>
+            <div class="timeline-body"><p>This seems good to me (I have not looked at the .exe files) and I appreciate the test case involving signing. I'm curious if there are some things we can optimize (e.g., it looks like it writes out, reads in,  and deletes a temporary file which will probably just be written somewhere else, can we just write that directly? there are also some allocations we can skip) but none of that has to block landing this.</p>
+<p>Is it really the case that zipimport will find the ZIP header at some arbitrary point in the binary? Should we worry about what happens if something else adds another ZIP header in the binary? (I thought part of the point of doing it via appending to the binary was that ZIP readers will look there.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-27 09:01</div>
+            <div class="timeline-body"><p>@geofft, thank you for the feedback!</p>
+<blockquote>
+<p>I'm curious if there are some things we can optimize (e.g., it looks like it writes out, reads in, and deletes a temporary file which will probably just be written somewhere else, can we just write that directly? there are also some allocations we can skip) but none of that has to block landing this.</p>
+</blockquote>
+<p>Yes, of course. I tried to keep the APIs mostly intact in this PR to minimise gratuitous disruption, but it does make sense to drop the distinction between 'generating' and 'writing' since 'generating' involves writing to disk anyway.</p>
+<blockquote>
+<p>Is it really the case that zipimport will find the ZIP header at some arbitrary point in the binary?</p>
+</blockquote>
+<p>Yes, starting from the EOF and finding the first EOCD block. This is already happening with the current trampoline binary: the zip blob's EOCD block is already in an arbitrary place as far as any generic reader would be concerned -- it's close to EOF but not quite (EOF contains the <code>UVSC</code> magic number)</p>
+<blockquote>
+<p>Should we worry about what happens if something else adds another ZIP header in the binary?</p>
+</blockquote>
+<p>Perhaps -- it's genuinely fragile and I am surprised this way of (ab)using <code>zipimport</code> ever took root. Although there are the following mitigating factors:</p>
+<ul>
+<li>This sounds like a very weird use case, possibly even contrived. I mean, people do very weird stuff, but this sounds objectively weirder than the typical garden-variety .exe file modifications such as changing the icon, stripping debug information, or indeed adding a signature for air-gapped environments.</li>
+<li>This is already a hazard with the current implementation(s) of the trampoline binaries, so there's a good chance that this use case is non-existent in the wild, because stuff would have probably broken already.</li>
+<li>This PR makes the situation no worse than it already is (apart from <em>possibly</em> flipping the order of which ZIP blob comes first? If you're doing that I imagine you've already got a no-go on your hands? I A/B'd a few binaries and the difference is pretty negligible anyway, though if you are in the business of <em>also</em> adding resources on top, all bets are off)</li>
+</ul>
+<blockquote>
+<p>(I thought part of the point of doing it via appending to the binary was that ZIP readers will look there.)</p>
+</blockquote>
+<p>It's all code-archaeology AFAICT, but I don't think there was a deliberate reason apart from 'it happens to work' and 'concatenating byte-strings is much easier than proper PE binary editing'.</p>
+<p>Circumstantial evidence suggests that <code>zipimport</code> came first (in Python 2.3 -- 2003!), and it was only later that <code>distlib</code> (ca. 2012/2013) and latterly <code>posy</code>/<code>uv-trampoline</code> ended up figuring out that <code>zipimport</code> is lenient enough to accept this use case.</p>
+<p>More strategically, I think a PEP on this subject -- defining a formal, non-hacky and robust API for script trampoline binaries -- would be essential in order to prevent this from regressing on itself. Something like <a href="https://peps.python.org/pep-0397/">PEP 397</a>, but for script entrypoints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-28 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:885 on 2025-08-28 13:39</div>
+            <div class="timeline-body"><p>Note the previous use of <code>if cfg!</code> instead of <code>#[cfg]</code> was intentional so you can edit and check this code when not on a matching platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-28 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-08-28 13:58</div>
+            <div class="timeline-body"><p>Why are these dropped? These are important?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-28 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:885 on 2025-08-28 14:02</div>
+            <div class="timeline-body"><p>(I'm cleaning this up)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-28 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-08-28 19:01</div>
+            <div class="timeline-body"><p>Change of semantics. <code>write_to_file()</code> now takes a file path, not a file handle, and therefore takes care of file creation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-28 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:885 on 2025-08-28 19:58</div>
+            <div class="timeline-body"><p>Here's my commit https://github.com/astral-sh/uv/commit/f2b69d292c11fa74a39808ef4e6517fc308ab313 — I can't push to your repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-28 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-08-28 19:59</div>
+            <div class="timeline-body"><p>We need it to fail if it's not creating a new file, that's why the original API took a handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-28 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-08-28 20:00</div>
+            <div class="timeline-body"><p>A little more context at https://github.com/astral-sh/uv/pull/14790#discussion_r2220549092</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-28 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-08-28 21:58</div>
+            <div class="timeline-body"><p>Thanks, I wasn't aware of this requirement. (I still don't <em>get it</em>, but I trust that it's valid)</p>
+<p>IIRC I refactored it this way in order to avoid double-opening the file, which is fraught on Windows. Using a <code>fs_err::write_file()</code> one-and-done is nice because it leaves no contention for <code>write_resources()</code>  which likewise opens the file, but in a winapi way. (none of the winapi methods accept native Rust <code>File</code> objects, so you couldn't even properly re-use the file handle either.)</p>
+<p>Maybe add a boolean <code>exists_ok</code> arg to <code>write_to_file()</code>? And replace <code>fs_err::write_file()</code> with a deliberately scoped block with the appropriate <code>OpenOptions</code>... maybe that will do the trick?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-28 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv-python/src/managed.rs</code>:885 on 2025-08-28 22:00</div>
+            <div class="timeline-body"><p>Very weird -- I've ticked the 'accept pushes from maintainers' option. (I have invited you as a collaborator to my fork anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-28 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-08-28 22:05</div>
+            <div class="timeline-body"><p>I will look a little closer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-08-29 00:16</div>
+            <div class="timeline-body"><p>FWIW before merge, I just tested binary of x86_64 got from ci summary with Python3.7.
+Unfortunately, using zip payload in a section of PE doesn't help with Python3.7's zipimport module.
+To keep compatible with Py3.7, I'd recommend to add zip (script_data) to end of target file instead of save it on a section of PE format. it could be thought as follow-up after merge, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-29 00:29</div>
+            <div class="timeline-body"><p>@T-256</p>
+<blockquote>
+<p>To keep compatible with Py3.7, I'd recommend to add zip (script_data) to end of target file instead of save it on a section of PE format.</p>
+</blockquote>
+<p>But then it wouldn't work with code-signing, because fixed positioning of the zip blob gets wrecked by code signing tools.</p>
+<p>Also -- the current trampoline is already incompatible with 3.7. (Do we actively want to <em>reintroduce</em> compatibility?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-29 12:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Also -- the current trampoline is already incompatible with 3.7. (Do we actively want to reintroduce compatibility?)</p>
+</blockquote>
+<p>No — if this introduced compatibility that'd be a nice property, but it's not an active goal for the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-29 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-08-29 12:30</div>
+            <div class="timeline-body"><p>I think the most immediate solution is to include an API which performs the same two-step operation as <code>windows_script_launcher</code> where it writes everything to a temporary file, reads that to get the bytes, then writes that to an open file handle.</p>
+<p>As a separate note, the two step operation in <code>windows_script_launcher</code> is pretty weird for normal operation! We're writing everything just to read it then write it again :) I worry about the performance implications of that and would like to refactor to avoid that unless the caller needs ownership of the file handle (e.g., as above).</p>
+<p>Unfortunately, the general pattern of using <code>write_file</code> then <code>write_resources</code> does leave room for races (and this is not just theoretical, things like this have bit us before). I think it's okay for now, but we'll probably want to look for a way to avoid that too.</p>
+<p>Circling back, I guess the two step approach of <code>windows_script_launcher</code> actually does resolve this problem... which hints to a simple solution: just construct the launcher in a temporary file that we're the sole writer to, then rename it into place (this is what we do for atomic writes in general, e.g., see <code>write_atomic</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-08-30 20:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-08-30 20:25</div>
+            <div class="timeline-body"><p>Happy for you to decide which way you want to go? I do think that the two-step operation is not optimal (or at least not aesthetically pleasing), although I kept it as such to avoid gratuitous API churn -- it's a chunky PR already. But if it does incidentally give us safety, then I guess that's alright. Although I imagine it is better to make the atomicity explicit rather than incidental!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-12 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1984 on 2025-09-12 12:48</div>
+            <div class="timeline-body"><p>Yeah it looks like there'd be a bunch of API churn here because we need to hash the contents for the RECORD when writing entrypoints.</p>
+<p>I think we should change it. I'm vaguely worried about this doubling the overhead of writing entrypoints on Windows, but they're small so I can live with it for now. It makes sense to do separately.</p>
+<p>https://github.com/astral-sh/uv/pull/15068/commits/d4303fd40c91895a7a52b9414c6decc059a407a0 addresses my blocking comment, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-10-13 13:41</div>
+            <div class="timeline-body"><p>Hello! Sorry for not engaging much on this PR in the last month and a bit. I am still interested in it -- is there any way I can help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-13 13:48</div>
+            <div class="timeline-body"><p>Sorry I lost track of this too. Let me take a look again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "refactor(uv-trampoline): use `.rcdata` to store trampoline type + path to python binary" to "Use `.rcdata` to store trampoline type + path to python binary" by @konstin on 2025-10-15 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-09 04:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.toml</code>:218 on 2025-11-09 04:01</div>
+            <div class="timeline-body"><p>I wonder if we should be using https://docs.rs/pkcs12/latest/pkcs12/ instead which is maintained?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-09 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.toml</code>:218 on 2025-11-09 04:11</div>
+            <div class="timeline-body"><p>(It actually looks like that doesn't support writing archives)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-09 04:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:218 on 2025-11-09 04:15</div>
+            <div class="timeline-body"><p>Was there a reason P12 format was needed in particular?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-09 04:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.toml</code>:218 on 2025-11-09 04:27</div>
+            <div class="timeline-body"><p>I'm not sure.</p>
+<p>I also briefly looked at https://github.com/ancwrd1/p12-keystore which seems fine too.</p>
+<p>It'd be nice to use a dependency that comes from a higher trust source, even if it's just for a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-09 04:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:218 on 2025-11-09 04:31</div>
+            <div class="timeline-body"><p>Looking at the <a href="https://github.com/astral-sh/uv/blob/d4131f25c1b2c3ae935878b8881844a2a3e09e59/crates/uv-trampoline-builder/src/lib.rs#L632-L658">test</a> and the Set-AuthenticodeSignature docs, I wonder if its possible to avoid P12 entirely by manually instantiating a System.Security.Cryptography.X509Certificates.X509Certificate2 bundle. I believe that would allows us to only rely on rcgen and not p12 (if it's possible). I'll give it a shot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:218 on 2025-11-09 04:53</div>
+            <div class="timeline-body"><p>Success, although it will require use of pwsh rather than powershell because <code>System.Security.Cryptography.X509Certificates.X509Certificate2::CreateFromPemFile</code> is .NET 5+</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-09 04:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-09 04:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:218 on 2025-11-09 04:54</div>
+            <div class="timeline-body"><p>The CI should have pwsh already so I don't think its a problem and I don't think we truly need to test in legacy powershell in this particular case as we've proven it works with legacy powershell already using pfx. I'll push my changes soon in case you're interested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-09 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:218 on 2025-11-09 05:08</div>
+            <div class="timeline-body"><p>See 153d854e5d8400ca79877ca65f64f4694e8de6c4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-09 05:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:199 on 2025-11-09 05:36</div>
+            <div class="timeline-body"><p>@zanieb I also don't think we need to change the windows version as part of this PR either. Everything should work fine if we keep the previous windows versions intact. That will minimize the changes to the lock file to be just isolated to rcgen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:199 on 2025-11-09 06:07</div>
+            <div class="timeline-body"><p>After f7e549d36da686f5f6f76baf6df08a30ca74ecf8 windows version is now the same as main. It also removed small unrelated changes to windows_exception in this PR as a result of the upgrade.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-09 06:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-09 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.toml</code>:199 on 2025-11-09 14:12</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-11-09 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-09 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a> reviewed on 2025-11-09 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/paveldikov">@paveldikov</a> on <code>Cargo.toml</code>:218 on 2025-11-09 18:48</div>
+            <div class="timeline-body"><p>nice! Re the 'why' question: I did it because of a (possibly incorrect) inference that pwsh on CI did not have the ability to modify the credential store</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:32 UTC
+    </footer>
+</body>
+</html>

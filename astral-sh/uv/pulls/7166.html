@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Docker integration docs for intermediate layers - astral-sh/uv #7166</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix Docker integration docs for intermediate layers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7166">#7166</a>
+        opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a>
+        on 2024-09-07 12:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2024-09-07 12:27</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>The Docker integration docs were missing to mount the <code>uv.lock</code> and <code>pyproject.toml</code> which are required also for the second layer that runs <code>uv sync --locked</code>.</p>
+<p>It also failed to mention that if your <code>pyproject.toml</code> references a readme file, that it must be mounted as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2024-09-07 12:31</div>
+            <div class="timeline-body"><p>I would also suggest that we add <code>--link-mode=copy</code> to the command to prevent this warning:</p>
+<pre><code>#11 0.340 warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+#11 0.340          If the cache and target directories are on different filesystems, hardlinking may not be supported.
+#11 0.340          If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+</code></pre>
+<p>Uv detects that the cache sits on a different filesystem (yay!), but it's probably a good idea to make this explicit in the Dockerfile.</p>
+<p>It's also mandatory to use this option, even if you don't use a cache mount, if you plan on copying only your project directory from another stage (e.g. when combining multiple stages), you likely won't think about copying (and merging!) the UV cache directory. Admittedly, that is a bit of an edge case.</p>
+<p>Adding <code>--compile-bytecode</code> might also be a good idea!</p>
+<p>edit: I've made these changes in ea61ed1c4308a942e5773ca9ebf8adc1b3c8b7db, let me know what you think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-07 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/integration/docker.md</code>:351 on 2024-09-07 14:41</div>
+            <div class="timeline-body"><p>Wouldn't these be added by the <code>ADD . /app</code> invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-07 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/integration/docker.md</code>:343 on 2024-09-07 14:42</div>
+            <div class="timeline-body"><p>I think I have a preference for setting an environment variable for this as in https://github.com/astral-sh/uv-docker-example/pull/16</p>
+<p>I think we cover bytecode compilation in a separate example though https://docs.astral.sh/uv/guides/integration/docker/#compiling-bytecode</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-07 14:51</div>
+            <div class="timeline-body"><p>Thanks for contributing! I have a couple questions :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tomaszbk">@tomaszbk</a> reviewed on 2024-09-07 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tomaszbk">@tomaszbk</a> on <code>docs/guides/integration/docker.md</code>:343 on 2024-09-07 17:26</div>
+            <div class="timeline-body"><p>I agree that bytecode compilation shouldn't be included in this example, as it is already covered afterwards</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on <code>docs/guides/integration/docker.md</code>:351 on 2024-09-07 18:54</div>
+            <div class="timeline-body"><p>Oh my, I blame tunnel vision. 🤦</p>
+<p>In my case I added only the <code>src</code> directory because <code>ADD . /app</code> adds a lot of things that I don't want to add. Thinking about it, with <code>--link-mode=copy</code>, I could probably even <code>--mount</code> the source directory itself as well? Arguably, a very minor optimization as you don't usually have many hundreds of megabytes of source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> reviewed on 2024-09-07 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> reviewed on 2024-09-07 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on <code>docs/guides/integration/docker.md</code>:343 on 2024-09-07 18:55</div>
+            <div class="timeline-body"><p>Fair point, although I feel obliged to point out that it also talks about caching later but uses a cache mount in this example already. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-07 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/integration/docker.md</code>:343 on 2024-09-07 18:58</div>
+            <div class="timeline-body"><p>I think I missed that when someone added the bind mounts to the example in #6921 — we should probably drop that from here too for clarity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-07 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/integration/docker.md</code>:351 on 2024-09-07 19:00</div>
+            <div class="timeline-body"><p>The source directory needs to stick around because we don't support non-editable installs of workspace members during syncs yet (#5792). Maybe it'd be best to address your case in the documentation by adding a case to the optimization examples for copying the src directory instead of the full project directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @NiklasRosenstein on 2025-11-06 01:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:31 UTC
+    </footer>
+</body>
+</html>

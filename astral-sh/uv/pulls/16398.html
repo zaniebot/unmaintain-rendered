@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add JSON output for the `tree` command - astral-sh/uv #16398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add JSON output for the `tree` command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16398">#16398</a>
+        opened by <a href="https://github.com/belmarca-bia">@belmarca-bia</a>
+        on 2025-10-21 20:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/belmarca-bia">@belmarca-bia</a> on 2025-10-21 20:17</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR adds support for outputting JSON using the <code>tree</code> command. It refactored the visitor code in order to call abstract procedures instead of hardcoding the textual representation.</p>
+<h2>Test Plan</h2>
+<p>The tests (<code>cargo test</code>) passed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-24 13:18</div>
+            <div class="timeline-body"><p>Can you share the JSON format you chose for a real project, how does it compare to <code>uv pip list --format json</code>?</p>
+<p>It seems that you change the iteration based code to a much more complex visitor based one. What motivated this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/belmarca-bia">@belmarca-bia</a> on 2025-10-24 14:56</div>
+            <div class="timeline-body"><p>This does something different from <code>uv pip list</code>, which just lists dependencies. It only adds a JSON tree emitter in addition to the default textual tree emitter. I'm interested in the dependency tree and not the the dependencies themselves. This would be used to taint packages/libraries to know which tests to run during CI.</p>
+<p>I don't particularly care about the actual key names or such details for now, nor do I care about the actual implementation identifiers, etc. Just testing the waters to see if that's the kind of functionality that could be added to <code>uv</code>.</p>
+<p>As for the bigger complexity, the advantage is <code>uv</code> can now serialize the dependency graph in multiple formats much more easily. The textual one is not great to pass as a input to another program, for example! The current code and the new code are actually functionally similar, they both run depth-first except the new code is now an actual visitor instead of just using the name <code>visitor</code>. The old method is kept in case for now but would have to go as it's basically hard-coding the serialization implementation.</p>
+<pre><code class="language-diff">-            for (visited_index, visited_line) in self.visit(*dep, visited, path).iter().enumerate()
+-            {
+-                let prefix = if visited_index == 0 {
+-                    prefix_top
+-                } else {
+-                    prefix_rest
+-                };
+-                lines.push(format!(&quot;{prefix}{visited_line}&quot;));
+-            }
++            self.visit_with_formatter(*dep, formatter, visited, path, child_position);
+</code></pre>
+<p>Note that the current pattern could (should) be abstracted a little bit more as it is not limited to formatting and serializing. This same pattern could allow <code>uv</code> to perform any computation on the graph, basically.</p>
+<p>Thanks for taking a look!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:35 UTC
+    </footer>
+</body>
+</html>

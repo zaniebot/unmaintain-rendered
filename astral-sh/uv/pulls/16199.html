@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement RFC9457 compliant messaging - astral-sh/uv #16199</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement RFC9457 compliant messaging</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16199">#16199</a>
+        opened by <a href="https://github.com/doddi">@doddi</a>
+        on 2025-10-09 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/doddi">@doddi</a> on 2025-10-09 08:04</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>HTTP1.1 <a href="https://www.rfc-editor.org/rfc/rfc9112.html#name-status-line">RFC 9112 - HTTP/1.1</a> section 4 defines the response status code to optionally include a text description (human readable) of the reason for the status code.</p>
+<p><a href="https://www.rfc-editor.org/rfc/rfc9113">RFC9113 - HTTP/2</a> is the HTTP2 protocol standard and the response status only considers the <a href="https://www.rfc-editor.org/rfc/rfc9113#name-response-pseudo-header-fiel">status code</a> and not the reason phrase, and as such important information can be lost in helping the client determine a route cause of a failure.</p>
+<p>As per discussion on this <a href="https://github.com/astral-sh/uv/pull/15979">PR</a> the current feeling is that implementing the RFC9457 standard might be the preferred route. This PR makes those changes to aid the discussion which has also been moved to the <a href="https://discuss.python.org/t/block-download-of-components-when-violating-policy/104021/1">PEP board</a></p>
+<h2>Test Plan</h2>
+<p>Pulling components that violate our policy over HTTP2 and without any RFC9457 implementation the following message is presented to the user:
+<img width="1482" height="104" alt="image" src="https://github.com/user-attachments/assets/0afcd0d8-ca67-4f94-a6c2-131e3b6d8dcc" /></p>
+<p>With the RFC9457 standard implemented, below you can see the advantage in the extra context as to why the component has been blocked:
+<img width="2171" height="127" alt="image" src="https://github.com/user-attachments/assets/25bb5465-955d-4a76-9f30-5477fc2c866f" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-09 13:42</div>
+            <div class="timeline-body"><p>Cool!</p>
+<p>cc @woodruffw</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-10-09 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @woodruffw by @woodruffw on 2025-10-09 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/cached_client.rs</code>:39 on 2025-10-10 17:34</div>
+            <div class="timeline-body"><p>Thinking out loud: is ignoring a malformed details response the right thing here? I <em>think</em> it is, but maybe it makes sense to emit a warning? I could see it being useful to notify upstream servers that they're emitting a malformed payload.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/cached_client.rs</code>:575 on 2025-10-10 17:36</div>
+            <div class="timeline-body"><p>Should this be an equality check rather than <code>starts_with</code>? RFC 9457 says that problem detail responses are identified by exactly the <code>application/problem+json</code> content-type, so we probably shouldn't accept <code>application/problem+json+abc</code> or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/cached_client.rs</code>:34 on 2025-10-10 17:39</div>
+            <div class="timeline-body"><p>IMO it's okay to remove this check, since we do it at the callsite. We can document that a caller-upheld invariant of this API is that the content-type should be right.</p>
+<p>(Alternatively we could keep this check, but remove it from the callsite. But that might be a little harder with the lifetimes/consumption.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/error.rs</code>:52 on 2025-10-10 17:40</div>
+            <div class="timeline-body"><p>My 0.02c would be for removing this, and just calling <code>serde_json::from_slice</code> directly wherever we use it 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/error.rs</code>:39 on 2025-10-10 17:41</div>
+            <div class="timeline-body"><p>Nitpick, nonblocking: serde defaults sometimes benefit from inlining:</p>
+<pre><code class="language-suggestion">/// Default problem type URI as per RFC 9457
+#[inline]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/error.rs</code>:40 on 2025-10-10 17:44</div>
+            <div class="timeline-body"><p>serde will ignore unknown fields by default, so my 0.02c would be for removing this until we actually need to process extension fields. It'll also make the parsing slightly faster (not that that matters much on the error path):</p>
+<pre><code class="language-suggestion"></code></pre>
+<p>(The tests should confirm that this works 🙂)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/error.rs</code>:59 on 2025-10-10 17:51</div>
+            <div class="timeline-body"><p>Should we render both of these, if present? I can imagine <code>{title}: {detail}</code> being useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-client/src/error.rs</code>:61 on 2025-10-10 17:52</div>
+            <div class="timeline-body"><p>I think we want to specialize here too -- if <code>status</code> isn't given we should probably take it from the parent request, <em>or</em> maybe we could say &quot;unknown error (server provided no information)&quot; and rely on the error layer above us rendering the status code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-10-10 18:05</div>
+            <div class="timeline-body"><p>Thanks @doddi! I did a review pass mostly based on my read of the RFC; I believe @konstin will do one more for uv's idioms (in which case any of his feedback on idioms overrides mine) 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-10 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/cached_client.rs</code>:39 on 2025-10-10 18:22</div>
+            <div class="timeline-body"><p>I probably wouldn't add a &quot;warning&quot; since it's not something the user can fix, but it might be worth logging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-10-13 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/cached_client.rs</code>:39 on 2025-10-14 10:04</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/5a3a59da5b357285b510938363f1ace5bfb11239</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/cached_client.rs</code>:575 on 2025-10-14 10:04</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/63175fb00c677b99409100f06aa285ae4a7fbcd3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/cached_client.rs</code>:34 on 2025-10-14 10:04</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/bab16f2fc84ea89102761016ef4189b11778f0e4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/error.rs</code>:52 on 2025-10-14 10:05</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/c1c453c796dcc0a7af837626db43bbe99c010412</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/error.rs</code>:39 on 2025-10-14 10:05</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/0ab6ed1a5678d355b1b90575cc55449996a4b521</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/error.rs</code>:40 on 2025-10-14 10:05</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/9f252c49bf2bed9aa8a5489a5e0c3deeacc52a4b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/error.rs</code>:59 on 2025-10-14 10:05</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/550a3c46899e457dfedb82749395822adc5fed0f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/error.rs</code>:61 on 2025-10-14 10:06</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/550a3c46899e457dfedb82749395822adc5fed0f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/error.rs</code>:71 on 2025-10-14 11:04</div>
+            <div class="timeline-body"><p>We should return <code>None</code> for this case and fall back to the default case in <code>WrappedReqwestError</code> instead of using our own string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/cached_client.rs</code>:32 on 2025-10-14 11:08</div>
+            <div class="timeline-body"><p>We should show the inner error in this warning (at least for serde), so it's clear why e.g. the data didn't match the schema.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/error.rs</code>:544 on 2025-10-14 11:17</div>
+            <div class="timeline-body"><p>Here we need to add something like <code>Server says: </code> so it's clear that that's from the remote and not uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-14 11:20</div>
+            <div class="timeline-body"><p>Can you add a test that shows the error message in context? <code>index_has_no_requires_python</code> and the <code>network.rs</code> have reference structures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/error.rs</code>:71 on 2025-10-14 14:44</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/5f01168b52ed05bf223e98213bcd251deed03d63</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/cached_client.rs</code>:32 on 2025-10-14 14:45</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/5f01168b52ed05bf223e98213bcd251deed03d63</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/doddi">@doddi</a> reviewed on 2025-10-14 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/doddi">@doddi</a> on <code>crates/uv-client/src/error.rs</code>:544 on 2025-10-14 14:45</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16199/commits/5f01168b52ed05bf223e98213bcd251deed03d63</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-14 15:56</div>
+            <div class="timeline-body"><p>For the clippy failure, we can box the large variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doddi">@doddi</a> on 2025-10-16 09:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Add an it test</p>
+</blockquote>
+<p>https://github.com/astral-sh/uv/pull/16199/commits/936ff82e1dd37e23aa3af4cbcf0554cd93bfdda7</p>
+<blockquote>
+<p>For the clippy failure, we can box the large variant.</p>
+</blockquote>
+<p>https://github.com/astral-sh/uv/pull/16199/commits/7ed10748268e12f429f4a7c4129bff7673637cc5 although I see the CI still failing for clippy error on windows for a different area. Can someone help me understand this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-16 09:48</div>
+            <div class="timeline-body"><p>Some OS types are larger on Windows than on Unix, which can push the error type size over the clippy threshold just for Windows. You can run Windows clippy locally with cargo-xwin and <code>cargo xwin clippy</code>, but usually just <code>Box</code>ing the struct that grew in the change in an error enum and rerunning CI does the trick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-16 19:09</div>
+            <div class="timeline-body"><p>I fixed the linter errors, I have experience with them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-10-16 19:25</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-16 19:42</div>
+            <div class="timeline-body"><p>I've changed the boxing to a different location because <code>is_transient_network_error</code> relies on having specific error types in the error chains and it considers Boxed type different from the base type there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doddi">@doddi</a> on 2025-10-16 19:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I've changed the boxing to a different location because <code>is_transient_network_error</code> relies on having specific error types in the error chains and it considers Boxed type different from the base type there.</p>
+</blockquote>
+<p>Thank you @konstin, I was struggling to understand this error being new to the code base</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-10-16 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-10-16 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-10-16 19:54</div>
+            <div class="timeline-body"><p>Thanks @doddi!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add required environment marker example to hint - astral-sh/uv #16244</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add required environment marker example to hint</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16244">#16244</a>
+        opened by <a href="https://github.com/Prhmma">@Prhmma</a>
+        on 2025-10-10 23:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Prhmma">@Prhmma</a> on 2025-10-10 23:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>fixes issue #15938</p>
+<ul>
+<li>show platform wheel hint with a concrete <code>tool.uv.required-environments</code> example so users know how to configure compatibility</li>
+<li>add <code>WheelTagHint::suggest_environment_marker</code> to pick a sensible environment marker based on the available wheel tags</li>
+<li>update the <code>sync_required_environment_hint</code> integration snapshot to expect the new multi-line hint</li>
+</ul>
+<h2>Test Plan</h2>
+<p>cargo test --package uv --test it -- sync::sync_required_environment_hint</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-15 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:5377 on 2025-10-15 12:57</div>
+            <div class="timeline-body"><p>Why are we going through the tags here, instead of using the actual interpreter environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Prhmma">@Prhmma</a> reviewed on 2025-10-15 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Prhmma">@Prhmma</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:5377 on 2025-10-15 13:16</div>
+            <div class="timeline-body"><p>Thanks for the comment,
+You are right, my initial understanding was the function is called when there are NO compatible wheels available for the current environment. In this case, we want to suggest what environment markers the user could configure to make the available wheels compatible.</p>
+<p>but the function should use the actual interpreter environment (best) instead of the available wheel tags (tags). I will push the fix shortly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Prhmma">@Prhmma</a> reviewed on 2025-10-15 20:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Prhmma">@Prhmma</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:5377 on 2025-10-15 20:24</div>
+            <div class="timeline-body"><p>@konstin
+I made some changes and pushed a new commit, but it got more complicated than I expected, because I had to pipe the value across for the environment, which means more changes for a UX issue.
+Please let me know your thoughts.</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:1455 on 2025-10-16 20:00</div>
+            <div class="timeline-body"><p>nit: We generally do <code>use uv_pep508::MarkerEnvironment</code> and then use <code>&amp;MarkerEnvironment</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:5397 on 2025-10-16 20:04</div>
+            <div class="timeline-body"><p>When would this markers be empty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:5587 on 2025-10-16 20:27</div>
+            <div class="timeline-body"><p>Showing multiline code blocks in the terminal is hard, and we currently don't have a good general diagnostic system (like showing diffs for sections we want to change). For example, with the current layout, you'd get extra indentation when copying, while triple backticks look out-of-place in terminal output, etc. What about rolling this into a single line to avoid the formatting question?</p>
+<blockquote>
+<p>consider adding <code>&quot;sys_platform == '[PLATFORM]' and platform_machine == '[MACHINE]'&quot;</code> to <code>tool.uv.required-environments</code> to ensure uv resolves to a version with compatible wheels`</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-16 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-10-16 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix: add required environment marker example to hint" to "Add required environment marker example to hint" by @konstin on 2025-10-16 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Prhmma">@Prhmma</a> reviewed on 2025-10-17 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Prhmma">@Prhmma</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:5397 on 2025-10-17 10:57</div>
+            <div class="timeline-body"><p>This is Python output</p>
+<pre><code>&gt;&gt;&gt; import platform
+&gt;&gt;&gt; help(platform.machine)
+Help on function machine in module platform:
+
+machine()
+    Returns the machine type, e.g. 'i386'
+
+    An empty string is returned if the value cannot be determined.
+</code></pre>
+<p>This is the defensive line, just to make sure we are safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Prhmma">@Prhmma</a> reviewed on 2025-10-17 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Prhmma">@Prhmma</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:5587 on 2025-10-17 11:07</div>
+            <div class="timeline-body"><p>pushed the changes, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:5397 on 2025-10-20 11:07</div>
+            <div class="timeline-body"><p>Interesting, I don't think I've ever seen this value be empty, but it makes sense to keep it since it's documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-20 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-10-20 11:07</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-10-20 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-10-20 11:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:33 UTC
+    </footer>
+</body>
+</html>

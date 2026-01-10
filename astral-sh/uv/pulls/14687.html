@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support http/https URLs in `uv python --python-downloads-json-url` - astral-sh/uv #14687</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support http/https URLs in `uv python --python-downloads-json-url`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14687">#14687</a>
+        opened by <a href="https://github.com/geofft">@geofft</a>
+        on 2025-07-17 18:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/geofft">@geofft</a> on 2025-07-17 18:54</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @geofft on 2025-07-17 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @jtfmumm by @geofft on 2025-07-17 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @geofft on 2025-07-17 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-17 19:11</div>
+            <div class="timeline-body"><p>I'll fix up docs and I can add some test coverage.</p>
+<p>This lets you do things like</p>
+<pre><code>target/debug/uv python list --python-downloads-json-url https://github.com/astral-sh/uv/raw/0.7.12/crates/uv-python/download-metadata.json
+</code></pre>
+<p>The high-level goal here is making it a little bit easier for users to roll back if we unexpectedly break something in python-build-standalone. I also intend to add, likely in separate PRs,</p>
+<ul>
+<li>a <code>--uv-tag 0.7.12</code> option that is syntax sugar for the above</li>
+<li>maybe some form of explicit versioning to the JSON, retroactively calling the current format version 1 but printing a nice message if we see <code>{&quot;version&quot;: &quot;2&quot;,  ...}</code> (we do not necessarily have to ever move to version 2, but having the error is nice)</li>
+<li>something to astral-sh/setup-uv to let you use this option</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-17 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:373 on 2025-07-17 22:30</div>
+            <div class="timeline-body"><p>Why do we need to clone here? That seems weird?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 22:32</div>
+            <div class="timeline-body"><p>I might need a couple sentence summary in the PR description about the high-level approach here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-17 23:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I might need a couple sentence summary in the PR description about the high-level approach here.</p>
+</blockquote>
+<p>In terms of implementation, or something more like design/intended semantics? In terms of implementation, this is broken down into two commits which you might prefer for reviewing, but the change is basically:</p>
+<ul>
+<li>Instead of having static methods on <code>ManagedPythonDownload</code> that populate a <code>once_cell</code>, make an explicit <code>ManagedPythonDownloader</code> object to hold that state, and adjust a handful of <code>'static</code> lifetimes as needed</li>
+<li>Make the <code>ManagedPythonDownloader</code> constructor async, so we can do HTTP requests from it</li>
+<li>Also have its callers pass in a client</li>
+<li>Actually do the HTTP request</li>
+</ul>
+<p>Oh, one note which I forgot to mention is that per <a href="https://docs.rs/serde_json/latest/serde_json/fn.from_reader.html"><code>serde::from_reader</code>'s docs</a>, you definitely shouldn't call it on an unbuffered reader (I ran <code>strace</code> and confirmed it's <code>read</code>(2)ing one byte at a time) and you might still get better results calling it on a big string than on a buffered reader. So I'm reading the whole thing into memory regardless of source, which should be fine because it's under two megabytes at the moment.</p>
+<p>In terms of semantics, this breaks the exciting corner case of parsing <code>irc://localhost/path/to/file.json</code> as the local file <code>/path/to/file.json</code> and instead treats that as a filename. An <code>http</code>/<code>https</code> URL is handled (hopefully with the normal set of network configuration for uv?), a valid <code>file</code> URL is handled, an invalid <code>file</code> URL (with a hostname, except on Windows where you get a UNC path back, or with <code>%00</code> or something similarly exciting) is an error, and everything else is treated as a path. There should be no other changes to semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/install.rs</code>:240 on 2025-07-18 10:12</div>
+            <div class="timeline-body"><p>Not your fault but I'm only now seeing it.</p>
+<pre><code class="language-suggestion">            .map(|request| InstallRequest::new(request, &amp;downloader))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/install.rs</code>:247 on 2025-07-18 10:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            .map(|request| InstallRequest::new(request, &amp;downloader))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:376 on 2025-07-18 10:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        downloader
+            .iter_all()
+            .filter(move |download| self.satisfied_by_download(download))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/list.rs</code>:118 on 2025-07-18 10:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            .map(|request| request.iter_downloads(&amp;downloader))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:638 on 2025-07-18 10:19</div>
+            <div class="timeline-body"><p>This call looks backwards, flipping the method so that the call is <code>self.iter_downloads(request)</code> would look more natural</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:668 on 2025-07-18 11:06</div>
+            <div class="timeline-body"><p>I tried improving the URL parsing and reusability situation in https://github.com/astral-sh/uv/pull/14712, but I didn't get anything that's noticeable better than the current logic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-07-18 11:07</div>
+            <div class="timeline-body"><p>Needs a test as mentioned, the code is looking good already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-07-18 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/downloads.rs</code>:373 on 2025-07-18 12:23</div>
+            <div class="timeline-body"><p>Huh, I needed this to get past some sort of lifetiime issue because the iterator captures <code>self</code>, but it seems fine now. I must have fixed something else better. I'll get rid of it, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:633 on 2025-07-18 12:24</div>
+            <div class="timeline-body"><p>With the rename, this is a little weird? Like <code>ManagedPythonDownloader::from_request</code> -&gt; <code>ManagedPythonDownload</code> when I'd expect <code>from_..</code> to return <code>Self</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:629 on 2025-07-18 12:26</div>
+            <div class="timeline-body"><p>I might rename this to <code>ManagedPythonDownloads</code> then have <code>download_for_request</code>and <code>iter_downloads</code> methods  (or just <code>find</code> and <code>iter</code>)? This doesn't actually download the versions, which is a little misleading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-07-18 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/downloads.rs</code>:633 on 2025-07-18 12:27</div>
+            <div class="timeline-body"><p>Yeah, for this and Konsti's comment on &quot;this call looks backwards&quot; I was trying to minimize the amount of textual churn, but probably better to not optimize for that (especially now that reviewers have seen the commits so far :) ), I can rework things a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:664 on 2025-07-18 12:27</div>
+            <div class="timeline-body"><p>This should have a docstring. What's the tldr on why this can't just take a <code>BaseClientBuilder</code>? I'm not worried about the performance, but it'd be a little clearer that it doesn't necessarily need a materialized client.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:679 on 2025-07-18 12:28</div>
+            <div class="timeline-body"><p>nit: I'd probably write this as a <code>let Ok(...) else return</code> instead of <code>if let Ok(...) else return</code> so you can early return</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:629 on 2025-07-18 12:30</div>
+            <div class="timeline-body"><p>I think the rename is also a little confusing because the client you pass to this struct won't be used by <code>ManagedPythonDownload</code> for the actual download</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-07-18 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/downloads.rs</code>:629 on 2025-07-18 12:30</div>
+            <div class="timeline-body"><p>Yes, that occurred to me too. Maybe <code>ManagedPythonDownloadList</code> for a little more visual distinction than the plural?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-07-18 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:664 on 2025-07-18 12:31</div>
+            <div class="timeline-body"><p>I looked at the callsites and it seems like you have a <code>BaseClientBuilder</code> you could provide instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:629 on 2025-07-18 12:34</div>
+            <div class="timeline-body"><p>Yeah I initially suggested that too and edited it out. I don't mind either way — <code>ManagedPythonDownloads</code> is a little closer to our typical naming in the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-18 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:633 on 2025-07-18 12:34</div>
+            <div class="timeline-body"><p>Would be resolved by https://github.com/astral-sh/uv/pull/14687#discussion_r2215923723</p>
+<p>Makes sense. In general, don't be afraid to refactor in uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-07-18 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/downloads.rs</code>:664 on 2025-07-18 12:35</div>
+            <div class="timeline-body"><p>It could, the only reason is that two of its callers construct a client shortly after calling this, and so if we passed a builder, we'd be calling <code>.build()</code> twice.. If that's not a problem I can definitely change that (and lazy-construct the client if we're in the HTTP(S) case only). But I was worried I'd have to do something like pass a <code>&amp;mut Option&lt;BaseClient&gt;</code> to pass the constructed client back to the caller to reuse it, or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:664 on 2025-07-28 22:07</div>
+            <div class="timeline-body"><p>I think it's probably fine if we build twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-28 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support http/https URLs in uv python --python-downloads-json-url" to "Support http/https URLs in `uv python --python-downloads-json-url`" by @konstin on 2025-08-04 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:722 on 2025-08-06 10:21</div>
+            <div class="timeline-body"><p>let-chains are not supported by our minimum rust version yet :/ (if CI still passes with that after rebasing we need to fix CI)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-settings/src/settings.rs</code>:833 on 2025-08-06 10:23</div>
+            <div class="timeline-body"><p>This reads like there is a particle missing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-08-06 10:24</div>
+            <div class="timeline-body"><p>we need a (wiremock) test, otherwise r+ me on the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-10-14 11:56</div>
+            <div class="timeline-body"><p>Hi @geofft , this feature is something I'm very interested in as well.</p>
+<p>I noticed there hasn't been any recent activity - are you still planning to work on it? If not, I'd be happy to help move it forward or open a continuation PR based on your work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @jtfmumm removed by @konstin on 2025-10-14 11:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:31 UTC
+    </footer>
+</body>
+</html>

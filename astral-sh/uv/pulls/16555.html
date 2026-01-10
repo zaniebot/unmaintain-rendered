@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow explicit values with `uv version --bump` - astral-sh/uv #16555</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow explicit values with `uv version --bump`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16555">#16555</a>
+        opened by <a href="https://github.com/terror">@terror</a>
+        on 2025-11-02 22:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/terror">@terror</a> on 2025-11-02 22:41</div>
+            <div class="timeline-body"><p>Resolves https://github.com/astral-sh/uv/issues/16427</p>
+<p>This PR updates <code>uv version --bump</code> so you can pin the exact number you’re targeting, i.e. <code>--bump patch=10</code> or <code>--bump dev=42</code>. The command-line interface now parses those <code>component=value</code> flags, and the bump logic actually sets the version to the number you asked for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-07 04:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/package.md</code>:91 on 2025-11-07 04:09</div>
+            <div class="timeline-body"><p>As a note, I don't think this belongs in the &quot;guide&quot; long-term — this kind of less common functionality belongs in the &quot;concepts&quot; section but we don't have one for <code>uv version</code> yet.</p>
+<p>I guess it'd be a &quot;Project version&quot; section in https://docs.astral.sh/uv/concepts/projects/config/ ? We should open an issue to track that work and ref this comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @zanieb on 2025-11-07 04:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:718 on 2025-11-08 02:49</div>
+            <div class="timeline-body"><p>I personally find <code>.map().unwrap_or()</code> easier to read</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:718 on 2025-11-08 02:53</div>
+            <div class="timeline-body"><p>or just</p>
+<pre><code class="language-rust">let (name, value) = match input.split_once('=') {
+    Some((n, v)) =&gt; (n, Some(v)),
+    None =&gt; (input, None),
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:719 on 2025-11-08 02:54</div>
+            <div class="timeline-body"><p>Why did you add this <code>to_ascii_lowercase</code>? I don't think we should be doing any lowercasing here, the current implementation doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:737 on 2025-11-08 03:00</div>
+            <div class="timeline-body"><p>aside: i am perplexed by rustfmt selecting this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/project/version.rs</code>:350 on 2025-11-08 03:22</div>
+            <div class="timeline-body"><p>This doesn't feel like the right approach, it's duplicating a lot of logic that <code>version.bump</code> already contains.</p>
+<p>I think we should just make these enums take an <code>Option&lt;u64&gt;</code> and handle that in <code>version.bump</code>. The only difference between <code>None</code> and <code>Some</code> is whether you're setting the value-to-update to <code>cur + 1</code> or <code>value</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> requested changes on 2025-11-08 03:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-08 03:24</div>
+            <div class="timeline-body"><p>(Btw the actual clap parser work is rad, and thank you for jumping on this!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-cli/src/lib.rs</code>:719 on 2025-11-08 03:33</div>
+            <div class="timeline-body"><p>Ah I assumed wrong that we were case sensitive. Changed this up in my latest commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-08 03:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-08 03:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/tests/it/version.rs</code>:1188 on 2025-11-08 03:35</div>
+            <div class="timeline-body"><p>aside: There are a few other places we manually dedent like this (and then some places we don't dedent at all). We may want to pull in something like <a href="https://docs.rs/indoc/latest/indoc/">indoc</a> and use it everywhere to be consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-08 03:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-cli/src/lib.rs</code>:718 on 2025-11-08 03:39</div>
+            <div class="timeline-body"><p>Yeah this reads more clear to me, changed this up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-08 03:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/project/version.rs</code>:350 on 2025-11-08 03:42</div>
+            <div class="timeline-body"><p>Just implemented this and it feels alot better. I had overlooked some of the existing logic that could have been re-used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-08 04:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-cli/src/lib.rs</code>:737 on 2025-11-08 04:01</div>
+            <div class="timeline-body"><p>Looked into this and it seems to be because of the multiline RHS expression, I kinda like this better:</p>
+<pre><code class="language-rust">let value = match value {
+    Some(raw) if raw.is_empty() =&gt; {
+        return Err(&quot;`--bump` values cannot be empty&quot;.to_string());
+    }
+    Some(raw) =&gt; Some(
+        raw.parse::&lt;u64&gt;()
+            .map_err(|_| format!(&quot;invalid numeric value `{raw}` for `--bump {name}`&quot;))?,
+    ),
+    None =&gt; None,
+};
+</code></pre>
+<p>(no rustfmt interference here 😅)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @terror on 2025-11-11 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-pep440/src/version.rs</code>:740 on 2025-11-11 17:26</div>
+            <div class="timeline-body"><p>This could technically be made into an else-if but it's consistent with the other block to not, so on balance this is probably better..?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-11-11 17:27</div>
+            <div class="timeline-body"><p>Nice, looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-11-11 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-11-11 17:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:37 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support GitHub Gist URLs via HTTP redirects in `uv run` - astral-sh/uv #16451</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support GitHub Gist URLs via HTTP redirects in `uv run`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16451">#16451</a>
+        opened by <a href="https://github.com/twilligon">@twilligon</a>
+        on 2025-10-26 00:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/twilligon">@twilligon</a> on 2025-10-26 00:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Extend the existing GitHub Gist URL support from #15058 to handle URLs that redirect to Gists.</p>
+<p><code>reqwest</code> already handled generic URL redirects for us (note this redirects directly to the <code>.py</code> on <code>gist.githubusercontent.com</code>):</p>
+<pre><code>~/git/uv $ uv run https://httpbin.org/redirect-to?url=https://gist.githubusercontent.com/twilligon/4d878a4d9550a4f1df258cde1f058699/raw/c28a4bf0cb6bb9e670cb47c95d28971ffac163e5/hello.py
+hello world!</code></pre>
+<p>But running a URL that redirected to a Gist's &quot;main page&quot; (a bit.ly link leading to a Gist, etc.) did not:</p>
+<pre><code>~/git/uv $ uv run https://httpbin.org/redirect-to?url=https://gist.github.com/twilligon/4d878a4d9550a4f1df258cde1f058699
+  File &quot;/tmp/scriptNodt3Q.py&quot;, line 87
+    &lt;title&gt;hello.py · GitHub&lt;/title&gt;</code></pre>
+<p>But if we have <code>reqwest</code> follow redirects <em>before</em> <code>resolve_gist_url</code>, we can handle this fine:</p>
+<pre><code>~/git/uv $ target/debug/uv run https://httpbin.org/redirect-to?url=https://gist.github.com/twilligon/4d878a4d9550a4f1df258cde1f058699
+hello world!</code></pre>
+<h2>Test Plan</h2>
+<p>I'd write an automated test but that'd require network access since wiremock doesn't seem to support mocking specific hostnames like <code>gist.github.com</code>. As manual tests go, I basically did the above, testing with several redirectors to both generic and Gist URLs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support GitHub Gist URLs via HTTP redirects in uv run" to "Support GitHub Gist URLs via HTTP redirects in `uv run`" by @twilligon on 2025-10-26 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-10-29 16:30</div>
+            <div class="timeline-body"><p>That seems reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-10-29 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-10-29 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twilligon">@twilligon</a> on 2025-10-29 22:41</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:36 UTC
+    </footer>
+</body>
+</html>

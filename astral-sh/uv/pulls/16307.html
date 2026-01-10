@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix backtick escaping for PowerShell - astral-sh/uv #16307</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix backtick escaping for PowerShell</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16307">#16307</a>
+        opened by <a href="https://github.com/jborean93">@jborean93</a>
+        on 2025-10-15 04:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jborean93">@jborean93</a> on 2025-10-15 04:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes the logic for escaping a double quoted string in PowerShell by not escaping a backslash but escaping the Unicode double quote variants that PowerShell treats the same as the ASCII double quotes.</p>
+<p><img width="685" height="99" alt="image" src="https://github.com/user-attachments/assets/ac1368c2-d915-4e49-b67f-ac71ee0f7d46" /></p>
+<h2>Test Plan</h2>
+<p>There does not seem to be any tests for this. I'm fairly new to rust but happy to add some if someone can point me in the right direction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @konstin on 2025-10-15 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2025-10-17 07:25</div>
+            <div class="timeline-body"><p>Shouldn’t <code>`</code> itself be escaped as <code>``</code> too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jborean93">@jborean93</a> on 2025-10-17 08:52</div>
+            <div class="timeline-body"><p>It probably should yes but it would mean that anyone that has a newline literal or unicode escape sequence would now not work. I think in the context of where this is used this is probably ok and should be escaped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-shell/src/lib.rs</code>:334 on 2025-10-20 14:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            '&quot;' | '`' | '\u{201C}' | '\u{201D}' | '\u{201E}' | '$' =&gt; escaped.push('`'),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-10-20 14:49</div>
+            <div class="timeline-body"><p>Dug through some docs and tried some examples and this all looks correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-10-20 14:54</div>
+            <div class="timeline-body"><p>Other redflags that came up in research:</p>
+<p>If these were single-quote strings then <code>'</code>,  <code>‘</code> and <code>’</code> would similarly be problematic, but in double-quote strings they're not (and this function <em>only</em> works for double-quote strings (the ` escape is only for double-quote strings), and the user of this function <em>needs</em> double quote strings to actually expand an env-var in the string).</p>
+<p>If this were a completely unquoted string (<code>echo hello</code>) then <code>#</code> would be a concern as it would introduce a comment. However it does not inside quoted strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-10-20 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jborean93">@jborean93</a> on 2025-10-20 18:43</div>
+            <div class="timeline-body"><p>Yea single quotes are easier to escape but in this case we are relying that this will be used in double quotes as we use <code>$env:PATH</code> in a value appended to this string. Thanks for sending through the backtick suggestion as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-10-20 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @konstin on 2025-10-20 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-10-21 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-10-21 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-21 10:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `uv cache clean` parallel process safe - astral-sh/uv #15888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make `uv cache clean` parallel process safe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15888">#15888</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-09-16 08:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-09-16 08:49</div>
+            <div class="timeline-body"><p>Currently, <code>uv cache clean</code> and <code>uv cache prune</code> can cause crashes in other uv processes running in parallel by removing their in-use files.</p>
+<p>We can solve this by using a shared (read) lock on the cache directory, while the <code>uv cache</code> operations use an exclusive (write) lock. The drawback is that this is always one extra lock, and that we assume that all platforms support shared locks.</p>
+<p>Once Rust 1.89 fulfills our N-2 policy, we can add support for these methods in fs_err and switch to https://doc.rust-lang.org/std/fs/struct.File.html#platform-specific-behavior-2.</p>
+<p><strong>Test Plan</strong></p>
+<p>Open one terminal, run:</p>
+<pre><code>uv venv -c -p 3.13
+UV_CACHE_DIR=cache uv cache clean
+UV_CACHE_DIR=cache uv pip install numpy==2.0.0
+</code></pre>
+<p>Open another terminal, run:</p>
+<pre><code>UV_CACHE_DIR=cache uv cache clean
+</code></pre>
+<p>Fixes #15704
+Part of #13883</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-09-16 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-17 10:52</div>
+            <div class="timeline-body"><blockquote>
+<p>and that we assume that all platforms support shared locks.</p>
+</blockquote>
+<p>How confident are you in this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-17 11:18</div>
+            <div class="timeline-body"><p>Given that there's support for this in the Rust standard library without warnings about platforms that don't support this, I expect wide support. I added a path that ignores platforms and filesystems with missing shared lock support.</p>
+<p>CC @BurntSushi who knows about file locking and @geofft who knows about Unix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-09-17 12:17</div>
+            <div class="timeline-body"><p>The docs say</p>
+<blockquote>
+<p>This function currently corresponds to the <code>flock</code> function on Unix with the <code>LOCK_SH</code> flag, and the <code>LockFileEx</code> function on Windows.</p>
+</blockquote>
+<p>Both of these seem supported and work properly on OS versions from the last few decades. [There is a quirk(https://utcc.utoronto.ca/~cks/space/blog/linux/FlockFcntlAndNFS) with <code>flock</code> on NFS if one client is accessing over NFS and another is directly accessing the local filesystem on the NFS server, but that's kind of a &quot;don't do that&quot; situation.</p>
+<p>I haven't looked in detail at the implementation but the rough approach of making a .lock file in the directory, ensuring every client is referring go the same actual file by relying on atomic hardlinks into place (which does work reliably on NFS), and then using shared or exclusive locks of the same lock type (and not byte-range locks), seems sound to me.</p>
+<p>I have a very slight worry about implementations that desugar <code>flock</code> into byte-range locks if there are no actual bytes in the file, i.e., the locked range is zero length. I am not sure if this is a real worry but we can just write one byte into the file to avoid the risk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-17 12:19</div>
+            <div class="timeline-body"><p>At least on the standard library side, support seems pretty broad: https://github.com/rust-lang/rust/blob/2ebb1263e3506412889410b567fa813ca3cb5c63/library/std/src/sys/fs/unix.rs#L1325-L1360</p>
+<p>At least as broad as the regular <code>lock()</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-09-17 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-17 12:21</div>
+            <div class="timeline-body"><p>I guess one other concern...</p>
+<p>If the cache is read only, this will cause a regression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-17 12:22</div>
+            <div class="timeline-body"><p>If memory serves, <code>flock</code> and POSIX <code>fcntl</code> locks are process <em>global</em>. So the main footgun to be aware of here is that you can't use them as synchronization primitives across threads within the same process.</p>
+<p>AFAIK, open file description locks on Linux support NFS and can be used as synchronization primitives across threads. But I think they are Linux-only unfortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-17 14:14</div>
+            <div class="timeline-body"><blockquote>
+<p>If the cache is read only, this will cause a regression?</p>
+</blockquote>
+<p>Like elsewhere, I'd suggest we <code>tracing::warn!</code> if we can't acquire it, but not fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-17 14:16</div>
+            <div class="timeline-body"><p>That's implemented :) <a href="https://github.com/astral-sh/uv/pull/15888/files#diff-d0c8455b65232353aa60383cd8a80d99a8b31cf7cd76bf22c18d32de36bed34cR403-R409">https://github.com/astral-sh/uv/pull/15888/files#diff-d0c8455b65232353aa60383cd8a80d99a8b31cf7cd76bf22c18d32de36bed34cR403-R409</a></p>
+<p>(I still have to test the read-only cache and handle the Windows CI failure before we can merge)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-18 16:48</div>
+            <div class="timeline-body"><p>It seems read-only caches already don't work, I filed a separate bug for it: https://github.com/astral-sh/uv/issues/15934</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-18 17:54</div>
+            <div class="timeline-body"><p>I cannot reproduce the CI failure locally, any ideas what's happening? I could see something about the locked file not being deletable, but that should happen consistently, and it also doesn't match the error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 18:49</div>
+            <div class="timeline-body"><p>I presume we attempt to delete the cache directory while it contains the locked file, which is okay on Unix but not allowed on Windows? (very naively)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 19:00</div>
+            <div class="timeline-body"><p>re. CI vs locally... maybe because it's on a ReFS drive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 07:39</div>
+            <div class="timeline-body"><p>I thought so too, but I'm using a ReFS drive on my laptop and it passes there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 08:21</div>
+            <div class="timeline-body"><p>Removing the locked file last after the dropping the lock works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-09-19 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-19 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-19 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markuspi">@markuspi</a> on 2025-11-07 14:45</div>
+            <div class="timeline-body"><p>Hi @konstin considering this PR, is the note in the documentation regarding <a href="https://docs.astral.sh/uv/concepts/cache/#cache-safety">cache safety</a> still relevant?</p>
+<blockquote>
+<p>Note that it's not safe to modify the uv cache (e.g., uv cache clean) while other uv commands are running, [...]</p>
+</blockquote>
+<p>Specifically, i am interested in periodically running <code>uv cache prune</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-07 15:19</div>
+            <div class="timeline-body"><p>Currently, uv blocks, but we want to make some further adjustment that might weaken this a bit so I don't want to remove the warning. I don't recommend using <code>uv cache</code> operations on a timer, I'd only use them manually and when required.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:32 UTC
+    </footer>
+</body>
+</html>

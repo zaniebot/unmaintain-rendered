@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--find-links` support for `uv pip list` - astral-sh/uv #16103</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `--find-links` support for `uv pip list`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16103">#16103</a>
+        opened by <a href="https://github.com/terror">@terror</a>
+        on 2025-10-02 15:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/terror">@terror</a> on 2025-10-02 15:50</div>
+            <div class="timeline-body"><p>Resolves https://github.com/astral-sh/uv/issues/16095</p>
+<p>This PR fixes <code>uv pip list --outdated</code> so <code>--find-links</code> locations impact the latest-version lookup. This wires flat indexes through the registry client even under <code>--no-index</code>, lets <code>LatestClient::find_latest</code> evaluate the same compatibility filters across both Simple API and flat metadata, and adds an integration test that installs from <code>scripts/links</code> to show the higher local release is reported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-10-03 02:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/pip_install.rs</code>:6193 on 2025-10-03 02:04</div>
+            <div class="timeline-body"><p>Do you know why these changed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/tests/it/pip_install.rs</code>:6193 on 2025-10-03 02:11</div>
+            <div class="timeline-body"><p>This path used to short-circuit with <code>ErrorKind::NoIndex</code>, but now since we're considering flat indexes (via <code>--find-links</code>), we end up getting a <code>UnavailablePackage::NotFound</code> rendering as 'not found in the package registry' instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-03 02:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-03 02:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/tests/it/pip_install.rs</code>:6193 on 2025-10-03 02:17</div>
+            <div class="timeline-body"><p>I think this wording is actually a bit confusing, this is implying we did a registry lookup (even though we supplied <code>--no-index</code>) as opposed to just looking at the directories/URLs provided by <code>--find-links</code>. Something to address for sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-03 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:510 on 2025-10-03 15:49</div>
+            <div class="timeline-body"><p>Was there a reason why we did <em>not</em> want to include <code>flat_indexes</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-03 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-client/src/registry_client.rs</code>:416 on 2025-10-03 15:52</div>
+            <div class="timeline-body"><p>This is a tad awkward, but this is here to keep the wording the same for the <a href="https://github.com/astral-sh/uv/blob/b06f02f13d79e644ffa7d35f38a817d1e32ec68a/crates/uv/tests/it/pip_install.rs#L6102"><code>already_installed_local_path_dependent</code></a> test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @terror on 2025-10-03 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2025-10-08 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/latest.rs</code>:40 on 2025-10-16 21:20</div>
+            <div class="timeline-body"><p>Can we make this a separate function? You can pass in an <code>impl Iterator&lt;...&gt;</code> if that helps</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_list.rs</code>:215 on 2025-10-16 21:22</div>
+            <div class="timeline-body"><p>We can run this test without the exclude newer env var, those warnings are misleading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/flat_index.rs</code>:325 on 2025-10-16 21:22</div>
+            <div class="timeline-body"><p>That seems correct, but it's a behavior change, could you open a separate PR for it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:510 on 2025-10-16 21:29</div>
+            <div class="timeline-body"><p>I'm not aware of any</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-16 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-10-16 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:510 on 2025-10-16 21:39</div>
+            <div class="timeline-body"><p>Unfortunately I really can't remember. I'm sure there's a reason for it. Probably because historically we didn't query flat indexes in the registry client? Something like that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-10-27 02:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-27 02:21</div>
+            <div class="timeline-body"><p>It's actually a bit hard for me to reason about how <code>--find-links</code> works now, because we create the <code>FlatIndexClient</code> and pass that around, but we're now <em>also</em> passing the <code>flat_indexes</code> to the registry client... Are they now being indexed <em>twice</em>?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:33 UTC
+    </footer>
+</body>
+</html>

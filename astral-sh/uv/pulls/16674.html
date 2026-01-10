@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deprecate `--project` arg for init - astral-sh/uv #16674</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deprecate `--project` arg for init</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16674">#16674</a>
+        opened by <a href="https://github.com/mikaylathompson">@mikaylathompson</a>
+        on 2025-11-10 19:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on 2025-11-10 19:30</div>
+            <div class="timeline-body"><p>Addresses https://github.com/astral-sh/uv/issues/15790</p>
+<h2>Summary</h2>
+<p>After discussion, the functionality of <code>--project</code> vs <code>--directory</code> was quite unclear in this case, so deprecating <code>--project</code> for <code>init</code> is probably the clearest behavior option. This is a breaking change, so it requires being under preview before being rolled out fully.</p>
+<p>Included in the PR now:</p>
+<ul>
+<li>new feature flag (<code>init --project</code> is deprecated if <code>--preview</code> or <code>--preview-features deprecate-project-for-init</code> are provided)</li>
+<li>tests (for <code>--directory</code> behavior, as well as the current warning and future error)</li>
+<li>documentation updated in docs/concepts/projects/init.md</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Mikayla/init with project arg" to "Deprecate `--project` arg for init" by @mikaylathompson on 2025-11-10 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-preview/src/lib.rs</code>:24 on 2025-11-10 19:33</div>
+            <div class="timeline-body"><p>I'd probably just call this <code>init-project-flag</code> for brevity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/lib.rs</code>:1820 on 2025-11-10 19:36</div>
+            <div class="timeline-body"><p>The difference in language between these is confusing, e.g., we're switching between &quot;argument&quot; and &quot;flag&quot; here. I'd say</p>
+<blockquote>
+<p>The <code>--project</code> option cannot be used in <code>uv init</code>. Use <code>--directory</code> instead.</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>Use of the <code>--project</code> option in <code>uv init</code> is deprecated and support will be removed in a future release . Consider using <code>--directory</code> instead.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/lib.rs</code>:1810 on 2025-11-10 19:37</div>
+            <div class="timeline-body"><p>Ah convenient we have this lying around!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/init.rs</code>:4145 on 2025-11-10 19:38</div>
+            <div class="timeline-body"><p>Do we need to snapshot the pyproject.toml? Or do we just need to assert it exists at this path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/lib.rs</code>:1820 on 2025-11-10 19:40</div>
+            <div class="timeline-body"><p>It is nice to have something about it being ignored, but &quot;some cases&quot; seems ambiguous. Can't we tell here if it will be ignored? Then we could say</p>
+<blockquote>
+<p>The <code>--project</code> option has no affect in <code>uv init</code> and will be removed in a future release. Consider...</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-10 19:41</div>
+            <div class="timeline-body"><p>For documentation, I think https://docs.astral.sh/uv/concepts/projects/init/#target-directory is the appropriate place to document using <code>--directory</code>. I wouldn't mention <code>--project</code> at all.</p>
+<p>I'd update the CONTRIBUTING guide in a separate pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mikaylathompson">@mikaylathompson</a> reviewed on 2025-11-10 19:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on <code>crates/uv/src/lib.rs</code>:1820 on 2025-11-10 19:53</div>
+            <div class="timeline-body"><p>Ah, yep, that wording is clearer.</p>
+<p>It's not quite accurate though to say that it has no effect. The case where it's not ignored is if a path is provided (so <code>uv init --project foo</code> <em>is</em> different than <code>uv init</code> but <code>uv init --project foo bar</code> <em>is not</em> different than <code>uv init bar</code>). But I'll be more direct about that in the wording.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/lib.rs</code>:1820 on 2025-11-10 19:56</div>
+            <div class="timeline-body"><p>Can't we detect that case here though and only say it has no effect if there's also a positional path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/lib.rs</code>:1820 on 2025-11-10 19:56</div>
+            <div class="timeline-body"><p>That also suggests a different hint for that case, e.g., when they do <code>uv init --project foo</code> we should suggest <code>uv init foo</code> not <code>uv init --directory foo</code>, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mikaylathompson">@mikaylathompson</a> reviewed on 2025-11-10 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on <code>crates/uv/src/lib.rs</code>:1820 on 2025-11-10 20:16</div>
+            <div class="timeline-body"><p>Oh, yeah, I can definitely detect that case. Interesting about simplifying to <code>uv init foo</code>. I think that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/init.rs</code>:4090 on 2025-11-10 21:27</div>
+            <div class="timeline-body"><p>I'd drop the newline — I think it's too hard to distinguish it from other output. We don't have the infrastructure to do nice multiline warnings yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/init.rs</code>:4065 on 2025-11-10 21:29</div>
+            <div class="timeline-body"><p>I don't think we need coverage for both of these cases, that's just testing whether our preview abstraction works correctly. I'd probably only test with the specific preview flag for this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/init.rs</code>:4062 on 2025-11-10 21:29</div>
+            <div class="timeline-body"><p>Isn't a path already being provided positionally in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/lib.rs</code>:1826 on 2025-11-10 21:32</div>
+            <div class="timeline-body"><p>The Rust idiom for this would be like <code>let suggestion = args.path.is_some().then_some(&quot;...&quot;).unwrap_or(&quot;...&quot;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mikaylathompson">@mikaylathompson</a> reviewed on 2025-11-10 21:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on <code>crates/uv/tests/it/init.rs</code>:4062 on 2025-11-10 21:51</div>
+            <div class="timeline-body"><p>Yes -- but I didn't distinguish between the two cases for the error message, just the warning.</p>
+<p>My thinking was that once we're in the &quot;enforced&quot; case -- either feature preview or post-breaking change, the nuance of the different behavior with vs without a positional path is gone. At that point we don't need to protect/explain the current behavior, which is what the conditional does for the warnings.</p>
+<p>I'm fine with changing that behavior if that seems unintuitive -- but it also keeps the long-term logic in the file simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mikaylathompson">@mikaylathompson</a> reviewed on 2025-11-10 21:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on <code>crates/uv/tests/it/init.rs</code>:4062 on 2025-11-10 21:52</div>
+            <div class="timeline-body"><p>(I am switching this from <code>PATH</code> to <code>positional path</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mikaylathompson">@mikaylathompson</a> reviewed on 2025-11-10 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on <code>crates/uv/src/lib.rs</code>:1826 on 2025-11-10 21:58</div>
+            <div class="timeline-body"><p>Ah, thanks. I got too excited about matching.
+clippy ended up changing this logic to just a simple if/else, so that's coming momentarily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/init.rs</code>:4062 on 2025-11-10 22:06</div>
+            <div class="timeline-body"><p>I'm just confused that we'd tell someone to use the positional path argument when they've already done so. I expect someone would complain about it eventually, but I don't feel strongly. I'm not so worried about the maintenance cost, we tend to invest into specialized error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-10 23:15</div>
+            <div class="timeline-body"><p>Feel free to mark any addressed comments as &quot;resolved&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-11-10 23:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @mikaylathompson on 2025-11-10 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mikaylathompson on 2025-11-10 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-10 23:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:39 UTC
+    </footer>
+</body>
+</html>

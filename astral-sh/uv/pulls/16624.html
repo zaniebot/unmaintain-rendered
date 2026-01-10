@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle externally managed system Pythons when validating global installs - astral-sh/uv #16624</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle externally managed system Pythons when validating global installs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16624">#16624</a>
+        opened by <a href="https://github.com/terror">@terror</a>
+        on 2025-11-06 22:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/terror">@terror</a> on 2025-11-06 22:29</div>
+            <div class="timeline-body"><p>This PR auto-detects <code>EXTERNALLY-MANAGED</code> marker files before running the “validate global Python install” script and append <code>--break-system-packages</code> to every <code>uv pip ... --system</code> call when needed. This lets the CI step keep exercising the real system interpreter (including Homebrew’s Python 3.14 on macOS) while staying compliant with <a href="https://peps.python.org/pep-0668/">PEP 668</a> protections, and it avoids requiring job-level flags or hard-coded platform checks.</p>
+<p>This aims to fix the <code>check system | python on macos x86-64</code> / <code>Validate global Python install</code> CI step failing for new branches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-06 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>scripts/check_system_python.py</code>:20 on 2025-11-06 22:47</div>
+            <div class="timeline-body"><p>If other system Python's become externally managed (e.g. on other runners) this detection will detect that and auto-pass in <code>--break-system-packages</code> without us having to pass in <code>--allow-externally-managed</code> directly.</p>
+<p>We <em>could</em> have passed in <code>--externally-managed</code> for this specific case, but that seems a bit brittle to me. Open to hearing other opinions!</p>
+<p>This change also means that the <code>--externally-managed</code> flag is now redundant (and only serves the purpose of being explicit when we pass it in).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-07 04:16</div>
+            <div class="timeline-body"><p>Thanks for investigating this!</p>
+<p>I like this idea as a solution for reducing maintenance, but I think we could miss changes to the intent of the test if we infer it, e.g., this marker is in a Homebrew Python install but the test explicitly is for GitHub's Python? (see https://github.com/astral-sh/uv/pull/16628#issuecomment-3500617033). It's unclear to me that it's worth inferring it since these are nearly always static, but I could be convinced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/terror">@terror</a> on 2025-11-07 05:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for investigating this!</p>
+<p>I like this idea as a solution for reducing maintenance, but I think we could miss changes to the intent of the test if we infer it, e.g., this marker is in a Homebrew Python install but the test explicitly is for GitHub's Python? (see <a href="https://github.com/astral-sh/uv/pull/16628#issuecomment-3500617033">#16628 (comment)</a>). It's unclear to me that it's worth inferring it since these are nearly always static, but I could be convinced.</p>
+</blockquote>
+<p>I'm operating under the assumption that any externally managed interpreter will need <code>--break-system-packages</code> to run this check, so this removes a manual step if any of them change.</p>
+<blockquote>
+<p>but I think we could miss changes to the intent of the test if we infer it</p>
+</blockquote>
+<p>I'm a bit confused here, the detection doesn't change which Python we test, it only asks that Python whether it requires <code>--break-system-packages</code>. I could see a scenario where we may <em>not</em> want detection, but for this specific check I'm not sure we ever would?</p>
+<blockquote>
+<p>since these are nearly always static</p>
+</blockquote>
+<p>I'm not too familiar with how often these change, but if this is the case and the maintenance burden is tolerated then I could see why it may not be worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-07 05:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit confused here, the detection doesn't change which Python we test, it only asks that Python whether it requires --break-system-packages. I could see a scenario where we may not want detection, but for this specific check I'm not sure we ever would?</p>
+</blockquote>
+<p>I'll try to explain in a bit more detail.</p>
+<p>The intent of the tests is to check that we properly detect and install into system Python versions in various contexts. If we're selecting a system Python version which has suddenly gained an <code>EXTERNALLY-MANAGED</code> marker, that <em>could</em> mean we're no longer testing against the interpreter we thought we were — at the very least, something changed about the test environment.</p>
+<p>I think it's probably <em>useful</em> for us to know that GitHub's macos-15-intel runner now requires this flag for mutating system requirements whereas it didn't a week ago. If we silently infer that, then we lose that information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/terror">@terror</a> on 2025-11-07 06:14</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm a bit confused here, the detection doesn't change which Python we test, it only asks that Python whether it requires --break-system-packages. I could see a scenario where we may not want detection, but for this specific check I'm not sure we ever would?</p>
+</blockquote>
+<p>I'll try to explain in a bit more detail.</p>
+<p>The intent of the tests is to check that we properly detect and install into system Python versions in various contexts. If we're selecting a system Python version which has suddenly gained an <code>EXTERNALLY-MANAGED</code> marker, that <em>could</em> mean we're no longer testing against the interpreter we thought we were — at the very least, something changed about the test environment.</p>
+<p>I think it's probably <em>useful</em> for us to know that GitHub's macos-15-intel runner now requires this flag for mutating system requirements whereas it didn't a week ago. If we silently infer that, then we lose that information.</p>
+</blockquote>
+<p>Interesting I hadn't thought about it that way. There would still be <em>some</em> <a href="https://github.com/astral-sh/uv/actions/runs/19151813166/job/54743833055?pr=16624#step:7:12">signal</a> with the log, but failing is definitely more attention grabbing 😅.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/terror">@terror</a> on 2025-11-07 16:10</div>
+            <div class="timeline-body"><p>Closing this in favour of supplying manual <code>--break-system-packages</code> when necessary. See above discussion for more context!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @terror on 2025-11-07 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-07 16:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:39 UTC
+    </footer>
+</body>
+</html>

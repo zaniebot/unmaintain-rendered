@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change reporter length to `Option` - astral-sh/uv #16448</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Change reporter length to `Option`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16448">#16448</a>
+        opened by <a href="https://github.com/0xllx0">@0xllx0</a>
+        on 2025-10-25 11:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/0xllx0">@0xllx0</a> on 2025-10-25 11:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Changes the <code>length</code> parameter to <code>PythonDownloadReporter::new</code> to an <code>Option&lt;u64&gt;</code> to resolve the issue of setting a single-item reporter length.</p>
+<p>Resolves: #15404</p>
+<h2>Test Plan</h2>
+<ul>
+<li>build test</li>
+<li>ran test suite</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-25 14:14</div>
+            <div class="timeline-body"><p>I think this came up w.r.t. <code>BinaryDownloadReporter</code>, we should make sure other reports are consistent.</p>
+<p>Does this have any user-facing effect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-10-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xllx0">@0xllx0</a> on 2025-10-25 23:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this came up w.r.t. BinaryDownloadReporter, we should make sure other reports are consistent.</p>
+</blockquote>
+<p>I changed all of the <code>*Reporter::new(.., length: ..)</code> methods to take an <code>Option</code>, hopefully I understood your suggestion.</p>
+<p>The builder-like <code>with_length</code> methods I left alone, since presumably these are always meant to set the length, and not an optional length.</p>
+<p>Also corrected the single reporter to pass a <code>Some(1)</code> argument, instead of the incorrect <code>None</code> that was there before (noticed after reviewing the other reporters).</p>
+<blockquote>
+<p>Does this have any user-facing effect?</p>
+</blockquote>
+<p>I don't think it should, since all of these methods are <code>pub(crate)</code>. If there are manual UI/UX smoke tests I can run, just let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "reporters: change reporter length to `Option`" to "Change reporter length to `Option`" by @konstin on 2025-10-27 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-10-27 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-27 09:33</div>
+            <div class="timeline-body"><p>The current implementation still sets <code>Some(1)</code>, even though that's not the correct length, so we're not yet solving https://github.com/astral-sh/uv/issues/15404.</p>
+<p>I checked with the example of the publish reporter, and it seems the <code>root</code> progress bar is created but then never used (so it's hidden), but that's a bigger change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xllx0">@0xllx0</a> on 2025-10-27 14:42</div>
+            <div class="timeline-body"><blockquote>
+<p>The current implementation still sets Some(1), even though that's not the correct length, so we're not yet solving https://github.com/astral-sh/uv/issues/15404.</p>
+</blockquote>
+<p>Right, so I originally set it to <code>None</code>, but wasn't sure if this was correct after the initial review.</p>
+<p>I ran a little smoke test:</p>
+<pre><code class="language-rust">use indicatif::{ProgressBar, ProgressDrawTarget};
+
+let bytes = b&quot;implementation of io::Read&quot;;
+let reader = bytes.as_ref();
+
+let pb = ProgressBar::with_draw_target(
+    Some(1),
+    //Some(bytes.len() as u64),
+    //None,
+    ProgressDrawTarget::stdout());
+
+let mut writer = Vec::new();
+
+for r in pb.wrap_iter(reader.iter()) {
+    writer.push(*r);
+    std::thread::sleep(std::time::Duration::from_millis(100));
+}
+</code></pre>
+<p>All variants of the length argument show the progress counter updates with the correct counter values.</p>
+<ul>
+<li><code>Some(1)</code> argument lights up the entire progress bar</li>
+<li><code>Some(bytes.len() as u64)</code> argument lights up the progress bar as progress is made</li>
+<li><code>None</code> keeps the progress bar dark as progress is made</li>
+</ul>
+<p>Now I see what you meant about it being an aesthetic choice. I think in absence of having the actual length of progress, <code>None</code> makes sense.</p>
+<p>So, would you like me to change all of the <code>Some(1)</code> progress bars to <code>None</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-27 14:42</div>
+            <div class="timeline-body"><p>Yes, we should go with <code>None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-27 16:16</div>
+            <div class="timeline-body"><p>I did some manual testing and it looks like the unused root progress bar is still hidden after the change, as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-10-27 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-10-27 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-10-27 16:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:35 UTC
+    </footer>
+</body>
+</html>

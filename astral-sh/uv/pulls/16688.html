@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix shell-specific test snapshots - astral-sh/uv #16688</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix shell-specific test snapshots</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16688">#16688</a>
+        opened by <a href="https://github.com/zsol">@zsol</a>
+        on 2025-11-11 18:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zsol">@zsol</a> on 2025-11-11 18:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Two tests were failing when run with <code>SHELL=fish</code>:</p>
+<ol>
+<li><code>create_venv_current_working_directory</code> failed because the &quot;activate&quot; filter didn't apply properly when the venv was in the CWD. This PR fixes the filter.</li>
+<li><code>tool_install_warn_path</code> failed because the messages are different between fish and bash. This PR hardcodes <code>SHELL=fish</code>.</li>
+</ol>
+<h2>Test Plan</h2>
+<p>CI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zsol on 2025-11-11 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zsol on 2025-11-11 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zsol on 2025-11-11 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/venv.rs</code>:1717 on 2025-11-11 19:03</div>
+            <div class="timeline-body"><p>How did this fail when we had <code>.arg(&quot;.&quot;)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-11 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_install.rs</code>:2851 on 2025-11-11 19:30</div>
+            <div class="timeline-body"><p>Why fish? Why not bash?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_install.rs</code>:2851 on 2025-11-11 19:31</div>
+            <div class="timeline-body"><p>Should we just set a default value for <code>SHELL</code> in the test context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a> reviewed on 2025-11-11 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zsol">@zsol</a> on <code>crates/uv/tests/it/tool_install.rs</code>:2851 on 2025-11-11 19:47</div>
+            <div class="timeline-body"><p>fish is clearly more interesting :) in all seriousness though, I don't have a strong opinion between:</p>
+<ol>
+<li>the test has more value if it exercises cases that we wouldn't normally catch (we'd never ever manually test this)</li>
+<li>the test has more value if it exercises the vastly more popular code path</li>
+</ol>
+<p>Do you have a preference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a> reviewed on 2025-11-11 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zsol">@zsol</a> on <code>crates/uv/tests/it/venv.rs</code>:1717 on 2025-11-11 19:48</div>
+            <div class="timeline-body"><p>The filter regex didn't match this because it requires a <code>/</code> before <code>bin</code>, which in this case isn't there (uv chooses to display this as <code>bin/activate</code> instead of <code>./bin/activate</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 19:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_install.rs</code>:2851 on 2025-11-11 19:49</div>
+            <div class="timeline-body"><p>If we want to test alternative shells, it should be in a test that's focused on those. I don't think a test that's focusing on capturing the general behavior of tool install warnings should use a non-default / uncommon code-path. so, I guess (2)!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-11-11 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zsol on 2025-11-12 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-11-12 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-11-12 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-12 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-12 13:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:30:40 UTC
+    </footer>
+</body>
+</html>
