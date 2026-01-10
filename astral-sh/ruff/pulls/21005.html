@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[WIP] Implement the `wrap_comprehension_in` preview style from Black - astral-sh/ruff #21005</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[WIP] Implement the <code>wrap_comprehension_in</code> preview style from Black</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21005">#21005</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-20 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-20 21:27</div>
+            <div class="timeline-body"><p>This is a rough draft with a naive fix. We still disagree with Black on some formatting, for example this snippet from our docstring formatting tests:</p>
+<pre><code class="language-py">def by_first_letter_of_column_values(self, col: str) -&gt; list[pl.DataFrame]:
+    return [
+        self._df.filter(pl.col(col).str.starts_with(c))
+        for c in sorted(set(df.select(pl.col(col).str.slice(0, 1)).to_series()))
+    ]
+</code></pre>
+<p>Black reuses the parentheses from the <code>sorted</code> call instead of adding new parentheses around the whole thing, which seems preferable.</p>
+<p><strong>Black</strong>:</p>
+<pre><code class="language-py">def by_first_letter_of_column_values(self, col: str) -&gt; list[pl.DataFrame]:
+    return [
+        self._df.filter(pl.col(col).str.starts_with(c))
+        for c in sorted(
+            set(df.select(pl.col(col).str.slice(0, 1)).to_series())
+        )
+    ]
+</code></pre>
+<p><strong>This PR</strong>:</p>
+<pre><code class="language-py">def by_first_letter_of_column_values(self, col: str) -&gt; list[pl.DataFrame]:
+    return [
+        self._df.filter(pl.col(col).str.starts_with(c))
+        for c in (
+            sorted(set(df.select(pl.col(col).str.slice(0, 1)).to_series()))
+        )
+    ]
+</code></pre>
+<p>I can't quite tell if I'm having trouble here because this is tricky to implement in Ruff as Dylan mentioned <a href="https://github.com/astral-sh/ruff/issues/20482#issuecomment-3340449328">here</a>, or if I'm still just unfamiliar with the formatter.</p>
+<h2>Summary</h2>
+<p>This PR implements the <code>wrap_comprehension_in</code> style added in
+https://github.com/psf/black/pull/4699. This wraps <code>in</code> clauses in
+comprehensions if they get too long. Using some examples from the upstream
+issue, this code:</p>
+<pre><code class="language-py">[a for graph_path_expression in refined_constraint.condition_as_predicate.variables]
+
+[
+    a
+    for graph_path_expression
+    in refined_constraint.condition_as_predicate.variables
+]
+</code></pre>
+<p>is currently formatted to:</p>
+<pre><code class="language-py">[
+    a
+    for graph_path_expression in refined_constraint.condition_as_predicate.variables
+]
+
+[
+    a
+    for graph_path_expression in refined_constraint.condition_as_predicate.variables
+]
+</code></pre>
+<p>even if the second line of the comprehension exceeds the configured line length.</p>
+<p>In preview, black will now break these lines by parenthesizing the expression
+following <code>in</code>:</p>
+<pre><code class="language-py">[
+    a
+    for graph_path_expression in (
+        refined_constraint.condition_as_predicate.variables
+    )
+]
+
+[
+    a
+    for graph_path_expression in (
+        refined_constraint.condition_as_predicate.variables
+    )
+]
+</code></pre>
+<p>I actually kind of like the alternative formatting mentioned on the original
+Black issue and in our #12870 which would be more like:</p>
+<pre><code class="language-py">[
+    a
+    for graph_path_expression
+	in refined_constraint.condition_as_predicate.variables
+]
+</code></pre>
+<p>but I think I'm in the minority there.</p>
+<h2>Test Plan</h2>
+<p>Existing Black compatibility tests showing fewer differences</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-20 21:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+449 -544 lines in 95 files in 24 projects; 31 projects unchanged)</p>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+21 -25 lines across 5 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/policies/ted_policy.py#L1009'>rasa/core/policies/ted_policy.py~L1009</a></p>
+<pre><code class="language-diff">         entity_tag_specs = [
+             EntityTagSpec(
+                 tag_name=tag_spec[&quot;tag_name&quot;],
+-                ids_to_tags={
+-                    int(key): value for key, value in tag_spec[&quot;ids_to_tags&quot;].items()
+-                },
+-                tags_to_ids={
+-                    key: int(value) for key, value in tag_spec[&quot;tags_to_ids&quot;].items()
+-                },
++                ids_to_tags={int(key): value for key, value in tag_spec[
++                        &quot;ids_to_tags&quot;
++                    ].items()},
++                tags_to_ids={key: int(value) for key, value in tag_spec[
++                        &quot;tags_to_ids&quot;
++                    ].items()},
+                 num_tags=tag_spec[&quot;num_tags&quot;],
+             )
+             for tag_spec in entity_tag_specs
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/nlu/classifiers/diet_classifier.py#L1195'>rasa/nlu/classifiers/diet_classifier.py~L1195</a></p>
+<pre><code class="language-diff">         entity_tag_specs = [
+             EntityTagSpec(
+                 tag_name=tag_spec[&quot;tag_name&quot;],
+-                ids_to_tags={
+-                    int(key): value for key, value in tag_spec[&quot;ids_to_tags&quot;].items()
+-                },
+-                tags_to_ids={
+-                    key: int(value) for key, value in tag_spec[&quot;tags_to_ids&quot;].items()
+-                },
++                ids_to_tags={int(key): value for key, value in tag_spec[
++                        &quot;ids_to_tags&quot;
++                    ].items()},
++                tags_to_ids={key: int(value) for key, value in tag_spec[
++                        &quot;tags_to_ids&quot;
++                    ].items()},
+                 num_tags=tag_spec[&quot;num_tags&quot;],
+             )
+             for tag_spec in entity_tag_specs
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/shared/core/domain.py#L1672'>rasa/shared/core/domain.py~L1672</a></p>
+<pre><code class="language-diff"> 
+         def get_duplicates(my_items: Iterable[Any]) -&gt; List[Any]:
+             &quot;&quot;&quot;Returns a list of duplicate items in my_items.&quot;&quot;&quot;
+-            return [
+-                item
+-                for item, count in collections.Counter(my_items).items()
+-                if count &gt; 1
+-            ]
++            return [item for item, count in collections.Counter(
++                    my_items
++                ).items() if count &gt; 1]
+ 
+         def check_mappings(
+             intent_properties: Dict[Text, Dict[Text, Union[bool, List]]],
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/shared/core/generator.py#L141'>rasa/shared/core/generator.py~L141</a></p>
+<pre><code class="language-diff"> 
+     @staticmethod
+     def _unfreeze_states(frozen_states: Deque[FrozenState]) -&gt; List[State]:
+-        return [
+-            {key: dict(value) for key, value in dict(frozen_state).items()}
+-            for frozen_state in frozen_states
+-        ]
++        return [{key: dict(value) for key, value in dict(
++                    frozen_state
++                ).items()} for frozen_state in frozen_states]
+ 
+     def past_states(
+         self,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/test_broker.py#L163'>tests/core/test_broker.py~L163</a></p>
+<pre><code class="language-diff">         actual.publish(e.as_dict())
+ 
+     with actual.session_scope() as session:
+-        events_types = [
+-            json.loads(event.data)[&quot;event&quot;]
+-            for event in session.query(actual.SQLBrokerEvent).all()
+-        ]
++        events_types = [json.loads(event.data)[&quot;event&quot;] for event in session.query(
++                actual.SQLBrokerEvent
++            ).all()]
+ 
+     assert events_types == [&quot;user&quot;, &quot;slot&quot;, &quot;restart&quot;]
+ 
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+6 -9 lines across 2 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/8ddec6c828bca5c9e4105e4bc6ffdcf94b3fe4cf/src/snowflake/cli/_app/snow_connector.py#L123'>src/snowflake/cli/_app/snow_connector.py~L123</a></p>
+<pre><code class="language-diff"> 
+     connection_parameters = {}
+     if connection_name:
+-        connection_parameters = {
+-            _resolve_alias(k): v
+-            for k, v in get_connection_dict(connection_name).items()
+-        }
++        connection_parameters = {_resolve_alias(k): v for k, v in get_connection_dict(
++                connection_name
++            ).items()}
+ 
+     elif temporary_connection:
+         connection_parameters = {}  # we will apply overrides in next step
+</code></pre>
+<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/8ddec6c828bca5c9e4105e4bc6ffdcf94b3fe4cf/src/snowflake/cli/api/config.py#L111'>src/snowflake/cli/api/config.py~L111</a></p>
+<pre><code class="language-diff">         return cls(**known_settings, _other_settings=other_settings)
+ 
+     def to_dict_of_known_non_empty_values(self) -&gt; dict:
+-        return {
+-            k: v
+-            for k, v in asdict(self).items()
+-            if k != &quot;_other_settings&quot; and v is not None
+-        }
++        return {k: v for k, v in asdict(
++                self
++            ).items() if k != &quot;_other_settings&quot; and v is not None}
+ 
+     def _non_empty_other_values(self) -&gt; dict:
+         return {k: v for k, v in self._other_settings.items() if v is not None}
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/alteryx/featuretools">alteryx/featuretools</a> (+9 -11 lines across 2 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/feature_base/feature_base.py#L612'>featuretools/feature_base/feature_base.py~L612</a></p>
+<pre><code class="language-diff">         return self._name_from_base(self.base_features[0].get_name())
+ 
+     def generate_names(self):
+-        return [
+-            self._name_from_base(base_name)
+-            for base_name in self.base_features[0].get_feature_names()
+-        ]
++        return [self._name_from_base(base_name) for base_name in self.base_features[
++                0
++            ].get_feature_names()]
+ 
+     def get_arguments(self):
+         _is_forward, relationship = self.relationship_path[0]
+</code></pre>
+<p><a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/synthesis/deep_feature_synthesis.py#L607'>featuretools/synthesis/deep_feature_synthesis.py~L607</a></p>
+<pre><code class="language-diff">                 return True
+             return False
+ 
+-        for feat in [
+-            f for f in all_features[dataframe.ww.name].values() if is_valid_feature(f)
+-        ]:
++        for feat in [f for f in all_features[
++                dataframe.ww.name
++            ].values() if is_valid_feature(f)]:
+             # Get interesting_values from the EntitySet that was passed, which
+             # is assumed to be the most recent version of the EntitySet.
+             # Features can contain a stale EntitySet reference without
+</code></pre>
+<p><a href='https://github.com/alteryx/featuretools/blob/938a0f6ccb98eaf21eca89830a25be2358a75db7/featuretools/synthesis/deep_feature_synthesis.py#L921'>featuretools/synthesis/deep_feature_synthesis.py~L921</a></p>
+<pre><code class="language-diff">             return [feature]
+ 
+         # Build the complete list of features prior to processing
+-        selected_features = [
+-            expand_features(feature)
+-            for feature in all_features[dataframe.ww.name].values()
+-        ]
++        selected_features = [expand_features(feature) for feature in all_features[
++                dataframe.ww.name
++            ].values()]
+         selected_features = functools.reduce(operator.iconcat, selected_features, [])
+ 
+         column_schemas = column_schemas if column_schemas else set()
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+37 -42 lines across 7 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/src/airflow/serialization/serialized_objects.py#L2426'>airflow-core/src/airflow/serialization/serialized_objects.py~L2426</a></p>
+<pre><code class="language-diff">         param_to_attr = {
+             &quot;description&quot;: &quot;_description&quot;,
+         }
+-        return {
+-            param_to_attr.get(k, k): v.default
+-            for k, v in signature(DAG.__init__).parameters.items()
+-            if v.default is not v.empty
+-        }
++        return {param_to_attr.get(k, k): v.default for k, v in signature(
++                DAG.__init__
++            ).parameters.items() if v.default is not v.empty}
+ 
+     _CONSTRUCTOR_PARAMS = __get_constructor_defaults.__func__()  # type: ignore
+     del __get_constructor_defaults
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/tests/unit/always/test_secrets_local_filesystem.py#L432'>airflow-core/tests/unit/always/test_secrets_local_filesystem.py~L432</a></p>
+<pre><code class="language-diff">     def test_yaml_extension_parsers_return_same_result(self, file_content):
+         with mock_local_file(file_content):
+             conn_uri_by_conn_id_yaml = {
+-                conn_id: conn.get_uri()
+-                for conn_id, conn in local_filesystem.load_connections_dict(&quot;a.yaml&quot;).items()
++                conn_id: conn.get_uri() for conn_id, conn in local_filesystem.load_connections_dict(
++                    &quot;a.yaml&quot;
++                ).items()
+             }
+             conn_uri_by_conn_id_yml = {
+-                conn_id: conn.get_uri()
+-                for conn_id, conn in local_filesystem.load_connections_dict(&quot;a.yml&quot;).items()
++                conn_id: conn.get_uri() for conn_id, conn in local_filesystem.load_connections_dict(
++                    &quot;a.yml&quot;
++                ).items()
+             }
+             assert conn_uri_by_conn_id_yaml == conn_uri_by_conn_id_yml
+ 
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/tests/unit/jobs/test_scheduler_job.py#L2206'>airflow-core/tests/unit/jobs/test_scheduler_job.py~L2206</a></p>
+<pre><code class="language-diff">         assert [x.queued_dttm for x in tis] == [None, None]
+ 
+         _queue_tasks(tis=tis)
+-        log_events = [
+-            x.event for x in session.scalars(select(Log).where(Log.run_id == run_id).order_by(Log.id)).all()
+-        ]
++        log_events = [x.event for x in session.scalars(
++                select(Log).where(Log.run_id == run_id).order_by(Log.id)
++            ).all()]
+         assert log_events == [
+             &quot;stuck in queued reschedule&quot;,
+             &quot;stuck in queued reschedule&quot;,
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/tests/unit/jobs/test_scheduler_job.py#L2217'>airflow-core/tests/unit/jobs/test_scheduler_job.py~L2217</a></p>
+<pre><code class="language-diff">         with _loader_mock(mock_executors):
+             scheduler._handle_tasks_stuck_in_queued()
+ 
+-        log_events = [
+-            x.event for x in session.scalars(select(Log).where(Log.run_id == run_id).order_by(Log.id)).all()
+-        ]
++        log_events = [x.event for x in session.scalars(
++                select(Log).where(Log.run_id == run_id).order_by(Log.id)
++            ).all()]
+         assert log_events == [
+             &quot;stuck in queued reschedule&quot;,
+             &quot;stuck in queued reschedule&quot;,
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/tests/unit/jobs/test_scheduler_job.py#L2233'>airflow-core/tests/unit/jobs/test_scheduler_job.py~L2233</a></p>
+<pre><code class="language-diff"> 
+         with _loader_mock(mock_executors):
+             scheduler._handle_tasks_stuck_in_queued()
+-        log_events = [
+-            x.event for x in session.scalars(select(Log).where(Log.run_id == run_id).order_by(Log.id)).all()
+-        ]
++        log_events = [x.event for x in session.scalars(
++                select(Log).where(Log.run_id == run_id).order_by(Log.id)
++            ).all()]
+         assert log_events == [
+             &quot;stuck in queued reschedule&quot;,
+             &quot;stuck in queued reschedule&quot;,
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/tests/unit/jobs/test_scheduler_job.py#L2297'>airflow-core/tests/unit/jobs/test_scheduler_job.py~L2297</a></p>
+<pre><code class="language-diff">         assert [x.queued_dttm for x in tis] == [None, None]
+ 
+         _queue_tasks(tis=tis)
+-        log_events = [
+-            x.event for x in session.scalars(select(Log).where(Log.run_id == run_id).order_by(Log.id)).all()
+-        ]
++        log_events = [x.event for x in session.scalars(
++                select(Log).where(Log.run_id == run_id).order_by(Log.id)
++            ).all()]
+         assert log_events == [
+             &quot;stuck in queued reschedule&quot;,
+             &quot;stuck in queued reschedule&quot;,
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/tests/unit/jobs/test_scheduler_job.py#L2308'>airflow-core/tests/unit/jobs/test_scheduler_job.py~L2308</a></p>
+<pre><code class="language-diff">         with _loader_mock(mock_executors):
+             scheduler._handle_tasks_stuck_in_queued()
+ 
+-        log_events = [
+-            x.event for x in session.scalars(select(Log).where(Log.run_id == run_id).order_by(Log.id)).all()
+-        ]
++        log_events = [x.event for x in session.scalars(
++                select(Log).where(Log.run_id == run_id).order_by(Log.id)
++            ).all()]
+         assert log_events == [
+             &quot;stuck in queued reschedule&quot;,
+             &quot;stuck in queued reschedule&quot;,
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/tests/unit/jobs/test_scheduler_job.py#L2329'>airflow-core/tests/unit/jobs/test_scheduler_job.py~L2329</a></p>
+<pre><code class="language-diff">                 scheduler._handle_tasks_stuck_in_queued()
+             tis = dr.get_task_instances(session=session)
+ 
+-        log_events = [
+-            x.event for x in session.scalars(select(Log).where(Log.run_id == run_id).order_by(Log.id)).all()
+-        ]
++        log_events = [x.event for x in session.scalars(
++                select(Log).where(Log.run_id == run_id).order_by(Log.id)
++            ).all()]
+         assert log_events == [
+             &quot;stuck in queued reschedule&quot;,
+             &quot;stuck in queued reschedule&quot;,
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/airflow-core/tests/unit/models/test_dag.py#L3239'>airflow-core/tests/unit/models/test_dag.py~L3239</a></p>
+<pre><code class="language-diff">             t1 = my_teardown()
+             s1 &gt;&gt; w1 &gt;&gt; t1
+             s1 &gt;&gt; t1
+-        assert {
+-            x.task_id
+-            for x in dag.partial_subset(
++        assert {x.task_id for x in dag.partial_subset(
+                 &quot;my_setup&quot;, include_upstream=upstream, include_downstream=downstream
+-            ).tasks
+-        } == expected
++            ).tasks} == expected
+ 
+     def test_get_flat_relative_ids_two_tasks_diff_setup_teardowns_deeper(self):
+         with DAG(dag_id=&quot;test_dag&quot;, schedule=None, start_date=pendulum.now()) as dag:
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/devel-common/src/docs/utils/conf_constants.py#L68'>devel-common/src/docs/utils/conf_constants.py~L68</a></p>
+<pre><code class="language-diff"> 
+ 
+ def get_rst_epilogue(package_version: str, airflow_core: bool) -&gt; str:
+-    return &quot;\n&quot;.join(
+-        f&quot;.. |{key}| replace:: {replace}&quot;
+-        for key, replace in get_global_substitutions(package_version, airflow_core).items()
+-    )
++    return &quot;\n&quot;.join(f&quot;.. |{key}| replace:: {replace}&quot; for key, replace in get_global_substitutions(
++            package_version, airflow_core
++        ).items())
+ 
+ 
+ SMARTQUOTES_EXCLUDES = {&quot;builders&quot;: [&quot;man&quot;, &quot;text&quot;, &quot;spelling&quot;]}
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/providers/fab/src/airflow/providers/fab/auth_manager/security_manager/override.py#L2415'>providers/fab/src/airflow/providers/fab/auth_manager/security_manager/override.py~L2415</a></p>
+<pre><code class="language-diff"> 
+     def _get_all_roles_with_permissions(self) -&gt; dict[str, Role]:
+         &quot;&quot;&quot;Return a dict with a key of role name and value of role with early loaded permissions.&quot;&quot;&quot;
+-        return {
+-            r.name: r
+-            for r in self.session.scalars(
++        return {r.name: r for r in self.session.scalars(
+                 select(self.role_model).options(joinedload(self.role_model.permissions))
+-            ).unique()
+-        }
++            ).unique()}
+ 
+     def _get_all_non_dag_permissions(self) -&gt; dict[tuple[str, str], Permission]:
+         &quot;&quot;&quot;
+</code></pre>
+<p><a href='https://github.com/apache/airflow/blob/1c62f7541a6efa365c62a0af68047bc2373827a0/providers/google/src/airflow/providers/google/cloud/openlineage/mixins.py#L473'>providers/google/src/airflow/providers/google/cloud/openlineage/mixins.py~L473</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;Extract column names from a dataset's schema.&quot;&quot;&quot;
+         return [
+             f.name
+-            for f in dataset.facets.get(&quot;schema&quot;, SchemaDatasetFacet(fields=[])).fields  # type: ignore[union-attr]
++            for f in (
++                dataset.facets.get(&quot;schema&quot;, SchemaDatasetFacet(fields=[])).fields  # type: ignore[union-attr]
++            )
+             if dataset.facets
+         ]
+ 
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+71 -62 lines across 12 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/commands/dashboard/importers/v1/utils.py#L82'>superset/commands/dashboard/importers/v1/utils.py~L82</a></p>
+<pre><code class="language-diff">         # in filter_scopes the key is the chart ID as a string; we need to update
+         # them to be the new ID as a string:
+         metadata[&quot;filter_scopes&quot;] = {
+-            str(id_map[int(old_id)]): columns
+-            for old_id, columns in metadata[&quot;filter_scopes&quot;].items()
+-            if int(old_id) in id_map
++            str(id_map[int(old_id)]): columns for old_id, columns in metadata[
++                &quot;filter_scopes&quot;
++            ].items() if int(old_id) in id_map
+         }
+ 
+         # now update columns to use new IDs:
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/commands/dashboard/importers/v1/utils.py#L98'>superset/commands/dashboard/importers/v1/utils.py~L98</a></p>
+<pre><code class="language-diff"> 
+     if &quot;expanded_slices&quot; in metadata:
+         metadata[&quot;expanded_slices&quot;] = {
+-            str(id_map[int(old_id)]): value
+-            for old_id, value in metadata[&quot;expanded_slices&quot;].items()
++            str(id_map[int(old_id)]): value for old_id, value in metadata[
++                &quot;expanded_slices&quot;
++            ].items()
+         }
+ 
+     if &quot;default_filters&quot; in metadata:
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/common/query_context_processor.py#L148'>superset/common/query_context_processor.py~L148</a></p>
+<pre><code class="language-diff">             try:
+                 if invalid_columns := [
+                     col
+-                    for col in get_column_names_from_columns(query_obj.columns)
+-                    + get_column_names_from_metrics(query_obj.metrics or [])
++                    for col in get_column_names_from_columns(
++                        query_obj.columns
++                    ) + get_column_names_from_metrics(query_obj.metrics or [])
+                     if (
+                         col not in self._qc_datasource.column_names
+                         and col != DTTM_ALIAS
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/daos/tag.py#L318'>superset/daos/tag.py~L318</a></p>
+<pre><code class="language-diff">         ids = [tag.id for tag in tags]
+         return [
+             star.tag_id
+-            for star in db.session.query(user_favorite_tag_table.c.tag_id)
+-            .filter(
+-                user_favorite_tag_table.c.tag_id.in_(ids),
+-                user_favorite_tag_table.c.user_id == get_user_id(),
++            for star in (
++                db.session.query(user_favorite_tag_table.c.tag_id)
++                .filter(
++                    user_favorite_tag_table.c.tag_id.in_(ids),
++                    user_favorite_tag_table.c.user_id == get_user_id(),
++                )
++                .all()
+             )
+-            .all()
+         ]
+ 
+     @staticmethod
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/migrations/shared/native_filters.py#L264'>superset/migrations/shared/native_filters.py~L264</a></p>
+<pre><code class="language-diff">                                 child[&quot;cascadeParentIds&quot;].append(parent[&quot;id&quot;])
+ 
+     return sorted(
+-        [
+-            fltr
+-            for key in filter_by_key_and_field
+-            for fltr in filter_by_key_and_field[key].values()
+-        ],
++        [fltr for key in filter_by_key_and_field for fltr in filter_by_key_and_field[
++                key
++            ].values()],
+         key=lambda fltr: fltr[&quot;filterType&quot;],
+     )
+ 
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/models/helpers.py#L214'>superset/models/helpers.py~L214</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;Get all (single column and multi column) unique constraints&quot;&quot;&quot;
+         unique = [
+             {c.name for c in u.columns}
+-            for u in cls.__table_args__  # type: ignore
++            for u in (
++                cls.__table_args__  # type: ignore
++            )
+             if isinstance(u, UniqueConstraint)
+         ]
+         unique.extend({c.name} for c in cls.__table__.columns if c.unique)  # type: ignore
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/models/helpers.py#L251'>superset/models/helpers.py~L251</a></p>
+<pre><code class="language-diff"> 
+         schema: dict[str, Any] = {
+             column.name: formatter(column)
+-            for column in cls.__table__.columns  # type: ignore
++            for column in (
++                cls.__table__.columns  # type: ignore
++            )
+             if (column.name in cls.export_fields and column.name not in parent_excludes)
+         }
+         if recursive:
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/models/helpers.py#L403'>superset/models/helpers.py~L403</a></p>
+<pre><code class="language-diff">                 parent_excludes = {c.name for c in parent_ref.local_columns}
+         dict_rep = {
+             c.name: getattr(self, c.name)
+-            for c in cls.__table__.columns  # type: ignore
++            for c in (
++                cls.__table__.columns  # type: ignore
++            )
+             if (
+                 c.name in export_fields
+                 and c.name not in parent_excludes
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/models/helpers.py#L694'>superset/models/helpers.py~L694</a></p>
+<pre><code class="language-diff"> 
+     table = target.__table__
+     primary_keys = table.primary_key.columns.keys()
+-    data = {
+-        attr: getattr(target, attr)
+-        for attr in list(table.columns.keys()) + (keep_relations or [])
+-        if attr not in primary_keys and attr not in ignore
+-    }
++    data = {attr: getattr(target, attr) for attr in list(table.columns.keys()) + (
++            keep_relations or []
++        ) if attr not in primary_keys and attr not in ignore}
+     data.update(kwargs)
+ 
+     return target.__class__(**data)
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/security/manager.py#L633'>superset/security/manager.py~L633</a></p>
+<pre><code class="language-diff">             and (
+                 drillable_columns := {
+                     row[0]
+-                    for row in self.session.query(TableColumn.column_name)
+-                    .filter(TableColumn.table_id == datasource.id)
+-                    .filter(TableColumn.groupby)
+-                    .all()
++                    for row in (
++                        self.session.query(TableColumn.column_name)
++                        .filter(TableColumn.table_id == datasource.id)
++                        .filter(TableColumn.groupby)
++                        .all()
++                    )
+                 }
+             )
+             and set(dimensions).issubset(drillable_columns)
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/views/core.py#L736'>superset/views/core.py~L736</a></p>
+<pre><code class="language-diff">                 [
+                     {
+                         &quot;slice_id&quot; if key == &quot;chart_id&quot; else key: value
+-                        for key, value in ChartWarmUpCacheCommand(
+-                            slc, dashboard_id, extra_filters
++                        for key, value in (
++                            ChartWarmUpCacheCommand(slc, dashboard_id, extra_filters)
++                            .run()
++                            .items()
+                         )
+-                        .run()
+-                        .items()
+                     }
+                     for slc in slices
+                 ],
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/views/datasource/views.py#L101'>superset/views/datasource/views.py~L101</a></p>
+<pre><code class="language-diff">             datasource_dict[&quot;owners&quot;], default_to_user=False
+         )
+ 
+-        duplicates = [
+-            name
+-            for name, count in Counter([
++        duplicates = [name for name, count in Counter([
+                 col[&quot;column_name&quot;] for col in datasource_dict[&quot;columns&quot;]
+-            ]).items()
+-            if count &gt; 1
+-        ]
++            ]).items() if count &gt; 1]
+         if duplicates:
+             return json_error_response(
+                 _(
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/viz.py#L562'>superset/viz.py~L562</a></p>
+<pre><code class="language-diff">             try:
+                 invalid_columns = [
+                     col
+-                    for col in get_column_names_from_columns(
+-                        query_obj.get(&quot;columns&quot;) or []
+-                    )
+-                    + get_column_names_from_columns(query_obj.get(&quot;groupby&quot;) or [])
+-                    + utils.get_column_names_from_metrics(
+-                        cast(list[Metric], query_obj.get(&quot;metrics&quot;) or [])
++                    for col in (
++                        get_column_names_from_columns(query_obj.get(&quot;columns&quot;) or [])
++                        + get_column_names_from_columns(query_obj.get(&quot;groupby&quot;) or [])
++                        + utils.get_column_names_from_metrics(
++                            cast(list[Metric], query_obj.get(&quot;metrics&quot;) or [])
++                        )
+                     )
+                     if col not in self.datasource.column_names
+                 ]
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/superset/viz.py#L2762'>superset/viz.py~L2762</a></p>
+<pre><code class="language-diff">             dims = ()
+         if level == -1:
+             return [
+-                {&quot;name&quot;: m, &quot;children&quot;: self.nest_procs(procs, 0, (m,))}
+-                for m in procs[0].columns
++                {&quot;name&quot;: m, &quot;children&quot;: self.nest_procs(procs, 0, (m,))} for m in procs[
++                    0
++                ].columns
+             ]
+         if not level:
+             return [
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/tests/integration_tests/charts/api_tests.py#L1545'>tests/integration_tests/charts/api_tests.py~L1545</a></p>
+<pre><code class="language-diff">         admin = self.get_user(&quot;admin&quot;)
+         users_favorite_ids = [
+             star.obj_id
+-            for star in db.session.query(FavStar.obj_id)
+-            .filter(
+-                and_(
+-                    FavStar.user_id == admin.id,
+-                    FavStar.class_name == FavStarClassName.CHART,
++            for star in (
++                db.session.query(FavStar.obj_id)
++                .filter(
++                    and_(
++                        FavStar.user_id == admin.id,
++                        FavStar.class_name == FavStarClassName.CHART,
++                    )
+                 )
++                .all()
+             )
+-            .all()
+         ]
+ 
+         assert users_favorite_ids
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/tests/integration_tests/dashboards/api_tests.py#L847'>tests/integration_tests/dashboards/api_tests.py~L847</a></p>
+<pre><code class="language-diff">         admin = self.get_user(&quot;admin&quot;)
+         users_favorite_ids = [
+             star.obj_id
+-            for star in db.session.query(FavStar.obj_id)
+-            .filter(
+-                and_(
+-                    FavStar.user_id == admin.id,
+-                    FavStar.class_name == FavStarClassName.DASHBOARD,
++            for star in (
++                db.session.query(FavStar.obj_id)
++                .filter(
++                    and_(
++                        FavStar.user_id == admin.id,
++                        FavStar.class_name == FavStarClassName.DASHBOARD,
++                    )
+                 )
++                .all()
+             )
+-            .all()
+         ]
+ 
+         assert users_favorite_ids
+</code></pre>
+<p><a href='https://github.com/apache/superset/blob/f165785003eeb51603b3be64e9303b332a53c7e7/tests/integration_tests/datasets/api_tests.py#L440'>tests/integration_tests/datasets/api_tests.py~L440</a></p>
+<pre><code class="language-diff">             },
+         }
+         if response[&quot;result&quot;][&quot;database&quot;][&quot;backend&quot;] not in (&quot;presto&quot;, &quot;hive&quot;):
+-            assert {
+-                k: v for k, v in response[&quot;result&quot;].items() if k in expected_result
+-            } == expected_result
++            assert {k: v for k, v in response[
++                    &quot;result&quot;
++                ].items() if k in expected_result} == expected_result
+         assert len(response[&quot;result&quot;][&quot;columns&quot;]) == 3
+         assert len(response[&quot;result&quot;][&quot;metrics&quot;]) == 2
+ 
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+6 -14 lines across 2 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/crazy_functions/Document_Optimize.py#L770'>crazy_functions/Document_Optimize.py~L770</a></p>
+<pre><code class="language-diff"> 
+         # 过滤支持的文件格式
+         file_paths = [
+-            f
+-            for f in file_paths
+-            if any(
+-                f.lower().endswith(ext)
+-                for ext in list(processor.paper_extractor.SUPPORTED_EXTENSIONS)
+-                + [&quot;.json&quot;, &quot;.csv&quot;, &quot;.xlsx&quot;, &quot;.xls&quot;]
+-            )
++            f for f in file_paths if any(f.lower().endswith(ext) for ext in list(
++                    processor.paper_extractor.SUPPORTED_EXTENSIONS
++                ) + [&quot;.json&quot;, &quot;.csv&quot;, &quot;.xlsx&quot;, &quot;.xls&quot;])
+         ]
+ 
+     if not file_paths:
+</code></pre>
+<p><a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/crazy_functions/paper_fns/reduce_aigc.py#L977'>crazy_functions/paper_fns/reduce_aigc.py~L977</a></p>
+<pre><code class="language-diff"> 
+         # 过滤支持的文件格式
+         file_paths = [
+-            f
+-            for f in file_paths
+-            if any(
+-                f.lower().endswith(ext)
+-                for ext in list(processor.paper_extractor.SUPPORTED_EXTENSIONS)
+-                + [&quot;.json&quot;, &quot;.csv&quot;, &quot;.xlsx&quot;, &quot;.xls&quot;]
+-            )
++            f for f in file_paths if any(f.lower().endswith(ext) for ext in list(
++                    processor.paper_extractor.SUPPORTED_EXTENSIONS
++                ) + [&quot;.json&quot;, &quot;.csv&quot;, &quot;.xlsx&quot;, &quot;.xls&quot;])
+         ]
+ 
+     if not file_paths:
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+12 -13 lines across 2 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/freedomofpress/securedrop/blob/9d136902700bfccfd64225a97cbe3770c2cd1c6a/securedrop/models.py#L874'>securedrop/models.py~L874</a></p>
+<pre><code class="language-diff"> 
+         # For seen indicators, we need to make sure one doesn't already exist
+         # otherwise it'll hit a unique key conflict
+-        already_seen_files = {
+-            file.file_id for file in SeenFile.query.filter_by(journalist_id=deleted.id).all()
+-        }
++        already_seen_files = {file.file_id for file in SeenFile.query.filter_by(
++                journalist_id=deleted.id
++            ).all()}
+         for file in SeenFile.query.filter_by(journalist_id=self.id).all():
+             if file.file_id in already_seen_files:
+                 db.session.delete(file)
+</code></pre>
+<p><a href='https://github.com/freedomofpress/securedrop/blob/9d136902700bfccfd64225a97cbe3770c2cd1c6a/securedrop/models.py#L884'>securedrop/models.py~L884</a></p>
+<pre><code class="language-diff">                 file.journalist_id = deleted.id
+                 db.session.add(file)
+ 
+-        already_seen_messages = {
+-            message.message_id
+-            for message in SeenMessage.query.filter_by(journalist_id=deleted.id).all()
+-        }
++        already_seen_messages = {message.message_id for message in SeenMessage.query.filter_by(
++                journalist_id=deleted.id
++            ).all()}
+         for message in SeenMessage.query.filter_by(journalist_id=self.id).all():
+             if message.message_id in already_seen_messages:
+                 db.session.delete(message)
+</code></pre>
+<p><a href='https://github.com/freedomofpress/securedrop/blob/9d136902700bfccfd64225a97cbe3770c2cd1c6a/securedrop/models.py#L895'>securedrop/models.py~L895</a></p>
+<pre><code class="language-diff">                 message.journalist_id = deleted.id
+                 db.session.add(message)
+ 
+-        already_seen_replies = {
+-            reply.reply_id for reply in SeenReply.query.filter_by(journalist_id=deleted.id).all()
+-        }
++        already_seen_replies = {reply.reply_id for reply in SeenReply.query.filter_by(
++                journalist_id=deleted.id
++            ).all()}
+         for reply in SeenReply.query.filter_by(journalist_id=self.id).all():
+             if reply.reply_id in already_seen_replies:
+                 db.session.delete(reply)
+</code></pre>
+<p><a href='https://github.com/freedomofpress/securedrop/blob/9d136902700bfccfd64225a97cbe3770c2cd1c6a/securedrop/tests/test_journalist_api.py#L432'>securedrop/tests/test_journalist_api.py~L432</a></p>
+<pre><code class="language-diff">             submission[&quot;filename&quot;] for submission in response.json[&quot;submissions&quot;]
+         ]
+ 
+-        expected_submissions = [
+-            submission.filename for submission in test_submissions[&quot;source&quot;].submissions
+-        ]
++        expected_submissions = [submission.filename for submission in test_submissions[
++                &quot;source&quot;
++            ].submissions]
+         assert observed_submissions == expected_submissions
+ 
+ 
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+5 -9 lines across 2 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/ibis-project/ibis/blob/f1c888b6f299d5dae794643464500d038af0994c/ibis/backends/pyspark/__init__.py#L389'>ibis/backends/pyspark/<strong>init</strong>.py~L389</a></p>
+<pre><code class="language-diff">         table_loc = self._to_sqlglot_table(database)
+         catalog, db = self._to_catalog_db_tuple(table_loc)
+         with self._active_catalog(catalog):
+-            tables = [
+-                row.tableName
+-                for row in self._session.sql(
++            tables = [row.tableName for row in self._session.sql(
+                     f&quot;SHOW TABLES IN {db or self.current_database}&quot;
+-                ).collect()
+-            ]
++                ).collect()]
+         return self._filter_with_like(tables, like)
+ 
+     def _wrap_udf_to_return_pandas(self, func, output_dtype):
+</code></pre>
+<p><a href='https://github.com/ibis-project/ibis/blob/f1c888b6f299d5dae794643464500d038af0994c/ibis/backends/sql/datatypes.py#L1387'>ibis/backends/sql/datatypes.py~L1387</a></p>
+<pre><code class="language-diff">     dialect = &quot;athena&quot;
+ 
+ 
+-TYPE_MAPPERS: dict[str, SqlglotType] = {
+-    mapper.dialect: mapper
+-    for mapper in set(get_subclasses(SqlglotType)) - {SqlglotType, BigQueryUDFType}
+-}
++TYPE_MAPPERS: dict[str, SqlglotType] = {mapper.dialect: mapper for mapper in set(
++        get_subclasses(SqlglotType)
++    ) - {SqlglotType, BigQueryUDFType}}
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+21 -32 lines across 5 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/langchain-ai/langchain/blob/9f470d297f0177b562c42a8a2f60a6f36ea48324/libs/core/langchain_core/messages/block_translators/openai.py#L726'>libs/core/langchain_core/messages/block_translators/openai.py~L726</a></p>
+<pre><code class="language-diff">                 if &quot;action&quot; in block and isinstance(block[&quot;action&quot;], dict):
+                     if &quot;sources&quot; in block[&quot;action&quot;]:
+                         sources = block[&quot;action&quot;][&quot;sources&quot;]
+-                    web_search_call[&quot;args&quot;] = {
+-                        k: v for k, v in block[&quot;action&quot;].items() if k != &quot;sources&quot;
+-                    }
++                    web_search_call[&quot;args&quot;] = {k: v for k, v in block[
++                            &quot;action&quot;
++                        ].items() if k != &quot;sources&quot;}
+                 for key in block:
+                     if key not in (&quot;type&quot;, &quot;id&quot;, &quot;action&quot;, &quot;status&quot;, &quot;index&quot;):
+                         web_search_call[key] = block[key]
+</code></pre>
+<p><a href='https://github.com/langchain-ai/langchain/blob/9f470d297f0177b562c42a8a2f60a6f36ea48324/libs/core/langchain_core/messages/utils.py#L1261'>libs/core/langchain_core/messages/utils.py~L1261</a></p>
+<pre><code class="language-diff">                             f&quot;{missing}. Full content block:\n\n{block}&quot;
+                         )
+                         raise ValueError(err)
+-                    if not any(
+-                        tool_call[&quot;id&quot;] == block[&quot;id&quot;]
+-                        for tool_call in cast(&quot;AIMessage&quot;, message).tool_calls
+-                    ):
++                    if not any(tool_call[&quot;id&quot;] == block[&quot;id&quot;] for tool_call in cast(
++                            &quot;AIMessage&quot;, message
++                        ).tool_calls):
+                         oai_msg[&quot;tool_calls&quot;] = oai_msg.get(&quot;tool_calls&quot;, [])
+                         oai_msg[&quot;tool_calls&quot;].append({
+                             &quot;type&quot;: &quot;function&quot;,
+</code></pre>
+<p><a href='https://github.com/langchain-ai/langchain/blob/9f470d297f0177b562c42a8a2f60a6f36ea48324/libs/core/langchain_core/runnables/base.py#L599'>libs/core/langchain_core/runnables/base.py~L599</a></p>
+<pre><code class="language-diff">         # Import locally to prevent circular import
+         from langchain_core.prompts.base import BasePromptTemplate  # noqa: PLC0415
+ 
+-        return [
+-            node.data
+-            for node in self.get_graph(config=config).nodes.values()
+-            if isinstance(node.data, BasePromptTemplate)
+-        ]
++        return [node.data for node in self.get_graph(
++                config=config
++            ).nodes.values() if isinstance(node.data, BasePromptTemplate)]
+ 
+     def __or__(
+         self,
+</code></pre>
+<p><a href='https://github.com/langchain-ai/langchain/blob/9f470d297f0177b562c42a8a2f60a6f36ea48324/libs/langchain/langchain_classic/chat_models/base.py#L604'>libs/langchain/langchain_classic/chat_models/base.py~L604</a></p>
+<pre><code class="language-diff"> 
+     def _model_params(self, config: RunnableConfig | None) -&gt; dict:
+         config = ensure_config(config)
+-        model_params = {
+-            k.removeprefix(self._config_prefix): v
+-            for k, v in config.get(&quot;configurable&quot;, {}).items()
+-            if k.startswith(self._config_prefix)
+-        }
++        model_params = {k.removeprefix(self._config_prefix): v for k, v in config.get(
++                &quot;configurable&quot;, {}
++            ).items() if k.startswith(self._config_prefix)}
+         if self._configurable_fields != &quot;any&quot;:
+             model_params = {
+                 k: v for k, v in model_params.items() if k in self._configurable_fields
+</code></pre>
+<p><a href='https://github.com/langchain-ai/langchain/blob/9f470d297f0177b562c42a8a2f60a6f36ea48324/libs/langchain/langchain_classic/chat_models/base.py#L624'>libs/langchain/langchain_classic/chat_models/base.py~L624</a></p>
+<pre><code class="language-diff">         config = RunnableConfig(**(config or {}), **cast(&quot;RunnableConfig&quot;, kwargs))
+         model_params = self._model_params(config)
+         remaining_config = {k: v for k, v in config.items() if k != &quot;configurable&quot;}
+-        remaining_config[&quot;configurable&quot;] = {
+-            k: v
+-            for k, v in config.get(&quot;configurable&quot;, {}).items()
+-            if k.removeprefix(self._config_prefix) not in model_params
+-        }
++        remaining_config[&quot;configurable&quot;] = {k: v for k, v in config.get(
++                &quot;configurable&quot;, {}
++            ).items() if k.removeprefix(self._config_prefix) not in model_params}
+         queued_declarative_operations = list(self._queued_declarative_operations)
+         if remaining_config:
+             queued_declarative_operations.append(
+</code></pre>
+<p><a href='https://github.com/langchain-ai/langchain/blob/9f470d297f0177b562c42a8a2f60a6f36ea48324/libs/langchain_v1/langchain/chat_models/base.py#L559'>libs/langchain_v1/langchain/chat_models/base.py~L559</a></p>
+<pre><code class="language-diff"> 
+     def _model_params(self, config: RunnableConfig | None) -&gt; dict:
+         config = ensure_config(config)
+-        model_params = {
+-            _remove_prefix(k, self._config_prefix): v
+-            for k, v in config.get(&quot;configurable&quot;, {}).items()
+-            if k.startswith(self._config_prefix)
+-        }
++        model_params = {_remove_prefix(k, self._config_prefix): v for k, v in config.get(
++                &quot;configurable&quot;, {}
++            ).items() if k.startswith(self._config_prefix)}
+         if self._configurable_fields != &quot;any&quot;:
+             model_params = {k: v for k, v in model_params.items() if k in self._configurable_fields}
+         return model_params
+</code></pre>
+<p><a href='https://github.com/langchain-ai/langchain/blob/9f470d297f0177b562c42a8a2f60a6f36ea48324/libs/langchain_v1/langchain/chat_models/base.py#L577'>libs/langchain_v1/langchain/chat_models/base.py~L577</a></p>
+<pre><code class="language-diff">         config = RunnableConfig(**(config or {}), **cast(&quot;RunnableConfig&quot;, kwargs))
+         model_params = self._model_params(config)
+         remaining_config = {k: v for k, v in config.items() if k != &quot;configurable&quot;}
+-        remaining_config[&quot;configurable&quot;] = {
+-            k: v
+-            for k, v in config.get(&quot;configurable&quot;, {}).items()
+-            if _remove_prefix(k, self._config_prefix) not in model_params
+-        }
++        remaining_config[&quot;configurable&quot;] = {k: v for k, v in config.get(
++                &quot;configurable&quot;, {}
++            ).items() if _remove_prefix(k, self._config_prefix) not in model_params}
+         queued_declarative_operations = list(self._queued_declarative_operations)
+         if remaining_config:
+             queued_declarative_operations.append(
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+14 -20 lines across 2 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/latchbio/latch/blob/e0e83673bb418f03d6e221acb4ae7ae829d8f8e9/src/latch/utils.py#L128'>src/latch/utils.py~L128</a></p>
+<pre><code class="language-diff">             name=x[&quot;displayName&quot;],
+             default=x[&quot;accountId&quot;] == default_account,
+         )
+-        for x in owned_teams
+-        + member_teams
+-        + (
+-            [res[&quot;teamInfoByAccountId&quot;]]
+-            if res[&quot;teamInfoByAccountId&quot;] is not None
+-            else []
++        for x in (
++            owned_teams
++            + member_teams
++            + (
++                [res[&quot;teamInfoByAccountId&quot;]]
++                if res[&quot;teamInfoByAccountId&quot;] is not None
++                else []
++            )
++            + owned_org_teams
++            + member_org_teams
+         )
+-        + owned_org_teams
+-        + member_org_teams
+     }
+ 
+     return teams
+</code></pre>
+<p><a href='https://github.com/latchbio/latch/blob/e0e83673bb418f03d6e221acb4ae7ae829d8f8e9/src/latch_cli/snakemake/serialize.py#L255'>src/latch_cli/snakemake/serialize.py~L255</a></p>
+<pre><code class="language-diff">     )
+     admin_lp = get_serializable_launch_plan(lp, settings, registrable_entity_cache)
+ 
+-    registrable_entities = [
+-        x.to_flyte_idl()
+-        for x in list(
++    registrable_entities = [x.to_flyte_idl() for x in list(
+             filter(should_register_with_admin, list(registrable_entity_cache.values()))
+-        )
+-        + [admin_lp]
+-    ]
++        ) + [admin_lp]]
+     for idx, entity in enumerate(registrable_entities):
+         cur = spec_dir
+ 
+</code></pre>
+<p><a href='https://github.com/latchbio/latch/blob/e0e83673bb418f03d6e221acb4ae7ae829d8f8e9/src/latch_cli/snakemake/serialize.py#L308'>src/latch_cli/snakemake/serialize.py~L308</a></p>
+<pre><code class="language-diff">     )
+     admin_lp = get_serializable_launch_plan(lp, settings, registrable_entity_cache)
+ 
+-    registrable_entities = [
+-        x.to_flyte_idl()
+-        for x in list(
++    registrable_entities = [x.to_flyte_idl() for x in list(
+             filter(should_register_with_admin, list(registrable_entity_cache.values()))
+-        )
+-        + [admin_lp]
+-    ]
++        ) + [admin_lp]]
+ 
+     click.secho(&quot;\nSerializing workflow entities&quot;, bold=True)
+     persist_registrable_entities(registrable_entities, output_dir)
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+3 -5 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/lnbits/lnbits/blob/bd07a319abf1368723649d99add449607fcb2342/lnbits/core/views/extension_api.py#L456'>lnbits/core/views/extension_api.py~L456</a></p>
+<pre><code class="language-diff">     user: User = Depends(check_user_exists),
+ ) -&gt; list[Extension]:
+     user_extensions_ids = [ue.extension for ue in await get_user_extensions(user.id)]
+-    return [
+-        ext
+-        for ext in await get_valid_extensions(False)
+-        if ext.code in user_extensions_ids
+-    ]
++    return [ext for ext in await get_valid_extensions(
++            False
++        ) if ext.code in user_extensions_ids]
+ 
+ 
+ @extension_router.delete(
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+43 -43 lines across 6 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/mlflow/dspy/util.py#L79'>mlflow/dspy/util.py~L79</a></p>
+<pre><code class="language-diff"> 
+         lm = dspy.settings.lm
+ 
+-        lm_attributes = {
+-            key: value
+-            for key, value in getattr(lm, &quot;kwargs&quot;, {}).items()
+-            if key not in {&quot;api_key&quot;, &quot;api_base&quot;}
+-        }
++        lm_attributes = {key: value for key, value in getattr(
++                lm, &quot;kwargs&quot;, {}
++            ).items() if key not in {&quot;api_key&quot;, &quot;api_base&quot;}}
+ 
+         for attr in [&quot;model&quot;, &quot;model_type&quot;, &quot;cache&quot;, &quot;temperature&quot;, &quot;max_tokens&quot;]:
+             value = getattr(lm, attr, None)
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/mlflow/store/tracking/sqlalchemy_store.py#L1801'>mlflow/store/tracking/sqlalchemy_store.py~L1801</a></p>
+<pre><code class="language-diff">     ) -&gt; list[LoggedModelOutput]:
+         return [
+             LoggedModelOutput(model_id=output.destination_id, step=output.step)
+-            for output in session.query(SqlInput)
+-            .filter(
+-                SqlInput.source_type == &quot;RUN_OUTPUT&quot;,
+-                SqlInput.source_id == run_id,
+-                SqlInput.destination_type == &quot;MODEL_OUTPUT&quot;,
++            for output in (
++                session.query(SqlInput)
++                .filter(
++                    SqlInput.source_type == &quot;RUN_OUTPUT&quot;,
++                    SqlInput.source_id == run_id,
++                    SqlInput.destination_type == &quot;MODEL_OUTPUT&quot;,
++                )
++                .all()
+             )
+-            .all()
+         ]
+ 
+     #######################################################################################
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/mlflow/store/tracking/sqlalchemy_store.py#L2050'>mlflow/store/tracking/sqlalchemy_store.py~L2050</a></p>
+<pre><code class="language-diff">             # First, get all scorer_ids for this experiment
+             scorer_ids = [
+                 scorer.scorer_id
+-                for scorer in session.query(SqlScorer.scorer_id)
+-                .filter(SqlScorer.experiment_id == experiment.experiment_id)
+-                .all()
++                for scorer in (
++                    session.query(SqlScorer.scorer_id)
++                    .filter(SqlScorer.experiment_id == experiment.experiment_id)
++                    .all()
++                )
+             ]
+ 
+             if not scorer_ids:
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/mlflow/types/schema.py#L399'>mlflow/types/schema.py~L399</a></p>
+<pre><code class="language-diff">             not isinstance(prop, dict) for prop in kwargs[&quot;properties&quot;].values()
+         ):
+             raise MlflowException(&quot;Expected properties to be a dictionary of Property JSON&quot;)
+-        return cls([
+-            Property.from_json_dict(**{name: prop}) for name, prop in kwargs[&quot;properties&quot;].items()
+-        ])
++        return cls([Property.from_json_dict(**{name: prop}) for name, prop in kwargs[
++                &quot;properties&quot;
++            ].items()])
+ 
+     def _merge(self, other: BaseType) -&gt; Object:
+         &quot;&quot;&quot;
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/tests/metrics/genai/test_genai_metrics.py#L160'>tests/metrics/genai/test_genai_metrics.py~L160</a></p>
+<pre><code class="language-diff"> 
+ 
+ def test_make_genai_metric_correct_response(custom_metric):
+-    assert [
+-        param.name for param in inspect.signature(custom_metric.eval_fn).parameters.values()
+-    ] == [&quot;predictions&quot;, &quot;metrics&quot;, &quot;inputs&quot;, &quot;targets&quot;]
++    assert [param.name for param in inspect.signature(
++            custom_metric.eval_fn
++        ).parameters.values()] == [&quot;predictions&quot;, &quot;metrics&quot;, &quot;inputs&quot;, &quot;targets&quot;]
+ 
+     with mock.patch.object(
+         model_utils,
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/tests/metrics/genai/test_genai_metrics.py#L275'>tests/metrics/genai/test_genai_metrics.py~L275</a></p>
+<pre><code class="language-diff">         ],
+     )
+ 
+-    assert [
+-        param.name for param in inspect.signature(custom_metric.eval_fn).parameters.values()
+-    ] == [&quot;predictions&quot;, &quot;metrics&quot;, &quot;inputs&quot;, &quot;targets&quot;]
++    assert [param.name for param in inspect.signature(
++            custom_metric.eval_fn
++        ).parameters.values()] == [&quot;predictions&quot;, &quot;metrics&quot;, &quot;inputs&quot;, &quot;targets&quot;]
+ 
+     with mock.patch.object(
+         model_utils,
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/tests/pyfunc/test_pyfunc_model_with_type_hints.py#L339'>tests/pyfunc/test_pyfunc_model_with_type_hints.py~L339</a></p>
+<pre><code class="language-diff">         df = spark.createDataFrame(pd.DataFrame({&quot;input&quot;: input_example}), schema=schema)
+     df = df.withColumn(&quot;response&quot;, udf(&quot;input&quot;))
+     pdf = df.toPandas()
+-    assert [
+-        x.asDict(recursive=True) if isinstance(x, Row) else x for x in pdf[&quot;response&quot;].tolist()
+-    ] == input_example
++    assert [x.asDict(recursive=True) if isinstance(x, Row) else x for x in pdf[
++            &quot;response&quot;
++        ].tolist()] == input_example
+ 
+ 
+ def test_pyfunc_model_with_no_op_type_hint_pass_signature_works():
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/tests/store/artifact/test_presigned_url_artifact_repo.py#L118'>tests/store/artifact/test_presigned_url_artifact_repo.py~L118</a></p>
+<pre><code class="language-diff">     remote_path = json.loads(kwargs[&quot;json_body&quot;])[&quot;path&quot;]
+     return CreateDownloadUrlResponse(
+         url=_make_presigned_url(remote_path),
+-        headers=[
+-            HttpHeader(name=header, value=val) for header, val in _make_headers(remote_path).items()
+-        ],
++        headers=[HttpHeader(name=header, value=val) for header, val in _make_headers(
++                remote_path
++            ).items()],
+     )
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/tests/store/artifact/test_presigned_url_artifact_repo.py#L163'>tests/store/artifact/test_presigned_url_artifact_repo.py~L163</a></p>
+<pre><code class="language-diff">     remote_path = json.loads(kwargs[&quot;json_body&quot;])[&quot;path&quot;]
+     return CreateUploadUrlResponse(
+         url=_make_presigned_url(remote_path),
+-        headers=[
+-            HttpHeader(name=header, value=val) for header, val in _make_headers(remote_path).items()
+-        ],
++        headers=[HttpHeader(name=header, value=val) for header, val in _make_headers(
++                remote_path
++            ).items()],
+     )
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/tests/store/artifact/test_presigned_url_artifact_repo.py#L208'>tests/store/artifact/test_presigned_url_artifact_repo.py~L208</a></p>
+<pre><code class="language-diff">             f&quot;{PRESIGNED_URL_ARTIFACT_REPOSITORY}.PresignedUrlArtifactRepository._get_download_presigned_url_and_headers&quot;,
+             return_value=CreateDownloadUrlResponse(
+                 url=_make_presigned_url(remote_file_path),
+-                headers=[
+-                    HttpHeader(name=k, value=v) for k, v in _make_headers(remote_file_path).items()
+-                ],
++                headers=[HttpHeader(name=k, value=v) for k, v in _make_headers(
++                        remote_file_path
++                    ).items()],
+             ),
+         ) as mock_request,
+         mock.patch(
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/tests/store/artifact/test_presigned_url_artifact_repo.py#L253'>tests/store/artifact/test_presigned_url_artifact_repo.py~L253</a></p>
+<pre><code class="language-diff">     total_remote_path = f&quot;{artifact_path}/{os.path.basename(local_file)}&quot;
+     creds = ArtifactCredentialInfo(
+         signed_uri=_make_presigned_url(total_remote_path),
+-        headers=[
+-            ArtifactCredentialInfo.HttpHeader(name=k, value=v)
+-            for k, v in _make_headers(total_remote_path).items()
+-        ],
++        headers=[ArtifactCredentialInfo.HttpHeader(name=k, value=v) for k, v in _make_headers(
++                total_remote_path
++            ).items()],
+     )
+     with (
+         mock.patch(
+</code></pre>
+<p><a href='https://github.com/mlflow/mlflow/blob/45a42428e175fa01250d22600d43ade1f25e2bc1/tests/store/artifact/test_presigned_url_artifact_repo.py#L295'>tests/store/artifact/test_presigned_url_artifact_repo.py~L295</a></p>
+<pre><code class="language-diff">     ):
+         cred_info = ArtifactCredentialInfo(
+             signed_uri=_make_presigned_url(remote_file_path),
+-            headers=[
+-                ArtifactCredentialInfo.HttpHeader(name=k, value=v)
+-                for k, v in _make_headers(remote_file_path).items()
+-            ],
++            headers=[ArtifactCredentialInfo.HttpHeader(name=k, value=v) for k, v in _make_headers(
++                    remote_file_path
++                ).items()],
+         )
+         artifact_repo._upload_to_cloud(cred_info, local_file, &quot;some/irrelevant/path&quot;)
+         mock_cloud.assert_called_once_with(
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+3 -7 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/pandas-dev/pandas/blob/e9e1b32f14eccf429d2de298b7aa488cf6dcc5df/pandas/core/reshape/melt.py#L548'>pandas/core/reshape/melt.py~L548</a></p>
+<pre><code class="language-diff">     If we have many columns, we could also use a regex to find our
+     stubnames and pass that list on to wide_to_long
+ 
+-    &gt;&gt;&gt; stubnames = sorted(
+-    ...     set([
+-    ...         match[0]
+-    ...         for match in df.columns.str.findall(r&quot;[A-B]\(.*\)&quot;).values
+-    ...         if match != []
+-    ...     ])
+-    ... )
++    &gt;&gt;&gt; stubnames = sorted(set([match[0] for match in df.columns.str.findall(
++    ...             r&quot;[A-B]\(.*\)&quot;
++    ...         ).values if match != []]))
+     &gt;&gt;&gt; list(stubnames)
+     ['A(weekly)', 'B(weekly)']
+ 
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+31 -28 lines across 4 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/prefecthq/prefect/blob/a3241cd06b5dfd838f4b854f11e9a5193776951a/src/integrations/prefect-kubernetes/tests/test_worker.py#L351'>src/integrations/prefect-kubernetes/tests/test_worker.py~L351</a></p>
+<pre><code class="language-diff">                                     &quot;env&quot;: [
+                                         *[
+                                             {&quot;name&quot;: k, &quot;value&quot;: v}
+-                                            for k, v in get_current_settings()
+-                                            .to_environment_variables(
+-                                                exclude_unset=True
++                                            for k, v in (
++                                                get_current_settings()
++                                                .to_environment_variables(
++                                                    exclude_unset=True
++                                                )
++                                                .items()
+                                             )
+-                                            .items()
+                                         ],
+                                         {
+                                             &quot;name&quot;: &quot;PREFECT__FLOW_RUN_ID&quot;,
+</code></pre>
+<p><a href='https://github.com/prefecthq/prefect/blob/a3241cd06b5dfd838f4b854f11e9a5193776951a/src/integrations/prefect-kubernetes/tests/test_worker.py#L667'>src/integrations/prefect-kubernetes/tests/test_worker.py~L667</a></p>
+<pre><code class="language-diff">                                     &quot;env&quot;: [
+                                         *[
+                                             {&quot;name&quot;: k, &quot;value&quot;: v}
+-                                            for k, v in get_current_settings()
+-                                            .to_environment_variables(
+-                                                exclude_unset=True
++                                            for k, v in (
++                                                get_current_settings()
++                                                .to_environment_variables(
++                                                    exclude_unset=True
++                                                )
++                                                .items()
+                                             )
+-                                            .items()
+                                         ],
+                                         {
+                                             &quot;name&quot;: &quot;PREFECT__FLOW_RUN_ID&quot;,
+</code></pre>
+<p><a href='https://github.com/prefecthq/prefect/blob/a3241cd06b5dfd838f4b854f11e9a5193776951a/src/integrations/prefect-kubernetes/tests/test_worker.py#L861'>src/integrations/prefect-kubernetes/tests/test_worker.py~L861</a></p>
+<pre><code class="language-diff">                                     &quot;env&quot;: [
+                                         *[
+                                             {&quot;name&quot;: k, &quot;value&quot;: v}
+-                                            for k, v in get_current_settings()
+-                                            .to_environment_variables(
+-                                                exclude_unset=True
++                                            for k, v in (
++                                                get_current_settings()
++                                                .to_environment_variables(
++                                                    exclude_unset=True
++                                                )
++                                                .items()
+                                             )
+-                                            .items()
+                                         ],
+                                         {
+                                             &quot;name&quot;: &quot;PREFECT__FLOW_RUN_ID&quot;,
+</code></pre>
+<p><a href='https://github.com/prefecthq/prefect/blob/a3241cd06b5dfd838f4b854f11e9a5193776951a/src/integrations/prefect-kubernetes/tests/test_worker.py#L1179'>src/integrations/prefect-kubernetes/tests/test_worker.py~L1179</a></p>
+<pre><code class="language-diff">                                     &quot;env&quot;: [
+                                         *[
+                                             {&quot;name&quot;: k, &quot;value&quot;: v}
+-                                            for k, v in get_current_settings()
+-                                            .to_environment_variables(
+-                                                exclude_unset=True
++                                            for k, v in (
++                                                get_current_settings()
++                                                .to_environment_variables(
++                                                    exclude_unset=True
++                                                )
++                                                .items()
+                                             )
+-                                            .items()
+                                         ],
+                                         {
+                                             &quot;name&quot;: &quot;PREFECT__FLOW_RUN_ID&quot;,
+</code></pre>
+<p><a href='https://github.com/prefecthq/prefect/blob/a3241cd06b5dfd838f4b854f11e9a5193776951a/src/prefect/utilities/collections.py#L569'>src/prefect/utilities/collections.py~L569</a></p>
+<pre><code class="language-diff">     &quot;&quot;&quot;
+     if not isinstance(obj, dict):
+         return obj
+-    return {
+-        key: remove_nested_keys(keys_to_remove, value)
+-        for key, value in cast(NestedDict[HashableT, VT], obj).items()
+-        if key not in keys_to_remove
+-    }
++    return {key: remove_nested_keys(keys_to_remove, value) for key, value in cast(
++            NestedDict[HashableT, VT], obj
++        ).items() if key not in keys_to_remove}
+ 
+ 
+ @overload
+</code></pre>
+<p><a href='https://github.com/prefecthq/prefect/blob/a3241cd06b5dfd838f4b854f11e9a5193776951a/tests/server/services/test_scheduler.py#L106'>tests/server/services/test_scheduler.py~L106</a></p>
+<pre><code class="language-diff">     deployment_with_active_schedules: schemas.core.Deployment,
+ ):
+     active_schedules = [
+-        s.schedule
+-        for s in await models.deployments.read_deployment_schedules(
++        s.schedule for s in await models.deployments.read_deployment_schedules(
+             session=session,
+             deployment_id=deployment_with_active_schedules.id,
+             deployment_schedule_filter=schemas.filters.DeploymentScheduleFilter(
+</code></pre>
+<p><a href='https://github.com/prefecthq/prefect/blob/a3241cd06b5dfd838f4b854f11e9a5193776951a/tests/test_settings.py#L644'>tests/test_settings.py~L644</a></p>
+<pre><code class="language-diff">     @pytest.mark.usefixtures(&quot;disable_hosted_api_server&quot;)
+     def test_settings_to_environment_includes_all_settings_with_non_null_values(self):
+         settings = Settings()
+-        expected_names = {
+-            s.name
+-            for s in _get_settings_fields(Settings).values()
+-            if s.value() is not None
+-        }
++        expected_names = {s.name for s in _get_settings_fields(
++                Settings
++            ).values() if s.value() is not None}
+         for name, metadata in SUPPORTED_SETTINGS.items():
+             if metadata.get(&quot;legacy&quot;) and name in expected_names:
+                 expected_names.remove(name)
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/python/mypy">python/mypy</a> (+3 -3 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/python/mypy/blob/b266dd1a238e867e6b135c54664a76dae5a00fcb/mypy/semanal.py#L1922'>mypy/semanal.py~L1922</a></p>
+<pre><code class="language-diff">         self.check_type_alias_bases(bases)
+ 
+         for tvd in tvar_defs:
+-            if isinstance(tvd, TypeVarType) and any(
+-                has_placeholder(t) for t in [tvd.upper_bound] + tvd.values
+-            ):
++            if isinstance(tvd, TypeVarType) and any(has_placeholder(t) for t in [
++                    tvd.upper_bound
++                ] + tvd.values):
+                 # Some type variable bounds or values are not ready, we need
+                 # to re-analyze this class.
+                 self.defer()
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/qdrant/qdrant-client">qdrant/qdrant-client</a> (+6 -9 lines across 2 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/qdrant/qdrant-client/blob/981117a506b549e9dcd51cd633d4a6162df3b05f/qdrant_client/conversions/conversion.py#L78'>qdrant_client/conversions/conversion.py~L78</a></p>
+<pre><code class="language-diff">     if &quot;structValue&quot; in value_:
+         if &quot;fields&quot; not in value_[&quot;structValue&quot;]:
+             return {}
+-        return dict(
+-            (key, value_to_json(val))
+-            for key, val in value_[&quot;structVa...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-10-20 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-10-20 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-21 06:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/comprehension.rs</code>:221 on 2025-10-21 06:33</div>
+            <div class="timeline-body"><p>You probably want has_own_parentheses</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-21 06:38</div>
+            <div class="timeline-body"><p>I think the comment here is relevant for your work</p>
+<p>https://github.com/astral-sh/ruff/blob/c9dff5c7d5bcab2a83f1c3b4a1a80af230ece541/crates/ruff_python_formatter/src/expression/mod.rs#L386-L397</p>
+<p>I'm also not sure if we should implement this preview style, as @dylwil3 pointed out in https://github.com/astral-sh/ruff/issues/20482#issuecomment-3340449328 because it might fall into the same category as https://github.com/astral-sh/ruff/issues/12856 where Black now starts introducing otherwise unnecessary parentheses. Are there alternative formattings that we could use that avoid the need for inserting parentheses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-21 06:41</div>
+            <div class="timeline-body"><p>Reading through the issue, the main concern seems to be that very long attribute chains aren't split. That makes me wonder if the proper fix instead is to split attribute expressions in parenthesized expressions. I suspect this would be a bigger change and we probably want to give attribute chains a very low split priority. Or we could decide to only indent the content rather than adding an extra pair of parentheses?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-21 19:48</div>
+            <div class="timeline-body"><p>Thanks for the pointers here and in our 1:1! The draft is in a slightly better state now, at least in terms of the tests and the ecosystem results. However, I'm now splitting expressions like this too eagerly on the <code>in</code>:</p>
+<pre><code class="language-py">unformatted: File would be reformatted
+ --&gt; /tmp/tmp.h5wCjfHytw/try.py:1:1
+2 | async def api_get_user_extensions(
+3 |     user: User = Depends(check_user_exists),
+4 | ) -&gt; list[Extension]:
+  - 
+  -     user_extensions_ids = [
+  -         ue.extension for ue in await get_user_extensions(user.id)
+  -     ]
+  -     return [
+  -         ext
+  -         for ext in await get_valid_extensions(False)
+  -         if ext.code in user_extensions_ids
+  -     ]
+5 +     user_extensions_ids = [ue.extension for ue in await get_user_extensions(user.id)]
+6 +     return [ext for ext in await get_valid_extensions(
+7 +             False
+8 +         ) if ext.code in user_extensions_ids]
+</code></pre>
+<p>Similar cases make up all of the ecosystem results I've looked at.</p>
+<p>Is there an easy way to avoid that? It does seem to be something with <code>can_omit_optional_parentheses</code> right where you linked me on Discord. The split priority you mentioned above sounded perfect, but I didn't turn up anything with grep.</p>
+<p>I will probably move on to another preview style as you and Dylan said, unless this is looking promising. It seems like there are other designs worth exploring in the future anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-22 06:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the pointers here and in our 1:1! The draft is in a slightly better state now, at least in terms of the tests and the ecosystem results. However, I'm now splitting expressions like this too eagerly on the in:</p>
+</blockquote>
+<p>This makes me wonder if you even want <code>maybe_parenthesize_expression</code>. Can you formalize the desired split and parenthesizing behavior?</p>
+<ul>
+<li>Should lines split from left to right? (We parenthesize the <code>in</code> before parenthesizing the if)</li>
+<li>Should lines split from right to left (We parenthesize the <code>if</code> part before parenthesizing the <code>in</code> part?</li>
+<li>Does parenthesizing the <code>in</code> part always expand the comprehension (<code>[</code> and <code>]</code> are on their own line)?</li>
+<li>Where should newlines be added when the <code>in</code> part gets parenthesized or splits over multiple lines (as you can see with <code>await</code>)</li>
+<li>...</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-23 19:55</div>
+            <div class="timeline-body"><p>This doesn't feel very formal, so I don't think it fully answers your questions, but my understanding based on the black tests are that this preview style should only come into effect after all of the usual splits have been done and the <code>in</code> clause is still too long. For the example above, black leaves the input alone:</p>
+<pre><code class="language-py">@extension_router.get(&quot;&quot;)
+async def api_get_user_extensions(
+    user: User = Depends(check_user_exists),
+) -&gt; list[Extension]:
+
+    user_extensions_ids = [
+        ue.extension for ue in await get_user_extensions(user.id)
+    ]
+    return [
+        ext
+        for ext in await get_valid_extensions(False)
+        if ext.code in user_extensions_ids
+    ]
+</code></pre>
+<p>If I extend the <code>await</code> expression enough, it eventually breaks like this on both stable and preview:</p>
+<pre><code class="language-py">@extension_router.get(&quot;&quot;)
+async def api_get_user_extensions(
+    user: User = Depends(check_user_exists),
+) -&gt; list[Extension]:
+
+    user_extensions_ids = [
+        ue.extension for ue in await get_user_extensions(user.id)
+    ]
+    return [
+        ext
+        for ext in await get_valid_extensions(
+            Falseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+        )
+        if ext.code in user_extensions_ids
+    ]
+</code></pre>
+<p>which also makes sense to me.</p>
+<p>This part is a bit confusing to me, but if I remove the <code>await</code> and the <code>call</code>, no split happens with the new preview style:</p>
+<pre><code class="language-py">@extension_router.get(&quot;&quot;)
+async def api_get_user_extensions(
+    user: User = Depends(check_user_exists),
+) -&gt; list[Extension]:
+
+    user_extensions_ids = [
+        ue.extension for ue in await get_user_extensions(user.id)
+    ]
+    return [
+        ext
+        for ext in aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    ]
+</code></pre>
+<p>If I make that an attribute expression instead (replacing an <code>a</code> with a <code>.</code> to avoid changing the length), it does split:</p>
+<pre><code class="language-py">@extension_router.get(&quot;&quot;)
+async def api_get_user_extensions(
+    user: User = Depends(check_user_exists),
+) -&gt; list[Extension]:
+
+    user_extensions_ids = [
+        ue.extension for ue in await get_user_extensions(user.id)
+    ]
+    return [
+        ext
+        for ext in (
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        )
+    ]
+</code></pre>
+<p>I get that same splitting even with a following <code>if</code> clause, as I would expect.</p>
+<p>Black also explicitly tests that they <em>don't</em> parenthesize the <code>in</code> clause if it's still too long <a href="https://github.com/psf/black/blob/6122359d2029f24bcac9fd34c930ff78672ae840/tests/data/cases/preview_wrap_comprehension_in.py#L117-L127">here</a>.</p>
+<p>So at least from these tests, it seems that the comprehension always gets fully expanded like the stable behavior, and then if the for-in part is still too long, and it's a specific type of expression like an attribute chain, it can be parenthesized and split across multiple lines.</p>
+<p>Does that help at all? Maybe I need to take a look at <code>normalize_invisible_parens</code> and the rest of the Black implementation too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-24 07:47</div>
+            <div class="timeline-body"><p>Thanks for explaining. What I understand is:</p>
+<ul>
+<li>We want a right-to-left layout where the <code>in</code> part breaks before the <code>for element in</code></li>
+<li>We only want to break the <code>for element in</code> over multiple lines if breaking the <code>in</code> on its own isn't enough. But, if we do so, we don't want to break the <code>in</code> unless it's necessary</li>
+</ul>
+<blockquote>
+<p>If I make that an attribute expression instead (replacing an a with a . to avoid changing the length), it does split:</p>
+</blockquote>
+<p>But you changed more than just from identifier to attribute. The attribute expression is shorter. I think this is just</p>
+<blockquote>
+<p>Black also explicitly tests that they don't parenthesize the in clause if it's still too long <a href="https://github.com/psf/black/blob/6122359d2029f24bcac9fd34c930ff78672ae840/tests/data/cases/preview_wrap_comprehension_in.py#L117-L127">here</a>.</p>
+</blockquote>
+<p>We did implement this behavior in a few places but it's fairly tricky and I'm honestly not sure if it's worth it. Some users find it confusing (it goes against: predictable formatting), but it does avoid parentheses in some places, like assignment, where I think it makes sense.</p>
+<p>As discussed with Dylan. I'm not convinced that this always improves formatting. Have you considered alternative formattings that don't require inserting parentheses but result in the same improvement?</p>
+<p>Either way. I haven't seen this come up. I suggest deprioritizing it. We have other formatter issues that have been requested more frequently (I don't remember that this ever came up)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-24 13:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Either way. I haven't seen this come up. I suggest deprioritizing it. We have other formatter issues that have been requested more frequently (I don't remember that this ever came up)</p>
+</blockquote>
+<p>Sounds good, thanks for talking through it. I still learned a lot!</p>
+<blockquote>
+<p>Have you considered alternative formattings that don't require inserting parentheses but result in the same improvement?</p>
+</blockquote>
+<p>I kind of liked this formatting mentioned on the upstream issue, but that's about as much as I've considered it.</p>
+<pre><code>[
+    a
+    for graph_path_expression
+	in refined_constraint.condition_as_predicate.variables
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-24 13:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:29:08 UTC
+    </footer>
+</body>
+</html>

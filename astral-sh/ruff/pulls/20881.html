@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Fix PYI034 to not trigger on metaclasses (`PYI034`) - astral-sh/ruff #20881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Fix PYI034 to not trigger on metaclasses (<code>PYI034</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20881">#20881</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-10-15 04:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-15 04:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20781</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @danparizher on 2025-10-15 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 04:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI034.pyi</code>:261 on 2025-10-15 12:31</div>
+            <div class="timeline-body"><p>This test passes on <code>main</code>. Are you able to add a test that does not pass on <code>main</code>, but does pass on this PR branch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> requested changes on 2025-10-15 12:31</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-10-15 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI034.pyi</code>:261 on 2025-10-15 22:07</div>
+            <div class="timeline-body"><p>I've updated the test case to use <code>type(Protocol)</code> which triggers <code>IsMetaclass::Maybe</code>. The fix skips <code>IsMetaclass::Yes</code> and <code>IsMetaclass::Maybe</code> cases as required by PEP 673.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-15 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI034.pyi</code>:261 on 2025-10-15 22:09</div>
+            <div class="timeline-body"><p>Thank you! Before we land this, I'd still like to wait for a bit more information on the issue to see if this is sufficient to fix the problem the user was experiencing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI034.pyi</code>:261 on 2025-10-21 13:20</div>
+            <div class="timeline-body"><p>It sounds like the consensus on the issue is that we should implement option (2) I outlined in https://github.com/astral-sh/ruff/issues/20781#issuecomment-3410351921. @danparizher, are you interested in updating this PR to include that change? I think we should probably work the heuristic into the <code>ruff_python_semantic::analyze::class::is_metaclass()</code> function. If we see that the class (or any of its known superclasses) has a <code>__new__</code> method that matches that heuristic, we should declare that the class is &quot;maybe a metaclass&quot; (but not &quot;definitely a metaclass&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-21 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @danparizher on 2025-10-24 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-24 10:32</div>
+            <div class="timeline-body"><p>Thanks, I pushed a few edits. The implementation LGTM now.</p>
+<p>@ntBre, I think you mentioned on the issue that it might be good to document this heuristic? That does seem like it might be worthwhile. I'll punt this back to you now, if that's okay 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @AlexWaygood on 2025-10-24 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-24 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-24 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-24 13:26</div>
+            <div class="timeline-body"><p>Thanks @AlexWaygood, this looks great! And you did all the hard work, I basically just copied your docstring into the rule docs :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/non_self_return_type.rs</code>:61 on 2025-10-24 13:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// The rule attempts to avoid flagging methods on metaclasses, since
+/// [PEP 673] specifies that `Self` is disallowed in metaclasses. Ruff can
+/// detect a class as being a metaclass if it inherits from a stdlib
+/// metaclass such as `builtins.type` or `abc.ABCMeta`, and additionally
+/// infers that a class may be a metaclass if it has a `__new__` method
+/// with a similar signature to `type.__new__`. The heuristic used to
+/// identify a metaclass-like `__new__` method signature is that it:
+///
+/// 1. Has exactly 5 parameters (including `cls`)
+/// 1. Has a second parameter annotated with `str`
+/// 1. Has a third parameter annotated with a `tuple` type
+/// 1. Has a fourth parameter annotated with a `dict` type
+/// 1. Has a fifth parameter is keyword-variadic (`**kwargs`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-24 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-24 13:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks @AlexWaygood, this looks great! And you did all the hard work, I basically just copied your docstring into the rule docs 😄</p>
+</blockquote>
+<p>Ah I have to share credit with @danparizher for that docstring, he wrote half of it!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-24 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-24 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-24 13:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:29:08 UTC
+    </footer>
+</body>
+</html>

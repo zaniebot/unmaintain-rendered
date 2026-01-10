@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyflakes`] Fix false positive for `__class__` in lambda expressions within class definitions (`F821`) - astral-sh/ruff #20564</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyflakes</code>] Fix false positive for <code>__class__</code> in lambda expressions within class definitions (<code>F821</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20564">#20564</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-09-25 03:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-09-25 03:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20562</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-25 03:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2984 on 2025-09-25 20:17</div>
+            <div class="timeline-body"><p>I was picturing this in <code>visit_stmt</code> like we did for function definitions rather than in the deferred visit. I guess lambdas aren't statements, so the analogous code would actually fit here in <code>visit_expr</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/e4ac9e90419841a338d6909af01acc8548c8b3c3/crates/ruff_linter/src/checkers/ast/mod.rs#L1620-L1632</p>
+<p>I think that should work because we push a <code>lambda</code> snapshot that gets used here like we do for functions. The one downside is that the popping for lambdas happens a bit farther down, unlike functions:</p>
+<p>https://github.com/astral-sh/ruff/blob/e4ac9e90419841a338d6909af01acc8548c8b3c3/crates/ruff_linter/src/checkers/ast/mod.rs#L2062-L2063</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-25 20:27</div>
+            <div class="timeline-body"><p>Thank you! The tests look good, but what do you think about moving the new code to <code>visit_expr</code> to mirror the function version a bit more closely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-09-26 01:40</div>
+            <div class="timeline-body"><p>Yeah, that approach makes sense to me. Thanks for the review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-09-26 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-21 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-21 21:20</div>
+            <div class="timeline-body"><p>Hmm, it looks like there are some new false positives in the ecosystem report. I was hoping it was something simple with the scope popping, which is why I pushed a commit, but that didn't end up helping. We're flagging a case like this with F401:</p>
+<pre><code class="language-py">import uuid
+
+
+class C:
+    uuid = lambda: str(uuid.uuid4())
+</code></pre>
+<p>and I don't fully understand why. We'll need to figure it out before we can merge this, though. Would you mind taking a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-24 04:59</div>
+            <div class="timeline-body"><p>The issue was that the <code>DunderClassCell</code> scope was being added during lambda definition processing instead of during lambda body analysis, which caused false positives when lambdas within classes referenced module-level variables like <code>uuid</code>.</p>
+<p>I fixed it by moving the scope logic from <code>visit_expr</code> to <code>visit_deferred_lambdas</code> (similar to how function definitions work) and changing the scope detection to check the entire scope hierarchy rather than just the current scope, ensuring <code>__class__</code> is accessible in lambdas within classes while preventing false positives for other variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-24 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-24 14:03</div>
+            <div class="timeline-body"><p>Ah okay, I guess my earlier suggestion about moving it to <code>visit_expr</code> was wrong then. Thank you for debugging and sorry for the bad suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-24 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-24 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-24 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:29:08 UTC
+    </footer>
+</body>
+</html>

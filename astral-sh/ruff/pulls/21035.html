@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document when a rule was added - astral-sh/ruff #21035</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Document when a rule was added</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21035">#21035</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-22 19:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-22 19:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Inspired by #20859, this PR adds the version a rule was added, and the file and line where it was defined, to <code>ViolationMetadata</code>. The file and line just use the standard <code>file!</code> and <code>line!</code> macros, while the more interesting version field uses a new <code>violation_metadata</code> attribute parsed by our <code>ViolationMetadata</code> derive macro.</p>
+<p>I moved the commit modifying all of the rule files to the end, so it should be a lot easier to review by omitting that one.</p>
+<p>As a curiosity and a bit of a sanity check, I also plotted the rule numbers over time:</p>
+<p><img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/75b0b5cc-3521-4d40-a395-8807e6f4925f" /></p>
+<p>I think this looks pretty reasonable and avoids some of the artifacts the earlier versions of the script ran into, such as the <code>rule</code> sub-command not being available or <code>--explain</code> requiring a file argument.</p>
+<details><summary>Script and summary data</summary>
+
+<pre><code class="language-shell">gawk --csv '
+NR &gt; 1 {
+    split($2, a, &quot;.&quot;)
+    major = a[1]; minor = a[2]; micro = a[3]
+    # sum the number of rules added per minor version
+    versions[minor] += 1
+}
+END {
+    tot = 0
+    for (i = 0; i &lt;= 14; i++) {
+        tot += versions[i]
+        print i, tot
+    }
+}
+' ruff_rules_metadata.csv &gt; summary.dat
+</code></pre>
+<pre><code>0 696
+1 768
+2 778
+3 803
+4 822
+5 848
+6 855
+7 865
+8 893
+9 915
+10 916
+11 924
+12 929
+13 932
+14 933
+</code></pre>
+</details>
+
+<h2>Test Plan</h2>
+<p>I built and viewed the documentation locally, and it looks pretty good!</p>
+<p><img width="1466" height="676" alt="image" src="https://github.com/user-attachments/assets/5e227df4-7294-4d12-bdaa-31cac4e9ad5c" /></p>
+<p>The spacing seems a bit awkward following the <code>h1</code> at the top, so I'm wondering if this might look nicer as a footer in Ruff. The links work well too:</p>
+<ul>
+<li><a href="https://github.com/astral-sh/ruff/releases/tag/v0.0.271">v0.0.271</a></li>
+<li><a href="https://github.com/astral-sh/ruff/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20airflow-variable-name-task-id-mismatch">Related issues</a></li>
+<li><a href="https://github.com/astral-sh/ruff/blob/main/crates%2Fruff_linter%2Fsrc%2Frules%2Fairflow%2Frules%2Ftask_variable_name.rs#L34">View source</a></li>
+</ul>
+<p>The last one even works on <code>main</code> now since it points to the <code>derive(ViolationMetadata)</code> line.</p>
+<p>In terms of binary size, this branch is a bit bigger than main with 38,654,520 bytes compared to 38,635,728 (+20 KB). I guess that's not <em>too</em> much of an increase, but I wanted to check since we're generating a lot more code with macros.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-10-22 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-22 19:56</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-22 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-10-22 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-10-22 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-10-22 22:45</div>
+            <div class="timeline-body"><p>That's fun, I wasn't aware <code>ruff rule</code> existed, that would have made my other two previous adventures with iterating over all the rules much easier. I'll have to go back at some point and update my scripts for those, since I may have missed a couple rules while regexing my way through the problems.</p>
+<p>Related to that, this may be a stupid question, but will the changes in this PR be reflected in <code>ruff rule</code>? (As in, after this will <code>ruff rule --all --output-format json</code> also include items for version, file, and line?) That would be even more convenient for my purposes, since I wouldn't need to do any of the regex spaghetti to get rule definition location info in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> reviewed on 2025-10-23 01:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_dev/src/generate_docs.rs</code>:52 on 2025-10-23 01:01</div>
+            <div class="timeline-body"><p>Apply with caution, completely untested.</p>
+<p>Two suggestions on the issues link:</p>
+<ul>
+<li>Surround the rule name with quotes (<code>%27</code> is <code>'</code>), since otherwise GitHub doesn't treat it as a single word, and a lot of extra results appear</li>
+<li>Use the new-ish <code>OR</code> operator + parenthesis to search for both the rule name and code at the same time, since some issues include only one of the two.</li>
+</ul>
+<p>As an example with a rule that has less, more common words: The <a href="https://github.com/astral-sh/ruff/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20non-self-return-type">generated link</a> for <code>non-self-return-type</code> gives 16 open and 22 closed, many of which are not related, and do not mention the rule name at all. This <a href="https://github.com/astral-sh/ruff/issues?q=is%3Aissue%20state%3Aopen%20(%27non-self-return-type%27%20OR%20PYI034">new link</a>) only gives 3 open and 8 closed, all of which at least mention the rule.</p>
+<pre><code class="language-suggestion">            let _ = writeln!(
+                &amp;mut output,
+                r#&quot;&lt;small&gt;
+Added in &lt;a href=&quot;https://github.com/astral-sh/ruff/releases/tag/{version}&quot;&gt;{version}&lt;/a&gt; ·
+&lt;a href=&quot;https://github.com/astral-sh/ruff/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20(%27{encoded_name}%27%20OR%20{rule_code})&quot; target=&quot;_blank&quot;&gt;Related issues&lt;/a&gt; ·
+&lt;a href=&quot;https://github.com/astral-sh/ruff/blob/main/{file}#L{line}&quot; target=&quot;_blank&quot;&gt;View source&lt;/a&gt;
+&lt;/small&gt;
+
+&quot;#,
+                version = rule.version().unwrap_or(env!(&quot;CARGO_PKG_VERSION&quot;)),
+                encoded_name =
+                    url::form_urlencoded::byte_serialize(rule.name().as_str().as_bytes())
+                        .collect::&lt;String&gt;(),
+                rule_code = rule.noqa_code(),
+                file =
+                    url::form_urlencoded::byte_serialize(rule.file().replace('\\', &quot;/&quot;).as_bytes())
+                        .collect::&lt;String&gt;(),
+                line = rule.line(),
+            );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 06:12</div>
+            <div class="timeline-body"><p>Nice! That's what you were up to yesterday :)</p>
+<p><code>ViolationMetadata</code> seems the right spot for <code>file</code> and <code>location</code> but I'm less sure about the version. Mainly because the rule status is now spread over two places:</p>
+<ul>
+<li><code>code_to_rule</code>: Defines the status of the rule (preview, removed, stable)</li>
+<li><code>violation_metadata</code>: Defines the version.</li>
+</ul>
+<p>This has the downside that It's unclear what the version represents. Is it when the rule was added, deprecated or removed?</p>
+<p>That's why I'm inclined to combine the version and the <code>RuleStatus</code>, similar to <code>LintStatus</code> in ty. Whether we simply extend the <code>RuleStatus</code> variants to have extra fields or move <code>RuleStatus</code> to <code>ViolationMetadata</code> (that's probably what I'd do if I would do it anew) isn't important and I'd probably go with what's easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-23 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_dev/src/generate_docs.rs</code>:52 on 2025-10-23 12:47</div>
+            <div class="timeline-body"><p>That seems like a good idea, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-23 12:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Related to that, this may be a stupid question, but will the changes in this PR be reflected in <code>ruff rule</code>? (As in, after this will <code>ruff rule --all --output-format json</code> also include items for version, file, and line?) That would be even more convenient for my purposes, since I wouldn't need to do any of the regex spaghetti to get rule definition location info in the first place.</p>
+</blockquote>
+<p>@MeGaGiGaGon I think that's a great question and a good idea to add. It crossed my mind early on but then I kind of forgot about it. I think it should be straightforward to add here.</p>
+<p>@MichaReiser that makes a lot of sense. I did like how <code>LintStatus</code> looked in ty. I'll try to see how it looks to move <code>RuleGroup</code> into the new macro attribute this morning, but I think adding the version as a field is probably easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-23 15:33</div>
+            <div class="timeline-body"><p>As Micha and I discussed on Discord, the <code>RuleGroup</code> and version information have now been combined, more like <code>LintStatus</code> in ty. This is an example usage of the new attribute:</p>
+<pre><code class="language-rust">#[derive(ViolationMetadata)]
+#[violation_metadata(stable_since = &quot;v0.0.155&quot;)]
+pub(crate) struct UnusedNOQA {
+    pub codes: Option&lt;UnusedCodes&gt;,
+}
+</code></pre>
+<p>One interesting and somewhat intentional aspect of the attribute is that the macro will preserve the last entry, so we could theoretically stack versions if the status of a rule changes over time. For example, this would be accepted by the current macro implementation but only use the <code>removed_since</code> field:</p>
+<pre><code class="language-rust">#[derive(ViolationMetadata)]
+#[violation_metadata(
+    preview_since = &quot;v0.0.123&quot;, 
+    stable_since = &quot;v0.0.155&quot;, 
+    deprecated_since = &quot;v1.2.3&quot;, 
+    removed_since = &quot;v4.5.6&quot;,
+)]
+pub(crate) struct UnusedNOQA {
+    pub codes: Option&lt;UnusedCodes&gt;,
+}
+</code></pre>
+<p>Another alternative we considered was just using the <code>RuleGroup</code> variants directly, like:</p>
+<pre><code class="language-rust">#[derive(ViolationMetadata)]
+#[violation_metadata(status = RuleGroup::Stable { since: &quot;v0.0.155&quot; })]
+pub(crate) struct UnusedNOQA {
+    pub codes: Option&lt;UnusedCodes&gt;,
+}
+</code></pre>
+<p>which is also pretty nice. If we ever decide to  add a <code>reason</code> field like ty has for the deprecated and removed variants this might be even more compelling. Or we could just add a <code>reason</code> field to the macro too.</p>
+<hr>
+
+<p>I also updated the JSON output format for <code>ruff rule</code> to include the new file and line information (the version was added automatically by including it in <code>RuleGroup</code>).</p>
+<p>And I rebased a bit more to keep the big commits at the end. The last commit is still <code>add metadata to rules</code> and the second-to-last is the big edit to remove the <code>RuleGroup</code> entries from the <code>map_codes</code> table.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-23 15:51</div>
+            <div class="timeline-body"><p>This works for me. I think having <code>status = </code> might be slightly easier to discover as you can type <code>RuleStatus::</code> to see all the variants that are supported. But I don't feel strongly about the syntax (having all versions stacked looks a bit nosiy and having multiple fields might be easier to parse).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-23 16:02</div>
+            <div class="timeline-body"><p>Sounds good! I guess I'll go ahead and land this once I fix the doctests and remove the scripts and CSV since it should be easy to iterate on the syntax now that we have the infrastructure in place.</p>
+<p>Maybe this is just my editor, but I wasn't getting completions when I tried typing <code>RuleGroup::</code> in the attribute. But otherwise I like that fine too, no strong feelings on the exact syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-10-23 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-23 16:24</div>
+            <div class="timeline-body"><p>One last check to make sure my scripts didn't change any of the rule statuses:</p>
+<pre><code class="language-shell">diff \
+    &lt;(./target/debug/ruff rule --all --output-format json | jq '[ .[] | { code, status: ( .status | keys[0] ) } ]') \
+    &lt;(../worktrees/ruff1/target/debug/ruff rule --all --output-format json | jq '[ .[] | { code, status} ]')
+</code></pre>
+<p>passes cleanly with main checked out in my other worktree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-23 16:30</div>
+            <div class="timeline-body"><p>Oh, I just realized that many of the versions are actually wrong after the <code>RuleGroup</code> change... I collected all of the <code>Added in</code> versions but now they need to be when they were stabilized or removed for many rules instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-23 18:37</div>
+            <div class="timeline-body"><p>All of the <code>removed_since</code> and <code>stable_since</code> versions are updated. Preview should have already been correct, and we don't currently have any deprecated rules. I'll merge once CI finishes and then start the release for the day. Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-23 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-23 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-23 18:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:29:08 UTC
+    </footer>
+</body>
+</html>
