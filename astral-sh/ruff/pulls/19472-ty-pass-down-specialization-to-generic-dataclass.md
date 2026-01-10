@@ -1,0 +1,570 @@
+```yaml
+number: 19472
+title: "[ty] Pass down specialization to generic dataclass bases"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - bug
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: david/fix-853
+created_at: 2025-07-21T18:32:06Z
+updated_at: 2025-07-21T18:52:00Z
+url: https://github.com/astral-sh/ruff/pull/19472
+synced_at: 2026-01-10T17:58:13Z
+```
+
+# [ty] Pass down specialization to generic dataclass bases
+
+---
+
+_Pull request opened by @sharkdp on 2025-07-21 18:32_
+
+## Summary
+
+closes https://github.com/astral-sh/ty/issues/853
+
+## Test Plan
+
+Regression test
+
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-07-21 18:32_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-07-21 18:32_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-07-21 18:32_
+
+---
+
+_Label `bug` added by @sharkdp on 2025-07-21 18:32_
+
+---
+
+_Label `ty` added by @sharkdp on 2025-07-21 18:32_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-21 18:35_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+meson (https://github.com/mesonbuild/meson)
+- error[invalid-argument-type] mesonbuild/compilers/c.py:132:17: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `Unknown | list[Unknown]`
++ error[invalid-argument-type] mesonbuild/compilers/c.py:132:17: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `Unknown | list[Unknown]`
+- error[invalid-argument-type] mesonbuild/compilers/c.py:264:17: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `Unknown | list[Unknown]`
++ error[invalid-argument-type] mesonbuild/compilers/c.py:264:17: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `Unknown | list[Unknown]`
+- error[invalid-argument-type] mesonbuild/compilers/c.py:415:13: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `Unknown | list[Unknown]`
++ error[invalid-argument-type] mesonbuild/compilers/c.py:415:13: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `Unknown | list[Unknown]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:245:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["default"]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:245:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["default"]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:252:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:252:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:258:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:258:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:265:17: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `Unknown | list[Unknown]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:265:17: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `Unknown | list[Unknown]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:418:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["default"]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:418:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["default"]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:469:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["default"]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:469:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["default"]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:476:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:476:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:482:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:482:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:489:17: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `Unknown | list[Unknown]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:489:17: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `Unknown | list[Unknown]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:606:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["default"]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:606:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["default"]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:613:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:613:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:695:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["default"]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:695:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["default"]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:702:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:702:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:708:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:708:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:804:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["default"]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:804:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["default"]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:811:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:811:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/compilers/cpp.py:817:13: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `Unknown | list[Unknown]`
++ error[invalid-argument-type] mesonbuild/compilers/cpp.py:817:13: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `Unknown | list[Unknown]`
+- error[invalid-argument-type] mesonbuild/compilers/cuda.py:643:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["none"]`
++ error[invalid-argument-type] mesonbuild/compilers/cuda.py:643:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["none"]`
+- error[invalid-argument-type] mesonbuild/compilers/cython.py:77:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["3"]`
++ error[invalid-argument-type] mesonbuild/compilers/cython.py:77:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["3"]`
+- error[invalid-argument-type] mesonbuild/compilers/cython.py:84:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["c"]`
++ error[invalid-argument-type] mesonbuild/compilers/cython.py:84:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["c"]`
+- error[invalid-argument-type] mesonbuild/compilers/fortran.py:124:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["none"]`
++ error[invalid-argument-type] mesonbuild/compilers/fortran.py:124:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["none"]`
+- error[invalid-argument-type] mesonbuild/compilers/mixins/emscripten.py:66:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[4]`
++ error[invalid-argument-type] mesonbuild/compilers/mixins/emscripten.py:66:13: Argument is incorrect: Expected `InitVar[int]`, found `Literal[4]`
+- error[invalid-argument-type] mesonbuild/compilers/rust.py:241:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["none"]`
++ error[invalid-argument-type] mesonbuild/compilers/rust.py:241:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["none"]`
+- error[invalid-argument-type] mesonbuild/compilers/rust.py:248:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/compilers/rust.py:248:13: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/compilers/swift.py:127:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["none"]`
++ error[invalid-argument-type] mesonbuild/compilers/swift.py:127:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["none"]`
+- error[invalid-argument-type] mesonbuild/coredata.py:387:17: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[0]`
++ error[invalid-argument-type] mesonbuild/coredata.py:387:17: Argument is incorrect: Expected `InitVar[int]`, found `Literal[0]`
+- error[invalid-argument-type] mesonbuild/options.py:707:85: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["auto"]`
++ error[invalid-argument-type] mesonbuild/options.py:707:85: Argument is incorrect: Expected `InitVar[str]`, found `Literal["auto"]`
+- error[invalid-argument-type] mesonbuild/options.py:708:54: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["ninja"]`
++ error[invalid-argument-type] mesonbuild/options.py:708:54: Argument is incorrect: Expected `InitVar[str]`, found `Literal["ninja"]`
+- error[invalid-argument-type] mesonbuild/options.py:713:13: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["vs2022"]`
++ error[invalid-argument-type] mesonbuild/options.py:713:13: Argument is incorrect: Expected `InitVar[str]`, found `Literal["vs2022"]`
+- error[invalid-argument-type] mesonbuild/options.py:716:59: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["debug"]`
++ error[invalid-argument-type] mesonbuild/options.py:716:59: Argument is incorrect: Expected `InitVar[str]`, found `Literal["debug"]`
+- error[invalid-argument-type] mesonbuild/options.py:717:82: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/options.py:717:82: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/options.py:718:68: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["shared"]`
++ error[invalid-argument-type] mesonbuild/options.py:718:68: Argument is incorrect: Expected `InitVar[str]`, found `Literal["shared"]`
+- error[invalid-argument-type] mesonbuild/options.py:720:94: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["shared"]`
++ error[invalid-argument-type] mesonbuild/options.py:720:94: Argument is incorrect: Expected `InitVar[str]`, found `Literal["shared"]`
+- error[invalid-argument-type] mesonbuild/options.py:722:88: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/options.py:722:88: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/options.py:723:102: Argument is incorrect: Expected `InitVar[_T]`, found `OctalInt`
++ error[invalid-argument-type] mesonbuild/options.py:723:102: Argument is incorrect: Expected `InitVar[Literal["preserve"] | OctalInt]`, found `OctalInt`
+- error[invalid-argument-type] mesonbuild/options.py:724:61: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["mirror"]`
++ error[invalid-argument-type] mesonbuild/options.py:724:61: Argument is incorrect: Expected `InitVar[str]`, found `Literal["mirror"]`
+- error[invalid-argument-type] mesonbuild/options.py:725:63: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["0"]`
++ error[invalid-argument-type] mesonbuild/options.py:725:63: Argument is incorrect: Expected `InitVar[str]`, found `Literal["0"]`
+- error[invalid-argument-type] mesonbuild/options.py:726:99: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:726:99: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:727:79: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/options.py:727:79: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/options.py:728:64: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:728:64: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:729:49: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["off"]`
++ error[invalid-argument-type] mesonbuild/options.py:729:49: Argument is incorrect: Expected `InitVar[str]`, found `Literal["off"]`
+- error[invalid-argument-type] mesonbuild/options.py:730:61: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[4]`
++ error[invalid-argument-type] mesonbuild/options.py:730:61: Argument is incorrect: Expected `InitVar[int]`, found `Literal[4]`
+- error[invalid-argument-type] mesonbuild/options.py:731:75: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["1"]`
++ error[invalid-argument-type] mesonbuild/options.py:731:75: Argument is incorrect: Expected `InitVar[str]`, found `Literal["1"]`
+- error[invalid-argument-type] mesonbuild/options.py:733:65: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:733:65: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:734:51: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["default"]`
++ error[invalid-argument-type] mesonbuild/options.py:734:51: Argument is incorrect: Expected `InitVar[str]`, found `Literal["default"]`
+- error[invalid-argument-type] mesonbuild/options.py:735:93: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `list[Unknown]`
++ error[invalid-argument-type] mesonbuild/options.py:735:93: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `list[Unknown]`
+- error[invalid-argument-type] mesonbuild/options.py:736:74: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:736:74: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:739:95: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:739:95: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:742:80: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[0]`
++ error[invalid-argument-type] mesonbuild/options.py:742:80: Argument is incorrect: Expected `InitVar[int]`, found `Literal[0]`
+- error[invalid-argument-type] mesonbuild/options.py:743:89: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["prefix"]`
++ error[invalid-argument-type] mesonbuild/options.py:743:89: Argument is incorrect: Expected `InitVar[str]`, found `Literal["prefix"]`
+- error[invalid-argument-type] mesonbuild/options.py:747:105: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/options.py:747:105: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/options.py:755:103: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `list[Unknown]`
++ error[invalid-argument-type] mesonbuild/options.py:755:103: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `list[Unknown]`
+- error[invalid-argument-type] mesonbuild/options.py:756:103: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `list[Unknown]`
++ error[invalid-argument-type] mesonbuild/options.py:756:103: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `list[Unknown]`
+- error[invalid-argument-type] mesonbuild/options.py:774:63: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/options.py:774:63: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/options.py:775:66: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:775:66: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:776:95: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[0]`
++ error[invalid-argument-type] mesonbuild/options.py:776:95: Argument is incorrect: Expected `InitVar[int]`, found `Literal[0]`
+- error[invalid-argument-type] mesonbuild/options.py:777:78: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["default"]`
++ error[invalid-argument-type] mesonbuild/options.py:777:78: Argument is incorrect: Expected `InitVar[str]`, found `Literal["default"]`
+- error[invalid-argument-type] mesonbuild/options.py:778:104: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:778:104: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:780:70: Argument is incorrect: Expected `InitVar[_T | list[_T]]`, found `list[Unknown]`
++ error[invalid-argument-type] mesonbuild/options.py:780:70: Argument is incorrect: Expected `InitVar[str | list[str]]`, found `list[Unknown]`
+- error[invalid-argument-type] mesonbuild/options.py:781:78: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/options.py:781:78: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/options.py:782:77: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/options.py:782:77: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/options.py:784:57: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["off"]`
++ error[invalid-argument-type] mesonbuild/options.py:784:57: Argument is incorrect: Expected `InitVar[str]`, found `Literal["off"]`
+- error[invalid-argument-type] mesonbuild/options.py:785:70: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:785:70: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:787:49: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["always"]`
++ error[invalid-argument-type] mesonbuild/options.py:787:49: Argument is incorrect: Expected `InitVar[str]`, found `Literal["always"]`
+- error[invalid-argument-type] mesonbuild/options.py:789:44: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["false"]`
++ error[invalid-argument-type] mesonbuild/options.py:789:44: Argument is incorrect: Expected `InitVar[str]`, found `Literal["false"]`
+- error[invalid-argument-type] mesonbuild/options.py:790:92: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] mesonbuild/options.py:790:92: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] mesonbuild/options.py:791:81: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:791:81: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:792:92: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] mesonbuild/options.py:792:92: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] mesonbuild/options.py:794:60: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["from_buildtype"]`
++ error[invalid-argument-type] mesonbuild/options.py:794:60: Argument is incorrect: Expected `InitVar[str]`, found `Literal["from_buildtype"]`
+- error[invalid-argument-type] unittests/optiontests.py:197:30: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["c++11"]`
++ error[invalid-argument-type] unittests/optiontests.py:197:30: Argument is incorrect: Expected `InitVar[str]`, found `Literal["c++11"]`
+- error[invalid-argument-type] unittests/optiontests.py:240:30: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["c++11"]`
++ error[invalid-argument-type] unittests/optiontests.py:240:30: Argument is incorrect: Expected `InitVar[str]`, found `Literal["c++11"]`
+- error[invalid-argument-type] unittests/optiontests.py:276:46: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[False]`
++ error[invalid-argument-type] unittests/optiontests.py:276:46: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[False]`
+- error[invalid-argument-type] unittests/optiontests.py:278:46: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] unittests/optiontests.py:278:46: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+- error[invalid-argument-type] unittests/optiontests.py:297:57: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["0"]`
++ error[invalid-argument-type] unittests/optiontests.py:297:57: Argument is incorrect: Expected `InitVar[str]`, found `Literal["0"]`
+- error[invalid-argument-type] unittests/optiontests.py:318:57: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["0"]`
++ error[invalid-argument-type] unittests/optiontests.py:318:57: Argument is incorrect: Expected `InitVar[str]`, found `Literal["0"]`
+- error[invalid-argument-type] unittests/optiontests.py:338:57: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["0"]`
++ error[invalid-argument-type] unittests/optiontests.py:338:57: Argument is incorrect: Expected `InitVar[str]`, found `Literal["0"]`
+- error[invalid-argument-type] unittests/optiontests.py:359:54: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["both"]`
++ error[invalid-argument-type] unittests/optiontests.py:359:54: Argument is incorrect: Expected `InitVar[str]`, found `Literal["both"]`
+- error[invalid-argument-type] unittests/optiontests.py:384:67: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["debug"]`
++ error[invalid-argument-type] unittests/optiontests.py:384:67: Argument is incorrect: Expected `InitVar[str]`, found `Literal["debug"]`
+- error[invalid-argument-type] unittests/optiontests.py:386:71: Argument is incorrect: Expected `InitVar[_T]`, found `Literal["0"]`
++ error[invalid-argument-type] unittests/optiontests.py:386:71: Argument is incorrect: Expected `InitVar[str]`, found `Literal["0"]`
+- error[invalid-argument-type] unittests/optiontests.py:388:90: Argument is incorrect: Expected `InitVar[_T]`, found `Literal[True]`
++ error[invalid-argument-type] unittests/optiontests.py:388:90: Argument is incorrect: Expected `InitVar[bool]`, found `Literal[True]`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- error[invalid-argument-type] src/prefect/_experimental/lineage.py:140:17: Argument is incorrect: Expected `RootModelRootType`, found `dict[Unknown, Unknown]`
+- Found 3742 diagnostics
++ Found 3741 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[invalid-argument-type] ddtrace/contrib/internal/pytest/_utils.py:93:28: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] ddtrace/contrib/internal/pytest/_utils.py:95:22: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/_api_client.py:160:28: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/_api_client.py:163:19: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/_api_client.py:172:24: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/_api_client.py:565:44: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/_api_client.py:567:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/_api_client.py:621:44: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/_api_client.py:624:42: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/recorder.py:567:32: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/recorder.py:569:72: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_fail.py:28:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_fail.py:31:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_fail.py:32:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_fail.py:33:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_fail.py:44:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_fail.py:45:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_fail.py:46:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_fail.py:47:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:26:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:29:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:30:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:31:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:43:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:44:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:45:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_suite_level.py:46:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:22:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:25:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:26:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:27:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:40:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:41:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:42:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_itr_skip_test_level.py:43:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_pass.py:20:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_pass.py:23:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_pass.py:24:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_pass.py:25:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_pass.py:36:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_pass.py:37:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_pass.py:38:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_pass.py:39:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_skip.py:20:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_skip.py:23:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_skip.py:24:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_skip.py:25:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_skip.py:36:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_skip.py:37:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_skip.py:38:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_all_skip.py:39:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:33:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:38:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:41:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:44:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:51:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:53:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:55:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:65:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:70:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:71:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:72:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:73:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:74:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:75:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:76:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:77:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:78:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:85:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:90:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:93:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_fail.py:96:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:30:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:35:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:38:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:41:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:49:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:51:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:60:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:65:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:68:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_atr_mix_pass.py:71:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:61:44: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:63:42: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:81:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:86:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:89:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:92:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:100:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:102:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:112:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:117:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:118:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:119:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:120:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:121:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:122:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:123:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:124:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:125:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:132:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:137:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:140:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:143:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:150:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_all_pass.py:153:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:38:44: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:40:42: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:58:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:63:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:66:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:69:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:77:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:79:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:89:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:93:38: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:99:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:104:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:107:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:110:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:117:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_faulty_session.py:120:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:61:44: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:63:42: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:81:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:86:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:89:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:92:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:100:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:102:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:112:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:117:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:118:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:119:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:120:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:121:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:122:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:123:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:124:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:125:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:132:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:137:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:140:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:143:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:150:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_fail.py:153:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:61:44: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:63:42: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:81:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:86:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:89:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:92:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:100:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:102:37: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:112:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:117:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:118:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:119:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:120:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:121:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:122:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:123:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:124:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:125:24: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:132:36: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:137:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:140:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:143:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:150:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_efd_mix_pass.py:153:34: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:39:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:42:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:43:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:44:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:46:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:47:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:48:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:63:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:64:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:65:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:66:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:67:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:68:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:69:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:71:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:89:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:90:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:92:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:93:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:94:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:96:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:97:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail.py:98:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:52:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:55:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:56:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:57:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:59:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:60:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:61:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:78:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:79:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:80:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:81:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:82:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:83:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:84:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:86:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:106:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:107:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:109:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:110:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:111:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:113:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:114:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:115:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:143:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:144:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:146:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:147:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:148:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:150:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:151:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_suite_level.py:152:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:48:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:51:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:52:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:53:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:55:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:56:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:57:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:74:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:75:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:76:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:77:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:78:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:79:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:80:55: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:82:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:102:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:103:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:105:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:106:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:107:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:109:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:110:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:111:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:139:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:140:38: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:142:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:143:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:144:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:146:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:147:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_fail_itr_test_level.py:148:40: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:27:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:30:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:31:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:32:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:34:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:35:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:36:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:51:34: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:52:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:56:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:57:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:58:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:59:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:60:51: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/fake_runner_mix_pass.py:62:36: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:47:54: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:48:48: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:49:52: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:51:58: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:52:68: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:75:58: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:76:52: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:77:56: Argument is incorrect: Expected `PT`, found `TestSuiteId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_visibility_api.py:79:62: Argument is incorrect: Expected `PT`, found `TestModuleId`
+- error[invalid-argument-type] tests/ci_visibility/api/test_internal_test_vis...*[Comment body truncated]*
+
+---
+
+_@AlexWaygood approved on 2025-07-21 18:35_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-07-21 18:36_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-21 18:44_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 0 | 358 | 83 |
+| **Total** | **0** | **358** | **83** |
+
+**[Full report with detailed diff](https://david-fix-853.ecosystem-663.pages.dev/diff)**
+
+
+---
+
+_Comment by @sharkdp on 2025-07-21 18:46_
+
+Wow, didn't expect this to have such a huge impact on the ecosystem tests. I guess we didn't see this earlier because the changes are concentrated to 3 projects only.
+
+---
+
+_Comment by @AlexWaygood on 2025-07-21 18:50_
+
+it all looks pretty promising, though!
+
+---
+
+_Merged by @sharkdp on 2025-07-21 18:51_
+
+---
+
+_Closed by @sharkdp on 2025-07-21 18:51_
+
+---
+
+_Branch deleted on 2025-07-21 18:52_
+
+---

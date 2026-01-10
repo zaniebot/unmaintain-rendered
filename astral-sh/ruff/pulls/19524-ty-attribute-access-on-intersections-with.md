@@ -1,0 +1,708 @@
+```yaml
+number: 19524
+title: "[ty] Attribute access on intersections with negative parts"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: david/map-with-boundness
+created_at: 2025-07-24T08:30:46Z
+updated_at: 2025-07-25T12:56:16Z
+url: https://github.com/astral-sh/ruff/pull/19524
+synced_at: 2026-01-10T17:58:13Z
+```
+
+# [ty] Attribute access on intersections with negative parts
+
+---
+
+_Pull request opened by @sharkdp on 2025-07-24 08:30_
+
+## Summary
+
+We currently infer a `@Todo` type whenever we access an attribute on an intersection type with negative components. This can happen very naturally. Consequently, this `@Todo` type is rather pervasive and hides a lot of true positives that ty could otherwise detect:
+
+```py
+class Foo:
+    attr: int = 1
+
+def _(f: Foo | None):
+    if f:
+        reveal_type(f)  # Foo & ~AlwaysFalsy
+
+        reveal_type(f.attr)  # now: int, previously: @Todo
+```
+
+The changeset here proposes to handle member access on these intersection types by simply ignoring all negative contributions. This is not always ideal: a negative contribution like `~<Protocol with members 'attr'>` could be a hint that `.attr` should not be accessible on the full intersection type. The behavior can certainly be improved in the future, but this seems like a reasonable initial step to get rid of this unnecessary `@Todo` type.
+
+## Ecosystem analysis
+
+There are quite a few changes here. I spot-checked them and found one bug where attribute access on pure negation types (`~P == object & ~P`) would not allow attributes on `object` to be accessed. After that was fixed, I only see true positives and known problems. The fact that a lot of `unused-ignore-comment` diagnostics go away are also evidence for the fact that this touches a sensitive area, where static analysis clashes with dynamically adding attributes to objects:
+```py
+… # type: ignore # Runtime attribute access
+```
+
+## Test Plan
+
+Updated tests.
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-07-24 08:30_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-07-24 08:30_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-07-24 08:30_
+
+---
+
+_Converted to draft by @sharkdp on 2025-07-24 08:30_
+
+---
+
+_Label `ty` added by @sharkdp on 2025-07-24 08:30_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-07-24 08:30_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-24 08:35_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- mypy_primer/utils.py:114:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[CompletedProcess[str], int | float]`, found `tuple[CompletedProcess[@Todo(map_with_boundness: intersections with negative contributions) | None], int | float]`
++ mypy_primer/utils.py:114:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[CompletedProcess[str], int | float]`, found `tuple[CompletedProcess[@Todo(generic `typing.Awaitable` type) | None], int | float]`
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ pytest_robotframework/__init__.py:230:63: error[unresolved-attribute] Type `((...) -> Unknown) & ~_KeywordDecorator` has no attribute `__name__`
+- Found 192 diagnostics
++ Found 193 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_util/func/utilfunctest.py:907:16: error[unresolved-attribute] Type `((...) -> Unknown) & ~((...) -> Unknown)` has no attribute `__qualname__`
+- beartype/_util/kind/map/utilmapset.py:141:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+
+jinja (https://github.com/pallets/jinja)
++ src/jinja2/compiler.py:1154:24: warning[possibly-unbound-attribute] Attribute `startswith` on type `Unknown | str | (tuple[str, str] & ~tuple[Unknown, ...])` is possibly unbound
+- Found 190 diagnostics
++ Found 191 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/http.py:391:40: error[invalid-argument-type] Argument to function `unquote` is incorrect: Expected `str`, found `None | @Todo(map_with_boundness: intersections with negative contributions)`
++ src/werkzeug/http.py:391:40: error[invalid-argument-type] Argument to function `unquote` is incorrect: Expected `str`, found `None | Unknown | str`
+- src/werkzeug/http.py:553:34: error[invalid-argument-type] Argument to function `unquote` is incorrect: Expected `str`, found `(@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | None`
++ src/werkzeug/http.py:553:34: error[invalid-argument-type] Argument to function `unquote` is incorrect: Expected `str`, found `(Unknown & ~AlwaysFalsy) | (str & ~AlwaysFalsy) | None`
++ src/werkzeug/sansio/response.py:614:50: warning[possibly-unbound-attribute] Attribute `to_header` on type `(WWWAuthenticate & ~AlwaysFalsy & ~list[Unknown]) | (list[WWWAuthenticate] & ~AlwaysFalsy & ~list[Unknown])` is possibly unbound
++ src/werkzeug/test.py:364:47: warning[possibly-unbound-attribute] Attribute `to_header` on type `Authorization | (tuple[str, str] & ~tuple[Unknown, ...])` is possibly unbound
++ src/werkzeug/test.py:379:24: error[call-non-callable] Object of type `object` is not callable
+- src/werkzeug/utils.py:114:16: error[invalid-return-type] Return type does not match returned value: expected `_T`, found `@Todo(map_with_boundness: intersections with negative contributions) | _Missing`
++ src/werkzeug/utils.py:114:16: error[invalid-return-type] Return type does not match returned value: expected `_T`, found `Any | _Missing`
+- src/werkzeug/utils.py:513:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 364 diagnostics
++ Found 366 diagnostics
+
+operator (https://github.com/canonical/operator)
+- ops/charm.py:1635:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ops/model.py:1953:90: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 104 diagnostics
++ Found 102 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/_conninfo_attempts.py:101:15: error[invalid-argument-type] Argument to function `getaddrinfo` is incorrect: Expected `bytes | str | int | None`, found `(str & ~AlwaysFalsy) | (ParamDef & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy)`
++ psycopg/psycopg/_conninfo_attempts.py:101:15: error[invalid-argument-type] Argument to function `getaddrinfo` is incorrect: Expected `bytes | str | int | None`, found `(str & ~AlwaysFalsy) | (ParamDef & ~AlwaysTruthy & ~AlwaysFalsy)`
+- psycopg/psycopg/_conninfo_attempts_async.py:101:19: error[invalid-argument-type] Argument to bound method `getaddrinfo` is incorrect: Expected `bytes | str | int | None`, found `(str & ~AlwaysFalsy) | (ParamDef & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy)`
++ psycopg/psycopg/_conninfo_attempts_async.py:101:19: error[invalid-argument-type] Argument to bound method `getaddrinfo` is incorrect: Expected `bytes | str | int | None`, found `(str & ~AlwaysFalsy) | (ParamDef & ~AlwaysTruthy & ~AlwaysFalsy)`
+- psycopg/psycopg/_py_transformer.py:158:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/_copy_base.py:427:23: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `format_row_text`
++ psycopg/psycopg/_copy_base.py:428:25: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `format_row_binary`
++ psycopg/psycopg/_copy_base.py:429:22: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `parse_row_text`
++ psycopg/psycopg/_copy_base.py:430:24: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `parse_row_binary`
++ psycopg/psycopg/_transformer.py:17:19: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `Transformer`
++ psycopg/psycopg/crdb/connection.py:36:21: warning[possibly-unbound-attribute] Attribute `parameter_status` on type `(Connection[Any] & ~Connection[tuple[Any, ...]] & ~AsyncConnection[tuple[Any, ...]]) | (AsyncConnection[Any] & ~Connection[tuple[Any, ...]] & ~AsyncConnection[tuple[Any, ...]]) | PGconn | Unknown` is possibly unbound
++ psycopg/psycopg/generators.py:382:15: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `connect`
++ psycopg/psycopg/generators.py:383:14: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `cancel`
++ psycopg/psycopg/generators.py:384:15: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `execute`
++ psycopg/psycopg/generators.py:385:12: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `send`
++ psycopg/psycopg/generators.py:386:18: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `fetch_many`
++ psycopg/psycopg/generators.py:387:13: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `fetch`
++ psycopg/psycopg/generators.py:388:28: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `pipeline_communicate`
+- psycopg/psycopg/pq/__init__.py:97:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | <class 'PGconn'>` is not assignable to `type[PGconn]`
++ psycopg/psycopg/pq/__init__.py:97:9: error[invalid-assignment] Object of type `Unknown | <class 'PGconn'>` is not assignable to `type[PGconn]`
+- psycopg/psycopg/pq/__init__.py:98:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | <class 'PGresult'>` is not assignable to `type[PGresult]`
++ psycopg/psycopg/pq/__init__.py:98:9: error[invalid-assignment] Object of type `Unknown | <class 'PGresult'>` is not assignable to `type[PGresult]`
+- psycopg/psycopg/pq/__init__.py:99:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | <class 'Conninfo'>` is not assignable to `type[Conninfo]`
++ psycopg/psycopg/pq/__init__.py:99:9: error[invalid-assignment] Object of type `Unknown | <class 'Conninfo'>` is not assignable to `type[Conninfo]`
+- psycopg/psycopg/pq/__init__.py:100:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | <class 'Escaping'>` is not assignable to `type[Escaping]`
++ psycopg/psycopg/pq/__init__.py:100:9: error[invalid-assignment] Object of type `Unknown | <class 'Escaping'>` is not assignable to `type[Escaping]`
+- psycopg/psycopg/pq/__init__.py:101:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | <class 'PGcancel'>` is not assignable to `type[PGcancel]`
++ psycopg/psycopg/pq/__init__.py:101:9: error[invalid-assignment] Object of type `Unknown | <class 'PGcancel'>` is not assignable to `type[PGcancel]`
+- psycopg/psycopg/pq/__init__.py:102:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | <class 'PGcancelConn'>` is not assignable to `type[PGcancelConn]`
++ psycopg/psycopg/pq/__init__.py:102:9: error[invalid-assignment] Object of type `Unknown | <class 'PGcancelConn'>` is not assignable to `type[PGcancelConn]`
++ psycopg/psycopg/waiting.py:375:16: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `is_module_patched`
++ psycopg/psycopg/waiting.py:384:14: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `wait_c`
+- Found 644 diagnostics
++ Found 658 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/error/graphql_error.py:147:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/graphql/execution/execute.py:1668:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/graphql/execution/execute.py:2194:8: warning[possibly-unbound-attribute] Attribute `is_awaitable` on type `(list[GraphQLError] & ~list[Unknown]) | (ExecutionContext & ~list[Unknown])` is possibly unbound
+- src/graphql/execution/execute.py:2207:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/graphql/execution/execute.py:2200:20: warning[possibly-unbound-attribute] Attribute `map_source_to_response` on type `(list[GraphQLError] & ~list[Unknown]) | (ExecutionContext & ~list[Unknown])` is possibly unbound
+- src/graphql/execution/execute.py:2265:44: error[invalid-argument-type] Argument to function `create_source_event_stream_impl` is incorrect: Expected `ExecutionContext`, found `(@Todo(map_with_boundness: intersections with negative contributions) & ~list[Unknown]) | (list[GraphQLError] & ~list[Unknown]) | (ExecutionContext & ~list[Unknown])`
++ src/graphql/execution/execute.py:2265:44: error[invalid-argument-type] Argument to function `create_source_event_stream_impl` is incorrect: Expected `ExecutionContext`, found `(list[GraphQLError] & ~list[Unknown]) | (ExecutionContext & ~list[Unknown])`
++ src/graphql/type/definition.py:1712:30: error[unresolved-attribute] Type `GraphQLType & ~AlwaysFalsy` has no attribute `of_type`
++ src/graphql/type/validate.py:616:26: error[not-iterable] Object of type `(InputValueDefinitionNode & ~AlwaysTruthy & ~AlwaysFalsy) | (tuple[ConstDirectiveNode, ...] & ~AlwaysFalsy)` may not be iterable
++ src/graphql/validation/rules/unique_directives_per_location.py:68:25: error[unresolved-attribute] Type `Node & ~SchemaDefinitionNode & ~SchemaExtensionNode` has no attribute `name`
+- tests/language/test_parser.py:658:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/language/test_parser.py:662:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/language/test_parser.py:656:16: warning[possibly-unbound-attribute] Attribute `kind` on type `(Location & ~AlwaysTruthy & ~AlwaysFalsy) | (Token & ~AlwaysFalsy)` is possibly unbound
++ tests/language/test_parser.py:657:16: warning[possibly-unbound-attribute] Attribute `value` on type `(Location & ~AlwaysTruthy & ~AlwaysFalsy) | (Token & ~AlwaysFalsy)` is possibly unbound
+- Found 325 diagnostics
++ Found 327 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/porcelain.py:2550:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(int, /) -> bytes`, found `@Todo(map_with_boundness: intersections with negative contributions) | (bound method TextIO.read(n: int = Literal[-1], /) -> str)`
++ dulwich/porcelain.py:2550:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(int, /) -> bytes`, found `Unknown | (bound method TextIO.read(n: int = Literal[-1], /) -> str)`
+- dulwich/porcelain.py:2576:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(int, /) -> bytes`, found `@Todo(map_with_boundness: intersections with negative contributions) | (bound method TextIO.read(n: int = Literal[-1], /) -> str)`
++ dulwich/porcelain.py:2576:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(int, /) -> bytes`, found `Unknown | (bound method TextIO.read(n: int = Literal[-1], /) -> str)`
++ dulwich/porcelain.py:4820:21: warning[possibly-unbound-attribute] Attribute `tree` on type `(Unknown & ~AlwaysFalsy) | (ShaFile & ~AlwaysFalsy)` is possibly unbound
+- Found 159 diagnostics
++ Found 160 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ starlette/staticfiles.py:76:45: error[invalid-argument-type] Argument to function `find_spec` is incorrect: Expected `str`, found `str | (tuple[str, str] & ~tuple[Unknown, ...]) | Unknown`
+- Found 160 diagnostics
++ Found 161 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo(map_with_boundness: intersections with negative contributions) | None | bytes`
++ pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Unknown | None | bytes`
+- pymongo/asynchronous/database.py:925:13: error[invalid-assignment] Object of type `(AsyncClientSession & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | Unknown | Primary` is not assignable to `_ServerMode | None`
++ pymongo/asynchronous/database.py:925:13: error[invalid-assignment] Object of type `(AsyncClientSession & ~AlwaysTruthy & ~AlwaysFalsy) | (_ServerMode & ~AlwaysFalsy) | Unknown | Primary` is not assignable to `_ServerMode | None`
+- pymongo/asynchronous/mongo_client.py:2539:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pymongo/asynchronous/mongo_client.py:2556:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pymongo/asynchronous/topology.py:876:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pymongo/synchronous/auth.py:128:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo(map_with_boundness: intersections with negative contributions) | None | bytes`
++ pymongo/synchronous/auth.py:128:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Unknown | None | bytes`
+- pymongo/synchronous/database.py:925:13: error[invalid-assignment] Object of type `(ClientSession & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | Unknown | Primary` is not assignable to `_ServerMode | None`
++ pymongo/synchronous/database.py:925:13: error[invalid-assignment] Object of type `(ClientSession & ~AlwaysTruthy & ~AlwaysFalsy) | (_ServerMode & ~AlwaysFalsy) | Unknown | Primary` is not assignable to `_ServerMode | None`
+- pymongo/synchronous/mongo_client.py:2529:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pymongo/synchronous/mongo_client.py:2546:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pymongo/synchronous/topology.py:874:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 422 diagnostics
++ Found 416 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_core/_run.py:1972:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 737 diagnostics
++ Found 736 diagnostics
+
+kornia (https://github.com/kornia/kornia)
++ kornia/augmentation/container/augment.py:656:25: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/augmentation/container/augment.py:657:23: warning[possibly-unbound-attribute] Attribute `float` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/contrib/models/efficient_vit/utils/network.py:33:12: error[unsupported-operator] Operator `//` is unsupported between objects of type `int | (tuple[int, ...] & ~tuple[Unknown, ...])` and `Literal[2]`
++ kornia/filters/gaussian.py:77:17: warning[possibly-unbound-attribute] Attribute `to` on type `(tuple[int | float, int | float] & ~tuple[Unknown, ...]) | (Unknown & ~tuple[Unknown, ...])` is possibly unbound
+- kornia/filters/kernels.py:276:55: warning[possibly-unbound-attribute] Attribute `exp` on type `@Todo(map_with_boundness: intersections with negative contributions) | int` is possibly unbound
++ kornia/filters/kernels.py:276:55: warning[possibly-unbound-attribute] Attribute `exp` on type `Unknown | int` is possibly unbound
++ kornia/geometry/boxes.py:707:43: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/boxes.py:707:63: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/boxes.py:710:33: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/boxes.py:713:13: warning[possibly-unbound-attribute] Attribute `view` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/boxes.py:713:24: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/boxes.py:713:40: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/boxes.py:713:59: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/boxes.py:713:74: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/keypoints.py:203:43: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/keypoints.py:203:63: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/keypoints.py:206:33: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/keypoints.py:210:19: warning[possibly-unbound-attribute] Attribute `view` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/keypoints.py:210:30: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/keypoints.py:210:46: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/geometry/keypoints.py:210:65: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/models/depth_estimation/base.py:59:35: warning[possibly-unbound-attribute] Attribute `cpu` on type `(Unknown & ~list[Unknown] & ~tuple[Unknown, ...]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/models/depth_estimation/base.py:60:40: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~list[Unknown] & ~tuple[Unknown, ...]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/models/depth_estimation/base.py:60:61: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~list[Unknown] & ~tuple[Unknown, ...]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/models/segmentation/base.py:184:40: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~None & ~list[Unknown] & ~tuple[Unknown, ...]) | (list[Unknown] & ~list[Unknown]) | (Unknown & ~list[Unknown] & ~tuple[Unknown, ...])` is possibly unbound
++ kornia/models/utils.py:61:58: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ kornia/models/utils.py:95:58: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- Found 773 diagnostics
++ Found 798 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/app_commands/commands.py:2186:86: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/app_commands/commands.py:2229:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/app_commands/commands.py:2298:82: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/app_commands/commands.py:2357:87: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/audit_logs.py:534:56: error[invalid-argument-type] Argument to bound method `from_data` is incorrect: Expected `int`, found `None | Unknown | (@Todo(map_with_boundness: intersections with negative contributions) & ~None) | Literal[-1]`
++ discord/audit_logs.py:534:56: error[invalid-argument-type] Argument to bound method `from_data` is incorrect: Expected `int`, found `None | Unknown | (Unknown & ~None) | Literal[-1]`
+- discord/audit_logs.py:535:55: error[invalid-argument-type] Argument to bound method `from_data` is incorrect: Expected `int`, found `None | Unknown | (@Todo(map_with_boundness: intersections with negative contributions) & ~None) | Literal[-1]`
++ discord/audit_logs.py:535:55: error[invalid-argument-type] Argument to bound method `from_data` is incorrect: Expected `int`, found `None | Unknown | (Unknown & ~None) | Literal[-1]`
+- discord/ext/commands/cog.py:526:33: warning[possibly-unbound-attribute] Attribute `__name__` on type `(FuncT & ~staticmethod) | ((...) -> Unknown)` is possibly unbound
++ discord/ext/commands/cog.py:526:33: error[unresolved-attribute] Type `(FuncT & ~staticmethod) | ((...) -> Unknown)` has no attribute `__name__`
+- discord/ext/commands/cog.py:528:17: warning[possibly-unbound-attribute] Attribute `__cog_listener_names__` on type `(FuncT & ~staticmethod) | ((...) -> Unknown)` is possibly unbound
++ discord/ext/commands/cog.py:528:17: error[unresolved-attribute] Type `(FuncT & ~staticmethod) | ((...) -> Unknown)` has no attribute `__cog_listener_names__`
+- discord/ui/view.py:587:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/ui/view.py:606:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 525 diagnostics
++ Found 519 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ pydantic/_internal/_model_construction.py:532:14: error[no-matching-overload] No overload of function `__new__` matches arguments
+- pydantic/_internal/_utils.py:345:96: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/color.py:330:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/color.py:334:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/v1/color.py:265:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/v1/utils.py:689:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 769 diagnostics
++ Found 765 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/annotation.py:333:20: error[unresolved-attribute] Type `type & ~StrawberryType` has no attribute `__strawberry_definition__`
++ strawberry/codegen/query_codegen.py:575:31: error[unresolved-attribute] Type `(type & ~StrawberryOptional & ~StrawberryList) | (StrawberryType & ~StrawberryOptional & ~StrawberryList)` has no attribute `__strawberry_definition__`
+- strawberry/codegen/query_codegen.py:688:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/exceptions/invalid_union_type.py:46:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ strawberry/experimental/pydantic/conversion.py:65:20: error[call-non-callable] Object of type `object` is not callable
+- strawberry/printer/printer.py:203:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/printer/printer.py:400:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/relay/utils.py:65:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/schema/name_converter.py:174:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ strawberry/schema/name_converter.py:166:20: error[unresolved-attribute] Type `object` has no attribute `name`
++ strawberry/schema/name_converter.py:168:31: error[unresolved-attribute] Type `type & ~LazyType[Unknown, Unknown] & ~EnumDefinition & ~StrawberryUnion & ~StrawberryList & ~StrawberryOptional & ~<Protocol with members '_scalar_definition'>` has no attribute `__strawberry_definition__`
+- strawberry/schema/schema_converter.py:873:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/schema/schema_converter.py:879:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ strawberry/schema/schema_converter.py:877:37: error[unresolved-attribute] Type `(StrawberryType & ~EnumDefinition & ~StrawberryList) | (type & ~EnumDefinition & ~StrawberryList)` has no attribute `__strawberry_definition__`
++ strawberry/schema/schema_converter.py:1077:21: warning[possibly-unbound-attribute] Attribute `__strawberry_definition__` on type `(StrawberryType & ~LazyType[Unknown, Unknown]) | (type & ~LazyType[Unknown, Unknown]) | type[Any]` is possibly unbound
++ strawberry/schema/schema_converter.py:1078:21: warning[possibly-unbound-attribute] Attribute `__strawberry_definition__` on type `(StrawberryType & ~LazyType[Unknown, Unknown]) | (type & ~LazyType[Unknown, Unknown]) | type[Any]` is possibly unbound
++ strawberry/tools/merge_types.py:26:11: error[unresolved-attribute] Type `type` has no attribute `__strawberry_definition__`
++ strawberry/types/arguments.py:165:9: error[invalid-assignment] Object of type `object` is not assignable to `EnumDefinition`
++ strawberry/types/arguments.py:232:9: error[invalid-assignment] Object of type `object` is not assignable to `EnumDefinition`
++ strawberry/types/arguments.py:238:27: error[unresolved-attribute] Type `(StrawberryType & ~StrawberryOptional & ~StrawberryList & ~LazyType[Unknown, Unknown] & ~<Protocol with members '_enum_definition'>) | (type & ~StrawberryOptional & ~StrawberryList & ~LazyType[Unknown, Unknown] & ~<Protocol with members '_enum_definition'>)` has no attribute `__strawberry_definition__`
++ strawberry/types/field.py:66:16: error[unresolved-attribute] Type `type & ~StrawberryType` has no attribute `__strawberry_definition__`
+- Found 363 diagnostics
++ Found 368 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ src/hydra_zen/_launch.py:416:5: error[unsupported-operator] Operator `+=` is unsupported between objects of type `Mapping[str, @Todo(Inference of subscript on special form)] & ~Mapping[Unknown, Unknown]` and `list[str]`
++ src/hydra_zen/structured_configs/_implementations.py:2252:47: error[invalid-argument-type] Argument to function `get_target_path` is incorrect: Expected `HasTarget`, found `(Importable & ((...) -> object) & type[DataclassInstance] & ~partial[Unknown]) | (((...) -> R) & ((...) -> object) & type[DataclassInstance] & ~partial[Unknown]) | (@Todo(unsupported nested subscript in type[X]) & ((...) -> object) & type[DataclassInstance] & ~partial[Unknown]) | (((...) -> Unknown) & ((...) -> object) & type[DataclassInstance]) | (@Todo(unsupported nested subscript in type[X]) & ((...) -> Unknown) & ((...) -> object) & type[DataclassInstance])`
+- src/hydra_zen/structured_configs/_implementations.py:1244:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/hydra_zen/structured_configs/_implementations.py:1245:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/hydra_zen/structured_configs/_implementations.py:1246:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 569 diagnostics
++ Found 568 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `@Todo(map_with_boundness: intersections with negative contributions) | Literal[HTTPStatus.SERVICE_UNAVAILABLE, b"Server is shutting down.\n"] | list[Unknown]`
++ src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `@Todo(generic `typing.Awaitable` type) | Literal[HTTPStatus.SERVICE_UNAVAILABLE, b"Server is shutting down.\n"] | list[Unknown]`
+
+pybind11 (https://github.com/pybind/pybind11)
++ pybind11/setup_helpers.py:319:38: error[unsupported-operator] Operator `+` is unsupported between objects of type `str` and `bytes`
+- Found 209 diagnostics
++ Found 210 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
++ src/pywinctl/_pywinctl_linux.py:170:25: warning[possibly-unbound-attribute] Attribute `lower` on type `(str & ~AlwaysFalsy) | (Pattern[str] & ~AlwaysFalsy)` is possibly unbound
++ src/pywinctl/_pywinctl_linux.py:224:24: warning[possibly-unbound-attribute] Attribute `lower` on type `(str & ~AlwaysFalsy) | (Pattern[str] & ~AlwaysFalsy)` is possibly unbound
+- Found 32 diagnostics
++ Found 34 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
++ ppb_vector/__init__.py:137:73: error[unresolved-attribute] Type `dict_keys[str, Unknown]` has no attribute `join`
+- Found 18 diagnostics
++ Found 19 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch/mirror.py:376:47: error[unresolved-attribute] Type `dict[Unknown, Unknown] & ~AlwaysFalsy` has no attribute `name`
++ src/bandersnatch/mirror.py:376:62: error[unresolved-attribute] Type `dict[Unknown, Unknown] & ~AlwaysFalsy` has no attribute `serial`
+- Found 123 diagnostics
++ Found 125 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- apprise/plugins/email/base.py:618:21: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `tuple[Unknown | Literal[False], @Todo(map_with_boundness: intersections with negative contributions)]`
++ apprise/plugins/email/base.py:618:21: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `tuple[Unknown | Literal[False], Unknown]`
+- apprise/plugins/email/base.py:628:21: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `tuple[Unknown | Literal[False], @Todo(map_with_boundness: intersections with negative contributions)]`
++ apprise/plugins/email/base.py:628:21: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `tuple[Unknown | Literal[False], Unknown]`
+- apprise/plugins/email/base.py:638:21: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `tuple[Unknown | Literal[False], @Todo(map_with_boundness: intersections with negative contributions)]`
++ apprise/plugins/email/base.py:638:21: error[invalid-argument-type] Argument to function `formataddr` is incorrect: Expected `tuple[str | None, str]`, found `tuple[Unknown | Literal[False], Unknown]`
++ test/test_api.py:126:16: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Iterable[str]`
++ test/test_apprise_attachments.py:92:29: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `AppriseAttachment | None`, found `AppriseAsset`
++ test/test_apprise_attachments.py:196:19: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `Iterable[@Todo(Inference of subscript on special form)]`, found `None`
++ test/test_apprise_attachments.py:197:19: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `Iterable[@Todo(Inference of subscript on special form)]`, found `object`
++ test/test_apprise_attachments.py:198:19: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `Iterable[@Todo(Inference of subscript on special form)]`, found `Literal[42]`
++ test/test_apprise_config.py:324:26: error[invalid-argument-type] Argument to bound method `add_config` is incorrect: Expected `str`, found `object`
++ test/test_apprise_config.py:325:26: error[invalid-argument-type] Argument to bound method `add_config` is incorrect: Expected `str`, found `Literal[42]`
++ test/test_apprise_config.py:326:26: error[invalid-argument-type] Argument to bound method `add_config` is incorrect: Expected `str`, found `None`
++ test/test_attach_http.py:424:12: warning[possibly-unbound-attribute] Attribute `startswith` on type `str | None` is possibly unbound
++ test/test_config_http.py:171:12: error[unresolved-attribute] Type `ConfigHTTP & ~AlwaysFalsy` has no attribute `expired`
++ test/test_config_http.py:179:16: error[unresolved-attribute] Type `ConfigHTTP & ~AlwaysFalsy` has no attribute `servers`
++ test/test_config_http.py:187:16: error[unresolved-attribute] Type `ConfigHTTP & ~AlwaysFalsy` has no attribute `expired`
++ test/test_config_http.py:189:20: error[unresolved-attribute] Type `ConfigHTTP & ~AlwaysFalsy` has no attribute `servers`
++ test/test_config_http.py:197:16: error[unresolved-attribute] Type `ConfigHTTP & ~AlwaysFalsy` has no attribute `expired`
++ test/test_config_http.py:199:20: error[unresolved-attribute] Type `ConfigHTTP & ~AlwaysFalsy` has no attribute `servers`
+- Found 4312 diagnostics
++ Found 4327 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ src/schemathesis/hooks.py:77:57: error[unresolved-attribute] Type `((...) -> Unknown) & ~str` has no attribute `__name__`
++ src/schemathesis/openapi/generation/filters.py:67:25: error[not-iterable] Object of type `<Protocol with members '__iter__'> & ~Mapping[Unknown, Unknown]` is not iterable
+- Found 287 diagnostics
++ Found 289 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- isort/api.py:161:5: error[invalid-assignment] Object of type `(str & ~AlwaysFalsy) | (Path & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy)` is not assignable to `str | None`
++ isort/api.py:161:5: error[invalid-assignment] Object of type `(str & ~AlwaysFalsy) | (Path & ~AlwaysTruthy & ~AlwaysFalsy)` is not assignable to `str | None`
+- isort/settings.py:909:73: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 38 diagnostics
++ Found 37 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
++ src/poetry/console/commands/run.py:75:29: warning[possibly-unbound-attribute] Attribute `split` on type `str | (dict[str, str] & ~dict[Unknown, Unknown]) | @Todo(Subscript expressions on intersections)` is possibly unbound
+- Found 932 diagnostics
++ Found 933 diagnostics
+
+colour (https://github.com/colour-science/colour)
++ colour/io/fichet2021.py:858:42: warning[possibly-unbound-attribute] Attribute `items` on type `(Sequence[SpectralDistribution | MultiSpectralDistributions] & ~Sequence[Unknown] & ~SpectralDistribution & ~MultiSpectralDistributions & ~ValuesView[Unknown]) | (Any & ~Sequence[Unknown] & ~SpectralDistribution & ~MultiSpectralDistributions & ~ValuesView[Unknown]) | (ValuesView[Unknown] & ~Sequence[Unknown] & ~SpectralDistribution & ~MultiSpectralDistributions & ~ValuesView[Unknown]) | Any` is possibly unbound
+- Found 477 diagnostics
++ Found 478 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- references/classification/utils.py:420:5: error[invalid-assignment] Object of type `tuple[@Todo(map_with_boundness: intersections with negative contributions), ...]` is not assignable to `list[type] | None`
++ references/classification/utils.py:420:5: error[invalid-assignment] Object of type `tuple[type, ...]` is not assignable to `list[type] | None`
++ references/depth/stereo/train.py:27:18: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- setup.py:288:20: warning[possibly-unbound-attribute] Attribute `copy` on type `Unknown | str | list[Unknown]` is possibly unbound
++ setup.py:288:20: warning[possibly-unbound-attribute] Attribute `copy` on type `Unknown | str | list[str] | list[Unknown]` is possibly unbound
+- setup.py:289:20: warning[possibly-unbound-attribute] Attribute `copy` on type `Unknown | str | list[Unknown]` is possibly unbound
++ setup.py:289:20: warning[possibly-unbound-attribute] Attribute `copy` on type `Unknown | str | list[str] | list[Unknown]` is possibly unbound
+- setup.py:413:32: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[Unknown]` and `Unknown | str | list[Unknown]`
++ setup.py:413:32: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[Unknown]` and `Unknown | str | list[str] | list[Unknown]`
+- setup.py:503:30: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[Unknown]` and `Unknown | str | list[Unknown]`
++ setup.py:503:30: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[Unknown]` and `Unknown | str | list[str] | list[Unknown]`
++ test/datasets_utils.py:651:58: warning[possibly-unbound-attribute] Attribute `__qualname__` on type `(((str, /) -> Any) & ~AlwaysFalsy) | (def open(fp: Unknown | IO[bytes], mode: Literal["r"] = Literal["r"], formats: list[str] | tuple[str, ...] | None = None) -> ImageFile)` is possibly unbound
+- test/test_backbone_utils.py:184:9: warning[possibly-unbound-attribute] Attribute `backward` on type `int | @Todo(map_with_boundness: intersections with negative contributions)` is possibly unbound
++ test/test_backbone_utils.py:184:9: warning[possibly-unbound-attribute] Attribute `backward` on type `int | Unknown` is possibly unbound
+- test/test_backbone_utils.py:225:9: warning[possibly-unbound-attribute] Attribute `backward` on type `int | @Todo(map_with_boundness: intersections with negative contributions)` is possibly unbound
++ test/test_backbone_utils.py:225:9: warning[possibly-unbound-attribute] Attribute `backward` on type `int | Unknown` is possibly unbound
++ torchvision/io/image.py:219:12: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
++ torchvision/io/image.py:257:12: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- torchvision/ops/poolers.py:122:34: error[invalid-argument-type] Argument to function `_infer_scale` is incorrect: Expected `list[int]`, found `tuple[Literal[0] | @Todo(map_with_boundness: intersections with negative contributions), Literal[0] | @Todo(map_with_boundness: intersections with negative contributions)]`
++ torchvision/ops/poolers.py:122:34: error[invalid-argument-type] Argument to function `_infer_scale` is incorrect: Expected `list[int]`, found `tuple[int, int]`
++ torchvision/transforms/functional.py:168:61: warning[possibly-unbound-attribute] Attribute `mode` on type `(Image & ~ndarray[Unknown, Unknown]) | (ndarray[Unknown, Unknown] & ~ndarray[Unknown, Unknown])` is possibly unbound
++ torchvision/transforms/functional.py:170:8: warning[possibly-unbound-attribute] Attribute `mode` on type `(Image & ~ndarray[Unknown, Unknown]) | (ndarray[Unknown, Unknown] & ~ndarray[Unknown, Unknown])` is possibly unbound
++ torchvision/transforms/functional.py:172:20: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ torchvision/transforms/functional.py:172:33: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ torchvision/utils.py:70:8: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
++ torchvision/utils.py:71:18: warning[possibly-unbound-attribute] Attribute `unsqueeze` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
++ torchvision/utils.py:72:8: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
++ torchvision/utils.py:73:12: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
++ torchvision/utils.py:75:18: warning[possibly-unbound-attribute] Attribute `unsqueeze` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
++ torchvision/utils.py:77:8: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
++ torchvision/utils.py:77:30: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
++ torchvision/utils.py:81:18: warning[possibly-unbound-attribute] Attribute `clone` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- Found 1467 diagnostics
++ Found 1483 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- mkdocs/utils/yaml.py:27:5: error[invalid-assignment] Object of type `(ScalarNode & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy) | Literal[""]` is not assignable to `str`
++ mkdocs/utils/yaml.py:27:5: error[invalid-assignment] Object of type `(ScalarNode & ~AlwaysTruthy & ~AlwaysFalsy) | (Any & ~AlwaysFalsy) | Literal[""]` is not assignable to `str`
+
+tornado (https://github.com/tornadoweb/tornado)
++ tornado/escape.py:336:30: warning[possibly-unbound-attribute] Attribute `strip` on type `(str & ~AlwaysFalsy & ~((...) -> object)) | (((str, /) -> str) & ~AlwaysFalsy & ~((...) -> object))` is possibly unbound
+- Found 242 diagnostics
++ Found 243 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ ignite/handlers/base_logger.py:52:29: error[not-iterable] Object of type `(list[str] & ~((...) -> object)) | (((str, Unknown, /) -> bool) & ~((...) -> object))` may not be iterable
+- ignite/handlers/param_scheduler.py:217:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ignite/handlers/param_scheduler.py:219:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/ignite/handlers/test_param_scheduler.py:655:17: warning[possibly-unbound-attribute] Attribute `param_history` on type `(Unknown & ~<Protocol with members 'param_history'>) | (State & ~<Protocol with members 'param_history'>)` is possibly unbound
+
+dragonchain (https://github.com/dragonchain/dragonchain)
++ dragonchain/transaction_processor/level_2_actions.py:54:37: error[invalid-argument-type] Argument to function `verify_transaction_count` is incorrect: Expected `str`, found `str | Unknown | None`
++ dragonchain/transaction_processor/level_2_actions.py:54:53: error[invalid-argument-type] Argument to function `verify_transaction_count` is incorrect: Expected `str`, found `str | Unknown | None`
+- dragonchain/webserver/lib/verifications.py:85:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `@Todo(map_with_boundness: intersections with negative contributions) | None`
++ dragonchain/webserver/lib/verifications.py:85:12: error[invalid-return-type] Return type does not match returned value: expected `str`, found `Unknown | None`
+- Found 304 diagnostics
++ Found 306 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ pwndbg/commands/__init__.py:161:33: error[unresolved-attribute] Type `((...) -> str | None) & ~AlwaysFalsy` has no attribute `__name__`
+- pwndbg/commands/procinfo.py:179:17: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | int | list[Unknown]` is not assignable to `int`
++ pwndbg/commands/procinfo.py:179:17: error[invalid-assignment] Object of type `str | int | list[Unknown]` is not assignable to `int`
++ pwndbg/dbg/lldb/repl/__init__.py:889:8: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `platform`
++ pwndbg/dbg/lldb/repl/__init__.py:889:26: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `platform`
++ pwndbg/dbg/lldb/repl/__init__.py:893:8: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `arch`
++ pwndbg/dbg/lldb/repl/__init__.py:894:45: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `arch`
++ pwndbg/dbg/lldb/repl/__init__.py:896:8: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `sysroot`
++ pwndbg/dbg/lldb/repl/__init__.py:897:48: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `sysroot`
++ pwndbg/dbg/lldb/repl/__init__.py:901:8: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `platform`
++ pwndbg/dbg/lldb/repl/__init__.py:902:41: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `platform`
++ pwndbg/dbg/lldb/repl/__init__.py:905:51: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `filename`
++ pwndbg/dbg/lldb/repl/__init__.py:907:57: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `filename`
++ pwndbg/dbg/lldb/repl/__init__.py:910:12: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `platform`
++ pwndbg/dbg/lldb/repl/__init__.py:916:13: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `filename`
++ pwndbg/dbg/lldb/repl/__init__.py:916:36: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `platform`
++ pwndbg/dbg/lldb/repl/__init__.py:920:44: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `filename`
++ pwndbg/dbg/lldb/repl/__init__.py:922:53: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `filename`
++ pwndbg/dbg/lldb/repl/__init__.py:926:41: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `filename`
++ pwndbg/dbg/lldb/repl/__init__.py:1123:8: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `name`
++ pwndbg/dbg/lldb/repl/__init__.py:1124:28: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `name`
++ pwndbg/dbg/lldb/repl/__init__.py:1125:8: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `pid`
++ pwndbg/dbg/lldb/repl/__init__.py:1126:27: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `pid`
++ pwndbg/dbg/lldb/repl/__init__.py:1127:27: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `waitfor`
++ pwndbg/dbg/lldb/repl/__init__.py:1132:32: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `include_existing`
++ pwndbg/dbg/lldb/repl/__init__.py:1175:32: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `plugin`
++ pwndbg/dbg/lldb/repl/__init__.py:1195:53: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `remoteurl`
++ pwndbg/dbg/lldb/repl/__init__.py:1227:13: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `remoteurl`
++ pwndbg/dbg/lldb/repl/__init__.py:1235:44: error[unresolved-attribute] Type `list[str] & ~AlwaysFalsy` has no attribute `remoteurl`
++ pwndbg/lib/cache.py:167:62: error[unresolved-attribute] Type `((...) -> Unknown) & ~<Protocol with members 'cache'>` has no attribute `__name__`
+- Found 2259 diagnostics
++ Found 2287 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ cloudinit/netinfo.py:591:25: error[not-iterable] Object of type `Interface | None` may not be iterable
++ cloudinit/netinfo.py:604:25: error[not-iterable] Object of type `Interface | None` may not be iterable
+- Found 595 diagnostics
++ Found 597 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
+- com/win32com/test/util.py:196:5: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `emitted` on type `Handler | @Todo(map_with_boundness: intersections with negative contributions)`
++ com/win32com/test/util.py:196:5: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `emitted` on type `Handler | Unknown`
+- com/win32com/test/util.py:197:12: warning[possibly-unbound-attribute] Attribute `emitted` on type `Handler | @Todo(map_with_boundness: intersections with negative contributions)` is possibly unbound
++ com/win32com/test/util.py:197:12: warning[possibly-unbound-attribute] Attribute `emitted` on type `Handler | Unknown` is possibly unbound
++ win32/Demos/eventLogDemo.py:40:44: error[missing-argument] No argument provided for required parameter `format` of bound method `strftime`
+- Found 1997 diagnostics
++ Found 1998 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/_code/code.py:1093:68: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | (ExceptionInfo[BaseException] & ~AlwaysTruthy & ~AlwaysFalsy) | (@Todo(map_with_boundness: intersections with negative contributions) & ~AlwaysFalsy)`
++ src/_pytest/_code/code.py:1093:68: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | (ExceptionInfo[BaseException] & ~AlwaysTruthy & ~AlwaysFalsy)`
++ src/_pytest/fixtures.py:789:23: warning[possibly-unbound-attribute] Attribute `argname` on type `FixtureDef[object] | (PseudoFixtureDef[object] & ~PseudoFixtureDef[Unknown])` is possibly unbound
++ src/_pytest/fixtures.py:1240:29: error[unresolved-attribute] Type `FixtureFunction & ~type[Any] & ~FixtureFunctionDefinition` has no attribute `__name__`
++ src/_pytest/python_api.py:430:40: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `bool_`
+- testing/test_reports.py:219:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 491 diagnostics
++ Found 493 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
++ freqtrade/optimize/optimize_reports/optimize_reports.py:270:17: warning[possibly-unbound-attribute] Attribute `resample` on type `(list[Unknown] & ~list[Unknown]) | (DataFrame & ~list[Unknown]) | Unknown` is possibly unbound
++ freqtrade/optimize/optimize_reports/optimize_reports.py:283:25: warning[possibly-unbound-attribute] Attribute `strftime` on type `Hashable | Unknown` is possibly unbound
++ freqtrade/optimize/optimize_reports/optimize_reports.py:284:32: warning[possibly-unbound-attribute] Attribute `to_pydatetime` on type `Hashable | Unknown` is possibly unbound
+- freqtrade/resolvers/iresolver.py:99:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ freqtrade/strategy/informative_decorator.py:142:21: warning[possibly-unbound-attribute] Attribute `format` on type `(str & ~AlwaysFalsy & ~((...) -> object)) | (((Any, /) -> str) & ~AlwaysFalsy & ~((...) -> object))` is possibly unbound
+- Found 369 diagnostics
++ Found 372 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/pipelines/files.py:474:29: warning[possibly-unbound-attribute] Attribute `getint` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
++ scrapy/pipelines/images.py:99:29: warning[possibly-unbound-attribute] Attribute `getint` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
++ scrapy/pipelines/images.py:112:31: warning[possibly-unbound-attribute] Attribute `getint` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
++ scrapy/pipelines/images.py:115:32: warning[possibly-unbound-attribute] Attribute `getint` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
++ scrapy/pipelines/media.py:94:38: warning[possibly-unbound-attribute] Attribute `getbool` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
++ scrapy/utils/log.py:124:8: warning[possibly-unbound-attribute] Attribute `getbool` on type `Settings | (dict[Unknown, Any] & ~dict[Unknown, Unknown])` is possibly unbound
++ scrapy/utils/python.py:301:14: error[no-matching-overload] No overload of function `getattr` matches arguments
++ scrapy/utils/python.py:301:44: error[no-matching-overload] No overload of function `getattr` matches arguments
+- Found 1064 diagnostics
++ Found 1072 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ schema_salad/makedoc.py:232:70: warning[possibly-unbound-attribute] Attribute `splitlines` on type `(str & ~MutableSequence[Unknown]) | (list[str] & ~MutableSequence[Unknown])` is possibly unbound
+- Found 144 diagnostics
++ Found 145 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- github/GithubRetry.py:127:103: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- github/GithubRetry.py:188:102: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- github/GithubRetry.py:197:103: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ github/Repository.py:1741:45: warning[possibly-unbound-attribute] Attribute `isoformat` on type `(@Todo(unknown type subscript) & ~date) | (_NotSetType & ~date)` is possibly unbound
++ github/Repository.py:3170:45: warning[possibly-unbound-attribute] Attribute `_identity` on type `(@Todo(unknown type subscript) & ~str) | (_NotSetType & ~str)` is possibly unbound
+- github/RequiredPullRequestReviews.py:217:16: error[invalid-return-type] Return type does not match returned value: expected `list[Team]`, found `@Todo(map_with_boundness: intersections with negative contributions) | None`
++ github/RequiredPullRequestReviews.py:217:16: error[invalid-return-type] Return type does not match returned value: expected `list[Team]`, found `Unknown | None`
+- github/RequiredPullRequestReviews.py:222:16: error[invalid-return-type] Return type does not match returned value: expected `list[NamedUser]`, found `@Todo(map_with_boundness: intersections with negative contributions) | None`
++ github/RequiredPullRequestReviews.py:222:16: error[invalid-return-type] Return type does not match returned value: expected `list[NamedUser]`, found `Unknown | None`
+- Found 305 diagnostics
++ Found 304 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
++ lib/Crypto/Math/Primality.py:318:26: error[unsupported-operator] Operator `+` is unsupported between objects of type `Literal["Unknown parameters: "]` and `dict_keys[str, Unknown]`
++ lib/Crypto/Math/Primality.py:357:26: error[unsupported-operator] Operator `+` is unsupported between objects of type `Literal["Unknown parameters: "]` and `dict_keys[str, Unknown]`
+- Found 1488 diagnostics
++ Found 1490 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ paasta_tools/cli/cmds/autoscale.py:243:12: error[unsupported-operator] Operator `<=` is not supported for types `int` and `None`, in comparing `Literal[200]` with `Unknown | None`
++ paasta_tools/cli/cmds/autoscale.py:243:19: error[unsupported-operator] Operator `<=` is not supported for types `None` and `int`, in comparing `Unknown | None` with `Literal[299]`
++ paasta_tools/cli/cmds/list_deploy_queue.py:85:32: error[invalid-argument-type] Argument to function `red` is incorrect: Expected `str`, found `Unknown | None`
++ paasta_tools/cli/cmds/list_deploy_queue.py:86:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Unknown | None`
+- paasta_tools/cli/cmds/logs.py:1529:80: error[invalid-argument-type] Argument to function `pick_default_log_mode` is incorrect: Expected `Iterable[str]`, found `None | @Todo(map_with_boundness: intersections with negative contributions)`
++ paasta_tools/cli/cmds/logs.py:1529:80: error[invalid-argument-type] Argument to function `pick_default_log_mode` is incorrect: Expected `Iterable[str]`, found `None | Any`
+- paasta_tools/cli/cmds/mark_for_deployment.py:534:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `@Todo(map_with_boundness: intersections with negative contributions) | None`
++ paasta_tools/cli/cmds/mark_for_deployment.py:534:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `str | None`
+- paasta_tools/paastaapi/model_utils.py:275:29: error[unsupported-operator] Operator `in` is not supported for types `Unknown` and `None`, in comparing `Unknown & ~None` with `None | @Todo(map_with_boundness: intersections with negative contributions)`
++ paasta_tools/paastaapi/model_utils.py:275:29: error[unsupported-operator] Operator `in` is not supported for types `Unknown` and `None`, in comparing `Unknown & ~None` with `None | Unknown`
+- paasta_tools/utils.py:3758:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, str, str | None]`, found `tuple[None | str, None | str, None | @Todo(map_with_boundness: intersections with negative contributions)]`
++ paasta_tools/utils.py:3758:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, str, str | None]`, found `tuple[None | str, None | str, None | str | @Todo(Support for `typing.TypeAlias`)]`
+- Found 876 diagnostics
++ Found 880 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- ext/django_stubs_ext/patch.py:114:84: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ mypy_django_plugin/django/context.py:374:33: warning[possibly-unbound-attribute] Attribute `field` on type `(RelatedField[Any, Any] & ~RelatedField[Unknown, Unknown]) | (ForeignObjectRel & ~RelatedField[Unknown, Unknown])` is possibly unbound
+
+altair (https://github.com/vega/altair)
++ altair/jupyter/jupyter_chart.py:251:34: warning[possibly-unbound-attribute] Attribute `to_dict` on type `(Any & ~dict[Unknown, Unknown]) | (UndefinedType & ~dict[Unknown, Unknown])` is possibly unbound
+- altair/jupyter/jupyter_chart.py:275:60: warning[possibly-unbound-attribute] Attribute `type` on type `(Any & dict[Unknown, Unknown]) | (UndefinedType & dict[Unknown, Unknown]) | @Todo(map_with_boundness: intersections with negative contributions)` is possibly unbound
++ altair/jupyter/jupyter_chart.py:275:60: warning[possibly-unbound-attribute] Attribute `type` on type `(Any & dict[Unknown, Unknown]) | (UndefinedType & dict[Unknown, Unknown]) | Any` is possibly unbound
+- Found 1302 diagnostics
++ Found 1303 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
++ src/bokeh/embed/bundle.py:353:25: error[unresolved-attribute] Type `HasProps & ~Document` has no attribute `references`
++ src/bokeh/server/tornado.py:91:12: error[unresolved-attribute] Type `ModuleType & ~AlwaysFalsy` has no attribute `Process`
+- Found 834 diagnostics
++ Found 836 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- examples/contrib/ntlm_upstream_proxy.py:79:33: error[invalid-return-type] Return type does not match returned value: expected `HTTPFlow`, found `(@Todo(Type::Intersection.call()) & HTTPFlow) | None`
++ examples/contrib/sslstrip.py:39:29: warning[possibly-unbound-attribute] Attribute `replace` on type `bytes | None` is possibly unbound
++ mitmproxy/addons/cut.py:57:24: error[unresolved-attribute] Type `Flow & ~AlwaysFalsy` has no attribute `headers`
+- mitmproxy/proxy/layers/http/_http2.py:186:33: error[type-assertion-failure] Argument does not have asserted type `Never`
+- mitmproxy/proxy/layers/http/_http3.py:127:33: error[type-assertion-failure] Argument does not have asserted type `Never`
+- Found 1815 diagnostics
++ Found 1814 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
++ sphinx/application.py:518:37: warning[possibly-unbound-attribute] Attribute `split` on type `(tuple[int, int] & ~tuple[Unknown, ...]) | str` is possibly unbound
++ sphinx/domains/c/__init__.py:153:22: warning[possibly-unbound-attribute] Attribute `clone` on type `Unknown | ASTDeclaration | None` is possibly unbound
++ sphinx/domains/cpp/__init__.py:214:22: warning[possibly-unbound-attribute] Attribute `clone` on type `Unknown | ASTDeclaration | None` is possibly unbound
+- sphinx/domains/cpp/_ast.py:317:21: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | list[ASTTemplateParams | ASTTemplateIntroduction] | None` is not assignable to `list[Any]`
++ sphinx/domains/cpp/_ast.py:317:21: error[invalid-assignment] Object of type `Unknown | list[ASTTemplateParams | ASTTemplateIntroduction] | None` is not assignable to `list[Any]`
++ sphinx/domains/cpp/_ast.py:2041:20: warning[possibly-unbound-attribute] Attribute `declaration` on type `Unknown | Symbol | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:2041:20: warning[possibly-unbound-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:3507:20: warning[possibly-unbound-attribute] Attribute `declaration` on type `Unknown | Symbol | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:3507:20: warning[possibly-unbound-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4054:20: warning[possibly-unbound-attribute] Attribute `declaration` on type `Unknown | Symbol | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4054:20: warning[possibly-unbound-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4103:20: warning[possibly-unbound-attribute] Attribute `declaration` on type `Unknown | Symbol | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4103:20: warning[possibly-unbound-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4103:62: error[invalid-argument-type] Argument to bound method `get_id` is incorrect: Expected `bool`, found `None`
++ sphinx/domains/cpp/_ast.py:4164:20: warning[possibly-unbound-attribute] Attribute `declaration` on type `Unknown | Symbol | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4164:20: warning[possibly-unbound-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4164:62: error[invalid-argument-type] Argument to bound method `get_id` is incorrect: Expected `bool`, found `None`
++ sphinx/domains/cpp/_ast.py:4315:20: warning[possibly-unbound-attribute] Attribute `declaration` on type `Unknown | Symbol | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4315:20: warning[possibly-unbound-attribute] Attribute `get_id` on type `Unknown | ASTDeclaration | None` is possibly unbound
++ sphinx/domains/cpp/_ast.py:4315:62: error[invalid-argument-type] Argument to bound method `get_id` is incorrect: Expected `bool`, found `None`
++ sphinx/domains/cpp/_parser.py:2081:34: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | list[ASTTemplateParams | ASTTemplateIntroduction] | None`
+- sphinx/domains/python/_annotations.py:197:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ sphinx/environment/adapters/toctree.py:556:9: error[unresolved-attribute] Unresolved attribute `children` on type `Node`.
++ sphinx/environment/adapters/toctree.py:556:65: error[unresolved-attribute] Type `Node & ~bullet_list & ~toctree & ~only` has no attribute `children`
++ sphinx/environment/adapters/toctree.py:557:22: error[unresolved-attribute] Type `Node` has no attribute `children`
++ sphinx/ext/autodoc/importer.py:488:47: error[call-non-callable] Method `__geti...*[Comment body truncated]*
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-24 08:40_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `possibly-unbound-attribute` | 199 | 3 | 30 |
+| `unresolved-attribute` | 134 | 0 | 0 |
+| `invalid-argument-type` | 38 | 0 | 34 |
+| `unused-ignore-comment` | 0 | 68 | 0 |
+| `unsupported-operator` | 26 | 0 | 13 |
+| `invalid-assignment` | 4 | 0 | 22 |
+| `invalid-return-type` | 2 | 1 | 9 |
+| `call-non-callable` | 5 | 0 | 0 |
+| `no-matching-overload` | 5 | 0 | 0 |
+| `not-iterable` | 5 | 0 | 0 |
+| `non-subscriptable` | 4 | 0 | 0 |
+| `type-assertion-failure` | 0 | 2 | 0 |
+| `index-out-of-bounds` | 1 | 0 | 0 |
+| `invalid-type-form` | 1 | 0 | 0 |
+| `missing-argument` | 1 | 0 | 0 |
+| **Total** | **425** | **74** | **108** |
+
+**[Full report with detailed diff](https://david-map-with-boundness.ecosystem-663.pages.dev/diff)**
+
+
+---
+
+_Renamed from "[ty] Mapping over intersections with negative types" to "[ty] Attribute access on intersections with negative parts" by @sharkdp on 2025-07-25 11:29_
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-07-25 12:10_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-07-25 12:10_
+
+---
+
+_Marked ready for review by @sharkdp on 2025-07-25 12:30_
+
+---
+
+_Comment by @AlexWaygood on 2025-07-25 12:35_
+
+> The changeset here proposes to handle member access on these intersection types by simply ignoring all negative contributions. This is not always ideal: a negative contribution like `~<Protocol with members 'attr'>` could be a hint that `.attr` should not be accessible on the full intersection type. The behavior can certainly be improved in the future, but this seems like a reasonable initial step to get rid of this unnecessary `@Todo` type.
+
+This is also essentially the conclusion @JelleZijlstra recently came to in his article exploring negated types: https://jellezijlstra.github.io/negation-types
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/narrow/hasattr.md`:47 on 2025-07-25 12:37_
+
+```suggestion
+change the type. `<Protocol with members 'spam'>` is a supertype of `WithSpam`, and so
+```
+
+---
+
+_@AlexWaygood approved on 2025-07-25 12:39_
+
+Excellent. I haven't looked through the ecosystem results but I trust you to have done a thorough analysis!
+
+---
+
+_@sharkdp reviewed on 2025-07-25 12:47_
+
+---
+
+_Review comment by @sharkdp on `crates/ty_python_semantic/resources/mdtest/narrow/hasattr.md`:47 on 2025-07-25 12:47_
+
+Oops — thanks!
+
+---
+
+_Merged by @sharkdp on 2025-07-25 12:56_
+
+---
+
+_Closed by @sharkdp on 2025-07-25 12:56_
+
+---
+
+_Branch deleted on 2025-07-25 12:56_
+
+---

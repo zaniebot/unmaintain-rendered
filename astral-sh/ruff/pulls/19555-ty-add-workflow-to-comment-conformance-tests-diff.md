@@ -1,0 +1,803 @@
+```yaml
+number: 19555
+title: "[ty] Add workflow to comment conformance tests diff"
+type: pull_request
+state: merged
+author: dhruvmanila
+labels:
+  - ci
+  - ty
+  - no-test
+assignees: []
+merged: true
+base: main
+head: dhruv/conformance-tests-diff
+created_at: 2025-07-25T13:07:19Z
+updated_at: 2025-07-28T06:03:24Z
+url: https://github.com/astral-sh/ruff/pull/19555
+synced_at: 2026-01-10T17:58:13Z
+```
+
+# [ty] Add workflow to comment conformance tests diff
+
+---
+
+_Pull request opened by @dhruvmanila on 2025-07-25 13:07_
+
+## Summary
+
+Follow-up to https://github.com/astral-sh/ruff/pull/19556, this PR adds the workflow that computes the diagnostic diff which the workflow introduced in the linked PR will add as a comment.
+
+This workflow is similar to the [ty ecosystem-analyzer workflow](https://github.com/astral-sh/ruff/blob/d781a6ab3f44afe5dd1afe1d06fb58fd3739fab5/.github/workflows/ty-ecosystem-analyzer.yaml).
+
+Closes: astral-sh/ty#212
+
+## Test Plan
+
+1. Initially there's no diff to show
+2. This [commit](https://github.com/astral-sh/ruff/pull/19555/commits/d0db9937df29cf2d192025ca8f9e480e4acc26f3) comments out a rule which updates the comment with the diff
+3. Later, that commit is reverted and the diff goes away
+
+Use the comment history to look at the diff output where the order of the history corresponds to the steps mentioned above in reverse order i.e., the edit in the middle will contain the diff output:
+
+<img width="1082" height="313" alt="Screenshot 2025-07-25 at 21 09 26" src="https://github.com/user-attachments/assets/6aceb60c-1987-4b9a-9063-e3999844f035" />
+
+---
+
+_Label `ci` added by @dhruvmanila on 2025-07-25 13:07_
+
+---
+
+_Label `ty` added by @dhruvmanila on 2025-07-25 13:07_
+
+---
+
+_Label `no-test` added by @dhruvmanila on 2025-07-25 13:27_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-25 15:27_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on typing conformance tests
+No changes detected when running ty on typing conformance tests ✅
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-25 15:36_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- mypy_primer/utils.py:32:9: error[invalid-assignment] Object of type `str` is not assignable to `Path`
+- Found 9 diagnostics
++ Found 8 diagnostics
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ pytest_robotframework/_internal/pytest/robot_file_support.py:58:118: warning[unknown-rule] Unknown rule `invalid-assignment`
+- Found 193 diagnostics
++ Found 194 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
++ pyp.py:511:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pyp.py:673:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 6 diagnostics
++ Found 8 diagnostics
+
+python-sop (https://gitlab.com/dkg/python-sop)
+- sop/__init__.py:380:13: error[invalid-assignment] Object of type `TextIOWrapper[_WrappedBuffer]` is not assignable to `BinaryIO`
+- sop/__init__.py:382:13: error[invalid-assignment] Object of type `TextIOWrapper[_WrappedBuffer]` is not assignable to `BinaryIO`
+- Found 3 diagnostics
++ Found 1 diagnostic
+
+beartype (https://github.com/beartype/beartype)
++ beartype/_check/code/_pep/codepep484604.py:498:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/code/codemain.py:261:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/code/codemain.py:265:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/code/codemain.py:278:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/code/codemain.py:283:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/code/codemain.py:286:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/convert/_reduce/_pep/redpep484646.py:245:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/convert/_reduce/_redrecurse.py:187:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/error/_pep/pep484/errpep484noreturn.py:43:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/error/_pep/pep484585/errpep484585mapping.py:120:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/error/errcause.py:419:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/error/errcause.py:542:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/error/errcause.py:574:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/forward/reference/fwdrefabc.py:60:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/forward/reference/fwdrefabc.py:166:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_decor/_nontype/decornontype.py:351:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_decor/wrap/_wrapargs.py:177:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_decor/wrap/_wrapargs.py:185:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_decor/wrap/_wrapargs.py:186:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/cls/pep/clspep3119.py:1013:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/cls/pep/clspep3119.py:1017:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/cls/pep/clspep3119.py:1021:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/func/arg/utilfuncarglen.py:278:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/func/utilfuncmake.py:198:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/func/utilfuncwrap.py:349:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/hint/pep/proposal/pep484585/pep484585ref.py:180:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/kind/sequence/utilseqmake.py:36:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_util/text/utiltextlabel.py:430:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/bite/collection/infercollectionsabc.py:156:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/claw/_ast/_clawastutil.py:198:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/claw/_ast/pep/clawastpep526.py:211:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/claw/_ast/pep/clawastpep526.py:214:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/claw/_ast/pep/clawastpep526.py:218:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/claw/_ast/pep/clawastpep695.py:246:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/claw/_clawmain.py:202:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/claw/_importlib/_clawimpload.py:377:9: error[invalid-assignment] Implicit shadowing of function `cache_from_source`
+- Found 566 diagnostics
++ Found 600 diagnostics
+
+itsdangerous (https://github.com/pallets/itsdangerous)
+- src/itsdangerous/serializer.py:95:5: error[invalid-assignment] Object of type `<module 'json'>` is not assignable to `_PDataSerializer[Any]`
+- src/itsdangerous/url_safe.py:21:5: error[invalid-assignment] Object of type `<class '_CompactJSON'>` is not assignable to `_PDataSerializer[str]`
+- Found 8 diagnostics
++ Found 6 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_make.py:1559:5: error[invalid-assignment] Object of type `tuple[@Todo(generator type), ...]` is not assignable to `list[Attribute | Unknown]`
+- src/attr/exceptions.py:20:5: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to `tuple[str]`
+- tests/dataclass_transform_example.py:32:1: error[invalid-assignment] Property `a` defined in `Frozen` is read-only
+- tests/test_annotations.py:644:9: error[invalid-assignment] Implicit shadowing of class `C`
+- tests/test_make.py:526:9: error[invalid-assignment] Implicit shadowing of class `C`
+- tests/test_next_gen.py:71:13: error[invalid-assignment] Object of type `Literal["1"]` is not assignable to attribute `x` of type `int`
+- tests/test_next_gen.py:219:13: error[invalid-assignment] Property `x` defined in `F` is read-only
+- tests/test_next_gen.py:258:13: error[invalid-assignment] Property `a` defined in `A` is read-only
+- tests/test_next_gen.py:261:13: error[invalid-assignment] Property `a` defined in `B` is read-only
+- tests/test_next_gen.py:264:13: error[invalid-assignment] Property `b` defined in `B` is read-only
+- tests/test_next_gen.py:267:13: error[invalid-assignment] Property `c` defined in `C` is read-only
+- tests/test_next_gen.py:387:9: error[invalid-assignment] Object of type `Literal["11"]` is not assignable to attribute `x` of type `int`
+- tests/test_next_gen.py:393:13: error[invalid-assignment] Object of type `Literal["9"]` is not assignable to attribute `x` of type `int`
+- Found 637 diagnostics
++ Found 624 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
++ tests/test_array.py:57:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_array.py:68:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_array.py:79:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_array.py:90:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/test_array.py:98:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_array.py:137:5: error[invalid-assignment] Object of type `TypedArray[Literal[42]]` is not assignable to `TypedArray[int]`
+- tests/test_array.py:357:1: error[invalid-assignment] Object of type `def singleton(value: _TSource) -> TypedArray[_TSource]` is not assignable to `(int, /) -> TypedArray[int]`
+- tests/test_block.py:335:1: error[invalid-assignment] Object of type `def singleton(value: _TSource) -> Block[_TSource]` is not assignable to `(int, /) -> Block[int]`
+- tests/test_seq.py:321:1: error[invalid-assignment] Object of type `def singleton(item: _TSource) -> Seq[_TSource]` is not assignable to `(int, /) -> Seq[int]`
+- tests/test_try.py:13:5: error[invalid-assignment] Object of type `Try[Literal[10]]` is not assignable to `Try[int]`
+- tests/test_try.py:34:5: error[invalid-assignment] Object of type `Try[Literal[10]]` is not assignable to `Try[int]`
+- Found 227 diagnostics
++ Found 226 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- aioredis/client.py:3432:13: error[invalid-assignment] Object of type `(Sequence[@Todo(Inference of subscript on special form)] & ~Mapping[Unknown, Unknown]) | (Mapping[AnyKeyT, int | float] & ~Mapping[Unknown, Unknown])` is not assignable to `Sequence[Unknown] | AbstractSet[AnyKeyT]`
+- Found 17 diagnostics
++ Found 16 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- pyinstrument/stack_sampler.py:49:1: error[invalid-assignment] Object of type `ContextVar[None]` is not assignable to `ContextVar[object]`
+- pyinstrument/vendor/decorator.py:295:5: error[invalid-assignment] Implicit shadowing of function `__init__`
+- pyinstrument/vendor/decorator.py:301:5: error[invalid-assignment] Implicit shadowing of function `__init__`
+- Found 40 diagnostics
++ Found 37 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- src/jinja2/environment.py:1605:13: error[invalid-assignment] Object of type `TextIOWrapper[_WrappedBuffer]` is not assignable to `IO[bytes]`
+- src/jinja2/exceptions.py:43:13: error[invalid-assignment] Object of type `str | Undefined | None` is not assignable to `str | None`
++ src/jinja2/filters.py:1775:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/jinja2/lexer.py:24:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/jinja2/nodes.py:1199:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/jinja2/runtime.py:690:17: error[invalid-assignment] Object of type `(Unknown & ~((...) -> object)) | bool | (((str | None, /) -> bool) & ~((...) -> object))` is not assignable to `bool | None`
+- tests/test_bytecode_cache.py:52:9: error[invalid-assignment] Object of type `Literal["code"]` is not assignable to attribute `code` of type `CodeType | None`
+- tests/test_bytecode_cache.py:62:9: error[invalid-assignment] Implicit shadowing of function `get`
+- tests/test_bytecode_cache.py:63:9: error[invalid-assignment] Implicit shadowing of function `set`
+- tests/test_bytecode_cache.py:66:9: error[invalid-assignment] Object of type `Literal["code"]` is not assignable to attribute `code` of type `CodeType | None`
+- Found 191 diagnostics
++ Found 187 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/datastructures/file_storage.py:129:13: error[invalid-assignment] Object of type `TextIOWrapper[_WrappedBuffer]` is not assignable to `str | PathLike[str] | IO[bytes]`
+- src/werkzeug/datastructures/file_storage.py:196:13: error[invalid-assignment] Object of type `TextIOWrapper[_WrappedBuffer]` is not assignable to `IO[bytes]`
++ src/werkzeug/datastructures/range.py:161:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/werkzeug/datastructures/range.py:163:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/werkzeug/datastructures/range.py:166:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/werkzeug/datastructures/range.py:168:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/werkzeug/datastructures/structures.py:792:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/werkzeug/datastructures/structures.py:806:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/werkzeug/formparser.py:29:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/werkzeug/sansio/response.py:597:9: error[invalid-assignment] Object of type `def on_update(value: WWWAuthenticate) -> None` is not assignable to attribute `_on_update` on type `(Unknown & ~None) | WWWAuthenticate`
+- src/werkzeug/sansio/response.py:620:13: error[invalid-assignment] Object of type `def on_update(value: WWWAuthenticate) -> None` is not assignable to attribute `_on_update` on type `(WWWAuthenticate & ~AlwaysFalsy & ~list[Unknown]) | (list[WWWAuthenticate] & ~AlwaysFalsy & ~list[Unknown])`
++ src/werkzeug/serving.py:55:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/werkzeug/test.py:815:13: error[invalid-assignment] Object of type `type` is not assignable to `type[Response] | None`
++ src/werkzeug/utils.py:480:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/werkzeug/utils.py:512:9: error[invalid-assignment] Object of type `(int & ~((...) -> object)) | (((str | None, /) -> int | None) & ~((...) -> object)) | (@Todo(Type::Intersection.call()) & ~None)` is not assignable to attribute `max_age` of type `int | None`
+- tests/live_apps/run.py:35:5: error[invalid-assignment] Implicit shadowing of function `address_string`
+- tests/test_datastructures.py:1009:9: error[invalid-assignment] Object of type `Literal[False]` is not assignable to attribute `no_cache` of type `str | Literal[True] | None`
+- tests/test_debug.py:279:9: error[invalid-assignment] Object of type `TypeError` is not assignable to attribute `__context__` on type `BaseException | None`
+- tests/test_http.py:141:9: error[invalid-assignment] Object of type `float` is not assignable to attribute `max_age` of type `int | None`
+- tests/test_http.py:144:9: error[invalid-assignment] Object of type `float` is not assignable to attribute `s_maxage` of type `int | None`
+- tests/test_http.py:255:9: error[invalid-assignment] Object of type `Literal["Foo Bar"]` is not assignable to attribute `realm` on type `Unknown | None`
+- tests/test_http.py:691:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `start` on type `ContentRange | None`
+- tests/test_http.py:692:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `stop` on type `ContentRange | None`
+- tests/test_security.py:66:5: error[invalid-assignment] Object of type `Literal["*"]` is not assignable to attribute `_os_alt_seps` of type `list[str]`
+- tests/test_utils.py:73:9: error[invalid-assignment] Implicit shadowing of function `prop`
+- Found 366 diagnostics
++ Found 359 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- src/aiortc/rtcpeerconnection.py:582:17: error[invalid-assignment] Object of type `Literal["client"]` is not assignable to attribute `role` on type `RTCDtlsParameters | None`
+- src/aiortc/rtcpeerconnection.py:584:17: error[invalid-assignment] Object of type `Unknown & ~Literal["auto"]` is not assignable to attribute `role` on type `RTCDtlsParameters | None`
+- src/aiortc/sdp.py:486:25: error[invalid-assignment] Object of type `str | None` is not assignable to attribute `muxId` on type `Unknown | RTCRtpParameters`
+- Found 93 diagnostics
++ Found 90 diagnostics
+
+kornia (https://github.com/kornia/kornia)
++ kornia/core/mixin/image_module.py:65:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ kornia/core/module.py:71:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- kornia/utils/draw.py:376:5: error[invalid-assignment] Not enough values to unpack: Expected 5
+- kornia/utils/draw.py:379:5: error[invalid-assignment] Not enough values to unpack: Expected 5
+- kornia/utils/draw.py:382:5: error[invalid-assignment] Not enough values to unpack: Expected 3
+- Found 798 diagnostics
++ Found 797 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ psycopg/psycopg/_cmodule.py:33:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/_py_transformer.py:158:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- psycopg/psycopg/_transformer.py:21:5: error[invalid-assignment] Object of type `<class 'Transformer'>` is not assignable to `type[Transformer]`
+- psycopg/psycopg/pq/__init__.py:97:9: error[invalid-assignment] Object of type `Unknown | <class 'PGconn'>` is not assignable to `type[PGconn]`
+- psycopg/psycopg/pq/__init__.py:98:9: error[invalid-assignment] Object of type `Unknown | <class 'PGresult'>` is not assignable to `type[PGresult]`
+- psycopg/psycopg/pq/__init__.py:99:9: error[invalid-assignment] Object of type `Unknown | <class 'Conninfo'>` is not assignable to `type[Conninfo]`
+- psycopg/psycopg/pq/__init__.py:100:9: error[invalid-assignment] Object of type `Unknown | <class 'Escaping'>` is not assignable to `type[Escaping]`
+- psycopg/psycopg/pq/__init__.py:101:9: error[invalid-assignment] Object of type `Unknown | <class 'PGcancel'>` is not assignable to `type[PGcancel]`
+- psycopg/psycopg/pq/__init__.py:102:9: error[invalid-assignment] Object of type `Unknown | <class 'PGcancelConn'>` is not assignable to `type[PGcancelConn]`
++ psycopg/psycopg/types/net.py:28:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/types/net.py:29:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/types/net.py:30:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/types/net.py:31:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/types/net.py:32:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/types/net.py:33:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/types/uuid.py:21:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ psycopg/psycopg/waiting.py:199:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- psycopg_pool/psycopg_pool/pool.py:240:17: error[invalid-assignment] Object of type `WaitingClient[Connection[@Todo(Support for `typing.TypeAlias`)]]` is not assignable to `WaitingClient[CT]`
+- psycopg_pool/psycopg_pool/pool_async.py:268:17: error[invalid-assignment] Object of type `WaitingClient[AsyncConnection[@Todo(Support for `typing.TypeAlias`)]]` is not assignable to `WaitingClient[ACT]`
+- tests/fix_db.py:182:5: error[invalid-assignment] Object of type `<class 'PGconnDebug'>` is not assignable to attribute `PGconn` of type `type[PGconn]`
++ tests/fix_pq.py:17:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 658 diagnostics
++ Found 659 diagnostics
+
+operator (https://github.com/canonical/operator)
++ ops/_main.py:101:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/framework.py:189:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/framework.py:388:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/framework.py:591:26: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/framework.py:594:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/framework.py:597:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/framework.py:600:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ops/log.py:77:5: error[invalid-assignment] Implicit shadowing of function `showwarning`
++ ops/model.py:3632:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 102 diagnostics
++ Found 109 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
++ comtypes/_post_coinit/misc.py:372:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- comtypes/client/_code_cache.py:121:13: error[invalid-assignment] Object of type `ModuleType` is not assignable to attribute `gen` of type `<module 'comtypes.gen'>`
+- comtypes/client/_generate.py:276:13: error[invalid-assignment] Object of type `object` is not assignable to `list[str]`
+- comtypes/logutil.py:38:5: error[invalid-assignment] Implicit shadowing of function `optionxform`
+- comtypes/tools/codegenerator/helpers.py:14:1: error[invalid-assignment] Implicit shadowing of class `lcid`
+- Found 410 diagnostics
++ Found 407 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ starlette/schemas.py:14:18: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/middleware/test_errors.py:24:5: error[invalid-assignment] Implicit shadowing of function `app`
+- tests/middleware/test_errors.py:35:5: error[invalid-assignment] Implicit shadowing of function `app`
+- tests/middleware/test_errors.py:47:5: error[invalid-assignment] Implicit shadowing of function `app`
+- tests/middleware/test_errors.py:61:5: error[invalid-assignment] Implicit shadowing of function `app`
+- tests/middleware/test_errors.py:75:5: error[invalid-assignment] Implicit shadowing of function `app`
++ tests/test_datastructures.py:342:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_websockets.py:213:5: error[invalid-assignment] Object of type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is not assignable to `ObjectSendStream[MutableMapping[str, Any]]`
+- tests/test_websockets.py:213:18: error[invalid-assignment] Object of type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` is not assignable to `ObjectReceiveStream[MutableMapping[str, Any]]`
+- Found 161 diagnostics
++ Found 156 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
++ koda_validate/tuple.py:318:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ koda_validate/tuple.py:358:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 38 diagnostics
++ Found 40 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ dulwich/bundle.py:287:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dulwich/client.py:2034:13: error[invalid-assignment] Object of type `None` is not assignable to attribute `pack_data` of type `PackData`
+- dulwich/client.py:2362:1: error[invalid-assignment] Object of type `<class 'SubprocessSSHVendor'>` is not assignable to `() -> SSHVendor`
+- dulwich/config.py:559:5: error[invalid-assignment] Object of type `bytearray` is not assignable to `bytes`
+- dulwich/tests/utils.py:361:5: error[invalid-assignment] Implicit shadowing of function `showwarning`
+- Found 161 diagnostics
++ Found 158 diagnostics
+
+python-htmlgen (https://github.com/srittau/python-htmlgen)
+- htmlgen/document.py:236:5: error[invalid-assignment] Invalid assignment to data descriptor attribute `type` on type `Script` with custom `__set__` method
+- test_htmlgen/form.py:51:9: error[invalid-assignment] Object of type `str` is not assignable to attribute `autocomplete` of type `Autocomplete | None`
+- test_htmlgen/video.py:38:9: error[invalid-assignment] Object of type `str` is not assignable to attribute `preload` of type `Preload | None`
+- Found 27 diagnostics
++ Found 24 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/tests/odd.py:98:1: error[invalid-assignment] Implicit shadowing of class `MetaClass`
+- src/zope/interface/tests/test_odd_declarations.py:60:1: error[invalid-assignment] Implicit shadowing of class `Odd`
+- src/zope/interface/tests/test_odd_declarations.py:269:9: error[invalid-assignment] Implicit shadowing of class `A`
+- src/zope/interface/tests/test_odd_declarations.py:274:9: error[invalid-assignment] Implicit shadowing of class `B`
+- Found 338 diagnostics
++ Found 334 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- src/graphql/execution/execute.py:185:5: error[invalid-assignment] Object of type `staticmethod` is not assignable to `(Any, /) -> bool`
++ src/graphql/language/visitor.py:292:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/execution/test_abstract.py:630:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 327 diagnostics
++ Found 328 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_core/_run.py:128:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_core/_run.py:142:9: error[invalid-assignment] Implicit shadowing of function `repr_callable`
+- src/trio/_core/_run.py:1446:21: error[invalid-assignment] Object of type `_TaskStatus[None]` is not assignable to `_TaskStatus[object]`
++ src/trio/_core/_tests/test_instrumentation.py:226:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_core/_tests/test_run.py:938:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_core/_tests/test_run.py:2668:5: error[invalid-assignment] Object of type `<class 'RuntimeError'> | RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2]]` is not assignable to `type[RuntimeError] | RaisesGroup[RuntimeError]`
++ src/trio/_deprecate.py:168:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_socket.py:1122:5: error[invalid-assignment] Implicit shadowing of function `recv`
+- src/trio/_socket.py:1141:5: error[invalid-assignment] Implicit shadowing of function `recv_into`
+- src/trio/_socket.py:1159:5: error[invalid-assignment] Implicit shadowing of function `recvfrom`
+- src/trio/_socket.py:1178:5: error[invalid-assignment] Implicit shadowing of function `recvfrom_into`
+- src/trio/_socket.py:1200:9: error[invalid-assignment] Implicit shadowing of function `recvmsg`
+- src/trio/_socket.py:1223:9: error[invalid-assignment] Implicit shadowing of function `recvmsg_into`
+- src/trio/_socket.py:1237:5: error[invalid-assignment] Implicit shadowing of function `send`
+- src/trio/_tests/type_tests/raisesgroup.py:30:5: error[invalid-assignment] Object of type `ExceptionGroup[Exception]` is not assignable to `ExceptionGroup[ValueError] | ValueError`
+- src/trio/_tests/type_tests/raisesgroup.py:40:5: error[invalid-assignment] Object of type `BaseExceptionGroup[BaseException]` is not assignable to `BaseExceptionGroup[KeyboardInterrupt]`
+- src/trio/_tests/type_tests/raisesgroup.py:154:5: error[invalid-assignment] Object of type `ExceptionGroup[Exception]` is not assignable to `ExceptionGroup[ExceptionGroup[ValueError]]`
+- src/trio/_tests/type_tests/raisesgroup.py:169:5: error[invalid-assignment] Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2]]` is not assignable to `RaisesGroup[ValueError]`
+- src/trio/_tests/type_tests/raisesgroup.py:170:5: error[invalid-assignment] Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2]]` is not assignable to `RaisesGroup[ValueError]`
+- src/trio/_tests/type_tests/raisesgroup.py:171:5: error[invalid-assignment] Object of type `RaisesGroup[ExcT_1 | ExceptionGroup[ExcT_2]]` is not assignable to `RaisesGroup[ValueError]`
+- src/trio/_util.py:221:17: error[invalid-assignment] Invalid assignment to data descriptor attribute `__name__` on type `<Protocol with members '__name__'>` with custom `__set__` method
+- src/trio/_util.py:223:21: error[invalid-assignment] Object of type `str` is not assignable to attribute `__qualname__` on type `<Protocol with members '__name__'> & <Protocol with members '__qualname__'>`
+- Found 736 diagnostics
++ Found 722 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- tests/test_console.py:632:5: error[invalid-assignment] Implicit shadowing of function `_pager`
+- tests/test_console.py:872:5: error[invalid-assignment] Implicit shadowing of function `isatty`
+- tests/test_logging.py:110:5: error[invalid-assignment] Implicit shadowing of function `handleError`
+- tests/test_pretty.py:184:5: error[invalid-assignment] Object of type `ExampleDataclass` is not assignable to attribute `bar` of type `str`
+- Found 312 diagnostics
++ Found 308 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- alerta/database/backends/mongodb/base.py:864:9: error[invalid-assignment] Implicit shadowing of function `pipeline`
+- tests/plugins/test_reject.py:27:5: error[invalid-assignment] Implicit shadowing of function `get_config`
+- Found 497 diagnostics
++ Found 495 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/django/views.py:218:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ strawberry/django/views.py:266:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/schema/config.py:17:5: error[invalid-assignment] Object of type `None` is not assignable to `bool`
+- strawberry/types/arguments.py:165:9: error[invalid-assignment] Object of type `object` is not assignable to `EnumDefinition`
+- strawberry/types/arguments.py:232:9: error[invalid-assignment] Object of type `object` is not assignable to `EnumDefinition`
++ strawberry/types/field.py:269:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ strawberry/types/info.py:81:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 368 diagnostics
++ Found 369 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- optuna/storages/_rdb/storage.py:460:17: error[invalid-assignment] Object of type `Unknown | Column[Unknown]` is not assignable to attribute `number` on type `FrozenTrial & ~AlwaysFalsy`
+- optuna/storages/_rdb/storage.py:461:17: error[invalid-assignment] Object of type `Unknown | Column[Unknown]` is not assignable to attribute `datetime_start` on type `FrozenTrial & ~AlwaysFalsy`
+- optuna/visualization/_parallel_coordinate.py:195:13: error[invalid-assignment] Object of type `list[int]` is not assignable to `list[int | float]`
+- tests/samplers_tests/test_samplers.py:371:5: error[invalid-assignment] Object of type `dict[str, CategoricalDistribution]` is not assignable to `dict[str, BaseDistribution]`
++ tests/storages_tests/test_heartbeat.py:290:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/trial_tests/test_frozen.py:273:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 569 diagnostics
++ Found 567 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/app_commands/commands.py:2188:80: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2231:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2300:76: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2359:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2419:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2522:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2525:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2579:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2631:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2672:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2724:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2774:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2818:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/app_commands/commands.py:2889:78: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/app_commands/transformers.py:584:13: error[invalid-assignment] Not enough values to unpack: Expected 3
++ discord/channel.py:750:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/channel.py:1394:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/channel.py:3047:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/ext/commands/cog.py:525:13: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `__cog_listener__` on type `(FuncT & ~staticmethod) | ((...) -> Unknown)`
+- discord/ext/commands/cog.py:530:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__cog_listener_names__` on type `(FuncT & ~staticmethod) | ((...) -> Unknown)`
+- discord/ext/commands/converter.py:1121:13: error[invalid-assignment] Object of type `tuple[(tuple[T] & ~tuple[Unknown, ...]) | (T & ~tuple[Unknown, ...])]` is not assignable to `tuple[T] | T`
+- discord/ext/commands/converter.py:1241:13: error[invalid-assignment] Not enough values to unpack: Expected 3
+- discord/ext/commands/core.py:110:13: error[invalid-assignment] Object of type `object` is not assignable to `(...) -> Any`
++ discord/ext/commands/flags.py:381:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/ext/commands/flags.py:404:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/ext/commands/flags.py:428:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/ext/commands/help.py:283:9: error[invalid-assignment] Implicit shadowing of function `get_commands`
+- discord/ext/commands/help.py:284:9: error[invalid-assignment] Implicit shadowing of function `walk_commands`
++ discord/ext/commands/hybrid.py:392:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/ext/commands/hybrid.py:437:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/file.py:106:9: error[invalid-assignment] Object of type `() -> Unknown` is not assignable to attribute `close` on type `BufferedIOBase | Unknown`
++ discord/state.py:969:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- discord/utils.py:1458:5: error[invalid-assignment] Object of type `<class '_ZstdDecompressionContext'>` is not assignable to `type[_DecompressionContext]`
+- discord/utils.py:1482:5: error[invalid-assignment] Object of type `<class '_ZlibDecompressionContext'>` is not assignable to `type[_DecompressionContext]`
++ discord/webhook/sync.py:658:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ discord/webhook/sync.py:701:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 519 diagnostics
++ Found 533 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- src/check_jsonschema/formats/__init__.py:55:5: error[invalid-assignment] Object of type `<class 'Draft202012Validator'>` is not assignable to `type[Validator]`
+- Found 60 diagnostics
++ Found 59 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
++ bson/__init__.py:757:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ bson/__init__.py:1185:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ bson/binary.py:459:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pymongo/_csot.py:30:1: error[invalid-assignment] Object of type `ContextVar[None]` is not assignable to `ContextVar[int | float | None]`
+- pymongo/_csot.py:31:1: error[invalid-assignment] Object of type `ContextVar[float]` is not assignable to `ContextVar[int | float]`
+- pymongo/_csot.py:32:1: error[invalid-assignment] Object of type `ContextVar[float]` is not assignable to `ContextVar[int | float]`
+- pymongo/asynchronous/database.py:925:13: error[invalid-assignment] Object of type `(AsyncClientSession & ~AlwaysTruthy & ~AlwaysFalsy) | (_ServerMode & ~AlwaysFalsy) | Unknown | Primary` is not assignable to `_ServerMode | None`
++ pymongo/asynchronous/server.py:379:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pymongo/ssl_support.py:100:13: error[invalid-assignment] Object of type `bool` is not assignable to attribute `check_ocsp_endpoint` on type `SSLContext | (SSLContext & <Protocol with members 'check_ocsp_endpoint'>)`
+- pymongo/ssl_support.py:119:13: error[invalid-assignment] Object of type `Any | Literal[0]` is not assignable to attribute `verify_flags` on type `SSLContext | SSLContext`
+- pymongo/synchronous/database.py:925:13: error[invalid-assignment] Object of type `(ClientSession & ~AlwaysTruthy & ~AlwaysFalsy) | (_ServerMode & ~AlwaysFalsy) | Unknown | Primary` is not assignable to `_ServerMode | None`
++ pymongo/synchronous/server.py:379:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 416 diagnostics
++ Found 414 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_generics.py:96:1: error[invalid-assignment] Object of type `ContextVar[None]` is not assignable to `ContextVar[WeakValueDictionary[tuple[Any, Any, tuple[Any, ...]], type[BaseModel]] | None]`
+- pydantic/_internal/_generics.py:395:1: error[invalid-assignment] Object of type `ContextVar[None]` is not assignable to `ContextVar[set[str] | None]`
+- pydantic/_internal/_mock_val_ser.py:137:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `validator` of type `SchemaValidator | PluggableSchemaValidator`
+- pydantic/_internal/_mock_val_ser.py:143:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `serializer` of type `SchemaSerializer`
+- pydantic/_internal/_mock_val_ser.py:176:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `__pydantic_validator__` of type `SchemaValidator | PluggableSchemaValidator`
+- pydantic/_internal/_mock_val_ser.py:182:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `__pydantic_serializer__` of type `SchemaSerializer`
+- pydantic/_internal/_mock_val_ser.py:217:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `__pydantic_validator__` of type `SchemaValidator | PluggableSchemaValidator`
+- pydantic/_internal/_mock_val_ser.py:223:5: error[invalid-assignment] Object of type `MockValSer[Unknown]` is not assignable to attribute `__pydantic_serializer__` of type `SchemaSerializer`
+- pydantic/dataclasses.py:326:5: error[invalid-assignment] Implicit shadowing of function `__call__`
+- pydantic/json_schema.py:1723:9: error[invalid-assignment] Object of type `Any | list[Any]` is not assignable to `ConfigDict`
+- pydantic/main.py:866:13: error[invalid-assignment] Object of type `tuple[type[Any] | (tuple[type[Any], ...] & ~tuple[Unknown, ...])]` is not assignable to `type[Any] | tuple[type[Any], ...]`
++ pydantic/root_model.py:70:26: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/v1/generics.py:100:13: error[invalid-assignment] Object of type `tuple[type[Any] | (tuple[type[Any], ...] & ~tuple[Unknown, ...])]` is not assignable to `type[Any] | tuple[type[Any], ...]`
+- Found 765 diagnostics
++ Found 754 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- src/hydra_zen/_hydra_overloads.py:330:9: error[invalid-assignment] Implicit shadowing of function `_call_target`
+- src/hydra_zen/structured_configs/_implementations.py:207:1: error[invalid-assignment] Implicit shadowing of function `get_yaml_loader`
+- src/hydra_zen/wrapper/_implementations.py:1734:9: error[invalid-assignment] Object of type `((x) -> Unknown) | (Mapping[@Todo(Support for `typing.TypeAlias`), @Todo(Support for `typing.TypeAlias`)] & ~Mapping[Unknown, Unknown]) | (((@Todo(Support for `typing.TypeAlias`), /) -> @Todo(Support for `typing.TypeAlias`)) & ~Mapping[Unknown, Unknown])` is not assignable to `(@Todo(Support for `typing.TypeAlias`), /) -> @Todo(Support for `typing.TypeAlias`)`
+- tests/annotations/declarations.py:461:5: error[invalid-assignment] Object of type `partial[Unknown]` is not assignable to `Partial[int]`
++ tests/annotations/declarations.py:462:23: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/annotations/declarations.py:473:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/annotations/declarations.py:471:5: error[invalid-assignment] Object of type `partial[Unknown]` is not assignable to `Partial[int]`
+- tests/annotations/declarations.py:472:5: error[invalid-assignment] Object of type `partial[Unknown]` is not assignable to `Partial[bool]`
+- Found 567 diagnostics
++ Found 563 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
++ porcupine/pluginloader.py:165:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ porcupine/plugins/langserver.py:698:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ porcupine/plugins/pastebin.py:197:88: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 22 diagnostics
++ Found 25 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- test/helpers/environment.py:61:9: error[invalid-assignment] Object of type `dict[str, str]` is not assignable to attribute `environ` of type `_Environ[str]`
+- test/helpers/rest.py:170:13: error[invalid-assignment] Object of type `None` is not assignable to attribute `image_url_logo` of type `str`
+- test/test_plugin_rocket_chat.py:341:5: error[invalid-assignment] Implicit shadowing of function `login`
+- Found 4327 diagnostics
++ Found 4324 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/core/deserialization.py:24:5: error[invalid-assignment] Object of type `type` is not assignable to `type[SafeLoader]`
++ src/schemathesis/core/deserialization.py:61:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/schemathesis/generation/case.py:223:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/schemathesis/generation/hypothesis/__init__.py:31:90: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/schemathesis/hooks.py:75:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/schemathesis/schemas.py:634:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/schemathesis/specs/openapi/schemas.py:98:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 289 diagnostics
++ Found 294 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch/tests/conftest.py:153:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_master.py:26:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_master.py:33:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_master.py:40:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_master.py:55:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:236:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:325:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:349:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:392:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:443:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:471:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:511:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:557:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:601:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:622:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:1010:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:1039:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_mirror.py:1177:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_package.py:26:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_package.py:38:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_package.py:52:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bandersnatch/tests/test_sync.py:17:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 125 diagnostics
++ Found 147 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- isort/api.py:161:5: error[invalid-assignment] Object of type `(str & ~AlwaysFalsy) | (Path & ~AlwaysTruthy & ~AlwaysFalsy)` is not assignable to `str | None`
++ isort/io.py:48:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+
+ignite (https://github.com/pytorch/ignite)
+- examples/notebooks/HandlersTimeProfiler_MNIST.ipynb:cell 14:25:5: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `n` on type `Unknown | ProgressBar`
+- examples/notebooks/HandlersTimeProfiler_MNIST.ipynb:cell 14:25:14: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `last_print_n` on type `Unknown | ProgressBar`
+- examples/notebooks/TextCNN.ipynb:cell 61:19:5: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `n` on type `Unknown | ProgressBar`
+- examples/notebooks/TextCNN.ipynb:cell 61:19:14: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `last_print_n` on type `Unknown | ProgressBar`
+- examples/reinforcement_learning/actor_critic.py:147:5: error[invalid-assignment] Object of type `Literal[10]` is not assignable to attribute `running_reward` on type `Unknown | State`
+- examples/reinforcement_learning/actor_critic.py:154:9: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `ep_reward` on type `Unknown | State`
+- examples/reinforcement_learning/actor_critic.py:160:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `running_reward` on type `Unknown | State`
+- examples/reinforcement_learning/reinforce.py:90:5: error[invalid-assignment] Object of type `Literal[10]` is not assignable to attribute `running_reward` on type `Unknown | State`
+- examples/reinforcement_learning/reinforce.py:96:9: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `ep_reward` on type `Unknown | State`
+- examples/reinforcement_learning/reinforce.py:100:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `running_reward` on type `Unknown | State`
++ ignite/distributed/auto.py:133:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ignite/engine/__init__.py:619:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/ignite/engine/test_engine.py:1210:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `dataiter` on type `Unknown | State`
+- tests/ignite/engine/test_engine_state_dict.py:188:9: error[invalid-assignment] Object of type `float` is not assignable to attribute `alpha` on type `Unknown | State`
+- tests/ignite/engine/test_engine_state_dict.py:247:9: error[invalid-assignment] Object of type `float` is not assignable to attribute `alpha` on type `Unknown | State`
+- tests/ignite/engine/test_engine_state_dict.py:248:9: error[invalid-assignment] Object of type `float` is not assignable to attribute `beta` on type `Unknown | State`
+- tests/ignite/engine/test_event_handlers.py:553:5: error[invalid-assignment] Implicit shadowing of function `foo`
+- tests/ignite/handlers/test_fbresearch_logger.py:79:5: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:81:5: error[invalid-assignment] Object of type `Literal["4.2"]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:83:5: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:85:5: error[invalid-assignment] Object of type `tuple[float, float]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:101:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `alpha` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:102:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `beta` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:103:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `gamma` on type `Unknown | State`
+- tests/ignite/handlers/test_lr_finder.py:596:5: error[invalid-assignment] Object of type `int | float` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:491:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `param_history` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:562:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `param_history` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:635:9: error[invalid-assignment] Object of type `None` is not assignable to attribute `param_history` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:1124:13: error[invalid-assignment] Object of type `None` is not assignable to attribute `param_history` on type `Unknown | State`
+- tests/ignite/handlers/test_time_limit.py:28:9: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `is_terminated` on type `Unknown | State`
+- tests/ignite/handlers/test_time_limit.py:31:5: error[invalid-assignment] Object of type `Literal[False]` is not assignable to attribute `is_terminated` on type `Unknown | State`
+- tests/ignite/handlers/test_tqdm_logger.py:217:5: error[invalid-assignment] Object of type `float` is not assignable to attribute `alpha` on type `Unknown | State`
+- tests/ignite/handlers/test_tqdm_logger.py:218:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `beta` on type `Unknown | State`
+- tests/ignite/handlers/test_tqdm_logger.py:219:5: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `gamma` on type `Unknown | State`
+- tests/ignite/metrics/test_metric.py:811:5: error[invalid-assignment] Implicit shadowing of function `compute`
+- tests/ignite/metrics/test_metric.py:819:5: error[invalid-assignment] Implicit shadowing of function `compute`
+- tests/ignite/metrics/test_metric.py:828:5: error[invalid-assignment] Implicit shadowing of function `compute`
+- Found 2107 diagnostics
++ Found 2074 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ cloudinit/config/schema.py:41:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ cloudinit/config/schema.py:518:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- cloudinit/sources/helpers/vmware/imc/config_file.py:61:9: error[invalid-assignment] Implicit shadowing of function `optionxform`
+- conftest.py:213:5: error[invalid-assignment] Object of type `def my_system_info() -> Unknown` is not assignable to attribute `system_info` of type `_lru_cache_wrapper[Unknown]`
+- tests/unittests/config/test_cc_growpart.py:372:13: error[invalid-assignment] Implicit shadowing of function `stat`
++ tests/unittests/config/test_cc_ubuntu_pro.py:33:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/unittests/early_patches.py:26:1: error[invalid-assignment] Implicit shadowing of function `lru_cache`
+- tests/unittests/runs/test_merge_run.py:56:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `userdata_raw` on type `DataSource | None`
+- tests/unittests/runs/test_simple_run.py:77:9: error[invalid-assignment] Implicit shadowing of function `_find_networking_config`
+- tests/unittests/sources/test_altcloud.py:164:9: error[invalid-assignment] Implicit shadowing of function `user_data_rhevm`
+- tests/unittests/sources/test_altcloud.py:176:9: error[invalid-assignment] Implicit shadowing of function `user_data_vsphere`
+- tests/unittests/sources/test_altcloud.py:188:9: error[invalid-assignment] Implicit shadowing of function `user_data_rhevm`
+- tests/unittests/sources/test_altcloud.py:197:9: error[invalid-assignment] Implicit shadowing of function `user_data_vsphere`
+- tests/unittests/sources/test_altcloud.py:241:9: error[invalid-assignment] Implicit shadowing of function `user_data_rhevm`
+- tests/unittests/sources/test_altcloud.py:249:9: error[invalid-assignment] Implicit shadowing of function `user_data_vsphere`
+- tests/unittests/sources/test_azure.py:1238:13: error[invalid-assignment] Object of type `Mock` is not assignable to attribute `get_tmp_exec_path` on type `(Unknown & ~str) | Distro`
+- tests/unittests/sources/test_configdrive.py:610:13: error[invalid-assignment] Implicit shadowing of function `find_devs_with`
+- tests/unittests/sources/test_configdrive.py:611:13: error[invalid-assignment] Implicit shadowing of function `is_partition`
+- tests/unittests/sources/test_digitalocean.py:157:13: error[invalid-assignment] Implicit shadowing of function `_get_sysinfo`
+- tests/unittests/sources/test_exoscale.py:72:9: error[invalid-assignment] Implicit shadowing of function `ds_detect`
+- tests/unittests/sources/test_exoscale.py:114:9: error[invalid-assignment] Implicit shadowing of function `ds_detect`
+- tests/unittests/sources/test_exoscale.py:150:9: error[invalid-assignment] Implicit shadowing of function `ds_detect`
+- tests/unittests/sources/test_exoscale.py:216:9: error[invalid-assignment] Implicit shadowing of function `ds_detect`
+- tests/unittests/sources/test_init.py:795:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to attribute `network_json` of type `str | None`
+- tests/unittests/sources/test_init.py:814:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to attribute `network_json` of type `str | None`
+- tests/unittests/sources/test_opennebula.py:66:9: error[invalid-assignment] Implicit shadowing of function `switch_user_cmd`
+- tests/unittests/sources/test_opennebula.py:398:13: error[invalid-assignment] Implicit shadowing of function `find_devs_with`
++ tests/unittests/sources/test_opennebula.py:76:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/unittests/sources/test_opennebula.py:87:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/unittests/sources/test_opennebula.py:110:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/unittests/sources/test_opennebula.py:121:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/unittests/sources/test_openstack.py:911:9: error[invalid-assignment] Implicit shadowing of function `_read_ec2_metadata`
+- tests/unittests/sources/test_upcloud.py:166:13: error[invalid-assignment] Implicit shadowing of function `_get_sysinfo`
+- tests/unittests/sources/test_upcloud.py:218:13: error[invalid-assignment] Implicit shadowing of function `_get_sysinfo`
+- tests/unittests/test_templating.py:268:9: error[invalid-assignment] Object of type `BaseException` is not assignable to `JinjaSyntaxParsingException`
+- Found 597 diagnostics
++ Found 576 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- tests/test_psql.py:98:9: error[invalid-assignment] Implicit shadowing of function `_execute`
+- Found 153 diagnostics
++ Found 152 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
++ boostedblob/listing.py:399:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ boostedblob/listing.py:403:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ boostedblob/path.py:282:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 26 diagnostics
++ Found 29 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- colour/characterisation/tests/test_aces_it.py:1199:9: error[invalid-assignment] Too many values to unpack: Expected 2
+- colour/colorimetry/spectrum.py:1190:17: error[invalid-assignment] Object of type `<class 'SpragueInterpolator'>` is not assignable to `type[ProtocolInterpolator] | None`
+- colour/colorimetry/spectrum.py:1192:17: error[invalid-assignment] Object of type `<class 'CubicSplineInterpolator'>` is not assignable to `type[ProtocolInterpolator] | None`
+- colour/colorimetry/spectrum.py:1297:9: error[invalid-assignment] Object of type `type[ProtocolExtrapolator] | None | <class 'Extrapolator'>` is not assignable to `type[ProtocolExtrapolator] | None`
+- colour/examples/characterisation/examples_aces_it.py:79:1: error[invalid-assignment] Too many values to unpack: Expected 2
+- colour/io/ctl.py:172:9: error[invalid-assignment] Object of type `(Sequence[str] & ~Sequence[Unknown]) | (dict[str, Sequence[str]] & ~Sequence[Unknown])` is not assignable to `dict[str, Sequence[Unknown]]`
+- colour/recovery/tests/test_jakob2019.py:127:17: error[invalid-assignment] Too many values to unpack: Expected 2
+- colour/utilities/array.py:892:13: error[invalid-assignment] Object of type `@Todo(unsupported type[X] special form)` is not assignable to attribute `DTYPE_INT_DEFAULT` on type `ModuleType & <Protocol with members 'DTYPE_INT_DEFAULT'>`
+- colour/utilities/array.py:942:13: error[invalid-assignment] Object of type `@Todo(unsupported type[X] special form)` is not assignable to attribute `DTYPE_FLOAT_DEFAULT` on type `ModuleType & <Protocol with members 'DTYPE_FLOAT_DEFAULT'>`
+- colour/utilities/verbose.py:304:5: error[invalid-assignment] Implicit shadowing of function `showwarning`
+- Found 478 diagnostics
++ Found 468 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- dragonchain/job_processor/contract_job_utest.py:436:9: error[invalid-assignment] Implicit shadowing of function `new_from_build_task`
+- dragonchain/job_processor/contract_job_utest.py:438:9: error[invalid-assignment] Implicit shadowing of function `create`
+- dragonchain/job_processor/contract_job_utest.py:445:9: error[invalid-assignment] Implicit shadowing of function `new_from_build_task`
+- dragonchain/job_processor/contract_job_utest.py:484:9: error[invalid-assignment] Implicit shadowing of function `get_contract_by_txn_type`
+- dragonchain/job_processor/contract_job_utest.py:485:9: error[invalid-assignment] Implicit shadowing of function `new_from_build_task`
+- dragonchain/job_processor/contract_job_utest.py:486:9: error[invalid-assignment] Implicit shadowing of function `create_dockerfile`
+- dragonchain/job_processor/contract_job_utest.py:487:9: error[invalid-assignment] Implicit shadowing of function `create_openfaas_secrets`
+- dragonchain/job_processor/contract_job_utest.py:488:9: error[invalid-assignment] Implicit shadowing of function `delete_contract_image`
+- dragonchain/job_processor/contract_job_utest.py:489:9: error[invalid-assignment] Implicit shadowing of function `deploy_to_openfaas`
+- dragonchain/job_processor/contract_job_utest.py:490:9: error[invalid-assignment] Implicit shadowing of function `pull_image`
+- dragonchain/job_processor/contract_job_utest.py:491:9: error[invalid-assignment] Implicit shadowing of function `schedule_contract`
+- dragonchain/lib/database/redisearch_utest.py:70:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:78:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:85:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:93:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:103:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:110:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:118:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:124:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:130:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:135:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:142:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:152:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:162:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:175:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/database/redisearch_utest.py:191:9: error[invalid-assignment] Implicit shadowing of function `_get_redisearch_index_client`
+- dragonchain/lib/interfaces/storage_utest.py:43:9: error[invalid-assignment] Object of type `MagicMock` is not assignable to attribute `storage` of type `<module 'dragonchain.lib.interfaces.aws.s3'> | <module 'dragonchain.lib.interfaces.local.disk'>`
+- dragonchain/lib/interfaces/storage_utest.py:44:9: error[invalid-assignment] Implicit shadowing of function `cache_get`
+- dragonchain/lib/interfaces/storage_utest.py:45:9: error[invalid-assignment] Implicit shadowing of function `cache_put`
+- dragonchain/lib/interfaces/storage_utest.py:46:9: error[invalid-assignment] Implicit shadowing of function `cache_delete`
+- dragonchain/lib/interfaces/storage_utest.py:58:9: error[invalid-assignment] Object of type `MagicMock` is not assignable to attribute `get` on type `<module 'dragonchain.lib.interfaces.aws.s3'> | <module 'dragonchain.lib.interfaces.local.disk'>`
+- dragonchain/lib/interfaces/storage_utest.py:62:9: error[invalid-assignment] Object of type `MagicMock` is not assignable to attribute `get` on type `<module 'dragonchain.lib.interfaces.aws.s3'> | <module 'dragonchain.lib.interfaces.local.disk'>`
+- dragonchain/lib/interfaces/storage_utest.py:63:9: error[invalid-assignment] Implicit shadowing of function `cache_get`
+- dragonchain/lib/interfaces/storage_utest.py:64:9: error[invalid-assignment] Implicit shadowing of function `cache_put`
+- dragonchain/lib/interfaces/storage_utest.py:70:9: error[invalid-assignment] Object of type `MagicMock` is not assignable to attribute `get` on type `<module 'dragonchain.lib.interfaces.aws.s3'> | <module 'dragonchain.lib.interfaces.local.disk'>`
+- dragonchain/lib/interfaces/storage_utest.py:78:9: error[invalid-assignment] Object of type `MagicMock` is not assignable to attribute `put` on type `<module 'dragonchain.lib.interfaces.aws.s3'> | <module 'dragonchain.lib.interfaces.local.disk'>`
+- dragonchain/lib/interfaces/storage_utest.py:90:9: error[invalid-assignment] Object of type `MagicMock` is not assignable to attribute `delete` on type `<module 'dragonchain.lib.interfaces.aws.s3'> | <module 'dragonchain.lib.interfaces.local.disk'>`
+- dragonchain/lib/interfaces/storage_utest.py:98:9: error[invalid-assignment] Object of type `MagicMock` is not assignable to attribute `list_objects` on type `<module 'dragonchain.lib.interfaces.aws.s3...*[Comment body truncated]*
+
+---
+
+_Marked ready for review by @dhruvmanila on 2025-07-25 15:41_
+
+---
+
+_Review requested from @carljm by @dhruvmanila on 2025-07-25 15:41_
+
+---
+
+_Review requested from @sharkdp by @dhruvmanila on 2025-07-25 15:41_
+
+---
+
+_Comment by @dhruvmanila on 2025-07-25 15:43_
+
+The mypy-primer workflow got triggered as I made a change in the Rust code which added the diff, but it did not get triggered once I reverted the Rust code change so the diff has persisted.
+
+---
+
+_Review comment by @sharkdp on `.github/workflows/typing_conformance.yaml`:58 on 2025-07-25 17:40_
+
+I guess we could experiment with whether or not a release build is faster here (longer build time vs faster check time)
+
+---
+
+_Review comment by @sharkdp on `.github/workflows/typing_conformance.yaml`:72 on 2025-07-25 17:41_
+
+Could probably also be a `uses: actions/checkout`, but I don't mind it being here.
+
+---
+
+_Review comment by @sharkdp on `.github/workflows/typing_conformance.yaml`:76 on 2025-07-25 17:44_
+
+Elsewhere, we fail the build if the exit code indicates a panic. But I guess it's fine if we see it in the diff?
+
+---
+
+_Review comment by @sharkdp on `.github/workflows/typing_conformance.yaml`:81 on 2025-07-25 17:45_
+
+Lot's of `../../..` here; could maybe use a subshell:
+```bash
+(
+    cd conformance/tests
+
+    # ...
+)
+
+# falls back to original directory automatically
+```
+
+or a variable with the path to the ruff directory... but I also don't care too much :smile: 
+
+---
+
+_@sharkdp approved on 2025-07-25 17:45_
+
+Thank you
+
+---
+
+_@carljm approved on 2025-07-25 19:20_
+
+Looks great, thank you!
+
+---
+
+_@dhruvmanila reviewed on 2025-07-28 05:42_
+
+---
+
+_Review comment by @dhruvmanila on `.github/workflows/typing_conformance.yaml`:72 on 2025-07-28 05:42_
+
+Yeah, I think we should just use `actions/checkout`, I'll change this.
+
+---
+
+_@dhruvmanila reviewed on 2025-07-28 05:57_
+
+---
+
+_Review comment by @dhruvmanila on `.github/workflows/typing_conformance.yaml`:81 on 2025-07-28 05:57_
+
+Used `GITHUB_WORKSPACE` :)
+
+---
+
+_@dhruvmanila reviewed on 2025-07-28 06:01_
+
+---
+
+_Review comment by @dhruvmanila on `.github/workflows/typing_conformance.yaml`:76 on 2025-07-28 06:01_
+
+Yeah, we can experiment, not sure what's the right approach is here.
+
+---
+
+_Merged by @dhruvmanila on 2025-07-28 06:03_
+
+---
+
+_Closed by @dhruvmanila on 2025-07-28 06:03_
+
+---
+
+_Branch deleted on 2025-07-28 06:03_
+
+---

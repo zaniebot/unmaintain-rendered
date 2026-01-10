@@ -1,0 +1,569 @@
+```yaml
+number: 18398
+title: "[ty] Generic class callable return ty param infererence"
+type: pull_request
+state: closed
+author: MatthewMckee4
+labels:
+  - ty
+assignees: []
+base: main
+head: generic-class-callable-return-ty-param-infer
+created_at: 2025-05-31T00:41:32Z
+updated_at: 2025-07-16T21:12:26Z
+url: https://github.com/astral-sh/ruff/pull/18398
+synced_at: 2026-01-10T17:58:13Z
+```
+
+# [ty] Generic class callable return ty param infererence
+
+---
+
+_Pull request opened by @MatthewMckee4 on 2025-05-31 00:41_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+Partially resolves https://github.com/astral-sh/ty/issues/500
+
+## Test Plan
+
+Update `generics/pep695/classes.md` and `generics/legacy/classes.md`
+
+Update tests with TODO
+
+
+---
+
+_Review requested from @carljm by @MatthewMckee4 on 2025-05-31 00:41_
+
+---
+
+_Review requested from @AlexWaygood by @MatthewMckee4 on 2025-05-31 00:41_
+
+---
+
+_Review requested from @sharkdp by @MatthewMckee4 on 2025-05-31 00:41_
+
+---
+
+_Review requested from @dcreager by @MatthewMckee4 on 2025-05-31 00:41_
+
+---
+
+_@MatthewMckee4 reviewed on 2025-05-31 00:42_
+
+---
+
+_Review comment by @MatthewMckee4 on `crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md`:431 on 2025-05-31 00:42_
+
+Im not sure if this should be `B[int | str]` or `B[int | str | None`]
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-31 00:44_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+attrs (https://github.com/python-attrs/attrs)
+- error[unresolved-attribute] tests/test_converters.py:113:24: Type `Converter[Unknown, Unknown]` has no attribute `__call__`
++ error[unresolved-attribute] tests/test_converters.py:113:24: Type `Converter[Unknown, Self]` has no attribute `__call__`
+
+Expression (https://github.com/cognitedata/Expression)
+- error[invalid-argument-type] expression/collections/seq.py:637:41: Argument to function `init_infinite` is incorrect: Expected `(int, /) -> Unknown`, found `def identity(value: _A) -> _A`
++ error[invalid-argument-type] expression/collections/seq.py:637:41: Argument to function `init_infinite` is incorrect: Expected `(int, /) -> _A`, found `def identity(value: _A) -> _A`
+- error[no-matching-overload] expression/extra/option/pipeline.py:91:12: No overload of function `reduce` matches arguments
++ error[invalid-return-type] expression/extra/parser.py:164:12: Return type does not match returned value: expected `Parser[str]`, found `Parser[_A]`
++ error[invalid-argument-type] expression/extra/parser.py:247:18: Argument to function `apply` is incorrect: Expected `Parser[(_B, /) -> _C]`, found `Parser[(_C, /) -> _C]`
++ error[invalid-argument-type] expression/extra/parser.py:247:24: Argument to function `apply` is incorrect: Expected `Parser[(Unknown, /) -> (_B, /) -> _C]`, found `Parser[(Unknown, /) -> ((_B, /) -> _C, /) -> _C]`
++ error[invalid-argument-type] expression/extra/parser.py:247:42: Argument to function `apply` is incorrect: Expected `Parser[_B]`, found `Parser[_C]`
++ error[no-matching-overload] expression/extra/parser.py:418:12: No overload of function `pipe` matches arguments
+- error[no-matching-overload] expression/extra/result/pipeline.py:96:12: No overload of function `reduce` matches arguments
+- error[no-matching-overload] tests/test_array.py:307:21: No overload of function `reduce` matches arguments
+- error[no-matching-overload] tests/test_block.py:274:21: No overload of function `reduce` matches arguments
++ error[invalid-return-type] tests/test_parser.py:250:12: Return type does not match returned value: expected `Parser[Expression]`, found `Parser[_A]`
+- error[invalid-argument-type] tests/test_seq.py:308:20: Argument to bound method `choose` is incorrect: Expected `(None | Literal[42], /) -> Option[Unknown]`, found `def of_optional(value: _TSource | None) -> Option[_TSource]`
++ error[invalid-argument-type] tests/test_seq.py:308:20: Argument to bound method `choose` is incorrect: Expected `(None | Literal[42], /) -> Option[_TSource]`, found `def of_optional(value: _TSource | None) -> Option[_TSource]`
+- Found 252 diagnostics
++ Found 254 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[invalid-assignment] starlette/routing.py:67:5: Object of type `((Request, /) -> Awaitable[Response] | Response) | partial[Unknown]` is not assignable to `(Request, /) -> Awaitable[Response]`
++ error[invalid-assignment] starlette/routing.py:67:5: Object of type `((Request, /) -> Awaitable[Response] | Response) | partial[@Todo(generic types.CoroutineType)]` is not assignable to `(Request, /) -> Awaitable[Response]`
+
+kornia (https://github.com/kornia/kornia)
++ error[invalid-assignment] kornia/config.py:68:5: Object of type `Self` is not assignable to `LazyLoaderConfig`
++ error[invalid-assignment] kornia/feature/sold2/structures.py:48:5: Object of type `Self` is not assignable to `HeatMapRefineCfg`
++ error[invalid-assignment] kornia/feature/sold2/structures.py:50:5: Object of type `Self` is not assignable to `JunctionRefineCfg`
++ error[invalid-assignment] kornia/feature/sold2/structures.py:74:5: Object of type `Self` is not assignable to `BackboneCfg`
++ error[invalid-assignment] kornia/feature/sold2/structures.py:80:5: Object of type `Self` is not assignable to `LineDetectorCfg`
++ error[invalid-assignment] kornia/feature/sold2/structures.py:81:5: Object of type `Self` is not assignable to `LineMatcherCfg`
+- Found 949 diagnostics
++ Found 955 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ error[invalid-assignment] src/anyio/_backends/_asyncio.py:2507:9: Object of type `Future[_T]` is not assignable to `Future[T_Retval]`
++ error[no-matching-overload] src/anyio/_backends/_asyncio.py:2590:19: No overload of bound method `create_connection` matches arguments
++ error[no-matching-overload] src/anyio/_backends/_asyncio.py:2590:19: No overload of bound method `create_connection` matches arguments
++ error[no-matching-overload] src/anyio/_backends/_asyncio.py:2590:19: No overload of bound method `create_connection` matches arguments
++ error[invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to bound method `create_datagram_endpoint` is incorrect: Argument type `Self` does not satisfy upper bound of type variable `_ProtocolT`
++ error[invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to bound method `create_datagram_endpoint` is incorrect: Argument type `Self` does not satisfy upper bound of type variable `_ProtocolT`
++ error[invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to bound method `create_datagram_endpoint` is incorrect: Argument type `Self` does not satisfy upper bound of type variable `_ProtocolT`
++ error[invalid-assignment] src/anyio/from_thread.py:418:5: Object of type `Self` is not assignable to `LockType`
++ error[invalid-assignment] src/anyio/streams/memory.py:54:5: Object of type `Self` is not assignable to `OrderedDict[Event, MemoryObjectItemReceiver[T_Item]]`
++ error[invalid-assignment] src/anyio/streams/memory.py:57:5: Object of type `Self` is not assignable to `OrderedDict[Event, T_Item]`
+- Found 109 diagnostics
++ Found 119 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:444:5: Object of type `Self` is not assignable to `ProcessSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:445:5: Object of type `Self` is not assignable to `PostingSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:446:5: Object of type `Self` is not assignable to `PeeringSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:447:5: Object of type `Self` is not assignable to `WatchingSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:448:5: Object of type `Self` is not assignable to `BatchingSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:449:5: Object of type `Self` is not assignable to `ScanningSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:450:5: Object of type `Self` is not assignable to `AdmissionSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:451:5: Object of type `Self` is not assignable to `ExecutionSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:452:5: Object of type `Self` is not assignable to `BackgroundSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:453:5: Object of type `Self` is not assignable to `NetworkingSettings`
++ error[invalid-assignment] kopf/_cogs/configs/configuration.py:454:5: Object of type `Self` is not assignable to `PersistenceSettings`
++ error[invalid-assignment] kopf/_core/reactor/inventory.py:34:5: Object of type `Self` is not assignable to `Throttler`
++ error[invalid-assignment] kopf/_core/reactor/inventory.py:35:5: Object of type `Self` is not assignable to `IndexingMemory`
++ error[invalid-assignment] kopf/_core/reactor/inventory.py:36:5: Object of type `Self` is not assignable to `DaemonsMemory`
+- Found 157 diagnostics
++ Found 171 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- warning[unused-ignore-comment] tests/validation/test_no_deprecated.py:23:8: Unused blanket `type: ignore` directive
+- Found 441 diagnostics
++ Found 440 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
++ error[invalid-assignment] src/aiortc/rtcrtpparameters.py:159:5: Object of type `Self` is not assignable to `RTCRtcpParameters`
+- Found 128 diagnostics
++ Found 129 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ error[invalid-assignment] src/trio/_channel.py:152:5: Object of type `Self` is not assignable to `OrderedDict[Task, T]`
++ error[invalid-assignment] src/trio/_channel.py:154:5: Object of type `Self` is not assignable to `OrderedDict[Task, None]`
++ error[invalid-assignment] src/trio/_core/_entry_queue.py:45:5: Object of type `Self` is not assignable to `RLock`
++ error[invalid-assignment] src/trio/_core/_run.py:1799:5: Object of type `Self` is not assignable to `Deadlines`
++ error[invalid-assignment] src/trio/_core/_run.py:1807:5: Object of type `Self` is not assignable to `EntryQueue`
++ error[invalid-assignment] src/trio/_core/_run.py:1809:5: Object of type `Self` is not assignable to `AsyncGenerators`
+- warning[unused-ignore-comment] src/trio/_core/_run.py:1983:75: Unused blanket `type: ignore` directive
++ error[unresolved-attribute] src/trio/_tests/test_exports.py:408:28: Type `str` has no attribute `get`
++ error[call-non-callable] src/trio/_tests/test_exports.py:410:27: Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` is not callable on object of type `str`
++ error[unresolved-attribute] src/trio/_tests/test_exports.py:413:32: Type `str` has no attribute `get`
+- error[invalid-argument-type] src/trio/_tests/test_threads.py:89:44: Argument to function `check_case` is incorrect: Expected `(...) -> Literal[2] | Awaitable[Literal[2]]`, found `def f1(record: Unknown | list[tuple[str, Thread | type[BaseException]]]) -> int`
+- error[invalid-argument-type] src/trio/_threads.py:379:70: Argument is incorrect: Expected `bool`, found `Value[Unknown] | Error`
++ error[invalid-argument-type] src/trio/_threads.py:379:70: Argument is incorrect: Expected `bool`, found `Value[RetT] | Error`
+- Found 1064 diagnostics
++ Found 1071 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- warning[unused-ignore-comment] pydantic/_internal/_fields.py:55:47: Unused blanket `type: ignore` directive
++ error[invalid-return-type] pydantic/experimental/pipeline.py:298:16: Return type does not match returned value: expected `_Pipeline[_InT, datetime]`, found `_Pipeline[Unknown, Self]`
++ error[invalid-return-type] pydantic/experimental/pipeline.py:302:16: Return type does not match returned value: expected `_Pipeline[_InT, str]`, found `_Pipeline[Unknown, LiteralString]`
++ error[invalid-argument-type] pydantic/experimental/pipeline.py:302:31: Argument to bound method `transform` is incorrect: Expected `(str, /) -> LiteralString`, found `Overload[(self: LiteralString) -> LiteralString, (self) -> str]`
++ error[invalid-return-type] pydantic/experimental/pipeline.py:305:16: Return type does not match returned value: expected `_Pipeline[_InT, str]`, found `_Pipeline[Unknown, LiteralString]`
++ error[invalid-argument-type] pydantic/experimental/pipeline.py:305:31: Argument to bound method `transform` is incorrect: Expected `(str, /) -> LiteralString`, found `Overload[(self: LiteralString) -> LiteralString, (self) -> str]`
++ error[invalid-return-type] pydantic/experimental/pipeline.py:308:16: Return type does not match returned value: expected `_Pipeline[_InT, str]`, found `_Pipeline[Unknown, LiteralString]`
++ error[invalid-argument-type] pydantic/experimental/pipeline.py:308:31: Argument to bound method `transform` is incorrect: Expected `(str, /) -> LiteralString`, found `Overload[(self: LiteralString) -> LiteralString, (self) -> str]`
++ error[invalid-return-type] pydantic/experimental/pipeline.py:311:16: Return type does not match returned value: expected `_Pipeline[_InT, str]`, found `_Pipeline[Unknown, LiteralString]`
++ error[invalid-argument-type] pydantic/experimental/pipeline.py:311:31: Argument to bound method `transform` is incorrect: Expected `(str, /) -> LiteralString`, found `Overload[(self: LiteralString, chars: LiteralString | None = None, /) -> LiteralString, (self, chars: str | None = None, /) -> str]`
+- Found 762 diagnostics
++ Found 770 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ error[invalid-assignment] rich/progress.py:982:5: Object of type `Self` is not assignable to `RLock`
+- Found 392 diagnostics
++ Found 393 diagnostics
+
+black (https://github.com/psf/black)
++ error[invalid-assignment] src/black/lines.py:48:5: Object of type `Self` is not assignable to `BracketTracker`
+- Found 134 diagnostics
++ Found 135 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
++ error[unresolved-attribute] tests/utils/test_password_manager.py:325:5: Type `bound method PoetryKeyring.get_password(name: str, username: str) -> str | None` has no attribute `assert_not_called`
++ error[unresolved-attribute] tests/utils/test_password_manager.py:343:5: Type `bound method PoetryKeyring.get_password(name: str, username: str) -> str | None` has no attribute `assert_not_called`
+- Found 1028 diagnostics
++ Found 1030 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ error[invalid-assignment] src/schemathesis/auths.py:127:5: Object of type `Self` is not assignable to `LockType`
++ error[invalid-assignment] src/schemathesis/cli/commands/run/handlers/output.py:787:5: Object of type `Self` is not assignable to `WarningData`
++ error[invalid-assignment] src/schemathesis/schemas.py:111:5: Object of type `Self` is not assignable to `AuthStorage[Unknown]`
++ error[invalid-assignment] src/schemathesis/schemas.py:631:5: Object of type `Self` is not assignable to `ParameterSet[P]`
++ error[invalid-assignment] src/schemathesis/schemas.py:632:5: Object of type `Self` is not assignable to `ParameterSet[P]`
++ error[invalid-assignment] src/schemathesis/schemas.py:633:5: Object of type `Self` is not assignable to `ParameterSet[P]`
++ error[invalid-assignment] src/schemathesis/schemas.py:634:5: Object of type `Self` is not assignable to `ParameterSet[P]`
++ error[invalid-assignment] src/schemathesis/schemas.py:635:5: Object of type `Self` is not assignable to `PayloadAlternatives[P]`
++ error[invalid-assignment] src/schemathesis/specs/graphql/schemas.py:87:5: Object of type `Self` is not assignable to `OperationCache`
++ error[invalid-argument-type] src/schemathesis/specs/openapi/formats.py:104:42: Argument to bound method `map` is incorrect: Expected `(str, /) -> LiteralString`, found `Overload[(*args: LiteralString, **kwargs: LiteralString) -> LiteralString, (*args: object, **kwargs: object) -> str]`
++ error[invalid-assignment] src/schemathesis/specs/openapi/schemas.py:98:5: Object of type `Self` is not assignable to `OperationCache`
++ error[invalid-assignment] src/schemathesis/specs/openapi/schemas.py:102:5: Object of type `Self` is not assignable to `RLock`
+- Found 418 diagnostics
++ Found 430 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[type-assertion-failure] asynq/tests/test_typing.py:16:9: Argument does not have asserted type `FutureBase[str]`
+- Found 190 diagnostics
++ Found 189 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ error[invalid-return-type] examples/contrib/upstream_pac.py:73:28: Return type does not match returned value: expected `tuple[str, tuple[str, int]] | None`, found `tuple[@Todo(Generic tuple specializations), ...]`
++ error[invalid-return-type] examples/contrib/upstream_pac.py:78:24: Return type does not match returned value: expected `tuple[str, tuple[str, int]] | None`, found `tuple[@Todo(Generic tuple specializations), ...]`
++ error[invalid-argument-type] test/mitmproxy/tools/console/test_quickhelp.py:63:19: Argument to bound method `unbind` is incorrect: Expected `Binding`, found `Binding | None`
+- Found 2050 diagnostics
++ Found 2053 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- warning[unused-ignore-comment] src/hydra_zen/wrapper/_implementations.py:446:12: Unused blanket `type: ignore` directive
+- Found 609 diagnostics
++ Found 608 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- error[invalid-argument-type] pwndbg/aglib/heap/ptmalloc.py:787:17: Argument to function `get` is incorrect: Expected `bool`, found `Unknown | None`
++ error[invalid-argument-type] pwndbg/aglib/heap/ptmalloc.py:787:17: Argument to function `get` is incorrect: Expected `bool`, found `bool | None`
+- error[unsupported-operator] pwndbg/aglib/heap/ptmalloc.py:1117:49: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[26]]`
++ error[unsupported-operator] pwndbg/aglib/heap/ptmalloc.py:1117:49: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[26]]`
+- error[invalid-argument-type] pwndbg/aglib/heap/ptmalloc.py:1271:17: Argument to function `get` is incorrect: Expected `bool`, found `Unknown | None`
++ error[invalid-argument-type] pwndbg/aglib/heap/ptmalloc.py:1271:17: Argument to function `get` is incorrect: Expected `bool`, found `bool | None`
+- error[unsupported-operator] pwndbg/aglib/heap/ptmalloc.py:1858:42: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[26]]`
++ error[unsupported-operator] pwndbg/aglib/heap/ptmalloc.py:1858:42: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[26]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:34:41: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[26]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:34:41: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[26]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:445:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[27]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[27]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:445:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[27]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[27]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:447:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[23]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[23]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:447:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[23]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[23]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:574:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[30]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[30]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:574:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[30]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[30]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:618:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[29]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[29]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:618:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[29]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[29]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:931:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[35]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[35]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:931:8: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[35]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[35]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:933:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[26]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:933:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[26]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[26]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:935:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[24]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[24]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:935:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[24]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[24]]`
+- error[unsupported-operator] pwndbg/aglib/heap/structs.py:937:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[15]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[15]]`
++ error[unsupported-operator] pwndbg/aglib/heap/structs.py:937:10: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[15]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[15]]`
++ error[invalid-return-type] pwndbg/aglib/regs.py:220:16: Return type does not match returned value: expected `int`, found `int | None`
++ error[invalid-return-type] pwndbg/aglib/regs.py:227:16: Return type does not match returned value: expected `int`, found `int | None`
+- error[invalid-argument-type] pwndbg/commands/ptmalloc2.py:99:58: Argument to function `format` is incorrect: Expected `bool`, found `Literal[False] | Unknown | None`
++ error[invalid-argument-type] pwndbg/commands/ptmalloc2.py:99:58: Argument to function `format` is incorrect: Expected `bool`, found `bool | None`
+- error[invalid-argument-type] pwndbg/commands/ptmalloc2.py:103:69: Argument to function `format` is incorrect: Expected `bool`, found `Literal[False] | Unknown | None`
++ error[invalid-argument-type] pwndbg/commands/ptmalloc2.py:103:69: Argument to function `format` is incorrect: Expected `bool`, found `bool | None`
+- error[unsupported-operator] pwndbg/glibc.py:205:13: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[32]]`, in comparing `Unknown | None` with `tuple[Literal[2], Literal[32]]`
++ error[unsupported-operator] pwndbg/glibc.py:205:13: Operator `>=` is not supported for types `None` and `tuple[Literal[2], Literal[32]]`, in comparing `tuple[int, ...] | None` with `tuple[Literal[2], Literal[32]]`
+- error[invalid-return-type] pwndbg/integration/ida.py:174:12: Return type does not match returned value: expected `bool`, found `Unknown | None`
++ error[invalid-return-type] pwndbg/integration/ida.py:174:12: Return type does not match returned value: expected `bool`, found `bool | None`
+- Found 2299 diagnostics
++ Found 2301 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
++ error[invalid-return-type] static_frame/core/batch.py:773:16: Return type does not match returned value: expected `InterGetItemLocCompound[Batch]`, found `InterGetItemLocCompound[Index[Any]]`
++ error[invalid-return-type] static_frame/core/batch.py:777:16: Return type does not match returned value: expected `InterGetItemILocCompound[Batch]`, found `InterGetItemILocCompound[Index[Any]]`
++ error[invalid-return-type] static_frame/core/batch.py:781:16: Return type does not match returned value: expected `InterfaceGetItemBLoc[Batch]`, found `InterfaceGetItemBLoc[Index[Any]]`
+- warning[unused-ignore-comment] static_frame/core/index.py:467:60: Unused blanket `type: ignore` directive
++ error[invalid-return-type] static_frame/core/index.py:463:16: Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co, TVDtype]`, found `InterGetItemLocReduces[Index[Any], Any]`
+- warning[unused-ignore-comment] static_frame/core/index_hierarchy.py:1225:59: Unused blanket `type: ignore` directive
++ error[invalid-return-type] static_frame/core/node_selector.py:458:16: Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co, Any]`, found `InterGetItemLocReduces[Index[Any], Any]`
++ error[invalid-return-type] static_frame/core/node_selector.py:494:16: Return type does not match returned value: expected `InterGetItemLoc[TVContainer_co]`, found `InterGetItemLoc[Index[Any]]`
++ error[invalid-return-type] static_frame/core/node_selector.py:528:16: Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co, Any]`, found `InterGetItemLocReduces[Index[Any], Any]`
++ error[invalid-return-type] static_frame/core/node_selector.py:538:16: Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co, Any]`, found `InterGetItemLocReduces[Index[Any], Any]`
+- Found 1925 diagnostics
++ Found 1931 diagnostics
+
+mypy (https://github.com/python/mypy)
++ error[unsupported-operator] mypy/modulefinder.py:944:53: Operator `+` is unsupported between objects of type `str` and `LiteralString | None`
+- Found 3183 diagnostics
++ Found 3184 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ error[no-matching-overload] tests/test_frame.py:1008:23: No overload of bound method `apply` matches arguments
+- error[type-assertion-failure] tests/test_frame.py:1033:9: Argument does not have asserted type `Series[int]`
+- error[type-assertion-failure] tests/test_frame.py:1056:9: Argument does not have asserted type `Series[int]`
++ error[type-assertion-failure] tests/test_frame.py:1063:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:1067:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:1071:9: Argument does not have asserted type `Series[Unknown]`
+- error[type-assertion-failure] tests/test_frame.py:1088:9: Argument does not have asserted type `Series[int]`
+- error[type-assertion-failure] tests/test_frame.py:1115:9: Argument does not have asserted type `Series[int]`
++ error[type-assertion-failure] tests/test_frame.py:1130:9: Argument does not have asserted type `Series[Unknown]`
++ error[type-assertion-failure] tests/test_frame.py:1136:9: Argument does not have asserted type `Series[Unknown]`
+- error[type-assertion-failure] tests/test_frame.py:2199:11: Argument does not have asserted type `DataFrame`
+- error[type-assertion-failure] tests/test_frame.py:2223:9: Argument does not have asserted type `DataFrame`
+- error[type-assertion-failure] tests/test_frame.py:2285:9: Argument does not have asserted type `DataFrame`
+- error[type-assertion-failure] tests/test_series.py:3312:9: Argument does not have asserted type `Series[Unknown]`
+- error[type-assertion-failure] tests/test_series.py:3380:9: Argument does not have asserted type `Series[Unknown]`
+- Found 2821 diagnostics
++ Found 2818 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- warning[unused-ignore-comment] pymongo/asynchronous/auth_oidc.py:89:75: Unused blanket `type: ignore` directive
+- Found 552 diagnostics
++ Found 551 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
++ error[no-matching-overload] sphinx/ext/napoleon/docstring.py:364:29: No overload of function `__new__` matches arguments
+- Found 651 diagnostics
++ Found 652 diagnostics
+
+optuna (https://github.com/optuna/optuna)
++ error[unresolved-attribute] optuna/samplers/_tpe/_truncnorm.py:172:12: Type `int | float` has no attribute `astype`
+- Found 1060 diagnostics
++ Found 1061 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ error[invalid-assignment] lib/streamlit/runtime/scriptrunner_utils/script_run_context.py:99:5: Object of type `Self` is not assignable to `Counter[str]`
++ error[invalid-assignment] lib/streamlit/runtime/state/session_state.py:367:5: Object of type `Self` is not assignable to `WStates`
++ error[invalid-assignment] lib/streamlit/runtime/state/session_state.py:370:5: Object of type `Self` is not assignable to `KeyIdMapper`
+- Found 3287 diagnostics
++ Found 3290 diagnostics
+
+rotki (https://github.com/rotki/rotki)
++ error[invalid-assignment] rotkehlchen/balances/manual.py:35:5: Object of type `Self` is not assignable to `Balance`
+- Found 2033 diagnostics
++ Found 2034 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ error[invalid-assignment] src/integrations/prefect-shell/prefect_shell/commands.py:264:5: Object of type `Self` is not assignable to `AsyncExitStack[bool | None]`
++ error[invalid-assignment] src/prefect/deployments/runner.py:249:5: Object of type `Self` is not assignable to `ParameterSchema`
++ error[invalid-assignment] src/prefect/flow_engine.py:168:5: Object of type `Self` is not assignable to `RunTelemetry`
++ error[invalid-assignment] src/prefect/server/events/filters.py:225:5: Object of type `Self` is not assignable to `LabelSet`
++ error[invalid-assignment] src/prefect/server/events/filters.py:226:5: Object of type `Self` is not assignable to `LabelSet`
++ error[invalid-assignment] src/prefect/task_engine.py:135:5: Object of type `Self` is not assignable to `RunTelemetry`
+- Found 4448 diagnostics
++ Found 4454 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[invalid-argument-type] ddtrace/_trace/processor/__init__.py:281:24: Argument to function `verify_url` is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown]`
++ error[invalid-argument-type] ddtrace/_trace/processor/__init__.py:281:24: Argument to function `verify_url` is incorrect: Expected `str`, found `Unknown | DerivedVariable[str]`
+- error[invalid-argument-type] ddtrace/_trace/processor/__init__.py:283:17: Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown]`
++ error[invalid-argument-type] ddtrace/_trace/processor/__init__.py:283:17: Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | DerivedVariable[str]`
+- error[invalid-argument-type] ddtrace/_trace/processor/__init__.py:284:48: Argument to function `get_dogstatsd_client` is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown]`
++ error[invalid-argument-type] ddtrace/_trace/processor/__init__.py:284:48: Argument to function `get_dogstatsd_client` is incorrect: Expected `str`, found `Unknown | DerivedVariable[str]`
++ error[invalid-assignment] ddtrace/debugging/_session.py:33:5: Object of type `Self` is not assignable to `Counter[str]`
+- error[invalid-argument-type] ddtrace/internal/agent.py:15:28: Argument to function `get_connection` is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown] | (Unknown & ~None)`
++ error[invalid-argument-type] ddtrace/internal/agent.py:15:28: Argument to function `get_connection` is incorrect: Expected `str`, found `Unknown | DerivedVariable[str] | (Unknown & ~None)`
++ error[invalid-assignment] ddtrace/internal/ci_visibility/_api_client.py:122:5: Object of type `Self` is not assignable to `EarlyFlakeDetectionSettings`
++ error[invalid-assignment] ddtrace/internal/ci_visibility/_api_client.py:123:5: Object of type `Self` is not assignable to `TestManagementSettings`
++ error[invalid-assignment] ddtrace/internal/ci_visibility/api/_base.py:75:5: Object of type `Self` is not assignable to `EarlyFlakeDetectionSettings`
++ error[invalid-assignment] ddtrace/internal/ci_visibility/api/_base.py:76:5: Object of type `Self` is not assignable to `AutoTestRetriesSettings`
++ error[invalid-assignment] ddtrace/internal/ci_visibility/api/_base.py:77:5: Object of type `Self` is not assignable to `TestManagementSettings`
+- error[invalid-argument-type] ddtrace/internal/ci_visibility/git_client.py:97:38: Argument to function `urljoin` is incorrect: Argument type `Unknown | DerivedVariable[Unknown]` does not satisfy constraints of type variable `AnyStr`
++ error[invalid-argument-type] ddtrace/internal/ci_visibility/git_client.py:97:38: Argument to function `urljoin` is incorrect: Argument type `Unknown | DerivedVariable[str]` does not satisfy constraints of type variable `AnyStr`
+- error[invalid-argument-type] ddtrace/internal/metrics.py:33:45: Argument to function `get_dogstatsd_client` is incorrect: Expected `str`, found `(Unknown & ~AlwaysFalsy) | Unknown | DerivedVariable[Unknown]`
++ error[invalid-argument-type] ddtrace/internal/metrics.py:33:45: Argument to function `get_dogstatsd_client` is incorrect: Expected `str`, found `(Unknown & ~AlwaysFalsy) | Unknown | DerivedVariable[str]`
++ error[invalid-assignment] ddtrace/internal/rate_limiter.py:205:5: Object of type `Self` is not assignable to `LockType`
+- error[invalid-argument-type] ddtrace/internal/remoteconfig/client.py:63:38: Argument to bound method `d` is incorrect: Expected `(Env, /) -> Unknown`, found `def derive_skip_shutdown(c: RemoteConfigClientConfig) -> bool`
++ error[invalid-argument-type] ddtrace/internal/remoteconfig/client.py:63:38: Argument to bound method `d` is incorrect: Expected `(Env, /) -> bool`, found `def derive_skip_shutdown(c: RemoteConfigClientConfig) -> bool`
+- error[invalid-return-type] ddtrace/internal/telemetry/writer.py:129:20: Return type does not match returned value: expected `str`, found `Unknown | DerivedVariable[Unknown]`
++ error[invalid-return-type] ddtrace/internal/telemetry/writer.py:129:20: Return type does not match returned value: expected `str`, found `Unknown | DerivedVariable[str]`
+- error[invalid-return-type] ddtrace/profiling/utils.py:20:12: Return type does not match returned value: expected `str`, found `str | (Unknown & ~AlwaysFalsy) | Unknown | DerivedVariable[Unknown]`
++ error[invalid-return-type] ddtrace/profiling/utils.py:20:12: Return type does not match returned value: expected `str`, found `str | (Unknown & ~AlwaysFalsy) | Unknown | DerivedVariable[str]`
+- error[invalid-argument-type] ddtrace/settings/_agent.py:153:39: Argument to bound method `d` is incorrect: Expected `(Env, /) -> Unknown`, found `def _derive_trace_url(config: AgentConfig) -> str`
++ error[invalid-argument-type] ddtrace/settings/_agent.py:153:39: Argument to bound method `d` is incorrect: Expected `(Env, /) -> str`, found `def _derive_trace_url(config: AgentConfig) -> str`
+- error[invalid-argument-type] ddtrace/settings/_agent.py:155:37: Argument to bound method `d` is incorrect: Expected `(Env, /) -> Unknown`, found `def _derive_stats_url(config: AgentConfig) -> str`
++ error[invalid-argument-type] ddtrace/settings/_agent.py:155:37: Argument to bound method `d` is incorrect: Expected `(Env, /) -> str`, found `def _derive_stats_url(config: AgentConfig) -> str`
+- error[invalid-argument-type] ddtrace/settings/crashtracker.py:48:32: Argument to bound method `d` is incorrect: Expected `(Env, /) -> Unknown`, found `def _derive_crashtracking_enabled(config: CrashtrackingConfig) -> bool`
++ error[invalid-argument-type] ddtrace/settings/crashtracker.py:48:32: Argument to bound method `d` is incorrect: Expected `(Env, /) -> bool`, found `def _derive_crashtracking_enabled(config: CrashtrackingConfig) -> bool`
+- error[invalid-argument-type] ddtrace/settings/crashtracker.py:101:55: Argument to bound method `d` is incorrect: Expected `(Env, /) -> Unknown`, found `def _derive_stacktrace_resolver(config: CrashtrackingConfig) -> str | None`
++ error[invalid-argument-type] ddtrace/settings/crashtracker.py:101:55: Argument to bound method `d` is incorrect: Expected `(Env, /) -> str | None`, found `def _derive_stacktrace_resolver(config: CrashtrackingConfig) -> str | None`
+- error[invalid-argument-type] tests/integration/test_integration.py:593:26: Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | DerivedVariable[Unknown]`
++ error[invalid-argument-type] tests/integration/test_integration.py:593:26: Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | DerivedVariable[str]`
+- Found 6885 diagnostics
++ Found 6892 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:117:12: Attribute `C_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:506:35: Attribute `coefs_paths_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:508:24: Attribute `Cs_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:509:30: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:616:12: Attribute `C_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:616:23: Attribute `C_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:646:21: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:646:37: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:653:35: Attribute `coefs_paths_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:655:12: Attribute `Cs_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:656:30: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:681:39: Attribute `coefs_paths_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:683:16: Attribute `Cs_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:684:34: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:928:25: Attribute `scores_` on type `Unknown | LogisticRegression` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:928:53: Attribute `scores_` on type `Unknown | LogisticRegression` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:1742:43: Attribute `l1_ratio_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:1743:36: Attribute `C_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:1828:12: Attribute `C_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:1829:12: Attribute `l1_ratio_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:1866:35: Attribute `coefs_paths_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:1874:30: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:2119:23: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:2280:28: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:2280:47: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:2313:21: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ warning[possibly-unbound-attribute] sklearn/linear_model/tests/test_logistic.py:2313:40: Attribute `scores_` on type `Unknown | LogisticRegressionCV` is possibly unbound
++ error[invalid-assignment] sklearn/utils/_tags.py:248:5: Object of type `Self` is not assignable to `InputTags`
++ error[invalid-assignment] sklearn/utils/extmath.py:350:9: Too many values to unpack: Expected 2
++ error[invalid-assignment] sklearn/utils/extmath.py:351:9: Too many values to unpack: Expected 2
+- Found 2519 diagnostics
++ Found 2549 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- warning[possibly-unbound-attribute] zerver/tests/test_openapi.py:584:58: Attribute `__name__` on type `(Unknown & ~(def get_events(request: HttpRequest, user_profile: UserProfile) -> HttpResponse)) | ((...) -> Unknown)` is possibly unbound
++ warning[possibly-unbound-attribute] zerver/tests/test_openapi.py:584:58: Attribute `__name__` on type `(Unknown & ~(def get_events(request: HttpRequest, user_profile: UserProfile) -> HttpResponse)) | ((...) -> HttpResponse)` is possibly unbound
+- error[invalid-argument-type] zerver/views/report.py:14:1: Argument is incorrect: Expected `_F`, found `(...) -> Unknown`
++ error[invalid-argument-type] zerver/views/report.py:14:1: Argument is incorrect: Expected `_F`, found `(...) -> HttpResponse`
+- error[invalid-argument-type] zerver/views/video_calls.py:298:1: Argument is incorrect: Expected `_F`, found `(...) -> Unknown`
++ error[invalid-argument-type] zerver/views/video_calls.py:298:1: Argument is incorrect: Expected `_F`, found `(...) -> HttpResponse`
+
+sympy (https://github.com/sympy/sympy)
++ error[invalid-argument-type] sympy/strategies/tests/test_core.py:30:25: Argument to function `null_safe` is incorrect: Expected `(int | None, /) -> int | None`, found `def rl(expr: int) -> int | None`
+- Found 18566 diagnostics
++ Found 18567 diagnostics
+
+```
+</details>
+
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md`:431 on 2025-05-31 00:53_
+
+I think it should be `int | str`, but I think that's a fix whose scope goes beyond this PR; we also get it wrong in a similar case not involving callables: https://play.ty.dev/5d886f2e-e45d-4a3e-ad0d-84e7bd56f6b1
+
+So I think you can just add a `# TODO: should be B[int | str]` for now, and adjust the assertion to be `B[int | str | None]` so the test passes.
+
+---
+
+_@carljm approved on 2025-05-31 00:54_
+
+This looks good to me, but I wouldn't mind @dcreager double-checking, so we might leave this til Monday.
+
+---
+
+_Review request for @sharkdp removed by @sharkdp on 2025-06-03 07:52_
+
+---
+
+_@MatthewMckee4 reviewed on 2025-06-05 20:12_
+
+---
+
+_Review comment by @MatthewMckee4 on `crates/ty_python_semantic/src/types/generics.rs`:733 on 2025-06-05 20:12_
+
+Check here so we dont infer `Never` like in this primer
+```diff
+- error[unresolved-attribute] scipy/fft/_pocketfft/basic.py:35:1: Unresolved attribute `__name__` on type `partial[Unknown]`.
++ error[unresolved-attribute] scipy/fft/_pocketfft/basic.py:35:1: Unresolved attribute `__name__` on type `partial[Never]`.
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md`:431 on 2025-06-05 23:43_
+
+Hmm on second look I don't think `B[int | str]` is right here. The typevar is constrained to `int` and `str`, so we must solve it to one of those types. This makes me think that the overloaded function `h` can't be accepted here, and we should actually be erroring on `B(h)`, because we can't solve the typevar to either `int` or `str`.
+
+It would probably be good to also have a test with constrained typevar that doesn't use an overloaded callable, just a normal callable returning e.g. `int`, and show we can solve that to `int`.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/generics.rs`:726 on 2025-06-05 23:46_
+
+I don't think this should be limited to `FunctionLiteral` as `actual` -- I think we should take any type as `actual` and call `.signatures()` on it. And we should probably add some tests for cases like passing another `Callable` type, passing an instance type with `__call__`, passing a class literal type.
+
+---
+
+_@carljm requested changes on 2025-06-05 23:47_
+
+On second look, I think there are some things that need attention here.
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md`:431 on 2025-06-06 01:18_
+
+For what it's worth, pyright reveals `B[str]` for this example, presumably since the first overload matches?
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/src/types/generics.rs`:726 on 2025-06-06 01:24_
+
+I agree with this in principle, though we don't have a `Type::signatures` method anymore. (If you have a union, you now go straight to a `Bindings` via `Type::bindings`. `Type::Callable` is one level down, and is a single callable that might have multiple overloads — but no multiple union elements.)
+
+We probably want to add a `Type::to_callable_type`, which would return `Option<Type<'db>>` for those types that can be translated into a single callable. (`FunctionLiteral`, `BoundMethod`, `Callable`, etc). And then we could update this match arm to work on any `actual` that returns `Some` for that method.
+
+---
+
+_@dcreager reviewed on 2025-06-06 01:31_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md`:431 on 2025-06-06 01:36_
+
+Hmm, I guess that makes sense. It probably isn't right to error, since the given callable does satisfy the annotation; it's just ambiguous whether we should infer `str` or `int`. But I guess in the face of that ambiguity, choosing the first overload is reasonable.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/generics.rs`:731 on 2025-06-06 01:38_
+
+I think the comments above suggest that the overload handling here should be a bit different. We should probably try inferring each overload in order against the actual signature, and go with the first one that matches. That definitely increases the complexity of this PR, though.
+
+---
+
+_@carljm reviewed on 2025-06-06 01:38_
+
+---
+
+_@MatthewMckee4 reviewed on 2025-06-08 19:17_
+
+---
+
+_Review comment by @MatthewMckee4 on `crates/ty_python_semantic/src/types/generics.rs`:726 on 2025-06-08 19:17_
+
+Should i add to_callable_type in this PR? And for now just handle these callable types
+
+---
+
+_Comment by @MatthewMckee4 on 2025-06-08 21:12_
+
+I may have changed more than is suitable for this PR
+
+---
+
+_Review requested from @carljm by @MatthewMckee4 on 2025-06-08 21:13_
+
+---
+
+_Comment by @MatthewMckee4 on 2025-06-09 11:31_
+
+> We should probably try inferring each overload in order against the actual signature
+
+For parameter inference, this seems a bit out of my depth. Any advice is appreciated
+
+---
+
+_Label `ty` added by @MichaReiser on 2025-06-20 06:32_
+
+---
+
+_Closed by @MatthewMckee4 on 2025-07-14 17:18_
+
+---
+
+_Branch deleted on 2025-07-16 21:12_
+
+---

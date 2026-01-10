@@ -1,0 +1,948 @@
+```yaml
+number: 19281
+title: "[ty] Check shifts of literals ints"
+type: pull_request
+state: open
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+draft: true
+base: main
+head: shifts
+created_at: 2025-07-11T12:54:46Z
+updated_at: 2025-07-28T09:09:19Z
+url: https://github.com/astral-sh/ruff/pull/19281
+synced_at: 2026-01-10T17:58:13Z
+```
+
+# [ty] Check shifts of literals ints
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-07-11 12:54_
+
+## Summary
+
+This is a rebased version of #18329 by @brandtbucher, with some additional changes from me. Fixes https://github.com/astral-sh/ty/issues/517
+
+With this PR, we now infer `Literal` int values from left-shift and right-shift operations between literal-int types, literal-bool types, or combinations of the two. We also attempt to detect invalid bitshift operations (where the r.h.s. is `<0`), in the same way as we attempt to detect `ZeroDivisionError`s.
+
+I renamed the existing `division-by-zero` error to `literal-math-error`, and expanded it to cover negative bitshifts, rather than introducing a new rule. The reasons for this are:
+- They're conceptually pretty similar in the kind of error they detect
+- I can't really think of a reason why a user would want to suppress one (either on a per-line, per-file or per-project basis) but not the other
+- I think they both suffer from the same drawbacks that @carljm noted in the PR description for
+https://github.com/astral-sh/ruff/pull/18220#issue-3077312707
+
+## Test Plan
+
+mdtests
+
+---
+
+Co-authored-by: Brandt Bucher <brandt@python.org>
+
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-07-11 12:54_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-07-11 12:54_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-07-11 12:54_
+
+---
+
+_Review requested from @MichaReiser by @AlexWaygood on 2025-07-11 12:54_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-07-11 12:54_
+
+---
+
+_Renamed from "Check shifts of literals ints" to "[ty] Check shifts of literals ints" by @AlexWaygood on 2025-07-11 12:54_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-11 12:58_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bidict (https://github.com/jab/bidict)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 15 diagnostics
++ Found 14 diagnostics
+
+zipp (https://github.com/jaraco/zipp)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 4 diagnostics
++ Found 3 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 11 diagnostics
++ Found 10 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 2 diagnostics
++ Found 1 diagnostic
+
+dacite (https://github.com/konradhalas/dacite)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 24 diagnostics
++ Found 23 diagnostics
+
+janus (https://github.com/aio-libs/janus)
++ All checks passed!
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 1 diagnostic
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 43 diagnostics
++ Found 42 diagnostics
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[unknown-rule] pyproject.toml:194:1: Unknown lint rule `division-by-zero`
++ warning[literal-math-error] tests/fixtures/test_python/test_keywordify_context_manager.py:9:13: Cannot divide object of type `Literal[1]` by zero
++ warning[unknown-rule] tests/fixtures/test_python/test_keywordify_context_manager.py:9:20: Unknown rule `division-by-zero`
++ warning[literal-math-error] tests/fixtures/test_python/test_keywordify_keyword_inside_context_manager.py:17:13: Cannot divide object of type `Literal[1]` by zero
++ warning[unknown-rule] tests/fixtures/test_python/test_keywordify_keyword_inside_context_manager.py:17:20: Unknown rule `division-by-zero`
+- Found 180 diagnostics
++ Found 184 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 7 diagnostics
++ Found 6 diagnostics
+
+async-utils (https://github.com/mikeshardmind/async-utils)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 17 diagnostics
++ Found 16 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 73 diagnostics
++ Found 72 diagnostics
+
+com2ann (https://github.com/ilevkivskyi/com2ann)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 6 diagnostics
++ Found 5 diagnostics
+
+python-sop (https://gitlab.com/dkg/python-sop)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 3 diagnostics
++ Found 2 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 8 diagnostics
++ Found 7 diagnostics
+
+DateType (https://github.com/glyph/DateType)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 7 diagnostics
++ Found 6 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 562 diagnostics
++ Found 561 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 6 diagnostics
++ Found 5 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 20 diagnostics
++ Found 19 diagnostics
+
+pegen (https://github.com/we-like-parsers/pegen)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 48 diagnostics
++ Found 47 diagnostics
+
+itsdangerous (https://github.com/pallets/itsdangerous)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 7 diagnostics
++ Found 6 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 45 diagnostics
++ Found 44 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 21 diagnostics
++ Found 20 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] tests/test_make.py:1481:71: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_validators.py:263:5: Cannot divide object of type `Literal[0]` by zero
+- Found 635 diagnostics
++ Found 636 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 231 diagnostics
++ Found 230 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 94 diagnostics
++ Found 93 diagnostics
+
+speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] backend/services/user_updater_helpers.py:143:27: Cannot divide object of type `float` by zero
+
+black (https://github.com/psf/black)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 60 diagnostics
++ Found 59 diagnostics
+
+operator (https://github.com/canonical/operator)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 115 diagnostics
++ Found 114 diagnostics
+
+dedupe (https://github.com/dedupeio/dedupe)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 62 diagnostics
++ Found 61 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 161 diagnostics
++ Found 160 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 41 diagnostics
++ Found 40 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 467 diagnostics
++ Found 466 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 306 diagnostics
++ Found 305 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] tests/pool/test_pool.py:127:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/pool/test_pool.py:1030:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/pool/test_pool_async.py:128:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/pool/test_pool_async.py:1032:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/pool/test_sched.py:82:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/pool/test_sched_async.py:81:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_adapt.py:467:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_adapt.py:482:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_concurrency.py:491:21: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_concurrency_async.py:379:21: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_connection.py:241:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_connection.py:268:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_connection.py:286:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_connection.py:912:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_connection_async.py:236:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_connection_async.py:264:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_connection_async.py:282:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_connection_async.py:915:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_copy.py:384:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_copy.py:394:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_copy_async.py:396:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_copy_async.py:408:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_cursor_common.py:590:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_cursor_common.py:599:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_cursor_common.py:773:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_cursor_common.py:785:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_cursor_common_async.py:594:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_cursor_common_async.py:602:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_cursor_common_async.py:781:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_cursor_common_async.py:793:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_pipeline.py:78:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_pipeline.py:89:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_pipeline.py:478:21: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_pipeline_async.py:75:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_pipeline_async.py:86:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_pipeline_async.py:477:21: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_transaction.py:103:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_transaction.py:122:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_transaction.py:636:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_transaction_async.py:103:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_transaction_async.py:122:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_transaction_async.py:643:13: Cannot divide object of type `Literal[1]` by zero
+- Found 614 diagnostics
++ Found 655 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 368 diagnostics
++ Found 367 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] dulwich/contrib/diffstat.py:160:27: Cannot divide object of type `float` by zero
++ warning[literal-math-error] dulwich/contrib/diffstat.py:161:27: Cannot divide object of type `float` by zero
+- Found 162 diagnostics
++ Found 163 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 448 diagnostics
++ Found 447 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 124 diagnostics
++ Found 123 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 30 diagnostics
++ Found 29 diagnostics
+
+python-htmlgen (https://github.com/srittau/python-htmlgen)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 27 diagnostics
++ Found 26 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] src/trio/_core/_run.py:161:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] src/trio/_core/_tests/test_guest_mode.py:434:29: Cannot divide object of type `Literal[1]` by zero
+- Found 784 diagnostics
++ Found 785 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 793 diagnostics
++ Found 792 diagnostics
+
+downforeveryone (https://github.com/rpdelaney/downforeveryone)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 6 diagnostics
++ Found 5 diagnostics
+
+svcs (https://github.com/hynek/svcs)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 86 diagnostics
++ Found 85 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] examples/suppress.py:17:5: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] rich/logging.py:289:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] rich/pretty.py:959:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_getfileno.py:22:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_logging.py:51:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_logging.py:82:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_logging.py:114:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_pretty.py:287:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_pretty.py:298:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:21:16: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:65:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:96:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:117:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:144:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:171:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:227:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:239:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:288:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:319:16: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:338:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:351:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_traceback.py:369:9: Cannot divide object of type `Literal[1]` by zero
+- Found 300 diagnostics
++ Found 321 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 28 diagnostics
++ Found 27 diagnostics
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 57 diagnostics
++ Found 56 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 551 diagnostics
++ Found 550 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 61 diagnostics
++ Found 60 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 430 diagnostics
++ Found 429 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 760 diagnostics
++ Found 759 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 597 diagnostics
++ Found 596 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 357 diagnostics
++ Found 356 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] sockeye/scoring.py:190:48: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] sockeye/utils.py:592:32: Cannot divide object of type `Literal[0]` by zero
++ warning[literal-math-error] sockeye/utils.py:593:31: Cannot divide object of type `Literal[0]` by zero
++ warning[literal-math-error] sockeye/utils.py:594:30: Cannot divide object of type `Literal[0]` by zero
+- Found 318 diagnostics
++ Found 321 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 4316 diagnostics
++ Found 4315 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 95 diagnostics
++ Found 94 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 212 diagnostics
++ Found 211 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 35 diagnostics
++ Found 34 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 24 diagnostics
++ Found 23 diagnostics
+
+flake8-pyi (https://github.com/PyCQA/flake8-pyi)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 10 diagnostics
++ Found 9 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 289 diagnostics
++ Found 288 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 114 diagnostics
++ Found 113 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 20 diagnostics
++ Found 19 diagnostics
+
+pylox (https://github.com/sco1/pylox)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 23 diagnostics
++ Found 22 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 2126 diagnostics
++ Found 2125 diagnostics
+
+imagehash (https://github.com/JohannesBuchner/imagehash)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 11 diagnostics
++ Found 10 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 34 diagnostics
++ Found 33 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 43 diagnostics
++ Found 42 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] tests/study_tests/test_study.py:1029:19: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/study_tests/test_study.py:1042:34: Cannot divide object of type `Literal[1]` by zero
+- Found 570 diagnostics
++ Found 571 diagnostics
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 60 diagnostics
++ Found 59 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 40 diagnostics
++ Found 39 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] asynq/tests/test_recursion.py:54:29: Cannot divide object of type `int` by zero
++ warning[literal-math-error] asynq/tests/test_recursion.py:54:29: Cannot divide object of type `float` by zero
++ warning[literal-math-error] asynq/tests/test_recursion.py:61:29: Cannot divide object of type `int` by zero
++ warning[literal-math-error] asynq/tests/test_recursion.py:61:29: Cannot divide object of type `float` by zero
+- Found 183 diagnostics
++ Found 186 diagnostics
+
+SinbadCogs (https://github.com/mikeshardmind/SinbadCogs)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 143 diagnostics
++ Found 142 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] tests/unittests/test_all_stages.py:202:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/unittests/test_gpg.py:188:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/unittests/test_gpg.py:206:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/unittests/test_url_helper.py:518:31: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/unittests/test_url_helper.py:527:31: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/unittests/test_url_helper.py:585:32: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/unittests/test_url_helper.py:593:32: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/unittests/test_util.py:3314:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/unittests/test_util.py:3333:17: Cannot divide object of type `Literal[1]` by zero
+- Found 653 diagnostics
++ Found 661 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 91 diagnostics
++ Found 90 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 937 diagnostics
++ Found 936 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 377 diagnostics
++ Found 376 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 53 diagnostics
++ Found 52 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] tests/test_debug.py:32:38: Cannot divide object of type `Literal[1]` by zero
+
+urllib3 (https://github.com/urllib3/urllib3)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 418 diagnostics
++ Found 417 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] tornado/test/gen_test.py:63:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/gen_test.py:71:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/gen_test.py:457:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/gen_test.py:472:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/gen_test.py:485:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/gen_test.py:505:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/ioloop_test.py:347:43: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/ioloop_test.py:358:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/ioloop_test.py:371:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/ioloop_test.py:380:43: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/ioloop_test.py:386:45: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/ioloop_test.py:588:43: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/ioloop_test.py:602:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/locks_test.py:373:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/tcpserver_test.py:27:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/twisted_test.py:63:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/web_test.py:1041:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/web_test.py:1048:21: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/web_test.py:1059:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/web_test.py:1936:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/web_test.py:1979:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/web_test.py:1982:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tornado/test/websocket_test.py:78:9: Cannot divide object of type `Literal[1]` by zero
+- Found 221 diagnostics
++ Found 243 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] tests/pipelines.py:8:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/pipelines.py:16:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/spiders.py:332:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/spiders.py:339:17: Cannot divide object of type `Literal[2]` by zero
++ warning[literal-math-error] tests/test_pipeline_crawl.py:204:24: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_request_attribute_binding.py:20:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_spidermiddleware.py:108:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_spidermiddleware.py:563:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_spidermiddleware_output_chain.py:146:39: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_utils_defer.py:123:21: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_utils_defer.py:150:21: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_utils_log.py:33:13: Cannot divide object of type `Literal[0]` by zero
++ warning[literal-math-error] tests/test_utils_python.py:63:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/test_utils_signal.py:53:9: Cannot divide object of type `Literal[1]` by zero
+- Found 1091 diagnostics
++ Found 1104 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 129 diagnostics
++ Found 128 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] mkdocs/tests/livereload_tests.py:448:49: Cannot divide object of type `Literal[0]` by zero
+
+alectryon (https://github.com/cpitclaudel/alectryon)
++ All checks passed!
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 1 diagnostic
+
+xarray-dataclasses (https://github.com/astropenguin/xarray-dataclasses)
++ All checks passed!
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 1 diagnostic
+
+colour (https://github.com/colour-science/colour)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 488 diagnostics
++ Found 487 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 151 diagnostics
++ Found 150 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 303 diagnostics
++ Found 302 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] freqtrade/data/metrics.py:314:33: Cannot divide object of type `Literal[0]` by zero
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 2264 diagnostics
++ Found 2263 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 52 diagnostics
++ Found 51 diagnostics
+
+pyppeteer (https://github.com/pyppeteer/pyppeteer)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 100 diagnostics
++ Found 99 diagnostics
+
+twine (https://github.com/pypa/twine)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 13 diagnostics
++ Found 12 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 2009 diagnostics
++ Found 2008 diagnostics
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 25 diagnostics
++ Found 24 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 27 diagnostics
++ Found 26 diagnostics
+
+AutoSplit (https://github.com/Toufool/AutoSplit)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 40 diagnostics
++ Found 39 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 145 diagnostics
++ Found 144 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] test/test_ops.py:2034:24: Cannot divide object of type `Literal[0]` by zero
+
+altair (https://github.com/vega/altair)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] tests/vegalite/v6/test_api.py:1784:71: Cannot divide object of type `Literal[1]` by zero
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 465 diagnostics
++ Found 464 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 889 diagnostics
++ Found 888 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] lib/Crypto/Util/number.py:469:27: Cannot floor divide object of type `int` by zero
+
+rclip (https://github.com/yurijmikhalevich/rclip)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 13 diagnostics
++ Found 12 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 856 diagnostics
++ Found 855 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 136 diagnostics
++ Found 135 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 2772 diagnostics
++ Found 2771 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] openlibrary/utils/tests/test_retry.py:39:31: Cannot divide object of type `Literal[1]` by zero
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 178 diagnostics
++ Found 177 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 1797 diagnostics
++ Found 1796 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] testing/code/test_excinfo.py:427:13: Cannot floor divide object of type `Literal[0]` by zero
++ warning[literal-math-error] testing/code/test_excinfo.py:628:21: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] testing/code/test_excinfo.py:682:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] testing/python/raises.py:323:24: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] testing/test_runner.py:549:45: Cannot divide object of type `Literal[0]` by zero
+- Found 516 diagnostics
++ Found 520 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 606 diagnostics
++ Found 605 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 3295 diagnostics
++ Found 3294 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 927 diagnostics
++ Found 926 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 1793 diagnostics
++ Found 1792 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 3743 diagnostics
++ Found 3742 diagnostics
+
+materialize (https://github.com/MaterializeInc/materialize)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 3229 diagnostics
++ Found 3228 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 1694 diagnostics
++ Found 1693 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 7294 diagnostics
++ Found 7293 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 2072 diagnostics
++ Found 2071 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] benchmarks/bm/iast_utils/aspects_benchmarks_simple_report.py:33:28: Cannot divide object of type `float` by zero
++ warning[literal-math-error] benchmarks/bm/iast_utils/aspects_benchmarks_simple_report.py:33:28: Cannot divide object of type `int` by zero
++ warning[literal-math-error] ddtrace/internal/ci_visibility/api/_session.py:153:32: Cannot divide object of type `Literal[0]` by zero
++ warning[literal-math-error] ddtrace/internal/ci_visibility/api/_session.py:153:32: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/contrib/aiohttp/app/web.py:72:12: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/contrib/cherrypy/web.py:60:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/contrib/falcon/app/resources.py:17:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/contrib/molten/test_molten.py:37:12: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/contrib/pyramid/app/web.py:27:9: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/contrib/sanic/run_server.py:34:5: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/tracer/test_span.py:195:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/tracer/test_span.py:242:13: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/tracer/test_span.py:274:17: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] tests/tracer/test_tracer.py:1227:17: Cannot divide object of type `Literal[1]` by zero
+- Found 6807 diagnostics
++ Found 6820 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] scipy/integrate/tests/test_integrate.py:761:16: Cannot divide object of type `float` by zero
++ warning[literal-math-error] scipy/integrate/tests/test_integrate.py:767:16: Cannot divide object of type `float` by zero
++ warning[literal-math-error] scipy/integrate/tests/test_integrate.py:776:18: Cannot divide object of type `float` by zero
++ warning[literal-math-error] scipy/signal/tests/test_filter_design.py:664:59: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] scipy/signal/tests/test_filter_design.py:841:64: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] scipy/sparse/linalg/_isolve/lsmr.py:256:14: Cannot divide object of type `Literal[1]` by zero
++ warning[literal-math-error] scipy/sparse/linalg/_isolve/lsqr.py:393:14: Cannot divide object of type `Literal[1]` by zero
+- Found 6641 diagnostics
++ Found 6647 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
++ warning[literal-math-error] sympy/assumptions/tests/test_context.py:27:13: Cannot divide object of type `Literal[1]` by zero
+
+manticore (https://github.com/trailofbits/manticore)
+- warning[unknown-rule] /home/runner/.config/ty/ty.toml:8:1: Unknown lint rule `literal-math-error`
+- Found 1116 diagnostics
++ Found 1115 diagnostics
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/diagnostic.rs`:249 on 2025-07-11 13:39_
+
+I don't think it's necessary that both sides are literal ints. At least for division by zero. 
+
+```py
+
+def test(a: int): 
+	return a / 0
+```
+
+---
+
+_Review comment by @MichaReiser on `.github/mypy-primer-ty.toml`:8 on 2025-07-11 13:39_
+
+I don't have good recommendations other than splitting the rule but I do find the new name much less clear. 
+
+---
+
+_@MichaReiser reviewed on 2025-07-11 13:41_
+
+You'll be surprised but I'm sort of favouring two rules here 😓 
+
+---
+
+_Comment by @AlexWaygood on 2025-07-11 18:31_
+
+> You'll be surprised but I'm sort of favouring two rules here 😓
+
+Haha, that does seem somewhat out of character for you 😆
+
+I can switch it back to two rules. I think they'll need to both be disabled by default, though -- I believe this rule is going to suffer from the same issues regarding false positives as `division-by-zero`. There just isn't as much code out there that actually uses bitshifts of integers, which is why the primer report is clean.
+
+---
+
+_Converted to draft by @AlexWaygood on 2025-07-11 18:43_
+
+---
+
+_Comment by @MichaReiser on 2025-07-11 19:35_
+
+It might be worth hearing more opinions before you spend much time splitting them 
+
+---
+
+_Marked ready for review by @AlexWaygood on 2025-07-13 20:14_
+
+---
+
+_Comment by @sharkdp on 2025-07-14 07:11_
+
+> It might be worth hearing more opinions
+
+To be honest, I am unsure if this is a valuable feature to have. Is it worth the additional code and time that we need to review and maintain this? It looks like there's not a single hit in the ecosystem. We would also disable the rule by default because it's prone to false positives. *And* it is non-trivial to get this right (see initial PR). So I think I'm in favor of not implementing this at all.
+
+---
+
+_Comment by @AlexWaygood on 2025-07-14 16:58_
+
+> To be honest, I am unsure if this is a valuable feature to have. Is it worth the additional code and time that we need to review and maintain this? It looks like there's not a single hit in the ecosystem. We would also disable the rule by default because it's prone to false positives. _And_ it is non-trivial to get this right (see initial PR). So I think I'm in favor of not implementing this at all.
+
+I agree that emitting a diagnostic if the r.h.s. is negative is not a very important feature at all; I'm okay with dropping it. I also don't think it's much code to maintain at all, though: we already have to check whether the r.h.s. is negative in order to get the literal math inference correct. github.com/astral-sh/ruff/pull/18329 has been basically mergable since it was originally filed; the only blocker was that I suggested combining the two rules (and we're now discussing whether doing that is even desirable 😆)
+
+---
+
+_Comment by @brandtbucher on 2025-07-14 18:21_
+
+Also, my original PR had an issue where shifting a 1 into the sign bit, like `1 << 63`, gave an (incorrect) negative result. Has that been addressed here?
+
+---
+
+_Comment by @carljm on 2025-07-14 20:26_
+
+I probably weakly favor two rules here, though I'd also be quite happy if we dropped both of the rules entirely.
+
+---
+
+_Comment by @AlexWaygood on 2025-07-21 14:37_
+
+> Also, my original PR had an issue where shifting a 1 into the sign bit, like `1 << 63`, gave an (incorrect) negative result. Has that been addressed here?
+
+Oh, don't think so. I'll check that.
+
+I'll also rip out the diagnostic for now, since we're not sure whether it should be its own diagnostic or combined with the `ZeroDivisionError` one, and this is the only point of contention in the PR currently as far as I understand it. Removing it now doesn't preclude adding it in a later PR.
+
+---
+
+_Converted to draft by @MichaReiser on 2025-07-28 09:09_
+
+---
