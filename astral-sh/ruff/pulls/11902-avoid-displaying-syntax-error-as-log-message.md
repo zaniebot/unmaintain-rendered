@@ -1,0 +1,572 @@
+```yaml
+number: 11902
+title: Avoid displaying syntax error as log message
+type: pull_request
+state: merged
+author: dhruvmanila
+labels:
+  - cli
+assignees: []
+merged: true
+base: ruff-0.5
+head: dhruv/syntax-error-3
+created_at: 2024-06-17T11:57:47Z
+updated_at: 2024-06-27T02:28:20Z
+url: https://github.com/astral-sh/ruff/pull/11902
+synced_at: 2026-01-10T21:56:00Z
+```
+
+# Avoid displaying syntax error as log message
+
+---
+
+_Pull request opened by @dhruvmanila on 2024-06-17 11:57_
+
+## Summary
+
+Follow-up to #11901 
+
+This PR avoids displaying the syntax errors as log message now that the `E999` diagnostic cannot be disabled.
+
+For context on why this was added, refer to https://github.com/astral-sh/ruff/pull/2505. Basically, we would allow ignoring the syntax error diagnostic because certain syntax feature weren't supported back then like `match` statement. And, if a user ignored `E999`, Ruff would give no feedback if the source code contained any syntax error. So, this log message was a way to indicate to the user even if `E999` was disabled.
+
+The current state of the parser is such that (a) it matches with the latest grammar and (b) it's easy to add support for any new syntax.
+
+**Note:** This PR doesn't remove the `DisplayParseError` struct because it's still being used by the formatter.
+
+## Test Plan
+
+Update existing snapshots from the integration tests.
+
+
+---
+
+_Comment by @github-actions[bot] on 2024-06-18 13:00_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+473 -36331 violations, +0 -0 fixes in 23 projects; 1 project error; 26 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/42634f8262a6fdb8eacdef16a064b5839bba7485/disnake/ext/commands/params.py#L807'>disnake/ext/commands/params.py:807:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/DisnakeDev/disnake/blob/42634f8262a6fdb8eacdef16a064b5839bba7485/tests/ext/commands/test_params.py#L143'>tests/ext/commands/test_params.py:143:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/DisnakeDev/disnake/blob/42634f8262a6fdb8eacdef16a064b5839bba7485/tests/ext/commands/test_params.py#L146'>tests/ext/commands/test_params.py:146:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/DisnakeDev/disnake/blob/42634f8262a6fdb8eacdef16a064b5839bba7485/tests/ext/commands/test_params.py#L214'>tests/ext/commands/test_params.py:214:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/.github/tests/test_validate_gpus.py#L26'>.github/tests/test_validate_gpus.py:26:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L66'>rasa/shared/utils/io.py:66:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L68'>rasa/shared/utils/io.py:68:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L93'>rasa/shared/utils/io.py:93:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/cli/test_utils.py#L458'>tests/cli/test_utils.py:458:13:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/cli/test_utils.py#L513'>tests/cli/test_utils.py:513:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/conftest.py#L891'>tests/conftest.py:891:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/core/test_actions.py#L2811'>tests/core/test_actions.py:2811:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/shared/core/test_domain.py#L1856'>tests/shared/core/test_domain.py:1856:13:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/shared/core/training_data/story_reader/test_yaml_story_reader.py#L272'>tests/shared/core/training_data/story_reader/test_yaml_story_reader.py:272:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/alteryx/featuretools">alteryx/featuretools</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/alteryx/featuretools/blob/8c99ff7d62d723e90d406ac56bae22aad82e6a47/featuretools/tests/entityset_tests/test_es.py#L714'>featuretools/tests/entityset_tests/test_es.py:714:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/alteryx/featuretools/blob/8c99ff7d62d723e90d406ac56bae22aad82e6a47/featuretools/tests/entityset_tests/test_serialization.py#L130'>featuretools/tests/entityset_tests/test_serialization.py:130:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/alteryx/featuretools/blob/8c99ff7d62d723e90d406ac56bae22aad82e6a47/featuretools/tests/entityset_tests/test_serialization.py#L131'>featuretools/tests/entityset_tests/test_serialization.py:131:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/15eaa4320dc8fb1adaa6ee2b2879aa0ec711769f/src/plasmapy/diagnostics/langmuir.py#L1396'>src/plasmapy/diagnostics/langmuir.py:1396:23:</a> NPY201 `np.trapz` will be removed in NumPy 2.0. Use `numpy.trapezoid` on NumPy 2.0, or ignore this warning on earlier versions.
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/15eaa4320dc8fb1adaa6ee2b2879aa0ec711769f/tests/particles/test_exceptions.py#L1040'>tests/particles/test_exceptions.py:1040:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+182 -25349 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/api/auth/backend/kerberos_auth.py#L69'>airflow/api/auth/backend/kerberos_auth.py:69:18:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/api/client/api_client.py#L28'>airflow/api/client/api_client.py:28:18:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/api/client/api_client.py#L34'>airflow/api/client/api_client.py:34:21:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/api/client/api_client.py#L46'>airflow/api/client/api_client.py:46:20:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/api/client/api_client.py#L53'>airflow/api/client/api_client.py:53:18:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/api/client/api_client.py#L60'>airflow/api/client/api_client.py:60:19:</a> ANN101 Missing type annotation for `self` in method
+... 24625 additional changes omitted for rule ANN101
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/callbacks/callback_requests.py#L57'>airflow/callbacks/callback_requests.py:57:19:</a> ANN102 Missing type annotation for `cls` in classmethod
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/callbacks/callback_requests.py#L95'>airflow/callbacks/callback_requests.py:95:19:</a> ANN102 Missing type annotation for `cls` in classmethod
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/dag_command.py#L309'>airflow/cli/commands/dag_command.py:309:14:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/dag_command.py#L309'>airflow/cli/commands/dag_command.py:309:31:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/info_command.py#L199'>airflow/cli/commands/info_command.py:199:18:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/info_command.py#L199'>airflow/cli/commands/info_command.py:199:35:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/internal_api_command.py#L166'>airflow/cli/commands/internal_api_command.py:166:17:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/internal_api_command.py#L166'>airflow/cli/commands/internal_api_command.py:166:34:</a> S603 `subprocess` call: check for execution of untrusted input
+... 297 additional changes omitted for rule S603
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/standalone_command.py#L51'>airflow/cli/commands/standalone_command.py:51:20:</a> ANN102 Missing type annotation for `cls` in classmethod
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/dag_processing/manager.py#L498'>airflow/dag_processing/manager.py:498:9:</a> ANN102 Missing type annotation for `cls` in classmethod
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/dag_processing/processor.py#L422'>airflow/dag_processing/processor.py:422:21:</a> ANN102 Missing type annotation for `cls` in classmethod
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/dag_processing/processor.py#L803'>airflow/dag_processing/processor.py:803:21:</a> ANN102 Missing type annotation for `cls` in classmethod
+... 539 additional changes omitted for rule ANN102
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/example_dags/example_kubernetes_executor.py#L132'>airflow/example_dags/example_kubernetes_executor.py:132:35:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/example_dags/example_kubernetes_executor.py#L132'>airflow/example_dags/example_kubernetes_executor.py:132:45:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/example_dags/example_kubernetes_executor.py#L94'>airflow/example_dags/example_kubernetes_executor.py:94:27:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/example_dags/example_kubernetes_executor.py#L94'>airflow/example_dags/example_kubernetes_executor.py:94:37:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/models/abstractoperator.py#L439'>airflow/models/abstractoperator.py:439:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/models/abstractoperator.py#L441'>airflow/models/abstractoperator.py:441:14:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/models/abstractoperator.py#L443'>airflow/models/abstractoperator.py:443:14:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/providers/apache/beam/hooks/beam.py#L575'>airflow/providers/apache/beam/hooks/beam.py:575:25:</a> S604 Function call with `shell=True` parameter identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/providers/apache/beam/hooks/beam.py#L577'>airflow/providers/apache/beam/hooks/beam.py:577:13:</a> S604 Function call with `shell=True` parameter identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/providers/microsoft/azure/hooks/msgraph.py#L327'>airflow/providers/microsoft/azure/hooks/msgraph.py:327:12:</a> PLR1701 [*] Merge `isinstance` calls: `isinstance(data, (BytesIO, bytes, str))`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/serialization/pydantic/dag.py#L45'>airflow/serialization/pydantic/dag.py:45:9:</a> PLR1701 [*] Merge `isinstance` calls
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/serialization/pydantic/taskinstance.py#L70'>airflow/serialization/pydantic/taskinstance.py:70:8:</a> PLR1701 [*] Merge `isinstance` calls: `isinstance(x, (BaseOperator, MappedOperator))`
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/utils/pydantic.py#L60'>airflow/utils/pydantic.py:60:13:</a> D107 Missing docstring in `__init__`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/utils/pydantic.py#L60'>airflow/utils/pydantic.py:60:13:</a> D107 Missing docstring in `__init__`
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L1082'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:1082:13:</a> S604 Function call with `shell=True` parameter identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L1091'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:1091:17:</a> S604 Function call with `shell=True` parameter identified, security issue
+... 25497 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+40 -4126 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/autoload_static.py#L32'>examples/output/apis/autoload_static.py:32:20:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/autoload_static.py#L34'>examples/output/apis/autoload_static.py:34:13:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/autoload_static.py#L41'>examples/output/apis/autoload_static.py:41:20:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/autoload_static.py#L43'>examples/output/apis/autoload_static.py:43:13:</a> ANN101 Missing type annotation for `self` in method
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/server_document/flask_server.py#L45'>examples/output/apis/server_document/flask_server.py:45:17:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/server_document/flask_server.py#L46'>examples/output/apis/server_document/flask_server.py:46:5:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/tornado_embed.py#L15'>examples/server/api/tornado_embed.py:15:13:</a> ANN101 Missing type annotation for `self` in method
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/server_auth/auth.py#L27'>examples/server/app/server_auth/auth.py:27:13:</a> ANN101 Missing type annotation for `self` in method
+... 4003 additional changes omitted for rule ANN101
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/system.py#L43'>release/system.py:43:18:</a> S602 `subprocess` call with `shell=True` identified, security issue
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/system.py#L43'>release/system.py:43:34:</a> S602 `subprocess` call with `shell=True` identified, security issue
+... 4156 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+2 -3 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/freedomofpress/securedrop/blob/22ff5276582c0c415a8ae9bf817609a6e1c5ffd5/admin/securedrop_admin/__init__.py#L598'>admin/securedrop_admin/__init__.py:598:12:</a> E721 Do not compare types, use `isinstance()`
+- <a href='https://github.com/freedomofpress/securedrop/blob/22ff5276582c0c415a8ae9bf817609a6e1c5ffd5/admin/securedrop_admin/__init__.py#L600'>admin/securedrop_admin/__init__.py:600:12:</a> E721 Do not compare types, use `isinstance()`
+- <a href='https://github.com/freedomofpress/securedrop/blob/22ff5276582c0c415a8ae9bf817609a6e1c5ffd5/admin/securedrop_admin/__init__.py#L604'>admin/securedrop_admin/__init__.py:604:12:</a> E721 Do not compare types, use `isinstance()`
++ <a href='https://github.com/freedomofpress/securedrop/blob/22ff5276582c0c415a8ae9bf817609a6e1c5ffd5/devops/scripts/verify-mo.py#L116'>devops/scripts/verify-mo.py:116:16:</a> S602 `subprocess` call with `shell=True` identified, security issue
++ <a href='https://github.com/freedomofpress/securedrop/blob/22ff5276582c0c415a8ae9bf817609a6e1c5ffd5/devops/scripts/verify-mo.py#L120'>devops/scripts/verify-mo.py:120:26:</a> RUF100 [*] Unused `noqa` directive (unused: `S602`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/fronzbot/blinkpy/blob/2e48b0c8fb881c20a18f0c399f46d07f26a497be/blinksync/blinksync.py#L58'>blinksync/blinksync.py:58:53:</a> F811 Redefinition of unused `working` from line 55
++ <a href='https://github.com/fronzbot/blinkpy/blob/2e48b0c8fb881c20a18f0c399f46d07f26a497be/blinksync/blinksync.py#L81'>blinksync/blinksync.py:81:53:</a> F811 Redefinition of unused `working` from line 78
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+11 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/backends/dask/convert.py#L28'>ibis/backends/dask/convert.py:28:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/backends/pandas/convert.py#L28'>ibis/backends/pandas/convert.py:28:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/backends/tests/test_client.py#L1219'>ibis/backends/tests/test_client.py:1219:13:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/expr/types/strings.py#L1678'>ibis/expr/types/strings.py:1678:9:</a> F811 Redefinition of unused `__mul__` from line 638
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/expr/types/strings.py#L417'>ibis/expr/types/strings.py:417:9:</a> F811 Redefinition of unused `initcap` from line 412
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/tests/benchmarks/test_benchmarks.py#L720'>ibis/tests/benchmarks/test_benchmarks.py:720:34:</a> F811 Redefinition of unused `con` from line 705
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/tests/expr/test_sql_builtins.py#L116'>ibis/tests/expr/test_sql_builtins.py:116:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/tests/expr/test_sql_builtins.py#L117'>ibis/tests/expr/test_sql_builtins.py:117:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/tests/expr/test_sql_builtins.py#L137'>ibis/tests/expr/test_sql_builtins.py:137:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+... 3 additional changes omitted for rule E721
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+
+```
+ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/demisto:content/pyproject.toml
+  Cause: TOML parse error at line 92, column 1
+   |
+92 | [tool.ruff]
+   | ^^^^^^^^^^^
+Unknown rule selector: `E999`
+```
+
+</p>
+</details>
+<details><summary>Changes by rule (14 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| ANN101 | 35381 | 0 | 35381 | 0 | 0 |
+| ANN102 | 674 | 0 | 674 | 0 | 0 |
+| S603 | 454 | 227 | 227 | 0 | 0 |
+| E721 | 211 | 188 | 23 | 0 | 0 |
+| S610 | 22 | 22 | 0 | 0 | 0 |
+| S602 | 21 | 11 | 10 | 0 | 0 |
+| S604 | 16 | 8 | 8 | 0 | 0 |
+| S605 | 8 | 4 | 4 | 0 | 0 |
+| F811 | 8 | 8 | 0 | 0 | 0 |
+| PLR1701 | 3 | 0 | 3 | 0 | 0 |
+| D107 | 2 | 1 | 1 | 0 | 0 |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |
+| NPY201 | 1 | 1 | 0 | 0 | 0 |
+| RUF024 | 1 | 1 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+261 -256 violations, +0 -0 fixes in 12 projects; 1 project error; 37 projects unchanged)
+
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/15eaa4320dc8fb1adaa6ee2b2879aa0ec711769f/src/plasmapy/diagnostics/langmuir.py#L1396'>src/plasmapy/diagnostics/langmuir.py:1396:23:</a> NPY201 `np.trapz` will be removed in NumPy 2.0. Use `numpy.trapezoid` on NumPy 2.0, or ignore this warning on earlier versions.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+171 -177 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/dag_command.py#L309'>airflow/cli/commands/dag_command.py:309:14:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/dag_command.py#L309'>airflow/cli/commands/dag_command.py:309:31:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/info_command.py#L199'>airflow/cli/commands/info_command.py:199:18:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/info_command.py#L199'>airflow/cli/commands/info_command.py:199:35:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/internal_api_command.py#L166'>airflow/cli/commands/internal_api_command.py:166:17:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/cli/commands/internal_api_command.py#L166'>airflow/cli/commands/internal_api_command.py:166:34:</a> S603 `subprocess` call: check for execution of untrusted input
+... 297 additional changes omitted for rule S603
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/example_dags/example_kubernetes_executor.py#L132'>airflow/example_dags/example_kubernetes_executor.py:132:35:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/example_dags/example_kubernetes_executor.py#L132'>airflow/example_dags/example_kubernetes_executor.py:132:45:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/example_dags/example_kubernetes_executor.py#L94'>airflow/example_dags/example_kubernetes_executor.py:94:27:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/example_dags/example_kubernetes_executor.py#L94'>airflow/example_dags/example_kubernetes_executor.py:94:37:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/providers/apache/beam/hooks/beam.py#L575'>airflow/providers/apache/beam/hooks/beam.py:575:25:</a> S604 Function call with `shell=True` parameter identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/providers/apache/beam/hooks/beam.py#L577'>airflow/providers/apache/beam/hooks/beam.py:577:13:</a> S604 Function call with `shell=True` parameter identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/providers/microsoft/azure/hooks/msgraph.py#L327'>airflow/providers/microsoft/azure/hooks/msgraph.py:327:12:</a> PLR1701 [*] Merge `isinstance` calls: `isinstance(data, (BytesIO, bytes, str))`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/serialization/pydantic/dag.py#L45'>airflow/serialization/pydantic/dag.py:45:9:</a> PLR1701 [*] Merge `isinstance` calls
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/serialization/pydantic/taskinstance.py#L70'>airflow/serialization/pydantic/taskinstance.py:70:8:</a> PLR1701 [*] Merge `isinstance` calls: `isinstance(x, (BaseOperator, MappedOperator))`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/www/extensions/init_appbuilder.py#L1'>airflow/www/extensions/init_appbuilder.py:1:1:</a> CPY001 Missing copyright notice at top of file
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/airflow/www/fab_security/manager.py#L1'>airflow/www/fab_security/manager.py:1:1:</a> CPY001 Missing copyright notice at top of file
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L1082'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:1082:13:</a> S604 Function call with `shell=True` parameter identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L1091'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:1091:17:</a> S604 Function call with `shell=True` parameter identified, security issue
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L1094'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:1094:13:</a> S604 Function call with `shell=True` parameter identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L1103'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:1103:17:</a> S604 Function call with `shell=True` parameter identified, security issue
+... 11 additional changes omitted for rule S604
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/hatch_build.py#L660'>hatch_build.py:660:13:</a> S602 `subprocess` call with `shell=True` identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/hatch_build.py#L660'>hatch_build.py:660:59:</a> S602 `subprocess` call with `shell=True` identified, security issue
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/hatch_build.py#L673'>hatch_build.py:673:13:</a> S602 `subprocess` call with `shell=True` identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/hatch_build.py#L673'>hatch_build.py:673:59:</a> S602 `subprocess` call with `shell=True` identified, security issue
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/scripts/ci/pre_commit/ruff_format.py#L26'>scripts/ci/pre_commit/ruff_format.py:26:1:</a> S602 `subprocess` call with `shell=True` identified, security issue
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/scripts/ci/pre_commit/ruff_format.py#L26'>scripts/ci/pre_commit/ruff_format.py:26:33:</a> S602 `subprocess` call with `shell=True` identified, security issue
+... 11 additional changes omitted for rule S602
++ <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/tests/dags/test_on_kill.py#L44'>tests/dags/test_on_kill.py:44:13:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/tests/dags/test_on_kill.py#L44'>tests/dags/test_on_kill.py:44:23:</a> S605 Starting a process with a shell: seems safe, but may be changed in the future; consider rewriting without `shell`
+... 3 additional changes omitted for rule S605
+- <a href='https://github.com/apache/airflow/blob/dcaf82a155337e36d133ff673bafc5cf50303034/tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py#L1'>tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py:1:1:</a> CPY001 Missing copyright notice at top of file
+... 318 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+38 -38 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/server_document/flask_server.py#L45'>examples/output/apis/server_document/flask_server.py:45:17:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/output/apis/server_document/flask_server.py#L46'>examples/output/apis/server_document/flask_server.py:46:5:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/system.py#L43'>release/system.py:43:18:</a> S602 `subprocess` call with `shell=True` identified, security issue
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/system.py#L43'>release/system.py:43:34:</a> S602 `subprocess` call with `shell=True` identified, security issue
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/hooks/install.py#L5'>scripts/hooks/install.py:5:20:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/hooks/install.py#L5'>scripts/hooks/install.py:5:5:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:22:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:26:</a> S603 `subprocess` call: check for execution of untrusted input
+... 69 additional changes omitted for rule S603
+... 68 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/22ff5276582c0c415a8ae9bf817609a6e1c5ffd5/devops/scripts/verify-mo.py#L116'>devops/scripts/verify-mo.py:116:16:</a> S602 `subprocess` call with `shell=True` identified, security issue
++ <a href='https://github.com/freedomofpress/securedrop/blob/22ff5276582c0c415a8ae9bf817609a6e1c5ffd5/devops/scripts/verify-mo.py#L120'>devops/scripts/verify-mo.py:120:26:</a> RUF100 [*] Unused `noqa` directive (unused: `S602`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/fronzbot/blinkpy/blob/2e48b0c8fb881c20a18f0c399f46d07f26a497be/blinksync/blinksync.py#L58'>blinksync/blinksync.py:58:53:</a> F811 Redefinition of unused `working` from line 55
++ <a href='https://github.com/fronzbot/blinkpy/blob/2e48b0c8fb881c20a18f0c399f46d07f26a497be/blinksync/blinksync.py#L81'>blinksync/blinksync.py:81:53:</a> F811 Redefinition of unused `working` from line 78
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/expr/types/strings.py#L1678'>ibis/expr/types/strings.py:1678:9:</a> F811 Redefinition of unused `__mul__` from line 638
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/expr/types/strings.py#L417'>ibis/expr/types/strings.py:417:9:</a> F811 Redefinition of unused `initcap` from line 412
++ <a href='https://github.com/ibis-project/ibis/blob/07f6e373d90c69e0cd4e33c19bfb858e18ed59f9/ibis/tests/benchmarks/test_benchmarks.py#L720'>ibis/tests/benchmarks/test_benchmarks.py:720:34:</a> F811 Redefinition of unused `con` from line 705
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/prefecthq/prefect/blob/758140862943c2e2da21199751562ce29bb5339b/src/prefect/cli/cloud/__init__.py#L269'>src/prefect/cli/cloud/__init__.py:269:42:</a> F811 Redefinition of unused `timeout_scope` from line 244
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+4 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/30f433ecf2b0bb136885636edf0ef87dd405e69d/packaging/docker/entrypoint.py#L144'>packaging/docker/entrypoint.py:144:11:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/rotki/rotki/blob/30f433ecf2b0bb136885636edf0ef87dd405e69d/packaging/docker/entrypoint.py#L144'>packaging/docker/entrypoint.py:144:28:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/rotki/rotki/blob/30f433ecf2b0bb136885636edf0ef87dd405e69d/packaging/docker/entrypoint.py#L166'>packaging/docker/entrypoint.py:166:26:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/rotki/rotki/blob/30f433ecf2b0bb136885636edf0ef87dd405e69d/packaging/docker/entrypoint.py#L166'>packaging/docker/entrypoint.py:166:9:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/rotki/rotki/blob/30f433ecf2b0bb136885636edf0ef87dd405e69d/packaging/docker/entrypoint.py#L174'>packaging/docker/entrypoint.py:174:52:</a> S602 `subprocess` call with `shell=True` seems safe, but may be changed in the future; consider rewriting without `shell`
++ <a href='https://github.com/rotki/rotki/blob/30f433ecf2b0bb136885636edf0ef87dd405e69d/packaging/docker/entrypoint.py#L174'>packaging/docker/entrypoint.py:174:9:</a> S602 `subprocess` call with `shell=True` seems safe, but may be changed in the future; consider rewriting without `shell`
++ <a href='https://github.com/rotki/rotki/blob/30f433ecf2b0bb136885636edf0ef87dd405e69d/rotkehlchen/tests/exchanges/test_kraken.py#L654'>rotkehlchen/tests/exchanges/test_kraken.py:654:58:</a> F811 Redefinition of unused `cursor` from line 653
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+37 -38 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/dcf2c67f2d084339148cc8397ff37c47da2a0d8e/scripts/lib/check_rabbitmq_queue.py#L143'>scripts/lib/check_rabbitmq_queue.py:143:26:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/dcf2c67f2d084339148cc8397ff37c47da2a0d8e/scripts/lib/check_rabbitmq_queue.py#L144'>scripts/lib/check_rabbitmq_queue.py:144:9:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/zulip/zulip/blob/dcf2c67f2d084339148cc8397ff37c47da2a0d8e/scripts/lib/check_rabbitmq_queue.py#L160'>scripts/lib/check_rabbitmq_queue.py:160:23:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/dcf2c67f2d084339148cc8397ff37c47da2a0d8e/scripts/lib/check_rabbitmq_queue.py#L161'>scripts/lib/check_rabbitmq_queue.py:161:9:</a> S603 `subprocess` call: check for execution of untrusted input
++ <a href='https://github.com/zulip/zulip/blob/dcf2c67f2d084339148cc8397ff37c47da2a0d8e/scripts/lib/hash_reqs.py#L38'>scripts/lib/hash_reqs.py:38:12:</a> S603 `subprocess` call: check for execution of untrusted input
+- <a href='https://github.com/zulip/zulip/blob/dcf2c67f2d084339148cc8397ff37c47da2a0d8e/scripts/lib/hash_reqs.py#L38'>scripts/lib/hash_reqs.py:38:36:</a> S603 `subprocess` call: check for execution of untrusted input
+... 69 additional changes omitted for rule S603
+- <a href='https://github.com/zulip/zulip/blob/dcf2c67f2d084339148cc8397ff37c47da2a0d8e/zerver/lib/markdown/fenced_code.py#L1'>zerver/lib/markdown/fenced_code.py:1:1:</a> CPY001 Missing copyright notice at top of file
+... 68 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/agronholm/anyio">agronholm/anyio</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/agronholm/anyio/blob/3ecc42273920c2828ba7b3303e860aaf59288cf3/tests/test_taskgroups.py#L557'>tests/test_taskgroups.py:557:27:</a> RUF100 [*] Unused `noqa` directive (unknown: `ASYNC101`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (+0 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/encode/httpx">encode/httpx</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/encode/httpx/blob/db9072f998b53ff66d50778bf5edee8e2cc8ede1/tests/client/test_auth.py#L371'>tests/client/test_auth.py:371:73:</a> F811 Redefinition of unused `client` from line 366
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+```
+ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/demisto:content/pyproject.toml
+  Cause: TOML parse error at line 92, column 1
+   |
+92 | [tool.ruff]
+   | ^^^^^^^^^^^
+Unknown rule selector: `E999`
+```
+
+</p>
+</details>
+<details><summary>Changes by rule (9 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| S603 | 454 | 227 | 227 | 0 | 0 |
+| S602 | 21 | 11 | 10 | 0 | 0 |
+| S604 | 16 | 8 | 8 | 0 | 0 |
+| S605 | 8 | 4 | 4 | 0 | 0 |
+| F811 | 8 | 8 | 0 | 0 | 0 |
+| CPY001 | 4 | 0 | 4 | 0 | 0 |
+| PLR1701 | 3 | 0 | 3 | 0 | 0 |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |
+| NPY201 | 1 | 1 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Label `cli` added by @dhruvmanila on 2024-06-19 01:33_
+
+---
+
+_Marked ready for review by @dhruvmanila on 2024-06-19 01:33_
+
+---
+
+_Label `do-not-merge` added by @dhruvmanila on 2024-06-19 06:50_
+
+---
+
+_Review requested from @MichaReiser by @dhruvmanila on 2024-06-26 04:32_
+
+---
+
+_@MichaReiser approved on 2024-06-26 06:28_
+
+---
+
+_Label `do-not-merge` removed by @dhruvmanila on 2024-06-26 09:50_
+
+---
+
+_Added to milestone `v0.5.0` by @dhruvmanila on 2024-06-26 09:50_
+
+---
+
+_Merged by @dhruvmanila on 2024-06-27 02:24_
+
+---
+
+_Closed by @dhruvmanila on 2024-06-27 02:24_
+
+---
+
+_Branch deleted on 2024-06-27 02:24_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2024-06-27 02:28_
+
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/dhruv/syntax-error-3)
+
+### Merging #11902 will **degrade performances by 4.03%**
+
+<sub>Comparing <code>dhruv/syntax-error-3</code> (0fe0d6d) with <code>main</code> (55f4812)</sub>
+
+
+
+### Summary
+
+`❌ 1` regressions
+`✅ 29` untouched benchmarks
+
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/dhruv/syntax-error-3)._
+
+### Benchmarks breakdown
+
+|     | Benchmark | `main` | `dhruv/syntax-error-3` | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | `linter/all-rules[unicode/pypinyin.py]` | 2.1 ms | 2.2 ms | -4.03% |
+
+
+---
