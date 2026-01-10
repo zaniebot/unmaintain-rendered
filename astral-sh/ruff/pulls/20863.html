@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable lto=fat - astral-sh/ruff #20863</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable lto=fat</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20863">#20863</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-10-14 12:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 12:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR switches from thin to fat LTO optimization.</p>
+<p>The main motivation is that using lto=fat fixes the binary size increase that we've seen after switching to inventory for <a href="https://github.com/astral-sh/ruff/issues/20845#issuecomment-3401604238">ingredient registration</a>. The regression is mainly due to symbols not being removed when using lto=thin, but they're successfully removed when using lto=fat (from 19MB to 17MB).</p>
+<p>Using lto=fat also results in a significant performance improvement, which I think is worth it on its own.</p>
+<p>Unfortunately, using lto=flat does have the downside that release builds take significantly longer. One of the main motivations for using <code>lto=thin</code> when we switched from <code>fat</code> to <code>thin</code> in https://github.com/astral-sh/ruff/pull/9031 was to improve performance. To mitigate this, I changed the <code>--profiling</code> profile to only use <code>lto=thin</code>, similar to what we do in uv (where we disable lto entirely). This PR is also likely to make the mypy primer and benchmark jobs slower (or when running mypy primer locally), because of a significant increase in compile time.</p>
+<p>This setup now mirrors uv's (with the exception that <code>profiling</code> use <code>lto=fat</code>).</p>
+<p>I do feel a bit bad about making this change while @BurntSushi is out, because I know he feels the most vocal about this.</p>
+<p>Clean build timing:</p>
+<ul>
+<li>fat: 2m 02s</li>
+<li>thin: 1m 00s</li>
+</ul>
+<p>Fixes https://github.com/astral-sh/ruff/issues/20845</p>
+<p>Relevant discussions:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/5904</li>
+<li>https://github.com/astral-sh/ruff/pull/9031</li>
+<li>https://github.com/astral-sh/uv/pull/5955</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-10-14 13:16</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto">CodSpeed Performance Report</a></h2>
+<h3>Merging #20863 will <strong>degrade performances by 5.28%</strong></h3>
+<p><sub>Comparing <code>micha/fat-lto</code> (6e2b809) with <code>main</code> (abf685b)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 25</code> improvements<br />
+<code>❌ 1 (👁 1)</code> regression<br />
+<code>✅ 25</code> untouched</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Blarge%2Fdataset.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-rules[large/dataset.py]</code></a> | 17.7 ms | 16.2 ms | +9.37% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Bnumpy%2Fctypeslib.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-rules[numpy/ctypeslib.py]</code></a> | 4.2 ms | 3.9 ms | +7.89% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Bnumpy%2Fglobals.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-rules[numpy/globals.py]</code></a> | 712.7 µs | 648.1 µs | +9.97% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Bpydantic%2Ftypes.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-rules[pydantic/types.py]</code></a> | 8.1 ms | 7.5 ms | +8.33% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Bunicode%2Fpypinyin.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-rules[unicode/pypinyin.py]</code></a> | 1.8 ms | 1.7 ms | +10.14% |
+| 👁 | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Adefault_rules%3A%3Abenchmark_default_rules%3A%3Alinter%2Fdefault-rules%5Bnumpy%2Fglobals.py%5D&amp;runnerMode=Instrumentation"><code>linter/default-rules[numpy/globals.py]</code></a> | 194.4 µs | 205.3 µs | -5.28% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Blarge%2Fdataset.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-with-preview-rules[large/dataset.py]</code></a> | 21.3 ms | 19.5 ms | +9.07% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bnumpy%2Fctypeslib.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-with-preview-rules[numpy/ctypeslib.py]</code></a> | 4.9 ms | 4.6 ms | +7.88% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bnumpy%2Fglobals.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-with-preview-rules[numpy/globals.py]</code></a> | 805 µs | 731.3 µs | +10.09% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bpydantic%2Ftypes.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-with-preview-rules[pydantic/types.py]</code></a> | 9.6 ms | 8.9 ms | +7.92% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Apreview_rules%3A%3Abenchmark_preview_rules%3A%3Alinter%2Fall-with-preview-rules%5Bunicode%2Fpypinyin.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-with-preview-rules[unicode/pypinyin.py]</code></a> | 2.1 ms | 1.9 ms | +10.15% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_cold%3A%3Aty_check_file%5Bcold%5D&amp;runnerMode=Instrumentation"><code>ty_check_file[cold]</code></a> | 122.8 ms | 115.2 ms | +6.6% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Acheck_file%3A%3Abenchmark_incremental%3A%3Aty_check_file%5Bincremental%5D&amp;runnerMode=Instrumentation"><code>ty_check_file[incremental]</code></a> | 5.2 ms | 4.4 ms | +17.85% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_many_enum_members%3A%3Aty_micro%5Bmany_enum_members%5D&amp;runnerMode=Instrumentation"><code>ty_micro[many_enum_members]</code></a> | 92.6 ms | 88.1 ms | +5.03% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aanyio%3A%3Aproject%3A%3Aanyio&amp;runnerMode=Instrumentation"><code>anyio</code></a> | 898.9 ms | 828.5 ms | +8.5% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aattrs%3A%3Aproject%3A%3Aattrs&amp;runnerMode=Instrumentation"><code>attrs</code></a> | 412.6 ms | 382.7 ms | +7.8% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&amp;runnerMode=Instrumentation"><code>DateType</code></a> | 194.9 ms | 182.3 ms | +6.91% |
+| ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Ahydra%3A%3Aproject%3A%3Ahydra-zen&amp;runnerMode=Instrumentation"><code>hydra-zen</code></a> | 935.8 ms | 853 ms | +9.7% |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Alarge%5Bsympy%5D&amp;runnerMode=WallTime"><code>large[sympy]</code></a> | 42.9 s | 38.9 s | +10.33% |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bcolour-science%5D&amp;runnerMode=WallTime"><code>medium[colour-science]</code></a> | 12.3 s | 11.1 s | +11.07% |
+| ... | ... | ... | ... | ... | ... |</p>
+<p><br/></p>
+<blockquote>
+<p>:information_source: <em>Only the first 20 benchmarks are displayed. <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto">Go to the app to view all benchmarks</a>.</em></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-14 13:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @MichaReiser on 2025-10-14 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-14 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-10-14 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-10-14 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 14:49</div>
+            <div class="timeline-body"><p>I'm not sure why that one instrumented benchmark regresses. But a 10% improvement on our walltime benchmarks is very convincing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>Cargo.toml</code>:311 on 2025-10-14 15:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># that we aren't shipping, but in order to make those two the same, we'd
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-14 15:32</div>
+            <div class="timeline-body"><p>Makes sense to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Enable fat LTO" to "Enable lto=fat" by @MichaReiser on 2025-10-14 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-10-15 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-15 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-15 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-27 14:02</div>
+            <div class="timeline-body"><p>Yeah I think I've slowly become okay with this sort of change. I even recently did the same for ripgrep. I still don't like that we have different compilation settings for profiling versus release, but I haven't been bitten too hard by it yet.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

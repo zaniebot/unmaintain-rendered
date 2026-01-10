@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Make the default settings try harder to avoid crashes - astral-sh/ruff #21047</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Make the default settings try harder to avoid crashes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21047">#21047</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-10-23 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-10-23 14:46</div>
+            <div class="timeline-body"><p>This introduces a safe_mode to our settings type that tells our initialization code to more aggressively believe Settings Failure Is Not An Error. This allows the full settings initialization logic to be used as much as possible for the default database while trying to keep any discarded results as narrow as possible for graceful degradation.</p>
+<p>Finally, Python has SFINAE.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/859</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-10-23 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-10-23 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-23 14:48</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-23 14:49</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-10-23 15:37</div>
+            <div class="timeline-body"><p>Ah, rude. The exact case of <code>VIRTUAL_ENV=gibberish</code> actually blows up in asserts in <code>dynamic_resolution_paths</code>. This is a big ol' game of whackamole.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-10-23 16:03</div>
+            <div class="timeline-body"><p>The failure with a gibberish <code>VIRTUAL_ENV</code> is a fascinating maybe-independent bug in our handling of symlinked python environments (homebrew).</p>
+<p>We actually handle the gibberish VIRTUAL_ENV value gracefully but then we fallback to grabbing a reference to some homebrew site-packages and then blowup because symlinks are happening and the same dir looks like two different dirs.</p>
+<p>(just on main, not with my patches, although my patches don't affect this):</p>
+<pre><code>No root found for path '/opt/homebrew/Cellar/python@3.13/3.13.5/lib/python3.13/site-packages'. Known roots: FileRoots(
+...
+path: &quot;/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages&quot;,
+</code></pre>
+<p>Here we have a symlink:</p>
+<pre><code>/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages 
+-&gt; 
+../../../../../../lib/python3.13/site-packages
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-10-23 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-10-23 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-10-23 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @sharkdp on 2025-10-23 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-10-23 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-10-23 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-23 19:08</div>
+            <div class="timeline-body"><p>@sharkdp did you intentionally mark this pr as ready for review?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-23 19:11</div>
+            <div class="timeline-body"><p>No, sorry. I was reading through it on mobile and must have hit something accidentally. And I can't even find the button to change it back 🙃</p>
+<p>By the way, love the SFINAE branch name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @AlexWaygood on 2025-10-23 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-25 21:37</div>
+            <div class="timeline-body"><p>You mentioned over chat if we should return a Result with the errors instead of a safe flag. I'm starting to see the appeal of this, if we try to get as much right as possible even in safe mode</p>
+<p>The resolution methods could return a result where the error type wraps the fallback settings and the first (or all errors). A caller could then decide to build the program with the fallback settings (or error).</p>
+<p>I'm not sure how much harder that is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-10-30 15:30</div>
+            <div class="timeline-body"><p>We no longer have an input that crashes the default server so I'm going to close this as WONTFIX until someone reports a new one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-10-30 15:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

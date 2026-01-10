@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement  `ForVariableUsedAfterBlock` (based on `wemake_python_styleguide` `ControlVarUsedAfterBlockViolation` `WPS441`) - astral-sh/ruff #11769</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement  <code>ForVariableUsedAfterBlock</code> (based on <code>wemake_python_styleguide</code> <code>ControlVarUsedAfterBlockViolation</code> <code>WPS441</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11769">#11769</a>
+        opened by <a href="https://github.com/MadLittleMods">@MadLittleMods</a>
+        on 2024-06-06 01:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on 2024-06-06 01:29</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Add <code>ForVariableUsedAfterBlock</code> (<code>RUF032</code>) based on <a href="https://wemake-python-styleguide.readthedocs.io/en/0.19.2/pages/usage/violations/best_practices.html#wemake_python_styleguide.violations.best_practices.ControlVarUsedAfterBlockViolation"><code>ControlVarUsedAfterBlockViolation</code> (<code>WPS441</code>)</a> from the <code>wemake_python_styleguide</code>. This rule prevents you from using <code>for</code>-loop variables outside of the loop block ~~(or a <code>with</code> context variable)~~.</p>
+<p>Example:</p>
+<pre><code class="language-py"># For control var used outside block
+for event in []:
+    _ = event
+    pass
+
+# ❌
+_ = event
+</code></pre>
+<details>
+<summary><s><code>with</code> statement</s></summary>
+
+<pre><code># with statement
+with None as w:
+    _ = w
+    pass
+
+# ❌
+_ = w
+</code></pre>
+</details>
+
+<p>Part of https://github.com/astral-sh/ruff/issues/3845</p>
+<p>This is spawning from a real-world pain where I accidentally used one for-loop control variable in another loop, see https://github.com/element-hq/synapse/pull/17187#discussion_r1612211662</p>
+<p>Relevant wtfPython around loop variables leaking out, https://github.com/satwikkansal/wtfPython?tab=readme-ov-file#-loop-variables-leaking-out</p>
+<p>Please bear in mind that this is my first Rust code so I'm probably doing a few things wrong :bow:. Shout out to @reivilibre who helped me in the beginning!</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Tested against the fixture file:</p>
+<pre><code>cargo run -p ruff -- check crates/ruff_linter/resources/test/fixtures/ruff/for_variable_used_after_block.py --no-cache --select RUF032 --preview
+</code></pre>
+<details>
+<summary>Previous command before the rename</summary>
+
+<pre><code>cargo run -p ruff -- check crates/ruff_linter/resources/test/fixtures/wemake_python_styleguide/control_var_used_after_block.py --no-cache --select WPS441
+</code></pre>
+</details>
+
+<p>Also tested against the https://github.com/element-hq/synapse codebase. It does trigger in several spots that work because Python works this way but could be refactored to align with this rule. Some of the usages seem slightly sketchy but it requires some more context/time to determine whether they are bugs in the Synapse code.</p>
+<p>Here is a real world bug that it caught: https://github.com/element-hq/synapse/pull/17272</p>
+<h3>Dev notes</h3>
+<p>Running <code>ruff</code> against your test file with your new rule:</p>
+<pre><code>cargo run -p ruff -- check crates/ruff_linter/resources/test/fixtures/wemake_python_styleguide/control_var_used_after_block.py --no-cache --select WPS441
+</code></pre>
+<h4>Getting started</h4>
+<ul>
+<li>How to get the project running -&gt; <a href="https://github.com/astral-sh/ruff/blob/084e5464fb785f3f8fcdc54505b954eae6886906/CONTRIBUTING.md#prerequisites"><code>CONTRIBUTING.md#prerequisites</code></a></li>
+<li>How to add a new lint rule -&gt; <a href="https://github.com/astral-sh/ruff/blob/084e5464fb785f3f8fcdc54505b954eae6886906/CONTRIBUTING.md#example-adding-a-new-lint-rule"><code>CONTRIBUTING.md#example-adding-a-new-lint-rule</code></a></li>
+</ul>
+<p>Running the <code>pre-commit</code> hooks without installing to your system:</p>
+<pre><code class="language-sh">python -m venv /home/eric/Downloads/ruff-venv
+source /home/eric/Downloads/ruff-venv/bin/activate
+pip install pre-commit
+</code></pre>
+<h4>Debug <code>NodeId</code>/<code>node_id</code></h4>
+<p>Add the following method to <code>crates/ruff_python_semantic/src/model.rs</code> and use <code>println!(&quot;nodes {:#?}&quot;, checker.semantic().nodes());</code>. It would be really nice if the node index/ID was printed next to each one but you can manually number things to get by.</p>
+<pre><code>    #[inline]
+    pub fn nodes(&amp;self) -&gt; &amp;Nodes&lt;'a&gt; {
+        &amp;self.nodes
+    }
+</code></pre>
+<h4>Inspect the AST</h4>
+<pre><code>cargo dev print-ast crates/ruff_linter/resources/test/fixtures/wemake_python_styleguide/control_var_used_after_block.py
+</code></pre>
+<h4>Helpful related <code>ruff</code> rules</h4>
+<ul>
+<li><code>unused_variable</code></li>
+<li><code>redefined_loop_name</code></li>
+<li><code>too_many_nested_blocks</code></li>
+<li><code>unused_loop_control_variable</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-06 01:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+117 -0 violations, +0 -0 fixes in 15 projects; 39 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/dd1e6aab5ff89e15d509b1672431db2f41d02425/disnake/message.py#L1104'>disnake/message.py:1104:28:</a> RUF032 `for` loop variable index is used outside of block
++ <a href='https://github.com/DisnakeDev/disnake/blob/dd1e6aab5ff89e15d509b1672431db2f41d02425/disnake/message.py#L1105'>disnake/message.py:1105:16:</a> RUF032 `for` loop variable reaction is used outside of block
++ <a href='https://github.com/DisnakeDev/disnake/blob/dd1e6aab5ff89e15d509b1672431db2f41d02425/scripts/codemods/typed_permissions.py#L84'>scripts/codemods/typed_permissions.py:84:33:</a> RUF032 `for` loop variable b is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/shared/nlu/training_data/test_features.py#L234'>tests/shared/nlu/training_data/test_features.py:234:46:</a> RUF032 `for` loop variable idx is used outside of block
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/shared/nlu/training_data/test_features.py#L234'>tests/shared/nlu/training_data/test_features.py:234:67:</a> RUF032 `for` loop variable idx is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+25 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/api/__init__.py#L46'>airflow/api/__init__.py:46:76:</a> RUF032 `for` loop variable backend is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/models/param.py#L284'>airflow/models/param.py:284:67:</a> RUF032 `for` loop variable k is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/providers/amazon/aws/sensors/s3.py#L150'>airflow/providers/amazon/aws/sensors/s3.py:150:64:</a> RUF032 `for` loop variable key is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/providers/amazon/aws/sensors/s3.py#L154'>airflow/providers/amazon/aws/sensors/s3.py:154:41:</a> RUF032 `for` loop variable key is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/providers/amazon/aws/sensors/s3.py#L159'>airflow/providers/amazon/aws/sensors/s3.py:159:50:</a> RUF032 `for` loop variable key is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/providers/apache/hive/hooks/hive.py#L1015'>airflow/providers/apache/hive/hooks/hive.py:1015:59:</a> RUF032 `for` loop variable i is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L476'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:476:60:</a> RUF032 `for` loop variable line is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L479'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:479:60:</a> RUF032 `for` loop variable line is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/providers/docker/operators/docker_swarm.py#L221'>airflow/providers/docker/operators/docker_swarm.py:221:32:</a> RUF032 `for` loop variable line is used outside of block
++ <a href='https://github.com/apache/airflow/blob/aa9bb4bb47878c2f4aec0df58a2edbe0e1e1f797/airflow/timetables/events.py#L103'>airflow/timetables/events.py:103:47:</a> RUF032 `for` loop variable next_event is used outside of block
+... 15 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+8 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/38d64e8dd2a3e1ec5e67bdbf062054b4188988d8/superset/cli/test_db.py#L235'>superset/cli/test_db.py:235:8:</a> RUF032 `for` loop variable spec is used outside of block
++ <a href='https://github.com/apache/superset/blob/38d64e8dd2a3e1ec5e67bdbf062054b4188988d8/superset/cli/test_db.py#L238'>superset/cli/test_db.py:238:21:</a> RUF032 `for` loop variable spec is used outside of block
++ <a href='https://github.com/apache/superset/blob/38d64e8dd2a3e1ec5e67bdbf062054b4188988d8/superset/cli/test_db.py#L269'>superset/cli/test_db.py:269:12:</a> RUF032 `for` loop variable spec is used outside of block
++ <a href='https://github.com/apache/superset/blob/38d64e8dd2a3e1ec5e67bdbf062054b4188988d8/superset/migrations/versions/2017-10-03_14-37_4736ec66ce19_.py#L204'>superset/migrations/versions/2017-10-03_14-37_4736ec66ce19_.py:204:19:</a> RUF032 `for` loop variable foreign is used outside of block
++ <a href='https://github.com/apache/superset/blob/38d64e8dd2a3e1ec5e67bdbf062054b4188988d8/superset/migrations/versions/2020-08-12_00-24_978245563a02_migrate_iframe_to_dash_markdown.py#L191'>superset/migrations/versions/2020-08-12_00-24_978245563a02_migrate_iframe_to_dash_markdown.py:191:40:</a> RUF032 `for` loop variable dashboard is used outside of block
++ <a href='https://github.com/apache/superset/blob/38d64e8dd2a3e1ec5e67bdbf062054b4188988d8/superset/sql_parse.py#L1539'>superset/sql_parse.py:1539:53:</a> RUF032 `for` loop variable dialect is used outside of block
++ <a href='https://github.com/apache/superset/blob/38d64e8dd2a3e1ec5e67bdbf062054b4188988d8/superset/tasks/cache.py#L269'>superset/tasks/cache.py:269:31:</a> RUF032 `for` loop variable class_ is used outside of block
++ <a href='https://github.com/apache/superset/blob/38d64e8dd2a3e1ec5e67bdbf062054b4188988d8/superset/tasks/cache.py#L271'>superset/tasks/cache.py:271:20:</a> RUF032 `for` loop variable class_ is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+13 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/document_lifecycle.py#L70'>src/bokeh/application/handlers/document_lifecycle.py:70:13:</a> RUF032 `for` loop variable callback is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/embed/util.py#L276'>src/bokeh/embed/util.py:276:27:</a> RUF032 `for` loop variable elementid is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/embed/util.py#L276'>src/bokeh/embed/util.py:276:38:</a> RUF032 `for` loop variable root is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/embed/util.py#L276'>src/bokeh/embed/util.py:276:47:</a> RUF032 `for` loop variable root is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/embed/util.py#L276'>src/bokeh/embed/util.py:276:58:</a> RUF032 `for` loop variable root is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L483'>src/bokeh/plotting/_figure.py:483:13:</a> RUF032 `for` loop variable kw is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L484'>src/bokeh/plotting/_figure.py:484:46:</a> RUF032 `for` loop variable kw is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L488'>src/bokeh/plotting/_figure.py:488:35:</a> RUF032 `for` loop variable kw is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/compiler.py#L116'>src/bokeh/util/compiler.py:116:38:</a> RUF032 `for` loop variable i is used outside of block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/codebase/test_code_quality.py#L112'>tests/codebase/test_code_quality.py:112:12:</a> RUF032 `for` loop variable line is used outside of block
+... 3 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/ae6e38a23fcbde72aae1bf6784ebb4afc413a0ad/ibis/backends/bigquery/tests/unit/udf/test_core.py#L181'>ibis/backends/bigquery/tests/unit/udf/test_core.py:181:16:</a> RUF032 `for` loop variable i is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/66c23629cca718f4dc685d9a9efa31a207ea2442/examples/milvus_client/rbac.py#L97'>examples/milvus_client/rbac.py:97:17:</a> RUF032 `for` loop variable role is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+18 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/__init__.py#L19'>pandas/__init__.py:19:25:</a> RUF032 `for` loop variable _dependency is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/common.py#L599'>pandas/io/common.py:599:8:</a> RUF032 `for` loop variable compression is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/common.py#L600'>pandas/io/common.py:600:16:</a> RUF032 `for` loop variable compression is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/common.py#L604'>pandas/io/common.py:604:43:</a> RUF032 `for` loop variable compression is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/formats/excel.py#L668'>pandas/io/formats/excel.py:668:25:</a> RUF032 `for` loop variable lnum is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/formats/excel.py#L673'>pandas/io/formats/excel.py:673:29:</a> RUF032 `for` loop variable lnum is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/formats/excel.py#L678'>pandas/io/formats/excel.py:678:27:</a> RUF032 `for` loop variable lnum is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/plotting/_matplotlib/boxplot.py#L557'>pandas/plotting/_matplotlib/boxplot.py:557:16:</a> RUF032 `for` loop variable ax is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/tests/frame/indexing/test_take.py#L48'>pandas/tests/frame/indexing/test_take.py:48:13:</a> RUF032 `for` loop variable df is used outside of block
++ <a href='https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/tests/frame/indexing/test_take.py#L50'>pandas/tests/frame/indexing/test_take.py:50:13:</a> RUF032 `for` loop variable df is used outside of block
+... 8 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-poetry/poetry">python-poetry/poetry</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/masonry/builders/editable.py#L182'>src/poetry/masonry/builders/editable.py:182:27:</a> RUF032 `for` loop variable scripts_path is used outside of block
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/masonry/builders/editable.py#L184'>src/poetry/masonry/builders/editable.py:184:64:</a> RUF032 `for` loop variable scripts_path is used outside of block
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/src/poetry/masonry/builders/editable.py#L207'>src/poetry/masonry/builders/editable.py:207:28:</a> RUF032 `for` loop variable scripts_path is used outside of block
++ <a href='https://github.com/python-poetry/poetry/blob/500a313d68637cbd317171c567280a10eaabae3c/tests/utils/env/test_env.py#L303'>tests/utils/env/test_env.py:303:37:</a> RUF032 `for` loop variable dist is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/3e540b04d9e12d01abbb33d1ae3af0c90014ddbb/rotkehlchen/api/rest.py#L559'>rotkehlchen/api/rest.py:559:49:</a> RUF032 `for` loop variable idx is used outside of block
++ <a href='https://github.com/rotki/rotki/blob/3e540b04d9e12d01abbb33d1ae3af0c90014ddbb/rotkehlchen/chain/zksync_lite/manager.py#L828'>rotkehlchen/chain/zksync_lite/manager.py:828:25:</a> RUF032 `for` loop variable target is used outside of block
++ <a href='https://github.com/rotki/rotki/blob/3e540b04d9e12d01abbb33d1ae3af0c90014ddbb/rotkehlchen/tests/db/test_db_upgrades.py#L2603'>rotkehlchen/tests/db/test_db_upgrades.py:2603:12:</a> RUF032 `for` loop variable idx is used outside of block
++ <a href='https://github.com/rotki/rotki/blob/3e540b04d9e12d01abbb33d1ae3af0c90014ddbb/rotkehlchen/tests/integration/test_zksynclite.py#L108'>rotkehlchen/tests/integration/test_zksynclite.py:108:25:</a> RUF032 `for` loop variable idx is used outside of block
++ <a href='https://github.com/rotki/rotki/blob/3e540b04d9e12d01abbb33d1ae3af0c90014ddbb/rotkehlchen/tests/integration/test_zksynclite.py#L91'>rotkehlchen/tests/integration/test_zksynclite.py:91:25:</a> RUF032 `for` loop variable idx is used outside of block
++ <a href='https://github.com/rotki/rotki/blob/3e540b04d9e12d01abbb33d1ae3af0c90014ddbb/rotkehlchen/tests/unit/globaldb/test_globaldb_consistency.py#L329'>rotkehlchen/tests/unit/globaldb/test_globaldb_consistency.py:329:75:</a> RUF032 `for` loop variable key is used outside of block
++ <a href='https://github.com/rotki/rotki/blob/3e540b04d9e12d01abbb33d1ae3af0c90014ddbb/rotkehlchen/tests/unit/globaldb/test_globaldb_consistency.py#L329'>rotkehlchen/tests/unit/globaldb/test_globaldb_consistency.py:329:84:</a> RUF032 `for` loop variable packaged_field is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/actions/streams.py#L628'>zerver/actions/streams.py:628:16:</a> RUF032 `for` loop variable stream_id is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/actions/streams.py#L631'>zerver/actions/streams.py:631:71:</a> RUF032 `for` loop variable stream_id is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/lib/markdown/__init__.py#L1036'>zerver/lib/markdown/__init__.py:1036:75:</a> RUF032 `for` loop variable size_name is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/tests/test_auth_backends.py#L239'>zerver/tests/test_auth_backends.py:239:32:</a> RUF032 `for` loop variable backend_name is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/tests/test_auth_backends.py#L256'>zerver/tests/test_auth_backends.py:256:32:</a> RUF032 `for` loop variable backend_name is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/tests/test_message_send.py#L1686'>zerver/tests/test_message_send.py:1686:30:</a> RUF032 `for` loop variable user is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/tests/test_message_send.py#L1699'>zerver/tests/test_message_send.py:1699:30:</a> RUF032 `for` loop variable user is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/tests/test_user_topics.py#L124'>zerver/tests/test_user_topics.py:124:44:</a> RUF032 `for` loop variable data is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/tests/test_user_topics.py#L129'>zerver/tests/test_user_topics.py:129:9:</a> RUF032 `for` loop variable data is used outside of block
++ <a href='https://github.com/zulip/zulip/blob/40f59a05c55e0e4f26ca87d2bca646770e94bff0/zerver/tests/test_user_topics.py#L131'>zerver/tests/test_user_topics.py:131:48:</a> RUF032 `for` loop variable data is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/indico/indico/blob/a22e0c0a9c0cf4d40d04029489dc530b4819d2ea/bin/utils/storage_checksums.py#L43'>bin/utils/storage_checksums.py:43:12:</a> RUF032 `for` loop variable row is used outside of block
++ <a href='https://github.com/indico/indico/blob/a22e0c0a9c0cf4d40d04029489dc530b4819d2ea/bin/utils/storage_checksums.py#L46'>bin/utils/storage_checksums.py:46:57:</a> RUF032 `for` loop variable row is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python-trio/trio/blob/c9baca6045d427fd4cc0de2ca396ddeb4a0f40a5/notes-to-self/socketpair-buffering.py#L35'>notes-to-self/socketpair-buffering.py:35:44:</a> RUF032 `for` loop variable _count is used outside of block
++ <a href='https://github.com/python-trio/trio/blob/c9baca6045d427fd4cc0de2ca396ddeb4a0f40a5/src/trio/_tests/check_type_completeness.py#L106'>src/trio/_tests/check_type_completeness.py:106:90:</a> RUF032 `for` loop variable obj_name is used outside of block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+20 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492'>src/_pytest/assertion/rewrite.py:492:40:</a> RUF032 `for` loop variable i is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492'>src/_pytest/assertion/rewrite.py:492:53:</a> RUF032 `for` loop variable i is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492'>src/_pytest/assertion/rewrite.py:492:66:</a> RUF032 `for` loop variable i is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L495'>src/_pytest/assertion/rewrite.py:495:12:</a> RUF032 `for` loop variable expl is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L713'>src/_pytest/assertion/rewrite.py:713:23:</a> RUF032 `for` loop variable item is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L713'>src/_pytest/assertion/rewrite.py:713:50:</a> RUF032 `for` loop variable item is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L714'>src/_pytest/assertion/rewrite.py:714:22:</a> RUF032 `for` loop variable item is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L716'>src/_pytest/assertion/rewrite.py:716:22:</a> RUF032 `for` loop variable item is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/truncate.py#L111'>src/_pytest/assertion/truncate.py:111:37:</a> RUF032 `for` loop variable iterated_index is used outside of block
++ <a href='https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/truncate.py#L112'>src/_pytest/assertion/truncate.py:112:30:</a> RUF032 `for` loop variable iterated_index is used outside of block
+... 10 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+<p><em>... Truncated remaining completed project reports due to GitHub comment length restrictions</em></p>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF032 | 117 | 117 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-07-23 02:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/resources/test/fixtures/wemake_python_styleguide/control_var_used_after_block.py</code>:1 on 2024-07-23 02:21</div>
+            <div class="timeline-body"><p>Friendly ping @charliermarsh :bow:</p>
+<p>Just looking for the next steps here (whether that be in a queue, pinging another person, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-24 13:22</div>
+            <div class="timeline-body"><p>Thanks for the contribution.</p>
+<p>What's the motivation for limiting the rule to <code>with</code> and <code>for</code> only? Should the rule apply to all compound statements?</p>
+<p>@AlexWaygood mentioned that there reasons to access variables from inside a <code>with</code> block. So maybe we should exclude <code>with</code> statements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-07-24 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/resources/test/fixtures/wemake_python_styleguide/control_var_used_after_block.py</code>:1 on 2024-07-24 18:37</div>
+            <div class="timeline-body"><p>Thanks for the reply!</p>
+<blockquote>
+<p>What's the motivation for limiting the rule to <code>with</code> and <code>for</code> only? Should the rule apply to all compound statements?</p>
+<p><em>-- @MichaReiser, https://github.com/astral-sh/ruff/pull/11769#pullrequestreview-2196737675</em></p>
+</blockquote>
+<p>Ideally, I would like to lint for full block-scoping in Python.</p>
+<p>Since Python isn't block-scoped, people often write code with patterns that go against this so there would be a lot of violations in existing codebases for full block-scoping. Using a loop-var after the block is <em>probably</em> a mistake though (or at the very least requires a second-look to make sure you're doing it right in your new code) and is a good thing to watch out for in any case (good introduction).</p>
+<p>But probably the main motivation for why only <code>with</code>/<code>for</code> is just to match what the <code>wemake-python-styleguide</code> did (prior art). Given the &quot;drop-in&quot; nature that <code>ruff</code> seems to try to sit in, I thought I would match this.</p>
+<blockquote>
+<p>@AlexWaygood mentioned that there reasons to access variables from <strong>inside</strong> a with block. So maybe we should exclude with statements.</p>
+</blockquote>
+<p>Inside should be fine. I assume you typo'ed and meant <code>ouside</code> there?</p>
+<p>I guess it would be good to know the reasons/use cases to judge better but there are use cases even for the for-loop behavior but the goal is just to lint against that regardless in favor of refactoring to a better pattern.</p>
+<p>And if we don't apply this to <code>with</code> loops, it's not a drop-in replacement for the other rule. But perhaps that's not a strict goal, etc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-29 06:46</div>
+            <div class="timeline-body"><p>We discussed this internally and we agreed on:</p>
+<ul>
+<li>Using the <code>for</code> introduced variable outside of a loop is likely a bug. There are cases where this is intentional, but that's when using suppressions is fine.</li>
+<li>Using the <code>with</code> introduced variable after the <code>with</code> block is more common and often acceptable. @AlexWaygood would you mind sharing an example?</li>
+<li>There's a similar problem related to variables introduced by <code>match case</code><pre><code class="language-python">import random
+
+match random.choice([True, False]):
+    case True: False
+    case x:
+        y = 2
+
+
+print(x)
+</code></pre>
+</li>
+</ul>
+<p>The fact that <code>for</code> is most likely an error and <code>with</code> is not justifies that this rule should be split into two rules. I suggest that we start with the <code>for</code> loop and add it to the <code>RUF</code> ruleset.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-29 13:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Using the <code>with</code> introduced variable after the <code>with</code> block is more common and often acceptable. @AlexWaygood would you mind sharing an example?</p>
+</blockquote>
+<p>A commit merged to the CPython repo earlier this morning has several examples in it: https://github.com/python/cpython/commit/0697188084bf61b28f258fbbe867e1010d679b3e.</p>
+<p>Here's a slightly simpler example than any of the functions that commit touched, from CPython's <code>dataclasses</code> test suite: https://github.com/python/cpython/blob/9187484dd97f6beb94fc17676014706922e380e1/Lib/test/test_dataclasses/<strong>init</strong>.py#L3121C1-L3138C68:</p>
+<pre><code class="language-py">import unittest
+from dataclasses import dataclass
+
+class FrozenTests(unittest.TestCase):
+    def test_non_frozen_normal_derived_from_empty_frozen(self):
+        @dataclass(frozen=True)
+        class D:
+            pass
+
+        class S(D):
+            pass
+
+        s = S()
+        self.assertFalse(hasattr(s, 'x'))
+        s.x = 5
+        self.assertEqual(s.x, 5)
+
+        del s.x
+        self.assertFalse(hasattr(s, 'x'))
+        with self.assertRaises(AttributeError) as cm:
+            del s.x
+        self.assertNotIsInstance(cm.exception, FrozenInstanceError)
+</code></pre>
+<p>The <code>with self.assertRaises</code> block is kept as small as possible, because the author of the test wanted to assert that the <code>AttributeError</code> exception is raised on exactly one line: the <code>del s.x</code> call. If an <code>AttributeError</code> was raised on another line, that would indicate a bug in the test or in the library; that should fail. So the <code>with</code> block is only one line long; but you want to save the <code>cm</code> binding that's created in the <code>with</code> statement so that you can do some extra assertions on it after the <code>with</code> block has ended.</p>
+<p>I think tests are the places where this comes up most often. You also see this pattern a lot with <code>pytest</code>-style tests that use <code>with pytest.raises()</code> context managers; it's not just <code>unittest</code>-style tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on 2024-07-30 04:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I suggest that we start with the <code>for</code> loop and add it to the <code>RUF</code> ruleset.</p>
+</blockquote>
+<p>Updated :white_check_mark:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`wemake_python_styleguide`] Implement  `ControlVarUsedAfterBlockViolation` (`WPS441`)" to "Implement  `ControlVarUsedAfterBlockViolation` (based on `wemake_python_styleguide` `WPS441`)" by @MadLittleMods on 2024-07-30 04:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:56 on 2024-07-30 06:47</div>
+            <div class="timeline-body"><p>I think we can remove <code>BlockKind</code> now that we only support a single block</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/codes.rs</code>:958 on 2024-07-30 06:48</div>
+            <div class="timeline-body"><p>We should put the rule into the preview group. It allows us to collect feedback before making the rule available to everyone</p>
+<pre><code class="language-suggestion">        (Ruff, &quot;031&quot;) =&gt; (RuleGroup::Preview, rules::ruff::rules::ControlVarUsedAfterBlock),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:91 on 2024-07-30 06:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">		let loop_var_bindings = reversed_bindings
+        .map(|(name, binding_id)| (name, checker.semantic().binding(*binding_id)))
+        .filter_map(|(name, binding)| {
+            binding.kind.is_loop_var().then_some((name, binding))
+        });
+		
+    for (&amp;name, binding) in loop_var_bindings {
+</code></pre>
+<p>I think it would help readability if the <code>in</code> expression is extracted into its own variable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:76 on 2024-07-30 06:53</div>
+            <div class="timeline-body"><p>Collecting all bindings seems expensive. From what i understand, this is necessary because <code>all_bindings</code> doesn't implement <code>DoubleEndedIterator</code>.</p>
+<p>You explain that we have to iterate over the bindings in reverse order. To me it's not entirely clear which logic depends on it. Could you point it out to me?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:94 on 2024-07-30 06:55</div>
+            <div class="timeline-body"><p>I'm a bit scared about the many <code>unwrap</code> calls in this block. Why is it safe to call <code>unwrap</code> for all these?  Could we add a comment explaining the safety constraints?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:113 on 2024-07-30 06:56</div>
+            <div class="timeline-body"><p>Collecting here seems unnecessary since we're only iterating over the entries in the for loop below</p>
+<pre><code class="language-suggestion">            let statement_hierarchy: Vec&lt;NodeId&gt; = checker
+                .semantic()
+                .parent_statement_ids(reference_node_id);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:36 on 2024-07-30 06:59</div>
+            <div class="timeline-body"><p>I'm inclined to rename the rule to <code>ForVariableUsedAfterBlock</code>, now that the rule is specific to for loops</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:122 on 2024-07-30 07:02</div>
+            <div class="timeline-body"><p>Can we add an example where the for loop contains a nested function and it access the variable</p>
+<pre><code class="language-python">for x in range(0..10):
+	def test(): 
+		print(x)
+
+	class Test:
+		a = x
+</code></pre>
+<p>What's the expected output in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:120 on 2024-07-30 07:04</div>
+            <div class="timeline-body"><p>Nit: You could use a label for the outer loop and break the outer loop. It removes the need to use the <code>is_used_in_block</code> variable.</p>
+<pre><code class="language-rust">'references for reference in binding.references() {
+	...
+	
+	if binding_statement_id == ancestor_node_id {
+		break 'references;
+	}
+
+	...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1210 on 2024-07-30 07:07</div>
+            <div class="timeline-body"><p>The <code>statement</code> function could now make use of <code>statement_id</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-30 07:08</div>
+            <div class="timeline-body"><p>Overall looking good. It would be great if we could avoid the collection of the bindings. I think they are the root cause for the 1-2% performance regression in the benchmarks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-08-01 21:40</div>
+            <div class="timeline-body"><p>We should release this new rule in preview mode first and try to improve its performance (maybe that's not possible, that's okay too)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-02 07:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:76 on 2024-08-02 07:11</div>
+            <div class="timeline-body"><p>Using the following example from the <code>control_var_used_after_block.py</code> fixture file:</p>
+<ul>
+<li>The <code>references</code> for the <code>1 binding</code> are just the <code>1 reference</code></li>
+<li>The <code>references</code> for the <code>2 binding</code> are <code>1 reference</code> and <code>2 reference</code></li>
+</ul>
+<pre><code class="language-py"># 1 binding
+for x in []:
+    # 1 reference
+    _ = x
+    pass
+
+# 2 binding
+for x in []:
+    # 2 reference
+    _ = x
+    pass
+</code></pre>
+<p>We want to loop over the bindings in source-order so as we find <code>references</code> in the block, we can mark them as <code>known_good_reference_node_ids</code>. This way we see the <code>1 binding</code> first, which will mark <code>1 reference</code> as a <code>known_good_reference_node_ids</code> so when we process the <code>2 binding</code>, we ignore <code>1 reference</code> and avoid a false violation.</p>
+<p>Reversing the iteration gets us source-order.</p>
+<hr />
+<p>Updated the comment there to try to explain this better :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-02 08:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:94 on 2024-08-02 08:18</div>
+            <div class="timeline-body"><p>I feel like I might need some help on these.</p>
+<h3>1. <code>binding.statement(checker.semantic()).unwrap();</code></h3>
+<p>What scenarios would a variable <code>binding.statement</code> be <code>None</code>? Feel like this might be a situation where it's a problem with <code>ruff</code> itself and we should give up. How do I represent that?</p>
+<h3>2. <code>binding.source.unwrap();</code></h3>
+<p>I think we're safe here as how can you bind a variable without the <code>source</code>? This again feels it would be a problem with <code>ruff</code> itself and we should give up. How do I represent that?</p>
+<p>Looking wherever we create a new <code>Binding { ... }</code>, it seems like <a href="https://github.com/astral-sh/ruff/blob/2e2b1b460f4de25e630cde69b4b49577bc5134b4/crates/ruff_python_semantic/src/model.rs#L229-L241"><code>source</code> is <code>None</code>  with <code>builtin</code>'s</a>.</p>
+<p>I don't think it's possible for us to deal with variable bindings for a <code>builtin</code>? (please double-check with your own knowledge)</p>
+<p>Although I guess the following example works in the Python interpreter but it doesn't seem to pop up as a variable <code>binding</code> at all in <code>ruff</code>:</p>
+<pre><code class="language-python">import builtins
+
+for builtins.x in [1,2,3]:
+    _ = x
+    pass
+
+# 3
+print(x)
+</code></pre>
+<h3>3. <code>reference.expression_id().unwrap()</code></h3>
+<p>This one says:</p>
+<p><a href="https://github.com/astral-sh/ruff/blob/2e2b1b460f4de25e630cde69b4b49577bc5134b4/crates/ruff_python_semantic/src/reference.rs#L16-L18"><code>reference.rs#L16-L18</code></a></p>
+<pre><code>/// The expression that the reference occurs in. `None` if the reference is a global
+/// reference or a reference via an augmented assignment.
+</code></pre>
+<p>I'm not sure what it means by &quot;global reference&quot; as it seems to work fine with our <code>global_var</code> example in the fixture file.</p>
+<p>I don't think we can run into an <a href="https://docs.python.org/3/reference/simple_stmts.html#augmented-assignment-statements">augmented assignment</a> (<code>x += 1</code>) in the for-loop binding syntax? (please double-check with your own knowledge)</p>
+<p>It seems like this can only be <code>None</code> if the <code>SemanticModel.node_id</code> is <a href="https://github.com/astral-sh/ruff/blob/2e2b1b460f4de25e630cde69b4b49577bc5134b4/crates/ruff_python_semantic/src/model.rs#L150-L155"><code>None</code> which happens on on <code>new(...)</code></a> and gets filled in as soon as we <code>push_node</code> something onto the stack. If we're iterating over any source code, it feels like something would be pushed onto the stack.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-02 09:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:122 on 2024-08-02 09:14</div>
+            <div class="timeline-body"><p>Added :white_check_mark:</p>
+<p>No violations are thrown for that example. I think that's as expected given this sort of usage :thinking:</p>
+<pre><code class="language-python">for x in range(0, 10):
+    def test(): 
+        print(x)
+        
+    test()
+        
+    class Test:
+        a = x
+        
+    foo = Test()
+    print(f&quot;foo {foo.a}&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @MadLittleMods on 2024-08-02 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-02 09:25</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/MadLittleMods%3Amadlittlemods%2Fcontrol-var-used-after-block?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #11769 will <strong>degrade performances by 5.26%</strong></h3>
+<p><sub>Comparing <code>MadLittleMods:madlittlemods/control-var-used-after-block</code> (9bcc4fe) with <code>main</code> (c906b01)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regression<br />
+<code>✅ 31</code> untouched</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/MadLittleMods%3Amadlittlemods%2Fcontrol-var-used-after-block?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/MadLittleMods%3Amadlittlemods%2Fcontrol-var-used-after-block?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Bnumpy%2Fglobals.py%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>linter/all-rules[numpy/globals.py]</code></a> | 726.2 µs | 766.5 µs | -5.26% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:107 on 2024-08-08 08:29</div>
+            <div class="timeline-body"><p>When I remove the <code>known_good_reference_node_ids</code> check, then no test fails. Can we add a test that demonstrates why the check is necesseary or remove the check?</p>
+<pre><code class="language-suggestion">            diagnostics.push(Diagnostic::new(
+                ForVariableUsedAfterBlock {
+                    control_var_name: name.to_owned(),
+                },
+                reference.range(),
+            ));
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:63 on 2024-08-08 08:32</div>
+            <div class="timeline-body"><p>I was able to remove the <code>rev</code> call and all tests keep passing. We should add a test that demonstrate why <code>rev</code> is necessary or remove the <code>rev</code> call (and the collecting of all bindings) if reversing in reversed-source-order is unnecessary.</p>
+<p>I think if reverse iterating matters (because of redefinitions), then I'm not sure if only iterating over the <code>loop_var_bindings</code> is sufficient in the next step (what if the redeclaration is a non-loop variable)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:71 on 2024-08-08 08:34</div>
+            <div class="timeline-body"><p>According to the documentation, the expression can be <code>None</code> when</p>
+<pre><code>    /// The expression that the reference occurs in. `None` if the reference is a global
+    /// reference or a reference via an augmented assignment.
+    ```
+
+As far as I can tell, this doesn't apply here. It would be good to add a comment here explaining why calling `unwrap` is safe.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:71 on 2024-08-08 08:37</div>
+            <div class="timeline-body"><p>The <code>statement</code> can be <code>None</code> if the binding comes from a built in. Let's add a comment explaining that calling <code>unwrap</code> is ok, because the rule only looks at for loop bindings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:75 on 2024-08-08 08:40</div>
+            <div class="timeline-body"><p>We can reduce the number of unwraps by using <code>binding_source_node_id</code></p>
+<pre><code class="language-suggestion">        let binding_source_node_id = binding.source.unwrap();
+        // The node_id of the for-loop that contains the binding
+        let binding_statement_id = checker.semantic().statement_id(binding_source_node_id);
+        let binding_statement = checker.semantic().statement(binding_source_node_id);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-08 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-09 05:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:107 on 2024-08-09 05:22</div>
+            <div class="timeline-body"><p>Good call on this :thumbsup: The <code>known_good_reference_node_ids</code> evolved first to <a href="https://github.com/astral-sh/ruff/commit/eaf2a35753b8bb3777d455be8e336a3072887f16">solve the shadowed binding cases</a> but my <a href="https://github.com/astral-sh/ruff/commit/a7de1cb892d3ca34b35fb90daeae2367465e99b4">fix later on to allow previous references</a> also ended up covering the shadowed cases without me realizing (much more elegant too). Sorry for not noticing :grimacing:</p>
+<p>Removed the <code>known_good_reference_node_ids</code> logic :white_check_mark:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-09 05:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:63 on 2024-08-09 05:23</div>
+            <div class="timeline-body"><p>Removed the reverse iteration over the bindings :white_check_mark: . This was only necessary to track <code>known_good_reference_node_ids</code> properly but <a href="https://github.com/astral-sh/ruff/pull/11769#discussion_r1710766228">since that's not necessary anymore</a>, can be removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-09 05:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:76 on 2024-08-09 05:29</div>
+            <div class="timeline-body"><p>Conversation continued in these discussions:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/11769#discussion_r1708943441</li>
+<li>https://github.com/astral-sh/ruff/pull/11769#discussion_r1708948858</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-09 05:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:71 on 2024-08-09 05:33</div>
+            <div class="timeline-body"><p>This one is no longer necessary since we can avoid the <code>unwrap()</code> entirely thanks to your <a href="https://github.com/astral-sh/ruff/pull/11769#discussion_r1708963581">suggestion below</a></p>
+<p>See https://github.com/astral-sh/ruff/pull/11769#discussion_r1696409339 for more discussion on the <code>unwrap()</code> calls</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-08-09 05:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-08-09 05:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-09 05:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/control_var_used_after_block.rs</code>:94 on 2024-08-09 05:38</div>
+            <div class="timeline-body"><h3>1. <code>binding.statement(checker.semantic()).unwrap();</code></h3>
+<p>Answered in a discussion below:</p>
+<blockquote>
+<p>The <code>statement</code> can be <code>None</code> if the binding comes from a built in. Let's add a comment explaining that calling <code>unwrap</code> is ok, because the rule only looks at for loop bindings.</p>
+<p><em>-- https://github.com/astral-sh/ruff/pull/11769#discussion_r1708959174</em></p>
+</blockquote>
+<p>Thankfully, we can avoid this <code>unwrap()</code> altogether if we grab the <code>binding_statement</code> a different way (see https://github.com/astral-sh/ruff/pull/11769#discussion_r1708963581)</p>
+<h3>2. <code>binding.source.unwrap();</code></h3>
+<p>(no discussion yet)</p>
+<h3>3. <code>reference.expression_id().unwrap()</code></h3>
+<p>Answered in a discussion below which seems in line with what I was finding.</p>
+<blockquote>
+<p>According to the documentation, the expression can be <code>None</code> when</p>
+<pre><code>/// The expression that the reference occurs in. `None` if the reference is a global
+/// reference or a reference via an augmented assignment.
+</code></pre>
+<p>As far as I can tell, this doesn't apply here. It would be good to add a comment here explaining why calling <code>unwrap</code> is safe.</p>
+<p><em>-- https://github.com/astral-sh/ruff/pull/11769#discussion_r1708953364</em></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/src/rules/ruff/rules/for_variable_used_after_block.rs</code>:71 on 2024-08-09 05:39</div>
+            <div class="timeline-body"><p>Added a comment :white_check_mark:</p>
+<p>See https://github.com/astral-sh/ruff/pull/11769#discussion_r1696409339 for more discussion on the <code>unwrap()</code> calls</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-09 05:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement  `ControlVarUsedAfterBlockViolation` (based on `wemake_python_styleguide` `WPS441`)" to "Implement  `ForVariableUsedAfterBlock` (based on `wemake_python_styleguide` `WPS441`)" by @MadLittleMods on 2024-08-09 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement  `ForVariableUsedAfterBlock` (based on `wemake_python_styleguide` `WPS441`)" to "Implement  `ForVariableUsedAfterBlock` (based on `wemake_python_styleguide` `ControlVarUsedAfterBlockViolation` `WPS441`)" by @MadLittleMods on 2024-08-09 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @MadLittleMods on 2024-08-09 06:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_python_semantic/src/binding.rs</code>:29 on 2024-08-09 06:50</div>
+            <div class="timeline-body"><p>Please double-check the accuracy of these comments. In any case, I'd like to document the cases so we don't have to run through this uncertainty in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-09 06:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 08:14</div>
+            <div class="timeline-body"><p>Some interesting cases from the ecosystem check</p>
+<p><strong>Variable declared outside the loop</strong></p>
+<p>I think the code here is correct because the variable is first defined outside the loop as being <code>None</code>.</p>
+<p>https://github.com/indico/indico/blob/a22e0c0a9c0cf4d40d04029489dc530b4819d2ea/bin/utils/storage_checksums.py#L39-L43</p>
+<p>https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/common.py#L581-L599</p>
+<p>(many more)</p>
+<p>An easy fix here could be to skip the rule if a binding for the same name was already defined before the for loop. But it may also be intentional that we catch this as part of this rule. What do you think?</p>
+<p><strong>Use in combination with try..except</strong></p>
+<p>It seems to be a somewhat common pattern to use the for loop variable outside the for-block when combined with <code>try..except</code></p>
+<p>https://github.com/python-trio/trio/blob/c9baca6045d427fd4cc0de2ca396ddeb4a0f40a5/src/trio/_tests/check_type_completeness.py#L62-L109</p>
+<p><strong>Multiple usages in the same statement</strong></p>
+<p>It would be great if we only flagged each variable once (at least per statement?)</p>
+<ul>
+<li><a href="https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492">src/_pytest/assertion/rewrite.py:492:40:</a> RUF032 <code>for</code> loop variable i is used outside of block</li>
+<li><a href="https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492">src/_pytest/assertion/rewrite.py:492:53:</a> RUF032 <code>for</code> loop variable i is used outside of block</li>
+<li><a href="https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492">src/_pytest/assertion/rewrite.py:492:66:</a> RUF032 <code>for</code> loop variable i is used outside of block</li>
+</ul>
+<p>**Delete statements **
+This is interesting. We may explicitly want to allow usages in delete statements</p>
+<p>https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/<strong>init</strong>.py#L19</p>
+<p><strong>Control flow</strong></p>
+<p>This here seems like a clear false positive but detecting it would be hard because it requires some form of control flow analysis</p>
+<p>https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/plotting/_matplotlib/boxplot.py#L520-L561
+https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/embed/util.py#L266-L276
+https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L476-L486</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-09 08:17</div>
+            <div class="timeline-body"><p>The code changes look good to me but there are some common patterns that the rule isn't handling well which makes me a bit wary of shipping the rule as is. @AlexWaygood any thoughts on the examples?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/for_variable_used_after_block.py</code>:48 on 2024-08-09 16:53</div>
+            <div class="timeline-body"><h4>Variable declared outside the loop</h4>
+<blockquote>
+<p>But it may also be intentional that we catch this as part of this rule. What do you think?</p>
+</blockquote>
+<p>I think it's intentional that we catch the <a href="https://github.com/indico/indico/blob/a22e0c0a9c0cf4d40d04029489dc530b4819d2ea/bin/utils/storage_checksums.py#L39-L43"><code>indico</code> example</a> as part of the rule. We have an example in the test fixture file for this.</p>
+<p>The other <a href="https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/common.py#L581-L599">example from <code>pandas</code></a> could be addressed with some fancy control flow analysis (see <a href="https://github.com/astral-sh/ruff/pull/11769/#discussion_r1711844404">other discussion</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/for_variable_used_after_block.py</code>:49 on 2024-08-09 17:08</div>
+            <div class="timeline-body"><h4>Use in combination with <code>try..except</code></h4>
+<blockquote>
+<p>It seems to be a somewhat common pattern to use the for loop variable outside the for-block when combined with <code>try..except</code></p>
+</blockquote>
+<p>The <a href="https://github.com/python-trio/trio/blob/c9baca6045d427fd4cc0de2ca396ddeb4a0f40a5/src/trio/_tests/check_type_completeness.py#L62-L109"><code>trio</code> example</a> really lends itself well to the convenience that the non-block scoping provides. I think this is probably best resolved by adding a <code># noqa: RUF032</code> comment for the lint rule to explicitly mark the case as fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/for_variable_used_after_block.py</code>:49 on 2024-08-09 17:15</div>
+            <div class="timeline-body"><h4>Multiple usages in the same statement</h4>
+<blockquote>
+<p>It would be great if we only flagged each variable once (at least per statement?)</p>
+<ul>
+<li><a href="https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492">src/_pytest/assertion/rewrite.py:492:40:</a> RUF032 <code>for</code> loop variable i is used outside of block</li>
+<li><a href="https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492">src/_pytest/assertion/rewrite.py:492:53:</a> RUF032 <code>for</code> loop variable i is used outside of block</li>
+<li><a href="https://github.com/pytest-dev/pytest/blob/ef9b8f9d748b6f50eab5d43e32d93008f7880899/src/_pytest/assertion/rewrite.py#L492">src/_pytest/assertion/rewrite.py:492:66:</a> RUF032 <code>for</code> loop variable i is used outside of block</li>
+</ul>
+</blockquote>
+<p>Seems like a decent improvement. Do we do this sort of deduplication for other rules? For the violation <code>Diagnostic</code>, do we combine the <code>TextRange</code> to cover the whole area?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/for_variable_used_after_block.py</code>:49 on 2024-08-09 17:15</div>
+            <div class="timeline-body"><h4>Delete statements</h4>
+<blockquote>
+<p>We may explicitly want to allow usages in delete statements (<a href="https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/__init__.py#L19">example</a>)</p>
+</blockquote>
+<p>Seems harmless to allow :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MadLittleMods">@MadLittleMods</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/for_variable_used_after_block.py</code>:49 on 2024-08-09 17:22</div>
+            <div class="timeline-body"><h4>Control flow</h4>
+<blockquote>
+<p>This here seems like a clear false positive but detecting it would be hard because it requires some form of control flow analysis</p>
+</blockquote>
+<p>The <a href="https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/plotting/_matplotlib/boxplot.py#L520-L561"><code>pandas</code> example</a> makes sense to allow if we can detect the context via control flow analysis. The <a href="https://github.com/pandas-dev/pandas/blob/0cdc6a48302ba1592b8825868de403ff9b0ea2a5/pandas/io/common.py#L581-L599">other <code>pandas</code> example</a> makes sense for this as well since it has a <code>return</code> statement to guard it every leaking below.</p>
+<p>But I think it's good that we catch <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/embed/util.py#L266-L276"><code>bokeh</code></a> <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_figure.py#L476-L486">examples</a> as sketchy. I don't see how we could use control flow analysis to see that they're fine?</p>
+<hr />
+<p>I'm assuming we don't want to actually dive into implementing the control flow analysis in this first iteration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MadLittleMods">@MadLittleMods</a> reviewed on 2024-08-09 17:23</div>
+            <div class="timeline-body"><p>Split the conversation from https://github.com/astral-sh/ruff/pull/11769/#issuecomment-2277408079 up so we can better discuss each issue and resolve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-08-15 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-19 10:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/for_variable_used_after_block.py</code>:48 on 2024-08-19 10:50</div>
+            <div class="timeline-body"><p>So, I think there are two different reasons why you want to avoid using a loop variable after the loop has finished:</p>
+<ol>
+<li><p>The first reason is that the loop might be empty, which means that the variable is never assigned:</p>
+<pre><code class="language-py">iterable = []
+for x in iterable:
+    pass
+print(x)  # NameError
+</code></pre>
+<p>Catching these feels like a &quot;correctness&quot; issue, that we should hopefully be able to do without very many false positives.</p>
+</li>
+<li><p>The second is cases where we can be sure that the variable is defined, but we still forbid this pattern, perhaps on grounds of readability/style (it might not be obvious to the reader that the variable is mutated; there might be clearer ways of writing the code), or because there's a chance that the author of the code might not be familiar with Python's scoping rules, and might not have intended to reassign the variable by using the loop:</p>
+<pre><code class="language-py">x = 42
+for x in range(5):
+     pass
+print(x)  # oops, now it's 4?? The author of the code expected it to still be 42
+</code></pre>
+<p>Sometimes code like this <em>can</em> indicate a bug, but it also might be working exactly as the author of the code intended; there's a lot of code out there that deliberately mutates a variable using a loop like this.</p>
+</li>
+</ol>
+<p>The conclusion I draw from this is that we in fact need two rules here:</p>
+<ol>
+<li>One rule to catch instances where a loop variable is used after the loop and was not defined before the loop. This is almost always bad practice, as the loop variable might not be defined.</li>
+<li>One more opinionated rule that catches instances where the loop variable is definitely defined, but the mutation of the variable via the loop might not be desired. This might be a bug and might not be, depending on how experienced the developer is with Python's semantics.</li>
+</ol>
+<p>For now I think I'd implement the first rule; we can consider the second rule as a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-19 10:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/for_variable_used_after_block.py</code>:49 on 2024-08-19 10:51</div>
+            <div class="timeline-body"><p>Usages in <code>del</code> statements are just as problematic as other usages, since they also result in <code>NameError</code>s if the variable is undefined:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; iterable = []
+&gt;&gt;&gt; for item in iterable:
+...     pass
+... 
+&gt;&gt;&gt; del item
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name 'item' is not defined. Did you mean: 'iter'?
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

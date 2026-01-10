@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Update &quot;constraint implication&quot; relation to work on constraints between two typevars - astral-sh/ruff #21068</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Update &quot;constraint implication&quot; relation to work on constraints between two typevars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21068">#21068</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-10-24 17:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-10-24 17:49</div>
+            <div class="timeline-body"><p>It's possible for a constraint to mention two typevars. For instance, in the body of</p>
+<pre><code class="language-py">def f[S: int, T: S](): ...
+</code></pre>
+<p>the baseline constraint set would be <code>(T ≤ S) ∧ (S ≤ int)</code>. That is, <code>S</code> must specialize to some subtype of <code>int</code>, and <code>T</code> must specialize to a subtype of the type that <code>S</code> specializes to.</p>
+<p>This PR updates the new &quot;constraint implication&quot; relationship from #21010 to work on these kinds of constraint sets. For instance, in the example above, we should be able to see that <code>T ≤ int</code> must always hold:</p>
+<pre><code class="language-py">def f[S, T]():
+    constraints = ConstraintSet.range(Never, S, int) &amp; ConstraintSet.range(Never, T, S)
+    static_assert(constraints.implies_subtype_of(T, int))  # now succeeds!
+</code></pre>
+<p>This did not require major changes to the implementation of <code>implies_subtype_of</code>. That method already relies on how our <code>simplify</code> and <code>domain</code> methods expand a constraint set to include the transitive closure of the constraints that it mentions, and to mark certain combinations of constraints as impossible. Previously, that transitive closure logic only looked at pairs of constraints that constrain the same typevar. (For instance, to notice that <code>(T ≤ bool) ∧ ¬(T ≤ int)</code> is impossible.)</p>
+<p>Now we also look at pairs of constraints that constraint different typevars, if one of the constraints is bound by the other — that is, pairs of the form <code>T ≤ S</code> and <code>S ≤ something</code>, or <code>S ≤ T</code> and <code>something ≤ S</code>. In those cases, transitivity lets us add a new derived constraint that <code>T ≤ something</code> or <code>something ≤ T</code>, respectively. Having done that, our existing <code>implies_subtype_of</code> logic finds and takes into account that derived constraint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-10-24 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-10-24 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-24 20:17</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-24 20:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-10-28 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-10-28 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-10-28 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-10-28 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-10-28 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-10-29 14:47</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fsubtype-given-typevars?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21068 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/subtype-given-typevars</code> (c054447) with <code>main</code> (d0aebaa)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 22</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fsubtype-given-typevars?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:188 on 2025-10-29 21:10</div>
+            <div class="timeline-body"><p>More an understand question for me. What's the difference between <code>Never</code> and passing <code>U</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-29 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-29 21:13</div>
+            <div class="timeline-body"><p>Makes sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:188 on 2025-10-30 18:15</div>
+            <div class="timeline-body"><p><code>range(Never, T, U)</code> is <code>Never ≤ T ≤ U</code>, which simplifies to <code>T ≤ U</code> since every type is a supertype of <code>Never</code>.</p>
+<p><code>range(U, T, U)</code> is <code>U ≤ T ≤ U</code>, which simplifies to <code>T = U</code>.</p>
+<p>So the first one is &quot;<code>T</code> must be a subtype of <code>U</code>&quot;, and the second one is &quot;<code>T</code> must be exactly the same type as <code>U</code>&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-30 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-10-30 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-10-30 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-10-30 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-30 20:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

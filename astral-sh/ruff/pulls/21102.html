@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix some false positive for `is_non_empty_f_string` - astral-sh/ruff #21102</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix some false positive for <code>is_non_empty_f_string</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21102">#21102</a>
+        opened by <a href="https://github.com/IDrokin117">@IDrokin117</a>
+        on 2025-10-27 19:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-10-27 19:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #21048</p>
+<p>Fix some false positive edge cases when determining string truthiness. The following cases are now treated as unknown truthiness:</p>
+<ol>
+<li>Comparison expressions can return any value, even empty strings.</li>
+<li>F-strings with format specs can produce either empty or non-empty strings:</li>
+</ol>
+<pre><code class="language-python">bool(f&quot;{'mystring':.0}&quot;) # Returns False
+</code></pre>
+<p>Additionally, fixed a bug that caused <code>f&quot;{f&quot;&quot;!s}&quot;</code> to be treated as non-empty. Since <code>.iter().all()</code> returns true if the iterator is empty, f-strings with no elements (like nested <code>f&quot;{f&quot;&quot;!s}&quot;</code>) were incorrectly treated as non-empty.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added test cases to S604 since <code>Truthiness</code> has no tests of its own</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-27 20:02</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1405 on 2025-10-28 19:43</div>
+            <div class="timeline-body"><p>Should this just be <code>any</code> instead? I could certainly be wrong, but it seems like we should check if any part is non-empty rather than <code>all</code> parts are non-empty. That would also give the correct behavior for the empty iterator and match the outer <code>any</code> on line 1401.</p>
+<p>I tried this locally, and I think it fixed an existing bug in a SIM222 test too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1362 on 2025-10-28 19:43</div>
+            <div class="timeline-body"><p>Should we move this down to the other complex expressions below? It seems slightly out of place in this block now that the other variants are all <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-28 19:47</div>
+            <div class="timeline-body"><p>Thanks! This looks good, I just had a couple of small ideas/suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-28 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1362 on 2025-10-28 20:06</div>
+            <div class="timeline-body"><p>To be more precise, this could still be <code>true</code> if all the operators in the <code>Compare</code> are the ones guaranteed to return <code>bool</code>s (<code>in</code>, <code>is</code>, <code>is not</code>, and <code>not in</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a> reviewed on 2025-10-28 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-10-29 14:47</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/IDrokin117%3Afeature%2Fgh-21048?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21102 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>IDrokin117:feature/gh-21048</code> (be1c7ab) with <code>main</code> (96b60c1)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 52</code> untouched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-10-30 14:00</div>
+            <div class="timeline-body"><p>Thank. I'll mark this as requested changes to make it easier to track the state of this PR. Please request re-review once you addressed the changes from the inline comments.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:13 UTC
+    </footer>
+</body>
+</html>

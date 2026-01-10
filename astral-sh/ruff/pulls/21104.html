@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix syntax error false positive on nested alternative patterns - astral-sh/ruff #21104</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix syntax error false positive on nested alternative patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21104">#21104</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-27 21:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-27 21:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #21101 by storing the child visitor's names in the parent visitor. This makes sure that <code>visitor.names</code> on line 1818 isn't empty after we visit a nested OR pattern.</p>
+<h2>Test Plan</h2>
+<p>New inline test cases derived from the issue, <a href="https://play.ruff.rs/7b6439ac-ee8f-4593-9a3e-c2aa34a595d0">playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-27 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-27 21:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-27 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-10-27 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-10-27 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-10-28 03:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1860 on 2025-10-28 18:19</div>
+            <div class="timeline-body"><p>I don't have a good understanding of this part. So please disregard if not relevant or I'm just wrong ;)</p>
+<p>Would it be better to return the union of all <code>visitor.names</code> here instead of just the last one in case we encountered a  <code>DifferentMatchPatternBindings</code> error? Or is there a risk that this introduces other false positives? If so, should we return the intersection of all names instead?</p>
+<p>(I suspect that either approach can lead to false positives depending on how the pattern are nested, so it might not be a case where there's no &quot;better way&quot; of doing this, it's just trade offs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-28 18:19</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-28 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1860 on 2025-10-28 18:48</div>
+            <div class="timeline-body"><p>Ah I think that's a good question. (This part was not intuitive to me at all, I was working on a more complicated fix when I realized this solved the issue)</p>
+<p>I guess this could come into play with cases like this:</p>
+<pre><code class="language-py">match 42:
+    case [{1: x} | [x] | [y]] | [y]: ...
+
+match 42:
+    case [{1: x} | [x] | [y]] | [x]: ...
+</code></pre>
+<p>We currently emit two diagnostics for the first and only one for the second:</p>
+<pre><code>invalid-syntax: alternative patterns bind different names
+  --&gt; /tmp/s.py:11:10
+   |
+10 | match 42:
+11 |     case [{1: x} | [x] | [y]] | [y]: ...
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 |
+13 | match 42:
+   |
+
+invalid-syntax: alternative patterns bind different names
+  --&gt; /tmp/s.py:11:11
+   |
+10 | match 42:
+11 |     case [{1: x} | [x] | [y]] | [y]: ...
+   |           ^^^^^^^^^^^^^^^^^^
+12 |
+13 | match 42:
+   |
+
+invalid-syntax: alternative patterns bind different names
+  --&gt; /tmp/s.py:14:11
+   |
+13 | match 42:
+14 |     case [{1: x} | [x] | [y]] | [x]: ...
+   |           ^^^^^^^^^^^^^^^^^^
+   |
+</code></pre>
+<p>Hmm, we actually get the same answer here with the union, but we get two errors in both cases with the intersection.</p>
+<p>Maybe that makes the intersection the best option for consistency's sake?</p>
+<p>I think I'd consider these all true positives at least, but they may be a bit redundant. CPython only emits the innermost diagnostic, so we could also consider that.</p>
+<p>This is also pretty hard to hit. Because of the <code>break</code> after emitting a <code>DifferentMatchPatternBindings</code> diagnostic, you need at least two inner patterns with the same name, followed by one with a different name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-28 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1860 on 2025-10-28 18:55</div>
+            <div class="timeline-body"><p>Oops, the intersection breaks the tests, I guess because <code>self.names</code> is initially empty. So I guess we should either stick with replacing or the union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-29 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1860 on 2025-10-29 15:41</div>
+            <div class="timeline-body"><p>Can't we just not intersect until we visited at least one pattern? Like use an <code>Option&lt;FxHashSet&gt;</code> and only intersect when it's some?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-29 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1860 on 2025-10-29 16:44</div>
+            <div class="timeline-body"><p>I may be misunderstanding the suggestion, but I tried a patch like the one below, and it caused some other tests to fail (and without changing the new diagnostics from this PR). It's not just when <code>self.names</code> is initially empty as I said before, this also affects cases like:</p>
+<pre><code class="language-py">match x:
+     case [] | [a]: ...
+</code></pre>
+<p>where one of the branches is genuinely empty.</p>
+<p>I initially included the .snap.new files in this patch, but they were way too big. We lost the diagnostics in the cases above.</p>
+<p>I'm leaning toward sticking with the simple existing code unless I'm just missing something.</p>
+<details><summary>Patch</summary>
+<p>
+
+<pre><code class="language-diff">diff --git a/crates/ruff_python_parser/src/semantic_errors.rs b/crates/ruff_python_parser/src/semantic_errors.rs
+index f35029d4b9..3312c72544 100644
+--- a/crates/ruff_python_parser/src/semantic_errors.rs
++++ b/crates/ruff_python_parser/src/semantic_errors.rs
+@@ -11,7 +11,7 @@ use ruff_python_ast::{
+     visitor::{Visitor, walk_expr},
+ };
+ use ruff_text_size::{Ranged, TextRange, TextSize};
+-use rustc_hash::{FxBuildHasher, FxHashSet};
++use rustc_hash::{FxBuildHasher, FxHashMap, FxHashSet};
+ use std::fmt::Display;
+ 
+ #[derive(Debug, Default)]
+@@ -117,7 +117,7 @@ impl SemanticSyntaxChecker {
+                 Self::irrefutable_match_case(match_stmt, ctx);
+                 for case in &amp;match_stmt.cases {
+                     let mut visitor = MatchPatternVisitor {
+-                        names: FxHashSet::default(),
++                        names: None,
+                         ctx,
+                     };
+                     visitor.visit_pattern(&amp;case.pattern);
+@@ -1671,7 +1671,7 @@ impl Visitor&lt;'_&gt; for ReboundComprehensionVisitor&lt;'_&gt; {
+ }
+ 
+ struct MatchPatternVisitor&lt;'a, Ctx&gt; {
+-    names: FxHashSet&lt;&amp;'a ast::name::Name&gt;,
++    names: Option&lt;FxHashSet&lt;&amp;'a ast::name::Name&gt;&gt;,
+     ctx: &amp;'a Ctx,
+ }
+ 
+@@ -1810,15 +1810,19 @@ impl&lt;'a, Ctx: SemanticSyntaxContext&gt; MatchPatternVisitor&lt;'a, Ctx&gt; {
+                 let mut previous_names: Option&lt;FxHashSet&lt;&amp;ast::name::Name&gt;&gt; = None;
+                 for pattern in patterns {
+                     let mut visitor = Self {
+-                        names: FxHashSet::default(),
++                        names: None,
+                         ctx: self.ctx,
+                     };
+                     visitor.visit_pattern(pattern);
+                     let Some(prev) = &amp;previous_names else {
+-                        previous_names = Some(visitor.names);
++                        previous_names = visitor.names;
+                         continue;
+                     };
+-                    if prev.symmetric_difference(&amp;visitor.names).next().is_some() {
++                    if visitor
++                        .names
++                        .as_ref()
++                        .is_some_and(|names| prev.symmetric_difference(&amp;names).next().is_some())
++                    {
+                         // test_err different_match_pattern_bindings
+                         // match x:
+                         //     case [a] | [b]: ...
+@@ -1857,7 +1861,13 @@ impl&lt;'a, Ctx: SemanticSyntaxContext&gt; MatchPatternVisitor&lt;'a, Ctx&gt; {
+                         );
+                         break;
+                     }
+-                    self.names = visitor.names;
++                    if let Some(names) = &amp;self.names
++                        &amp;&amp; let Some(other) = visitor.names
++                    {
++                        self.names = Some(names.intersection(&amp;other).cloned().collect());
++                    } else {
++                        self.names = visitor.names;
++                    }
+                 }
+             }
+         }
+@@ -1866,7 +1876,12 @@ impl&lt;'a, Ctx: SemanticSyntaxContext&gt; MatchPatternVisitor&lt;'a, Ctx&gt; {
+     /// Add an identifier to the set of visited names in `self` and emit a [`SemanticSyntaxError`]
+     /// if `ident` has already been seen.
+     fn insert(&amp;mut self, ident: &amp;'a ast::Identifier) {
+-        if !self.names.insert(&amp;ident.id) {
++        if self.names.is_none() {
++            self.names = Some(FxHashSet::default());
++        }
++        let names = self.names.as_mut().unwrap();
++
++        if !names.insert(&amp;ident.id) {
+             SemanticSyntaxChecker::add_error(
+                 self.ctx,
+                 SemanticSyntaxErrorKind::MultipleCaseAssignment(ident.id.clone()),
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-29 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1860 on 2025-10-29 17:50</div>
+            <div class="timeline-body"><p>That's not what I meant, I think?</p>
+<p>I'd created a <code>Option&lt;FxHashSet&gt;</code> right outside the <code>for pattern in patterns {</code> rather than globally in the visitor</p>
+<p>But i also think that what we have is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-29 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1860 on 2025-10-29 17:55</div>
+            <div class="timeline-body"><p>We have one of those too:</p>
+<p>https://github.com/astral-sh/ruff/blob/d38a5292d2a9c8509da6868046da0caa49ed5e46/crates/ruff_python_parser/src/semantic_errors.rs#L1809-L1811</p>
+<p>We need an outer one in the visitor (or at least somewhere else) for recursive cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-30 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1860 on 2025-10-30 17:39</div>
+            <div class="timeline-body"><p>I'll go ahead and land this for now then since it should resolve the bug!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-30 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-30 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-30 17:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:13 UTC
+    </footer>
+</body>
+</html>

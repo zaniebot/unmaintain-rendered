@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Fix `TC003` false positive with `future-annotations` - astral-sh/ruff #21125</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Fix <code>TC003</code> false positive with <code>future-annotations</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21125">#21125</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-29 14:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-29 14:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #21121 by upgrading <code>RuntimeEvaluated</code> annotations like
+<code>dataclasses.KW_ONLY</code> to <code>RuntimeRequired</code>. We already had special handling for
+<code>TypingOnly</code> annotations in this context but not <code>RuntimeEvaluated</code>. Combining
+that with the <code>future-annotations</code> setting, which allowed ignoring the
+<code>RuntimeEvaluated</code> flag, led to the reported bug where we would try to move
+<code>KW_ONLY</code> into a <code>TYPE_CHECKING</code> block.</p>
+<h2>Test Plan</h2>
+<p>A new test based on the issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-29 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-29 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-10-29 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-29 15:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ntBre on 2025-10-29 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-29 15:17</div>
+            <div class="timeline-body"><p>I should have waited a second longer before taking it out of draft. I think the ecosystem hit is a false positive, taking a closer look now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-29 15:45</div>
+            <div class="timeline-body"><p>It looks like we have 4 pre-existing UP037 false positives on this project:
+<a href="https://github.com/latchbio/latch/blob/main/src/latch/ldata/_transfer/upload.py"><code>src/latch/ldata/_transfer/upload.py</code></a>:121:27: UP037 <code>[*]</code> Remove quotes from type annotation
+<a href="https://github.com/latchbio/latch/blob/main/src/latch/ldata/_transfer/upload.py"><code>src/latch/ldata/_transfer/upload.py</code></a>:122:33: UP037 <code>[*]</code> Remove quotes from type annotation
+<a href="https://github.com/latchbio/latch/blob/main/src/latch/ldata/_transfer/upload.py"><code>src/latch/ldata/_transfer/upload.py</code></a>:132:28: UP037 <code>[*]</code> Remove quotes from type annotation
+<a href="https://github.com/latchbio/latch/blob/main/src/latch/types/directory.py"><code>src/latch/types/directory.py</code></a>:162:36: UP037 <code>[*]</code> Remove quotes from type annotation</p>
+<p>but this PR adds a fifth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-29 16:47</div>
+            <div class="timeline-body"><p>Now the ecosystem check looks good! We needed to visit the whole <code>RuntimeEvaluated</code> annotation as <code>RuntimeRequired</code> for the special <code>dataclass</code> types, unlike the existing <code>TypingOnly</code> branch, which could treat the annotation and slice separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-29 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @amyreese by @MichaReiser on 2025-10-29 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1428 on 2025-10-30 13:18</div>
+            <div class="timeline-body"><p>Nit: I would move this up right below the other <code>AnnotationContext::RuntimeEvaluated</code> arm. Not only reduces it the size of the diff, it also makes it easier to &quot;match&quot; the different arms when reading the code because you don't need to keep track of the only partially matched arms (or, you have but only up to the next arm)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-30 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-30 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-30 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-30 18:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:13 UTC
+    </footer>
+</body>
+</html>

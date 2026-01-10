@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clearer error message when `line-length` goes beyond threshold - astral-sh/ruff #21072</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clearer error message when <code>line-length</code> goes beyond threshold</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21072">#21072</a>
+        opened by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a>
+        on 2025-10-25 10:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-25 10:54</div>
+            <div class="timeline-body"><p>Fixes #20823</p>
+<h2>Summary</h2>
+<p>Implemented code from original issue</p>
+<h2>Test Plan</h2>
+<p>Added test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-25 11:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-10-25 11:06</div>
+            <div class="timeline-body"><p>My implementation example doesn't seem quite right.</p>
+<p>I don't think we should prohibit people from setting <code>line-length</code> to more than 320, maybe we should just give a warning? (but it will change the current behavior)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-25 11:22</div>
+            <div class="timeline-body"><blockquote>
+<p>My implementation example doesn't seem quite right.</p>
+<p>I don't think we should prohibit people from setting <code>line-length</code> to more than 320, maybe we should just give a warning? (but it will change the current behavior)</p>
+</blockquote>
+<p>IMO, there's no need for having artificial constraints about the max size of the line-length, or a need to set a warning, the way that I see it, if a user explicitly set <code>line-length</code> to 10000 he knows what he's doing (I hope so). I am not saying that there's a need for increasing the possible length (by utilizing NonZerou32).</p>
+<hr />
+<p>One possible solution would be to remove
+https://github.com/astral-sh/ruff/blob/64ab79e5721ec6fdd2182fbf9d39a26534ccca43/crates/ruff_linter/src/line_width.rs#L24-L25</p>
+<p>And relying on the constrains of <code>NonZerou16</code> at:
+https://github.com/astral-sh/ruff/blob/64ab79e5721ec6fdd2182fbf9d39a26534ccca43/crates/ruff_linter/src/line_width.rs#L94-L103</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-10-25 12:00</div>
+            <div class="timeline-body"><p>It seems that the root of the problem lies in crate <a href="https://github.com/toml-rs/toml/blob/6df349bffa72263ca25bfacd7016420749c94174/crates/toml/src/value.rs#L32">toml</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-10-25 12:08</div>
+            <div class="timeline-body"><p>although it seems that the TOML specification <a href="https://toml.io/en/v1.0.0#integer">mentions this</a></p>
+<blockquote>
+<p>Non-negative integer values may also be expressed in hexadecimal, octal, or binary. In these formats, leading + is not allowed and leading zeros are allowed (after the prefix). Hex values are case-insensitive. Underscores are allowed between digits (but not between the prefix and the value).</p>
+</blockquote>
+<pre><code class="language-toml"># hexadecimal with prefix `0x`
+hex1 = 0xDEADBEEF
+hex2 = 0xdeadbeef
+hex3 = 0xdead_beef
+
+# octal with prefix `0o`
+oct1 = 0o01234567
+oct2 = 0o755 # useful for Unix file permissions
+
+# binary with prefix `0b`
+bin1 = 0b11010110
+</code></pre>
+<p>Arbitrary 64-bit signed integers (from −2^63 to 2^63−1) should be accepted and handled losslessly. If an integer cannot be represented losslessly, an error must be thrown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-25 13:51</div>
+            <div class="timeline-body"><blockquote>
+<p>If an integer cannot be represented losslessly, an error must be thrown.</p>
+</blockquote>
+<p>So if I understand you correctly it will be something like:</p>
+<pre><code class="language-rust">let raw = match i64::deserialize(deserializer) {
+  Ok(v) =&gt; v,
+  Err(_) =&gt; {
+    let s: &amp;str = Deserializer::deserialize(deserializer)?;
+    i64::from_str(s).map_err(ParseLineWidthError::ParseError)?
+  }
+}
+
+let value = u16::try_from(raw).map_err(???)
+</code></pre>
+<p>The main issue with this approach is that
+https://github.com/astral-sh/ruff/blob/64ab79e5721ec6fdd2182fbf9d39a26534ccca43/crates/ruff_linter/src/line_width.rs#L90-L93
+can only store <code>u16</code> and in the best case with this approach we'll have <code>i64</code>. It doesn't make much sense to change the type to <code>i64</code>. what does deserlizing to i64 first gives us? why can't we just do what you suggested initially?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/line_width.rs</code>:62 on 2025-10-25 14:59</div>
+            <div class="timeline-body"><p>Nit: Maybe something like this:</p>
+<pre><code class="language-suggestion">        let value = Self::try_from(value).map_err(|_| {
+            serde::de::Error::custom(format!(
+                &quot;line-length must be between 1 and {} (got {value})&quot;,
+                Self::MAX,
+            ))
+        })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-25 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ShaharNaveh on 2025-10-26 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-27 07:37</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-10-27 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-27 07:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

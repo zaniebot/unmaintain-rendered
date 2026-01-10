@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Alternative `match` patterns bind different names - astral-sh/ruff #20682</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Alternative <code>match</code> patterns bind different names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20682">#20682</a>
+        opened by <a href="https://github.com/11happy">@11happy</a>
+        on 2025-10-02 16:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/11happy">@11happy</a> on 2025-10-02 16:06</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This PR implements semantic syntax error where alternative patterns bind different names</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I have written inline tests as directed in #17412</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @11happy on 2025-10-02 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @11happy on 2025-10-02 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-05 06:19</div>
+            <div class="timeline-body"><p>test <code>/ruff/crates/ty_python_semantic/resources/mdtest/import/star.md</code> is failing as now two syntax errors are emitted at same line line 295 &amp; 366, Can we add multiple syntax errors on the same line ?</p>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@irrefutable_case_pattern.py.snap</code>:436 on 2025-10-06 20:37</div>
+            <div class="timeline-body"><p>It looks like something is going wrong with the error message here (<code>expected ``, ...</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__match__star_pattern_usage.py.snap</code>:624 on 2025-10-06 20:38</div>
+            <div class="timeline-body"><p>These also show the empty placeholders in the error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1789 on 2025-10-06 20:41</div>
+            <div class="timeline-body"><p>I think some other interesting cases involve more nested structure. That's the reason we have to do this check in a visitor:</p>
+<pre><code class="language-py">match x:
+    case [a] | [C(x)]: ...
+</code></pre>
+<p>We could also add some <code>test_ok</code> cases, like <code>case [a] | [C(a)]: ...</code> which should work. You might be able to adapt some of the cases above from <code>duplicate_match_class_attr</code> if you want even deeper nesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1766 on 2025-10-06 21:43</div>
+            <div class="timeline-body"><p>What do you think about something more like this?</p>
+<pre><code class="language-rust">                let mut previous_names: Option&lt;FxHashSet&lt;&amp;ast::name::Name&gt;&gt; = None;
+                for pattern in patterns {
+                    let mut visitor = Self {
+                        names: FxHashSet::default(),
+                        ctx: self.ctx,
+                    };
+                    visitor.visit_pattern(pattern);
+                    match previous_names {
+                        Some(ref previous_names) =&gt; {
+                            for missing_name in previous_names.symmetric_difference(&amp;visitor.names)
+                            {
+                                SemanticSyntaxChecker::add_error(
+                                    self.ctx,
+                                    SemanticSyntaxErrorKind::AlternateBindedPattern(
+                                        missing_name.to_string(),
+                                        missing_name.to_string(),
+                                    ),
+                                    pattern.range(),
+                                );
+                            }
+                        }
+                        None =&gt; previous_names = Some(visitor.names),
+                    }
+                }
+</code></pre>
+<p>The nice thing about this is that we can avoid allocating additional <code>Vec</code>s, but the error message might be a bit worse. I'm just passing the same <code>missing_name</code> twice here, obviously we'd have to do something different. But I think an error message either like Python itself:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; match 42:
+...     case [x] | [C(x), C(y)]: ...
+...
+  File &quot;&lt;python-input-12&gt;&quot;, line 2
+    case [x] | [C(x), C(y)]: ...
+         ^^^^^^^^^^^^^^^^^^
+SyntaxError: alternative patterns bind different names
+</code></pre>
+<p>or like Rust:</p>
+<pre><code>error[E0408]: variable `y` is not bound in all patterns
+ --&gt; try.rs:4:9
+  |
+4 |         x | y =&gt; todo!(),
+  |         ^   - variable not in all patterns
+  |         |
+  |         pattern doesn't bind `y`
+
+error[E0408]: variable `x` is not bound in all patterns
+ --&gt; try.rs:4:13
+  |
+4 |         x | y =&gt; todo!(),
+  |         -   ^ pattern doesn't bind `x`
+  |         |
+  |         variable not in all patterns
+</code></pre>
+<p>where we either mention zero or one variable name instead of both sets would be fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-06 21:44</div>
+            <div class="timeline-body"><p>Thank you! This looks good overall. I just had a couple of suggestions about test cases and a bit of a simplification/possible performance improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-06 21:46</div>
+            <div class="timeline-body"><blockquote>
+<p>test <code>/ruff/crates/ty_python_semantic/resources/mdtest/import/star.md</code> is failing as now two syntax errors are emitted at same line line 295 &amp; 366, Can we add multiple syntax errors on the same line ?</p>
+</blockquote>
+<p>Yes, I think you can stack the comments, although you may need to move the existing one to the previous line like this:</p>
+<pre><code>    # error: [invalid-syntax] &quot;name capture `E` makes remaining patterns unreachable&quot;
+    # error: [invalid-syntax] &quot;your error here&quot;
+    case E | F:  
+        ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-08 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@statements__match__star_pattern_usage.py.snap</code>:624 on 2025-10-08 16:55</div>
+            <div class="timeline-body"><p>done , now I am mentioning only a single variable as rust does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-08 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1789 on 2025-10-08 16:56</div>
+            <div class="timeline-body"><p>yes I added some more deeper nested cases &amp; test_ok as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-08 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1766 on 2025-10-08 16:57</div>
+            <div class="timeline-body"><p>yeah , I agree this approach is much better &amp; have updated accordingly &amp; changed the diagnostic accordingly following similar to rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @11happy on 2025-10-08 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @11happy on 2025-10-08 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @11happy on 2025-10-08 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @11happy on 2025-10-08 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-08 17:11</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>test <code>/ruff/crates/ty_python_semantic/resources/mdtest/import/star.md</code> is failing as now two syntax errors are emitted at same line line 295 &amp; 366, Can we add multiple syntax errors on the same line ?</p>
+</blockquote>
+<p>Yes, I think you can stack the comments, although you may need to move the existing one to the previous line like this:</p>
+<pre><code>    # error: [invalid-syntax] &quot;name capture `E` makes remaining patterns unreachable&quot;
+    # error: [invalid-syntax] &quot;your error here&quot;
+    case E | F:  
+        ...
+</code></pre>
+</blockquote>
+<p>Sure, have added accordingly.
+Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-08 17:23</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1511 on 2025-10-15 17:06</div>
+            <div class="timeline-body"><p>nit: Could we add some docs here? Just for more context, we don't currently show any of these docs anywhere, but we want to keep  them up to date in case we display them to users like rule docs in the future. That's also why most of the early ones are more elaborate with examples  and such.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1766 on 2025-10-15 17:37</div>
+            <div class="timeline-body"><p>After looking at this again, I think I'd actually prefer the simpler error that Python emits for now. Using <code>symmetric_difference</code> like I suggested doesn't result in a very nice error message in some cases.</p>
+<p>I think ideally we would emit something very similar to the rustc diagnostic, but we don't have access to an actual <code>Diagnostic</code> type in the <code>SemanticSyntaxChecker</code> at the moment. I might open a separate issue to follow up on that because it seems useful more generally.</p>
+<p>For reference, I took a look at how Rust emits this <a href="https://github.com/rust-lang/rust/blob/28d0a4a205f9e511ad2f51ee79a4aa19a704a455/compiler/rustc_resolve/src/late.rs#L3714-L3723">diagnostic</a> today. Something like you had initially actually looks closer, but again, we can't really make use of the additional information to render a nice diagnostic currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-15 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-16 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1766 on 2025-10-16 17:09</div>
+            <div class="timeline-body"><p>sure,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1511 on 2025-10-16 17:09</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-16 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-16 17:15</div>
+            <div class="timeline-body"><p>rebased : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @AlexWaygood on 2025-10-16 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @AlexWaygood on 2025-10-16 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @AlexWaygood on 2025-10-16 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-10-16 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-17 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1511 on 2025-10-17 21:07</div>
+            <div class="timeline-body"><p>That looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-17 21:32</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I pushed two small commits, one using the full match pattern's range like CPython does. I think the narrower range could be helpful in the future, but the whole thing seems okay for now. And one renaming the error to <code>DifferentMatchPatternBindings</code>. I still don't totally love the name, but it's not user-facing, so we can always iterate on it if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[syntax-errors]:  implement semantic syntax error alternate_binded_pattern" to "[syntax-errors] Alternative `match` patterns bind different names" by @ntBre on 2025-10-17 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-17 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-17 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-10-27 19:31</div>
+            <div class="timeline-body"><p>This change seems to now cause a SyntaxError on the following valid code that doesn't use different names:</p>
+<pre><code>invalid-syntax: alternative patterns bind different names
+   --&gt; src/sp_repo_review/checks/ruff.py:127:17
+    |
+125 |           match ruff:
+126 |               case (
+127 | /                 {&quot;lint&quot;: {&quot;select&quot;: x} | {&quot;extend-select&quot;: x}}
+128 | |                 | {&quot;select&quot;: x}
+129 | |                 | {&quot;extend-select&quot;: x}
+    | |______________________________________^
+130 |               ):
+131 |                   return cls.code in x or &quot;ALL&quot; in x
+    |
+</code></pre>
+<p>See https://github.com/scientific-python/cookie/pull/663</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

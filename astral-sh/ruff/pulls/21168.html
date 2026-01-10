@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] prefer declared type on invalid TypedDict creation - astral-sh/ruff #21168</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] prefer declared type on invalid TypedDict creation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21168">#21168</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-10-31 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-10-31 14:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In general, when we have an invalid assignment (inferred assigned type is not assignable to declared type), we fall back to inferring the declared type, since the declared type is a more explicit declaration of the programmer's intent. This also maintains the invariant that our inferred type for a name is always assignable to the declared type for that same name. For example:</p>
+<pre><code class="language-py">x: str = 1
+reveal_type(x)  # revealed: str
+</code></pre>
+<p>We weren't following this pattern for dictionary literals inferred (via type context) as a typed dictionary; if the literal was not valid for the annotated TypedDict type, we would just fall back to the normal inferred type of the dict literal, effectively ignoring the annotation, and resulting in inferred type not assignable to declared type.</p>
+<h2>Test Plan</h2>
+<p>Added mdtest assertions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-10-31 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-10-31 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-10-31 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-10-31 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-31 14:56</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-10-31 14:56:30.742757677 +0000
++++ new-output.txt	2025-10-31 14:56:33.878763195 +0000
+@@ -927,6 +927,7 @@
+ typeddicts_operations.py:29:42: error[invalid-argument-type] Invalid argument to key &quot;year&quot; with declared type `int` on TypedDict `Movie`: value of type `float`
+ typeddicts_operations.py:32:36: error[invalid-key] Invalid key for TypedDict `Movie`: Unknown key &quot;other&quot;
+ typeddicts_operations.py:37:20: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
++typeddicts_operations.py:47:1: error[unresolved-attribute] Object of type `Movie` has no attribute `clear`
+ typeddicts_operations.py:62:1: error[unresolved-attribute] Object of type `MovieOptional` has no attribute `clear`
+ typeddicts_readonly.py:24:4: error[invalid-assignment] Cannot assign to key &quot;members&quot; on TypedDict `Band`: key is marked read-only
+ typeddicts_readonly.py:50:4: error[invalid-assignment] Cannot assign to key &quot;title&quot; on TypedDict `Movie1`: key is marked read-only
+@@ -946,5 +947,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 948 diagnostics
++Found 949 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-31 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-31 14:58</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">cloud-init (https://github.com/canonical/cloud-init)
++ cloudinit/net/ephemeral.py:140:13: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `str | Unknown`
+- cloudinit/net/ephemeral.py:140:13: error[unresolved-attribute] Object of type `str` has no attribute `get`
++ cloudinit/net/ephemeral.py:140:36: error[not-iterable] Object of type `Interface | None` may not be iterable
+- Found 1139 diagnostics
++ Found 1140 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-31 15:03</div>
+            <div class="timeline-body"><p>Conformance suite change is positive (we are supposed to error on that line).</p>
+<p>Ecosystem change looks like we have a TypedDict type where we previously didn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-10-31 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-31 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-31 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2025-10-31 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:13 UTC
+    </footer>
+</body>
+</html>

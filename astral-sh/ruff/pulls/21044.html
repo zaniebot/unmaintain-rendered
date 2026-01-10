@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve `invalid-argument-type` diagnostics where a union type was provided - astral-sh/ruff #21044</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve <code>invalid-argument-type</code> diagnostics where a union type was provided</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21044">#21044</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-10-23 10:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 10:56</div>
+            <div class="timeline-body"><p>Fixes https://github.com/astral-sh/ty/issues/1411</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-10-23 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-10-23 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-10-23 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-23 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-10-23 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-23 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-10-23 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-23 10:58</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-23 10:59</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 11:50</div>
+            <div class="timeline-body"><p>The secondary info message won't be shown with <code>--output-format=concise</code> or in the main diagnostic shown in editors (unless they supported related information which many dont).</p>
+<p>Given that this is the most important bit, I'm inclined to make it part of the primary annotation message, although that's somewhat tricky</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 11:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 11:58</div>
+            <div class="timeline-body"><p>I think we may have had this conversation before... I think we may need to rethink our diagnostic model here. It's often not feasible to encapsulate all relevant information in a single line, and mypy, for example, will often display secondary diagnostics even if you do not specify <code>--pretty</code>. (Mypy uses a concise output format by default; <code>--pretty</code> gives you annotations as part of diagnostics, similar to our output format.) E.g. https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=8322703266ffc5e8e2ccb9538e2487c3</p>
+<p>The approach I'm taking here is also exactly what we already do in similar diagnostics, so I'm inclined to say that if we want to change this approach, we should do so for all our diagnostics together: https://github.com/astral-sh/ruff/blob/01695513ce33f1f1615309323ba145c42f4720c1/crates/ty_python_semantic/resources/mdtest/snapshots/union_call.md_-<em>Calling_a_union_of_f%E2%80%A6</em>-<em>A_smaller_scale_exam%E2%80%A6</em>(c24ecd8582e5eb2f).snap#L34-L53</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 12:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:02</div>
+            <div class="timeline-body"><p>It's probably worth changing it everywhere because using sub diagnostics with info won't show with <code>--output-format=concise</code> or in the editor. The reason I opened this issue was because I didn't had enough information in the editor to fix the diagnostic.</p>
+<p>I'd be inclined to change the message to:</p>
+<pre><code>Expected `Sized`, element `Foo` of `str | Foo` is not assignable to `Sized`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:06</div>
+            <div class="timeline-body"><blockquote>
+<p>using sub diagnostics with info won't show with <code>--output-format=concise</code></p>
+</blockquote>
+<p>yes, that's the thing I'm suggesting we might want to rethink when I said &quot;we may need to rethink our diagnostic model here&quot;. I don't think that's a great outcome. I think it's going to end up with worse diagnostics than mypy for CLI users. It's often silly to try to cram all relevant information onto one line, and for things like overloads it's arguably impossible.</p>
+<blockquote>
+<p>or in the editor</p>
+</blockquote>
+<p>Whenever I need more information on a diagnostic rust-analyzer is showing me in the &quot;Problems&quot; tab in VSCode, I always click on the &quot;see full diagnostic&quot; option, and then a new tab opens up with all subdiagnostics displayed as well as the main diagnostic. Is it not possible for us to implement something similar for users of the ty server?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:11</div>
+            <div class="timeline-body"><p>And it seems to me that I'm already being shown several subdiagnostics on-hover here in VSCode, for example, even without clicking on the &quot;Click for full compiler diagnostic&quot; option?</p>
+<p><img width="2332" height="850" alt="image" src="https://github.com/user-attachments/assets/d51a4540-53a3-4831-b9b9-2bafb47ce79f" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Whenever I need more information on a diagnostic rust-analyzer is showing me in the &quot;Problems&quot; tab in VSCode, I always click on the &quot;see full diagnostic&quot; option, and then a new tab opens up with all subdiagnostics displayed as well as the main diagnostic. Is it not possible for us to implement something similar for users of the ty server?</p>
+</blockquote>
+<p>We do implement this but it's not supported by all editors</p>
+<blockquote>
+<p>I think it's going to end up with worse diagnostics than mypy for CLI users.</p>
+</blockquote>
+<p>Only when using <code>--output-format=full</code>.</p>
+<p>I do share the sentiment that we shouldn't try to put everything on a single line. But I think it's crucial that the most important bits are visible on that single line. In this case, it's not the union, but which element of the union doesn't implement <code>Sized</code>. We can move the union out of the main message into a secondary info message. But I think we need to have the problematic element in the primary message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:20</div>
+            <div class="timeline-body"><blockquote>
+<p><code>Expected `Sized`, element `Foo` of `str | Foo` is not assignable to `Sized`</code></p>
+</blockquote>
+<p>I think if I'm a user, this message could easily raise more questions than it answers. The user might not have any idea why we're talking about either <code>Foo</code> or <code>Foo | str</code> -- we haven't yet told them that we inferred a type of <code>str | Foo</code> for the argument they passed into the function call. Users think in terms of values, not types; all they'll see in their source code is a variable <code>bar</code>, and they might not even be aware of what type <code>bar</code> has at runtime, let alone the union type we've inferred for it in ty. I don't think we can start talking about which specific element in the union is causing an issue before we've told them that we've inferred a union type for the argument being passed in</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:21</div>
+            <div class="timeline-body"><blockquote>
+<p>We do implement this but it's not supported by all editors</p>
+</blockquote>
+<p>Feels like a feature request that should be brought up with those editors, since it'll also lead to a bad experience when using other LSP servers like rust-analyzer ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:23</div>
+            <div class="timeline-body"><p>This discussion does make me wonder whether it might be worth revisiting my original idea in https://github.com/astral-sh/ruff/pull/20730#discussion_r2410446248 of having a &quot;smart filter&quot; option for union displays (so that we can make sure at least one &quot;problematic union element&quot; is always included in the display)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Feels like a feature request that should be brought up with those editors, since it'll also lead to a bad experience when using other LSP servers like rust-analyzer ;)</p>
+</blockquote>
+<p>Maybe, but that's out of our control and it's still an issue when using <code>--output-format=concise</code>.</p>
+<blockquote>
+<p>This discussion does make me wonder whether it might be worth revisiting my original idea in https://github.com/astral-sh/ruff/pull/20730#discussion_r2410446248 of having a &quot;smart filter&quot; option for union displays (so that we can make sure at least one &quot;problematic union element&quot; is always included in the display)</p>
+</blockquote>
+<p>I'd sort of like this more. It seems very unfortunate to just truncate anywhere. I think it also degraded the LSP experience because it's now impossible to see the full type when hovering (and I assume we also truncate when using <code>reveal_type</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:26</div>
+            <div class="timeline-body"><blockquote>
+<p>and I assume we also truncate when using <code>reveal_type</code>?</p>
+</blockquote>
+<p>no, we do not. There's an option to switch off truncation when displaying types and <code>reveal_type</code> already uses it. The type displayed for on-hover should probably also use it; this was probably an oversight in #20730!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:27</div>
+            <div class="timeline-body"><p>It's probably worth exploring how other type checkers (across ecosystem) handle long types (and union types) in diagnostics and editors</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:27</div>
+            <div class="timeline-body"><p>Though even for on-hover, we may want to avoid displaying all union elements in situations where the union is <a href="https://github.com/astral-sh/ruff/pull/20730#issuecomment-3381454378">60 elements long</a>...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:34</div>
+            <div class="timeline-body"><p>In general I think we infer unions more than any other Python type checker. This is not only because we treat intersections as first-class types, but also because we have concepts such as &quot;class-literal types&quot; and &quot;function-literal types&quot;. To my knowledge, no other Python type checker treats these concepts as first-class types, and treating them as such seems to mean that huge unions are more common for us than for other type checkers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:34</div>
+            <div class="timeline-body"><p><img width="1895" height="440" alt="Screenshot 2025-10-23 at 14 32 24" src="https://github.com/user-attachments/assets/a22de7d9-13c4-44d0-bece-149709694e8c" /></p>
+<p>Typescript does truncate very long unions</p>
+<p><img width="1248" height="1325" alt="Screenshot 2025-10-23 at 14 34 04" src="https://github.com/user-attachments/assets/212c0c00-3f8d-4ed8-b7fa-72a4023b1a1e" /></p>
+<p>https://www.typescriptlang.org/play/?#code/PTAEDEFcDsGMBcCWB7ap4AsCG9SoDYCeoWssApgA7wDOoN8ATotAOY0BQAZjAimpWbR4AZSYtWACgBuWfJHIAueuLYBKZdOSIAJqADeHUKFioayfOQB0+ZFNnzyagNwcAvhw4hQAFQyI6AHdEfHxQckZGZEZQACNyWCxIGnJ0DFSsaFRCAFtkZNAYfhNUeCwWOgAWACZuXiRUdHIGSSNQRHhyHOU24wAfUAAiLEpKS0He0AHB2My5ieN+odh0yMIFxemdHHINpcHyfB0I+LW9qaGuRFZz6dZGEd3J6YxUckJjwNuhgGtEYO+g0seWggJymVYyEB0ASZSET0WF0G0QhCM2Q0oIywhCwgIAjpAWBRAQ8aJRTox1s8hgwHoEKVTEdMymwIiw0ftAjtGDlDqhASNmKZ4IDYvhSD8GaLHFLqYNEsI5PlKBykaZTNBICK5bAHtBZUyhjoHpDoFxGITtYbBpDkCkDeibQ8VebLYDWJAsLJAQArCWujqA-CIXlBwgrciq6bg6DbIRgyD4B37CyIaRRjHkUgYQEqrCMXMRGghkG59kjMYZwZjSA5XPIXn3OadXMWmEk8rF0Fyhj5gNWx3wBs4KHUmrGbwAOVrp3aaEwqSKqAAhBwNKAtLoDG1BCxRKopB0ui5QN4AKKRaLKTU5WcBUBZXBYGjF1jQLBi1JDlRCVirjxeGAZ7pmgeSMKkpg5JWAAeyiZNkeQFEuaDBJgeCxD6sLoIQKqcDwcANAIUQUC+ADCDYwQAkp0OStMYR7dNS+jtDo14zhEzgPlgvLKLSEicaQSDpsosTIBYWZoB4hrMbobG3hx6AdJYvEHpxlCQGKATpKxcRiZYmSgFJ6IyTpN6nJx4rxPgKm-px0gBIgn4iXpEmGUxLFyeZoDHDQuqINQ-A2fx4Tvp+OmieJBlGUsJmeQpZSsEFbCcVwWbwJA4HhS5UXubJD7sYwnGJJ0kKUklrACYwKxpuQWWRZJuWmQVdlyAo5WcSklgILVzn1W50kefl8mFSUwjkMI7UkKMUTpnV+kNQNeVmfF5DQfAk3pswVw9bpfXRRcsVDV5iQBagk3+KwGDBpdnRza5+0DIdy0jekWA6BIk27uCZW7fN-XGYNz0dRpr3vWwk0pBqcaEL1f0PQYgPNfQtbfTDP7BatmKxjtEVw41cUjY+Sjo8loCUCwMJ3Tli1NcNRUNryE0kxVoBcOKrCsDj2ULQDS1I7yL5YJzk3gW9sP3fjR0KTQGmYQgENwpl4vU7ztNeUO5OwJNTDjWDiW-RLNME5xPzvIE0Q6XxpNMBKXN7ZLQNkxgpLE1bLMyxzzS3crPMxYjdOgASyCdJNXBetER5U77B3+15NDQP5KrrcznERT832m1H-1+3zAerRQjDUBD2BKwbKs52rCmYiazoYJNxpYFw3tl9Hj2x9L42dHAruqSUUGWM3uOG6rxugObjCW73gjICRKRZ-DT1I50PKTSwxzQXbeNG1LI3HFcCeESL5D2eQgSb8PFej5j4rvofKcbnIug7PPDtI7A4pbYgxWBffGpXDy59y4x1zl5CoTBIB8DOvfVaCQtSANbgjEBCl3rgT4MJe+IZKyM0HtzbOwDK4jQ9LoQ47JQ4WFsGfF+29HYWmUtAs00QKBUJHjvNSqZYBozdgJUYwZ4F4Lbkgka08mEZR7rZbyM9aydz4QvduQiohDlMNZaBvZNI0G0j7fhiCCEdRZHGSe4i3rIGoDI1+AcyQJEQFcb+UCuHeXIPvUx1CkbgQJIgcC2CIY4ACNtZhl9WEmGYMvH+djeTJyHkAgROjRrvTvnYng+ArihCcSwx2GpaTlCZnY8CFjup+PwaPYMOQOjeNsb3CUWRAiWB0JzfJUTR6mGOKPBwT8cF7QnGAAA5I08gnT2h0Gequdcm49CGA6b4Sk6BkAkDIM0OgWAyZRBVIweAxBMA4HCNBAItA4halANgOgRIKLeM-NhXCbR0m4B6QANVamIiQoAAC87QaJWB6ZxU8QFLyMH-EAA</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-23 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 12:47</div>
+            <div class="timeline-body"><p>No other Python type checker attempts to highlight the problematic union element as part of the <em>primary</em> diagnostic for something like this, from what I can tell:</p>
+<ul>
+<li>Mypy: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=e52205a0769db5dd033a163d85f561f8</li>
+<li>Pyright: https://pyright-play.net/?pyrightVersion=1.1.405&amp;strict=true&amp;code=CYUwZgBGAUAeBcECWA7ALhAPhAzmgTgJTwCwAUBJRADYgpyHlA</li>
+<li>Pyrefly: https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeSImMYABGABT6I0ToAuNAPjXGwE4BKRAB10NcTVjpGA0SAA0IAK5tocEuUQgAxDQCqqqBDak6S9AGNVudHFGiqtMLj4BbVGwD66Ja%2Bww%2BRmZWNgEaAFoAPh5%2BETEJPhg2JT4xMGEQADlffz5mYHwAXwy5RTJEsChSQjZcVygKXQAFUgqqngwcAhoLG0gAcxSPCBtCUV0AZRgYGgALNjZiOEQAehXy6irCF36VmHQVzFwLOBXe9AGh6wO6FxpUADdUaFRsWB6%2BiEG%2BYZsaXGI13UojIbFmNnCDwCcBGYgAvDQMgBmQgARgATCV0CBCopUFYIFCAGLQGAUNBYPBEMg4oA</li>
+</ul>
+<p>Pyright highlights it in a subdiagnostic, the same as my PR currently proposes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/function.md_-_Call_expression_-_Wrong_argument_type_-_Diagnostics_for_unio…_(5396a8f9e7f88f71).snap</code>:47 on 2025-10-23 13:01</div>
+            <div class="timeline-body"><p>That's true. But no other type checker seems to truncate the union type :)</p>
+<p>I'm fine merging this as is but I really think our approach to truncating unions is problematic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-23 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-10-23 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-23 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-23 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:3550 on 2025-10-27 08:19</div>
+            <div class="timeline-body"><p>I assumed we would fix this somewhere else, e.g. when actually checking assignability in the first place. This code here only affects invalid-argument-type, but we should do the same thing in other situations, like for actual assignments to variables. Consider:</p>
+<pre><code class="language-py">from typing import Sized
+
+class Foo: ...
+
+def g(
+    b: list[str]
+    | str
+    | dict[str, str]
+    | tuple[str, ...]
+    | bytes
+    | frozenset[str]
+    | set[str]
+    | Foo,
+):
+    y: Sized = b  # still only shows the truncated union
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-27 08:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-27 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:3550 on 2025-10-27 08:26</div>
+            <div class="timeline-body"><p>A more general solution would probably be https://github.com/astral-sh/ruff/pull/19580 (so that we always propagate up the reason <em>why</em> an assignability/subtyping relation did not hold). I do think we need something like that eventually, for better diagnostics in cases where Protocol subtyping doesn't hold (our diagnostics are currently terrible for protocols with lots of members — you can't tell which specific member of the protocol wasn't satisfied). But that would be a big change, and I'm not yet sure how it would fit in with Doug's work on the new constraint solver.</p>
+<p>We already do ad-hoc special-casing of union types like this for several other diagnostics. I agree it's not great but I think it's the best we can do for now, and it's better than nothing in the short term.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

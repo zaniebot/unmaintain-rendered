@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurable &quot;unparse mode&quot; for `ruff_python_codegen::Generator` - astral-sh/ruff #21041</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Configurable &quot;unparse mode&quot; for <code>ruff_python_codegen::Generator</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21041">#21041</a>
+        opened by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a>
+        on 2025-10-23 08:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-23 08:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>At <a href="https://github.com/RustPython/RustPython">RustPython</a> we want to fully replace https://github.com/RustPython/RustPython/blob/153d0eef51ea109d8a322fd351678847b2fb8fe2/compiler/codegen/src/unparse.rs.</p>
+<p>Currently our only regression when using Ruff's unparsing, is forcing tuple parentheses.</p>
+<h2>Test Plan</h2>
+<p>Added tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-23 08:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1633 on 2025-10-23 09:46</div>
+            <div class="timeline-body"><p>The signature here becomes a bit awkward. Should we introduce a <code>GeneratorOptions</code> struct with:</p>
+<ul>
+<li><code>indentation</code></li>
+<li><code>line_ending</code></li>
+<li><code>preferred_quote</code>: Option</li>
+<li><code>forced_tuple_parentheses</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-23 09:48</div>
+            <div class="timeline-body"><p>This option seems fairly low-level and I worry we'll have more conflicts in the future because we're likely to go to preserve the source formatting in more places where what you want is some fixed formatting (not sure I understand why it matters to you how tuples are formatted).</p>
+<p>IMO, this does raise the question if our goals are well aligned or if we'll keep patching up differences forever. Have you considerd just forking the generator?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 09:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> reviewed on 2025-10-23 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1633 on 2025-10-23 10:18</div>
+            <div class="timeline-body"><p>sounds good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> reviewed on 2025-10-23 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-23 10:28</div>
+            <div class="timeline-body"><blockquote>
+<p>This option seems fairly low-level and I worry we'll have more conflicts in the future because we're likely to go to preserve the source formatting in more places where what you want is some fixed formatting (not sure I understand why it matters to you how tuples are formatted).</p>
+</blockquote>
+<p>Because at RustPython we are using CPython test suite. when you do:</p>
+<pre><code class="language-python">import ast
+parsed = ast.parse('x = 1,')
+ast.unparse(parsed)
+</code></pre>
+<p>The returned value is <code>x = (1,)</code>, and our tests fails because it's getting <code>x = 1,</code> instead</p>
+<blockquote>
+<p>IMO, this does raise the question if our goals are well aligned or if we'll keep patching up differences forever. Have you considerd just forking the generator?</p>
+</blockquote>
+<p>We have considered that, and agreed on try to get it upstream and in the worst case we will fork, but that's less ideal for us. obviously I get the concern with merging code that solves a very niche issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 10:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-23 10:44</div>
+            <div class="timeline-body"><blockquote>
+<p>We have considered that, and agreed on try to get it upstream and in the worst case we will fork, but that's less ideal for us. obviously I get the concern with merging code that solves a very niche issue</p>
+</blockquote>
+<p>I'm less concerned about the niche use case. My concern is that our goals aren't aligned. Our long-term goal is to preserve as much as possible about the source formatting as possible. This is in direct contrast with what you want. You want a generator that's <code>ast.unparse</code> compatible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/youknowone">@youknowone</a> reviewed on 2025-10-23 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/youknowone">@youknowone</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-23 13:39</div>
+            <div class="timeline-body"><p>Hi! Long time no see.</p>
+<p>I fully understand that it’s not natural for unnecessary features to be included in the Ruff repository.</p>
+<p>However, from interpreting your explanation, it seems that @ShaharNaveh’s requirements may not actually be in direct contrast with your long-term goals.</p>
+<p>To preserve the source formatting, the system would need to store whether the original text included parentheses. Only then it could decide whether to restore them. Currently, since the original parenthesis information isn’t preserved, Ruff can only offer two fixed options: always include parentheses or never include them.</p>
+<p>In the long term, If ruff_python_codegen::Generator will need to include information from the original source anyway, then perhaps @ShaharNaveh could help implement this based on your suggestion how to approach consistent with the project’s goals.
+Meanwhile, RustPython could achieve the same purpose by simply using a fixed value instead of the original formatting information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-23 13:45</div>
+            <div class="timeline-body"><p>The issue is that, once added, other users than RustPython will start using it and it will be harder for us to remove or even remember what the use case was.</p>
+<p>I also don't fully understand the hesitation of just forking that one module. It's not that much code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/youknowone">@youknowone</a> reviewed on 2025-10-23 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/youknowone">@youknowone</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-23 14:24</div>
+            <div class="timeline-body"><p>My point is that if, as you say, your goal is to preserve the exact syntax of the original input, then users also can use the same feature aligned to your goal.</p>
+<p>It’s unfortunate that this discussion was seen merely as hesitation about forking. Everyone knows the code can be forked at any time, but I don’t think that was ever the focus of this conversation.</p>
+<p>Anyway, I understand that you’re currently not interested in this issue, and that the Ruff project is more focused on the concern that “it will be harder for us to remove or even remember what the use case was” rather than on a technical discussion about whether a similar feature might be needed in the future to restore the original syntax.</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-23 17:24</div>
+            <div class="timeline-body"><blockquote>
+<p>My point is that if, as you say, your goal is to preserve the exact syntax of the original input, then users also can use the same feature aligned to your goal.</p>
+</blockquote>
+<p>I don't understand that part. The feature you need is to always set parentheses because that's the only formatting that's compatible with <code>unparse</code>.</p>
+<blockquote>
+<p>rather than on a technical discussion about whether a similar feature might be needed in the future to restore the original syntax.</p>
+</blockquote>
+<p>I don't think that's what you need?</p>
+<p>The example from @ShaharNaveh shows that you don't want to preserve formatting:</p>
+<pre><code class="language-py">import ast
+parsed = ast.parse('x = 1,')
+ast.unparse(parsed) # should become x = (1,)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/youknowone">@youknowone</a> reviewed on 2025-10-24 04:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/youknowone">@youknowone</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-24 04:25</div>
+            <div class="timeline-body"><p>To preserve the original syntax, there must be a field to store information that it had parenthesis or not before.
+Once if there is a field. @ShaharNaveh can fill the field as he needs.</p>
+<p>That's based on your description:</p>
+<blockquote>
+<p>... because we're likely to go to preserve the source formatting in more places ...</p>
+</blockquote>
+<blockquote>
+<p>Our long-term goal is to preserve as much as possible about the source formatting as possible.</p>
+</blockquote>
+<p>Is the preservation already implemented? Then he might be able to look for it if it is reusable or not.
+Otherwise it will be required later to preserve the original formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-24 06:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-24 06:00</div>
+            <div class="timeline-body"><p>No such field exists today because Ruff always uses the precedence. But we ran into the same issue with quotes, where Ruff used to preserve parentheses, and we had to add an extra option to allow customizing the quotes. That's where my concern comes from, the &quot;better&quot; we make the generator for Ruff's purpose, the more flags we'll need.</p>
+<p>I'd be open to removing the quote style option again and instead introducing a Mode option with two variants: <code>Default</code> and <code>AstUnparse</code>. This at least cleary documents the intent of all those options</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ShaharNaveh on 2025-10-24 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Optionally force tuple parentheses for `ruff_python_codegen::Generator`" to "Configurable "unparse mode" for `ruff_python_codegen::Generator`" by @ShaharNaveh on 2025-10-24 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-24 10:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:72 on 2025-10-24 10:44</div>
+            <div class="timeline-body"><p>Nit: I think just <code>Mode</code> is enough. I'd rename <code>Ast</code> to <code>AstUnparse</code> and document that the intent is to emit the same output as Python's <code>ast.unparse</code> method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-24 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:188 on 2025-10-24 10:45</div>
+            <div class="timeline-body"><p>We could make this a method on <code>Mode</code> insteada of repeating it at every call site</p>
+<pre><code>impl Mode {
+	const fn quote_style(self, flags: AnyStringFlags) -&gt; QuoteStyle {
+		...
+	}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:72 on 2025-10-24 10:47</div>
+            <div class="timeline-body"><p>np, would you prefer this documented at the enum variant, or the <code>Generator::with_unparse_mode</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> reviewed on 2025-10-24 10:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-24 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:72 on 2025-10-24 10:48</div>
+            <div class="timeline-body"><p>I suggest documenting it at the variant level</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:188 on 2025-10-24 10:49</div>
+            <div class="timeline-body"><p>I guess that it would make sense to move the tuple precedence value to it's own method as well, right? although it's only used once it kind of makes more sense to me for some reason. I'll do that if you think it's a good idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> reviewed on 2025-10-24 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-24 10:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:188 on 2025-10-24 10:55</div>
+            <div class="timeline-body"><p>I'm less concerned about the tuple case because it's used exactly once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> reviewed on 2025-10-24 11:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:82 on 2025-10-24 11:23</div>
+            <div class="timeline-body"><p>had to use generics because this gets called with either <code>AnyStringFlags</code> or <code>BytesLiteralFlags</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> reviewed on 2025-10-24 11:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1620 on 2025-10-24 11:24</div>
+            <div class="timeline-body"><p>Renamed to <code>UnparsedMode</code> here because the name collides with</p>
+<pre><code class="language-rust">use ruff_python_parser::{..., Mode, ...};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ShaharNaveh on 2025-10-24 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-10-24 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-10-24 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-24 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/youknowone">@youknowone</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:130 on 2025-10-25 00:44</div>
+            <div class="timeline-body"><p>Thank you all for trying to find common ground.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/youknowone">@youknowone</a> reviewed on 2025-10-25 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-25 03:46</div>
+            <div class="timeline-body"><p>tysm @MichaReiser &lt;3 !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-25 08:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

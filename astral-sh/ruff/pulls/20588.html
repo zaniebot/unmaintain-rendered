@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Preserve digit separators in `Decimal` constructor (`FURB157`) - astral-sh/ruff #20588</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Preserve digit separators in <code>Decimal</code> constructor (<code>FURB157</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20588">#20588</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-09-26 03:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-09-26 03:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20572</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-26 03:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-09-30 19:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @amyreese on 2025-09-30 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @amyreese on 2025-09-30 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @amyreese on 2025-09-30 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:139 on 2025-09-30 20:11</div>
+            <div class="timeline-body"><p>I looked through some of the previous issues with this rule, and this check is not sufficient:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/13807</li>
+<li>https://github.com/astral-sh/ruff/issues/14204</li>
+<li>https://github.com/astral-sh/ruff/issues/14587</li>
+</ul>
+<p>The first of these, especially <a href="https://github.com/astral-sh/ruff/issues/13807#issuecomment-2422680644">this comment</a>, notes a couple of cases where <code>has_digit_separators</code> would lead to an invalid <code>original_str</code>. This replacement in the snapshots below is an example of that: <code>Decimal(__1____000) </code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from decimal import Decimal
+&gt;&gt;&gt; Decimal(__1____000)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-5&gt;&quot;, line 1, in &lt;module&gt;
+    Decimal(__1____000)
+            ^^^^^^^^^^
+NameError: name '__1____000' is not defined
+&gt;&gt;&gt; Decimal(&quot;__1____000&quot;)
+Decimal('1000')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-09-30 20:13</div>
+            <div class="timeline-body"><p>Thanks! But I think we need to be more careful here. At least one of the new snapshots is incorrect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-09-30 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-10-01 01:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:138 on 2025-10-01 01:30</div>
+            <div class="timeline-body"><p>Would it be better to just strip leading underscores, and otherwise preserve the placement and frequency, rather than assume that thousands are the only use of underscores in numeric literals?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-01 01:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:138 on 2025-10-01 01:35</div>
+            <div class="timeline-body"><p>Leading underscores aren't the only problem. Duplicates in the middle cause a syntax error too, but not in the <code>Decimal</code> constructor:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from decimal import Decimal
+&gt;&gt;&gt; 1__2
+  File &quot;&lt;python-input-2&gt;&quot;, line 1
+    1__2
+     ^
+SyntaxError: invalid decimal literal
+&gt;&gt;&gt; Decimal(&quot;1__2&quot;)
+Decimal('12')
+</code></pre>
+<p>But I agree in principle, <code>add_thousand_separators</code> does not seem like the right approach to me.</p>
+<p>I'm starting to think we should just mark the fix as unsafe if the value we're replacing the original with is different. The edge cases here seem pretty tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-10-01 01:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:138 on 2025-10-01 01:47</div>
+            <div class="timeline-body"><p>Thanks for catching that; I agree that marking it unsafe is probably the way to go to not break too much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/m-aciek">@m-aciek</a> reviewed on 2025-10-01 09:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/m-aciek">@m-aciek</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:138 on 2025-10-01 09:32</div>
+            <div class="timeline-body"><p>Wouldn't stripping leading underscores and replacing duplicates with a single underscore be enough?</p>
+<p>In my opinion keeping <code>Decimal(&quot;10_000_000&quot;)</code> -&gt; <code>Decimal(10_000_000)</code> transition as safe would be very convenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:138 on 2025-10-01 12:32</div>
+            <div class="timeline-body"><p>It would be enough to strip leading underscores, strip trailing underscores, strip leading zeros (unless all the digits are zeros), and collapse medial underscore sequences: <code>Decimal(&quot; _-_0_01__2_ &quot;)</code> would become <code>Decimal(-1_2)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a> reviewed on 2025-10-01 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/m-aciek">@m-aciek</a> reviewed on 2025-10-01 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/m-aciek">@m-aciek</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:138 on 2025-10-01 17:00</div>
+            <div class="timeline-body"><p>That's the behavior I fight for ❤️ 🚀 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-01 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:138 on 2025-10-01 17:02</div>
+            <div class="timeline-body"><p>That sounds reasonable to me, I gave up a bit too soon :) @danparizher do you want to give this a shot? We can still revert to marking the fix unsafe if the code gets too complicated, but this sounds feasible with the transformations we're already doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-10-01 23:42</div>
+            <div class="timeline-body"><p>lgtm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-10-02 01:34</div>
+            <div class="timeline-body"><p>The current state of this PR is that underscores are normalized to be thousands separators, but cf. @amyreese’s <a href="https://github.com/astral-sh/ruff/pull/20588#discussion_r2393221709">earlier comment</a>. If a user writes <code>Decimal(&quot;1__23_45_000&quot;)</code> that formatting was probably intentional so it should become <code>Decimal(1_23_45_000)</code>. I think normalizing the underscores more than the minimum needed to avoid a syntax error should be left for a different rule as in #18221.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-21 07:27</div>
+            <div class="timeline-body"><p>What's the status of this PR? Is there something left that needs addressing or is it good to go?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-21 13:06</div>
+            <div class="timeline-body"><p>I don't think we should normalize the digit separators to thousands separators, as @dscorbett pointed out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:251 on 2025-10-24 19:56</div>
+            <div class="timeline-body"><p>I think this ends up being overly verbose and defensive, and lines 225-251 could be replaced with just:</p>
+<pre><code>let result = trimmed
+    .chars()
+    .dedup_by(|a, b| {*a == '_' &amp;&amp; a == b})
+    .collect::&lt;String&gt;();
+</code></pre>
+<p>Leading/trailing underscores were already trimmed by line 218, so there shouldn't be a need to both check that there are some number of digits <em>and</em> the result after trimming/deduplication is not empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB157.py</code>:78 on 2025-10-24 19:57</div>
+            <div class="timeline-body"><p>Would be nice to include test cases showing that non-thousands separators are maintained accordingly, eg <code>&quot;12_34_56_78&quot;</code> and <code>&quot;1234_5678&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-10-24 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:159 on 2025-10-24 20:45</div>
+            <div class="timeline-body"><p>We should use <code>Fix::applicable_edit</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:159 on 2025-10-24 20:47</div>
+            <div class="timeline-body"><p>Or wait, if we're going to preserve the original formatting, should it just be safe again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:209 on 2025-10-24 20:48</div>
+            <div class="timeline-body"><p>We should either remove <code>_numeric_part</code> if it's unused or rename it to <code>numeric_part</code>, if it's used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:231 on 2025-10-24 20:51</div>
+            <div class="timeline-body"><p>These <code>is_empty</code> checks don't seem right to me at all. I don't think we should return an arbitrary value for invalid input, and I think we've already validated the input in <code>verbose_decimal_constructor</code>, but I could also be missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:215 on 2025-10-24 20:52</div>
+            <div class="timeline-body"><p>We already stripped the prefix once on line 99. Can we reuse more of the work from the parent function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-24 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-10-24 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-28 20:31</div>
+            <div class="timeline-body"><p>I pushed a few commits simplifying things slightly to reuse the earlier unary prefix removal, but this looks good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-28 21:35</div>
+            <div class="timeline-body"><p>After a bit more thought, I came up with some additional edge cases with separators and leading zeros. Hopefully everything is covered now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-28 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-28 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-28 21:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>

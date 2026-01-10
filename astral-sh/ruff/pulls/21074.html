@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expose some methods of `ruff_python_parser::Lexer` - astral-sh/ruff #21074</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Expose some methods of <code>ruff_python_parser::Lexer</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21074">#21074</a>
+        opened by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a>
+        on 2025-10-25 14:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-25 14:39</div>
+            <div class="timeline-body"><p>While trying to lex an incomplete source code that comes from a lazy iterator or a <a href="https://doc.rust-lang.org/std/io/trait.BufRead.html"><code>BufRead</code></a>, I had trouble with:</p>
+<ul>
+<li>knowing what is the offset of the last good token</li>
+<li>Configure the Lexer to start from the offset of the last good token</li>
+</ul>
+<p>Unfortunately
+https://github.com/astral-sh/ruff/blob/64ab79e5721ec6fdd2182fbf9d39a26534ccca43/crates/ruff_python_parser/src/lexer.rs#L1823-L1824</p>
+<p>doesn't let you do that.</p>
+<hr />
+<p>Feel free to close this PR if this is an unwanted change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ShaharNaveh on 2025-10-25 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ShaharNaveh on 2025-10-25 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:85 on 2025-10-25 14:55</div>
+            <div class="timeline-body"><p>I'd be okay to have a function next to <code>lex_tokens</code> that also takes an offset but I rather keep the constructor <code>pub(crate)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-25 14:56</div>
+            <div class="timeline-body"><p>Can you tell me more about your use case?</p>
+<p>The lexer is very much tied to our parser and not really intended to be public API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-25 14:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-25 17:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you tell me more about your use case?</p>
+</blockquote>
+<p>ofc:)</p>
+<p>I'm trying to implement a Rust iterator that behaves like CPython’s internal, undocumented <code>_tokenize.TokenizerIter</code> class.
+This class operates on any object that provides a <code>.readline()</code> method.</p>
+<p>On each <code>__next__</code> call, it:</p>
+<ul>
+<li>May call <code>.readline()</code> on the given object, consuming it lazily as needed.</li>
+<li>Yields a tuple that includes (among other elements) the line and column numbers where the token starts and ends, which is why I need access to the <code>TextRange</code>.</li>
+</ul>
+<p>Because the input is consumed lazily, I need to keep track of my current position (offset) in the source. I don’t want to re-tokenize everything from the beginning every time a new line is read.</p>
+<p>For example, imagine the first line is:</p>
+<pre><code class="language-py">def foo():
+</code></pre>
+<p>After processing the <code>:</code> token, a syntax error occurs. To continue, I call <code>.readline()</code> on the buffer, which gives me:</p>
+<pre><code class="language-py">    pass
+</code></pre>
+<p>Now, my <code>source</code> looks like this:</p>
+<pre><code class="language-py">def foo():
+    pass
+</code></pre>
+<p>I should be able to get the next token starting from where the <code>:</code> token ended (in this case the next token would be <code>Indent</code>, then <code>Pass</code>).</p>
+<p>Here’s a short Python snippet that illustrates the behavior:</p>
+<pre><code class="language-py">import io
+import _tokenize
+
+buf = io.StringIO(
+&quot;&quot;&quot;
+def func():
+  pass
+
+-)( ERROR $&amp;-
+
+for i in range(1):
+  pass
+&quot;&quot;&quot;)
+
+try:
+  for tup in _tokenize.TokenizerIter(buf.readline, extra_tokens=False):
+    # (token numeric value, token value, (char_offset_start, line_start), (char_offset_end, line_end), current_line)
+    # Token numeric val from: https://github.com/python/cpython/blob/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Lib/token.py#L7-L79
+    print(tup)
+except BaseException as err:
+  print(f&quot;{err=}&quot;)
+
+print(f&quot;{buf.read()=}&quot;) # Remaining buffer that wasn't touched.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> reviewed on 2025-10-25 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:85 on 2025-10-25 17:09</div>
+            <div class="timeline-body"><p>np.But it does feel a bit redundant as it would have the same signature and would call <code>Lexer::new</code> under the hood. so we end up with two identical methods only that one of them is <code>pub</code> and the other is <code>pub(crate)</code></p>
+<p>I'm not even sure how to call it :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-25 18:02</div>
+            <div class="timeline-body"><p>Thanks for the explanation.</p>
+<p>I don't think <code>Lexer::new</code> starting from a given offset is what you want in that case. The issue with constructing a new Lexer is that the Lexer tracks a lot of internal state (the number of open parentheses, the f-string nesting, ...) that you lose when you throw away the old lexer and create a new instance.</p>
+<p>So what you really want is a way to update the underlying <code>String</code> (which will append new content) and then call <code>next_token</code> again. But I'm not even sure if that will work because the <code>Lexer</code> e.g. returns a <code>String</code> token even if it is unterminated. In that case, you'd have to check that the unterminated flag is set, then rewind the lexer to <em>before the string</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-25 18:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the explanation.</p>
+<p>I don't think <code>Lexer::new</code> starting from a given offset is what you want in that case. The issue with constructing a new Lexer is that the Lexer tracks a lot of internal state (the number of open parentheses, the f-string nesting, ...) that you lose when you throw away the old lexer and create a new instance.</p>
+</blockquote>
+<blockquote>
+<p>So what you really want is a way to update the underlying <code>String</code> (which will append new content) and then call <code>next_token</code> again. But I'm not even sure if that will work because the <code>Lexer</code> e.g. returns a <code>String</code> token even if it is unterminated. In that case, you'd have to check that the unterminated flag is set, then rewind the lexer to <em>before the string</em>.</p>
+</blockquote>
+<p>Oh, good to know.</p>
+<p>So, if I understand it correctly:
+There's no benefit for me to start the Lexer from a different offset, I could re-lex the entire <code>source</code> and grab the first token that has a larger offset from what I previously had.
+Unless there's an API to adjust the cursor location of the Lexer that I don't see (even if there was, it will feel criminally wrong).</p>
+<p>And for this PR, I'd need to make the following adjustments:</p>
+<p>Add <code>TokenFlags</code> to https://github.com/astral-sh/ruff/blob/64ab79e5721ec6fdd2182fbf9d39a26534ccca43/crates/ruff_python_parser/src/lib.rs#L74</p>
+<p>And make this <code>pub</code>:
+https://github.com/astral-sh/ruff/blob/64ab79e5721ec6fdd2182fbf9d39a26534ccca43/crates/ruff_python_parser/src/lexer.rs#L134</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> reviewed on 2025-10-25 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:85 on 2025-10-25 18:28</div>
+            <div class="timeline-body"><p>After your explanation here: https://github.com/astral-sh/ruff/pull/21074#issuecomment-3446985878</p>
+<p>There's no need to have this one public. will revert</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ShaharNaveh on 2025-10-25 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-25 21:32</div>
+            <div class="timeline-body"><p>It's not clear to me why you need the current_* methos over just calling next token?</p>
+<p>Adjusting the cursor Location has the same problem as creating a new lexer: it doesn't account for the internal state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShaharNaveh">@ShaharNaveh</a> on 2025-10-26 10:06</div>
+            <div class="timeline-body"><p>@MichaReiser After your explanation of:</p>
+<blockquote>
+<p>I don't think Lexer::new starting from a given offset is what you want in that case. The issue with constructing a new Lexer is that the Lexer tracks a lot of internal state (the number of open parentheses, the f-string nesting, ...) that you lose when you throw away the old lexer and create a new instance.</p>
+</blockquote>
+<p>It seems like <code>Lexer</code> isn't exactly what I need. And if I intend to reparse the whole <code>source</code> after each new addition to <code>source</code> then <code>ruff_python_parser::Parser</code> already gives me what I need.</p>
+<p>tysm for the replies and explanations!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ShaharNaveh on 2025-10-26 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-26 10:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:00:12 UTC
+    </footer>
+</body>
+</html>
