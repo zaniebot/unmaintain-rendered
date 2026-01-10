@@ -12,7 +12,7 @@ head: zb/fix-first-commit
 created_at: 2025-09-09T12:11:47Z
 updated_at: 2025-09-09T12:20:54Z
 url: https://github.com/zanieb/rooster/pull/78
-synced_at: 2026-01-10T00:09:01Z
+synced_at: 2026-01-10T00:14:18Z
 ---
 
 # Allow leading commits that have not been pushed

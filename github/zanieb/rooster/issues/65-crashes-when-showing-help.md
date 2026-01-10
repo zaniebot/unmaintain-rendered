@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-05-13T09:44:45Z
 updated_at: 2025-08-26T16:10:10Z
 url: https://github.com/zanieb/rooster/issues/65
-synced_at: 2026-01-10T00:09:01Z
+synced_at: 2026-01-10T00:14:18Z
 ---
 
 # Crashes when showing help

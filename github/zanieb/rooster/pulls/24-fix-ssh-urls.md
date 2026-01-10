@@ -13,7 +13,7 @@ head: fix-ssh-urls
 created_at: 2024-03-23T16:59:33Z
 updated_at: 2024-03-24T16:51:05Z
 url: https://github.com/zanieb/rooster/pull/24
-synced_at: 2026-01-10T00:09:01Z
+synced_at: 2026-01-10T00:14:18Z
 ---
 
 # Fix ssh urls

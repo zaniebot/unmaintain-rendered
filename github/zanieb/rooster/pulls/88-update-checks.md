@@ -12,7 +12,7 @@ head: zb/check-up
 created_at: 2026-01-08T20:46:32Z
 updated_at: 2026-01-08T20:46:32Z
 url: https://github.com/zanieb/rooster/pull/88
-synced_at: 2026-01-10T00:09:01Z
+synced_at: 2026-01-10T00:14:18Z
 ---
 
 # Update checks

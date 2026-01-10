@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-28T13:02:03Z
 updated_at: 2024-03-17T14:55:19Z
 url: https://github.com/zanieb/rooster/issues/18
-synced_at: 2026-01-10T00:09:01Z
+synced_at: 2026-01-10T00:14:18Z
 ---
 
 # Stopped working when using `v` prefix for tags 

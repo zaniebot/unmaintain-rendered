@@ -12,7 +12,7 @@ head: zb/fix-missing-commit
 created_at: 2025-05-05T13:45:25Z
 updated_at: 2025-05-05T14:16:41Z
 url: https://github.com/zanieb/rooster/pull/61
-synced_at: 2026-01-10T00:09:01Z
+synced_at: 2026-01-10T00:14:18Z
 ---
 
 # Skip nodes with missing commits

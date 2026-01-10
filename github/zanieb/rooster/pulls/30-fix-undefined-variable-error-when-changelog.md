@@ -13,7 +13,7 @@ head: zb/fix-i
 created_at: 2024-03-24T16:53:56Z
 updated_at: 2024-03-24T16:55:40Z
 url: https://github.com/zanieb/rooster/pull/30
-synced_at: 2026-01-10T00:09:01Z
+synced_at: 2026-01-10T00:14:18Z
 ---
 
 # Fix undefined variable error when changelog exists but is empty
