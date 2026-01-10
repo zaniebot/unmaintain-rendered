@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-02T09:06:46Z
 updated_at: 2025-05-16T07:19:43Z
 url: https://github.com/astral-sh/uv/issues/9571
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Workspaces with common code and `uv run` with subset of packages?
@@ -55,10 +55,6 @@ _Comment by @bepuca on 2024-12-09 13:31_
 
 This does kinda work, but long term it feels a bit like a patch. Is it in the roadmap to be able to do `uv export --package X --package Y`? 
 I find a few instances in which we may require this and it would be super helpful. In our current case, we need to extract the code into a temp dir with a few more things, so we are exporting the requirements and running from there. I guess we can extract multiple files and since they all come from the same lock, they should be able to install together. The problem is this adds a bit of complexity. Nothing terrible, but I think being able to slice a number of packages for commands would be useful.
-
----
-
-_Referenced in [astral-sh/uv#8334](../../astral-sh/uv/issues/8334.md) on 2024-12-20 15:47_
 
 ---
 

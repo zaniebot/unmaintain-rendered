@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-10T03:59:35Z
 updated_at: 2025-05-13T15:50:08Z
 url: https://github.com/astral-sh/uv/issues/13374
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # --short option for list
@@ -54,9 +54,5 @@ _Label `enhancement` added by @w3soul on 2025-05-10 03:59_
 _Comment by @Sharraff on 2025-05-13 15:50_
 
 i will like to take this on, if you don't mind
-
----
-
-_Referenced in [astral-sh/uv#13832](../../astral-sh/uv/issues/13832.md) on 2025-06-04 12:47_
 
 ---

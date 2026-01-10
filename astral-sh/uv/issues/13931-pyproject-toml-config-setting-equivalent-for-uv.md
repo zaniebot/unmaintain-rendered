@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-09T19:12:43Z
 updated_at: 2025-06-09T19:56:22Z
 url: https://github.com/astral-sh/uv/issues/13931
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `pyproject.toml` config setting equivalent for `UV_PROJECT_ENVIRONMENT`
@@ -61,9 +61,5 @@ Please see https://github.com/astral-sh/uv/issues/12587#issuecomment-2770642225
 ---
 
 _Label `duplicate` added by @zanieb on 2025-06-09 19:56_
-
----
-
-_Referenced in [astral-sh/uv#15163](../../astral-sh/uv/issues/15163.md) on 2025-08-08 09:56_
 
 ---

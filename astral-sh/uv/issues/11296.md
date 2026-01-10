@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-06T20:44:39Z
 updated_at: 2025-05-20T12:53:22Z
 url: https://github.com/astral-sh/uv/issues/11296
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Hitting ulimit with huge workspace
@@ -272,9 +272,5 @@ Hi @potiuk We are also doing the same  for our `mono` repo, which houses a large
 - Also I see you say you do not `commit` the `uv.lock` , how does that work ? It is just like `poetry.lock` or `npm_lock.json` and they are all committed to the repository ?
 
 thanks
-
----
-
-_Referenced in [fastapi-practices/fastapi_best_architecture#908](../../fastapi-practices/fastapi_best_architecture/pulls/908.md) on 2025-11-21 13:38_
 
 ---

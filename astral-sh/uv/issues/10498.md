@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-11T14:11:31Z
 updated_at: 2025-04-01T19:23:16Z
 url: https://github.com/astral-sh/uv/issues/10498
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Revised `activate` script fails on `alpine:edge`
@@ -35,10 +35,6 @@ _Renamed from "This change caused our CI to fail using `alpine:edge` image" to "
 ---
 
 _Label `bug` added by @charliermarsh on 2025-01-11 14:11_
-
----
-
-_Referenced in [astral-sh/uv#10492](../../astral-sh/uv/pulls/10492.md) on 2025-01-11 15:34_
 
 ---
 
@@ -125,10 +121,6 @@ index 3678ee23b..f87ca81dd 100644
  fi
  export VIRTUAL_ENV
 ```
-
----
-
-_Referenced in [astral-sh/uv#10521](../../astral-sh/uv/pulls/10521.md) on 2025-01-11 19:35_
 
 ---
 

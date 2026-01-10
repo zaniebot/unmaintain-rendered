@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-17T15:31:11Z
 updated_at: 2025-05-18T13:02:36Z
 url: https://github.com/astral-sh/uv/issues/13508
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # installing a workspace with workspace dependency groups
@@ -60,10 +60,6 @@ layout
 
 all the packages define dev dependency groups that need to be installed for ci to run, trying to understand how to make this work with uv. it seems uv sync is optionated to automatically remove packages in the virtualenv that are not related to the current package's sync operation, so we need someway to encapsulate installing all packages and their dev group dependencies to be able to run ci from a top level command (makefile target ~ make test)
  
-
----
-
-_Referenced in [cloud-custodian/cloud-custodian#10140](../../cloud-custodian/cloud-custodian/pulls/10140.md) on 2025-05-17 15:40_
 
 ---
 

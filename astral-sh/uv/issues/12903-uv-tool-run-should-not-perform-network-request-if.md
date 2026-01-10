@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-15T20:27:11Z
 updated_at: 2025-05-06T05:32:18Z
 url: https://github.com/astral-sh/uv/issues/12903
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv tool run should not perform network request if version is fully frozen
@@ -83,9 +83,5 @@ _Comment by @tjni on 2025-05-06 05:32_
 I think I have a similar request (but not exactly the same).
 
 I'd like to always use `uvx run package@latest` to quickly deliver the latest code changes to my consumers, but dependency resolution for my package takes about a minute. I think I'm looking for a way to make the semantics of `latest` mean: check for a new version but if the latest version is still the same as last time, use the cached one without dependency resolution.
-
----
-
-_Referenced in [astral-sh/uv#17089](../../astral-sh/uv/issues/17089.md) on 2025-12-11 18:20_
 
 ---

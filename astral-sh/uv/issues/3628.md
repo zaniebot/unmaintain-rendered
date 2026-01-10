@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-16T16:52:24Z
 updated_at: 2025-03-27T21:21:08Z
 url: https://github.com/astral-sh/uv/issues/3628
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Install root package as editable in `uv run`
@@ -28,10 +28,6 @@ _Label `preview` added by @charliermarsh on 2024-05-16 16:52_
 ---
 
 _Assigned to @konstin by @konstin on 2024-05-17 11:44_
-
----
-
-_Referenced in [astral-sh/uv#3843](../../astral-sh/uv/issues/3843.md) on 2024-05-26 19:17_
 
 ---
 

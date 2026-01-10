@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T19:59:34Z
 updated_at: 2025-04-27T03:48:07Z
 url: https://github.com/astral-sh/uv/issues/12728
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Install yields `failed to download`
@@ -76,9 +76,5 @@ Basically just doing:
 ---
 
 _Closed by @LarsKue on 2025-04-27 03:48_
-
----
-
-_Referenced in [boukendesho/curl-snap#1](../../boukendesho/curl-snap/issues/1.md) on 2025-04-29 08:25_
 
 ---

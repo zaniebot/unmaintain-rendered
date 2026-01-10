@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-01T17:57:30Z
 updated_at: 2025-05-21T13:46:10Z
 url: https://github.com/astral-sh/uv/issues/13254
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv version leaves lock file out-of-date
@@ -96,10 +96,6 @@ Installed 1 package in 1ms
  - lvmcryo==0.3.12a0 (from file:///home/gallegoj/code/lvmcryo)
  + lvmcryo==0.3.13a0 (from file:///home/gallegoj/code/lvmcryo)
 ```
-
----
-
-_Referenced in [astral-sh/uv#13317](../../astral-sh/uv/pulls/13317.md) on 2025-05-06 18:54_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-21T11:21:00Z
 updated_at: 2025-05-21T11:26:15Z
 url: https://github.com/astral-sh/uv/issues/13570
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # allow multiple --package arguments to uv sync
@@ -40,10 +40,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @kapilt on 2025-05-21 11:21_
-
----
-
-_Referenced in [cloud-custodian/cloud-custodian#10140](../../cloud-custodian/cloud-custodian/pulls/10140.md) on 2025-05-21 11:22_
 
 ---
 

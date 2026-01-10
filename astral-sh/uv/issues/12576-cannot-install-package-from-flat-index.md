@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-31T06:52:36Z
 updated_at: 2025-03-31T13:22:37Z
 url: https://github.com/astral-sh/uv/issues/12576
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Cannot install package from "flat" index
@@ -237,10 +237,6 @@ _Comment by @luh-t-to on 2025-03-31 13:20_
 That works! Wonderful, thank you very much.
 
 I got it from the [docs](https://docs.astral.sh/uv/configuration/indexes/#flat-indexes)
-
----
-
-_Referenced in [astral-sh/uv#12583](../../astral-sh/uv/pulls/12583.md) on 2025-03-31 13:22_
 
 ---
 

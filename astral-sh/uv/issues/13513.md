@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-18T13:43:24Z
 updated_at: 2025-06-09T23:50:37Z
 url: https://github.com/astral-sh/uv/issues/13513
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # [nit] uv pip install lists updating, updated for git source
@@ -66,10 +66,6 @@ Yeah I'd like to avoid emitting here when we already have the SHA checked-out.
 ---
 
 _Assigned to @oconnor663 by @oconnor663 on 2025-05-29 21:00_
-
----
-
-_Referenced in [astral-sh/uv#13748](../../astral-sh/uv/pulls/13748.md) on 2025-05-31 03:33_
 
 ---
 

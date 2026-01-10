@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T09:24:33Z
 updated_at: 2025-04-17T16:01:46Z
 url: https://github.com/astral-sh/uv/issues/9834
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # phantom UV_PROJECT_ENVIRONMENT value
@@ -49,10 +49,6 @@ _Label `question` added by @zanieb on 2024-12-12 13:58_
 _Comment by @superlopuh on 2024-12-12 14:19_
 
 Hmm, but what I'd really like is to reuse my scripts that use `uv` to use the current env instead of .venv, is the recommended way to do that by launching them with `UV_PROJECT_ENVIRONMENT=venvbla`?
-
----
-
-_Referenced in [xdslproject/xdsl#3630](../../xdslproject/xdsl/pulls/3630.md) on 2024-12-12 14:20_
 
 ---
 

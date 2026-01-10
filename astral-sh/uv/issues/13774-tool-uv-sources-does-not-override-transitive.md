@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-02T01:52:10Z
 updated_at: 2025-06-04T03:14:50Z
 url: https://github.com/astral-sh/uv/issues/13774
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `[tool.uv.sources]` does not override transitive dependencies
@@ -186,10 +186,6 @@ Yes I think adding a warning for cases like this would be a good idea. I'll keep
 _Comment by @zanieb on 2025-06-03 23:18_
 
 Just to be clear, I don't think we can unconditionally warn if `tool.uv.sources` is unused at install time — it'd be too noisy. However, I do think it's reasonable to warn if `tool.uv.sources` would _never_ be used. It seems a bit tricky, but maybe it's not so bad. @oconnor663, I'd recommend opening a new issue with a simpler reproduction and dedicated title so we can close this one out.
-
----
-
-_Referenced in [astral-sh/uv#13829](../../astral-sh/uv/issues/13829.md) on 2025-06-04 03:14_
 
 ---
 

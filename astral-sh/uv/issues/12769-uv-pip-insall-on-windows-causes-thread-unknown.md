@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-09T02:28:37Z
 updated_at: 2025-04-16T07:27:47Z
 url: https://github.com/astral-sh/uv/issues/12769
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv pip insall` on Windows causes "thread '<unknown>' has overflowed its stack"
@@ -327,14 +327,6 @@ We can set the higher default stack size for rayon, too.
 
 ---
 
-_Referenced in [trifectatechfoundation/zlib-rs#340](../../trifectatechfoundation/zlib-rs/issues/340.md) on 2025-04-11 15:47_
-
----
-
-_Referenced in [astral-sh/uv#12839](../../astral-sh/uv/pulls/12839.md) on 2025-04-11 16:05_
-
----
-
 _Comment by @konstin on 2025-04-14 09:37_
 
 If you have the chance, could you test #12839?
@@ -363,10 +355,6 @@ The bigger stacks solution is what we should do, but I'm now reasonably sure we'
 
 ---
 
-_Referenced in [rayon-rs/rayon#854](../../rayon-rs/rayon/issues/854.md) on 2025-04-14 15:01_
-
----
-
 _Comment by @notatallshaw on 2025-04-16 01:20_
 
 > If you have the chance, could you test [#12839](https://github.com/astral-sh/uv/pull/12839)?
@@ -376,9 +364,5 @@ I tested your current branch and was unable to reproduce the error, whereas I ca
 ---
 
 _Closed by @konstin on 2025-04-16 07:27_
-
----
-
-_Referenced in [astral-sh/uv#11837](../../astral-sh/uv/issues/11837.md) on 2025-04-16 14:43_
 
 ---

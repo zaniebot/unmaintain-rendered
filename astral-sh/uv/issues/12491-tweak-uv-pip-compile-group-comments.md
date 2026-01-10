@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-26T16:41:47Z
 updated_at: 2025-03-26T16:41:47Z
 url: https://github.com/astral-sh/uv/issues/12491
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # tweak `uv pip compile --group` comments
@@ -54,13 +54,5 @@ all
 ---
 
 _Label `bug` added by @Gankra on 2025-03-26 16:41_
-
----
-
-_Referenced in [jazzband/pip-tools#2062](../../jazzband/pip-tools/issues/2062.md) on 2025-03-26 16:42_
-
----
-
-_Referenced in [astral-sh/uv#12495](../../astral-sh/uv/pulls/12495.md) on 2025-03-26 20:15_
 
 ---

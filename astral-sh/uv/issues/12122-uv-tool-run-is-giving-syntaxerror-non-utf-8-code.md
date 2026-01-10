@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-11T22:47:58Z
 updated_at: 2025-03-28T12:50:15Z
 url: https://github.com/astral-sh/uv/issues/12122
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv tool run is giving "SyntaxError: Non-UTF-8 code starting with '\xe8' in file..."
@@ -1306,14 +1306,6 @@ PEP 514 support is implemented, it's still in preview though (`--preview` or `UV
 
 ---
 
-_Referenced in [astral-sh/uv#12175](../../astral-sh/uv/pulls/12175.md) on 2025-03-19 18:30_
-
----
-
-_Referenced in [astral-sh/uv#12246](../../astral-sh/uv/pulls/12246.md) on 2025-03-21 17:47_
-
----
-
 _Comment by @schlamar on 2025-03-28 08:09_
 
 I wonder if the original issue is going to be tackled?
@@ -1330,9 +1322,5 @@ It's not quite clear what the current stance is about Python 3.7 compatibility. 
 _Comment by @charliermarsh on 2025-03-28 12:50_
 
 Yes, we don’t officially support Python 3.7, which is why it’s not included in the list of supported platforms. It mostly works, especially on Linux and macOS, but it’s not officially supported.
-
----
-
-_Referenced in [astral-sh/uv#12577](../../astral-sh/uv/issues/12577.md) on 2025-03-31 13:00_
 
 ---

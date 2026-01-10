@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-25T08:02:27Z
 updated_at: 2025-04-28T13:50:08Z
 url: https://github.com/astral-sh/uv/issues/13101
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv can't find installed packages
@@ -153,10 +153,6 @@ _Comment by @eromoe on 2025-04-26 04:24_
 If you see my above comments, you would find the uv do something wrong on my machine . 
 I can't access packages installed by uv . 
 
-
----
-
-_Referenced in [astral-sh/uv#13098](../../astral-sh/uv/issues/13098.md) on 2025-04-26 04:28_
 
 ---
 

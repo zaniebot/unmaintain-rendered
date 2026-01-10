@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-08T14:12:58Z
 updated_at: 2025-04-08T14:34:35Z
 url: https://github.com/astral-sh/uv/issues/12744
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Wrong dependency built from correct git hash
@@ -98,9 +98,5 @@ _Comment by @robtovey on 2025-04-08 14:34_
 It looks like I should have looked into the specific dependency a bit more first...
 I am assuming that such an edge-case will not appear very often!
 Feel free to close this issue whenever you consider it solved from the uv side
-
----
-
-_Referenced in [ElmerCSC/elmer_circuitbuilder#12](../../ElmerCSC/elmer_circuitbuilder/issues/12.md) on 2025-04-08 15:40_
 
 ---

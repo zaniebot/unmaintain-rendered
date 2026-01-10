@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-20T22:51:34Z
 updated_at: 2025-04-10T19:47:01Z
 url: https://github.com/astral-sh/uv/issues/10793
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Add --frozen flag to "sync-and-running" documentation
@@ -131,18 +131,6 @@ _Comment by @johnthagen on 2025-03-21 17:13_
 I can concede the tradeoffs you're making and if Cargo works this way that is extra support to your position.
 
 I still feel unsure of this myself given the potential for an unexpected footgun, but can respect the decision you all are making.
-
----
-
-_Referenced in [astral-sh/uv#12372](../../astral-sh/uv/issues/12372.md) on 2025-03-21 17:13_
-
----
-
-_Referenced in [astral-sh/uv#12818](../../astral-sh/uv/pulls/12818.md) on 2025-04-10 18:12_
-
----
-
-_Referenced in [astral-sh/uv#12819](../../astral-sh/uv/pulls/12819.md) on 2025-04-10 18:15_
 
 ---
 

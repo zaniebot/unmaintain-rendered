@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-31T08:50:44Z
 updated_at: 2025-04-02T14:15:37Z
 url: https://github.com/astral-sh/uv/issues/12578
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv run python in vllm dir failed `No solution found when resolving dependencies for split`
@@ -108,13 +108,5 @@ _Reopened by @yihong0618 on 2025-04-02 05:39_
 _Comment by @zanieb on 2025-04-02 14:15_
 
 We don't support `setup.py` specific fields no, those are all run via `setuptools` and don't use uv configuration.
-
----
-
-_Referenced in [vllm-project/vllm#15985](../../vllm-project/vllm/issues/15985.md) on 2025-04-03 03:36_
-
----
-
-_Referenced in [vllm-project/vllm#15986](../../vllm-project/vllm/pulls/15986.md) on 2025-04-03 03:46_
 
 ---

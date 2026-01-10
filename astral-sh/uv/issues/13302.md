@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-05T15:27:23Z
 updated_at: 2025-05-07T10:53:15Z
 url: https://github.com/astral-sh/uv/issues/13302
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # error: Operation not supported (os error 95)
@@ -77,10 +77,6 @@ Python 3.10.11
 ---
 
 _Label `bug` added by @thatlittleboy on 2025-05-05 15:27_
-
----
-
-_Referenced in [astral-sh/uv#13303](../../astral-sh/uv/pulls/13303.md) on 2025-05-05 16:19_
 
 ---
 

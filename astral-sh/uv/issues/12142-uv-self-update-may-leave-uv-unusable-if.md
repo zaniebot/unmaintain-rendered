@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-12T19:03:55Z
 updated_at: 2025-06-10T11:05:42Z
 url: https://github.com/astral-sh/uv/issues/12142
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv self update` may leave uv unusable if interrupted
@@ -71,10 +71,6 @@ please review the error messages below.
 _Comment by @zanieb on 2025-04-01 17:09_
 
 I'm not sure we can easily tell. I think we just need to move it to a temporary directory instead of trying to remove it. This is a Windows-specific thing though.
-
----
-
-_Referenced in [astral-sh/uv#12816](../../astral-sh/uv/issues/12816.md) on 2025-04-27 13:23_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-16T14:07:40Z
 updated_at: 2025-05-17T00:17:24Z
 url: https://github.com/astral-sh/uv/issues/13492
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Failed to extract archive, bzip2: bz2 header missing
@@ -89,10 +89,6 @@ I'm hitting this very frequently, locally and on CI, in the last 24 hours or so.
 
 ---
 
-_Referenced in [astral-sh/uv#13498](../../astral-sh/uv/pulls/13498.md) on 2025-05-16 20:41_
-
----
-
 _Comment by @konstin on 2025-05-16 20:48_
 
 We accidentally changed the cache format in the 0.7.4 without noticing, causing these errors, sorry! Cleaning the cache will fix this, but we're also shipping a fix with the next release.
@@ -104,9 +100,5 @@ _Closed by @charliermarsh on 2025-05-17 00:17_
 ---
 
 _Closed by @charliermarsh on 2025-05-17 00:17_
-
----
-
-_Referenced in [kedro-org/kedro#4747](../../kedro-org/kedro/issues/4747.md) on 2025-05-19 16:19_
 
 ---

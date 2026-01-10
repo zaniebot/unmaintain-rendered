@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-26T23:05:51Z
 updated_at: 2025-03-27T21:39:30Z
 url: https://github.com/astral-sh/uv/issues/12499
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Initial `uv add --script` produces invalid result with existing metadata section
@@ -120,10 +120,6 @@ It only does this when the nonstandard section is the first line in the file.
 _Comment by @merlinz01 on 2025-03-26 23:40_
 
 More accurately, it does this when the first non-shebang line in the file is a valid metadata section line.
-
----
-
-_Referenced in [astral-sh/uv#12501](../../astral-sh/uv/pulls/12501.md) on 2025-03-27 01:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-27T18:24:56Z
 updated_at: 2025-04-27T20:09:06Z
 url: https://github.com/astral-sh/uv/issues/13137
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # When downloading packages in CI action UV doesn't print which version it resolved to download.
@@ -44,9 +44,5 @@ Hmm, I don't think that's a uv error. It looks like a runtime error, from trying
 _Comment by @CompRhys on 2025-04-27 20:09_
 
 Sorry yes I wasn't clear there is no error with UV. The linked error is supposed to support the point that it would be nice if when UV prints downloading XYZ it gave the version in brackets as that would make it easier to diagnose which version caused the error in instances where the dependencies may be unpinned. 
-
----
-
-_Referenced in [astral-sh/uv#12654](../../astral-sh/uv/issues/12654.md) on 2025-06-05 14:09_
 
 ---

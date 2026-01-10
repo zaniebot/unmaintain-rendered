@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-27T09:11:33Z
 updated_at: 2025-06-06T19:11:19Z
 url: https://github.com/astral-sh/uv/issues/3287
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # [perf] uv pip install resolution is slow when installing from VCS
@@ -303,14 +303,6 @@ I'm tempted to rethink our Git strategy a bit more holistically... Right now, we
 
 ---
 
-_Referenced in [astral-sh/uv#3952](../../astral-sh/uv/issues/3952.md) on 2024-06-01 22:12_
-
----
-
-_Referenced in [nf-core/modules#8191](../../nf-core/modules/pulls/8191.md) on 2025-04-02 08:25_
-
----
-
 _Comment by @flying-sheep on 2025-06-06 12:14_
 
 You no longer use libgit2 anymore, right?
@@ -326,10 +318,6 @@ Correct.
 _Comment by @flying-sheep on 2025-06-06 12:22_
 
 I also don’t think that uv downloads a repo from VCS as part of resolution. If I’m right and every project downloaded from VCS is also built really all we need is probably #1737.
-
----
-
-_Referenced in [astral-sh/uv#1737](../../astral-sh/uv/issues/1737.md) on 2025-06-06 12:25_
 
 ---
 

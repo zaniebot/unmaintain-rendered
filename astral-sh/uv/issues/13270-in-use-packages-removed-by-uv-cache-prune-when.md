@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-02T17:18:12Z
 updated_at: 2025-05-10T18:39:12Z
 url: https://github.com/astral-sh/uv/issues/13270
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # In-use Packages Removed by `uv cache prune` When Using Symlinks
@@ -276,10 +276,6 @@ Confirmed I also see it when running that Docker image.
 _Comment by @charliermarsh on 2025-05-10 18:15_
 
 Thanks, I've found the bug (we're messing up when the wheel tag contains a dot).
-
----
-
-_Referenced in [astral-sh/uv#13379](../../astral-sh/uv/pulls/13379.md) on 2025-05-10 18:28_
 
 ---
 

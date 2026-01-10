@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-08T18:11:44Z
 updated_at: 2025-05-08T18:12:05Z
 url: https://github.com/astral-sh/uv/issues/13352
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add support for only upgrading specific packages, i.e., `--only-upgrade-package` or `--upgrade-mode strict`
@@ -30,9 +30,5 @@ See https://github.com/astral-sh/uv/issues/13347 for discussion.
 ---
 
 _Label `enhancement` added by @zanieb on 2025-05-08 18:11_
-
----
-
-_Referenced in [astral-sh/uv#13347](../../astral-sh/uv/issues/13347.md) on 2025-05-08 18:12_
 
 ---

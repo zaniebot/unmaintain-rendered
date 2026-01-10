@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-03T06:35:56Z
 updated_at: 2025-06-03T14:18:19Z
 url: https://github.com/astral-sh/uv/issues/13795
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # ssh username `git` obfuscated in 0.7.9
@@ -79,10 +79,6 @@ Although also perhaps a duplicate of #13791
 ---
 
 _Renamed from "Changed export behaviour in 0.7.9" to "ssh username `git` obfuscated in 0.7.9" by @konstin on 2025-06-03 09:24_
-
----
-
-_Referenced in [astral-sh/uv#13799](../../astral-sh/uv/pulls/13799.md) on 2025-06-03 09:32_
 
 ---
 

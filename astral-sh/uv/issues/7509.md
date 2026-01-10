@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-18T16:57:37Z
 updated_at: 2025-05-09T14:03:56Z
 url: https://github.com/astral-sh/uv/issues/7509
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # uv falls back to copy instead of symlink
@@ -39,10 +39,6 @@ Symlinks are fairly problematic, since if the cache gets deleted, your entire pr
 _Comment by @zanieb on 2024-09-18 17:00_
 
 We set `copy` in the example at https://github.com/astral-sh/uv-docker-example/blob/3d2a5afd814babec58804b9ffce923ea114a76fb/Dockerfile#L10-L11 — needs to be updated over here.
-
----
-
-_Referenced in [astral-sh/uv#7510](../../astral-sh/uv/pulls/7510.md) on 2024-09-18 17:03_
 
 ---
 

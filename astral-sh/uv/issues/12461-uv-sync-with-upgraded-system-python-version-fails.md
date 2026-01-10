@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-25T10:34:08Z
 updated_at: 2025-04-15T10:01:16Z
 url: https://github.com/astral-sh/uv/issues/12461
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv sync` with upgraded system Python version fails to update `activate_this.py`
@@ -67,10 +67,6 @@ _Label `bug` added by @andersk on 2025-03-25 10:34_
 
 ---
 
-_Referenced in [zulip/zulip#34156](../../zulip/zulip/pulls/34156.md) on 2025-03-25 12:39_
-
----
-
 _Comment by @zanieb on 2025-04-01 18:31_
 
 I think `uv sync` should discard the virtual environment entirely in this case, I'm very surprised it does not?
@@ -78,10 +74,6 @@ I think `uv sync` should discard the virtual environment entirely in this case, 
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-04-11 13:03_
-
----
-
-_Referenced in [astral-sh/uv#12884](../../astral-sh/uv/pulls/12884.md) on 2025-04-14 18:10_
 
 ---
 

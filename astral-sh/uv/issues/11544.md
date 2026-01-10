@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-15T23:45:17Z
 updated_at: 2025-04-03T19:27:25Z
 url: https://github.com/astral-sh/uv/issues/11544
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `pyenv`-created virtualenv is not picked up
@@ -147,9 +147,5 @@ Yes the file contents are arbitrary and not enforced by a standard. I certainly 
 _Comment by @albireox on 2025-04-03 19:27_
 
 Would it make sense for the `.python-version` file to be ignored if the `--active` flag is passed? At that point we'd be using the loaded `python` binary in the PATH.
-
----
-
-_Referenced in [davistdaniel/PiHoleLongTermStats#1](../../davistdaniel/PiHoleLongTermStats/pulls/1.md) on 2025-04-28 21:22_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T14:54:48Z
 updated_at: 2025-05-01T10:47:51Z
 url: https://github.com/astral-sh/uv/issues/13233
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # BUG: `uv run --no-sync` incorrectly resets CPython 3.14 venv in version 0.7
@@ -103,10 +103,6 @@ _Label `bug` added by @neutrinoceros on 2025-04-30 14:54_
 
 ---
 
-_Referenced in [neutrinoceros/inifix#414](../../neutrinoceros/inifix/pulls/414.md) on 2025-04-30 14:55_
-
----
-
 _Assigned to @zanieb by @zanieb on 2025-04-30 15:09_
 
 ---
@@ -163,14 +159,6 @@ The key is
 DEBUG Checking for Python environment at `.venv`
 DEBUG The interpreter in the virtual environment has different version (3.14.0) than it was created with (3.14.0a3)
 ```
-
----
-
-_Referenced in [astral-sh/uv#13234](../../astral-sh/uv/pulls/13234.md) on 2025-04-30 15:43_
-
----
-
-_Referenced in [astral-sh/uv#13235](../../astral-sh/uv/issues/13235.md) on 2025-04-30 15:51_
 
 ---
 

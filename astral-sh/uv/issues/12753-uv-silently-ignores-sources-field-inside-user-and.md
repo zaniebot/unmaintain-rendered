@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-08T17:23:35Z
 updated_at: 2025-04-08T21:01:14Z
 url: https://github.com/astral-sh/uv/issues/12753
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # UV silently ignores sources field inside user and system-level configuration, instead of erroring
@@ -98,18 +98,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-04-08 19:36_
 
 ---
 
-_Referenced in [astral-sh/uv#12757](../../astral-sh/uv/pulls/12757.md) on 2025-04-08 19:41_
-
----
-
 _Closed by @charliermarsh on 2025-04-08 21:01_
 
 ---
 
 _Closed by @charliermarsh on 2025-04-08 21:01_
-
----
-
-_Referenced in [astral-sh/uv#13493](../../astral-sh/uv/issues/13493.md) on 2025-05-16 14:08_
 
 ---

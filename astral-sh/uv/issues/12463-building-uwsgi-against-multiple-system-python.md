@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-25T12:28:20Z
 updated_at: 2025-03-25T13:23:39Z
 url: https://github.com/astral-sh/uv/issues/12463
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Building uwsgi against multiple system Python versions corrupts it
@@ -67,10 +67,6 @@ _Label `bug` added by @andersk on 2025-03-25 12:28_
 
 ---
 
-_Referenced in [zulip/zulip#34156](../../zulip/zulip/pulls/34156.md) on 2025-03-25 12:39_
-
----
-
 _Comment by @charliermarsh on 2025-03-25 13:20_
 
 Is this the same as https://github.com/astral-sh/uv/issues/10575?
@@ -80,9 +76,5 @@ Is this the same as https://github.com/astral-sh/uv/issues/10575?
 _Comment by @andersk on 2025-03-25 13:22_
 
 Not sure, that one doesn’t seem to involve multiple Python versions.
-
----
-
-_Referenced in [vexxhost/atmosphere#2773](../../vexxhost/atmosphere/pulls/2773.md) on 2025-06-20 00:26_
 
 ---

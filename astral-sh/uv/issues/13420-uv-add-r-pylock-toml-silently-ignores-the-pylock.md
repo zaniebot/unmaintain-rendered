@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-13T03:13:37Z
 updated_at: 2025-05-13T03:50:02Z
 url: https://github.com/astral-sh/uv/issues/13420
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv add -r pylock.toml` silently ignores the `pylock.toml` contents
@@ -27,15 +27,7 @@ _Label `bug` added by @charliermarsh on 2025-05-13 03:13_
 
 ---
 
-_Referenced in [astral-sh/uv#13400](../../astral-sh/uv/issues/13400.md) on 2025-05-13 03:13_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-05-13 03:33_
-
----
-
-_Referenced in [astral-sh/uv#13421](../../astral-sh/uv/pulls/13421.md) on 2025-05-13 03:33_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-08T07:30:13Z
 updated_at: 2025-04-10T19:56:08Z
 url: https://github.com/astral-sh/uv/issues/12735
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add env variable UV_NON_EDITABLE
@@ -54,10 +54,6 @@ I think `UV_NO_EDITABLE` would be the proper name, or `UV_SYNC_NO_EDITABLE`?
 _Comment by @charliermarsh on 2025-04-08 19:44_
 
 Yeah `UV_NO_EDITABLE` 👍 
-
----
-
-_Referenced in [astral-sh/uv#12773](../../astral-sh/uv/pulls/12773.md) on 2025-04-09 07:15_
 
 ---
 

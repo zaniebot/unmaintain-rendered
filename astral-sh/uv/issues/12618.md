@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-02T03:17:06Z
 updated_at: 2025-04-07T03:18:50Z
 url: https://github.com/astral-sh/uv/issues/12618
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv doesn't report crc errors with corrupted packages where pip does
@@ -142,15 +142,7 @@ That async zip lib seems like it might be the dodgy bit. Seems like the maintain
 
 ---
 
-_Referenced in [Qiskit/documentation#2922](../../Qiskit/documentation/pulls/2922.md) on 2025-04-02 12:42_
-
----
-
 _Assigned to @Gankra by @zanieb on 2025-04-02 13:29_
-
----
-
-_Referenced in [astral-sh/uv#12623](../../astral-sh/uv/pulls/12623.md) on 2025-04-02 14:31_
 
 ---
 
@@ -179,20 +171,8 @@ Yeah, I think we should make this opt-in for now. PR welcome.
 
 ---
 
-_Referenced in [astral-sh/uv#12694](../../astral-sh/uv/issues/12694.md) on 2025-04-07 01:26_
-
----
-
-_Referenced in [astral-sh/uv#12706](../../astral-sh/uv/pulls/12706.md) on 2025-04-07 03:12_
-
----
-
 _Comment by @samypr100 on 2025-04-07 03:18_
 
 Made a quick fix PR to make it opt-in https://github.com/astral-sh/uv/pull/12706, although just noticed #12694 so feel free to ignore this PR if there's a better short-term solution.
-
----
-
-_Referenced in [astral-sh/uv#12722](../../astral-sh/uv/pulls/12722.md) on 2025-04-07 17:26_
 
 ---

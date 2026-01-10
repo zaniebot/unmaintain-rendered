@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-25T03:01:27Z
 updated_at: 2025-04-28T21:29:06Z
 url: https://github.com/astral-sh/uv/issues/13096
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Use of random temp paths by `uv build` adds nondeterminism into build environments
@@ -138,10 +138,6 @@ _Label `external` added by @konstin on 2025-04-25 07:54_
 
 ---
 
-_Referenced in [rust-lang/rust#111540](../../rust-lang/rust/issues/111540.md) on 2025-04-25 17:55_
-
----
-
 _Comment by @tabbyrobin on 2025-04-25 18:24_
 
 Hi, thanks for your response. I agree that rustc behavior is a bug and should be fixed. On the other hand, the issue I filed here has different scope:
@@ -169,10 +165,6 @@ _Comment by @tabbyrobin on 2025-04-25 20:37_
 Some related issues: #3684, #12036
 
 @Urgau Thanks for the confirmation you provided (in the rust-lang issue) that `--remap-path-scope` would not address this issue.
-
----
-
-_Referenced in [pyca/cryptography#12811](../../pyca/cryptography/issues/12811.md) on 2025-04-27 00:35_
 
 ---
 

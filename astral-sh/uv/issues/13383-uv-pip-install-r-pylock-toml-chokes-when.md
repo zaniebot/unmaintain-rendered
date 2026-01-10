@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-10T22:21:20Z
 updated_at: 2025-05-11T02:55:59Z
 url: https://github.com/astral-sh/uv/issues/13383
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv pip install -r pylock.toml ...` chokes when dependencies are present.
@@ -364,10 +364,6 @@ _Label `bug` added by @jsirois on 2025-05-10 22:21_
 
 ---
 
-_Referenced in [pex-tool/pex#2735](../../pex-tool/pex/issues/2735.md) on 2025-05-10 22:26_
-
----
-
 _Comment by @jsirois on 2025-05-10 22:39_
 
 The likely root cause mirror issue is #13032. Since dependencies are currently not emitted by uv when exporting `pylock.toml` it makes some sense (although it is not correct) that it fails to parse these when ingesting.
@@ -375,14 +371,6 @@ The likely root cause mirror issue is #13032. Since dependencies are currently n
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-05-10 23:22_
-
----
-
-_Referenced in [pex-tool/pex#2760](../../pex-tool/pex/pulls/2760.md) on 2025-05-11 02:34_
-
----
-
-_Referenced in [astral-sh/uv#13384](../../astral-sh/uv/pulls/13384.md) on 2025-05-11 02:41_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-12T16:16:51Z
 updated_at: 2025-05-27T08:03:06Z
 url: https://github.com/astral-sh/uv/issues/9845
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Read `UV_INDEX_<NAME>_` credentials during `uv publish`
@@ -75,10 +75,6 @@ That would be perfect, thank you !
 
 ---
 
-_Referenced in [astral-sh/uv#10193](../../astral-sh/uv/issues/10193.md) on 2024-12-30 16:41_
-
----
-
 _Comment by @menzenski on 2024-12-30 18:22_
 
 We publish Python libraries to a private Artifactory registry and use separate credentials for read-only operations and for publishing. Those are easy enough to map to the same environment variable names if needed but IMO it'd be nicer to be able to use different names when reading (installing dependencies) vs writing (publishing).
@@ -101,10 +97,6 @@ _Label `enhancement` added by @zanieb on 2024-12-30 20:18_
 
 ---
 
-_Referenced in [astral-sh/uv#10386](../../astral-sh/uv/issues/10386.md) on 2025-01-08 14:34_
-
----
-
 _Comment by @SalttownUser on 2025-01-08 15:05_
 
 We publish to private GitLab projects with individual credentials for every project.  In GitLab all the packages from one group are available accessing the group package registry(https://docs.gitlab.com/ee/user/packages/package_registry/#view-packages).
@@ -114,10 +106,6 @@ In this scenario the publish token for pushing the package to the project is not
 ---
 
 _Label `good first issue` added by @zanieb on 2025-01-08 21:12_
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2025-01-28 14:56_
 
 ---
 
@@ -132,10 +120,6 @@ _Label `good first issue` removed by @konstin on 2025-01-28 15:11_
 ---
 
 _Label `needs-decision` added by @konstin on 2025-01-28 15:13_
-
----
-
-_Referenced in [astral-sh/uv#11032](../../astral-sh/uv/pulls/11032.md) on 2025-01-28 18:41_
 
 ---
 
@@ -193,9 +177,5 @@ A closely related issue to this that I could consider part of it: Can we add the
 EDIT:
 would there be anything problematic with this workaround? It does not seem to install uv again...
 `uvx --env-file .env uv publish`
-
----
-
-_Referenced in [astral-sh/uv#14253](../../astral-sh/uv/pulls/14253.md) on 2025-06-25 07:50_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-28T04:08:45Z
 updated_at: 2025-04-02T01:40:16Z
 url: https://github.com/astral-sh/uv/issues/12523
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Feature Request: Support for no-install-package in pyproject.toml
@@ -59,10 +59,6 @@ _Label `enhancement` added by @garam-kim1 on 2025-03-28 04:08_
 
 ---
 
-_Referenced in [astral-sh/uv#12429](../../astral-sh/uv/issues/12429.md) on 2025-04-01 07:42_
-
----
-
 _Comment by @zanieb on 2025-04-01 19:37_
 
 > would allow users to persistently exclude specific packages from installation when running uv sync
@@ -103,10 +99,6 @@ We support that now by setting an impossible marker, e.g., `override-dependencie
 _Comment by @garam-kim1 on 2025-04-02 01:30_
 
 Thanks for the workaround! Using overrides-dependencies = ["package; sys_platform = 'never'"] solves. It would be great if this approach could be documented more prominently, or perhaps implementing a dedicated excluded-dependencies option in the future for simplicity. Appreciate your help!
-
----
-
-_Referenced in [astral-sh/uv#12616](../../astral-sh/uv/issues/12616.md) on 2025-04-02 01:38_
 
 ---
 

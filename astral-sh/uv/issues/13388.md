@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-11T19:27:45Z
 updated_at: 2025-05-15T14:08:56Z
 url: https://github.com/astral-sh/uv/issues/13388
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # running uv add ./package should reinstall the local package, same as uv pip install
@@ -65,10 +65,6 @@ _Label `bug` removed by @charliermarsh on 2025-05-13 03:03_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2025-05-13 03:03_
-
----
-
-_Referenced in [astral-sh/uv#13462](../../astral-sh/uv/pulls/13462.md) on 2025-05-15 10:03_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-17T18:49:41Z
 updated_at: 2025-04-02T19:25:00Z
 url: https://github.com/astral-sh/uv/issues/9979
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Python listed twice on Windows
@@ -131,10 +131,6 @@ Ok so [the chocolatey shim](https://github.com/chocolatey/shimgen/blob/70ddc44f2
 This in turn subtly changes the behaviour of the python interpretter's `sys.path`, which presumably inherits the exact path string the binary was invoked from.
 
 So the good news is we don't need to deal with symlinks/hardlinks at all here, we just need to be case-insensitive when deduplicating things on windows... although I don't know if it's "incorrect" to dedupe the shim install because I see some notes in the code about how shims are *specifically* unsafe to cache because they're, well, shims.
-
----
-
-_Referenced in [astral-sh/uv#12506](../../astral-sh/uv/issues/12506.md) on 2025-03-27 17:12_
 
 ---
 
@@ -271,14 +267,6 @@ DEBUG Found `cpython-3.11.9-windows-x86_64-none` at `C:\ProgramData\chocolatey\b
 
 ---
 
-_Referenced in [astral-sh/uv#12628](../../astral-sh/uv/pulls/12628.md) on 2025-04-02 16:09_
-
----
-
 _Closed by @zanieb on 2025-04-02 19:25_
-
----
-
-_Referenced in [astral-sh/uv#13505](../../astral-sh/uv/issues/13505.md) on 2025-05-18 20:57_
 
 ---

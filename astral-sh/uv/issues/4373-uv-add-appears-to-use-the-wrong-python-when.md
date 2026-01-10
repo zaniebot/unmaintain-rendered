@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-18T01:01:14Z
 updated_at: 2025-04-02T22:55:51Z
 url: https://github.com/astral-sh/uv/issues/4373
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv add` appears to use the wrong python when requires-python, package, and .venv python version conflict
@@ -412,10 +412,6 @@ Possibly... But I think it would probably be a `trace!` log since I'd expect it 
 _Comment by @zanieb on 2024-06-18 13:53_
 
 A trace log makes sense to me if it's not too noisy.
-
----
-
-_Referenced in [astral-sh/uv#4381](../../astral-sh/uv/pulls/4381.md) on 2024-06-18 13:56_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-27T21:09:49Z
 updated_at: 2025-06-06T15:16:37Z
 url: https://github.com/astral-sh/uv/issues/11002
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Concurrent cache access causes errors on Windows
@@ -33,14 +33,6 @@ _Label `bug` added by @charliermarsh on 2025-01-27 21:09_
 ---
 
 _Label `windows` added by @charliermarsh on 2025-01-27 21:09_
-
----
-
-_Referenced in [astral-sh/uv#7434](../../astral-sh/uv/issues/7434.md) on 2025-01-27 21:10_
-
----
-
-_Referenced in [astral-sh/uv#11007](../../astral-sh/uv/pulls/11007.md) on 2025-01-27 23:03_
 
 ---
 
@@ -136,7 +128,7 @@ _Unassigned @charliermarsh by @zanieb on 2025-04-08 23:05_
 
 ---
 
-_Comment by @majutsushi on 2025-05-16 01:38_
+_Comment by @janlarres on 2025-05-16 01:38_
 
 I just ran into this while trying to get a colleague set up who was using Windows. Trying to install any moderately complex library would result in the "file is used by another process" error. We had to resort to using pip to get things unblocked.
 
@@ -157,9 +149,5 @@ Edit: see next comment.
 _Comment by @petamas on 2025-06-06 15:14_
 
 Managed to reproduce in Windows Sandbox using `uv` 0.7.11 with these exact repro steps: https://github.com/astral-sh/uv/issues/11002#issuecomment-2787658535
-
----
-
-_Referenced in [astral-sh/uv#13883](../../astral-sh/uv/issues/13883.md) on 2025-06-06 15:17_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T01:26:46Z
 updated_at: 2025-04-07T17:49:07Z
 url: https://github.com/astral-sh/uv/issues/12694
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Make CRC checking opt-in
@@ -31,10 +31,6 @@ _Assigned to @Gankra by @zanieb on 2025-04-07 01:41_
 
 ---
 
-_Referenced in [astral-sh/uv#12618](../../astral-sh/uv/issues/12618.md) on 2025-04-07 03:18_
-
----
-
 _Comment by @konstin on 2025-04-07 16:51_
 
 Can we check whether data descriptors are used and if so, skip CRC validation until the async-zip library supports data descriptors? The field already exists in `rs-async-zip`: https://github.com/charliermarsh/rs-async-zip/compare/main...konstin:rs-async-zip:konsti/data-descriptor
@@ -44,10 +40,6 @@ Can we check whether data descriptors are used and if so, skip CRC validation un
 _Comment by @charliermarsh on 2025-04-07 17:03_
 
 Yeah that sounds like it might be a better approach.
-
----
-
-_Referenced in [astral-sh/uv#12722](../../astral-sh/uv/pulls/12722.md) on 2025-04-07 17:42_
 
 ---
 

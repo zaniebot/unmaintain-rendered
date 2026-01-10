@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-02T20:59:53Z
 updated_at: 2025-04-10T20:56:48Z
 url: https://github.com/astral-sh/uv/issues/12638
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Complain more loudly about unknown Dependency Object Specifiers
@@ -104,10 +104,6 @@ Sorry if this seems too basic, this is my first time working with this locally (
 _Comment by @zanieb on 2025-04-09 18:58_
 
 I would `uv init example && cd example`, then edit `pyproject.toml`, then `cargo run -- uv sync` or similar.
-
----
-
-_Referenced in [astral-sh/uv#12811](../../astral-sh/uv/pulls/12811.md) on 2025-04-10 16:27_
 
 ---
 

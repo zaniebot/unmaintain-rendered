@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T19:40:49Z
 updated_at: 2025-05-02T15:11:39Z
 url: https://github.com/astral-sh/uv/issues/13243
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv for debian
@@ -49,9 +49,5 @@ Nice to see a debian package! Unfortunately, for policy and security reasons, we
 ---
 
 _Closed by @dariogriffo on 2025-05-02 15:11_
-
----
-
-_Referenced in [astral-sh/uv#13640](../../astral-sh/uv/issues/13640.md) on 2025-05-26 20:10_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-27T11:45:37Z
 updated_at: 2025-05-27T12:43:31Z
 url: https://github.com/astral-sh/uv/issues/13675
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Gitlab CI example should quote varaibles to avoid version parsing as integer
@@ -66,10 +66,6 @@ PR welcome.
 ---
 
 _Label `help wanted` added by @charliermarsh on 2025-05-27 12:24_
-
----
-
-_Referenced in [astral-sh/uv#13679](../../astral-sh/uv/pulls/13679.md) on 2025-05-27 12:34_
 
 ---
 

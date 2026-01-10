@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-01T15:51:38Z
 updated_at: 2025-06-03T09:13:19Z
 url: https://github.com/astral-sh/uv/issues/13761
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # show extras for `uv tool list`
@@ -59,10 +59,6 @@ I think it seems reasonable to support this as `--show-extras`, similar to `--sh
 ---
 
 _Label `help wanted` added by @charliermarsh on 2025-06-02 00:11_
-
----
-
-_Referenced in [astral-sh/uv#13783](../../astral-sh/uv/pulls/13783.md) on 2025-06-02 13:07_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-28T23:58:02Z
 updated_at: 2025-03-29T19:59:42Z
 url: https://github.com/astral-sh/uv/issues/12539
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # how to use same dependency with diffierent source in diffierent group(or extra)
@@ -75,13 +75,5 @@ _Label `question` added by @ryomahan on 2025-03-28 23:58_
 ---
 
 _Closed by @ryomahan on 2025-03-29 19:59_
-
----
-
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-04-23 17:14_
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:27_
 
 ---

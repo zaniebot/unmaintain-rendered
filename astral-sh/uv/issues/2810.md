@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-03T15:17:03Z
 updated_at: 2025-05-23T08:50:18Z
 url: https://github.com/astral-sh/uv/issues/2810
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Random errors on accessing cache with simultaneous installs on Windows
@@ -226,10 +226,6 @@ There is no AV software on those machines.
 
 ---
 
-_Referenced in [astral-sh/uv#3280](../../astral-sh/uv/issues/3280.md) on 2024-04-26 16:07_
-
----
-
 _Comment by @nickhutchinson on 2024-04-27 15:37_
 
 The `ERROR_ACCESS_DENIED` 'Failed to persist temporary file' errors are straightforward to reproduce -- try deleting `%LOCALAPPDATA%\uv\cache` and then running, say, five `uv venv --seed <my-venv-dir>` commands in parallel, where `<my-venv-dir>` is unique across all the invocations.
@@ -259,17 +255,9 @@ If you've got a hard requirement on having POSIX-style file renames for uv, then
 
 ---
 
-_Referenced in [meltano/meltano#8539](../../meltano/meltano/issues/8539.md) on 2024-05-13 16:42_
-
----
-
 _Comment by @george-palmsens on 2024-08-28 08:20_
 
 Would love to see this remedied - `uv` speeds up our CI by a huge amount but this issue has forced us to revert. Glad the root cause seems to be understood!
-
----
-
-_Referenced in [astral-sh/uv#9524](../../astral-sh/uv/pulls/9524.md) on 2024-11-29 15:27_
 
 ---
 

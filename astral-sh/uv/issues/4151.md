@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T22:55:34Z
 updated_at: 2025-05-27T10:10:49Z
 url: https://github.com/astral-sh/uv/issues/4151
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv pip install` doesn't install CLI tools properly
@@ -93,14 +93,6 @@ _Closed by @Malix-Labs on 2024-06-08 18:22_
 
 ---
 
-_Referenced in [skypilot-org/skypilot#5181](../../skypilot-org/skypilot/issues/5181.md) on 2025-04-10 21:17_
-
----
-
-_Referenced in [skypilot-org/skypilot#4952](../../skypilot-org/skypilot/issues/4952.md) on 2025-04-15 21:03_
-
----
-
 _Comment by @PantiL on 2025-05-27 10:07_
 
 Hello.
@@ -170,9 +162,5 @@ Installed 17 packages in 16ms
  + websockets==15.0.1
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#13674](../../astral-sh/uv/issues/13674.md) on 2025-05-27 10:18_
 
 ---

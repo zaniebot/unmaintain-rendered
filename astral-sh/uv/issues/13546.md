@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-19T21:56:36Z
 updated_at: 2025-05-22T17:02:19Z
 url: https://github.com/astral-sh/uv/issues/13546
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv_build` cannot find stubs-only package
@@ -83,14 +83,6 @@ _No response_
 ---
 
 _Label `bug` added by @jorenham on 2025-05-19 21:56_
-
----
-
-_Referenced in [numpy/numtype#470](../../numpy/numtype/issues/470.md) on 2025-05-19 21:57_
-
----
-
-_Referenced in [astral-sh/uv#13563](../../astral-sh/uv/pulls/13563.md) on 2025-05-20 21:35_
 
 ---
 

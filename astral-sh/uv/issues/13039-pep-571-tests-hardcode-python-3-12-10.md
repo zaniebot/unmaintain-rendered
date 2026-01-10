@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-22T03:07:46Z
 updated_at: 2025-04-22T09:24:04Z
 url: https://github.com/astral-sh/uv/issues/13039
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # PEP 571 tests hardcode Python 3.12.10
@@ -90,10 +90,6 @@ Thanks for the report! Not sure what the best way to handle this is — we can e
 ---
 
 _Label `testing` added by @zanieb on 2025-04-22 03:12_
-
----
-
-_Referenced in [astral-sh/uv#13047](../../astral-sh/uv/pulls/13047.md) on 2025-04-22 08:34_
 
 ---
 

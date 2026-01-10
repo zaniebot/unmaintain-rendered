@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-03T14:29:24Z
 updated_at: 2025-04-29T21:37:06Z
 url: https://github.com/astral-sh/uv/issues/12653
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Using `--frozen` with `--no-sources` uses sources still
@@ -34,10 +34,6 @@ Hmm yeah. We kind of have to use the sources here.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-04-04 12:49_
-
----
-
-_Referenced in [astral-sh/uv#12671](../../astral-sh/uv/pulls/12671.md) on 2025-04-04 12:51_
 
 ---
 

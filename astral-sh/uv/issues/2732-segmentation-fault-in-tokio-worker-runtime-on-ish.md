@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-30T13:27:52Z
 updated_at: 2025-03-27T17:14:12Z
 url: https://github.com/astral-sh/uv/issues/2732
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Segmentation fault in tokio worker runtime on iSH 
@@ -105,10 +105,6 @@ Today there's `uv` in [Alpinelinux](https://gitlab.alpinelinux.org/alpine/aports
 The only tricky workaround was to disable vendored openssl as Alpine using latest 3.3 via `export OPENSSL_NO_VENDOR=1`
 
 Guess it could be improved but there's so many openssl versions in the stable releases
-
----
-
-_Referenced in [ish-app/ish#2447](../../ish-app/ish/issues/2447.md) on 2024-08-27 15:20_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-09T14:47:17Z
 updated_at: 2025-03-26T20:46:18Z
 url: https://github.com/astral-sh/uv/issues/10431
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Split `--quiet` mode into "quiet" and "silent" modes
@@ -44,10 +44,6 @@ _Comment by @zanieb on 2025-01-09 18:02_
 
 ---
 
-_Referenced in [astral-sh/uv#11698](../../astral-sh/uv/issues/11698.md) on 2025-02-21 17:30_
-
----
-
 _Comment by @Gankra on 2025-02-28 14:29_
 
 Point of clarification: are we indeed proposing `-qq` is silent even on stdout, even for commands whose entire purpose is to produce output? (e.g. if you hypothetically ran `uv python list -qq`, it essentially does nothing (except maybe has non-zero status)?)
@@ -59,10 +55,6 @@ Point of clarification: are we indeed proposing `-qq` is silent even on stdout, 
 _Comment by @zanieb on 2025-02-28 15:18_
 
 I think so, though I don't feel strongly. "Silent is silent" seems easier to maintain.
-
----
-
-_Referenced in [astral-sh/uv#12300](../../astral-sh/uv/pulls/12300.md) on 2025-03-18 19:34_
 
 ---
 

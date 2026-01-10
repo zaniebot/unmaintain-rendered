@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T16:36:03Z
 updated_at: 2025-04-16T13:45:00Z
 url: https://github.com/astral-sh/uv/issues/1705
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # uv should install packages without requiring a venv
@@ -131,9 +131,5 @@ Even in a UV managed python, its not possible to install with the --system flag:
 0.422 
 0.422 Consider creating a virtual environment with `uv venv`.
 ```
-
----
-
-_Referenced in [agentuity/examples#11](../../agentuity/examples/pulls/11.md) on 2025-05-26 19:20_
 
 ---

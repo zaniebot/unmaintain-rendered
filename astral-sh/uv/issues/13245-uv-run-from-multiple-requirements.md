@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T22:46:37Z
 updated_at: 2025-05-02T12:52:03Z
 url: https://github.com/astral-sh/uv/issues/13245
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv run` from multiple requirements
@@ -89,10 +89,6 @@ uv run fish -c 'uv pip install foo bar && actual command here'
 This isn't perfect as there's no way to express a constraint against the existing `uv.lock` (I've commented on https://github.com/astral-sh/uv/issues/9774 that it'd be nice to have this), but as above probably good enough for practical use cases!
 
 I hope the above trick helps anyone else looking to support the same feature of per-developer dependencies.
-
----
-
-_Referenced in [astral-sh/uv#9774](../../astral-sh/uv/issues/9774.md) on 2025-05-02 11:41_
 
 ---
 

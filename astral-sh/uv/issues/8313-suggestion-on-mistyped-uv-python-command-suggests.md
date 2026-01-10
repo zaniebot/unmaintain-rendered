@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-17T23:35:29Z
 updated_at: 2025-05-12T01:44:55Z
 url: https://github.com/astral-sh/uv/issues/8313
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Suggestion on mistyped `uv python` command suggests `uv pip`
@@ -41,10 +41,6 @@ Thanks! This looks weirdly hard to fix.
 ---
 
 _Label `bug` added by @zanieb on 2024-10-18 00:46_
-
----
-
-_Referenced in [astral-sh/uv#8316](../../astral-sh/uv/pulls/8316.md) on 2024-10-18 00:59_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-11T05:14:37Z
 updated_at: 2025-05-11T07:21:00Z
 url: https://github.com/astral-sh/uv/issues/8123
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # vscode extension
@@ -28,10 +28,6 @@ both [pdm](https://marketplace.visualstudio.com/items?itemName=GabDug.pdm) and [
 _Comment by @my1e5 on 2024-10-11 09:34_
 
 Related to https://github.com/astral-sh/uv/issues/5903
-
----
-
-_Referenced in [astral-sh/uv#10212](../../astral-sh/uv/issues/10212.md) on 2024-12-28 09:51_
 
 ---
 

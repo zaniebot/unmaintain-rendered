@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-14T23:52:33Z
 updated_at: 2025-05-19T18:36:08Z
 url: https://github.com/astral-sh/uv/issues/9134
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # How to properly setup a mirror for the standalone installer and updater?
@@ -174,10 +174,6 @@ Looks like the original feature was added here: https://github.com/axodotdev/car
 
 ---
 
-_Referenced in [axodotdev/cargo-dist#1738](../../axodotdev/cargo-dist/issues/1738.md) on 2025-01-30 22:35_
-
----
-
 _Comment by @leodevian on 2025-02-13 13:48_
 
 Do you think that I could bypass this issue using another domain and redirections? I think that I could do something similar that what is done for https://astral.sh but I don't know how to do it... If I could create redirections from https://wizardry.com/astral-sh/uv/releases/download to https://magic.com/repository/uv/ (which would redirect to https://github.com/astral-sh/uv/releases/download) and create https://wizardry.com/api/v3/repos/astral-sh/releases manually, would that work or is it non-sense? I have no idea how to implement this and I would love to know how it was done for https://astral.sh to try it by myself.
@@ -187,14 +183,6 @@ Do you think that I could bypass this issue using another domain and redirection
 _Comment by @zanieb on 2025-02-13 16:16_
 
 We use https://developers.cloudflare.com/rules/
-
----
-
-_Referenced in [astral-sh/uv#12808](../../astral-sh/uv/issues/12808.md) on 2025-04-10 14:09_
-
----
-
-_Referenced in [astral-sh/cargo-dist#35](../../astral-sh/cargo-dist/issues/35.md) on 2025-05-09 11:41_
 
 ---
 
@@ -296,9 +284,5 @@ def main(host: str = "127.0.0.1") -> int:
 if __name__ == "__main__":
     raise SystemExit(main())
 ```
-
----
-
-_Referenced in [astral-sh/uv#16519](../../astral-sh/uv/issues/16519.md) on 2025-10-30 16:25_
 
 ---

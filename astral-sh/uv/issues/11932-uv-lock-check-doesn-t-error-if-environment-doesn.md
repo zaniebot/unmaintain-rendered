@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-03T20:02:59Z
 updated_at: 2025-04-03T14:41:24Z
 url: https://github.com/astral-sh/uv/issues/11932
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv lock --check` doesn't error if environment doesn't match lockfile
@@ -48,10 +48,6 @@ _Label `bug` added by @cjw296 on 2025-03-03 20:02_
 _Comment by @cjw296 on 2025-03-03 20:10_
 
 It's also troubling that if I change the version in the lockfile such that it no longer matches the environment or `pyproject.toml`, such as by changing to a lower second point release, `uv sync` and `uv sync --locked` both do nothing, `uv lock --check` and `uv lock` also both do nothing.
-
----
-
-_Referenced in [astral-sh/uv#12202](../../astral-sh/uv/issues/12202.md) on 2025-04-01 21:39_
 
 ---
 

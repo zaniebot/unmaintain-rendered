@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-08T16:36:00Z
 updated_at: 2025-05-08T19:06:23Z
 url: https://github.com/astral-sh/uv/issues/13347
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # What, exactly, does `uv lock --U <package>==<version>` do?
@@ -161,10 +161,6 @@ That is why I would like to have `--only-upgrade-package` or `--upgrade-mode str
 _Comment by @zanieb on 2025-05-08 18:09_
 
 Thanks for all the details!
-
----
-
-_Referenced in [astral-sh/uv#13352](../../astral-sh/uv/issues/13352.md) on 2025-05-08 18:12_
 
 ---
 

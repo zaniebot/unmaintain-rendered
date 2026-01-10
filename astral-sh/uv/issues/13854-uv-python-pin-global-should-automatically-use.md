@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-05T05:18:09Z
 updated_at: 2025-06-05T16:04:57Z
 url: https://github.com/astral-sh/uv/issues/13854
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # "uv python pin --global" Should Automatically Use Latest or Current Project Version
@@ -68,10 +68,6 @@ I'm not sure I agree we should set a global pin based on local context without a
 ---
 
 _Label `needs-decision` added by @zanieb on 2025-06-05 14:28_
-
----
-
-_Referenced in [astral-sh/uv#13862](../../astral-sh/uv/pulls/13862.md) on 2025-06-05 16:04_
 
 ---
 

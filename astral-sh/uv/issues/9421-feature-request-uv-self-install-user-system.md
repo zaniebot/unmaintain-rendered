@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-25T15:38:40Z
 updated_at: 2025-05-30T15:10:23Z
 url: https://github.com/astral-sh/uv/issues/9421
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Feature request: `uv self install [--user] [--system]`
@@ -58,10 +58,6 @@ _Comment by @Gankra on 2025-01-08 16:58_
 It's an interesting situation where you're prevented from using the installation scripts but do have presumably-admin-permissions to throw things in Program Files (I'd certainly believe there's systems configured like that).
 
 However I could certainly see "tell us a directory and we can move stuff there". That said it would almost certainly need some upstream collaborative work with dist/axoupdater to make sure all the update machinery we use doesn't get confused.
-
----
-
-_Referenced in [astral-sh/uv#11456](../../astral-sh/uv/issues/11456.md) on 2025-02-12 21:13_
 
 ---
 

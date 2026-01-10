@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-21T16:29:21Z
 updated_at: 2025-05-27T03:29:59Z
 url: https://github.com/astral-sh/uv/issues/13580
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv --offline self update` ignores --offline flag.
@@ -80,14 +80,6 @@ _Comment by @dangdennis on 2025-05-26 16:46_
 Discovered that you _can_ set cargo features with `cargo run`.
 
 Running `cargo run --features "self-update" -- self update --offline` takes the execution path I needed. Looking to see how we write integration tests.
-
----
-
-_Referenced in [dangdennis/uv#1](../../dangdennis/uv/pulls/1.md) on 2025-05-26 17:48_
-
----
-
-_Referenced in [astral-sh/uv#13663](../../astral-sh/uv/pulls/13663.md) on 2025-05-26 17:49_
 
 ---
 

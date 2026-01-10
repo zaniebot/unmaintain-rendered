@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-23T07:21:35Z
 updated_at: 2025-05-26T18:17:20Z
 url: https://github.com/astral-sh/uv/issues/13614
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv lock --check` fails even though `uv lock` gives no updates
@@ -208,10 +208,6 @@ Thanks @konstin. Good to know that I will be out of office until June 5 so my de
 _Comment by @Gankra on 2025-05-23 14:55_
 
 With those logs I have a minimal reproducer, so we should be able to fix it in the next release
-
----
-
-_Referenced in [astral-sh/uv#13635](../../astral-sh/uv/pulls/13635.md) on 2025-05-24 00:51_
 
 ---
 

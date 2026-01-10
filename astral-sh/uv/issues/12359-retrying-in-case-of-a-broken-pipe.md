@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T09:23:36Z
 updated_at: 2025-05-21T17:23:59Z
 url: https://github.com/astral-sh/uv/issues/12359
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Retrying in case of a broken pipe
@@ -117,10 +117,6 @@ I think we could add that in https://github.com/astral-sh/uv/blob/a1a4d820d54607
 
 ---
 
-_Referenced in [astral-sh/uv#12602](../../astral-sh/uv/issues/12602.md) on 2025-04-01 17:14_
-
----
-
 _Comment by @potiuk on 2025-04-03 11:40_
 
 I think there is a bit more to the issue than just showing the retry. Let me explain a bit more context, maybe it will allow to find a better remedy or implement some workarounds. 
@@ -194,10 +190,6 @@ Quick feedback. Mounting a folder to `/root/.cache` and sharing it among all the
 
 ---
 
-_Referenced in [astral-sh/uv#12676](../../astral-sh/uv/pulls/12676.md) on 2025-04-04 17:12_
-
----
-
 _Comment by @potiuk on 2025-04-04 17:13_
 
 That definitely works better now when we mounted host directory as a `~/.cache`  - I proposed to update the docs to mention the case in #12676 - so that others can discover it more easily, but other than that it can be closed (the #12602 is still nice to have anyway though)
@@ -240,10 +232,6 @@ so this is why my installation is taking so long!
 
 ---
 
-_Referenced in [dagster-io/dagster#29725](../../dagster-io/dagster/pulls/29725.md) on 2025-05-01 16:19_
-
----
-
 _Comment by @potiuk on 2025-05-03 22:56_
 
 We are still getting that one occassionally in our CI  - for example here:
@@ -279,10 +267,6 @@ Is it possible to get some extra informatioln about the number of retries and ma
 _Comment by @konstin on 2025-05-03 23:06_
 
 Re extra information, we log all errors we retry when `-v` or more specifically `RUST_LOG=uv_client=debug` is set.
-
----
-
-_Referenced in [astral-sh/uv#13281](../../astral-sh/uv/pulls/13281.md) on 2025-05-03 23:34_
 
 ---
 

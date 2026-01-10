@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-29T08:42:25Z
 updated_at: 2025-03-28T14:37:55Z
 url: https://github.com/astral-sh/uv/issues/7777
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Adding package dependency trace to `uv export`
@@ -121,10 +121,6 @@ colorama v0.4.6
     └── project v0 (group: dev)
 (*) Package tree already displayed
 ```
-
----
-
-_Referenced in [astral-sh/uv#12350](../../astral-sh/uv/pulls/12350.md) on 2025-03-20 22:25_
 
 ---
 

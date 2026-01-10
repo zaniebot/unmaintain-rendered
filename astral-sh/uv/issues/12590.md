@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-31T16:57:41Z
 updated_at: 2025-04-01T13:08:37Z
 url: https://github.com/astral-sh/uv/issues/12590
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # python-platform docs and uv.toml schema doesn't match command requirements
@@ -83,10 +83,6 @@ _Label `bug` added by @falkben on 2025-03-31 16:57_
 _Comment by @Gankra on 2025-03-31 21:12_
 
 This definitely looks like a bug in `python-platform` parsing
-
----
-
-_Referenced in [astral-sh/uv#12592](../../astral-sh/uv/pulls/12592.md) on 2025-03-31 21:27_
 
 ---
 

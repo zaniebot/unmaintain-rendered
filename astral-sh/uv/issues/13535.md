@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-19T13:48:10Z
 updated_at: 2025-06-05T19:06:36Z
 url: https://github.com/astral-sh/uv/issues/13535
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add support for `uvx python@latest`
@@ -55,9 +55,5 @@ _Comment by @maxmynter on 2025-06-05 19:06_
 I'm taking the interpreter with the highest version number. It is also how i would intuitively understand how latest works, though I can see why someone would have the other intuition.
 
 What is your preference? 
-
----
-
-_Referenced in [astral-sh/uv#13873](../../astral-sh/uv/pulls/13873.md) on 2025-06-05 20:13_
 
 ---

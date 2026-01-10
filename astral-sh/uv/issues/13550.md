@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-20T08:00:43Z
 updated_at: 2025-05-21T06:33:28Z
 url: https://github.com/astral-sh/uv/issues/13550
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Github action installation differs from local
@@ -231,10 +231,6 @@ You're installing two packages, django-stubs and django-types, that both provide
 
 ---
 
-_Referenced in [astral-sh/uv#13437](../../astral-sh/uv/pulls/13437.md) on 2025-05-20 14:49_
-
----
-
 _Comment by @atinary-bvollmer on 2025-05-21 06:25_
 
 Thanks for looking into this. I've investigated a bit more and you are right. Installing the django-stubs second after the django-types breaks the ci while installing it the afterway works. In the end I realized I could remove the django-stubs package.
@@ -242,9 +238,5 @@ Thanks for looking into this. I've investigated a bit more and you are right. In
 ---
 
 _Closed by @atinary-bvollmer on 2025-05-21 06:33_
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-08-18 16:36_
 
 ---

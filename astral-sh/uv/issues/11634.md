@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-19T19:18:50Z
 updated_at: 2025-03-26T01:14:45Z
 url: https://github.com/astral-sh/uv/issues/11634
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Package-specific find-links, without using other indices
@@ -88,10 +88,6 @@ Unfortunately the "lock a package to a specific index" functionality isn't avail
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-24 01:59_
-
----
-
-_Referenced in [astral-sh/uv#12407](../../astral-sh/uv/pulls/12407.md) on 2025-03-24 01:59_
 
 ---
 

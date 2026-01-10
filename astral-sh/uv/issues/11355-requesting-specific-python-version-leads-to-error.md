@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-09T14:42:56Z
 updated_at: 2025-06-04T05:46:53Z
 url: https://github.com/astral-sh/uv/issues/11355
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Requesting specific Python version leads to error
@@ -136,10 +136,6 @@ I first did not specify a minor version, which is why when not specifying a mino
 ---
 
 _Closed by @ImahnShekhzadeh on 2025-02-09 20:00_
-
----
-
-_Referenced in [astral-sh/uv#11454](../../astral-sh/uv/issues/11454.md) on 2025-02-12 17:04_
 
 ---
 

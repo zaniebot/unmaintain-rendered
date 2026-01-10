@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-31T15:38:43Z
 updated_at: 2025-04-01T12:56:04Z
 url: https://github.com/astral-sh/uv/issues/12588
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # dependencies are assumed to be the same among wheels
@@ -69,10 +69,6 @@ _Label `bug` added by @njzjz on 2025-03-31 15:38_
 
 ---
 
-_Referenced in [deepmodeling/deepmd-kit#4679](../../deepmodeling/deepmd-kit/issues/4679.md) on 2025-03-31 15:40_
-
----
-
 _Comment by @charliermarsh on 2025-03-31 15:42_
 
 Unfortunately this is a hard requirement of uv (and Poetry too), and likely won't change. Likely the best you can do here is define static dependency metadata for TensorFlow: https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata
@@ -88,9 +84,5 @@ _Label `question` added by @charliermarsh on 2025-04-01 12:56_
 ---
 
 _Closed by @charliermarsh on 2025-04-01 12:56_
-
----
-
-_Referenced in [tensorflow/tensorflow#94854](../../tensorflow/tensorflow/pulls/94854.md) on 2025-06-05 05:39_
 
 ---

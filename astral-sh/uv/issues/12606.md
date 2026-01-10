@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-01T20:22:52Z
 updated_at: 2025-04-07T23:11:45Z
 url: https://github.com/astral-sh/uv/issues/12606
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add dedicated error message for conda environment.yml files
@@ -64,10 +64,6 @@ _Comment by @christeefy on 2025-04-02 12:42_
 Got it! I assumed that `RequirementsSource.from_requirements_file` would be fallible, but I see now that validation is deferred until `RequirementsSpecification::from_source`, as you pointed out. 
 
 I'll try to implement a fix based on your suggestions, and may circle back here if I need extra clarification. 
-
----
-
-_Referenced in [astral-sh/uv#12669](../../astral-sh/uv/pulls/12669.md) on 2025-04-04 12:25_
 
 ---
 

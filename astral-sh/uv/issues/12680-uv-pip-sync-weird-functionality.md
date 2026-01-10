@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T19:14:02Z
 updated_at: 2025-04-04T19:26:09Z
 url: https://github.com/astral-sh/uv/issues/12680
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv pip sync` weird functionality
@@ -218,13 +218,5 @@ _Comment by @gtkacz on 2025-04-04 19:26_
 ---
 
 _Closed by @gtkacz on 2025-04-04 19:26_
-
----
-
-_Referenced in [astral-sh/uv#12683](../../astral-sh/uv/pulls/12683.md) on 2025-04-04 23:17_
-
----
-
-_Referenced in [astral-sh/uv#14507](../../astral-sh/uv/issues/14507.md) on 2025-07-08 14:12_
 
 ---

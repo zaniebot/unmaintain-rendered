@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-01T13:34:10Z
 updated_at: 2025-06-03T21:12:10Z
 url: https://github.com/astral-sh/uv/issues/10263
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `python3-config` equivalent?
@@ -33,10 +33,6 @@ so I can use `/root/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/bin/p
 PATH="$(dirname $(realpath .venv/bin/python)):$PATH"
 export PATH
 ```
-
----
-
-_Referenced in [astral-sh/uv#10267](../../astral-sh/uv/issues/10267.md) on 2025-01-02 01:33_
 
 ---
 
@@ -127,13 +123,5 @@ _Comment by @samypr100 on 2025-06-03 21:12_
 > [@geofft](https://github.com/geofft) I think if we are going to consider changing virtual environment creation in uv we need to open an issue upstream in CPython first to understand if this is something there's general consensus on.
 
 Agreed, I found some other historical discussions here https://github.com/pypa/virtualenv/issues/1808 implying the same
-
----
-
-_Referenced in [python/cpython#135147](../../python/cpython/issues/135147.md) on 2025-06-04 18:21_
-
----
-
-_Referenced in [Tencent-Hunyuan/Hunyuan3D-2.1#42](../../Tencent-Hunyuan/Hunyuan3D-2.1/issues/42.md) on 2025-08-20 08:20_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-26T21:47:27Z
 updated_at: 2025-05-27T01:43:25Z
 url: https://github.com/astral-sh/uv/issues/13667
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv cache clean package` is very slow for me
@@ -154,10 +154,6 @@ _Label `performance` added by @konstin on 2025-05-26 21:54_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-05-27 01:09_
-
----
-
-_Referenced in [astral-sh/uv#13669](../../astral-sh/uv/pulls/13669.md) on 2025-05-27 01:31_
 
 ---
 

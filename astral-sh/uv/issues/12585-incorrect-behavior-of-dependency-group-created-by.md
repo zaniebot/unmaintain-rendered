@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-31T14:01:47Z
 updated_at: 2025-03-31T14:51:29Z
 url: https://github.com/astral-sh/uv/issues/12585
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Incorrect behavior of dependency group created by `uvx migrate-to-uv`
@@ -96,18 +96,6 @@ Yes, `uv add pyarrow --group cloud-export-to-parquet` works as expected if the g
 
 ---
 
-_Referenced in [astral-sh/uv#12586](../../astral-sh/uv/pulls/12586.md) on 2025-03-31 14:36_
-
----
-
 _Closed by @charliermarsh on 2025-03-31 14:51_
-
----
-
-_Referenced in [temporalio/samples-python#170](../../temporalio/samples-python/pulls/170.md) on 2025-04-02 10:28_
-
----
-
-_Referenced in [astral-sh/uv#8591](../../astral-sh/uv/issues/8591.md) on 2025-04-16 00:33_
 
 ---

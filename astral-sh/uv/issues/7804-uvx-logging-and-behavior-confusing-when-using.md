@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-30T06:40:33Z
 updated_at: 2025-04-30T02:26:37Z
 url: https://github.com/astral-sh/uv/issues/7804
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uvx` logging and behavior confusing when using binary name instead of package name
@@ -110,10 +110,6 @@ I think that, ideally, `uvx px` should consistently fail, and perhaps give peopl
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-09-30 14:00_
-
----
-
-_Referenced in [astral-sh/uv#11603](../../astral-sh/uv/pulls/11603.md) on 2025-02-18 19:55_
 
 ---
 

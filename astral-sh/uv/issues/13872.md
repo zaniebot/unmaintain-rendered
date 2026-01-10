@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-05T19:28:38Z
 updated_at: 2025-06-09T16:45:34Z
 url: https://github.com/astral-sh/uv/issues/13872
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv add` with source specified
@@ -78,9 +78,5 @@ related to #13874 ?
 _Comment by @zanieb on 2025-06-09 16:45_
 
 I was checking if we'd added `--index <name>` support and found a bug, which is tracked in that issue.
-
----
-
-_Referenced in [astral-sh/uv#13974](../../astral-sh/uv/issues/13974.md) on 2025-06-11 19:12_
 
 ---

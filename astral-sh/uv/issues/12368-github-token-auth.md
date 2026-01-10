@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T14:20:58Z
 updated_at: 2025-03-31T08:58:03Z
 url: https://github.com/astral-sh/uv/issues/12368
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # github token auth
@@ -137,13 +137,5 @@ _Comment by @kristjanvalur on 2025-03-31 08:58_
 > Hi [@zanieb](https://github.com/zanieb) What is the recommend method for Github Actions? I don't think using PAT is a good option.
 
 I have been using https://github.com/astral-sh/setup-uv successfully for GHA.  My questions above were for a self hosted TeamCity pipeline.
-
----
-
-_Referenced in [astral-sh/uv#11342](../../astral-sh/uv/issues/11342.md) on 2025-06-04 03:54_
-
----
-
-_Referenced in [astral-sh/uv#13850](../../astral-sh/uv/pulls/13850.md) on 2025-06-04 21:56_
 
 ---

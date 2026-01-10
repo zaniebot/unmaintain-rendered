@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-02T14:13:20Z
 updated_at: 2025-06-04T03:55:56Z
 url: https://github.com/astral-sh/uv/issues/9576
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # NETRC environment variable ignored for git installs
@@ -170,10 +170,6 @@ RUN --mount=type=secret,id=netrc,dst=/run/secrets/.netrc \
 ```
 
 but again, I worry of the side effects, and I guess `NETRC` still has to be set for usual python packages
-
----
-
-_Referenced in [astral-sh/uv#11342](../../astral-sh/uv/issues/11342.md) on 2025-06-04 03:54_
 
 ---
 

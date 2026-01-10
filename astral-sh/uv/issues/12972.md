@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-04-18T16:30:04Z
 updated_at: 2025-04-18T16:30:10Z
 url: https://github.com/astral-sh/uv/issues/12972
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Consider skipping empty or invalid `.python-version` files during discovery
@@ -22,9 +22,5 @@ We currently stop discovery at empty `.python-version` files, should we fallback
 
 See https://github.com/astral-sh/uv/pull/12909#discussion_r2050586857
             
-
----
-
-_Referenced in [astral-sh/uv#12909](../../astral-sh/uv/pulls/12909.md) on 2025-04-18 16:47_
 
 ---

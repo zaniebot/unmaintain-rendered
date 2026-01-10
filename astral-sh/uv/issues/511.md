@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-28T21:47:42Z
 updated_at: 2025-03-31T10:09:10Z
 url: https://github.com/astral-sh/uv/issues/511
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # Allow override of dependencies
@@ -113,15 +113,7 @@ Gonna do a pass on this.
 
 ---
 
-_Referenced in [astral-sh/uv#631](../../astral-sh/uv/pulls/631.md) on 2023-12-13 05:18_
-
----
-
 _Closed by @charliermarsh on 2023-12-13 15:03_
-
----
-
-_Referenced in [astral-sh/uv#2686](../../astral-sh/uv/issues/2686.md) on 2024-03-27 05:07_
 
 ---
 

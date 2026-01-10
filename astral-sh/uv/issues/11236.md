@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-05T07:54:33Z
 updated_at: 2025-04-29T21:37:04Z
 url: https://github.com/astral-sh/uv/issues/11236
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Keyring integration requires entry at /simple/package/, not /simple/
@@ -796,25 +796,9 @@ A few possibilities...
 
 ---
 
-_Referenced in [astral-sh/uv#11391](../../astral-sh/uv/issues/11391.md) on 2025-02-10 17:07_
-
----
-
-_Referenced in [astral-sh/uv#11507](../../astral-sh/uv/issues/11507.md) on 2025-02-14 13:02_
-
----
-
-_Referenced in [astral-sh/uv#12004](../../astral-sh/uv/issues/12004.md) on 2025-03-06 13:25_
-
----
-
 _Comment by @zanieb on 2025-03-20 22:07_
 
 Note this is a duplicate of https://github.com/astral-sh/uv/issues/4056
-
----
-
-_Referenced in [astral-sh/uv#12651](../../astral-sh/uv/pulls/12651.md) on 2025-04-03 14:15_
 
 ---
 

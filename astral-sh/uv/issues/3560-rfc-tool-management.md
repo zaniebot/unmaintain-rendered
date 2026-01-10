@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T19:42:14Z
 updated_at: 2025-05-22T22:32:49Z
 url: https://github.com/astral-sh/uv/issues/3560
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # RFC: Tool management
@@ -210,10 +210,6 @@ _Label `tracking` added by @zanieb on 2024-05-13 19:42_
 
 ---
 
-_Referenced in [astral-sh/uv#1173](../../astral-sh/uv/issues/1173.md) on 2024-05-13 20:44_
-
----
-
 _Comment by @zanieb on 2024-05-13 20:59_
 
 As an aside, I'm a little uncertain about providing two interfaces i.e. `uv run` and `uv tool run`/`uvx`. Unfortunately it feels necessary to have two different interfaces to provide reasonable default semantics for these separate use-cases. 
@@ -344,10 +340,6 @@ Yeah I don't specify this command because I'm unsure if it's going to be necessa
 
 ---
 
-_Referenced in [astral-sh/uv#3613](../../astral-sh/uv/issues/3613.md) on 2024-05-15 16:56_
-
----
-
 _Comment by @henryiii on 2024-05-15 21:09_
 
 For `uv tool run`, would it respect pipx's entrypoint for tools that don't match? (https://github.com/pypa/build/blob/d852035e338bca6a06597cc0501f319d3bf03df4/pyproject.toml#L83-L84) Or would every tool have to add a new entrypoint for uv?
@@ -355,14 +347,6 @@ For `uv tool run`, would it respect pipx's entrypoint for tools that don't match
 Also, pipx assumes if there's a single console entry point, that that' what `pipx run` should run, so build would actually work without that now, though IIRC it does print a notice that it's doing that.
 
 Also, `pipx reinstall` is the only way to update all dependencies. For example, if you've installed `twine` in the past and now want METADATA 2.3 support, you have to `pipx reinstall` it since it's actually a dependency that is needed to get that, and pipx only upgrades the main package and anything that it has to. (Also I use reinstall-all after homebrew updates my Python)
-
----
-
-_Referenced in [astral-sh/uv#3657](../../astral-sh/uv/pulls/3657.md) on 2024-05-19 14:16_
-
----
-
-_Referenced in [astral-sh/uv#2607](../../astral-sh/uv/issues/2607.md) on 2024-05-21 21:47_
 
 ---
 
@@ -434,10 +418,6 @@ Thanks for putting this up online, it's written quite well!
 
 ---
 
-_Referenced in [astral-sh/uv#3960](../../astral-sh/uv/issues/3960.md) on 2024-06-04 14:50_
-
----
-
 _Comment by @zanieb on 2024-06-04 23:14_
 
 @ekohilas thanks for your comments! (https://github.com/astral-sh/uv/issues/3560#issuecomment-2130784332)
@@ -482,37 +462,9 @@ Regarding the continued concerns about confusion w.r.t. `uv tool add` vs `uv too
 
 ---
 
-_Referenced in [astral-sh/uv#4113](../../astral-sh/uv/issues/4113.md) on 2024-06-06 23:03_
-
----
-
-_Referenced in [astral-sh/uv#3959](../../astral-sh/uv/issues/3959.md) on 2024-06-11 22:58_
-
----
-
-_Referenced in [astral-sh/uv#4476](../../astral-sh/uv/issues/4476.md) on 2024-06-24 16:00_
-
----
-
-_Referenced in [astral-sh/uv#4485](../../astral-sh/uv/issues/4485.md) on 2024-06-24 19:21_
-
----
-
-_Referenced in [astral-sh/uv#4486](../../astral-sh/uv/issues/4486.md) on 2024-06-24 19:21_
-
----
-
 _Comment by @vlad-ivanov-name on 2024-06-25 08:50_
 
 Question -- will there be a place where tool dependencies are pinned? Normally transitive dependencies of dev-dependencies would be part of a lockfile, but if it's installed globally is there a risk of tool runs not being reproducible between instances of a project when the project references a tool?
-
----
-
-_Referenced in [astral-sh/uv#4411](../../astral-sh/uv/issues/4411.md) on 2024-06-30 22:01_
-
----
-
-_Referenced in [astral-sh/uv#2917](../../astral-sh/uv/issues/2917.md) on 2024-07-02 01:41_
 
 ---
 
@@ -572,10 +524,6 @@ _Comment by @T-256 on 2024-07-30 20:11_
 > PS. If it is a matter of resources - I've been doing some Rust stuff in my spare time lately, I may be able to land a hand here at some point.
 
 It'd be nice to have a POC work on dependency groups (PEP 735) in uv. by that we can realize how it will improve interface of dev-dependencies (which also includes project dependencies) and build-dependencies (which isolated from project dependencies). I think to achieve that, at first step, we'd need to improve lockfile format to support locking groups and locking inheritances in single file.
-
----
-
-_Referenced in [astral-sh/uv#5632](../../astral-sh/uv/issues/5632.md) on 2024-07-30 20:19_
 
 ---
 
@@ -710,10 +658,6 @@ _Comment by @zanieb on 2024-08-21 16:23_
 
 ---
 
-_Referenced in [astral-sh/uv#6365](../../astral-sh/uv/issues/6365.md) on 2024-08-21 18:34_
-
----
-
 _Comment by @daviewales on 2024-08-23 00:23_
 
 > A uvx alias will be provided to run tools. Notably, this would be an alias for uv tool run not uv tool — this could be a point of confusion for users transition from pipx but avoids the need to type uvx run. If we're providing an alias, it should be for the most-used command not for the broader uv tool interface. This matches tools in other ecosystems, like npx.
@@ -800,46 +744,6 @@ We don't have Discussions turned on in this repository and it didn't feel worth 
 
 ---
 
-_Referenced in [astral-sh/uv#6578](../../astral-sh/uv/issues/6578.md) on 2024-08-26 17:49_
-
----
-
-_Referenced in [astral-sh/uv#6598](../../astral-sh/uv/issues/6598.md) on 2024-09-03 14:56_
-
----
-
-_Referenced in [astral-sh/uv#7095](../../astral-sh/uv/pulls/7095.md) on 2024-09-05 18:57_
-
----
-
-_Referenced in [astral-sh/uv#7186](../../astral-sh/uv/issues/7186.md) on 2024-09-08 13:22_
-
----
-
-_Referenced in [astral-sh/uv#7312](../../astral-sh/uv/issues/7312.md) on 2024-09-11 21:18_
-
----
-
-_Referenced in [astral-sh/uv#7719](../../astral-sh/uv/issues/7719.md) on 2024-09-26 18:13_
-
----
-
-_Referenced in [astral-sh/uv#7729](../../astral-sh/uv/issues/7729.md) on 2024-09-27 12:57_
-
----
-
-_Referenced in [astral-sh/uv#8165](../../astral-sh/uv/issues/8165.md) on 2024-10-14 13:46_
-
----
-
-_Referenced in [astral-sh/uv#8164](../../astral-sh/uv/issues/8164.md) on 2024-10-14 14:15_
-
----
-
-_Referenced in [astral-sh/uv#9591](../../astral-sh/uv/issues/9591.md) on 2024-12-03 22:13_
-
----
-
 _Comment by @anisse on 2025-01-10 14:45_
 
 Hello, a quick feedback: I was bitten by `uv tool run` not having support for lockfile yet: ruff was bumped to a version that breaks formatting, and it broke CI with no apparent change.
@@ -857,10 +761,6 @@ _Comment by @anisse on 2025-01-10 18:00_
 Either way could work. I'd prefer to use the version pinned in the dev-dependencies group over a tool-specific lock file though.
 
 Also, I might have misunderstood, what did you mean in this message: https://github.com/astral-sh/uv/issues/3560#issuecomment-2258821376 ?
-
----
-
-_Referenced in [astral-sh/uv#11436](../../astral-sh/uv/issues/11436.md) on 2025-02-12 15:02_
 
 ---
 
@@ -887,18 +787,10 @@ and
 
 ---
 
-_Referenced in [astral-sh/uv#13268](../../astral-sh/uv/issues/13268.md) on 2025-05-02 15:34_
-
----
-
 _Comment by @codethief on 2025-05-22 18:44_
 
 @purajit I'd be interested in this as well! In fact, I only came here because of [this comment](https://github.com/astral-sh/uv/issues/8164#issuecomment-2411398549) by @charliermarsh about "project-level tools".
 
-
----
-
-_Referenced in [astral-sh/uv#9026](../../astral-sh/uv/issues/9026.md) on 2025-05-22 22:20_
 
 ---
 
@@ -909,13 +801,5 @@ _Comment by @codethief on 2025-05-22 22:32_
 - https://github.com/astral-sh/uv/issues/12533
 - https://github.com/astral-sh/uv/issues/13268
 
-
----
-
-_Referenced in [astral-sh/uv#13861](../../astral-sh/uv/issues/13861.md) on 2025-06-05 14:56_
-
----
-
-_Referenced in [astral-sh/uv#15384](../../astral-sh/uv/issues/15384.md) on 2025-08-20 13:09_
 
 ---

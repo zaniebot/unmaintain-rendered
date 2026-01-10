@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-10T02:20:06Z
 updated_at: 2025-05-10T20:55:29Z
 url: https://github.com/astral-sh/uv/issues/13372
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv pip install` won't download a `.tgz` from the index
@@ -67,10 +67,6 @@ _Label `bug` added by @godlygeek on 2025-05-10 02:20_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-05-10 20:28_
-
----
-
-_Referenced in [astral-sh/uv#13382](../../astral-sh/uv/pulls/13382.md) on 2025-05-10 20:37_
 
 ---
 

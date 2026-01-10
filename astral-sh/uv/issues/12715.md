@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T14:26:57Z
 updated_at: 2025-04-07T16:13:59Z
 url: https://github.com/astral-sh/uv/issues/12715
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Is UV_SYSTEM_PYTHON variable fully respected?
@@ -66,9 +66,5 @@ After further inspection, it's should be due to `misaki[zh]` not doesn't have th
 ---
 
 _Closed by @houtianze on 2025-04-07 15:53_
-
----
-
-_Referenced in [astral-sh/uv#12987](../../astral-sh/uv/issues/12987.md) on 2025-10-21 19:20_
 
 ---

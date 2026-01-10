@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T00:15:25Z
 updated_at: 2025-05-28T13:11:32Z
 url: https://github.com/astral-sh/uv/issues/6783
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Consider defaulting to `~=` version_cmp instead of `>=`
@@ -124,10 +124,6 @@ I'm not opposed to adding an option, I think. We'll need to reach consensus as a
 
 ---
 
-_Referenced in [astral-sh/uv#10247](../../astral-sh/uv/issues/10247.md) on 2024-12-31 06:13_
-
----
-
 _Comment by @konstin on 2025-01-03 10:09_
 
 I usually recommend operators like `>=2.1.0 <3.0.0` (or `>=0.2.1 <0.3.0` for `0.x` versions), since they avoid code breaking when a new major version of a dependencies is released, assuming that the dependency uses somewhat semantic versioning, so an option for that would be nice.
@@ -137,10 +133,6 @@ I usually recommend operators like `>=2.1.0 <3.0.0` (or `>=0.2.1 <0.3.0` for `0.
 _Comment by @frenata on 2025-01-03 15:46_
 
 @konstin , I *think* that's equivalent to ~2.1. Either way, an option to make that the default would be nice.
-
----
-
-_Referenced in [astral-sh/uv#7810](../../astral-sh/uv/issues/7810.md) on 2025-01-03 17:55_
 
 ---
 
@@ -162,10 +154,6 @@ For example PDM has the `--save-exact` option to the `pdm add` command that can 
 
 ---
 
-_Referenced in [bakdata/kpops#578](../../bakdata/kpops/pulls/578.md) on 2025-01-09 15:46_
-
----
-
 _Comment by @yourcelf on 2025-01-10 04:07_
 
 The "compatible" range specifier `~=` isn't great as a default.  While `~=2.1` is equivalent to `>=2.1.0`, it is *not* equivalent to `>=2.1.1`, since `~=2.1` allows `2.1.0`.  The poetry style `^2.1.1` can be expressed precisely as `>=2.1.1, <3.0.0`, which works, but is verbose.  The difference would be if I'm installing second library that expresses a dependency on `==2.1.0`, I will get a dependency solver error (which is desirable), instead of silently allowing a (potentially with security bugs) earlier patch version into the solution.
@@ -179,10 +167,6 @@ So I'd advocate for a double inequality like `>=2.1.1, <3.0.0` as the clearest s
 _Comment by @AmmoniumX on 2025-02-24 14:52_
 
 I think frenata's suggestion of implementing rye's "dependency-operator" config would satisfy every party. Keep the `>=` as default, since there is good justification for having it there, but people who aren't developing public libraries should have the _option_ to explicitly state they want to limit themselves to the current major version. I hope we can see something similar added to uv, as this wouldn't really change the majority's opinion of "having >= by default is better", but still gives other people the option to change the default behavior.
-
----
-
-_Referenced in [astral-sh/uv#12401](../../astral-sh/uv/issues/12401.md) on 2025-03-23 22:50_
 
 ---
 
@@ -276,18 +260,6 @@ _Assigned to @konstin by @konstin on 2025-04-17 14:20_
 ---
 
 _Unassigned @zanieb by @konstin on 2025-04-17 14:20_
-
----
-
-_Referenced in [astral-sh/uv#12946](../../astral-sh/uv/pulls/12946.md) on 2025-04-17 14:26_
-
----
-
-_Referenced in [astral-sh/uv#13381](../../astral-sh/uv/issues/13381.md) on 2025-05-10 20:20_
-
----
-
-_Referenced in [goauthentik/authentik#14469](../../goauthentik/authentik/pulls/14469.md) on 2025-05-11 00:40_
 
 ---
 

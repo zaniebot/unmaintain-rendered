@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-04T22:29:09Z
 updated_at: 2025-04-21T06:43:16Z
 url: https://github.com/astral-sh/uv/issues/4028
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Allow users to install a project's dependencies, without the project itself
@@ -105,10 +105,6 @@ include = ["blog"]
 
 ---
 
-_Referenced in [astral-sh/uv#5258](../../astral-sh/uv/issues/5258.md) on 2024-07-21 14:13_
-
----
-
 _Comment by @Vigilans on 2024-07-21 14:22_
 
 My use case: ansible project with bundled `ansible` and other related packages.
@@ -139,10 +135,6 @@ RUN uv sync --no-dev
 
 ---
 
-_Referenced in [astral-sh/uv#6068](../../astral-sh/uv/issues/6068.md) on 2024-08-13 20:58_
-
----
-
 _Comment by @sbidoul on 2024-08-14 08:42_
 
 In the above scenario of a layered Dockerfile to leverage caching of infrequently changing dependencies, it is important that there is a way to install from `uv.lock` without involving `pyproject.toml`. That is because when `pyproject.toml` gets involved, it may in turn require the presence of the whole project (because of an in-tree build backend, dynamic dependencies, etc).
@@ -161,14 +153,6 @@ I agree that something like this is necessary.
 ---
 
 _Label `preview` removed by @zanieb on 2024-08-20 18:23_
-
----
-
-_Referenced in [astral-sh/uv#5229](../../astral-sh/uv/issues/5229.md) on 2024-08-21 06:32_
-
----
-
-_Referenced in [astral-sh/uv#6315](../../astral-sh/uv/issues/6315.md) on 2024-08-21 10:42_
 
 ---
 
@@ -292,10 +276,6 @@ As a note on my own post, I think I prefer `--without-locals` over `--without-lo
 _Comment by @charliermarsh on 2024-08-21 21:36_
 
 What about `--no-locals` or `--no-local` to match options like `--no-project`?
-
----
-
-_Referenced in [astral-sh/uv#6398](../../astral-sh/uv/pulls/6398.md) on 2024-08-22 01:49_
 
 ---
 
@@ -431,21 +411,9 @@ Ah, right I now see the lock file knows the distinction between regular and dev 
 
 ---
 
-_Referenced in [astral-sh/uv#6271](../../astral-sh/uv/issues/6271.md) on 2024-08-22 16:09_
-
----
-
-_Referenced in [astral-sh/uv#6443](../../astral-sh/uv/issues/6443.md) on 2024-08-22 16:33_
-
----
-
 _Comment by @zanieb on 2024-08-22 16:41_
 
 Might be worth considering https://github.com/astral-sh/uv/issues/4422 too when designing a `--skip-package` interface.
-
----
-
-_Referenced in [astral-sh/uv#6451](../../astral-sh/uv/issues/6451.md) on 2024-08-22 17:31_
 
 ---
 
@@ -471,22 +439,6 @@ We may even want to have a dedicated separate command for this with different de
 
 ---
 
-_Referenced in [Komorebi-AI/python-template#47](../../Komorebi-AI/python-template/pulls/47.md) on 2024-08-23 08:37_
-
----
-
-_Referenced in [astral-sh/uv#6538](../../astral-sh/uv/pulls/6538.md) on 2024-08-23 18:47_
-
----
-
-_Referenced in [astral-sh/uv#6539](../../astral-sh/uv/pulls/6539.md) on 2024-08-23 19:09_
-
----
-
-_Referenced in [astral-sh/uv#6540](../../astral-sh/uv/pulls/6540.md) on 2024-08-23 19:28_
-
----
-
 _Comment by @zanieb on 2024-08-23 20:40_
 
 This will be available when we release (soon, I'm sure). Let me know if you encounter any problems!
@@ -503,17 +455,9 @@ This is available now in 0.3.3
 
 ---
 
-_Referenced in [astral-sh/uv#6578](../../astral-sh/uv/issues/6578.md) on 2024-08-24 11:59_
-
----
-
 _Comment by @justenstall on 2024-08-27 15:44_
 
 Is `--no-install-paths` still planned?
-
----
-
-_Referenced in [astral-sh/uv#6695](../../astral-sh/uv/issues/6695.md) on 2024-08-27 15:50_
 
 ---
 
@@ -535,18 +479,6 @@ No, it's not intended for long-term usage. You're probably looking for #6585 ins
 
 ---
 
-_Referenced in [astral-sh/uv#11453](../../astral-sh/uv/issues/11453.md) on 2025-02-12 17:11_
-
----
-
-_Referenced in [astral-sh/uv#11505](../../astral-sh/uv/issues/11505.md) on 2025-02-14 13:20_
-
----
-
-_Referenced in [appgoblin-dev/adscrawler#37](../../appgoblin-dev/adscrawler/issues/37.md) on 2025-03-15 18:43_
-
----
-
 _Comment by @VigneshVSV on 2025-04-08 18:04_
 
 For those who have specified a build-backend and wish to avoid building and installing the project for which you have created the `.venv` with `uv` , do:
@@ -554,10 +486,6 @@ For those who have specified a build-backend and wish to avoid building and inst
 `uv sync --no-install-project`
 
 Thanks to uv community for this project.
-
----
-
-_Referenced in [dh-tech/undate-python#118](../../dh-tech/undate-python/pulls/118.md) on 2025-04-11 14:55_
 
 ---
 

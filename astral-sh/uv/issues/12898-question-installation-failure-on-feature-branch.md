@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-15T14:50:28Z
 updated_at: 2025-04-22T10:34:25Z
 url: https://github.com/astral-sh/uv/issues/12898
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # ❓ Question: Installation Failure on Feature Branch — Is it Me or the Package?
@@ -79,10 +79,6 @@ uv 0.5.21 (c306e46e1 2025-01-18)
 ---
 
 _Label `question` added by @brupelo on 2025-04-15 14:50_
-
----
-
-_Referenced in [Kludex/uvicorn#1972](../../Kludex/uvicorn/issues/1972.md) on 2025-04-15 14:58_
 
 ---
 

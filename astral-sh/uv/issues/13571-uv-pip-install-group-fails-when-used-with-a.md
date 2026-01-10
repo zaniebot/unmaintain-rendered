@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-21T11:44:33Z
 updated_at: 2025-05-21T17:08:15Z
 url: https://github.com/astral-sh/uv/issues/13571
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv pip install --group` fails when used with a subfolder
@@ -127,9 +127,5 @@ _Label `error messages` added by @Gankra on 2025-05-21 17:08_
 ---
 
 _Assigned to @Gankra by @Gankra on 2025-05-21 17:08_
-
----
-
-_Referenced in [astral-sh/uv#14482](../../astral-sh/uv/issues/14482.md) on 2025-07-07 09:14_
 
 ---

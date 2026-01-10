@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-21T06:38:59Z
 updated_at: 2025-05-14T06:56:08Z
 url: https://github.com/astral-sh/uv/issues/10807
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `UV_PROJECT_ENVIRONMENT` is being ignored while creating venv
@@ -37,10 +37,6 @@ _Label `needs-decision` added by @konstin on 2025-01-21 08:26_
 _Comment by @konstin on 2025-01-21 08:27_
 
 `uv venv` takes the location as first argument, but it might makes sense to support `UV_PROJECT_ENVIRONMENT` as override for the default branch for consistency.
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-02-17 10:19_
 
 ---
 

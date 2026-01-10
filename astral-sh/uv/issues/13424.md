@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-13T05:23:07Z
 updated_at: 2025-05-13T07:25:06Z
 url: https://github.com/astral-sh/uv/issues/13424
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Direct dependency warning mentions `--resolution lowest` when using `lowest-direct`
@@ -59,10 +59,6 @@ _Renamed from "`direct dependency` warning mentions `--resolution lowest` when u
 ---
 
 _Assigned to @konstin by @konstin on 2025-05-13 07:16_
-
----
-
-_Referenced in [astral-sh/uv#13426](../../astral-sh/uv/pulls/13426.md) on 2025-05-13 07:17_
 
 ---
 

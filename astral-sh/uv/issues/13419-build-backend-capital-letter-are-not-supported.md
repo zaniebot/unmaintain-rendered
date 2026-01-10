@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-13T02:50:48Z
 updated_at: 2025-05-16T12:25:36Z
 url: https://github.com/astral-sh/uv/issues/13419
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Build backend: Capital letter are not supported
@@ -41,10 +41,6 @@ _Renamed from "can't i use capital letter in source code dir?" to "Build backend
 ---
 
 _Label `bug` added by @konstin on 2025-05-15 13:39_
-
----
-
-_Referenced in [astral-sh/uv#13468](../../astral-sh/uv/pulls/13468.md) on 2025-05-15 13:59_
 
 ---
 

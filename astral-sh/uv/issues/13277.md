@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-03T18:01:11Z
 updated_at: 2025-05-04T21:16:31Z
 url: https://github.com/astral-sh/uv/issues/13277
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Provide universal (fat) Python builds on macOS
@@ -63,9 +63,5 @@ Tracking this in https://github.com/astral-sh/python-build-standalone/issues/140
 ---
 
 _Closed by @konstin on 2025-05-04 21:16_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#140](../../astral-sh/python-build-standalone/issues/140.md) on 2025-05-05 22:02_
 
 ---

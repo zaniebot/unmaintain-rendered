@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-05T01:00:28Z
 updated_at: 2025-06-04T13:01:55Z
 url: https://github.com/astral-sh/uv/issues/9652
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Add `uv run --watch script.py` command to rerun `uv run` on `.py` file changes
@@ -68,11 +68,7 @@ I would look into how bun does that and copy that for `uv`. I never had issues t
 
 ---
 
-_Referenced in [astral-sh/uv#10781](../../astral-sh/uv/pulls/10781.md) on 2025-01-21 18:38_
-
----
-
-_Comment by @breightend on 2025-04-04 15:01_
+_Comment by @BrendaTapari on 2025-04-04 15:01_
 
 Any updates on this? it would be an awesome feature  
 
@@ -108,10 +104,6 @@ I believe for the first draft just taking a script to run is acceptable.
 _Comment by @thejchap on 2025-04-08 23:53_
 
 sounds good - and thanks for the mdbook pointers. will get into it
-
----
-
-_Referenced in [astral-sh/uv#12847](../../astral-sh/uv/pulls/12847.md) on 2025-04-11 22:28_
 
 ---
 

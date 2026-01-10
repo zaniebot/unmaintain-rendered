@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-22T18:41:03Z
 updated_at: 2025-04-23T18:44:46Z
 url: https://github.com/astral-sh/uv/issues/13059
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Authorization to azure private registry by environment variable doesn't work
@@ -170,9 +170,5 @@ http -a :$PAT https://feeds.dev.azure.com/<ORG>/_apis/packaging/feeds?api-versio
   , (map("  FEED: \(.name) -- \(.id)"))
 '
 ```
-
----
-
-_Referenced in [astral-sh/uv#13044](../../astral-sh/uv/issues/13044.md) on 2025-04-23 15:26_
 
 ---

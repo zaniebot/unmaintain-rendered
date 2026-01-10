@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-03T22:29:06Z
 updated_at: 2025-05-07T16:31:42Z
 url: https://github.com/astral-sh/uv/issues/13280
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # excluding `**/@test` causes "Unsupported glob expression in: `tool.uv.build-backend.*-exclude`"
@@ -71,10 +71,6 @@ _Label `bug` added by @jorenham on 2025-05-03 22:29_
 
 ---
 
-_Referenced in [numpy/numtype#470](../../numpy/numtype/issues/470.md) on 2025-05-03 22:30_
-
----
-
 _Comment by @jorenham on 2025-05-03 22:38_
 
 The full `pyproject.toml` can be found here: https://github.com/numpy/numtype/blob/61d553fec07151c5b61c9b5d76654431bbd67130/pyproject.toml
@@ -84,10 +80,6 @@ The full `pyproject.toml` can be found here: https://github.com/numpy/numtype/bl
 _Comment by @konstin on 2025-05-03 22:50_
 
 We took this behavior from https://peps.python.org/pep-0639/#add-license-files-key, though it clearly falls short here: There is no way to escape characters outside the `[a-zA-z0-9_.-]` to use them verbatim.
-
----
-
-_Referenced in [numpy/numtype#540](../../numpy/numtype/pulls/540.md) on 2025-05-04 16:38_
 
 ---
 
@@ -150,14 +142,6 @@ _Comment by @jorenham on 2025-05-04 17:03_
 > [@joey-the-33rd](https://github.com/joey-the-33rd) Please do not post AI comment or pull requests.
 
 That account made exactly 1001 contributions in the last couple of days, so I'm guessing it's a fully AI-controlled account, set out to waste all of our time.
-
----
-
-_Referenced in [astral-sh/uv#13311](../../astral-sh/uv/pulls/13311.md) on 2025-05-06 10:38_
-
----
-
-_Referenced in [astral-sh/uv#13313](../../astral-sh/uv/pulls/13313.md) on 2025-05-06 11:04_
 
 ---
 

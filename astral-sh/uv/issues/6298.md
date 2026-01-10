@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-21T04:56:20Z
 updated_at: 2025-05-19T13:41:15Z
 url: https://github.com/astral-sh/uv/issues/6298
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Add a command to read and update (i.e., bump) the project version, e.g., `uv version`
@@ -40,14 +40,6 @@ _Label `projects` added by @zanieb on 2024-08-21 12:36_
 
 ---
 
-_Referenced in [astral-sh/uv#6311](../../astral-sh/uv/issues/6311.md) on 2024-08-21 12:39_
-
----
-
-_Referenced in [astral-sh/uv#6430](../../astral-sh/uv/issues/6430.md) on 2024-08-22 13:33_
-
----
-
 _Comment by @JonZeolla on 2024-08-22 14:19_
 
 Would maintaining version identifiers outside of `pyproject.toml` be considered out of scope for `uv`? For instance, updating something like a `__version__` in a `src/package/__init__.py`?
@@ -64,10 +56,6 @@ path = "src/package/__init__.py"
 
 ---
 
-_Referenced in [astral-sh/uv#6440](../../astral-sh/uv/issues/6440.md) on 2024-08-22 14:35_
-
----
-
 _Comment by @deadnews on 2024-08-22 15:08_
 
 It's most convenient to me to have `git tag` based versioning:
@@ -79,21 +67,9 @@ I would love to have this functionality.
 
 ---
 
-_Referenced in [astral-sh/uv#6636](../../astral-sh/uv/issues/6636.md) on 2024-08-26 17:35_
-
----
-
 _Comment by @raayu83 on 2024-08-29 12:27_
 
 Would also love to see this... I'm currently using poetry-version-plugin in versioned projects and want to switch them to uv 
-
----
-
-_Referenced in [locustio/locust#2857](../../locustio/locust/issues/2857.md) on 2024-08-30 08:09_
-
----
-
-_Referenced in [astral-sh/uv#6854](../../astral-sh/uv/issues/6854.md) on 2024-08-30 12:06_
 
 ---
 
@@ -160,10 +136,6 @@ uv build
 
 ---
 
-_Referenced in [astral-sh/uv#7248](../../astral-sh/uv/pulls/7248.md) on 2024-09-10 09:17_
-
----
-
 _Comment by @daviewales on 2024-09-11 00:20_
 
 Consider how `poetry` does it: https://python-poetry.org/docs/cli#version
@@ -203,41 +175,9 @@ Using `uvx hatch version ...` is mostly fine, but I can't use it when it's a stu
 
 ---
 
-_Referenced in [astral-sh/uv#7507](../../astral-sh/uv/issues/7507.md) on 2024-09-18 16:47_
-
----
-
-_Referenced in [CSSUoB/TeX-Bot-Py-V2#329](../../CSSUoB/TeX-Bot-Py-V2/issues/329.md) on 2024-09-20 22:49_
-
----
-
-_Referenced in [astral-sh/uv#7609](../../astral-sh/uv/issues/7609.md) on 2024-09-21 12:33_
-
----
-
-_Referenced in [astral-sh/uv#7672](../../astral-sh/uv/issues/7672.md) on 2024-09-24 20:22_
-
----
-
-_Referenced in [astral-sh/uv#7750](../../astral-sh/uv/issues/7750.md) on 2024-09-28 03:51_
-
----
-
-_Referenced in [astral-sh/uv#7818](../../astral-sh/uv/issues/7818.md) on 2024-09-30 19:40_
-
----
-
-_Referenced in [astral-sh/uv#7785](../../astral-sh/uv/issues/7785.md) on 2024-10-06 14:42_
-
----
-
 _Comment by @david-waterworth on 2024-10-10 02:10_
 
 I'd love to see something like this as well - I currently use `python-semantic-version` but that uses SemVer rather than PEP440 - which causes a few minor issues such as not being able to parse tags that are valid PEP440 but not SemVer git tags (i.e. tags we added before migrating to PSV). It also has a nice CHANGELOG generation module, and the ability to generate release or dev version based on branch name (main vs feature). Version bumping rules are based on commit message parsing (i.e. if message starts with `feat:` bump minor version, if `fix:` bump patch etc.). As part of the PSV build process, all files that are modified (i.e. pyproject.toml, __version__.py) are staged, committed and pushed. The commit is also tagged with the version. You can then filter by the commit message in your CI pipeline to prevent infinite recursion.
-
----
-
-_Referenced in [astral-sh/uv#8162](../../astral-sh/uv/issues/8162.md) on 2024-10-14 16:30_
 
 ---
 
@@ -281,7 +221,7 @@ Basically, that part isn't trivial and we're doing a lot of other things.
 
 ---
 
-_Comment by @sam57719 on 2024-10-14 17:00_
+_Comment by @samcorky on 2024-10-14 17:00_
 
 @zanieb according to the [docs](https://docs.astral.sh/uv/getting-started/help/#viewing-the-version) there are already other ways to get the uv version. 
 
@@ -318,10 +258,6 @@ Maybe someone already thought of that, I'm new to `uv` 🤷‍♂️
 _Comment by @chrisrodrigue on 2024-10-14 17:52_
 
 Related: https://github.com/astral-sh/uv/issues/6440
-
----
-
-_Referenced in [astral-sh/uv#8294](../../astral-sh/uv/issues/8294.md) on 2024-10-17 16:38_
 
 ---
 
@@ -394,18 +330,6 @@ Maybe the top level command could be something like:
 
 ---
 
-_Referenced in [PyVRP/PyVRP#659](../../PyVRP/PyVRP/issues/659.md) on 2024-10-28 20:51_
-
----
-
-_Referenced in [astral-sh/uv#8714](../../astral-sh/uv/issues/8714.md) on 2024-10-31 04:49_
-
----
-
-_Referenced in [mbarkhau/bumpver#239](../../mbarkhau/bumpver/issues/239.md) on 2024-10-31 13:42_
-
----
-
 _Comment by @epicserve on 2024-10-31 13:59_
 
 [Bumpver](https://github.com/mbarkhau/bumpver) would be a good project for inspiration. I submitted https://github.com/mbarkhau/bumpver/issues/239, but it was closed as a duplicate of https://github.com/mbarkhau/bumpver/issues/193, which seems like it's a ways off.
@@ -420,10 +344,6 @@ _Comment by @HenriBlacksmith on 2024-10-31 17:39_
 > 
 
 Looks a bit older compared to: https://github.com/callowayproject/bump-my-version but I assume uv maintainers already have good references 😃 
-
----
-
-_Referenced in [astral-sh/uv#8755](../../astral-sh/uv/issues/8755.md) on 2024-11-01 23:21_
 
 ---
 
@@ -442,10 +362,6 @@ _Comment by @nc9 on 2024-11-08 08:40_
 > The `uv version` command already exists, so I need to come up with a design to either phase that out in favor this functionality or choose a new command name.
 
 fwiw - when I first used `uv` at the very early stages, I instinctively thought the `version` subcommand would replicate the `poetry version` et al. behaviour. It would probably make more sense to keep `uv` related commands under `uv self` (ie. `uv self version`) and keep the top-level subcommands as project / environment scoped commands. 
-
----
-
-_Referenced in [astral-sh/uv#9126](../../astral-sh/uv/issues/9126.md) on 2024-11-14 18:25_
 
 ---
 
@@ -480,10 +396,6 @@ I use this as a workaround:
 
 ---
 
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
 _Comment by @NathanVaughn on 2024-11-26 18:43_
 
 Personally I do this with a version of Python that includes `tomllib`:
@@ -491,10 +403,6 @@ Personally I do this with a version of Python that includes `tomllib`:
 ```bash
 version=$(python -c 'import tomllib;fp=open("pyproject.toml","rb");print(tomllib.load(fp)["project"]["version"]);fp.close()')
 ```
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
 
 ---
 
@@ -532,34 +440,6 @@ I don't think there are many places where there is a dependency on a `uv version
 
 It's just something I thought of and any part could be changed/tweaked to better fit the desired outcome. 
 But anyway I think this is a major one and should be considered since it would make `uv` better and will allow for an easy drop-in replacement from any `poetry` based project.
-
----
-
-_Referenced in [plugboard-dev/plugboard#58](../../plugboard-dev/plugboard/issues/58.md) on 2024-12-13 16:38_
-
----
-
-_Referenced in [astral-sh/uv#9899](../../astral-sh/uv/issues/9899.md) on 2024-12-15 16:55_
-
----
-
-_Referenced in [unitycatalog/unitycatalog#782](../../unitycatalog/unitycatalog/pulls/782.md) on 2024-12-17 20:33_
-
----
-
-_Referenced in [astral-sh/uv#8352](../../astral-sh/uv/issues/8352.md) on 2024-12-18 10:33_
-
----
-
-_Referenced in [Fraunhofer-AISEC/gallia#657](../../Fraunhofer-AISEC/gallia/pulls/657.md) on 2024-12-19 14:38_
-
----
-
-_Referenced in [datnguye/dbterd#126](../../datnguye/dbterd/issues/126.md) on 2025-01-02 01:59_
-
----
-
-_Referenced in [langroid/langroid#662](../../langroid/langroid/pulls/662.md) on 2025-01-05 22:18_
 
 ---
 
@@ -646,10 +526,6 @@ Need to use a python version that has tomllib (i.e. 3.11 or greater).
 
 ---
 
-_Referenced in [TechnologyBrewery/pants-uv-lifecycle-plugin#11](../../TechnologyBrewery/pants-uv-lifecycle-plugin/issues/11.md) on 2025-01-21 16:09_
-
----
-
 _Comment by @engeir on 2025-01-22 08:12_
 
 Expanding on the answer in https://github.com/astral-sh/uv/issues/6298#issuecomment-2335034247, the following bash script can both print and increment versions:
@@ -706,10 +582,6 @@ Inspired by one of the comments above, here's my GitHub action for getting versi
           VERSION=$(uvx --from=toml-cli toml get --toml-path=pyproject.toml project.version)
           echo "package_version=$VERSION" >> $GITHUB_OUTPUT
 ```
-
----
-
-_Referenced in [spotify/luigi#3338](../../spotify/luigi/pulls/3338.md) on 2025-02-01 22:00_
 
 ---
 
@@ -836,14 +708,6 @@ I hope others like me will feel this is good enough to be unblocked, and move th
 
 ---
 
-_Referenced in [aws-powertools/powertools-lambda-python#5624](../../aws-powertools/powertools-lambda-python/issues/5624.md) on 2025-02-06 11:49_
-
----
-
-_Referenced in [yamatt/homoglyphs#16](../../yamatt/homoglyphs/pulls/16.md) on 2025-02-06 19:37_
-
----
-
 _Comment by @kwaegel on 2025-02-10 19:44_
 
 There are a number of workarounds posted so far, but I'll add one more to the list.
@@ -884,21 +748,9 @@ Keeping my fingers crossed that this only needs to be a "temporary" workaround, 
 
 ---
 
-_Referenced in [astral-sh/uv#11475](../../astral-sh/uv/issues/11475.md) on 2025-02-13 14:23_
-
----
-
-_Referenced in [TechnologyBrewery/habushu#224](../../TechnologyBrewery/habushu/pulls/224.md) on 2025-02-13 20:22_
-
----
-
 _Comment by @Blindstars on 2025-02-15 20:16_
 
 +1 - Would use this all day long in replacement of poetry version.
-
----
-
-_Referenced in [astral-sh/uv#11679](../../astral-sh/uv/issues/11679.md) on 2025-02-21 18:07_
 
 ---
 
@@ -1345,14 +1197,6 @@ The commands are a bit longer though (but those can easily be aliased).
 
 ---
 
-_Referenced in [astral-sh/uv#12055](../../astral-sh/uv/issues/12055.md) on 2025-03-07 18:56_
-
----
-
-_Referenced in [astral-sh/uv#12349](../../astral-sh/uv/pulls/12349.md) on 2025-03-20 21:11_
-
----
-
 _Comment by @Gankra on 2025-03-20 21:49_
 
 We've got a PR up for an interface/implementation we're reasonably happy with: https://github.com/astral-sh/uv/pull/12349
@@ -1509,19 +1353,7 @@ Just a thought based on https://pypi.org/project/bumpver/
 
 ---
 
-_Referenced in [astral-sh/uv#12749](../../astral-sh/uv/issues/12749.md) on 2025-04-08 16:50_
-
----
-
 _Closed by @zanieb on 2025-04-29 21:37_
-
----
-
-_Referenced in [Homebrew/homebrew-core#221925](../../Homebrew/homebrew-core/pulls/221925.md) on 2025-04-29 23:35_
-
----
-
-_Referenced in [wntrblm/nox#953](../../wntrblm/nox/issues/953.md) on 2025-04-30 02:18_
 
 ---
 
@@ -1606,17 +1438,5 @@ Or even having just a singular version for a workspace, that the child packages 
 _Comment by @zanieb on 2025-05-19 13:41_
 
 Please open new issues for both of these questions. You're pinging hundreds of people subscribed here.
-
----
-
-_Referenced in [encord-team/encord-client-python#943](../../encord-team/encord-client-python/pulls/943.md) on 2025-06-27 12:26_
-
----
-
-_Referenced in [jakubplichta/grafana-dashboard-builder#227](../../jakubplichta/grafana-dashboard-builder/issues/227.md) on 2025-10-12 21:28_
-
----
-
-_Referenced in [aaronclong/xspfify#2](../../aaronclong/xspfify/pulls/2.md) on 2025-11-22 01:00_
 
 ---

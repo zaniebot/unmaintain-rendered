@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T21:41:38Z
 updated_at: 2025-04-01T20:21:40Z
 url: https://github.com/astral-sh/uv/issues/7052
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Include build dependencies in locked resolutions (`uv pip compile`, `uv lock`)
@@ -42,10 +42,6 @@ _Comment by @charliermarsh on 2024-09-04 23:49_
 _Comment by @alex on 2024-09-04 23:52_
 
 My immediate use case is to prepare constraints files that can be used with `--build-constraints`
-
----
-
-_Referenced in [pyca/cryptography#11548](../../pyca/cryptography/issues/11548.md) on 2024-09-05 18:40_
 
 ---
 
@@ -215,31 +211,7 @@ wrote:
 
 ---
 
-_Referenced in [astral-sh/uv#7960](../../astral-sh/uv/issues/7960.md) on 2024-10-08 22:33_
-
----
-
-_Referenced in [astral-sh/uv#8647](../../astral-sh/uv/issues/8647.md) on 2024-10-28 21:11_
-
----
-
 _Renamed from "Add the ability for `uv pip compile` to include build dependencies" to "Include build dependencies in locked resolutions (`uv pip compile`, `uv lock`)" by @charliermarsh on 2024-10-28 21:12_
-
----
-
-_Referenced in [astral-sh/uv#8414](../../astral-sh/uv/issues/8414.md) on 2024-10-28 21:15_
-
----
-
-_Referenced in [astral-sh/uv#10233](../../astral-sh/uv/issues/10233.md) on 2025-01-02 12:50_
-
----
-
-_Referenced in [astral-sh/uv#10301](../../astral-sh/uv/issues/10301.md) on 2025-01-05 20:02_
-
----
-
-_Referenced in [astral-sh/uv#10903](../../astral-sh/uv/issues/10903.md) on 2025-01-23 15:46_
 
 ---
 
@@ -286,18 +258,6 @@ cannot use high level APIs like `uv sync` and have to resort to `uv pip install`
 
 
 [^1]: I'm simplifying a bit, but the real-life use case is that I use `meson-python` as a build backend, which by design, supports build isolation *or* editable installs, but not the combination of both. This is done because C-extensions installed in editable mode require re-compilation ahead of runtime, which can only be performed if build-time requirements are available in the same environment.
-
----
-
-_Referenced in [neutrinoceros/gpgi#269](../../neutrinoceros/gpgi/pulls/269.md) on 2025-02-16 11:06_
-
----
-
-_Referenced in [astropy/astropy#17760](../../astropy/astropy/issues/17760.md) on 2025-02-19 16:14_
-
----
-
-_Referenced in [astral-sh/uv#12446](../../astral-sh/uv/issues/12446.md) on 2025-03-25 01:12_
 
 ---
 

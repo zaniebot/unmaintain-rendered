@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-05T12:58:40Z
 updated_at: 2025-06-05T16:19:28Z
 url: https://github.com/astral-sh/uv/issues/13859
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # 3rd party install scripts using uv frequently shadow previously-standalone-installed uv
@@ -51,10 +51,6 @@ _Label `enhancement` added by @mattgiles on 2025-06-05 12:58_
 
 ---
 
-_Referenced in [griptape-ai/griptape-nodes#1408](../../griptape-ai/griptape-nodes/issues/1408.md) on 2025-06-05 13:05_
-
----
-
 _Comment by @konstin on 2025-06-05 16:05_
 
 Thanks for bringing this up and reporting it upstream! For use cases where you need to use uv inside another project, we recommend setting  `UV_INSTALL_DIR` to a project controlled directory and `NO_MODIFY_PATH=1` to avoid changing the user's dotfiles.
@@ -64,9 +60,5 @@ Thanks for bringing this up and reporting it upstream! For use cases where you n
 _Comment by @zanieb on 2025-06-05 16:19_
 
 I think they should actually use https://docs.astral.sh/uv/configuration/installer/#unmanaged-installations
-
----
-
-_Referenced in [LabAutomationAndScreening/copier-cloud-courier-infrastructure#10](../../LabAutomationAndScreening/copier-cloud-courier-infrastructure/pulls/10.md) on 2025-08-02 20:06_
 
 ---

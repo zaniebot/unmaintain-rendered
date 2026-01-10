@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-29T13:33:59Z
 updated_at: 2025-05-14T07:32:31Z
 url: https://github.com/astral-sh/uv/issues/13195
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Disabling hash verification
@@ -108,14 +108,6 @@ It looks like there are hashes missing for aarch64 in https://download.pytorch.o
 ```
 
 CC @charliermarsh 
-
----
-
-_Referenced in [astral-sh/uv#13318](../../astral-sh/uv/issues/13318.md) on 2025-05-06 22:30_
-
----
-
-_Referenced in [pytorch/pytorch#153469](../../pytorch/pytorch/issues/153469.md) on 2025-05-13 15:33_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-02T09:51:49Z
 updated_at: 2025-04-09T16:24:14Z
 url: https://github.com/astral-sh/uv/issues/7865
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Bundle Python Interpreter in virtual environments
@@ -101,10 +101,6 @@ Ok, I started working on this in #7920. Does `--install-dir` name work?
 
 ---
 
-_Referenced in [astral-sh/uv#7419](../../astral-sh/uv/issues/7419.md) on 2024-10-08 01:47_
-
----
-
 _Comment by @alexwilson1 on 2025-01-29 19:47_
 
 Bundling Python into .venv using UV_PYTHON_INSTALL_DIR does not work because when .venv is not empty (contains Python) the installation gives this error:
@@ -115,29 +111,9 @@ Bundling Python into .venv using UV_PYTHON_INSTALL_DIR does not work because whe
 
 ---
 
-_Referenced in [astral-sh/python-build-standalone#381](../../astral-sh/python-build-standalone/issues/381.md) on 2025-01-29 23:31_
-
----
-
-_Referenced in [astral-sh/uv#11056](../../astral-sh/uv/issues/11056.md) on 2025-02-01 17:36_
-
----
-
 _Comment by @ginkgo97 on 2025-02-04 05:48_
 
 Will the option `--install-dir` or the env `UV_PYTHON_INSTALL_DIR` be able to be configured in `uv.toml`?
-
----
-
-_Referenced in [astral-sh/uv#11541](../../astral-sh/uv/issues/11541.md) on 2025-02-15 20:15_
-
----
-
-_Referenced in [astral-sh/uv#11927](../../astral-sh/uv/issues/11927.md) on 2025-03-03 19:44_
-
----
-
-_Referenced in [astral-sh/uv#12298](../../astral-sh/uv/issues/12298.md) on 2025-03-18 19:13_
 
 ---
 
@@ -146,29 +122,5 @@ _Comment by @kevinmarks-b on 2025-04-09 16:24_
 I'm trying to do this to get the Python binary into an RPM for deployment on AWS. 
 However, it seems impossible to get uv to see the python installed in a nearby directory with `UV_PYTHON_INSTALL_DIR` - even if I do as the OP did and symlink it to the install, it destroys that version and reinstalls when I use `uv run` to the ~/.local/share/uv/python/ one instead. 
 Now I'm trying to do this in a make file, so `UV_PYTHON_INSTALL_DIR` may not persist into the runtime. Is there a way to make uv find it?
-
----
-
-_Referenced in [astral-sh/uv#12798](../../astral-sh/uv/issues/12798.md) on 2025-04-10 03:52_
-
----
-
-_Referenced in [astral-sh/uv#13097](../../astral-sh/uv/issues/13097.md) on 2025-04-25 07:56_
-
----
-
-_Referenced in [astral-sh/uv#14198](../../astral-sh/uv/issues/14198.md) on 2025-06-22 12:33_
-
----
-
-_Referenced in [astral-sh/uv#14602](../../astral-sh/uv/issues/14602.md) on 2025-07-14 14:47_
-
----
-
-_Referenced in [astral-sh/uv#15751](../../astral-sh/uv/issues/15751.md) on 2025-09-16 02:02_
-
----
-
-_Referenced in [astral-sh/uv#16289](../../astral-sh/uv/issues/16289.md) on 2025-10-13 23:07_
 
 ---

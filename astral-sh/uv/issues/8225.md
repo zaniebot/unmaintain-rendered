@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T17:24:41Z
 updated_at: 2025-04-27T15:47:07Z
 url: https://github.com/astral-sh/uv/issues/8225
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv pip install` hangs...
@@ -735,10 +735,6 @@ I can't reproduce this, e.g. I ran that Docker image, added your project definit
 _Comment by @zanieb on 2024-10-16 04:35_
 
 I also cannot reproduce this in a container with `docker run --platform linux/amd64 -it ghcr.io/astral-sh/uv:python3.13-bookworm-slim /bin/bash`
-
----
-
-_Referenced in [astral-sh/uv#8252](../../astral-sh/uv/issues/8252.md) on 2024-10-16 12:25_
 
 ---
 

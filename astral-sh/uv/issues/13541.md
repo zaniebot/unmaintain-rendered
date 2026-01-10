@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-19T18:52:39Z
 updated_at: 2025-05-21T16:16:12Z
 url: https://github.com/astral-sh/uv/issues/13541
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # [DOC] Explain `uv sync` in the projects guide for working on existing projects
@@ -31,10 +31,6 @@ Therefore, I propose to add a small but explicit section on working on existing 
 ---
 
 _Label `enhancement` added by @turbotimon on 2025-05-19 18:52_
-
----
-
-_Referenced in [astral-sh/uv#13542](../../astral-sh/uv/pulls/13542.md) on 2025-05-19 18:52_
 
 ---
 

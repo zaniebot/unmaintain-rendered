@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T11:25:10Z
 updated_at: 2025-04-03T10:24:26Z
 url: https://github.com/astral-sh/uv/issues/2079
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # Cross-platform support
@@ -33,10 +33,6 @@ _Label `enhancement` added by @konstin on 2024-03-01 10:58_
 
 ---
 
-_Referenced in [astral-sh/uv#2142](../../astral-sh/uv/issues/2142.md) on 2024-03-03 21:02_
-
----
-
 _Comment by @fullerzz on 2024-04-18 00:31_
 
 I would definitely use `uv pip install --platform` if implemented! My current use case involves downloading python dependencies  with `pip install -r requirements.txt --platform manylinux2014_aarch64`.
@@ -50,10 +46,6 @@ I'm a big fan of Ruff, so I'm hoping I can start to make use of uv more too.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-19 14:11_
-
----
-
-_Referenced in [astral-sh/uv#3154](../../astral-sh/uv/pulls/3154.md) on 2024-04-20 00:16_
 
 ---
 

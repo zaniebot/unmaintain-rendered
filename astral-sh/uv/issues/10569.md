@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-13T16:03:49Z
 updated_at: 2025-04-16T10:29:46Z
 url: https://github.com/astral-sh/uv/issues/10569
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Great work, but can we support build script e.g. `build.py` for building simple C extension modules?
@@ -88,10 +88,6 @@ Not sure how to resolve this.
 
 ---
 
-_Referenced in [python-poetry/poetry#10029](../../python-poetry/poetry/issues/10029.md) on 2025-01-13 16:10_
-
----
-
 _Comment by @tpgillam on 2025-01-13 21:27_
 
 Just a workaround, but you could use the setuptools backend to build the extension module. This necessitates a `setup.py` rather than `build.py`.
@@ -131,10 +127,6 @@ May I suggest two aspects of having an arbitrary `build.py` which may be a sourc
 2) Do allow arbitrary positional arguments to be passed into `build.py`, e.g. `uv build -- -a --b` where `-a` and `--b` are then passed into `python -m build`.
 
 Both for your considerations.
-
----
-
-_Referenced in [stanford-centaur/PyPantograph#90](../../stanford-centaur/PyPantograph/issues/90.md) on 2025-03-29 18:37_
 
 ---
 
@@ -212,9 +204,5 @@ _Comment by @jymchng on 2025-04-16 10:29_
 https://github.com/winstxnhdw/KinematicBicycleModel/blob/main/pyproject.toml
 
 Take a look at this guys, maybe we can use `setuptools` to 'natively' help us to build extension modules between a dedicated build script.
-
----
-
-_Referenced in [astral-sh/uv#16438](../../astral-sh/uv/issues/16438.md) on 2025-10-24 15:16_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-28T14:26:07Z
 updated_at: 2025-04-18T09:48:05Z
 url: https://github.com/astral-sh/uv/issues/6750
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Avoid creating `main.py` in existing projects
@@ -24,14 +24,6 @@ e.g. in `uv-fastapi-example` I don't want a `hello.py` when I regenerate the `py
 ---
 
 _Label `projects` added by @zanieb on 2024-08-28 14:26_
-
----
-
-_Referenced in [astral-sh/uv#6850](../../astral-sh/uv/pulls/6850.md) on 2024-08-30 02:56_
-
----
-
-_Referenced in [astral-sh/uv#6853](../../astral-sh/uv/issues/6853.md) on 2024-08-30 12:04_
 
 ---
 
@@ -85,10 +77,6 @@ Right now I have an alias for this command:
 
 ---
 
-_Referenced in [astral-sh/uv#10369](../../astral-sh/uv/pulls/10369.md) on 2025-01-24 15:10_
-
----
-
 _Comment by @Bengt on 2025-01-24 15:21_
 
 (I basically agree with everyone in this thread, but I collected some data in the thread @zanieb pointed me from to here, so I am shamelessly reposting my comment from there here:)
@@ -120,10 +108,6 @@ I have one more use-case -- I use uv to create a directory hosting data analysis
 
 ---
 
-_Referenced in [astral-sh/uv#11192](../../astral-sh/uv/pulls/11192.md) on 2025-02-03 19:55_
-
----
-
 _Comment by @Gankra on 2025-02-12 17:39_
 
 Just updating the status of this since a lot of the comments are outdated and kinda talking about an orthogonal question:
@@ -139,10 +123,6 @@ I think the heuristic is a good idea but it's less clear what it should be. Two 
 * `**/*.py`: if there's any `.py` in the same directory *or any subdirectory*
 
 The first seems nice and simple but maybe too weak, the second could be overzealous. Perhaps something more precise than this could be better though? That said, on balance "making a file you have to delete" seems less bad than "not making a file you expect to be there and being confused".
-
----
-
-_Referenced in [astral-sh/uv#11329](../../astral-sh/uv/pulls/11329.md) on 2025-02-12 17:47_
 
 ---
 

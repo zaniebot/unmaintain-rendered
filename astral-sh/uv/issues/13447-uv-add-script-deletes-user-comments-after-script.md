@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-14T08:57:17Z
 updated_at: 2025-05-14T21:54:22Z
 url: https://github.com/astral-sh/uv/issues/13447
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv add --script` deletes user comments after `script`-comment-block
@@ -71,10 +71,6 @@ _Label `bug` added by @qwerbzuio on 2025-05-14 08:57_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-05-14 18:49_
-
----
-
-_Referenced in [astral-sh/uv#13460](../../astral-sh/uv/pulls/13460.md) on 2025-05-14 19:21_
 
 ---
 

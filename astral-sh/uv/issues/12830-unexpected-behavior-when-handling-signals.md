@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-11T09:18:09Z
 updated_at: 2025-04-23T23:42:59Z
 url: https://github.com/astral-sh/uv/issues/12830
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Unexpected behavior when handling signals
@@ -114,10 +114,6 @@ _All sorts_ of python tools (e.g. coverage tools) use signals for various purpos
 ---
 
 _Assigned to @zanieb by @zanieb on 2025-04-21 02:27_
-
----
-
-_Referenced in [astral-sh/uv#13017](../../astral-sh/uv/pulls/13017.md) on 2025-04-21 15:19_
 
 ---
 

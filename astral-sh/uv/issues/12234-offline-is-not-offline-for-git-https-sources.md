@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-17T09:53:35Z
 updated_at: 2025-04-04T16:02:55Z
 url: https://github.com/astral-sh/uv/issues/12234
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # --offline is not offline for "git+https" sources.
@@ -105,10 +105,6 @@ _Label `help wanted` added by @charliermarsh on 2025-03-17 18:20_
 _Comment by @thejchap on 2025-03-18 02:39_
 
 I'll take a look at this one
-
----
-
-_Referenced in [astral-sh/uv#12619](../../astral-sh/uv/pulls/12619.md) on 2025-04-02 04:49_
 
 ---
 

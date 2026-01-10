@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-06T08:33:34Z
 updated_at: 2025-05-06T08:35:01Z
 url: https://github.com/astral-sh/uv/issues/13310
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv can't install lzma wheel created in Python
@@ -97,9 +97,5 @@ _Label `bug` added by @konstin on 2025-05-06 08:33_
 _Comment by @konstin on 2025-05-06 08:34_
 
 The last error here, "stream/file format not recognized", comes from lzma-sys. The zip crate recognizes the lzma encoding and tries to unpack it, but it seems there's some format incompatibility.
-
----
-
-_Referenced in [astral-sh/uv#13192](../../astral-sh/uv/issues/13192.md) on 2025-05-06 08:38_
 
 ---

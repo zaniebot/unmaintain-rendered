@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-28T08:43:23Z
 updated_at: 2025-04-15T09:15:12Z
 url: https://github.com/astral-sh/uv/issues/2038
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # Managing dependencies on top of system site-packages
@@ -73,10 +73,6 @@ I think the scenario is too odd and doesn't really make sense to support.
 ---
 
 _Closed by @fbergroth on 2024-02-29 13:48_
-
----
-
-_Referenced in [astral-sh/rye#925](../../astral-sh/rye/issues/925.md) on 2024-03-23 05:35_
 
 ---
 

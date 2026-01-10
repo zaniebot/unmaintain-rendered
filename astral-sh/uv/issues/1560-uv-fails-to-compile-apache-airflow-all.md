@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T01:54:22Z
 updated_at: 2025-04-08T09:58:40Z
 url: https://github.com/astral-sh/uv/issues/1560
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # uv fails to compile `apache-airflow[all]`  (performance resolution issue)
@@ -182,10 +182,6 @@ FYI I created a seperate issue for this: https://github.com/astral-sh/uv/issues/
 
 ---
 
-_Referenced in [astral-sh/uv#2003](../../astral-sh/uv/issues/2003.md) on 2024-02-27 05:19_
-
----
-
 _Comment by @potiuk on 2024-02-27 10:53_
 
 FYI. My non-scientific comparision (after > 24 hrs switching to uv) is that Airflow's workflow is getting a HUGE boost.
@@ -297,14 +293,6 @@ Oh absolutely - approach of boto3/botocore is particularly difficult for package
 
 ---
 
-_Referenced in [astral-sh/uv#1398](../../astral-sh/uv/issues/1398.md) on 2024-03-22 20:08_
-
----
-
-_Referenced in [pypa/pip#12035](../../pypa/pip/issues/12035.md) on 2024-03-28 14:03_
-
----
-
 _Comment by @notatallshaw on 2024-04-04 14:27_
 
 FYI, the error output is different now, but the issue of uv backtracking too far back on apache-beam for Python 3.11 with latest version of airflow still exists as of today:
@@ -365,10 +353,6 @@ We could potentially - of course - in the future versions of airflow to say for 
 Of course I know it's an NP-complete problem and choosing some heuristics will cause problems for some other cases - and I do not know the details of how `uv` resolution is done, so maybe I am stating the obvious, but possibly a good solution could be to figure out a few such "likely" heuristics that will limit big part of the tree resolution and gradually remove such "stronger" heuristics when resolution could not be found with them - with the speed of UV resolution, even if you try several times, with weaker and weaker heuristics it could be fast enough (and might help in 9X% of cases that will work super-fast and reliable with the stronger heuristics.
 
 Just a "lame" proposal - without knowing the internals - it might be - again - stating the obvious thing that already happens (or maybe I am missing somethign that I am not aware of), so apologies if that's the case :)
-
----
-
-_Referenced in [apache/airflow#38753](../../apache/airflow/pulls/38753.md) on 2024-04-05 08:24_
 
 ---
 

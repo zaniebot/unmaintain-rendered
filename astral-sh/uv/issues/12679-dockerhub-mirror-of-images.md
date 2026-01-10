@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T19:04:01Z
 updated_at: 2025-04-07T14:17:17Z
 url: https://github.com/astral-sh/uv/issues/12679
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Dockerhub mirror of images
@@ -82,13 +82,5 @@ For usage with Gitlab's built-in [Dependency Proxy](https://docs.gitlab.com/user
 
 [Trivy opted](https://github.com/aquasecurity/trivy-db/issues/441#issuecomment-2406710186) to start publishing there after Github started enforcing some heavy rate limiting on container image pulls; though we've seen less issues with Github since moving to self-hosted Gitlab Runners.
 
-
----
-
-_Referenced in [astral-sh/uv#14088](../../astral-sh/uv/pulls/14088.md) on 2025-06-17 01:25_
-
----
-
-_Referenced in [astral-sh/uv#14106](../../astral-sh/uv/issues/14106.md) on 2025-06-17 13:07_
 
 ---

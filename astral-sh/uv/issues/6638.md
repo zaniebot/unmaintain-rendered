@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-26T07:11:48Z
 updated_at: 2025-05-07T01:46:28Z
 url: https://github.com/astral-sh/uv/issues/6638
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # How to run a library module?
@@ -71,10 +71,6 @@ I think we should document this. I'm not sure we should provide a shorthand yet.
 
 ---
 
-_Referenced in [astral-sh/uv#6914](../../astral-sh/uv/issues/6914.md) on 2024-09-03 14:14_
-
----
-
 _Comment by @johnhoran on 2024-09-05 18:19_
 
 One downside to the `uv run python -m mylibrary.module` approach is that this doesn't allow for the inline script metadata.
@@ -115,14 +111,6 @@ Please consider adding `-m` to `uvx run` or perhaps make that a default fallback
 _Comment by @gotmax23 on 2024-09-11 09:10_
 
 `uv run -m` makes a lot of sense to me. You're trying to *run* a *module*.
-
----
-
-_Referenced in [astral-sh/uv#7281](../../astral-sh/uv/pulls/7281.md) on 2024-09-11 17:55_
-
----
-
-_Referenced in [astral-sh/uv#7297](../../astral-sh/uv/issues/7297.md) on 2024-09-11 18:21_
 
 ---
 
@@ -168,14 +156,6 @@ The problem with `project.scripts` is that it creates new executables that end u
 
 ---
 
-_Referenced in [astral-sh/uv#7322](../../astral-sh/uv/pulls/7322.md) on 2024-09-12 04:10_
-
----
-
-_Referenced in [astral-sh/uv#7738](../../astral-sh/uv/issues/7738.md) on 2024-09-27 13:20_
-
----
-
 _Comment by @zanieb on 2024-09-27 13:22_
 
 > end up in $PATH, in completions, and in a global namespace
@@ -210,10 +190,6 @@ I don't have a preference on the solution implementation, as long as the interfa
 _Comment by @zanieb on 2024-09-27 16:04_
 
 Okay thanks for your feedback. @j178 do you see a problem with just doing `module: bool` instead of `module: Option<String>`?
-
----
-
-_Referenced in [astral-sh/uv#7754](../../astral-sh/uv/pulls/7754.md) on 2024-09-28 07:19_
 
 ---
 

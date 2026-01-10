@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-09T13:20:40Z
 updated_at: 2025-04-17T23:32:58Z
 url: https://github.com/astral-sh/uv/issues/12780
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv python install 3.12 fails on an arm system, despite its being a supported platform
@@ -312,10 +312,6 @@ Does https://github.com/astral-sh/uv/releases/download/0.6.13/uv-armv7-unknown-l
 
 ---
 
-_Referenced in [astral-sh/cargo-dist#15](../../astral-sh/cargo-dist/issues/15.md) on 2025-04-09 15:44_
-
----
-
 _Comment by @Gankra on 2025-04-09 15:44_
 
 Filed https://github.com/astral-sh/cargo-dist/issues/15 for potential installer improvements.
@@ -344,14 +340,6 @@ _Comment by @johndunderhill on 2025-04-10 06:23_
 > We don't have `aarch64-musl` Python versions yet, it's non-trivial but can be tracked in [astral-sh/python-build-standalone#569](https://github.com/astral-sh/python-build-standalone/pull/569)
 
 Ok, but bear in mind, per the initial post, `cpython-3.12.8-linux-armv7-gnueabihf` appears to work on this platform.  That was a guess on my part; I'm not entirely clear about the details, nor if this is even the best choice here.
-
----
-
-_Referenced in [astral-sh/uv#12852](../../astral-sh/uv/issues/12852.md) on 2025-04-13 14:17_
-
----
-
-_Referenced in [astral-sh/uv#12949](../../astral-sh/uv/pulls/12949.md) on 2025-04-17 19:42_
 
 ---
 

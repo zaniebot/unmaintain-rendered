@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-02T19:26:44Z
 updated_at: 2025-06-02T21:30:54Z
 url: https://github.com/astral-sh/uv/issues/13789
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Why default behavior with no args changed?
@@ -78,9 +78,5 @@ _Closed by @KuRRe8 on 2025-06-02 20:58_
 _Comment by @zanieb on 2025-06-02 21:30_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/uv#13790](../../astral-sh/uv/issues/13790.md) on 2025-06-02 21:40_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-01T18:22:10Z
 updated_at: 2025-04-21T19:16:49Z
 url: https://github.com/astral-sh/uv/issues/12605
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Drop support for reading executable name requests from `.python-version` files
@@ -38,18 +38,6 @@ _Added to milestone `v0.7.0` by @zanieb on 2025-04-01 18:22_
 
 ---
 
-_Referenced in [astral-sh/uv#12643](../../astral-sh/uv/issues/12643.md) on 2025-04-04 14:01_
-
----
-
-_Referenced in [astral-sh/uv#12909](../../astral-sh/uv/pulls/12909.md) on 2025-04-15 21:11_
-
----
-
 _Closed by @zanieb on 2025-04-21 19:16_
-
----
-
-_Referenced in [astral-sh/uv#10548](../../astral-sh/uv/issues/10548.md) on 2025-04-29 22:24_
 
 ---

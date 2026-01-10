@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-03T13:57:28Z
 updated_at: 2025-06-03T13:57:41Z
 url: https://github.com/astral-sh/uv/issues/13811
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `check system | python on opensuse` flakes with "context canceled" while looking for GPG keys
@@ -38,9 +38,5 @@ _Label `ci-flake` added by @zanieb on 2025-06-03 13:57_
 _Comment by @zanieb on 2025-06-03 13:57_
 
 e.g. https://github.com/astral-sh/uv/actions/runs/15419136863/job/43389413121?pr=13808
-
----
-
-_Referenced in [astral-sh/uv#13818](../../astral-sh/uv/pulls/13818.md) on 2025-06-03 14:28_
 
 ---

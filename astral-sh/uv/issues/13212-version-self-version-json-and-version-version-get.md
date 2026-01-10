@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T04:19:25Z
 updated_at: 2025-05-21T19:59:40Z
 url: https://github.com/astral-sh/uv/issues/13212
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `version::self_version_json` and `version::version_get_fallback_unmanaged_json` test failures (outside git checkout?)
@@ -239,26 +239,6 @@ Thank you!
 
 ---
 
-_Referenced in [astral-sh/uv#13251](../../astral-sh/uv/pulls/13251.md) on 2025-05-01 12:12_
-
----
-
-_Referenced in [astral-sh/uv#13566](../../astral-sh/uv/pulls/13566.md) on 2025-05-21 07:43_
-
----
-
 _Closed by @Gankra on 2025-05-21 19:59_
-
----
-
-_Referenced in [astral-sh/uv#13602](../../astral-sh/uv/issues/13602.md) on 2025-05-22 18:48_
-
----
-
-_Referenced in [astral-sh/uv#14785](../../astral-sh/uv/issues/14785.md) on 2025-07-21 11:05_
-
----
-
-_Referenced in [astral-sh/uv#14786](../../astral-sh/uv/pulls/14786.md) on 2025-07-21 12:27_
 
 ---

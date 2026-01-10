@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-11T20:06:23Z
 updated_at: 2025-05-12T08:21:45Z
 url: https://github.com/astral-sh/uv/issues/13389
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv` installs an ancient version of `boto3` on Python `3.9`
@@ -87,9 +87,5 @@ _Label `question` added by @charliermarsh on 2025-05-12 00:28_
 ---
 
 _Closed by @peterschmidt85 on 2025-05-12 08:21_
-
----
-
-_Referenced in [haddocking/powerfit#68](../../haddocking/powerfit/pulls/68.md) on 2025-09-16 06:18_
 
 ---

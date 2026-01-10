@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-25T08:05:28Z
 updated_at: 2025-04-25T12:56:47Z
 url: https://github.com/astral-sh/uv/issues/13102
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv pip install` panics when using `*` under windows powershell
@@ -59,10 +59,6 @@ _Label `bug` added by @stefanhoelzl on 2025-04-25 08:05_
 ---
 
 _Assigned to @konstin by @konstin on 2025-04-25 11:17_
-
----
-
-_Referenced in [astral-sh/uv#13105](../../astral-sh/uv/pulls/13105.md) on 2025-04-25 11:24_
 
 ---
 

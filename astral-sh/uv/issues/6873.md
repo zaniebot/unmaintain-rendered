@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-30T14:31:41Z
 updated_at: 2025-04-09T12:18:29Z
 url: https://github.com/astral-sh/uv/issues/6873
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv python install 3.12` is not working on armv7 libc is identify as `gnu` instead of `gnueabihf`
@@ -157,10 +157,6 @@ _Label `uv python` added by @zanieb on 2024-09-03 14:34_
 _Comment by @orgua on 2024-09-25 15:11_
 
 I have the same trouble on a armv7 beaglebone black. Latest `uv 0.4.16` won't install any python version, not just 3.12. Would love to be able to use that feature! Armv7 is slow enough and could use every improvement newer py-versions bring :)
-
----
-
-_Referenced in [astral-sh/uv#7725](../../astral-sh/uv/pulls/7725.md) on 2024-09-26 19:35_
 
 ---
 
@@ -318,10 +314,6 @@ _Comment by @zanieb on 2024-10-07 15:31_
 You can also request a full download key, e.g., `uv python install cpython-3.12.6-linux-armv7-gnueabihf`, then rename the directory as described above
 
 edit: Actually this fails to parse correctly because the error reported above. i'll fix that. https://github.com/astral-sh/uv/pull/7975
-
----
-
-_Referenced in [astral-sh/uv#8498](../../astral-sh/uv/pulls/8498.md) on 2024-10-23 11:34_
 
 ---
 
@@ -535,9 +527,5 @@ cpython-3.7.3-linux-armv7-gnu                          /usr/bin/python3 -> pytho
 But this environment is "Raspbian GNU/Linux 10 (buster)."  The problem machine in my original report was "Raspbian GNU/Linux 11 (bullseye)".  I'll try to run down one of those and test it with the latest version.  If it works, I'll post here, otherwise I'll open a new issue.  Thanks for your help.
 
 John
-
----
-
-_Referenced in [astral-sh/uv#12780](../../astral-sh/uv/issues/12780.md) on 2025-04-09 13:24_
 
 ---

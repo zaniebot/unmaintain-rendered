@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-28T09:37:35Z
 updated_at: 2025-05-04T23:24:58Z
 url: https://github.com/astral-sh/uv/issues/13173
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv run --with .` ignores version constrains from the script when installing package dependencies
@@ -78,18 +78,6 @@ _Label `bug` added by @Luthaf on 2025-04-28 09:37_
 
 ---
 
-_Referenced in [TorchSim/torch-sim#178](../../TorchSim/torch-sim/issues/178.md) on 2025-04-28 09:38_
-
----
-
-_Referenced in [metatensor/metatensor#913](../../metatensor/metatensor/issues/913.md) on 2025-04-28 09:38_
-
----
-
-_Referenced in [TorchSim/torch-sim#183](../../TorchSim/torch-sim/pulls/183.md) on 2025-04-28 17:20_
-
----
-
 _Comment by @charliermarsh on 2025-05-04 12:41_
 
 Makes sense, thanks.
@@ -97,14 +85,6 @@ Makes sense, thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-05-04 15:02_
-
----
-
-_Referenced in [astral-sh/uv#13283](../../astral-sh/uv/pulls/13283.md) on 2025-05-04 15:39_
-
----
-
-_Referenced in [astral-sh/uv#13284](../../astral-sh/uv/pulls/13284.md) on 2025-05-04 15:40_
 
 ---
 

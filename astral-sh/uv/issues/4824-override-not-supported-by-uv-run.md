@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-05T07:58:07Z
 updated_at: 2025-04-10T19:02:57Z
 url: https://github.com/astral-sh/uv/issues/4824
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `--override` not supported by `uv run`
@@ -242,10 +242,6 @@ Nothing of substance to say but I'll be happy either way! :)
 
 ---
 
-_Referenced in [astral-sh/uv#4973](../../astral-sh/uv/pulls/4973.md) on 2024-07-17 02:33_
-
----
-
 _Assigned to @zanieb by @charliermarsh on 2024-07-17 02:33_
 
 ---
@@ -303,16 +299,8 @@ _Label `help wanted` added by @zanieb on 2024-10-04 21:28_
 
 ---
 
-_Referenced in [astral-sh/uv#9614](../../astral-sh/uv/issues/9614.md) on 2024-12-03 18:08_
-
----
-
 _Comment by @systemsoverload on 2025-04-10 19:02_
 
 Just wanted to +1 this issue to point out that this would effectively eliminate the need for tox for _most_ simple cases. Being able to specify a specific version of python and a handful of overrides are all that is happening in just about every tox file Ive ever written.
-
----
-
-_Referenced in [astral-sh/uv#14860](../../astral-sh/uv/issues/14860.md) on 2025-07-24 01:18_
 
 ---

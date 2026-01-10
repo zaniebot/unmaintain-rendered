@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-08T20:08:00Z
 updated_at: 2025-04-09T12:33:14Z
 url: https://github.com/astral-sh/uv/issues/12760
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Avoid GitHub queries for immutable references
@@ -27,10 +27,6 @@ _Label `bug` added by @zanieb on 2025-04-08 20:08_
 
 ---
 
-_Referenced in [astral-sh/uv#12746](../../astral-sh/uv/issues/12746.md) on 2025-04-08 20:10_
-
----
-
 _Comment by @charliermarsh on 2025-04-08 20:37_
 
 I can take a look.
@@ -44,10 +40,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-04-08 20:51_
 _Comment by @charliermarsh on 2025-04-08 20:51_
 
 Ah ok, I see the problem here.
-
----
-
-_Referenced in [astral-sh/uv#12767](../../astral-sh/uv/pulls/12767.md) on 2025-04-09 01:34_
 
 ---
 

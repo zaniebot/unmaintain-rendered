@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-12T10:28:39Z
 updated_at: 2025-05-14T07:29:47Z
 url: https://github.com/astral-sh/uv/issues/13404
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # git+https://dependency information is lost when using uv build with hatchling
@@ -97,10 +97,6 @@ Python 3.10.17
 ---
 
 _Label `bug` added by @soof-golan on 2025-05-12 10:28_
-
----
-
-_Referenced in [astral-sh/uv#13405](../../astral-sh/uv/issues/13405.md) on 2025-05-12 10:37_
 
 ---
 

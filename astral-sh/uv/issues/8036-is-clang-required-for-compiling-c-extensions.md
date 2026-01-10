@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-09T07:18:29Z
 updated_at: 2025-04-02T14:27:06Z
 url: https://github.com/astral-sh/uv/issues/8036
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Is `clang` required for compiling C extensions?
@@ -292,22 +292,6 @@ _Closed by @zanieb on 2024-10-21 22:16_
 
 ---
 
-_Referenced in [astral-sh/uv#8429](../../astral-sh/uv/issues/8429.md) on 2024-10-21 22:17_
-
----
-
-_Referenced in [astral-sh/uv#8644](../../astral-sh/uv/issues/8644.md) on 2024-10-28 19:33_
-
----
-
-_Referenced in [joshua-auchincloss/hatch-cython#66](../../joshua-auchincloss/hatch-cython/issues/66.md) on 2025-03-12 16:17_
-
----
-
-_Referenced in [codegen-sh/codegen#804](../../codegen-sh/codegen/pulls/804.md) on 2025-03-12 16:28_
-
----
-
 _Comment by @moll-re on 2025-04-02 12:45_
 
 Hi, apologies for reviving this, but the suggested fixes are not working for me.
@@ -342,9 +326,5 @@ Interesting point, so using `sysconfig.get_config_var("CC")` is the wrong approa
 _Comment by @zanieb on 2025-04-02 14:27_
 
 I think so! At the very least, it doesn't allow overriding it to your preferred compiler. I'm not sure what downstream best practice is. 
-
----
-
-_Referenced in [VOICEVOX/voicevox_engine#1665](../../VOICEVOX/voicevox_engine/issues/1665.md) on 2025-04-29 16:08_
 
 ---

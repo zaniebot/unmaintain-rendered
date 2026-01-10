@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-01T16:57:10Z
 updated_at: 2025-06-05T04:16:41Z
 url: https://github.com/astral-sh/uv/issues/6913
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Add `build-constraints` support to `uv lock` etc. via `pyproject.toml`
@@ -36,10 +36,6 @@ _Label `good first issue` added by @charliermarsh on 2024-09-01 16:57_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2024-09-01 16:57_
-
----
-
-_Referenced in [astral-sh/uv#5561](../../astral-sh/uv/issues/5561.md) on 2024-09-01 16:57_
 
 ---
 
@@ -123,10 +119,6 @@ Edit:
 It does work. I temporarily added my whole requirementes-dev.txt to another "optional-dependencies" called "reqs", ran uv lock, removed the block, ran uv lock again, and the exports now match perfectly the original pip compiled requirements files.
 
 I leave this here in case anyone else wants to migrate from pip compile to uv lock
-
----
-
-_Referenced in [astral-sh/uv#11585](../../astral-sh/uv/pulls/11585.md) on 2025-02-17 23:07_
 
 ---
 

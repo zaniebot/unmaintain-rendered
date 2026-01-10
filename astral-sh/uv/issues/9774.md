@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-10T14:44:06Z
 updated_at: 2025-05-02T11:41:32Z
 url: https://github.com/astral-sh/uv/issues/9774
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv pip compile` should have the option to use `uv.lock` as constraints file
@@ -88,10 +88,6 @@ I think we can close this issue. Sorry for wasting your time.
 ---
 
 _Closed by @fnep on 2024-12-10 16:22_
-
----
-
-_Referenced in [astral-sh/uv#13245](../../astral-sh/uv/issues/13245.md) on 2025-05-02 11:39_
 
 ---
 

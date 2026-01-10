@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T17:34:55Z
 updated_at: 2025-04-03T14:09:37Z
 url: https://github.com/astral-sh/uv/issues/4056
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Keyring cli calls differ from pip
@@ -118,10 +118,6 @@ _Label `compatibility` added by @zanieb on 2024-06-05 18:24_
 
 ---
 
-_Referenced in [astral-sh/uv#4061](../../astral-sh/uv/pulls/4061.md) on 2024-06-05 18:31_
-
----
-
 _Comment by @Rogdham on 2024-06-06 07:28_
 
 Here is an illustration with the [`artifacts-keyring`](https://pypi.org/project/artifacts-keyring/) to authenticate to Azure DevOps and fetch packages from an Azure Artifact feed.
@@ -171,47 +167,15 @@ In any case, I acknowledge that I have limited knowledge on the topic, so I leav
 
 ---
 
-_Referenced in [astral-sh/uv#3542](../../astral-sh/uv/issues/3542.md) on 2024-06-27 10:59_
-
----
-
-_Referenced in [astral-sh/uv#4583](../../astral-sh/uv/issues/4583.md) on 2024-06-27 11:03_
-
----
-
-_Referenced in [astral-sh/uv#4857](../../astral-sh/uv/pulls/4857.md) on 2024-07-08 09:18_
-
----
-
 _Comment by @zanieb on 2025-03-20 22:03_
 
 @jtfmumm I think we could solve this now that we have `authenticate = "always"`, basically we could eagerly fetch credentials from the keyring for unauthenticated index URLs? At that point, we'd have access to the "index root" and user-specified URL. The only downside to that is that we might fetch credentials before we need to make any network requests, which add overhead to various commands. Perhaps the answer is still to do https://github.com/astral-sh/uv/issues/4583 and tweak our keyring invocation accordingly for index URLs.
 
 ---
 
-_Referenced in [astral-sh/uv#12280](../../astral-sh/uv/issues/12280.md) on 2025-03-20 22:06_
-
----
-
-_Referenced in [astral-sh/uv#11236](../../astral-sh/uv/issues/11236.md) on 2025-03-20 22:07_
-
----
-
 _Comment by @zanieb on 2025-03-20 22:07_
 
 (I think @konstin is thinking about keyring behaviors too though, I'm not sure what the status of that work is or if it covers this)
-
----
-
-_Referenced in [astral-sh/uv#11391](../../astral-sh/uv/issues/11391.md) on 2025-03-20 22:13_
-
----
-
-_Referenced in [astral-sh/uv#12004](../../astral-sh/uv/issues/12004.md) on 2025-03-20 22:21_
-
----
-
-_Referenced in [astral-sh/uv#12651](../../astral-sh/uv/pulls/12651.md) on 2025-04-03 14:05_
 
 ---
 

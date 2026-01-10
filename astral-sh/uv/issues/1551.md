@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-16T23:09:35Z
 updated_at: 2025-04-16T01:46:11Z
 url: https://github.com/astral-sh/uv/issues/1551
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # Using uv with internal libraries fails with `No module named 'pip'`
@@ -107,18 +107,6 @@ Closing since @hauntsaninja suggestion is what you're looking for!
 ---
 
 _Closed by @charliermarsh on 2024-04-04 03:58_
-
----
-
-_Referenced in [astral-sh/uv#7291](../../astral-sh/uv/issues/7291.md) on 2024-09-11 14:05_
-
----
-
-_Referenced in [astral-sh/uv#7327](../../astral-sh/uv/issues/7327.md) on 2025-02-01 07:38_
-
----
-
-_Referenced in [holdonprojekt/hcc#1](../../holdonprojekt/hcc/pulls/1.md) on 2025-04-04 15:02_
 
 ---
 

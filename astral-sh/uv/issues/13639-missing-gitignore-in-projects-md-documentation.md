@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-24T16:27:49Z
 updated_at: 2025-06-05T06:19:39Z
 url: https://github.com/astral-sh/uv/issues/13639
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Missing .gitignore in projects.md documentation
@@ -79,14 +79,6 @@ _Label `help wanted` added by @charliermarsh on 2025-05-27 19:22_
 
 ---
 
-_Referenced in [AbhiUpadhye/uv#1](../../AbhiUpadhye/uv/pulls/1.md) on 2025-06-02 06:55_
-
----
-
 _Closed by @AbhiUpadhye on 2025-06-05 06:19_
-
----
-
-_Referenced in [astral-sh/uv#13855](../../astral-sh/uv/pulls/13855.md) on 2025-06-05 06:55_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-27T13:44:23Z
 updated_at: 2025-05-04T09:06:36Z
 url: https://github.com/astral-sh/uv/issues/13131
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Extensible VCS/URL scheme support.
@@ -62,9 +62,5 @@ Closing since there was little interest in this idea
 ---
 
 _Closed by @oh-ok on 2025-05-04 09:06_
-
----
-
-_Referenced in [astral-sh/uv#15346](../../astral-sh/uv/issues/15346.md) on 2025-08-18 14:14_
 
 ---

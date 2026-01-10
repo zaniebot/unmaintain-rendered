@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-03T02:41:25Z
 updated_at: 2025-04-10T20:23:34Z
 url: https://github.com/astral-sh/uv/issues/12641
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Documentation update post PEP 751
@@ -64,17 +64,9 @@ _Comment by @zanieb on 2025-04-03 03:12_
 
 ---
 
-_Referenced in [astral-sh/uv#12732](../../astral-sh/uv/pulls/12732.md) on 2025-04-07 22:27_
-
----
-
 _Comment by @ollytheninja on 2025-04-07 22:28_
 
 @zanieb I hope it's alright I got the ball rolling on adding a note to the docs based on your suggestion above 🙂 
-
----
-
-_Referenced in [astral-sh/uv#12823](../../astral-sh/uv/pulls/12823.md) on 2025-04-10 19:54_
 
 ---
 

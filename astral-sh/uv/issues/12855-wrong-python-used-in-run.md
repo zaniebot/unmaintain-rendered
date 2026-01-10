@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-14T00:59:23Z
 updated_at: 2025-04-15T20:28:23Z
 url: https://github.com/astral-sh/uv/issues/12855
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # wrong python used in run
@@ -61,10 +61,6 @@ see above
 ---
 
 _Label `bug` added by @dotysan on 2025-04-14 00:59_
-
----
-
-_Referenced in [astral-sh/uv#12870](../../astral-sh/uv/pulls/12870.md) on 2025-04-14 04:00_
 
 ---
 

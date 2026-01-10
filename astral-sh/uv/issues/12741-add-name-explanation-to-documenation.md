@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-08T10:00:08Z
 updated_at: 2025-04-10T11:26:34Z
 url: https://github.com/astral-sh/uv/issues/12741
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add name explanation to documenation
@@ -74,9 +74,5 @@ especially one that looks so much like an acronym as this one. I, for one, wonde
 I take it my points aren't very convincing, but at this point I'm just happy that it's a conscious decision rather than something overlooked. Thought it would be nice to bring it to your attention.
 
 So feel free to close the issue as wontfix if that's the case. 
-
----
-
-_Referenced in [astral-sh/uv#5336](../../astral-sh/uv/pulls/5336.md) on 2025-04-30 12:23_
 
 ---

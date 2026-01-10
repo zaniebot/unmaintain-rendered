@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-14T06:24:28Z
 updated_at: 2025-05-22T22:33:41Z
 url: https://github.com/astral-sh/uv/issues/8164
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # uv tool install does not respect index-url from pyproject.toml
@@ -83,10 +83,6 @@ I'm also trying to configure `uv tool install` to adhere to a configuration prov
 This issue was closed in favor of #3560, but that issue has also been resolved & closed without any mention of tool installation index. I would like this to be a feature of uv, if possible.
 
 Is it acceptable to reopen this issue?
-
----
-
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2025-05-22 18:44_
 
 ---
 

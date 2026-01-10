@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-16T09:31:21Z
 updated_at: 2025-04-01T17:56:43Z
 url: https://github.com/astral-sh/uv/issues/12199
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Simple pip aliasing
@@ -139,14 +139,6 @@ Now imagine you are a fresh python developer - some one suggested you to use uv 
 Next day ChatGPT gives you instructions to run 'pip install foo' - and you got it in global python library (why would you care to read history of all 20 package installers and their behavior)
 
 Thats not good DX - and with LLMs it will keep suggesting pip the same for very long  time
-
----
-
-_Referenced in [astral-sh/uv#12335](../../astral-sh/uv/issues/12335.md) on 2025-03-20 10:41_
-
----
-
-_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-01 17:54_
 
 ---
 

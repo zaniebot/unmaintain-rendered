@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T16:47:34Z
 updated_at: 2025-04-30T17:23:23Z
 url: https://github.com/astral-sh/uv/issues/13236
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv>=0.6.15` does not replace `clang` in `sysconfig` during installation.
@@ -70,10 +70,6 @@ Thanks!
 _Comment by @zanieb on 2025-04-30 16:55_
 
 I can only presume this regressed in https://github.com/astral-sh/uv/pull/12239
-
----
-
-_Referenced in [astral-sh/uv#13237](../../astral-sh/uv/pulls/13237.md) on 2025-04-30 17:06_
 
 ---
 

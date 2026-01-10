@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-28T17:48:40Z
 updated_at: 2025-04-01T16:54:21Z
 url: https://github.com/astral-sh/uv/issues/11028
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Can't compile Meson extensions against managed Python due to pkg-config
@@ -272,18 +272,6 @@ _Comment by @samypr100 on 2025-01-29 04:09_
 My bad @charliermarsh, I completely missed .pc file patching was implemented a bit later after the initial round of patching PR's😆 
 
 (I thought it was still a TODO thing)
-
----
-
-_Referenced in [astral-sh/uv#11234](../../astral-sh/uv/issues/11234.md) on 2025-02-05 06:45_
-
----
-
-_Referenced in [astral-sh/uv#11291](../../astral-sh/uv/pulls/11291.md) on 2025-02-06 19:49_
-
----
-
-_Referenced in [astropy/astropy#17760](../../astropy/astropy/issues/17760.md) on 2025-02-13 07:29_
 
 ---
 

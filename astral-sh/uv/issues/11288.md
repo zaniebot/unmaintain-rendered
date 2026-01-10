@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-06T19:06:17Z
 updated_at: 2025-04-09T16:36:40Z
 url: https://github.com/astral-sh/uv/issues/11288
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv run --python <path> <tool>` always recreates virtualenvironment
@@ -240,10 +240,6 @@ Which definitely would return `false` in this case. The `--python <dir>` request
 
 ---
 
-_Referenced in [astral-sh/uv#11290](../../astral-sh/uv/pulls/11290.md) on 2025-02-06 19:34_
-
----
-
 _Comment by @LordAro on 2025-02-07 08:16_
 
 Some justification for using the folder rather than the executable - I'm looking at having a cross platform command that works for both Windows & Linux - Windows puts the executable in the python root, Linux has a `bin` folder
@@ -284,9 +280,5 @@ Creating virtual environment at: .venv
 .venv/pyvenv.cfg contains `home = C:\Users\cpigott\dev\foobar\auxd\python` as I'd expect
 
 I've tried with and without absolute path on the commandline, no difference
-
----
-
-_Referenced in [astral-sh/uv#12801](../../astral-sh/uv/issues/12801.md) on 2025-04-10 08:57_
 
 ---

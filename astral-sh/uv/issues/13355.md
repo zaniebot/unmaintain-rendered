@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-08T21:22:08Z
 updated_at: 2025-05-12T19:34:24Z
 url: https://github.com/astral-sh/uv/issues/13355
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # I would like to generate `uv` lock files and exclude optional dependencies. `uv sync` and `uv lock` don't seem to offer this
@@ -102,13 +102,5 @@ _Reopened by @konstin on 2025-05-12 19:34_
 ---
 
 _Closed by @konstin on 2025-05-12 19:34_
-
----
-
-_Referenced in [Davidyz/VectorCode#137](../../Davidyz/VectorCode/pulls/137.md) on 2025-05-14 14:19_
-
----
-
-_Referenced in [Maxioum/Peeler#102](../../Maxioum/Peeler/issues/102.md) on 2025-10-08 09:27_
 
 ---

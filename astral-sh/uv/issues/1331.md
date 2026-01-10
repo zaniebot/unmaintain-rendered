@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T20:22:30Z
 updated_at: 2025-04-01T17:55:47Z
 url: https://github.com/astral-sh/uv/issues/1331
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # Provide `pip` -> `uv pip` alias in virtual environments
@@ -255,10 +255,6 @@ Uh, `uv pipish`? It's pip...ish 🤯
 
 ---
 
-_Referenced in [astral-sh/uv#1657](../../astral-sh/uv/issues/1657.md) on 2024-02-18 17:25_
-
----
-
 _Comment by @zanieb on 2024-02-18 17:25_
 
 I do not think we're going to do this.
@@ -272,34 +268,6 @@ See instead:
 ---
 
 _Closed by @zanieb on 2024-02-18 17:25_
-
----
-
-_Referenced in [astral-sh/uv#6593](../../astral-sh/uv/issues/6593.md) on 2024-08-25 14:07_
-
----
-
-_Referenced in [astral-sh/uv#7534](../../astral-sh/uv/issues/7534.md) on 2024-09-19 09:55_
-
----
-
-_Referenced in [astral-sh/uv#10949](../../astral-sh/uv/issues/10949.md) on 2025-01-25 16:23_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2025-01-25 16:24_
-
----
-
-_Referenced in [astral-sh/uv#11550](../../astral-sh/uv/issues/11550.md) on 2025-02-16 05:31_
-
----
-
-_Referenced in [astral-sh/uv#12335](../../astral-sh/uv/issues/12335.md) on 2025-03-20 13:15_
-
----
-
-_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-01 17:54_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-11T18:31:47Z
 updated_at: 2025-05-08T05:23:49Z
 url: https://github.com/astral-sh/uv/issues/9822
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Git submodule cloning not working when using relative paths
@@ -131,10 +131,6 @@ It looks like the checkout in `~/.cache/uv/git-v0/...` is configured with a remo
 Not sure what the fix would be without changing how git checkouts are cloned or fixing up the .git/modules in between init and update
 
 I'm uv 0.5.13 on Darwin
-
----
-
-_Referenced in [astral-sh/uv#12156](../../astral-sh/uv/pulls/12156.md) on 2025-03-13 23:22_
 
 ---
 

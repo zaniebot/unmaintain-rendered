@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-24T13:28:49Z
 updated_at: 2025-05-04T12:38:10Z
 url: https://github.com/astral-sh/uv/issues/13089
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # How to handle custom `.venv` location in multi lib repos
@@ -166,10 +166,6 @@ EDIT: @andresliszt the current version of `setup-uv` automatically activates a v
 _Comment by @andresliszt on 2025-04-24 13:49_
 
 Oh thank you @eifinger !!! Was doing everything, I was about to post that working directory wasn't workng. Thanks again
-
----
-
-_Referenced in [andresliszt/moo-rs#98](../../andresliszt/moo-rs/pulls/98.md) on 2025-04-24 13:52_
 
 ---
 

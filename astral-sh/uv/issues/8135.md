@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-11T23:31:50Z
 updated_at: 2025-04-17T12:01:25Z
 url: https://github.com/astral-sh/uv/issues/8135
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # how to change default python version in uv? 
@@ -194,10 +194,6 @@ _Unassigned @charliermarsh by @zanieb on 2025-04-15 22:06_
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-04-16 15:05_
-
----
-
-_Referenced in [astral-sh/uv#12920](../../astral-sh/uv/pulls/12920.md) on 2025-04-16 15:23_
 
 ---
 

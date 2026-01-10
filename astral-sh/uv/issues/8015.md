@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-08T19:08:34Z
 updated_at: 2025-04-10T14:08:43Z
 url: https://github.com/astral-sh/uv/issues/8015
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Custom sources for python distribution binaries
@@ -308,10 +308,6 @@ EDIT: I believe what I'm referring to is this PR https://github.com/astral-sh/uv
 
 ---
 
-_Referenced in [astral-sh/uv#8046](../../astral-sh/uv/issues/8046.md) on 2024-10-09 13:43_
-
----
-
 _Comment by @chrisrodrigue on 2024-10-10 21:35_
 
 Just took a look at #7741 and I am wondering why the environment variables can't be specified in the `pyproject.toml` for the index URLs.
@@ -321,10 +317,6 @@ Just took a look at #7741 and I am wondering why the environment variables can't
 _Comment by @zanieb on 2024-10-11 02:14_
 
 @guillemc23 sorry this issue is about downloading Python distributions — not index URLs for packages. Could you open a new issue for your question instead?
-
----
-
-_Referenced in [astral-sh/uv#8186](../../astral-sh/uv/issues/8186.md) on 2024-10-14 19:41_
 
 ---
 
@@ -446,14 +438,6 @@ And, @MeitarR now I see that's literally the issue you linked to before I joined
 
 ---
 
-_Referenced in [astral-sh/uv#10939](../../astral-sh/uv/pulls/10939.md) on 2025-01-24 15:40_
-
----
-
-_Referenced in [astral-sh/uv#11746](../../astral-sh/uv/issues/11746.md) on 2025-03-07 14:49_
-
----
-
 _Comment by @chrisrodrigue on 2025-03-14 18:07_
 
 Another uv user was asking if one could set the python mirror in `pyproject.toml` (https://github.com/astral-sh/uv/issues/11746#issuecomment-2706614478).
@@ -465,9 +449,5 @@ _Comment by @chrisrodrigue on 2025-03-14 18:27_
 Would it be worth adding another release asset that includes uv for each `python-build-standalone` platform (i.e. `cpython-3.12.9+20250311-x86_64-pc-windows-msvc-install_only_uv.tar.gz`)? Might need to alter uv to look for Python interpreter in the current directory (similar to `uv.toml` discovery).
 
 Just an idea 🙂
-
----
-
-_Referenced in [astral-sh/uv#12808](../../astral-sh/uv/issues/12808.md) on 2025-04-10 14:09_
 
 ---

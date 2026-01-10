@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-03T18:43:02Z
 updated_at: 2025-06-04T16:53:59Z
 url: https://github.com/astral-sh/uv/issues/13826
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add environment variable for build --package
@@ -51,9 +51,5 @@ _Comment by @pedro-avalos on 2025-06-04 16:53_
 I'm mainly thinking of the [snapcraft](https://github.com/canonical/snapcraft) and [rockcraft](https://github.com/canonical/rockcraft) packaging, but it may come in handy for other packaging tools.
 
 See the [uv plugin for snapcraft](https://documentation.ubuntu.com/snapcraft/stable/reference/plugins/uv_plugin/). The plugin uses environment variables to configure the package. At the moment, I do not believe it supports building just one package in a workspace because it doesn't have custom options, relying just on passing environment variables through to `uv`.
-
----
-
-_Referenced in [astral-sh/uv#14001](../../astral-sh/uv/pulls/14001.md) on 2025-06-12 16:46_
 
 ---

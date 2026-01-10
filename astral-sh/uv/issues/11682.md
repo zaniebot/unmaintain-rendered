@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-21T02:41:40Z
 updated_at: 2025-04-01T20:33:23Z
 url: https://github.com/astral-sh/uv/issues/11682
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Support "only-binary"configuration and UV_ONLY_PROJECT environment variable at project level
@@ -105,10 +105,6 @@ That error message is because `--build` / `--no-build` are available on most com
 https://github.com/astral-sh/uv/blob/ac2dcd658e7e4d526b069c879325f37afb77d1f2/crates/uv-cli/src/lib.rs#L4974-L5027
 
 I don't quite follow the rest of your question @sanmai-NL ?
-
----
-
-_Referenced in [astral-sh/uv#12607](../../astral-sh/uv/issues/12607.md) on 2025-04-01 20:30_
 
 ---
 

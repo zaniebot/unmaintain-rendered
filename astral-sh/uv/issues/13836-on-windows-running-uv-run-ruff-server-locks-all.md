@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-04T13:52:29Z
 updated_at: 2025-06-04T15:01:49Z
 url: https://github.com/astral-sh/uv/issues/13836
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # On Windows, Running `uv run ruff server` locks all `ruff.exe` files in ALL virtual environments created by uv.
@@ -172,9 +172,5 @@ But I would not know what man-made horrors lie beyond my comprehension in terms 
 You're doing great work!
 
 Thank you for bearing with me 👍
-
----
-
-_Referenced in [astral-sh/uv#11134](../../astral-sh/uv/issues/11134.md) on 2025-06-04 15:38_
 
 ---

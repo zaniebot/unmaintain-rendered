@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-24T15:29:46Z
 updated_at: 2025-04-29T17:58:12Z
 url: https://github.com/astral-sh/uv/issues/12431
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `--version` shouldn't show the uv version on subcommands
@@ -42,10 +42,6 @@ _Added to milestone `v0.7.0` by @charliermarsh on 2025-03-24 15:29_
 
 ---
 
-_Referenced in [astral-sh/uv#12439](../../astral-sh/uv/pulls/12439.md) on 2025-03-24 16:38_
-
----
-
 _Label `bug` removed by @zanieb on 2025-04-01 16:44_
 
 ---
@@ -57,10 +53,6 @@ _Label `cli` added by @zanieb on 2025-04-01 16:44_
 _Comment by @zanieb on 2025-04-01 18:39_
 
 (I don't consider this a bug, but agree we should change it)
-
----
-
-_Referenced in [astral-sh/uv#13108](../../astral-sh/uv/pulls/13108.md) on 2025-04-25 16:24_
 
 ---
 

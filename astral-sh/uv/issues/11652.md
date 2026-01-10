@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-20T05:13:12Z
 updated_at: 2025-06-05T04:48:22Z
 url: https://github.com/astral-sh/uv/issues/11652
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv build creates dist/.gitignore; doesn't play nice with PYPI trusted publishing
@@ -138,10 +138,6 @@ _Unassigned @konstin by @konstin on 2025-04-08 13:19_
 _Comment by @dimaqq on 2025-04-09 00:48_
 
 it's a bit hard to see what's going on in logs... would you mind adding something like `find .` or equivalent step to check if there is in fact a `dist/.gitignore` file?
-
----
-
-_Referenced in [astral-sh/uv#12742](../../astral-sh/uv/pulls/12742.md) on 2025-04-09 10:19_
 
 ---
 

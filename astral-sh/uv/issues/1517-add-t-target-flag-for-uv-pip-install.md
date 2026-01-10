@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T17:28:41Z
 updated_at: 2025-04-30T15:32:06Z
 url: https://github.com/astral-sh/uv/issues/1517
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # Add `-t/--target` flag for `uv pip install`
@@ -137,18 +137,6 @@ function uv.target(){
 
 ---
 
-_Referenced in [serverless/serverless-python-requirements#830](../../serverless/serverless-python-requirements/issues/830.md) on 2024-03-16 15:37_
-
----
-
-_Referenced in [astral-sh/uv#2751](../../astral-sh/uv/issues/2751.md) on 2024-04-01 03:46_
-
----
-
-_Referenced in [astral-sh/uv#2752](../../astral-sh/uv/issues/2752.md) on 2024-04-01 14:32_
-
----
-
 _Comment by @mpderbec on 2024-04-01 15:09_
 
 > But if uv is willing to only support the case where the directory specified in -t is empty, then yes, this is fine.
@@ -169,10 +157,6 @@ $ python -m zipapp --compress --python=/usr/bin/env python3 --main=myapp.__main_
 ```
 
 Would be quite happy in this case to have the extra dirs (like bin) simply ignored, since they won't show up in the zipapp.
-
----
-
-_Referenced in [astral-sh/uv#3076](../../astral-sh/uv/issues/3076.md) on 2024-04-16 22:35_
 
 ---
 
@@ -258,10 +242,6 @@ I second `RUN /workspace/.venv/bin/python app.py`, this also ensures that all su
 _Comment by @acatalucci-synth on 2024-04-22 14:47_
 
 thanks for the suggestions and compliments for the Dockerfile! I'll be waiting for `--target` support 👍 
-
----
-
-_Referenced in [astral-sh/uv#3201](../../astral-sh/uv/issues/3201.md) on 2024-04-22 21:56_
 
 ---
 
@@ -408,19 +388,7 @@ And a third, I guess - keep it simple and be guided by actual use cases, rather 
 
 ---
 
-_Referenced in [astral-sh/uv#3257](../../astral-sh/uv/pulls/3257.md) on 2024-04-25 00:16_
-
----
-
 _Closed by @charliermarsh on 2024-04-25 23:15_
-
----
-
-_Referenced in [jaraco/pip-run#104](../../jaraco/pip-run/issues/104.md) on 2024-07-16 21:11_
-
----
-
-_Referenced in [astral-sh/uv#5952](../../astral-sh/uv/issues/5952.md) on 2024-08-09 08:15_
 
 ---
 

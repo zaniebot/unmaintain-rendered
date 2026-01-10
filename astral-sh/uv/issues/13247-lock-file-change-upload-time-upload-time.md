@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-01T06:47:38Z
 updated_at: 2025-05-01T07:10:23Z
 url: https://github.com/astral-sh/uv/issues/13247
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # lock file change `upload-time` --> `upload_time`
@@ -53,10 +53,6 @@ _No response_
 ---
 
 _Label `question` added by @dimaqq on 2025-05-01 06:47_
-
----
-
-_Referenced in [canonical/sdcore-amf-k8s-operator#527](../../canonical/sdcore-amf-k8s-operator/pulls/527.md) on 2025-05-01 06:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-17T12:41:00Z
 updated_at: 2025-04-28T10:12:23Z
 url: https://github.com/astral-sh/uv/issues/10708
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # How to work with OpenCV 4 different installation methods?
@@ -105,10 +105,6 @@ then i am able to run it. and if just remove the change from the pyproject.toml 
 
 i hope this is sufficient reproduceable 
 
-
----
-
-_Referenced in [astral-sh/uv#11806](../../astral-sh/uv/issues/11806.md) on 2025-02-26 17:53_
 
 ---
 
@@ -292,13 +288,5 @@ python main.py
 _Comment by @konstin on 2025-04-28 10:12_
 
 Thanks for the script! Unfortunately, it always passes on my machine. Can you check that in VS Code, it uses the correct environment `print(sys.prefix)`? If the error occurs again, can you the contents of `.venv/lib/[platform dependent]/site-packages` and check if there is a `cv2` folder and what it contains?
-
----
-
-_Referenced in [astral-sh/uv#13437](../../astral-sh/uv/pulls/13437.md) on 2025-05-13 20:55_
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-08-18 16:36_
 
 ---

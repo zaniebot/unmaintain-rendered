@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-27T12:08:04Z
 updated_at: 2025-06-02T09:10:53Z
 url: https://github.com/astral-sh/uv/issues/13676
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Please consider removing testing on Python 3.8
@@ -44,18 +44,6 @@ _Label `testing` added by @zanieb on 2025-05-27 13:43_
 _Comment by @zanieb on 2025-05-27 13:56_
 
 (Looking at this, and there are a lot of tests that don't require 3.8... I'll put up an initial patch)
-
----
-
-_Referenced in [astral-sh/packse#242](../../astral-sh/packse/pulls/242.md) on 2025-05-27 14:18_
-
----
-
-_Referenced in [astral-sh/uv#13680](../../astral-sh/uv/pulls/13680.md) on 2025-05-27 14:23_
-
----
-
-_Referenced in [astral-sh/uv#13688](../../astral-sh/uv/pulls/13688.md) on 2025-05-27 19:43_
 
 ---
 
@@ -241,10 +229,6 @@ Oh, sorry — I already managed to get distracted and forget about this. I'll ta
 
 ---
 
-_Referenced in [astral-sh/uv#13755](../../astral-sh/uv/pulls/13755.md) on 2025-05-31 15:49_
-
----
-
 _Comment by @mgorny on 2025-05-31 15:51_
 
 #13755 fixes almost all failures. One remains:
@@ -330,10 +314,6 @@ _Comment by @konstin on 2025-06-02 07:21_
 _Comment by @mgorny on 2025-06-02 07:55_
 
 Oh, indeed. I thought it will require more complex changes but apparently not.
-
----
-
-_Referenced in [astral-sh/uv#13780](../../astral-sh/uv/pulls/13780.md) on 2025-06-02 07:56_
 
 ---
 

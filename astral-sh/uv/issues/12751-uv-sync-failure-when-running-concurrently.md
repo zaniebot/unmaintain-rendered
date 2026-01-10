@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-08T16:54:44Z
 updated_at: 2025-06-06T12:16:42Z
 url: https://github.com/astral-sh/uv/issues/12751
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv sync failure when running concurrently
@@ -116,22 +116,10 @@ _Unassigned @jtfmumm by @konstin on 2025-06-05 17:39_
 
 ---
 
-_Referenced in [astral-sh/uv#13869](../../astral-sh/uv/pulls/13869.md) on 2025-06-05 17:48_
-
----
-
-_Referenced in [astral-sh/uv#13883](../../astral-sh/uv/issues/13883.md) on 2025-06-06 11:58_
-
----
-
 _Closed by @konstin on 2025-06-06 12:16_
 
 ---
 
 _Closed by @konstin on 2025-06-06 12:16_
-
----
-
-_Referenced in [astral-sh/uv#14153](../../astral-sh/uv/pulls/14153.md) on 2025-06-20 14:07_
 
 ---

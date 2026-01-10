@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-01T08:32:53Z
 updated_at: 2025-04-01T12:58:06Z
 url: https://github.com/astral-sh/uv/issues/12596
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Fails to parse `channels` in `environment.yml`
@@ -87,9 +87,5 @@ Yes, it's a Conda YAML, sorry for the mistake in the issue title. It's fine if y
 ---
 
 _Closed by @lnicola on 2025-04-01 12:58_
-
----
-
-_Referenced in [astral-sh/uv#12606](../../astral-sh/uv/issues/12606.md) on 2025-04-01 20:22_
 
 ---

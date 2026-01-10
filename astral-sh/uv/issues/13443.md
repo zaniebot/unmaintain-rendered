@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-14T05:17:05Z
 updated_at: 2025-05-16T08:10:38Z
 url: https://github.com/astral-sh/uv/issues/13443
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv 0.7.x and 0.6.x have different behaviors running the same command
@@ -2708,10 +2708,6 @@ Thank you for sharing. I've determined the cause of this in how we're handling t
 _Comment by @jmspereira on 2025-05-15 10:27_
 
 Thank you! Please let me know if you need more information from my side. 
-
----
-
-_Referenced in [astral-sh/uv#13463](../../astral-sh/uv/pulls/13463.md) on 2025-05-15 10:42_
 
 ---
 

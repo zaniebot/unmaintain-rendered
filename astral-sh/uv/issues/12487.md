@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-26T14:16:15Z
 updated_at: 2025-03-28T11:49:46Z
 url: https://github.com/astral-sh/uv/issues/12487
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Specifying macOS platform breaks pip install
@@ -99,10 +99,6 @@ for mac_version in sorted(non_eol_mac_versions):
 
 ---
 
-_Referenced in [astral-sh/uv#12518](../../astral-sh/uv/pulls/12518.md) on 2025-03-27 21:49_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-27 21:49_
 
 ---
@@ -112,9 +108,5 @@ _Closed by @charliermarsh on 2025-03-28 11:49_
 ---
 
 _Closed by @charliermarsh on 2025-03-28 11:49_
-
----
-
-_Referenced in [bazel-contrib/rules_uv#236](../../bazel-contrib/rules_uv/issues/236.md) on 2025-04-11 05:27_
 
 ---

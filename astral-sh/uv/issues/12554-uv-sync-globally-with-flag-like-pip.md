@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-30T08:04:34Z
 updated_at: 2025-03-30T15:04:03Z
 url: https://github.com/astral-sh/uv/issues/12554
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # UV Sync Globally with Flag like Pip
@@ -56,9 +56,5 @@ _Label `enhancement` removed by @charliermarsh on 2025-03-30 15:04_
 ---
 
 _Label `question` added by @charliermarsh on 2025-03-30 15:04_
-
----
-
-_Referenced in [astral-sh/uv#12615](../../astral-sh/uv/issues/12615.md) on 2025-04-02 00:04_
 
 ---

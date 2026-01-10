@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-26T21:25:04Z
 updated_at: 2025-04-21T02:58:39Z
 url: https://github.com/astral-sh/uv/issues/4567
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Allow updating sources with `uv add`
@@ -152,10 +152,6 @@ Options:
 ```
 
 If it's expected that `uv add requests --branch consider_certs` should add the branch to the existing package source then I'd be a little confused as that would really prevent users from being able to move away from using a git source and go to using something like PyPI.
-
----
-
-_Referenced in [astral-sh/uv#12897](../../astral-sh/uv/pulls/12897.md) on 2025-04-15 12:57_
 
 ---
 

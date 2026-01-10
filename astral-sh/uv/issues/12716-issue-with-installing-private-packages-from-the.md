@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T14:31:34Z
 updated_at: 2025-04-14T07:34:03Z
 url: https://github.com/astral-sh/uv/issues/12716
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Issue with installing private packages from the Google Artifact Registry
@@ -69,10 +69,6 @@ Python 3.11.9
 ---
 
 _Label `bug` added by @kmkolasinski on 2025-04-07 14:31_
-
----
-
-_Referenced in [astral-sh/uv#12280](../../astral-sh/uv/issues/12280.md) on 2025-04-07 14:32_
 
 ---
 

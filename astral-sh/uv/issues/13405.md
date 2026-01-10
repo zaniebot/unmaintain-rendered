@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-12T10:37:50Z
 updated_at: 2025-05-14T16:38:27Z
 url: https://github.com/astral-sh/uv/issues/13405
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # wheels built by uv with git+https dependencies wrongly installs a package from PyPI with the same name
@@ -134,10 +134,6 @@ _Label `question` added by @charliermarsh on 2025-05-12 14:02_
 ---
 
 _Closed by @charliermarsh on 2025-05-13 13:14_
-
----
-
-_Referenced in [astral-sh/uv#13404](../../astral-sh/uv/issues/13404.md) on 2025-05-13 19:28_
 
 ---
 

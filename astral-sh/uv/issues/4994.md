@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-11T15:38:04Z
 updated_at: 2025-05-30T04:21:21Z
 url: https://github.com/astral-sh/uv/issues/4994
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv tool install` unable to install a tool that depends on intermediate dependencies with entrypoints
@@ -111,10 +111,6 @@ Although it seems like `uvx fastapi --from fastapi-cli` just works?
 
 ---
 
-_Referenced in [astral-sh/uv#4997](../../astral-sh/uv/pulls/4997.md) on 2024-07-12 03:31_
-
----
-
 _Comment by @zanieb on 2024-07-12 16:20_
 
 Yeah `uvx --from fastapi-cli fastapi ...` does seem like the proper invocation here — but we would need to support including dependency entry points for parity with Rye and pipx.
@@ -124,10 +120,6 @@ Yeah `uvx --from fastapi-cli fastapi ...` does seem like the proper invocation h
 _Comment by @charliermarsh on 2024-07-12 16:23_
 
 Yeah it just seems like it's kind of... the wrong way around, to include a dependency entrypoint. And it complicates the CLI a lot.
-
----
-
-_Referenced in [astral-sh/uv#5017](../../astral-sh/uv/issues/5017.md) on 2024-07-12 16:25_
 
 ---
 
@@ -144,10 +136,6 @@ Ok, `uv tool run jupyter` is a counterexample here. Right now, we suggest `uv to
 
 So the command in that case would really need to be... `uv tool run --from jupyter-core --with jupyter jupyter notebook`.
 
-
----
-
-_Referenced in [astral-sh/uv#6329](../../astral-sh/uv/issues/6329.md) on 2024-08-21 14:16_
 
 ---
 

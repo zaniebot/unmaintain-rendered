@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-14T10:56:06Z
 updated_at: 2025-05-14T18:41:50Z
 url: https://github.com/astral-sh/uv/issues/13448
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # No solution found when resolving dependencies for split (sys_platform != 'linux')
@@ -146,9 +146,5 @@ _Comment by @charliermarsh on 2025-05-14 18:41_
 ---
 
 _Closed by @charliermarsh on 2025-05-14 18:41_
-
----
-
-_Referenced in [astral-sh/uv#13487](../../astral-sh/uv/issues/13487.md) on 2025-05-16 11:28_
 
 ---

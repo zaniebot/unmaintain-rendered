@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-15T10:18:58Z
 updated_at: 2025-04-21T21:16:08Z
 url: https://github.com/astral-sh/uv/issues/12184
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Should `uv python install 3` install an alpha version?
@@ -101,10 +101,6 @@ https://github.com/astral-sh/uv/blob/3a53ec3c5af88a50fbb334a73880a41fd9e9b3a5/cr
 ---
 
 _Assigned to @zanieb by @zanieb on 2025-03-15 20:26_
-
----
-
-_Referenced in [astral-sh/uv#12194](../../astral-sh/uv/pulls/12194.md) on 2025-03-15 20:44_
 
 ---
 

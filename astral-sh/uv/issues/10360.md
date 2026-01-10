@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-07T13:14:09Z
 updated_at: 2025-04-09T02:26:28Z
 url: https://github.com/astral-sh/uv/issues/10360
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Allow default index for conflicting groups (torch cpu/cuda)
@@ -378,9 +378,5 @@ _Comment by @mcdiarmid on 2025-04-09 02:26_
 I'm interested in this too.  The ability to choose one of the groups in a defined conflict, rather than appending to the list of groups containing `default-groups`.  Maybe outside the scope of this issue though.  
 
 Perhaps adding a parameter like `additional-group-behavior=[append|override]`, where default is the current behavior of `append`.
-
----
-
-_Referenced in [astral-sh/uv#12965](../../astral-sh/uv/pulls/12965.md) on 2025-05-19 07:22_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-27T18:32:58Z
 updated_at: 2025-05-30T17:39:41Z
 url: https://github.com/astral-sh/uv/issues/12512
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv lock` fails when using `dependency-metadata` with a URL dependency
@@ -135,10 +135,6 @@ dependency-metadata = [
 anyio = { url = "https://files.pythonhosted.org/packages/a1/ee/48ca1a7c89ffec8b6a0c5d02b89c305671d5ffd8d3c94acf8b8c408575bb/anyio-4.9.0-py3-none-any.whl" }
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#13736](../../astral-sh/uv/pulls/13736.md) on 2025-05-30 17:23_
 
 ---
 

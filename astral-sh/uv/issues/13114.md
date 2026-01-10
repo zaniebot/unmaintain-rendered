@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-26T03:38:20Z
 updated_at: 2025-04-28T18:23:56Z
 url: https://github.com/astral-sh/uv/issues/13114
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Support GraalPy install with `uv python`
@@ -38,10 +38,6 @@ GraalPy binaries are available on Github (https://github.com/oracle/graalpython/
 ---
 
 _Label `enhancement` added by @paugier on 2025-04-26 03:38_
-
----
-
-_Referenced in [astral-sh/uv#13172](../../astral-sh/uv/pulls/13172.md) on 2025-04-28 09:26_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-18T19:04:06Z
 updated_at: 2025-04-10T03:52:34Z
 url: https://github.com/astral-sh/uv/issues/12298
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Please support (and respect) --link-mode in `uv python install`
@@ -51,9 +51,5 @@ _Label `duplicate` added by @zanieb on 2025-03-18 19:13_
 ---
 
 _Closed by @zanieb on 2025-04-10 03:52_
-
----
-
-_Referenced in [astral-sh/uv#12798](../../astral-sh/uv/issues/12798.md) on 2025-04-10 03:52_
 
 ---

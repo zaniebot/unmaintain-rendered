@@ -3,21 +3,21 @@ number: 13099
 title: uvcorn is not getting installed using uv pip
 type: issue
 state: closed
-author: nimaidev
+author: nimxch
 labels:
   - question
 assignees: []
 created_at: 2025-04-25T05:35:36Z
 updated_at: 2025-04-25T12:49:14Z
 url: https://github.com/astral-sh/uv/issues/13099
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uvcorn is not getting installed using uv pip
 
 ---
 
-_Issue opened by @nimaidev on 2025-04-25 05:35_
+_Issue opened by @nimxch on 2025-04-25 05:35_
 
 ### Summary
 
@@ -39,7 +39,7 @@ Python 3.10.12
 
 ---
 
-_Label `bug` added by @nimaidev on 2025-04-25 05:35_
+_Label `bug` added by @nimxch on 2025-04-25 05:35_
 
 ---
 

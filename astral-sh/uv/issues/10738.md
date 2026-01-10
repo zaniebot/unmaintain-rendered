@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-18T19:03:50Z
 updated_at: 2025-04-11T18:31:21Z
 url: https://github.com/astral-sh/uv/issues/10738
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Dependency sorting issue in pyproject.toml
@@ -343,9 +343,5 @@ _Comment by @dhimmel on 2025-04-11 18:31_
 Or at least a recommendation on this thread for a tool that sorts dependencies since IDE sorting differs.
 
 Or perhaps a pyproject option to tell `uv` to always sort?
-
----
-
-_Referenced in [astral-sh/uv#13334](../../astral-sh/uv/pulls/13334.md) on 2025-05-07 17:58_
 
 ---

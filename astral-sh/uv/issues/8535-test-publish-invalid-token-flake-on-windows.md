@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-24T17:40:40Z
 updated_at: 2025-04-27T15:58:13Z
 url: https://github.com/astral-sh/uv/issues/8535
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Test `publish::invalid_token` flake on Windows
@@ -86,10 +86,6 @@ _Label `internal` added by @zanieb on 2024-10-24 17:40_
 _Comment by @konstin on 2024-11-03 18:03_
 
 This one is awkward because it would require retrying an error that failed with the right error code.
-
----
-
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
 
 ---
 

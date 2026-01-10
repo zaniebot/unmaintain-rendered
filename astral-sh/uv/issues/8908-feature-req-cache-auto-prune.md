@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-08T00:30:58Z
 updated_at: 2025-05-13T14:15:06Z
 url: https://github.com/astral-sh/uv/issues/8908
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Feature req: cache auto-prune
@@ -528,9 +528,5 @@ _Label `cache` added by @charliermarsh on 2024-11-09 02:17_
 _Comment by @zanieb on 2025-05-13 14:14_
 
 See also https://github.com/astral-sh/uv/issues/5731
-
----
-
-_Referenced in [astral-sh/uv#16761](../../astral-sh/uv/issues/16761.md) on 2025-11-17 15:29_
 
 ---

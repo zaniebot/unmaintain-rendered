@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-20T22:36:18Z
 updated_at: 2025-04-02T13:33:29Z
 url: https://github.com/astral-sh/uv/issues/12352
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv build` tries to build even though `tool.uv.package` is False
@@ -118,10 +118,6 @@ I was mostly led astray by the docs mentioned in the initial report.  Perhaps, a
 _Comment by @zanieb on 2025-04-01 20:50_
 
 Added in https://github.com/astral-sh/uv/pull/12608
-
----
-
-_Referenced in [astral-sh/uv#12608](../../astral-sh/uv/pulls/12608.md) on 2025-04-01 20:51_
 
 ---
 

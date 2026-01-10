@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-20T20:52:17Z
 updated_at: 2025-04-05T11:43:38Z
 url: https://github.com/astral-sh/uv/issues/10066
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv build` produces empty wheels when using hatchling (in some cases)
@@ -160,10 +160,6 @@ We invoke `hatchling` which is the `hatch` build backend, it's roughly `python -
 
 ---
 
-_Referenced in [pypa/hatch#1865](../../pypa/hatch/issues/1865.md) on 2024-12-20 22:22_
-
----
-
 _Comment by @cofin on 2024-12-20 22:49_
 
 I believe [this is related](https://github.com/astral-sh/uv/issues/8833#issuecomment-2466423582). 
@@ -219,14 +215,6 @@ _Closed by @zanieb on 2024-12-21 00:59_
 ---
 
 _Label `upstream` added by @zanieb on 2024-12-21 00:59_
-
----
-
-_Referenced in [astral-sh/uv#11557](../../astral-sh/uv/issues/11557.md) on 2025-02-16 16:40_
-
----
-
-_Referenced in [xorq-labs/xorq#792](../../xorq-labs/xorq/pulls/792.md) on 2025-04-02 07:38_
 
 ---
 

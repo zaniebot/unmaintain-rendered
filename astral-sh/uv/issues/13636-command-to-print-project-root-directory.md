@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-24T01:24:08Z
 updated_at: 2025-05-24T15:48:50Z
 url: https://github.com/astral-sh/uv/issues/13636
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Command to print project root directory
@@ -33,13 +33,5 @@ From what I understand from reading somewhere (I can’t remember where), UV’s
 ---
 
 _Label `enhancement` added by @Hawk777 on 2025-05-24 01:24_
-
----
-
-_Referenced in [geldata/gel-cli#1712](../../geldata/gel-cli/pulls/1712.md) on 2025-08-01 16:15_
-
----
-
-_Referenced in [astral-sh/uv#16678](../../astral-sh/uv/pulls/16678.md) on 2025-11-11 16:42_
 
 ---

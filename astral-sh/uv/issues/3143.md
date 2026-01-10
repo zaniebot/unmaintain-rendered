@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-19T17:47:31Z
 updated_at: 2025-05-11T19:43:50Z
 url: https://github.com/astral-sh/uv/issues/3143
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Recent `uv` dependency resolution installs older version of package
@@ -115,10 +115,6 @@ Installed 124 packages in 297ms
 
 ---
 
-_Referenced in [drivendataorg/zamba#315](../../drivendataorg/zamba/issues/315.md) on 2024-04-19 18:09_
-
----
-
 _Comment by @charliermarsh on 2024-04-19 18:27_
 
 I'm a little bit mixed on this because the updated resolution is "equally" valid -- some packages resolved to newer versions, e.g., the newer resolution was able to upgrade to `urllib3==2.2.1` instead of `urllib3==1.26.18`, but at the cost of having to use older boto versions.
@@ -218,10 +214,6 @@ I think I know the cause, but not the details of why / how. pip has a better heu
 
 ---
 
-_Referenced in [astral-sh/uv#3148](../../astral-sh/uv/pulls/3148.md) on 2024-04-19 23:16_
-
----
-
 _Comment by @notatallshaw on 2024-04-19 23:19_
 
 > pip has a better heuristic for "package depth",
@@ -277,13 +269,5 @@ _Comment by @notatallshaw on 2025-05-11 19:43_
 > I have the same issue with Python 3.9.
 
 Please open a new issue with a reproducible example. 
-
----
-
-_Referenced in [astral-sh/uv#13389](../../astral-sh/uv/issues/13389.md) on 2025-05-11 20:06_
-
----
-
-_Referenced in [haddocking/powerfit#68](../../haddocking/powerfit/pulls/68.md) on 2025-09-16 06:18_
 
 ---

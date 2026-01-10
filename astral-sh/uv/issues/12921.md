@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-16T16:14:06Z
 updated_at: 2025-05-23T07:05:16Z
 url: https://github.com/astral-sh/uv/issues/12921
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Respect --global Python pins during uv tool operations
@@ -43,10 +43,6 @@ _Renamed from "Support global Python pin for uv tool install" to "Respect --glob
 
 ---
 
-_Referenced in [astral-sh/uv#8135](../../astral-sh/uv/issues/8135.md) on 2025-04-17 12:01_
-
----
-
 _Comment by @mikelei8291 on 2025-05-22 21:24_
 
 Why does the documentation for [`uv python pin --global`](https://docs.astral.sh/uv/reference/cli/#uv-python-pin--global) already state that commands like `uv tool install` would use the pin, when they actually do not?
@@ -57,20 +53,8 @@ It's really confusing and frustrating when the program doesn't do what the docum
 
 ---
 
-_Referenced in [astral-sh/uv#13611](../../astral-sh/uv/pulls/13611.md) on 2025-05-23 05:45_
-
----
-
 _Comment by @jtfmumm on 2025-05-23 07:05_
 
 @mikelei8291 Thank you for catching this. I've fixed the documentation.
-
----
-
-_Referenced in [astral-sh/uv#10711](../../astral-sh/uv/issues/10711.md) on 2025-06-17 06:20_
-
----
-
-_Referenced in [astral-sh/uv#14112](../../astral-sh/uv/pulls/14112.md) on 2025-06-18 23:43_
 
 ---

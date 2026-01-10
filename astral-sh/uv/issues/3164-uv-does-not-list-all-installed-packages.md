@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-20T22:00:39Z
 updated_at: 2025-03-31T13:35:54Z
 url: https://github.com/astral-sh/uv/issues/3164
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Uv does not list all installed packages.
@@ -75,17 +75,5 @@ _Closed by @charliermarsh on 2024-04-22 14:49_
 ---
 
 _Label `question` added by @zanieb on 2024-04-22 14:51_
-
----
-
-_Referenced in [astral-sh/uv#3341](../../astral-sh/uv/issues/3341.md) on 2024-05-03 03:40_
-
----
-
-_Referenced in [TechnologyBrewery/habushu#221](../../TechnologyBrewery/habushu/pulls/221.md) on 2025-02-13 22:10_
-
----
-
-_Referenced in [tensorflow/text#1393](../../tensorflow/text/issues/1393.md) on 2025-03-31 12:16_
 
 ---

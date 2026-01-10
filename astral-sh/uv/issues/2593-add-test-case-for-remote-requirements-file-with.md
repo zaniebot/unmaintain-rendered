@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-21T17:33:52Z
 updated_at: 2025-04-17T14:25:40Z
 url: https://github.com/astral-sh/uv/issues/2593
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Add test case for remote requirements file with HTTP basic authentication
@@ -38,10 +38,6 @@ _Unassigned @zanieb by @zanieb on 2025-02-18 15:46_
 _Comment by @zanieb on 2025-02-18 15:47_
 
 We need to stand up a proxy or something?
-
----
-
-_Referenced in [astral-sh/uv#12941](../../astral-sh/uv/pulls/12941.md) on 2025-04-17 12:42_
 
 ---
 

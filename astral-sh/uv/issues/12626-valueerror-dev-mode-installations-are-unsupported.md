@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-02T15:37:42Z
 updated_at: 2025-04-14T19:14:32Z
 url: https://github.com/astral-sh/uv/issues/12626
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # ValueError: Dev mode installations are unsupported with path rewrite
@@ -178,10 +178,6 @@ _Label `needs-mre` removed by @konstin on 2025-04-14 12:40_
 ---
 
 _Label `question` added by @konstin on 2025-04-14 12:40_
-
----
-
-_Referenced in [pypa/hatch#1956](../../pypa/hatch/issues/1956.md) on 2025-04-14 12:49_
 
 ---
 

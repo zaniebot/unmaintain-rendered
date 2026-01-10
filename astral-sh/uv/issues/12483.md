@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-26T11:10:23Z
 updated_at: 2025-05-06T11:47:55Z
 url: https://github.com/astral-sh/uv/issues/12483
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv add --index updates source registry for all dependencies
@@ -56,10 +56,6 @@ _Label `question` added by @aranvir on 2025-03-26 11:10_
 _Comment by @charliermarsh on 2025-03-26 16:21_
 
 I think the difference with the docs example is that you need to provide a name for the index? Like `uv add custom-package --index my_custom_index=http://some-token:super-secret-token@gitlab.private.lan/api/v4/projects/123/packages/pypi/simple`. Or did you already have a named index defined in the file? If the index doesn't have a name, we can't "pin" it like that.
-
----
-
-_Referenced in [astral-sh/uv#13064](../../astral-sh/uv/issues/13064.md) on 2025-04-23 08:58_
 
 ---
 

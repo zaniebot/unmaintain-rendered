@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-30T17:49:07Z
 updated_at: 2025-06-02T00:20:57Z
 url: https://github.com/astral-sh/uv/issues/13737
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv pip install` not respecting `index.authenticate` on followup requests
@@ -183,10 +183,6 @@ This could be because we don't propagate credentials to URLs with a different ro
 https://github.com/astral-sh/uv/blob/c19a294a48351ca84f18149fd6bcbf17d9e20bd9/crates/uv-distribution-types/src/index_url.rs#L70-L89
 
 `https://python.localhost/root/pypi/+simple/cryptography/ ` authenticates because it's a child of your given index URL `https://python.localhost/root/pypi/+simple`, but ` https://python.localhost/root/pypi/+f/c82/4c9281cb62801/` does not because it's on a different path.
-
----
-
-_Referenced in [astral-sh/uv#13743](../../astral-sh/uv/pulls/13743.md) on 2025-05-30 20:51_
 
 ---
 

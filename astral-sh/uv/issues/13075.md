@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-23T20:52:34Z
 updated_at: 2025-04-23T22:23:35Z
 url: https://github.com/astral-sh/uv/issues/13075
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv pip install panic with invalid major version
@@ -67,10 +67,6 @@ oddly enough this once threw no error? some async issue?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-04-23 22:09_
-
----
-
-_Referenced in [astral-sh/uv#13077](../../astral-sh/uv/pulls/13077.md) on 2025-04-23 22:09_
 
 ---
 

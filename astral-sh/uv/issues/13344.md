@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-08T10:32:00Z
 updated_at: 2025-05-13T03:03:45Z
 url: https://github.com/astral-sh/uv/issues/13344
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Resolver panics when adding qlmaas as dependency
@@ -74,10 +74,6 @@ uv 0.7.3
 ---
 
 _Label `bug` added by @shumpohl on 2025-05-08 10:32_
-
----
-
-_Referenced in [pubgrub-rs/pubgrub#337](../../pubgrub-rs/pubgrub/pulls/337.md) on 2025-05-08 10:43_
 
 ---
 
@@ -150,15 +146,7 @@ Tag: cp312-cp312-win_amd64
 
 ---
 
-_Referenced in [myQLM/myqlm-issues#40](../../myQLM/myqlm-issues/issues/40.md) on 2025-05-08 11:00_
-
----
-
 _Assigned to @konstin by @konstin on 2025-05-09 14:10_
-
----
-
-_Referenced in [astral-sh/uv#13366](../../astral-sh/uv/pulls/13366.md) on 2025-05-09 16:32_
 
 ---
 

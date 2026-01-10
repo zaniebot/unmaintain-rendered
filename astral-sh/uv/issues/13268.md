@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-02T15:32:44Z
 updated_at: 2025-05-02T15:49:54Z
 url: https://github.com/astral-sh/uv/issues/13268
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # managing project tools with a new `uv tool sync` subcommand
@@ -86,13 +86,5 @@ Yeah we sort of wanted to wait for the `dependency-groups` table to move forward
 ---
 
 _Label `needs-design` added by @zanieb on 2025-05-02 15:49_
-
----
-
-_Referenced in [astral-sh/uv#12533](../../astral-sh/uv/issues/12533.md) on 2025-05-02 17:12_
-
----
-
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2025-05-22 22:32_
 
 ---

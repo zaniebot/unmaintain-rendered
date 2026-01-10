@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-04-29T14:41:46Z
 updated_at: 2025-04-18T13:22:15Z
 url: https://github.com/astral-sh/uv/issues/3312
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # uv doesn't correctly checkout Git dependencies with Git LFS assets
@@ -88,10 +88,6 @@ Adding another workaround here. Running `git lfs install --force --skip-smudge` 
 ---
 
 _Label `help wanted` added by @zanieb on 2024-09-03 14:18_
-
----
-
-_Referenced in [prefix-dev/pixi#2000](../../prefix-dev/pixi/issues/2000.md) on 2024-09-16 16:34_
 
 ---
 
@@ -214,18 +210,6 @@ This updates your Git config to skip LFS just for uv dependencies.
 
 ---
 
-_Referenced in [ami-iit/comodo#23](../../ami-iit/comodo/pulls/23.md) on 2024-10-15 16:07_
-
----
-
-_Referenced in [rust-lang/git2-rs#956](../../rust-lang/git2-rs/issues/956.md) on 2024-10-16 00:03_
-
----
-
-_Referenced in [astral-sh/uv#9451](../../astral-sh/uv/issues/9451.md) on 2024-11-26 20:18_
-
----
-
 _Comment by @SZRabinowitz on 2024-12-17 19:46_
 
 > Another workaround option if you need LFS for other repos and don't want to manually set environment variables:
@@ -283,19 +267,7 @@ On the other hand since the command would only run if the user has Git LFS insta
 
 ---
 
-_Referenced in [astral-sh/uv#10335](../../astral-sh/uv/pulls/10335.md) on 2025-01-06 21:25_
-
----
-
 _Closed by @zanieb on 2025-01-13 21:48_
-
----
-
-_Referenced in [descriptinc/audiotools#113](../../descriptinc/audiotools/issues/113.md) on 2025-02-07 23:55_
-
----
-
-_Referenced in [timniederhausen/bw_save_game#1](../../timniederhausen/bw_save_game/issues/1.md) on 2025-02-11 19:36_
 
 ---
 
@@ -315,18 +287,10 @@ _Comment by @zanieb on 2025-04-16 16:13_
 
 ---
 
-_Referenced in [astral-sh/uv#12938](../../astral-sh/uv/issues/12938.md) on 2025-04-18 13:17_
-
----
-
 _Comment by @thesofakillers on 2025-04-18 13:21_
 
 > @thesofakillers you'll need to open a new issue with a clear reproduction
 
 [opened](https://github.com/astral-sh/uv/issues/12938)! ty
-
----
-
-_Referenced in [StonyBrookNLP/appworld#166](../../StonyBrookNLP/appworld/issues/166.md) on 2025-10-16 05:55_
 
 ---

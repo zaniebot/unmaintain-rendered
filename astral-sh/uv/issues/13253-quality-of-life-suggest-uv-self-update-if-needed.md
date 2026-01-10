@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-05-01T16:47:51Z
 updated_at: 2025-05-08T00:09:30Z
 url: https://github.com/astral-sh/uv/issues/13253
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Quality of life - suggest `uv self update` if needed
@@ -57,10 +57,6 @@ _Label `error messages` added by @zanieb on 2025-05-01 17:32_
 
 ---
 
-_Referenced in [astral-sh/uv#13258](../../astral-sh/uv/pulls/13258.md) on 2025-05-02 03:15_
-
----
-
 _Comment by @davis-martin on 2025-05-02 09:13_
 
 It might also be advisable to give the user a non-intrusive update prompt if the number of days since last update exceeds a certain threshold - since uv isn't updated automatically or via package management I imagine there are many users running on an out-of-date version, blissfully unaware until it presents an issue. Tealdeer/tldr handles this pretty gracefully for its db updates, it could be similarly handled by a single line addition at runtime to the effect of:
@@ -78,10 +74,6 @@ _Label `help wanted` added by @charliermarsh on 2025-05-04 12:56_
 _Comment by @charliermarsh on 2025-05-04 12:59_
 
 Should be straightforward if anyone wants to give it a try. In `crates/uv/src/lib.rs`, we should check if the current version is lower than the lower-bound version on the target range by going through `Ranges<Version>`. If so, we should show the hint. This code should only run if the `self-update` feature is enabled.
-
----
-
-_Referenced in [astral-sh/uv#13305](../../astral-sh/uv/pulls/13305.md) on 2025-05-05 20:40_
 
 ---
 

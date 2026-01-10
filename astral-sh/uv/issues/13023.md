@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-21T20:04:11Z
 updated_at: 2025-06-03T14:39:06Z
 url: https://github.com/astral-sh/uv/issues/13023
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `workspace_lock_idempotence_root_workspace` test flake on Windows
@@ -66,9 +66,5 @@ _Closed by @konstin on 2025-06-03 14:37_
 _Comment by @zanieb on 2025-06-03 14:39_
 
 Brutal, closing the old for the new? :D
-
----
-
-_Referenced in [astral-sh/uv#13812](../../astral-sh/uv/issues/13812.md) on 2025-06-03 14:39_
 
 ---

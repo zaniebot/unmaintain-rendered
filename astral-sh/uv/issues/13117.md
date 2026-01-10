@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-26T04:09:59Z
 updated_at: 2025-04-29T21:37:07Z
 url: https://github.com/astral-sh/uv/issues/13117
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Better error message when a non-PEP-751-compatible filename lock file is used
@@ -69,15 +69,7 @@ Good call, I will fix.
 
 ---
 
-_Referenced in [astral-sh/uv#13119](../../astral-sh/uv/pulls/13119.md) on 2025-04-26 14:30_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-04-26 14:48_
-
----
-
-_Referenced in [astral-sh/uv#13126](../../astral-sh/uv/issues/13126.md) on 2025-04-27 07:48_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T09:29:19Z
 updated_at: 2025-04-04T09:29:19Z
 url: https://github.com/astral-sh/uv/issues/12665
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # File permissions on lock files (#11324)
@@ -35,9 +35,5 @@ _No response_
 ---
 
 _Label `question` added by @Lalufu on 2025-04-04 09:29_
-
----
-
-_Referenced in [astral-sh/uv#16769](../../astral-sh/uv/issues/16769.md) on 2025-11-18 16:56_
 
 ---

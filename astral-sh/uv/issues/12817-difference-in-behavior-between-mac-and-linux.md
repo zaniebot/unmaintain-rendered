@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-10T18:08:21Z
 updated_at: 2025-04-10T18:15:39Z
 url: https://github.com/astral-sh/uv/issues/12817
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Difference in behavior between mac and linux
@@ -102,9 +102,5 @@ Interestingly, while I created an analogous test with poetry, which produced the
 ---
 
 _Closed by @natemcintosh on 2025-04-10 18:15_
-
----
-
-_Referenced in [nushell/nushell#15545](../../nushell/nushell/issues/15545.md) on 2025-04-10 18:39_
 
 ---

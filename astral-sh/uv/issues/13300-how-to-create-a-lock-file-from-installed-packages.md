@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-05T12:50:18Z
 updated_at: 2025-05-06T15:31:52Z
 url: https://github.com/astral-sh/uv/issues/13300
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # How to create a lock file from installed packages (or from requirements.txt file)
@@ -107,9 +107,5 @@ That will be a useful part of the docs, @zanieb, thanks!
 ---
 
 _Closed by @czechnology on 2025-05-06 15:31_
-
----
-
-_Referenced in [astral-sh/uv#10924](../../astral-sh/uv/issues/10924.md) on 2025-05-20 16:02_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-29T12:25:55Z
 updated_at: 2025-05-06T08:38:43Z
 url: https://github.com/astral-sh/uv/issues/13192
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # compression not supported: 14
@@ -124,10 +124,6 @@ _Comment by @charliermarsh on 2025-05-04 12:49_
 
 ---
 
-_Referenced in [astral-sh/uv#13285](../../astral-sh/uv/pulls/13285.md) on 2025-05-04 16:02_
-
----
-
 _Comment by @konstin on 2025-05-04 16:02_
 
 It has a feature flag we can activate: #13285
@@ -206,10 +202,6 @@ $ cargo run -- pip install fakepkg-0.0.1-py3-none-any.whl
 $ cargo run -- --version
 uv 0.7.2+24 (3218e364a 2025-05-05)
 ```
-
----
-
-_Referenced in [astral-sh/uv#13310](../../astral-sh/uv/issues/13310.md) on 2025-05-06 08:33_
 
 ---
 

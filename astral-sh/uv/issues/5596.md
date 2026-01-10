@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T11:57:59Z
 updated_at: 2025-05-29T09:05:06Z
 url: https://github.com/astral-sh/uv/issues/5596
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Feature Request: `extend` config option
@@ -45,10 +45,6 @@ Heya, is there any chance this can get some priority? Would help us roll out `uv
 _Comment by @zanieb on 2024-10-22 12:24_
 
 Given the lack of additional interest and the amount of work we have on our plate right now, it seems unlikely that we can devote time to this in the near future. Sorry.
-
----
-
-_Referenced in [astral-sh/uv#11070](../../astral-sh/uv/issues/11070.md) on 2025-02-06 11:59_
 
 ---
 

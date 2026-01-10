@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-05T04:40:17Z
 updated_at: 2025-05-05T04:43:08Z
 url: https://github.com/astral-sh/uv/issues/13296
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add subcommand that reports project root and workspace root information
@@ -63,9 +63,5 @@ $ uv python workspace-root
 ---
 
 _Label `enhancement` added by @legendre6891 on 2025-05-05 04:40_
-
----
-
-_Referenced in [astral-sh/uv#14509](../../astral-sh/uv/pulls/14509.md) on 2025-07-08 18:56_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-21T22:11:31Z
 updated_at: 2025-04-30T15:27:33Z
 url: https://github.com/astral-sh/uv/issues/8429
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Improve `sysconfig` metadata when installing managed Python distributions
@@ -38,79 +38,15 @@ _Label `tracking` added by @zanieb on 2024-10-21 22:11_
 
 ---
 
-_Referenced in [astral-sh/uv#7525](../../astral-sh/uv/issues/7525.md) on 2024-10-21 22:11_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#374](../../astral-sh/python-build-standalone/issues/374.md) on 2024-10-21 22:16_
-
----
-
-_Referenced in [astral-sh/uv#7369](../../astral-sh/uv/issues/7369.md) on 2024-10-21 22:16_
-
----
-
-_Referenced in [astral-sh/uv#8036](../../astral-sh/uv/issues/8036.md) on 2024-10-21 22:16_
-
----
-
 _Comment by @ringsaturn on 2024-10-22 00:39_
 
 Should #6488 be included?
 
 ---
 
-_Referenced in [astral-sh/uv#6488](../../astral-sh/uv/issues/6488.md) on 2024-10-22 01:34_
-
----
-
 _Comment by @zanieb on 2024-10-22 01:35_
 
 Yes thanks!
-
----
-
-_Referenced in [astral-sh/uv#8459](../../astral-sh/uv/issues/8459.md) on 2024-10-22 16:58_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#380](../../astral-sh/python-build-standalone/issues/380.md) on 2024-10-23 13:20_
-
----
-
-_Referenced in [astral-sh/uv#8481](../../astral-sh/uv/pulls/8481.md) on 2024-10-24 13:46_
-
----
-
-_Referenced in [astral-sh/uv#8644](../../astral-sh/uv/issues/8644.md) on 2024-10-28 19:33_
-
----
-
-_Referenced in [astral-sh/uv#8879](../../astral-sh/uv/issues/8879.md) on 2024-11-07 13:51_
-
----
-
-_Referenced in [astral-sh/uv#8821](../../astral-sh/uv/issues/8821.md) on 2024-11-07 13:53_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#307](../../astral-sh/python-build-standalone/issues/307.md) on 2024-11-26 14:33_
-
----
-
-_Referenced in [Jij-Inc/ommx#165](../../Jij-Inc/ommx/issues/165.md) on 2024-11-27 05:39_
-
----
-
-_Referenced in [PyPSA/pypsa-usa#483](../../PyPSA/pypsa-usa/issues/483.md) on 2024-11-27 18:09_
-
----
-
-_Referenced in [astral-sh/uv#9501](../../astral-sh/uv/issues/9501.md) on 2024-11-29 17:25_
-
----
-
-_Referenced in [astral-sh/uv#9347](../../astral-sh/uv/issues/9347.md) on 2024-12-11 19:16_
 
 ---
 
@@ -329,18 +265,6 @@ Should we reopen this or one of the linked issues?
 
 ---
 
-_Referenced in [astral-sh/uv#11028](../../astral-sh/uv/issues/11028.md) on 2025-01-28 17:48_
-
----
-
-_Referenced in [astral-sh/uv#11811](../../astral-sh/uv/issues/11811.md) on 2025-02-26 21:26_
-
----
-
-_Referenced in [Jij-Inc/pyo3-stub-gen#161](../../Jij-Inc/pyo3-stub-gen/issues/161.md) on 2025-04-05 08:32_
-
----
-
 _Comment by @sabonerune on 2025-04-30 15:06_
 
 It seems the problem has reappeared in v0.6.15.
@@ -351,13 +275,5 @@ It seems that the process of replacing `clang` and `clang++` with `cc` and `c++`
 _Comment by @zanieb on 2025-04-30 15:27_
 
 @sabonerune please open a new issue with more details.
-
----
-
-_Referenced in [astral-sh/uv#13236](../../astral-sh/uv/issues/13236.md) on 2025-04-30 16:47_
-
----
-
-_Referenced in [astral-sh/uv#13544](../../astral-sh/uv/issues/13544.md) on 2025-05-19 20:51_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-14T14:26:37Z
 updated_at: 2025-04-17T23:32:57Z
 url: https://github.com/astral-sh/uv/issues/12881
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # allow github ci ratelimiting on installer scripts to be managed with UV_GITHUB_TOKEN
@@ -78,10 +78,6 @@ Oh wait this is the bootstrap script, apologies, one moment while I pull up thos
 
 ---
 
-_Referenced in [astral-sh/cargo-dist#23](../../astral-sh/cargo-dist/issues/23.md) on 2025-04-14 15:15_
-
----
-
 _Comment by @Gankra on 2025-04-14 15:16_
 
 I'm afraid we don't read these values in the installer scripts right now -- I've filed an issue to do that 
@@ -131,10 +127,6 @@ But when we started (the 10th of February) to use the option : https://github.co
 ![Image](https://github.com/user-attachments/assets/2c0900ad-caa3-4dde-8bc5-7f8e8b46da56)
 
 So I'm quite confident.
-
----
-
-_Referenced in [astral-sh/uv#12949](../../astral-sh/uv/pulls/12949.md) on 2025-04-17 19:42_
 
 ---
 

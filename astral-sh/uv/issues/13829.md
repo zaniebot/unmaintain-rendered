@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-04T03:14:03Z
 updated_at: 2025-06-04T19:42:37Z
 url: https://github.com/astral-sh/uv/issues/13829
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `[tool.uv.sources]` should warn if it has no effect on any platform
@@ -78,24 +78,8 @@ _Label `enhancement` added by @oconnor663 on 2025-06-04 03:14_
 
 ---
 
-_Referenced in [astral-sh/uv#13774](../../astral-sh/uv/issues/13774.md) on 2025-06-04 03:14_
-
----
-
 _Comment by @charliermarsh on 2025-06-04 19:42_
 
 Important to note that we'd need to check that `numpy` isn't a dependency in any workspace member (not just the root `pyproject.toml`), since sources apply to workspace members too.
-
----
-
-_Referenced in [astral-sh/uv#13900](../../astral-sh/uv/issues/13900.md) on 2025-06-08 18:04_
-
----
-
-_Referenced in [astral-sh/uv#13981](../../astral-sh/uv/issues/13981.md) on 2025-06-12 00:45_
-
----
-
-_Referenced in [astral-sh/uv#14077](../../astral-sh/uv/pulls/14077.md) on 2025-06-16 14:59_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-30T22:10:47Z
 updated_at: 2025-06-03T13:12:04Z
 url: https://github.com/astral-sh/uv/issues/13746
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Failure to connect with "No route to host" in "Test in Firecracker VM" on `build binary | freebsd` CI test
@@ -56,10 +56,6 @@ Oh weird, I don't know if I've seen this before? Should we open an issue on the 
 _Comment by @konstin on 2025-06-02 12:11_
 
 Reported upstream: https://github.com/acj/freebsd-firecracker-action/issues/3
-
----
-
-_Referenced in [astral-sh/uv#13804](../../astral-sh/uv/pulls/13804.md) on 2025-06-03 12:49_
 
 ---
 

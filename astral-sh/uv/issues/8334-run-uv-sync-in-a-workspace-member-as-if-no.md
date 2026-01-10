@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-18T15:03:08Z
 updated_at: 2025-04-16T18:18:44Z
 url: https://github.com/astral-sh/uv/issues/8334
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Run `uv sync` in a workspace member as if no workspace root was present
@@ -143,9 +143,5 @@ package_2 = [{ index = "../package_2" }]
 ...
 ```
 You still need to `uv sync` when you change your packages, but seems the best approach so far. I admit I haven't try submodules in a big monorepo mirror with all the packages.
-
----
-
-_Referenced in [astral-sh/uv#12984](../../astral-sh/uv/issues/12984.md) on 2025-04-20 03:20_
 
 ---

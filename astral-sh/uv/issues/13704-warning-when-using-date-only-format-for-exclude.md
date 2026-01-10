@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-28T19:34:18Z
 updated_at: 2025-05-28T20:23:12Z
 url: https://github.com/astral-sh/uv/issues/13704
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Warning when using date-only format for `exclude-newer`
@@ -112,10 +112,6 @@ _Comment by @johnthagen on 2025-05-28 19:50_
 _Comment by @zanieb on 2025-05-28 19:52_
 
 Yeah you're welcome to fix it, I think it's just a copy / paste from the pip reference? We _do_ support date-only on the CLI so we can't remove that from everywhere.
-
----
-
-_Referenced in [astral-sh/uv#13706](../../astral-sh/uv/pulls/13706.md) on 2025-05-28 19:57_
 
 ---
 

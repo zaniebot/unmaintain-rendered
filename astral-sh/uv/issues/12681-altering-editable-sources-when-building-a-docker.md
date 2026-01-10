@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T20:32:13Z
 updated_at: 2025-04-28T15:31:57Z
 url: https://github.com/astral-sh/uv/issues/12681
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Altering editable sources when building a docker image
@@ -88,14 +88,6 @@ You mean something like `--no-install-workspace`, but for `path` sources?
 _Comment by @zanieb on 2025-04-18 20:48_
 
 If what Charlie suggests, that'd be like https://github.com/astral-sh/uv/issues/12845, e.g., `--no-install-source path`?
-
----
-
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-04-23 17:14_
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:27_
 
 ---
 

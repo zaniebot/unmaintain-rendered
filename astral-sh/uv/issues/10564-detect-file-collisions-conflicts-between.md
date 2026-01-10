@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T14:37:31Z
 updated_at: 2025-04-06T06:23:51Z
 url: https://github.com/astral-sh/uv/issues/10564
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Detect file collisions / conflicts between different packages while installing
@@ -54,9 +54,5 @@ Installing contents into overlapping directories, as in effectively namespace pa
 They should never install different file contents to the same *files* in overlapping directories. That's what is being discussed here.
 
 (As a special exception, multiple packages can install the same `__init__.py` with morally identical contents, i.e. the only thing the file does is `pkgutil.extend_path()`. Those should be allowed despite file collisions.)
-
----
-
-_Referenced in [astral-sh/uv#14192](../../astral-sh/uv/issues/14192.md) on 2025-06-21 18:52_
 
 ---

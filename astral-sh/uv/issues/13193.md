@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-29T13:25:14Z
 updated_at: 2025-04-29T13:33:50Z
 url: https://github.com/astral-sh/uv/issues/13193
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Incorrect command argument in 0.6.15 Release Note
@@ -61,10 +61,6 @@ Python 3.11.10
 ---
 
 _Label `bug` added by @Maxioum on 2025-04-29 13:25_
-
----
-
-_Referenced in [astral-sh/uv#13194](../../astral-sh/uv/pulls/13194.md) on 2025-04-29 13:32_
 
 ---
 

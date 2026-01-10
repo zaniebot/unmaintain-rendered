@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-27T08:38:54Z
 updated_at: 2025-05-27T12:43:08Z
 url: https://github.com/astral-sh/uv/issues/13673
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Local dev dependencies always installed with --all-packages
@@ -76,10 +76,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-05-27 11:43_
 _Comment by @Knut-Boost on 2025-05-27 12:18_
 
 Thank you for looking into it. I added a Dockerfile to the example repo. Let me know if further clarification is needed.
-
----
-
-_Referenced in [astral-sh/uv#13678](../../astral-sh/uv/pulls/13678.md) on 2025-05-27 12:31_
 
 ---
 

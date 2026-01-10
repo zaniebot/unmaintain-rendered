@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-02T01:20:44Z
 updated_at: 2025-04-16T02:47:16Z
 url: https://github.com/astral-sh/uv/issues/6925
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # UV does not respect pip mirror configuration for uv add and uv tool install
@@ -108,10 +108,6 @@ _Label `question` added by @charliermarsh on 2024-09-02 17:15_
 ---
 
 _Label `configuration` added by @charliermarsh on 2024-09-02 17:15_
-
----
-
-_Referenced in [hiyouga/LLaMA-Factory#7225](../../hiyouga/LLaMA-Factory/issues/7225.md) on 2025-03-13 11:56_
 
 ---
 

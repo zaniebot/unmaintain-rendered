@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-31T18:44:54Z
 updated_at: 2025-04-02T22:50:49Z
 url: https://github.com/astral-sh/uv/issues/12591
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # keyring support not working on MacOS
@@ -45,10 +45,6 @@ uv 0.6.11 (Homebrew 2025-03-30)
 ---
 
 _Label `bug` added by @TheFriendlyCoder on 2025-03-31 18:44_
-
----
-
-_Referenced in [astral-sh/uv#12280](../../astral-sh/uv/issues/12280.md) on 2025-03-31 19:01_
 
 ---
 

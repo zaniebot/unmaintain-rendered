@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T01:52:20Z
 updated_at: 2025-04-18T19:12:51Z
 url: https://github.com/astral-sh/uv/issues/11816
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Attempting to install package where dependencies give git+url and needs environment variables to be set.
@@ -43,10 +43,6 @@ _No response_
 ---
 
 _Label `question` added by @CompRhys on 2025-02-27 01:52_
-
----
-
-_Referenced in [facebook/Ax#3430](../../facebook/Ax/issues/3430.md) on 2025-02-27 14:51_
 
 ---
 

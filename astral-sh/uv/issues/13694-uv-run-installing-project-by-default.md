@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-28T07:24:28Z
 updated_at: 2025-05-28T10:35:35Z
 url: https://github.com/astral-sh/uv/issues/13694
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv run` installing project by default
@@ -171,9 +171,5 @@ Thanks a lot!
 ---
 
 _Closed by @Danipulok on 2025-05-28 10:35_
-
----
-
-_Referenced in [astral-sh/uv#16994](../../astral-sh/uv/issues/16994.md) on 2025-12-05 05:18_
 
 ---

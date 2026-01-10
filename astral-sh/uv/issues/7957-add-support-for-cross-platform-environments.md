@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-07T03:56:32Z
 updated_at: 2025-06-02T19:09:08Z
 url: https://github.com/astral-sh/uv/issues/7957
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Add support for cross-platform environments
@@ -94,17 +94,9 @@ This sounds cool, but I would be surprised if we had the time to build it soon. 
 
 ---
 
-_Referenced in [pypa/cibuildwheel#2286](../../pypa/cibuildwheel/pulls/2286.md) on 2025-02-24 06:34_
-
----
-
 _Comment by @eabase on 2025-02-25 07:57_
 
 Also consider #11773 
-
----
-
-_Referenced in [pypackaging-native/pkgconf-pypi#74](../../pypackaging-native/pkgconf-pypi/issues/74.md) on 2025-05-26 02:46_
 
 ---
 

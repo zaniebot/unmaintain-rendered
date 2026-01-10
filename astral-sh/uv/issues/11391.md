@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-10T17:00:59Z
 updated_at: 2025-04-29T21:37:04Z
 url: https://github.com/astral-sh/uv/issues/11391
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Index URL cannot be queried for lack of authentication ending with package name
@@ -85,17 +85,9 @@ _Label `registry` added by @zanieb on 2025-02-10 17:08_
 
 ---
 
-_Referenced in [astral-sh/uv#11507](../../astral-sh/uv/issues/11507.md) on 2025-02-14 13:02_
-
----
-
 _Comment by @zanieb on 2025-03-20 22:13_
 
 This is also the same as #4056 
-
----
-
-_Referenced in [astral-sh/uv#12651](../../astral-sh/uv/pulls/12651.md) on 2025-04-03 14:18_
 
 ---
 

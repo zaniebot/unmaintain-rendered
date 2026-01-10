@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-19T16:55:43Z
 updated_at: 2025-04-25T07:10:12Z
 url: https://github.com/astral-sh/uv/issues/12983
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv sync breaks venv if folder is called python
@@ -138,10 +138,6 @@ python = "python:main"
 It matches the project name, so, in this case, it's `python` and clobbers the environment's `python`.
 
 Yeah we can avoid adding the entrypoint to the project this case, it's pretty niche though. Broadly, we may want to warn if you have an entrypoint name that collides with an existing one — and maybe ban entrypoints called `python` entirely? I'm sort of surprised that's even allowed in the specification.
-
----
-
-_Referenced in [astral-sh/uv#13051](../../astral-sh/uv/pulls/13051.md) on 2025-04-22 11:03_
 
 ---
 

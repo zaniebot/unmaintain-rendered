@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-02T22:12:59Z
 updated_at: 2025-06-03T16:12:35Z
 url: https://github.com/astral-sh/uv/issues/13791
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # New credentials obfuscation breaks `uv export`
@@ -47,10 +47,6 @@ _Label `bug` added by @jlconnor on 2025-06-02 22:13_
 
 ---
 
-_Referenced in [astral-sh/uv#13560](../../astral-sh/uv/pulls/13560.md) on 2025-06-02 22:13_
-
----
-
 _Comment by @zanieb on 2025-06-02 22:16_
 
 Please share a reproducible example, as described in #9452
@@ -67,17 +63,9 @@ _Label `needs-mre` added by @zanieb on 2025-06-02 22:16_
 
 ---
 
-_Referenced in [astral-sh/uv#13792](../../astral-sh/uv/pulls/13792.md) on 2025-06-02 22:31_
-
----
-
 _Comment by @stolpa4 on 2025-06-03 06:45_
 
 I can reproduce this, all my private packages are now put into requirements.txt with these stars, which make my requirements.txt file effectively useless. I had no credentials in my dependencies, all the packages are pulled via ssh, with the help of ssh agent. 
-
----
-
-_Referenced in [astral-sh/uv#13795](../../astral-sh/uv/issues/13795.md) on 2025-06-03 07:37_
 
 ---
 
@@ -100,10 +88,6 @@ Using Python 3.12.10 environment at: /usr/local
 ```
 
 The wheel installation that is rejected is not a direct dependency
-
----
-
-_Referenced in [astral-sh/uv#13799](../../astral-sh/uv/pulls/13799.md) on 2025-06-03 09:32_
 
 ---
 
@@ -162,10 +146,6 @@ _Comment by @rivershah on 2025-06-03 14:03_
     ]
 .....
 ```
-
----
-
-_Referenced in [astral-sh/uv#13823](../../astral-sh/uv/issues/13823.md) on 2025-06-03 16:12_
 
 ---
 

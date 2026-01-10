@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-12T13:43:24Z
 updated_at: 2025-05-12T19:48:39Z
 url: https://github.com/astral-sh/uv/issues/13410
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uvx with a lock file
@@ -99,10 +99,6 @@ For now, you can specify click in your pyproject.toml
 
 ---
 
-_Referenced in [astral-sh/uv#13414](../../astral-sh/uv/issues/13414.md) on 2025-05-12 19:45_
-
----
-
 _Comment by @Ark-kun on 2025-05-12 19:45_
 
 I guess I was just using `uv run --with` instead of `uvx --from`.
@@ -134,17 +130,5 @@ https://github.com/ai-dynamo/dynamo/issues/1039
 _Comment by @zanieb on 2025-05-12 19:48_
 
 Moving to https://github.com/astral-sh/uv/issues/13414
-
----
-
-_Referenced in [astral-sh/uv#15361](../../astral-sh/uv/issues/15361.md) on 2025-08-18 20:53_
-
----
-
-_Referenced in [awslabs/nx-plugin-for-aws#378](../../awslabs/nx-plugin-for-aws/issues/378.md) on 2025-12-11 02:21_
-
----
-
-_Referenced in [awslabs/nx-plugin-for-aws#379](../../awslabs/nx-plugin-for-aws/issues/379.md) on 2025-12-11 02:41_
 
 ---

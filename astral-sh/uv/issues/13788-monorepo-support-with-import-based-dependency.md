@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-02T18:57:13Z
 updated_at: 2025-06-05T09:53:20Z
 url: https://github.com/astral-sh/uv/issues/13788
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Monorepo support with import-based dependency inference and custom build targets
@@ -75,9 +75,5 @@ _Label `wish` added by @konstin on 2025-06-03 09:48_
 _Comment by @vhtmui on 2025-06-05 09:53_
 
 That's exactly what I want! !
-
----
-
-_Referenced in [thromer/uv-monorepo-example#1](../../thromer/uv-monorepo-example/pulls/1.md) on 2025-06-29 21:52_
 
 ---

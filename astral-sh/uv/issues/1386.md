@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-15T23:37:23Z
 updated_at: 2025-04-20T23:42:40Z
 url: https://github.com/astral-sh/uv/issues/1386
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # `uv venv` and github actions scripts / workflows
@@ -152,25 +152,9 @@ Was running into race conditions here or at least issues with steps / jobs runni
 
 ---
 
-_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-02-16 22:26_
-
----
-
-_Referenced in [scikit-hep/pyhf#2444](../../scikit-hep/pyhf/pulls/2444.md) on 2024-02-16 22:28_
-
----
-
-_Referenced in [open-webui/open-webui#758](../../open-webui/open-webui/pulls/758.md) on 2024-02-16 22:40_
-
----
-
 _Comment by @adamtheturtle on 2024-02-17 12:55_
 
 Ideally for me there would be clear instructions on good practice for using `uv` in GitHub Actions, including on Windows, and including with a cache using `actions/cache`. 
-
----
-
-_Referenced in [astral-sh/uv#1604](../../astral-sh/uv/issues/1604.md) on 2024-02-18 08:03_
 
 ---
 
@@ -262,10 +246,6 @@ jobs:
 
 ---
 
-_Referenced in [astral-sh/uv#1639](../../astral-sh/uv/issues/1639.md) on 2024-02-19 13:12_
-
----
-
 _Label `documentation` added by @AlexWaygood on 2024-02-19 13:13_
 
 ---
@@ -289,14 +269,6 @@ _Comment by @AlexWaygood on 2024-02-20 09:05_
 _Comment by @strickvl on 2024-02-20 10:19_
 
 Had / having similar issues on our CI. Choosing to wait for a more stable way for this global install to happen which I believe will be worked on next week.
-
----
-
-_Referenced in [astral-sh/uv#1779](../../astral-sh/uv/issues/1779.md) on 2024-02-20 21:22_
-
----
-
-_Referenced in [mesa/mesa#2038](../../mesa/mesa/pulls/2038.md) on 2024-02-20 22:02_
 
 ---
 
@@ -334,14 +306,6 @@ jobs:
       - name: Test with pytest
         run: pytest
 ```
-
----
-
-_Referenced in [actions/setup-python#822](../../actions/setup-python/issues/822.md) on 2024-02-21 19:17_
-
----
-
-_Referenced in [astral-sh/uv#2000](../../astral-sh/uv/pulls/2000.md) on 2024-02-27 16:19_
 
 ---
 
@@ -399,14 +363,6 @@ The cache _does_ improve resolution times because sometimes we need to build sou
 
 ---
 
-_Referenced in [astral-sh/uv#2231](../../astral-sh/uv/issues/2231.md) on 2024-03-24 20:15_
-
----
-
-_Referenced in [aiidateam/aiida-core#6363](../../aiidateam/aiida-core/pulls/6363.md) on 2024-04-22 12:39_
-
----
-
 _Comment by @zanieb on 2024-05-22 20:56_
 
 Hi! For those of you who are subscribed to this and are using `echo "VIRTUAL_ENV=${Python_ROOT_DIR}"` as a work-around — as of 0.2.0 this is no longer supported and we'd recommend using the `--system` flag or `--python <path>` instead.
@@ -425,18 +381,6 @@ _Comment by @zanieb on 2024-06-27 16:58_
 
 - https://github.com/inventree/InvenTree/pull/7317
 
-
----
-
-_Referenced in [shap/shap#3768](../../shap/shap/pulls/3768.md) on 2024-07-26 11:15_
-
----
-
-_Referenced in [45spoons/seuranta#4](../../45spoons/seuranta/pulls/4.md) on 2024-08-24 17:54_
-
----
-
-_Referenced in [shyndman/vantron-collectd-support#2](../../shyndman/vantron-collectd-support/pulls/2.md) on 2025-03-07 22:23_
 
 ---
 

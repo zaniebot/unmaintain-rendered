@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-14T17:44:03Z
 updated_at: 2025-04-14T22:05:34Z
 url: https://github.com/astral-sh/uv/issues/12883
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv-build* release links are broken
@@ -60,10 +60,6 @@ _Assigned to @Gankra by @Gankra on 2025-04-14 18:24_
 
 ---
 
-_Referenced in [astral-sh/uv#12885](../../astral-sh/uv/pulls/12885.md) on 2025-04-14 18:35_
-
----
-
 _Comment by @Gankra on 2025-04-14 18:37_
 
 Apologies, all the info in the release was auto-generated due to a misconfiguration. No such files were ever built or uploaded, nor should they have been.
@@ -85,9 +81,5 @@ _Closed by @Gankra on 2025-04-14 18:49_
 _Comment by @the-connoisseur on 2025-04-14 22:05_
 
 Thanks for the quick fix!
-
----
-
-_Referenced in [astral-sh/uv#12927](../../astral-sh/uv/issues/12927.md) on 2025-04-17 12:46_
 
 ---

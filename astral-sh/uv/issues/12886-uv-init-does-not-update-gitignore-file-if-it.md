@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-14T18:55:09Z
 updated_at: 2025-04-14T21:06:30Z
 url: https://github.com/astral-sh/uv/issues/12886
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv init does not update .gitignore file if it already exists
@@ -77,9 +77,5 @@ _Label `bug` removed by @Gankra on 2025-04-14 21:05_
 _Comment by @Gankra on 2025-04-14 21:06_
 
 I could have sworn we had an issue open for this, but I can't find it. Yeah it would be nice if we did more intelligent merging/updating, or at least had an option to do so (since there's cases where it might not be correct/safe to do so).
-
----
-
-_Referenced in [astral-sh/uv#12395](../../astral-sh/uv/issues/12395.md) on 2025-04-15 03:01_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-15T21:44:15Z
 updated_at: 2025-05-30T21:16:47Z
 url: https://github.com/astral-sh/uv/issues/10653
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Publish integration test flakes
@@ -187,10 +187,6 @@ DEBUG Command exited with code: 1
 ---
 
 _Label `testing` added by @zanieb on 2025-01-15 22:19_
-
----
-
-_Referenced in [mypdns/matrix#121078](../../mypdns/matrix/issues/121078.md) on 2025-02-28 07:18_
 
 ---
 

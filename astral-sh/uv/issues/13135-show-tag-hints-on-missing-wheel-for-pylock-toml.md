@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-27T16:28:42Z
 updated_at: 2025-04-27T16:56:51Z
 url: https://github.com/astral-sh/uv/issues/13135
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Show tag hints on missing wheel for `pylock.toml`
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-04-27 16:28_
 ---
 
 _Label `error messages` added by @charliermarsh on 2025-04-27 16:28_
-
----
-
-_Referenced in [astral-sh/uv#13136](../../astral-sh/uv/pulls/13136.md) on 2025-04-27 16:43_
 
 ---
 

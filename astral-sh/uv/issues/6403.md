@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-22T03:14:21Z
 updated_at: 2025-03-27T11:49:15Z
 url: https://github.com/astral-sh/uv/issues/6403
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Feature: more graceful handling of `uv run` when CLIs aren't well exposed.
@@ -124,10 +124,6 @@ _Comment by @zanieb on 2024-08-22 16:07_
 _Comment by @zanieb on 2024-08-22 16:08_
 
 Seems like Jupyter should ship a CLI package that does something reasonable.. haha
-
----
-
-_Referenced in [astral-sh/uv#6922](../../astral-sh/uv/issues/6922.md) on 2024-09-02 18:11_
 
 ---
 

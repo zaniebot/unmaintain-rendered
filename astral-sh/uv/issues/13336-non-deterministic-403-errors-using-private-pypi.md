@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-07T18:49:10Z
 updated_at: 2025-05-16T15:57:41Z
 url: https://github.com/astral-sh/uv/issues/13336
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Non-deterministic 403 errors using private pypi server with `uv pip install -r requirements.txt`
@@ -480,10 +480,6 @@ Installed 5 packages in 10ms
  + urllib3==2.4.0
 DEBUG Released lock at `/Users/creston/scratch/creston/uv-test/.venv/.lock`
 ```
-
----
-
-_Referenced in [astral-sh/uv#13338](../../astral-sh/uv/issues/13338.md) on 2025-05-07 21:28_
 
 ---
 

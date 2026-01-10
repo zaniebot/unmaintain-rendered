@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-04T07:15:52Z
 updated_at: 2025-06-04T14:58:37Z
 url: https://github.com/astral-sh/uv/issues/13830
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv sync deletes venv and creates a new one
@@ -97,9 +97,5 @@ Yep that's it - I'm stupid. Thanks!
 ---
 
 _Closed by @aranvir on 2025-06-04 14:58_
-
----
-
-_Referenced in [astral-sh/uv#14031](../../astral-sh/uv/issues/14031.md) on 2025-06-13 16:32_
 
 ---

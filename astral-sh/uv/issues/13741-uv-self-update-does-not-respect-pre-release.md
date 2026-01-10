@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-30T19:34:43Z
 updated_at: 2025-06-04T15:33:00Z
 url: https://github.com/astral-sh/uv/issues/13741
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv self update` does not respect pre-release segments during equality checks
@@ -174,10 +174,6 @@ They installed uv in a non-standard way (using `INSTALLER_DOWNLOAD_URL=` to forc
 But that install script has the latest actual version of uv baked in (at the time, 0.7.8), so it recorded to disk in the receipt.json 0.7.8, and so the updater """correctly""" reported that the installed version was the one requested. Then the uv binary printed its own version in the success message (0.7.8-alpha.1), and not the one the updater found, creating this extra-confusing situation.
 
 So if there's a fix we want to make here, it's a bit more of a subtle one, and probably not a good first issue?
-
----
-
-_Referenced in [astral-sh/uv#13840](../../astral-sh/uv/pulls/13840.md) on 2025-06-04 15:12_
 
 ---
 

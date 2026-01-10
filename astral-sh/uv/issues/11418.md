@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-11T11:44:09Z
 updated_at: 2025-04-03T10:17:28Z
 url: https://github.com/astral-sh/uv/issues/11418
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # You're on Linux (`manylinux_2_39_x86_64`),  but `torch` (v2.5.1) only has wheels for the following platform: `linux_aarch64`
@@ -396,9 +396,5 @@ build-backend = "hatchling.build"
 packages = ["src/experiments"]
 
 ```
-
----
-
-_Referenced in [astral-sh/uv#12852](../../astral-sh/uv/issues/12852.md) on 2025-04-13 14:17_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-28T19:35:15Z
 updated_at: 2025-04-28T20:31:23Z
 url: https://github.com/astral-sh/uv/issues/13185
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Should I remove old builds before publishing?
@@ -61,9 +61,5 @@ Thank you!
 ---
 
 _Closed by @Gabriel-p on 2025-04-28 20:31_
-
----
-
-_Referenced in [astral-sh/uv#16030](../../astral-sh/uv/issues/16030.md) on 2025-09-25 19:22_
 
 ---

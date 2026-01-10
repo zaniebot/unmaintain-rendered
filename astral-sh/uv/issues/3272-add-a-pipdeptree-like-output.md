@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-25T21:04:19Z
 updated_at: 2025-05-18T19:31:31Z
 url: https://github.com/astral-sh/uv/issues/3272
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Add a `pipdeptree` like output
@@ -54,10 +54,6 @@ For reference/design, poetry has `--tree` as part of `poetry show`
 
 ---
 
-_Referenced in [astral-sh/uv#3859](../../astral-sh/uv/pulls/3859.md) on 2024-05-27 06:46_
-
----
-
 _Closed by @ibraheemdev on 2024-06-21 19:48_
 
 ---
@@ -65,10 +61,6 @@ _Closed by @ibraheemdev on 2024-06-21 19:48_
 _Comment by @ibraheemdev on 2024-06-21 19:56_
 
 Opened https://github.com/astral-sh/uv/issues/4439 to track additional features that did not land in the initial PR.
-
----
-
-_Referenced in [astral-sh/uv#1657](../../astral-sh/uv/issues/1657.md) on 2024-06-24 16:09_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-06T03:24:56Z
 updated_at: 2025-04-14T13:08:27Z
 url: https://github.com/astral-sh/uv/issues/12687
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Allow using `--dry-run` with `--frozen` / `--locked` in `uv sync`
@@ -120,10 +120,6 @@ Mind if I take a stab at this?
 _Comment by @zanieb on 2025-04-08 17:24_
 
 Go for it!
-
----
-
-_Referenced in [astral-sh/uv#12778](../../astral-sh/uv/pulls/12778.md) on 2025-04-09 13:02_
 
 ---
 

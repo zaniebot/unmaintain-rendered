@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-15T12:28:52Z
 updated_at: 2025-04-11T11:00:49Z
 url: https://github.com/astral-sh/uv/issues/12185
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv under Win11 WSL-ubuntu sees wrong (win) python references
@@ -36,10 +36,6 @@ Also, atm, I just want to give context why combination of pyenv with uv might be
 Thank you for working on such wonderful tool as uv! It really makes our lives easier. o7
 
 _Originally posted by @krstp in https://github.com/astral-sh/uv/issues/1495#issuecomment-2726485796_
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-03-15 12:31_
 
 ---
 

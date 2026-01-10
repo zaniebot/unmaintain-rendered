@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-28T06:38:33Z
 updated_at: 2025-04-01T22:16:47Z
 url: https://github.com/astral-sh/uv/issues/12525
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # concurrent `uv run` is very slow even with cache
@@ -196,9 +196,5 @@ Thanks, much appreciated! If there's any other data points that I can gather tha
 ---
 
 _Label `question` removed by @zanieb on 2025-04-01 22:16_
-
----
-
-_Referenced in [ray-project/ray#50961](../../ray-project/ray/issues/50961.md) on 2025-04-25 06:37_
 
 ---

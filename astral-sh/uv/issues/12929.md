@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-17T01:40:24Z
 updated_at: 2025-04-17T16:57:54Z
 url: https://github.com/astral-sh/uv/issues/12929
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # JSON schema for config-settings seems wrong
@@ -87,10 +87,6 @@ Hmm, I'm not sure why you're seeing a difference in the CLI but I _can_ verify i
 ![Image](https://github.com/user-attachments/assets/0ee6a71e-1579-4824-ac81-f70257ef6823)
 
 I think we need to make `ConfigSettingValue` untagged.
-
----
-
-_Referenced in [astral-sh/uv#12947](../../astral-sh/uv/pulls/12947.md) on 2025-04-17 15:13_
 
 ---
 

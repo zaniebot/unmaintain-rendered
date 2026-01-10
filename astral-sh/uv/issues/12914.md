@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-16T07:45:22Z
 updated_at: 2025-04-17T16:59:14Z
 url: https://github.com/astral-sh/uv/issues/12914
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv python list` stopped showing non-installed PyPy exactly after 0.6.10
@@ -88,10 +88,6 @@ When passing `uv python list pypy`, then `download_request` is basically `Python
 Removing the 3 lines [there](https://github.com/astral-sh/uv/blob/main/crates/uv-python/src/downloads.rs#L210-L212) to avoid setting implementation to CPython when calling `fill` solves this issue (not sure it this is clean). If I am on the right track I could perhaps open a PR, but if someone else is faster feel free to go ahead.
 
 EDIT: I opened a PR, but it has no tests, I wanted mostly to check the CI
-
----
-
-_Referenced in [astral-sh/uv#12915](../../astral-sh/uv/pulls/12915.md) on 2025-04-16 09:15_
 
 ---
 

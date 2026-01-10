@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-27T17:18:48Z
 updated_at: 2025-04-11T13:48:56Z
 url: https://github.com/astral-sh/uv/issues/10203
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Make it easier to deploy a mirror for uv-python command
@@ -41,10 +41,6 @@ I think that one way of solving this issue is, instead of hardcoding the list of
 
 ---
 
-_Referenced in [astral-sh/uv#8015](../../astral-sh/uv/issues/8015.md) on 2024-12-27 18:11_
-
----
-
 _Label `wish` added by @charliermarsh on 2024-12-28 14:48_
 
 ---
@@ -52,14 +48,6 @@ _Label `wish` added by @charliermarsh on 2024-12-28 14:48_
 _Comment by @MeitarR on 2024-12-31 07:19_
 
 @charliermarsh is this PR welcome? (And do you agree with the suggested solution?)
-
----
-
-_Referenced in [astral-sh/uv#8548](../../astral-sh/uv/pulls/8548.md) on 2025-01-04 10:09_
-
----
-
-_Referenced in [astral-sh/uv#10939](../../astral-sh/uv/pulls/10939.md) on 2025-01-24 15:49_
 
 ---
 
@@ -78,10 +66,6 @@ _Comment by @Crypto-Spartan on 2025-03-25 01:28_
 I have the same issue as @fcwys. Internal mirror is slow to get the updated `python-build-standalone` binaries and uv fails to download the latest tag. I work in an ephemeral environment in a corporate network, so i have an install script that reinstalls everything everyday. When uv breaks like this, I straight up can't use it at all.
 
 I would love it if I could tell uv to use an older tag when downloading the python-build-standalone binaries, as sometimes we have the binaries from the _previous week_, but since uv is so picky about which tag it's downloading, it won't work.
-
----
-
-_Referenced in [astral-sh/uv#12808](../../astral-sh/uv/issues/12808.md) on 2025-04-10 14:09_
 
 ---
 
@@ -116,13 +100,5 @@ I'm going to tenatively mark this issue as resolved since you can do the above p
 ---
 
 _Closed by @Gankra on 2025-04-11 13:48_
-
----
-
-_Referenced in [astral-sh/uv#12838](../../astral-sh/uv/issues/12838.md) on 2025-04-11 15:21_
-
----
-
-_Referenced in [astral-sh/uv#16669](../../astral-sh/uv/issues/16669.md) on 2025-11-14 20:05_
 
 ---

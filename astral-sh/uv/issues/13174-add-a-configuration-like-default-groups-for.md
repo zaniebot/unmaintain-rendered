@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-28T12:09:52Z
 updated_at: 2025-04-28T19:53:45Z
 url: https://github.com/astral-sh/uv/issues/13174
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add a configuration like `default-groups` for optional dependencies
@@ -44,10 +44,6 @@ _Label `enhancement` added by @etienne-monier on 2025-04-28 12:09_
 _Comment by @konstin on 2025-04-28 12:44_
 
 This is a work in progress, see https://github.com/astral-sh/uv/pull/12965
-
----
-
-_Referenced in [astral-sh/uv#12965](../../astral-sh/uv/pulls/12965.md) on 2025-04-28 12:44_
 
 ---
 

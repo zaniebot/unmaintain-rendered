@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-07T21:28:05Z
 updated_at: 2025-05-08T14:23:25Z
 url: https://github.com/astral-sh/uv/issues/13338
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # URLs are not formatted correctly during retry errors logs
@@ -28,10 +28,6 @@ _Assigned to @zanieb by @zanieb on 2025-05-07 21:28_
 ---
 
 _Label `tracing` added by @zanieb on 2025-05-07 21:28_
-
----
-
-_Referenced in [astral-sh/uv#13339](../../astral-sh/uv/pulls/13339.md) on 2025-05-07 22:09_
 
 ---
 

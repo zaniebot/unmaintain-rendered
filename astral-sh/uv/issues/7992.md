@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-07T23:51:02Z
 updated_at: 2025-04-14T22:04:17Z
 url: https://github.com/astral-sh/uv/issues/7992
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Installation of `pygraphviz` fails (but still updates uv.lock)
@@ -156,10 +156,6 @@ _Comment by @charliermarsh on 2024-10-23 00:00_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-11 21:05_
-
----
-
-_Referenced in [astral-sh/uv#9030](../../astral-sh/uv/pulls/9030.md) on 2024-11-11 21:05_
 
 ---
 

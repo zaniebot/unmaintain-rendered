@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-05T17:16:47Z
 updated_at: 2025-06-06T18:35:21Z
 url: https://github.com/astral-sh/uv/issues/13867
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `lock_requires_python` flakes when a new pre-releases version is addeded
@@ -45,15 +45,7 @@ _Issue opened by @zanieb on 2025-06-05 17:16_
 
 ---
 
-_Referenced in [astral-sh/uv#13866](../../astral-sh/uv/pulls/13866.md) on 2025-06-05 17:16_
-
----
-
 _Label `ci-flake` added by @zanieb on 2025-06-05 17:17_
-
----
-
-_Referenced in [astral-sh/uv#13884](../../astral-sh/uv/pulls/13884.md) on 2025-06-06 12:49_
 
 ---
 

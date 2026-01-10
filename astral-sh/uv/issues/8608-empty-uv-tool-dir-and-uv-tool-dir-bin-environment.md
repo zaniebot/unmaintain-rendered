@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-27T17:23:52Z
 updated_at: 2025-04-21T19:15:04Z
 url: https://github.com/astral-sh/uv/issues/8608
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Empty `UV_TOOL_DIR` and `UV_TOOL_DIR_BIN` environment variables treated differently
@@ -113,10 +113,6 @@ _Removed from milestone `v0.6.0` by @zanieb on 2025-02-15 02:34_
 ---
 
 _Added to milestone `v0.7.0` by @zanieb on 2025-02-15 02:34_
-
----
-
-_Referenced in [astral-sh/uv#12905](../../astral-sh/uv/pulls/12905.md) on 2025-04-15 20:46_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-16T22:53:02Z
 updated_at: 2025-05-27T03:53:19Z
 url: https://github.com/astral-sh/uv/issues/10699
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Suggest `MACOSX_DEPLOYMENT_TARGET` in resolver platform tag hint
@@ -40,20 +40,8 @@ _Label `help wanted` added by @zanieb on 2025-01-16 22:53_
 
 ---
 
-_Referenced in [astral-sh/uv#10696](../../astral-sh/uv/issues/10696.md) on 2025-01-20 15:11_
-
----
-
-_Referenced in [astral-sh/uv#11783](../../astral-sh/uv/pulls/11783.md) on 2025-02-25 22:57_
-
----
-
 _Comment by @ywh555hhh on 2025-05-27 03:53_
 
 Do you still need help with this? If so, I'd be happy to pick it up.
-
----
-
-_Referenced in [astral-sh/uv#16553](../../astral-sh/uv/pulls/16553.md) on 2025-11-02 21:14_
 
 ---

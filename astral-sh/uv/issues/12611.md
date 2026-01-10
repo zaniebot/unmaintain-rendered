@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-01T22:10:01Z
 updated_at: 2025-04-02T18:14:59Z
 url: https://github.com/astral-sh/uv/issues/12611
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Authenticate argument ignored with explicit index
@@ -135,10 +135,6 @@ I added some test coverage in https://github.com/astral-sh/uv/pull/12624 and ~it
 
 ---
 
-_Referenced in [astral-sh/uv#12624](../../astral-sh/uv/pulls/12624.md) on 2025-04-02 14:42_
-
----
-
 _Comment by @jdumas on 2025-04-02 14:43_
 
 Hi! Here is the trace output when using `explicit = true`:
@@ -211,10 +207,6 @@ term myproject==0.1.0
 _Comment by @jtfmumm on 2025-04-02 15:59_
 
 I've investigated this and indexes configured as `explicit = true` are being excluded from the list of index URLs our auth middleware uses to check for authentication policies. That would explain why authentication is not being forced here. I'll fix this and see if it resolves your issue.
-
----
-
-_Referenced in [astral-sh/uv#12631](../../astral-sh/uv/pulls/12631.md) on 2025-04-02 16:59_
 
 ---
 

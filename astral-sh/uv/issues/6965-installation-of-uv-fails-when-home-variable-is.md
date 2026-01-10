@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-03T10:22:27Z
 updated_at: 2025-06-09T15:49:27Z
 url: https://github.com/astral-sh/uv/issues/6965
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Installation of uv fails when $HOME variable is not set
@@ -75,10 +75,6 @@ _Comment by @zsimic on 2024-09-06 16:52_
 I ran into this as well, and ended up defining a HOME env var. My use case is auto installing `uv` in a specific folder, using `CARGO_DIST_FORCE_INSTALL_DIR`, and `HOME` in my case ideally shouldn't be involved at all. I see it's used to generate a receipt file (which is also not needed in this case).
 
 What would be nice for automations like this is if the installer script simply dropped the correct `uv` binary in the specified target folder, and that's it (no PATH modifications, no HOME involved etc)
-
----
-
-_Referenced in [axodotdev/cargo-dist#1400](../../axodotdev/cargo-dist/issues/1400.md) on 2024-09-07 19:29_
 
 ---
 
@@ -236,22 +232,10 @@ _Reopened by @konstin on 2025-05-28 10:49_
 
 ---
 
-_Referenced in [astral-sh/cargo-dist#38](../../astral-sh/cargo-dist/pulls/38.md) on 2025-05-28 11:04_
-
----
-
-_Referenced in [kishaningithub/setup-python-amazon-linux#24](../../kishaningithub/setup-python-amazon-linux/pulls/24.md) on 2025-06-04 10:00_
-
----
-
 _Closed by @Gankra on 2025-06-09 15:49_
 
 ---
 
 _Closed by @Gankra on 2025-06-09 15:49_
-
----
-
-_Referenced in [astral-sh/uv#14156](../../astral-sh/uv/pulls/14156.md) on 2025-06-20 18:06_
 
 ---

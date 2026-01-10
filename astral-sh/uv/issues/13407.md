@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-12T11:37:55Z
 updated_at: 2025-05-15T15:19:04Z
 url: https://github.com/astral-sh/uv/issues/13407
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv build backend doesn't support ` module-root = "./"`
@@ -122,14 +122,6 @@ _Comment by @followheart26 on 2025-05-13 02:18_
 > It works with `module-root = ""`, we should accept `./`, too, though.
 
 i use module-root = "", and i find that if the source code dir named like nBk tCk  also raise the Error: Expected a Python module directory at: `tCk`, can't i use capital letter in source code dir? 
-
----
-
-_Referenced in [astral-sh/uv#13419](../../astral-sh/uv/issues/13419.md) on 2025-05-13 02:50_
-
----
-
-_Referenced in [astral-sh/uv#13465](../../astral-sh/uv/pulls/13465.md) on 2025-05-15 12:02_
 
 ---
 

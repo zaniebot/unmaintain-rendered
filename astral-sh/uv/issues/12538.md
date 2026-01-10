@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-28T23:57:56Z
 updated_at: 2025-04-01T17:24:58Z
 url: https://github.com/astral-sh/uv/issues/12538
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # No Python at '"C:\Users\Administrator\AppData\Roaming\uv\python\cpython-3.10.16-windows-x86_64-none\python.exe'
@@ -108,9 +108,5 @@ In fact, that error message is from the CPython virtual environment launcher: ht
 _Comment by @ThermodynamicBeta on 2025-04-01 17:24_
 
 Oh, TIL, thanks
-
----
-
-_Referenced in [astral-sh/uv#14814](../../astral-sh/uv/issues/14814.md) on 2025-07-22 15:59_
 
 ---

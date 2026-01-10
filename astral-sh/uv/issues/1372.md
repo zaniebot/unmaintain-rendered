@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T22:28:47Z
 updated_at: 2025-04-04T23:27:36Z
 url: https://github.com/astral-sh/uv/issues/1372
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # `uv pip install filename.whl` is not supported
@@ -71,10 +71,6 @@ Mostly to keep feature parity with pip and be able to be a drop-in replacement.
 _Comment by @zanieb on 2024-02-16 00:25_
 
 This mismatch in behavior is actually intentional because it was hard to implement, but we plan to do it. See https://github.com/astral-sh/uv/issues/313 for the tracking issue.
-
----
-
-_Referenced in [astral-sh/uv#1403](../../astral-sh/uv/issues/1403.md) on 2024-02-16 00:44_
 
 ---
 

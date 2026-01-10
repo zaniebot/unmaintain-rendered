@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-23T03:43:28Z
 updated_at: 2025-06-01T01:23:48Z
 url: https://github.com/astral-sh/uv/issues/13610
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `TypeError: must be str, not list` when appending subtype of `str` to a `list` in uv-managed python installation on linux
@@ -253,14 +253,6 @@ RUN uv run -p 3.14 mre.py
 
 ---
 
-_Referenced in [astral-sh/uv#13617](../../astral-sh/uv/pulls/13617.md) on 2025-05-23 14:11_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#622](../../astral-sh/python-build-standalone/pulls/622.md) on 2025-05-23 17:46_
-
----
-
 _Closed by @Gankra on 2025-05-23 22:15_
 
 ---
@@ -331,10 +323,6 @@ Here is the testing I've seen (❌ has bug, ✅ works):
   * ❌ 3.14
 
 Based on this testing it seemed clear that the issue was isolated to linux, and it's *probably* x64 specific, but I opted to handle that conservatively and just reverted "linux, not-aarch64".
-
----
-
-_Referenced in [Homebrew/homebrew-core#224582](../../Homebrew/homebrew-core/pulls/224582.md) on 2025-05-24 02:47_
 
 ---
 

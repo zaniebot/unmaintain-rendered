@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-21T20:02:58Z
 updated_at: 2025-05-27T14:35:50Z
 url: https://github.com/astral-sh/uv/issues/13582
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv python install --reinstall` does not include pre-release versions
@@ -67,10 +67,6 @@ _Comment by @Michaelgathara on 2025-05-25 23:54_
 
 @zanieb I believe I have fixed this up within #13645
 Open to thoughts
-
----
-
-_Referenced in [astral-sh/uv#13645](../../astral-sh/uv/pulls/13645.md) on 2025-05-27 14:35_
 
 ---
 

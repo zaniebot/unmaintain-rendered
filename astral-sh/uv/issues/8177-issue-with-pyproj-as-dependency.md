@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-14T16:57:58Z
 updated_at: 2025-04-02T14:21:51Z
 url: https://github.com/astral-sh/uv/issues/8177
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Issue with pyproj as dependency
@@ -237,10 +237,6 @@ yes, I think you've pinpointed it, if I could ask a final question then to check
   ```
   
   So here I was thinking `uv sync` with the above pyproject.toml would accomplish much the same, but maybe I was missing some things conda was doing in the background to manage ARM issues?
-
----
-
-_Referenced in [NREL/flasc#214](../../NREL/flasc/pulls/214.md) on 2024-10-14 18:47_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-28T09:10:50Z
 updated_at: 2025-03-30T18:48:49Z
 url: https://github.com/astral-sh/uv/issues/12526
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv tree with --only-group doesn't show full depth
@@ -88,10 +88,6 @@ I think this is a bug... `plotly`'s deps should be visible.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-28 20:24_
-
----
-
-_Referenced in [astral-sh/uv#12560](../../astral-sh/uv/pulls/12560.md) on 2025-03-30 18:39_
 
 ---
 

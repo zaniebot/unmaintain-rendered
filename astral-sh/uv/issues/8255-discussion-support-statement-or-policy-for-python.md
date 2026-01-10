@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T13:49:04Z
 updated_at: 2025-05-21T19:56:12Z
 url: https://github.com/astral-sh/uv/issues/8255
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Discussion: Support statement or policy for python
@@ -123,14 +123,6 @@ This isn't really feasible, because then we need to maintain all the code to sup
 
 Yes we do this, but this creates additional maintenance overhead for uv. It's not trivial to support multiple versions of distributions indefinitely.
 
-
----
-
-_Referenced in [astral-sh/python-build-standalone#342](../../astral-sh/python-build-standalone/issues/342.md) on 2024-10-20 15:20_
-
----
-
-_Referenced in [astral-sh/uv#8649](../../astral-sh/uv/pulls/8649.md) on 2024-10-29 12:38_
 
 ---
 

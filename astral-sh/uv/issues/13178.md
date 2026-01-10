@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-28T14:47:45Z
 updated_at: 2025-04-28T14:58:06Z
 url: https://github.com/astral-sh/uv/issues/13178
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # install.sh throws error
@@ -67,9 +67,5 @@ The issue appears to be with the snap curl distribution.
 ---
 
 _Closed by @DavidACunningham on 2025-04-28 14:58_
-
----
-
-_Referenced in [boukendesho/curl-snap#1](../../boukendesho/curl-snap/issues/1.md) on 2025-04-29 08:25_
 
 ---

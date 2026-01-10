@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T20:26:00Z
 updated_at: 2025-04-02T18:29:42Z
 url: https://github.com/astral-sh/uv/issues/9531
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Unable to install a python project depending on `httpx` on a corporate Jenkins Windows Runner with AV
@@ -165,10 +165,6 @@ It's fine ! It means it was a known issue, and the good solution
 
 ---
 
-_Referenced in [astral-sh/uv#9543](../../astral-sh/uv/pulls/9543.md) on 2024-11-30 15:40_
-
----
-
 _Closed by @charliermarsh on 2024-12-01 22:57_
 
 ---
@@ -273,10 +269,6 @@ Funny enough, I've tried with a very older version of uv (0.4.0) which actually 
 _Comment by @Gankra on 2025-01-24 14:16_
 
 Interesting, thanks for all the useful info!
-
----
-
-_Referenced in [astral-sh/uv#10966](../../astral-sh/uv/issues/10966.md) on 2025-01-26 12:21_
 
 ---
 

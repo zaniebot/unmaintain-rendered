@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-05T19:04:14Z
 updated_at: 2025-06-05T19:20:22Z
 url: https://github.com/astral-sh/uv/issues/13870
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add local lock for parallel commands
@@ -58,9 +58,5 @@ Thanks for the link to the issue! Local lock should fix our issue too
 ---
 
 _Closed by @leviska on 2025-06-05 19:20_
-
----
-
-_Referenced in [astral-sh/uv#13883](../../astral-sh/uv/issues/13883.md) on 2025-06-18 18:36_
 
 ---

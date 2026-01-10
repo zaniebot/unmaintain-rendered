@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-21T23:11:23Z
 updated_at: 2025-06-06T14:18:18Z
 url: https://github.com/astral-sh/uv/issues/13031
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Accept `pylock.toml` as a constraint file
@@ -41,9 +41,5 @@ This would be terrifically useful since currently we use constraints files as th
 _Comment by @itcarroll on 2025-06-06 14:18_
 
 Could this, or would this also constrain `uv lock`? I'm not clear right now on how to approach a project that comes with only a `pylock.toml`. I think I still need a `uv.lock` but I'm not sure how to generate it while respecting `pylock.toml`.
-
----
-
-_Referenced in [astral-sh/uv#15947](../../astral-sh/uv/issues/15947.md) on 2025-09-19 13:23_
 
 ---

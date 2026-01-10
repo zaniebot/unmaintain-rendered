@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T16:07:47Z
 updated_at: 2025-05-23T20:48:25Z
 url: https://github.com/astral-sh/uv/issues/6348
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # On Windows, `uv run` fails with "error: Failed to spawn: `python`"
@@ -77,10 +77,6 @@ Serious déjà vu but turns out I only fixed this for pager: https://github.com/
 _Comment by @zanieb on 2024-08-21 16:33_
 
 https://github.com/astral-sh/uv/issues/5838 / https://github.com/astral-sh/uv/pull/5849
-
----
-
-_Referenced in [astral-sh/uv#6354](../../astral-sh/uv/pulls/6354.md) on 2024-08-21 16:41_
 
 ---
 
@@ -160,17 +156,9 @@ This makes sense to me. I think the problem is we look for all valid Python exec
 
 ---
 
-_Referenced in [astral-sh/uv#6444](../../astral-sh/uv/issues/6444.md) on 2024-08-22 15:27_
-
----
-
 _Comment by @pfmoore on 2024-08-22 16:54_
 
 Understood. As I say, my configuration is (was) unusual - it's not normal to have *just* the versioned `python3.x` executable without the unversioned one - so I wouldn't consider this as a priority (except maybe to point it out in the docs for now, as it *is* confusing when it happens).
-
----
-
-_Referenced in [astral-sh/uv#10122](../../astral-sh/uv/issues/10122.md) on 2024-12-23 15:33_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-22T10:01:25Z
 updated_at: 2025-04-22T11:46:44Z
 url: https://github.com/astral-sh/uv/issues/12389
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # PEP517 backend: support fallback to `uv` executable?
@@ -119,10 +119,6 @@ This is not a problem for us — we control the dependency versions.
 
 ---
 
-_Referenced in [astral-sh/uv#13049](../../astral-sh/uv/pulls/13049.md) on 2025-04-22 10:16_
-
----
-
 _Comment by @konstin on 2025-04-22 10:19_
 
 > On top of that, Maturin makes things difficult. uv-build consists of a Python module and an executable. Gentoo supports 7 Python targets right now, and this currently means building the identical uv-build executable 7 times. Of course, we can hack that around to have it built only once — but in the end, for me it's cleaner to have a single uv package that's already built as plain Rust package (i.e. without repeating the build for 7 Python versions), and an uv-build package that installs only Python modules.
@@ -158,9 +154,5 @@ _Closed by @konstin on 2025-04-22 11:46_
 ---
 
 _Closed by @konstin on 2025-04-22 11:46_
-
----
-
-_Referenced in [astral-sh/uv#15000](../../astral-sh/uv/issues/15000.md) on 2025-07-31 18:21_
 
 ---

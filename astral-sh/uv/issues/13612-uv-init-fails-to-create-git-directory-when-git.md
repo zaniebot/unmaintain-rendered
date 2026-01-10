@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-23T06:34:35Z
 updated_at: 2025-05-24T15:05:39Z
 url: https://github.com/astral-sh/uv/issues/13612
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv init fails to create .git directory when git outputs is not in English
@@ -75,10 +75,6 @@ _Label `bug` removed by @charliermarsh on 2025-05-24 12:19_
 ---
 
 _Label `error messages` added by @charliermarsh on 2025-05-24 12:19_
-
----
-
-_Referenced in [astral-sh/uv#13637](../../astral-sh/uv/pulls/13637.md) on 2025-05-24 14:09_
 
 ---
 

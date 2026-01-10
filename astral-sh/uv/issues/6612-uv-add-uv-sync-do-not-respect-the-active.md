@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-25T16:40:19Z
 updated_at: 2025-05-18T10:12:38Z
 url: https://github.com/astral-sh/uv/issues/6612
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv add`/`uv sync`/... do not respect the active virtualenv, should they?
@@ -374,10 +374,6 @@ i mean, it's ultimately up to them, but it seems weird to me for the project (ve
 
 ---
 
-_Referenced in [astral-sh/uv#6834](../../astral-sh/uv/pulls/6834.md) on 2024-08-29 22:39_
-
----
-
 _Comment by @zanieb on 2024-08-29 23:17_
 
 Take a look at https://github.com/astral-sh/uv/pull/6834 and let me know if it is sufficient for you. Please remember to be considerate.
@@ -396,10 +392,6 @@ But in my mind, all of the reasons you state in the PR for being reasons against
 So if someone's going to use this env var for any of the local-development usecases (docker/ci both seem addressed by the PR either way) either forces one to set both or prefix everything with one runs interactively with `uv run`. Which is maybe fine but i'm mostly saying to point out i dont know that it necessarily solves the problems you're describing as why you'd prefer to not read VIRTUAL_ENV.
 
 For my own purposes of fast swapping between python versions interactively, which is how i landed here in the first place, this env var is inconvenient as a solution relative to the standard env var for the reasons stated above, but i suppose perhaps #1495 will have to be the solution.
-
----
-
-_Referenced in [astral-sh/uv#6849](../../astral-sh/uv/issues/6849.md) on 2024-08-30 03:32_
 
 ---
 
@@ -542,10 +534,6 @@ This doesn't make sense to me. Feel free to open an issue with the specifics, we
 
 ---
 
-_Referenced in [johnthagen/python-blueprint#267](../../johnthagen/python-blueprint/issues/267.md) on 2025-04-10 14:52_
-
----
-
 _Comment by @RafalSkolasinski on 2025-05-18 00:02_
 
 > it sounds like you want uv pip sync pyproject.toml instead?
@@ -586,9 +574,5 @@ Just re-read and we do _not_ support Conda environments with `--active`. I can't
 _Comment by @RafalSkolasinski on 2025-05-18 10:12_
 
 Found https://github.com/astral-sh/uv/issues/11315 
-
----
-
-_Referenced in [astral-sh/uv#15603](../../astral-sh/uv/issues/15603.md) on 2025-08-31 08:56_
 
 ---

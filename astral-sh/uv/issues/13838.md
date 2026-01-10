@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-04T14:50:08Z
 updated_at: 2025-06-04T17:53:38Z
 url: https://github.com/astral-sh/uv/issues/13838
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Allow using workspace member dependency groups from workspace root
@@ -53,10 +53,6 @@ _Issue opened by @zanieb on 2025-06-04 14:50_
 > Right now, the best option I have is to keep a `doc` extra and use `doc = ["helper_package[doc]"]`, which I was hoping to get away from. 
 
  _Originally posted by @effigies in [#13540](https://github.com/astral-sh/uv/issues/13540#issuecomment-2940153737)_
-
----
-
-_Referenced in [astral-sh/uv#13540](../../astral-sh/uv/issues/13540.md) on 2025-06-04 14:50_
 
 ---
 

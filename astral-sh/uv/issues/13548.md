@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-20T04:58:32Z
 updated_at: 2025-05-21T13:46:11Z
 url: https://github.com/astral-sh/uv/issues/13548
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Support workspaces in `uv version`
@@ -49,18 +49,10 @@ This is mostly fixed by the current version of #13317, although `--all-packages`
 
 ---
 
-_Referenced in [astral-sh/uv#13317](../../astral-sh/uv/pulls/13317.md) on 2025-05-20 14:47_
-
----
-
 _Closed by @Gankra on 2025-05-21 13:46_
 
 ---
 
 _Closed by @Gankra on 2025-05-21 13:46_
-
----
-
-_Referenced in [astral-sh/uv#13971](../../astral-sh/uv/issues/13971.md) on 2025-06-11 16:26_
 
 ---

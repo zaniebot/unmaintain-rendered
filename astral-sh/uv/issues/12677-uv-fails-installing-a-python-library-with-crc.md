@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T18:03:53Z
 updated_at: 2025-04-07T18:28:34Z
 url: https://github.com/astral-sh/uv/issues/12677
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # UV fails installing a python library with CRC mismatch
@@ -157,10 +157,6 @@ cc @Gankra
 _Comment by @charliermarsh on 2025-04-06 21:03_
 
 Ah interesting. Data descriptors are fairly rare in Python packages but I know the `buf` registry uses them (since that's the only place it's come up before).
-
----
-
-_Referenced in [astral-sh/uv#12694](../../astral-sh/uv/issues/12694.md) on 2025-04-07 01:27_
 
 ---
 

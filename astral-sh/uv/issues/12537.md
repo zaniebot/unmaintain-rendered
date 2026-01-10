@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-28T21:14:30Z
 updated_at: 2025-04-01T23:14:43Z
 url: https://github.com/astral-sh/uv/issues/12537
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv does not seem to do anything
@@ -220,10 +220,6 @@ So this is not a UV problem. Unfortunately, this is not the first time I have lo
 _Comment by @zanieb on 2025-04-01 23:07_
 
 Ah I'm sorry to hear that. Thank you for following up with the details though!
-
----
-
-_Referenced in [astral-sh/uv#12612](../../astral-sh/uv/issues/12612.md) on 2025-04-01 23:09_
 
 ---
 

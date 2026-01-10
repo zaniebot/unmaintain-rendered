@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-02T15:54:16Z
 updated_at: 2025-05-02T16:47:50Z
 url: https://github.com/astral-sh/uv/issues/13269
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv fails when Poetry pyproject.toml defines version under [tool.poetry] instead of [project]
@@ -88,13 +88,5 @@ Good to know, thanks. I'll open an issue on their bug tracker.
 ---
 
 _Closed by @nhubbard on 2025-05-02 16:47_
-
----
-
-_Referenced in [HumanSignal/label-studio-sdk#449](../../HumanSignal/label-studio-sdk/issues/449.md) on 2025-05-02 16:49_
-
----
-
-_Referenced in [fern-api/fern#9617](../../fern-api/fern/issues/9617.md) on 2025-09-25 19:42_
 
 ---

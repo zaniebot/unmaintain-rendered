@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-26T12:27:36Z
 updated_at: 2025-04-16T00:40:54Z
 url: https://github.com/astral-sh/uv/issues/8591
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Should dependency group names be normalized with underscores converted to hyphens?
@@ -160,10 +160,6 @@ _Comment by @sirosen on 2024-10-28 02:54_
 I'm happy to help if there's some ambiguity WRT the spec, but I think you put it all perfectly, so there's not much for me to add! 😁
 
 But I'm happy to listen in and these sorts of threads help educate me more about how the spec is playing out in the wild (and where any mistakes may have been made).
-
----
-
-_Referenced in [astral-sh/uv#8702](../../astral-sh/uv/issues/8702.md) on 2024-10-30 15:42_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-23T15:22:30Z
 updated_at: 2025-04-25T02:06:07Z
 url: https://github.com/astral-sh/uv/issues/13070
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `tool.uv.conflicts` changes dependency resolution even without conflicts
@@ -112,10 +112,6 @@ _Label `bug` added by @rambip on 2025-04-23 15:22_
 ---
 
 _Renamed from "`tool.uv.conflicts` change dependency resolution even without conflicts" to "`tool.uv.conflicts` changes dependency resolution even without conflicts" by @rambip on 2025-04-23 15:25_
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:31_
 
 ---
 

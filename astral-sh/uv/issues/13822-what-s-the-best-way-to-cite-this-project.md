@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-03T15:02:36Z
 updated_at: 2025-06-04T14:24:17Z
 url: https://github.com/astral-sh/uv/issues/13822
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # What's the best way to cite this project?
@@ -58,10 +58,6 @@ _Comment by @Pacatro on 2025-06-03 17:08_
 > TIL: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files
 
 Yep, that's what I'm talking about.
-
----
-
-_Referenced in [astral-sh/uv#13824](../../astral-sh/uv/pulls/13824.md) on 2025-06-03 17:17_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-29T23:00:31Z
 updated_at: 2025-05-03T20:34:45Z
 url: https://github.com/astral-sh/uv/issues/13206
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Injecting index URL via environment variable
@@ -91,10 +91,6 @@ _Label `question` added by @vizeit on 2025-04-29 23:00_
 _Comment by @zanieb on 2025-04-29 23:45_
 
 Related to https://github.com/astral-sh/uv/issues/5734
-
----
-
-_Referenced in [astral-sh/uv#5734](../../astral-sh/uv/issues/5734.md) on 2025-04-30 04:38_
 
 ---
 

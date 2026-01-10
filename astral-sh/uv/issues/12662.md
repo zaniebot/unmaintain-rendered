@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T03:17:24Z
 updated_at: 2025-04-07T18:11:48Z
 url: https://github.com/astral-sh/uv/issues/12662
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv venv` activation script has side effects with zsh and bash
@@ -96,10 +96,6 @@ May I suggest to rename the variable `_UV_VENV_ACTIVATOR`? This will lower the c
 _Comment by @charliermarsh on 2025-04-04 12:50_
 
 That seems like a good idea.
-
----
-
-_Referenced in [astral-sh/uv#12672](../../astral-sh/uv/pulls/12672.md) on 2025-04-04 12:53_
 
 ---
 

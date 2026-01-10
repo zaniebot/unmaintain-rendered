@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-13T16:01:39Z
 updated_at: 2025-04-16T03:52:34Z
 url: https://github.com/astral-sh/uv/issues/9088
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # error: No interpreter found -- 
@@ -78,14 +78,6 @@ Thanks for filing. @Kanerix is right that we're reading `3.10-dev` from your `.p
 
 ---
 
-_Referenced in [astral-sh/uv#9092](../../astral-sh/uv/pulls/9092.md) on 2024-11-13 17:15_
-
----
-
-_Referenced in [astral-sh/uv#12643](../../astral-sh/uv/issues/12643.md) on 2025-04-03 05:40_
-
----
-
 _Comment by @DavidAntliff on 2025-04-16 02:16_
 
 New to `uv`, this also just caught me out - took me some time to work out what was going on.
@@ -101,9 +93,5 @@ My workaround for now is to remove `~/.python-version` while I try out `uv`, but
 _Comment by @zanieb on 2025-04-16 03:52_
 
 Would be fixed by #12909 
-
----
-
-_Referenced in [xorbitsai/inference#3241](../../xorbitsai/inference/pulls/3241.md) on 2025-04-16 12:44_
 
 ---

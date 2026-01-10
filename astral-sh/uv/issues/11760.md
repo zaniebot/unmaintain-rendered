@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-24T22:57:42Z
 updated_at: 2025-04-11T10:14:56Z
 url: https://github.com/astral-sh/uv/issues/11760
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Dependency resolution failure on transitive Git build-system requirement
@@ -318,10 +318,6 @@ _Comment by @Gankra on 2025-04-10 17:08_
 While at first this seemed like a bug, upon reflection this is unfortunately intended/expected behaviour, and would require substantial deviations from the relevant python specs to support.
 
 `[tool.uv.sources]` is a feature for development builds, just like dependency-groups. Dev builds are a concept that only exist at the top-level, and not for dependencies. So just as you can't depend on a library "with its dependency-group xyz enabled", you can't depend on a library "with its tool.uv.sources enabled".
-
----
-
-_Referenced in [astral-sh/uv#12815](../../astral-sh/uv/pulls/12815.md) on 2025-04-10 17:23_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-07T02:34:10Z
 updated_at: 2025-04-15T20:36:12Z
 url: https://github.com/astral-sh/uv/issues/12696
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Failure to build cydifflib (Compatibility with CMake < 3.5 error)
@@ -153,10 +153,6 @@ I'm even considering adding a kind of bootstrapping process around uv that tests
 _Comment by @zanieb on 2025-04-08 19:45_
 
 It seems like that would need to be handled in [cydifflib](https://github.com/rapidfuzz/CyDifflib)'s build system. We could add supporting for patching environment variables while building dependencies, but that's sort of a whack-a-mole approach whereas tweaking the build system upstream would resolve the issue for everyone.
-
----
-
-_Referenced in [rapidfuzz/CyDifflib#6](../../rapidfuzz/CyDifflib/issues/6.md) on 2025-04-08 23:25_
 
 ---
 

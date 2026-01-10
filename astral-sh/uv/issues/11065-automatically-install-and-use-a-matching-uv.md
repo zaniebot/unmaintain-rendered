@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-29T14:34:34Z
 updated_at: 2025-04-09T20:56:38Z
 url: https://github.com/astral-sh/uv/issues/11065
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Automatically install and use a matching uv version to satisfy `requires-version`.
@@ -92,14 +92,6 @@ _Label `wish` added by @zanieb on 2025-01-29 14:47_
 _Comment by @zanieb on 2025-01-29 14:47_
 
 This sounds cool, but isn't something I can prioritize right now.
-
----
-
-_Referenced in [astral-sh/uv#11869](../../astral-sh/uv/pulls/11869.md) on 2025-02-28 21:33_
-
----
-
-_Referenced in [astral-sh/uv#12787](../../astral-sh/uv/issues/12787.md) on 2025-04-09 20:55_
 
 ---
 

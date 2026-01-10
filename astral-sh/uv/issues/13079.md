@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-24T00:52:13Z
 updated_at: 2025-04-25T10:52:03Z
 url: https://github.com/astral-sh/uv/issues/13079
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `Requires-Python` is ignored
@@ -338,14 +338,6 @@ uv 0.6.16
 ---
 
 _Label `bug` added by @njzjz on 2025-04-24 00:52_
-
----
-
-_Referenced in [deepmodeling/deepmd-kit#4715](../../deepmodeling/deepmd-kit/pulls/4715.md) on 2025-04-24 00:52_
-
----
-
-_Referenced in [astral-sh/uv#13086](../../astral-sh/uv/pulls/13086.md) on 2025-04-24 10:18_
 
 ---
 

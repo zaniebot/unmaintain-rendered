@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-14T16:31:32Z
 updated_at: 2025-06-06T10:17:23Z
 url: https://github.com/astral-sh/uv/issues/13456
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # VIRTUAL_ENV_PROMPT format in uv differs from venv or virtualenv
@@ -70,14 +70,6 @@ Python 3.12.9
 ---
 
 _Label `bug` added by @ericbn on 2025-05-14 16:31_
-
----
-
-_Referenced in [astral-sh/uv#13458](../../astral-sh/uv/pulls/13458.md) on 2025-05-14 17:20_
-
----
-
-_Referenced in [astral-sh/uv#13501](../../astral-sh/uv/pulls/13501.md) on 2025-05-17 02:07_
 
 ---
 

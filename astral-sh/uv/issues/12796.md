@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-10T01:47:31Z
 updated_at: 2025-04-10T14:03:38Z
 url: https://github.com/astral-sh/uv/issues/12796
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Support named index from `tool.uv.index` When running the `uv add` command
@@ -75,9 +75,5 @@ _Closed by @charliermarsh on 2025-04-10 14:03_
 _Comment by @charliermarsh on 2025-04-10 14:03_
 
 (We def want to support this.)
-
----
-
-_Referenced in [astral-sh/uv#10140](../../astral-sh/uv/issues/10140.md) on 2025-08-01 10:48_
 
 ---

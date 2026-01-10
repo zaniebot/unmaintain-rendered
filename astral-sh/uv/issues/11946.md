@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-04T11:24:31Z
 updated_at: 2025-04-01T17:06:27Z
 url: https://github.com/astral-sh/uv/issues/11946
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Support for `UV_PROJECT` environment variable that acts like the CLI `--project` argument
@@ -68,10 +68,6 @@ Yep go for it.
 _Comment by @thejchap on 2025-03-13 05:20_
 
 @sprassso are you still planning to work on this one?
-
----
-
-_Referenced in [astral-sh/uv#12327](../../astral-sh/uv/pulls/12327.md) on 2025-03-20 04:22_
 
 ---
 

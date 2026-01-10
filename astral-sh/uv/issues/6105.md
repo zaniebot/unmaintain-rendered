@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-15T11:33:28Z
 updated_at: 2025-05-30T20:16:36Z
 url: https://github.com/astral-sh/uv/issues/6105
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Bytecode compilation hangs non-deterministically hangs in QEMU aarch64 docker
@@ -65,10 +65,6 @@ Interesting... I think that's a timeout we set _per file_, so it's intended to c
 _Comment by @nijel on 2024-08-15 12:07_
 
 Looking again at the log, it happens when installing cffi only, so there shouldn't be that much files to compile. It there way to log verbosely what is going on there (besides `--verbose` which I've tried)?
-
----
-
-_Referenced in [WeblateOrg/docker#2571](../../WeblateOrg/docker/pulls/2571.md) on 2024-08-15 12:57_
 
 ---
 
@@ -137,10 +133,6 @@ I tried but couldn't reproduce this locally, it looks like a non-deterministic f
 ---
 
 _Unassigned @konstin by @konstin on 2024-08-19 15:51_
-
----
-
-_Referenced in [astral-sh/uv#6958](../../astral-sh/uv/pulls/6958.md) on 2024-09-03 08:17_
 
 ---
 
@@ -275,14 +267,6 @@ _Comment by @konstin on 2025-01-16 10:23_
 
 ---
 
-_Referenced in [astral-sh/uv#10672](../../astral-sh/uv/pulls/10672.md) on 2025-01-16 10:43_
-
----
-
-_Referenced in [astral-sh/uv#10673](../../astral-sh/uv/pulls/10673.md) on 2025-01-16 10:56_
-
----
-
 _Comment by @konstin on 2025-01-16 11:16_
 
 To add some context: On my machine, i can bytecode compile a project 4437 files in 9.15s on a single efficiency core (`taskset -c`), i.e. an average of 2ms per file. If we're hitting the 60s timeout, that's 30000x slower than that average, so i'm suspecting there's something more than just too low timeouts going on.
@@ -320,10 +304,6 @@ _Comment by @cpcloud on 2025-02-05 17:19_
 I am hitting this now too, when building a nix closure under qemu (aarch64) on an x86_64 machine, that itself is a cloud VM, so there are at least two layers of virtualization in my case.
 
 I can also corroborate that the timeout is not easily reproducible, sometimes "just run it again" seems to work.
-
----
-
-_Referenced in [ibis-project/ibis#10795](../../ibis-project/ibis/pulls/10795.md) on 2025-02-05 17:25_
 
 ---
 
@@ -656,10 +636,6 @@ I'm only getting this timeout when the gdbserver is running, if it isn't running
 
 ---
 
-_Referenced in [astral-sh/uv#11699](../../astral-sh/uv/issues/11699.md) on 2025-02-24 10:13_
-
----
-
 _Comment by @geofft on 2025-02-28 17:02_
 
 I think I've tracked this down to a fairly straightforward bug in qemu-user and reported it here: https://gitlab.com/qemu-project/qemu/-/issues/2846
@@ -689,14 +665,6 @@ _Comment by @vicchi on 2025-03-03 10:15_
 > A more practical workaround would be to reduce the concurrency of bytecode compilation with UV_CONCURRENT_INSTALLS=1, new in 0.6.3 (https://github.com/astral-sh/uv/pull/11615).
 
 I can confirm that running my build test case (from #11699) with `UV_COMPILE_BYTECODE=1` and `UV_CONCURRENT_INSTALLS=1` is a very viable and working workaround. Thanks @geofft !
-
----
-
-_Referenced in [ITISFoundation/osparc-simcore#7604](../../ITISFoundation/osparc-simcore/pulls/7604.md) on 2025-04-29 07:09_
-
----
-
-_Referenced in [ray-project/ray#50961](../../ray-project/ray/issues/50961.md) on 2025-05-25 05:10_
 
 ---
 
@@ -781,9 +749,5 @@ _Comment by @tobiasmcnulty on 2025-05-30 20:16_
 @geofft For further clarification, I was using the `docker-container` driver for setup-buildx-action during the previous test. I am not sure if `docker-container` uses `qemu-user` or not.
 
 I need to switch to the `docker` driver for other reasons, so I'll let you know if I still encounter the issue with it or not (I suspect not).
-
----
-
-_Referenced in [astral-sh/uv#14369](../../astral-sh/uv/pulls/14369.md) on 2025-06-30 09:01_
 
 ---

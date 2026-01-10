@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-11T17:40:54Z
 updated_at: 2025-04-04T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/11425
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Reject `git+file` paths in requirement definitions
@@ -120,10 +120,6 @@ _Label `error messages` added by @charliermarsh on 2025-02-13 16:40_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2025-02-13 16:40_
-
----
-
-_Referenced in [astral-sh/uv#11514](../../astral-sh/uv/pulls/11514.md) on 2025-02-14 16:40_
 
 ---
 

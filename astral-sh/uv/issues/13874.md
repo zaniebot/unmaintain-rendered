@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-05T23:17:41Z
 updated_at: 2025-06-09T17:28:40Z
 url: https://github.com/astral-sh/uv/issues/13874
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv add --index <name>` assumes a path in the local directory as the index?
@@ -84,30 +84,10 @@ _Assigned to @jtfmumm by @jtfmumm on 2025-06-08 23:30_
 
 ---
 
-_Referenced in [astral-sh/uv#13917](../../astral-sh/uv/pulls/13917.md) on 2025-06-09 14:26_
-
----
-
-_Referenced in [astral-sh/uv#13872](../../astral-sh/uv/issues/13872.md) on 2025-06-09 16:35_
-
----
-
 _Closed by @jtfmumm on 2025-06-09 17:28_
 
 ---
 
 _Closed by @jtfmumm on 2025-06-09 17:28_
-
----
-
-_Referenced in [astral-sh/uv#13969](../../astral-sh/uv/issues/13969.md) on 2025-06-11 15:30_
-
----
-
-_Referenced in [astral-sh/uv#13974](../../astral-sh/uv/issues/13974.md) on 2025-06-11 19:12_
-
----
-
-_Referenced in [astral-sh/uv#14034](../../astral-sh/uv/issues/14034.md) on 2025-06-13 18:07_
 
 ---

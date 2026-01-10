@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-09T15:18:42Z
 updated_at: 2025-04-06T21:48:03Z
 url: https://github.com/astral-sh/uv/issues/7219
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # uv --color=never shows colors :)
@@ -61,10 +61,6 @@ Uh oh, sorry. I will take a look!
 
 ---
 
-_Referenced in [astral-sh/uv#7223](../../astral-sh/uv/pulls/7223.md) on 2024-09-10 07:41_
-
----
-
 _Comment by @StSav012 on 2024-10-23 10:07_
 
 I've stumbled upon another manifestation of the issue. Despite the `--color=never` option is provided, it's ignored when an error is displayed:
@@ -103,9 +99,5 @@ In case it helps I think this is another manifestation of the bug
 <img width="502" alt="Image" src="https://github.com/user-attachments/assets/8db9f746-2447-49d0-98fc-bada9e6fd0e1" />
 
 <img width="602" alt="Image" src="https://github.com/user-attachments/assets/54bc5402-5bd3-4947-8b0e-076842e79531" />
-
----
-
-_Referenced in [astral-sh/uv#13924](../../astral-sh/uv/issues/13924.md) on 2025-06-09 16:44_
 
 ---

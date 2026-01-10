@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T19:58:58Z
 updated_at: 2025-05-19T17:56:38Z
 url: https://github.com/astral-sh/uv/issues/1715
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:41:45Z
 ```
 
 # Support "--no-build-isolation" when installing packages
@@ -55,14 +55,6 @@ So, modules like these simply instruct users to disable this build isolation by 
 (This issue _generally_ manifests as an error when setup.py can't being find the `packaging` module, and users being confused because they already ran `pip install packaging`. See: https://github.com/Dao-AILab/flash-attention/issues/453 
 That's exactly the error I get when I `uv pip install flash-attn`: `ModuleNotFoundError: No module named 'packaging'`
 
-
----
-
-_Referenced in [astral-sh/uv#1582](../../astral-sh/uv/issues/1582.md) on 2024-02-19 19:59_
-
----
-
-_Referenced in [Dao-AILab/flash-attention#833](../../Dao-AILab/flash-attention/issues/833.md) on 2024-02-19 20:17_
 
 ---
 
@@ -126,19 +118,11 @@ If we could guarantee that we install the install the same pytorch version in th
 
 ---
 
-_Referenced in [drivendataorg/zamba#311](../../drivendataorg/zamba/pulls/311.md) on 2024-03-02 01:10_
-
----
-
 _Comment by @marcelroed on 2024-03-04 18:57_
 
 > I hope this is fixed soon since `flash-attn` is the barebone for my ML projects :(
 
 This is the only issue keeping me from using uv for everything.
-
----
-
-_Referenced in [astral-sh/uv#2258](../../astral-sh/uv/pulls/2258.md) on 2024-03-07 02:19_
 
 ---
 
@@ -161,14 +145,6 @@ _Closed by @charliermarsh on 2024-03-07 14:04_
 _Comment by @charliermarsh on 2024-03-07 23:51_
 
 This just went out in v0.1.16. Feedback welcome as always.
-
----
-
-_Referenced in [astral-sh/rye#552](../../astral-sh/rye/issues/552.md) on 2024-03-11 11:06_
-
----
-
-_Referenced in [AutoGPTQ/AutoGPTQ#535](../../AutoGPTQ/AutoGPTQ/issues/535.md) on 2024-03-28 10:05_
 
 ---
 
@@ -198,14 +174,6 @@ Is there a way to assume that the dependencies are already installed, but still 
 
 Thanks
 
-
----
-
-_Referenced in [ModelCloud/GPTQModel#108](../../ModelCloud/GPTQModel/issues/108.md) on 2024-06-28 11:47_
-
----
-
-_Referenced in [NVIDIA/TransformerEngine#981](../../NVIDIA/TransformerEngine/pulls/981.md) on 2024-07-03 22:50_
 
 ---
 
@@ -249,22 +217,6 @@ uv venv
 uv pip install torch
 uv tool install flash-attn --no-build-isolation --python .venv
 ```
-
----
-
-_Referenced in [astral-sh/uv#6083](../../astral-sh/uv/issues/6083.md) on 2024-08-14 13:35_
-
----
-
-_Referenced in [rusty1s/pytorch_scatter#455](../../rusty1s/pytorch_scatter/issues/455.md) on 2024-09-04 20:32_
-
----
-
-_Referenced in [NVIDIA/TransformerEngine#1324](../../NVIDIA/TransformerEngine/pulls/1324.md) on 2024-11-08 19:47_
-
----
-
-_Referenced in [astral-sh/uv#10138](../../astral-sh/uv/issues/10138.md) on 2024-12-24 08:24_
 
 ---
 
@@ -332,10 +284,6 @@ This was an open issue in  https://github.com/rusty1s/pytorch_scatter/issues/455
 
 ---
 
-_Referenced in [bulletmark/pipxu#19](../../bulletmark/pipxu/issues/19.md) on 2025-03-10 10:13_
-
----
-
 _Comment by @doctorpangloss on 2025-05-19 17:55_
 
 this should be reopened - we practically need to specify torch as an override for build requirements
@@ -345,17 +293,5 @@ this should be reopened - we practically need to specify torch as an override fo
 _Comment by @charliermarsh on 2025-05-19 17:56_
 
 Please open a separate issue with a clear ask and MRE, and avoid commenting on closed issues. Thanks! 
-
----
-
-_Referenced in [astral-sh/uv#15248](../../astral-sh/uv/issues/15248.md) on 2025-08-13 03:03_
-
----
-
-_Referenced in [Machine-Learning-for-Medical-Language/cnlp_llm#43](../../Machine-Learning-for-Medical-Language/cnlp_llm/issues/43.md) on 2025-08-24 03:46_
-
----
-
-_Referenced in [NVlabs/earth2grid#57](../../NVlabs/earth2grid/issues/57.md) on 2025-10-28 23:08_
 
 ---

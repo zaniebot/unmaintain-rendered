@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-15T00:51:37Z
 updated_at: 2025-04-01T18:38:41Z
 url: https://github.com/astral-sh/uv/issues/11528
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add section about how packages are installed from the cache
@@ -26,10 +26,6 @@ It'd be nice to have a section on this in the Caching concept document.
 ---
 
 _Label `documentation` added by @zanieb on 2025-02-15 00:51_
-
----
-
-_Referenced in [astral-sh/uv#11504](../../astral-sh/uv/issues/11504.md) on 2025-02-15 00:52_
 
 ---
 

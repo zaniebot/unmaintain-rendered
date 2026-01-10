@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-18T12:25:05Z
 updated_at: 2025-04-10T16:32:30Z
 url: https://github.com/astral-sh/uv/issues/5182
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `uv add` rejects pytorch from its index when on mac
@@ -195,65 +195,9 @@ Uhm as an FYI: today I tried `uv add torch` on M3 mac and it correctly installed
 
 ---
 
-_Referenced in [astral-sh/uv#7005](../../astral-sh/uv/issues/7005.md) on 2024-09-04 13:27_
-
----
-
-_Referenced in [astral-sh/uv#7557](../../astral-sh/uv/issues/7557.md) on 2024-09-19 18:21_
-
----
-
 _Comment by @dimbleby on 2024-09-19 22:19_
 
 https://github.com/pytorch/pytorch/issues/136275
-
----
-
-_Referenced in [astral-sh/uv#8536](../../astral-sh/uv/issues/8536.md) on 2024-10-24 19:52_
-
----
-
-_Referenced in [astral-sh/uv#8603](../../astral-sh/uv/issues/8603.md) on 2024-10-27 18:56_
-
----
-
-_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-10-30 20:52_
-
----
-
-_Referenced in [astral-sh/uv#8746](../../astral-sh/uv/issues/8746.md) on 2024-11-01 13:23_
-
----
-
-_Referenced in [owid/etl#3518](../../owid/etl/pulls/3518.md) on 2024-11-08 16:04_
-
----
-
-_Referenced in [astral-sh/uv#9209](../../astral-sh/uv/issues/9209.md) on 2024-11-18 18:15_
-
----
-
-_Referenced in [astral-sh/uv#9228](../../astral-sh/uv/issues/9228.md) on 2024-11-19 15:10_
-
----
-
-_Referenced in [google/magika#801](../../google/magika/issues/801.md) on 2024-11-19 17:29_
-
----
-
-_Referenced in [astral-sh/uv#9412](../../astral-sh/uv/issues/9412.md) on 2024-11-25 14:17_
-
----
-
-_Referenced in [astral-sh/uv#9425](../../astral-sh/uv/issues/9425.md) on 2024-11-25 21:40_
-
----
-
-_Referenced in [astral-sh/uv#9514](../../astral-sh/uv/issues/9514.md) on 2024-11-29 16:44_
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
 
 ---
 
@@ -292,10 +236,6 @@ error: Failed to parse metadata from built wheel
 
 ---
 
-_Referenced in [TechnologyBrewery/pants-uv-lifecycle-plugin#6](../../TechnologyBrewery/pants-uv-lifecycle-plugin/issues/6.md) on 2025-01-22 14:47_
-
----
-
 _Comment by @charliermarsh on 2025-01-22 14:55_
 
 Are you sure that you're using Python 3.9? Does `uv add --python 3.9 https://github.com/pantsbuild/pants/releases/download/release_2.23.1/pantsbuild.pants-2.23.1-cp39-cp39-macosx_11_0_arm64.whl` fail in the same way?
@@ -317,14 +257,6 @@ Running `uv add --python 3.9 https://github.com/pantsbuild/pants/releases/downlo
 _Comment by @charliermarsh on 2025-01-22 15:13_
 
 No prob!
-
----
-
-_Referenced in [google/magika#922](../../google/magika/issues/922.md) on 2025-01-24 10:57_
-
----
-
-_Referenced in [google/magika#928](../../google/magika/issues/928.md) on 2025-01-24 12:12_
 
 ---
 

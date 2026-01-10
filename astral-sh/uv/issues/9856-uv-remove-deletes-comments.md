@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-13T00:11:00Z
 updated_at: 2025-04-10T21:01:17Z
 url: https://github.com/astral-sh/uv/issues/9856
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # (🐞) `uv remove` deletes comments
@@ -123,13 +123,5 @@ George
 _Comment by @kiran-4444 on 2025-04-10 21:01_
 
 I'd like to take this up.
-
----
-
-_Referenced in [astral-sh/uv#13966](../../astral-sh/uv/issues/13966.md) on 2025-06-11 13:51_
-
----
-
-_Referenced in [astral-sh/uv#14200](../../astral-sh/uv/pulls/14200.md) on 2025-06-22 19:52_
 
 ---

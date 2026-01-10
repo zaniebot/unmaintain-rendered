@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-12T15:37:43Z
 updated_at: 2025-04-19T16:13:03Z
 url: https://github.com/astral-sh/uv/issues/9061
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Running unit tests with pytest in scripts
@@ -210,10 +210,6 @@ Related
 _Comment by @zanieb on 2024-11-12 19:00_
 
 We've also discussed like `--with-requirements <script-path>`
-
----
-
-_Referenced in [Flexget/Flexget#4163](../../Flexget/Flexget/pulls/4163.md) on 2025-01-25 15:28_
 
 ---
 

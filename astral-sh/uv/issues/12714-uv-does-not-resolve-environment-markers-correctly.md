@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-07T13:26:01Z
 updated_at: 2025-04-07T14:13:34Z
 url: https://github.com/astral-sh/uv/issues/12714
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # UV does not resolve environment markers correctly
@@ -130,9 +130,5 @@ environments = ["sys_platform != 'darwin' or platform_machine != 'x86_64'"]
 ---
 
 _Closed by @Vdaleke on 2025-04-07 14:13_
-
----
-
-_Referenced in [psychopy/psychopy#7166](../../psychopy/psychopy/issues/7166.md) on 2025-04-23 02:56_
 
 ---

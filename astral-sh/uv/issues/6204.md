@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-19T13:21:08Z
 updated_at: 2025-05-12T19:23:46Z
 url: https://github.com/astral-sh/uv/issues/6204
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # uv conflicts with pyenv-virtualenv auto-activation
@@ -111,10 +111,6 @@ which works reasonably well, but it would be nice if `uv` could just default (or
 
 ---
 
-_Referenced in [modelcontextprotocol/create-python-server#5](../../modelcontextprotocol/create-python-server/issues/5.md) on 2024-11-25 23:42_
-
----
-
 _Comment by @fredrikaverpil on 2024-12-25 20:31_
 
 In case it helps anyone, I've got this in my `.zshrc` which seems to work pretty ok (activate/deactivate .venv on `cd`, `z` or `zi`):
@@ -175,18 +171,6 @@ This doesn't help in favoring uv because the resulting hiccups tend to be annoyi
 
 ---
 
-_Referenced in [astral-sh/uv#10372](../../astral-sh/uv/issues/10372.md) on 2025-01-07 18:34_
-
----
-
-_Referenced in [astral-sh/uv#11273](../../astral-sh/uv/issues/11273.md) on 2025-02-06 04:51_
-
----
-
-_Referenced in [astral-sh/uv#11544](../../astral-sh/uv/issues/11544.md) on 2025-02-16 18:53_
-
----
-
 _Comment by @erny on 2025-03-09 19:30_
 
 > Another +1 from me.
@@ -213,14 +197,6 @@ I had problems invoking `uv sync` with the same error, so I changed the pyenv-vi
     export UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV
     export UV_ACTIVE=1
 
-
----
-
-_Referenced in [kreuzberg-dev/kreuzberg#36](../../kreuzberg-dev/kreuzberg/issues/36.md) on 2025-04-08 20:11_
-
----
-
-_Referenced in [beeware/briefcase#2036](../../beeware/briefcase/issues/2036.md) on 2025-05-04 03:14_
 
 ---
 
@@ -256,9 +232,5 @@ Thanks for your help, feel free to close the issue ! 🙂
 ---
 
 _Closed by @konstin on 2025-05-12 19:23_
-
----
-
-_Referenced in [astral-sh/uv#15603](../../astral-sh/uv/issues/15603.md) on 2025-08-31 08:56_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-15T18:58:54Z
 updated_at: 2025-05-18T23:38:45Z
 url: https://github.com/astral-sh/uv/issues/13476
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Bump MSRV to 1.85
@@ -58,10 +58,6 @@ I have an idea how to split this into PRs so it's not all at once, I can do the 
 ---
 
 _Label `internal` added by @charliermarsh on 2025-05-18 21:33_
-
----
-
-_Referenced in [astral-sh/uv#13516](../../astral-sh/uv/pulls/13516.md) on 2025-05-18 21:50_
 
 ---
 

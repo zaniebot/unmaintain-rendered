@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T07:08:01Z
 updated_at: 2025-04-30T16:11:52Z
 url: https://github.com/astral-sh/uv/issues/13213
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # new `uv version` command cannot display and update project version of non-root workspace member
@@ -50,10 +50,6 @@ _Label `bug` added by @manlao on 2025-04-30 07:08_
 ---
 
 _Assigned to @Gankra by @konstin on 2025-04-30 07:21_
-
----
-
-_Referenced in [astral-sh/uv#13230](../../astral-sh/uv/pulls/13230.md) on 2025-04-30 13:58_
 
 ---
 

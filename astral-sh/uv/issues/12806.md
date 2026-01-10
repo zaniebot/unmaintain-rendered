@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-10T12:52:38Z
 updated_at: 2025-04-10T20:22:18Z
 url: https://github.com/astral-sh/uv/issues/12806
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # UV_INDEX breaks when using newlines as delimiters
@@ -63,10 +63,6 @@ Would definitely appreciate a patch for this, cleaner migration is always great.
 ---
 
 _Label `compatibility` added by @Gankra on 2025-04-10 13:55_
-
----
-
-_Referenced in [astral-sh/uv#12820](../../astral-sh/uv/pulls/12820.md) on 2025-04-10 18:32_
 
 ---
 

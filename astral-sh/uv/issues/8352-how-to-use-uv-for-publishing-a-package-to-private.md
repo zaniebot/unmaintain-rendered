@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-19T00:01:21Z
 updated_at: 2025-06-03T09:41:49Z
 url: https://github.com/astral-sh/uv/issues/8352
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 #  How to Use uv for Publishing a Package to Private GitLab and Install from It
@@ -143,9 +143,5 @@ https://docs.gitlab.com/user/packages/pypi_repository/?tab=With+a+CI%2FCD+job+to
 _Comment by @konstin on 2025-06-03 09:41_
 
 `UV_PUBLISH_TOKEN` assumes the username `__token__` (PyPI's convention), while GitLab wants the username `gitlab-ci-token`, so we need to use `UV_PUBLISH_USERNAME`/`UV_PUBLISH_PASSWORD`
-
----
-
-_Referenced in [astral-sh/uv#16236](../../astral-sh/uv/issues/16236.md) on 2025-10-10 17:08_
 
 ---

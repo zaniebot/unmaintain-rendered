@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-16T13:35:04Z
 updated_at: 2025-06-02T15:58:32Z
 url: https://github.com/astral-sh/uv/issues/12919
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Update sysconfig entries to patch cross-compiled `CC` paths
@@ -39,10 +39,6 @@ _Comment by @zanieb on 2025-04-16 13:35_
 ---
 
 _Label `bug` added by @zanieb on 2025-04-16 14:51_
-
----
-
-_Referenced in [astral-sh/uv#13441](../../astral-sh/uv/pulls/13441.md) on 2025-05-14 02:29_
 
 ---
 

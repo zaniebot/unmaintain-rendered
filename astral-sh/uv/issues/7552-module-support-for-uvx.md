@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-19T14:25:11Z
 updated_at: 2025-05-07T15:31:05Z
 url: https://github.com/astral-sh/uv/issues/7552
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Module support for uvx
@@ -156,9 +156,5 @@ Same issue as with uv run for the module argument, everything that follows -m is
 _Comment by @theonewolf on 2025-05-07 15:31_
 
 This would be a useful feature.
-
----
-
-_Referenced in [astral-sh/uv#15455](../../astral-sh/uv/issues/15455.md) on 2025-08-22 16:15_
 
 ---

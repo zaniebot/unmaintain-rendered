@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T10:33:42Z
 updated_at: 2025-06-06T09:10:31Z
 url: https://github.com/astral-sh/uv/issues/6801
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Provide an option to start `uv` on Windows without a console window
@@ -73,10 +73,6 @@ _Comment by @CrendKing on 2025-02-24 16:26_
 Is the `--gui-script` option meant to provide a way to start a script without a window on Windows? If so, I think it actually needs this issue to work. Since `uv` itself always spawns a console window, and it always waits for the subprocess to terminate, the console window is inevitable.
 
 I suggest shipping a `uvw.exe` built with the `windows` subsystem, and deprecate `--script` and `--gui-script`. Make `uvw run` invoke `pythonw`.
-
----
-
-_Referenced in [astral-sh/uv#11786](../../astral-sh/uv/pulls/11786.md) on 2025-02-26 01:40_
 
 ---
 

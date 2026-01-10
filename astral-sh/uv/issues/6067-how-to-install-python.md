@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-13T20:50:12Z
 updated_at: 2025-04-03T13:10:59Z
 url: https://github.com/astral-sh/uv/issues/6067
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # How to install Python 
@@ -126,19 +126,7 @@ See https://github.com/astral-sh/uv/pull/6207
 
 ---
 
-_Referenced in [astral-sh/uv#6207](../../astral-sh/uv/pulls/6207.md) on 2024-08-19 14:42_
-
----
-
 _Closed by @zanieb on 2024-08-19 16:13_
-
----
-
-_Referenced in [astral-sh/uv#6506](../../astral-sh/uv/issues/6506.md) on 2024-08-23 13:03_
-
----
-
-_Referenced in [astral-sh/uv#8032](../../astral-sh/uv/issues/8032.md) on 2024-10-09 03:28_
 
 ---
 
@@ -195,10 +183,6 @@ I'm preparing a docker image, so it is intended to install Jupyter (and it's ext
 _Comment by @zanieb on 2025-02-04 02:48_
 
 Yeah, sorry about that — I need to fix a bug where the installed managed Python versions are picked up by the `--system` flag.
-
----
-
-_Referenced in [astral-sh/uv#11360](../../astral-sh/uv/issues/11360.md) on 2025-02-09 19:05_
 
 ---
 

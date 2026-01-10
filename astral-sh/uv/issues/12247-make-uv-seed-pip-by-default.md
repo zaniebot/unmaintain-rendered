@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-17T20:26:09Z
 updated_at: 2025-04-01T17:54:39Z
 url: https://github.com/astral-sh/uv/issues/12247
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Make uv seed pip by default
@@ -70,10 +70,6 @@ _Comment by @paveldikov on 2025-03-22 18:56_
 > I understand seed is configurable with environment variable, but
 
 I haven't tried it for the `seed` option per se, but have you considered centrally managing users' `uv.toml` configuration files? This is what we do for our corporate environment (Windows + Linux, with a tiny Mac segment), and it works great -- much better than env vars indeed.
-
----
-
-_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-01 17:54_
 
 ---
 

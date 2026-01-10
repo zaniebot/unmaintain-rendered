@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T17:46:24Z
 updated_at: 2025-03-25T17:30:33Z
 url: https://github.com/astral-sh/uv/issues/5619
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Add a community and contributing docs section
@@ -38,10 +38,6 @@ _Label `documentation` added by @zanieb on 2024-07-30 17:46_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-07-30 17:46_
-
----
-
-_Referenced in [astral-sh/uv#5617](../../astral-sh/uv/pulls/5617.md) on 2024-07-30 17:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-11T20:59:37Z
 updated_at: 2025-04-19T07:14:32Z
 url: https://github.com/astral-sh/uv/issues/12845
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add a flag to `uv export` to omit local packages
@@ -117,10 +117,6 @@ _Label `enhancement` added by @fepegar on 2025-04-11 20:59_
 _Comment by @zanieb on 2025-04-18 20:48_
 
 Another option would be like.. `--no-emit-source path`?
-
----
-
-_Referenced in [astral-sh/uv#12681](../../astral-sh/uv/issues/12681.md) on 2025-04-18 20:48_
 
 ---
 

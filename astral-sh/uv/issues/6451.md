@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-22T17:29:01Z
 updated_at: 2025-04-01T23:56:17Z
 url: https://github.com/astral-sh/uv/issues/6451
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Docker: feedback on docs and workflow with frozen/locked dependencies and `--require-hashes`
@@ -153,10 +153,6 @@ The benefit here is that you can create a cacheable layer with your project's de
 _Comment by @bofm on 2024-08-22 22:09_
 
 Nice! What's still missing? Omitting venv creation?
-
----
-
-_Referenced in [Komorebi-AI/python-template#47](../../Komorebi-AI/python-template/pulls/47.md) on 2024-08-23 08:37_
 
 ---
 

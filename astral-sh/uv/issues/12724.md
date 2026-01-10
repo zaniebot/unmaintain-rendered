@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-07T18:06:30Z
 updated_at: 2025-04-29T06:38:08Z
 url: https://github.com/astral-sh/uv/issues/12724
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Google colab issue
@@ -88,10 +88,6 @@ _Comment by @NourEldin-Osama on 2025-04-07 20:56_
 > !mkdir /backend-container !mkdir /backend-container/containers !touch /backend-container/containers/build.constraints !touch /backend-container/containers/requirements.constraints
 
 I can confirm that this workaround is working
-
----
-
-_Referenced in [googlecolab/colabtools#5237](../../googlecolab/colabtools/issues/5237.md) on 2025-04-08 04:32_
 
 ---
 

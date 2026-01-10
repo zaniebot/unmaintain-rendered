@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-28T16:57:22Z
 updated_at: 2025-04-22T17:26:37Z
 url: https://github.com/astral-sh/uv/issues/9506
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Enable configuration of additional paths when detecting system pythons
@@ -75,10 +75,6 @@ And I'd rather not inject these Pythons into the `PATH` via a uv/uvx shim becaus
 For us, I think the ideal solution is similar to the initial request: a setting that accepts a list of additional Python interpreters to discover.
 
 In terms of what the setting could look like, a `UV_SYSTEM_PYTHONS` environment variable that accepted a list of Python interpreters would be one option. Then we could keep a versioned `uv` module that would set that variable. We might be able to make a system-level configuration file work instead, but we'd probably need a way to select this file via an environment variable since we have multiple module sets.
-
----
-
-_Referenced in [astral-sh/uv#11308](../../astral-sh/uv/issues/11308.md) on 2025-02-11 22:42_
 
 ---
 
@@ -151,9 +147,5 @@ I can work towards a PR if wanted.
 
 Incidentally, I see in the code that `UV_TEST_PYTHON_PATH` overrides `PATH`, which could be a suitable temporary workaround (`TEST`, it being intended for unit testing, and no documentation probably mean that this should not be relied upon).
 
-
----
-
-_Referenced in [tox-dev/tox-uv#170](../../tox-dev/tox-uv/issues/170.md) on 2025-06-20 10:40_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-25T21:42:12Z
 updated_at: 2025-04-29T21:37:08Z
 url: https://github.com/astral-sh/uv/issues/9429
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # uv suffers dependency confusion if user forgets to put username:password on internal index url
@@ -123,10 +123,6 @@ Answering this previous question from @charliermarsh :
 > Are you for --default-index= rather than --index=? --index= allows fallback to PyPI, if a package isn't found on a preceding index
 
 In my case I wanted `example-component` to come from my internal package index, but its dependencies to come from PyPI. That's why I used `--index` rather than `--default-index` to point to the internal package index.
-
----
-
-_Referenced in [astral-sh/uv#12805](../../astral-sh/uv/pulls/12805.md) on 2025-04-10 12:38_
 
 ---
 

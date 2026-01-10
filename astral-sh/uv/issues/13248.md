@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-01T06:51:37Z
 updated_at: 2025-05-05T08:59:56Z
 url: https://github.com/astral-sh/uv/issues/13248
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv breaks with --extra-index-url on latest version
@@ -46,10 +46,6 @@ _No response_
 ---
 
 _Label `bug` added by @desmondcheongzx on 2025-05-01 06:51_
-
----
-
-_Referenced in [Eventual-Inc/Daft#4279](../../Eventual-Inc/Daft/pulls/4279.md) on 2025-05-01 07:06_
 
 ---
 
@@ -2466,10 +2462,6 @@ This URL does not exist. But because our objects are stored in S3 buckets, you g
 Since it's a 403 instead of a 404, uv stops searching indexes---by design it seems, if I understand #12805 correctly.
 
 I guess everything is working by design. Is there a way to specify `ignore-error-codes` on the command line? This part to me is unclear.
-
----
-
-_Referenced in [Eventual-Inc/Daft#4289](../../Eventual-Inc/Daft/pulls/4289.md) on 2025-05-02 08:01_
 
 ---
 

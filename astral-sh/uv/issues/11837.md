@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-27T18:14:19Z
 updated_at: 2025-04-16T14:44:57Z
 url: https://github.com/astral-sh/uv/issues/11837
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uv fails with "thread '<unknown>' has overflowed its stack" on Windows
@@ -393,10 +393,6 @@ _Comment by @ricrogz on 2025-03-04 21:35_
 Well, I didn't get as far as building `uv` locally and debugging. Just playing with the `RUST_MIN_STACK` env variable solved my issue: setting it to 3Mb (3145728 bytes) allowed the command to succeed, with the threshold being somewhere between 2.5Mb and 2.75Mb.
 
 So, it seems that, for whatever reason, the wheel files I'm using seem to trigger a higher memory usage than what would be expected.
-
----
-
-_Referenced in [astral-sh/uv#12769](../../astral-sh/uv/issues/12769.md) on 2025-04-09 03:21_
 
 ---
 

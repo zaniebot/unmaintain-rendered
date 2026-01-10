@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-03T12:59:36Z
 updated_at: 2025-04-04T15:49:27Z
 url: https://github.com/astral-sh/uv/issues/12649
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Bump MSRV to 1.84.0
@@ -28,10 +28,6 @@ _Label `enhancement` added by @charliermarsh on 2025-04-03 12:59_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-04-04 12:37_
-
----
-
-_Referenced in [astral-sh/uv#12670](../../astral-sh/uv/pulls/12670.md) on 2025-04-04 12:43_
 
 ---
 

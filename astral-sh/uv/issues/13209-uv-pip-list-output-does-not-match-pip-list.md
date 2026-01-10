@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-30T02:09:28Z
 updated_at: 2025-05-02T14:28:40Z
 url: https://github.com/astral-sh/uv/issues/13209
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv pip list` output does not match `pip list`: distribution package names instead of import package names
@@ -98,10 +98,6 @@ I think that's a good move for uv, and I appreciate the consistency.
 I guess it's a tradeoff in the `uv pip` interface, though. Matching pip and all its oddities can be unpleasant, and isn't something you claim to do anyway. On the other hand, matching pip and all its oddities makes drop-in replacement easier, which helps with adoption.
 
 For me, this is fine either way; I'm going to update the integration test this took down to be more robust and not parse the output of `pip list`. I more opened this for others to find. I imagine plenty of CI code somewhere is diffing `pip list`; I was honestly a bit surprised nobody had opened this yet—maybe that's a good sign it doesn't come up that much.
-
----
-
-_Referenced in [astral-sh/uv#13210](../../astral-sh/uv/pulls/13210.md) on 2025-04-30 02:55_
 
 ---
 

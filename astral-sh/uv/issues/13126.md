@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-27T07:48:49Z
 updated_at: 2025-06-03T19:23:26Z
 url: https://github.com/astral-sh/uv/issues/13126
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Better error message for incorrect format of (requires-python = "version") in *.toml
@@ -97,10 +97,6 @@ Detecting that the specifier was _just_ a version and adding some sort of ("Did 
 _Comment by @jmwoliver on 2025-06-03 12:20_
 
 I'm looking at pushing a PR for this one today if you could assign it to me.
-
----
-
-_Referenced in [astral-sh/uv#13803](../../astral-sh/uv/pulls/13803.md) on 2025-06-03 12:36_
 
 ---
 

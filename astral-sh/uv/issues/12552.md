@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-30T07:12:36Z
 updated_at: 2025-03-30T12:18:08Z
 url: https://github.com/astral-sh/uv/issues/12552
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Feature request: uv subcommands' shell autocompletion by `<tab>`.
@@ -132,9 +132,5 @@ _Renamed from "Feature request: uv subcommands `<tab>` completion." to "Feature 
 ---
 
 _Renamed from "Feature request: uv subcommands shell autocompletion by `<tab>`." to "Feature request: uv subcommands' shell autocompletion by `<tab>`." by @hongyi-zhao on 2025-03-30 12:18_
-
----
-
-_Referenced in [astral-sh/uv#12559](../../astral-sh/uv/pulls/12559.md) on 2025-03-30 16:34_
 
 ---

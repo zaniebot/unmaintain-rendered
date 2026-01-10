@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T11:21:38Z
 updated_at: 2025-04-29T21:37:08Z
 url: https://github.com/astral-sh/uv/issues/12362
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Prevent fallback to PyPi when private index returns 401/403 (to mitigate dependency confusion risk)
@@ -1295,10 +1295,6 @@ Just to show that `uv sync`and `uv add` has the same behaviour.
 
 ---
 
-_Referenced in [astral-sh/uv#12470](../../astral-sh/uv/pulls/12470.md) on 2025-03-25 18:56_
-
----
-
 _Comment by @bendikhk on 2025-04-08 12:25_
 
 Hi again,
@@ -1323,10 +1319,6 @@ _Comment by @bendikhk on 2025-04-08 19:12_
 > [@bendikhk](https://github.com/bendikhk) I am actually working on a design to address this very problem. I hope to begin work on the implementation in the near future.
 
 Great! Let me know if I can help with some testing! :)
-
----
-
-_Referenced in [astral-sh/uv#12805](../../astral-sh/uv/pulls/12805.md) on 2025-04-10 12:38_
 
 ---
 

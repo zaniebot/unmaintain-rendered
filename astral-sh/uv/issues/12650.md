@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-03T13:00:40Z
 updated_at: 2025-04-03T14:19:35Z
 url: https://github.com/astral-sh/uv/issues/12650
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Running `uv` in a read-only docker-like filesystem
@@ -130,9 +130,5 @@ Thanks for the great support 🚀 !
 ---
 
 _Closed by @tgrohens on 2025-04-03 14:19_
-
----
-
-_Referenced in [ThePhaseless/Byparr#249](../../ThePhaseless/Byparr/issues/249.md) on 2025-09-28 05:06_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T03:52:09Z
 updated_at: 2025-04-14T12:31:45Z
 url: https://github.com/astral-sh/uv/issues/8915
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Platform-Specific Dependencies in requirements.in Not Working as Expected with `--universal`
@@ -67,10 +67,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-08 13:37_
 
 ---
 
-_Referenced in [astral-sh/uv#8960](../../astral-sh/uv/pulls/8960.md) on 2024-11-08 23:03_
-
----
-
 _Closed by @charliermarsh on 2024-11-08 23:22_
 
 ---
@@ -116,10 +112,6 @@ optimum[onnxruntime-gpu]==1.23.3 ; sys_platform == 'linux'
 This has become an issue with our Bazel setup. It is now considered a duplicate, and Bazel fails to create a repository. Could this be addressed? 
 
 Thanks
-
----
-
-_Referenced in [bazel-contrib/rules_python#2766](../../bazel-contrib/rules_python/pulls/2766.md) on 2025-04-14 04:52_
 
 ---
 

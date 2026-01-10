@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-13T13:55:24Z
 updated_at: 2025-05-13T14:15:12Z
 url: https://github.com/astral-sh/uv/issues/13431
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Ephemeral environments are not ephemeral
@@ -123,9 +123,5 @@ I'm surprised the script environments use that much space despite the hard links
 
 This is related to https://github.com/astral-sh/uv/issues/5731 — which probably captures your need.
 
-
----
-
-_Referenced in [ansys/pyhps#619](../../ansys/pyhps/pulls/619.md) on 2025-06-30 10:07_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-26T21:19:03Z
 updated_at: 2025-05-23T00:51:27Z
 url: https://github.com/astral-sh/uv/issues/9453
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Feedback on "Before posting in the issue tracker"
@@ -26,10 +26,6 @@ That issue is locked to avoid distracting commentary, but feedback is very welco
 ---
 
 _Label `documentation` added by @zanieb on 2024-11-26 21:19_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:19_
 
 ---
 

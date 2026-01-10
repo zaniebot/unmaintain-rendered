@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-04T17:59:59Z
 updated_at: 2025-06-04T19:34:53Z
 url: https://github.com/astral-sh/uv/issues/13846
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # timeout in the `cargo test | macos` job
@@ -38,10 +38,6 @@ _Comment by @oconnor663 on 2025-06-04 18:00_
 _Comment by @zanieb on 2025-06-04 18:13_
 
 Very weird, where did it spend all that time? :(
-
----
-
-_Referenced in [astral-sh/uv#13847](../../astral-sh/uv/pulls/13847.md) on 2025-06-04 18:14_
 
 ---
 

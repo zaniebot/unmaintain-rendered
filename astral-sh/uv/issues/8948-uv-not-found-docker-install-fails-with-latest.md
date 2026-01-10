@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-08T16:00:43Z
 updated_at: 2025-04-01T08:34:24Z
 url: https://github.com/astral-sh/uv/issues/8948
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # UV not found; Docker install fails with latest install and `v0.5.0`
@@ -105,10 +105,6 @@ That works! Thanks!
 ---
 
 _Closed by @zanieb on 2024-11-08 16:15_
-
----
-
-_Referenced in [commaai/openpilot#33973](../../commaai/openpilot/pulls/33973.md) on 2024-11-09 04:41_
 
 ---
 

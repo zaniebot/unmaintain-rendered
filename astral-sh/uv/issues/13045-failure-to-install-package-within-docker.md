@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-22T08:06:25Z
 updated_at: 2025-05-05T06:53:43Z
 url: https://github.com/astral-sh/uv/issues/13045
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Failure to install package within docker container using uv while poetry/pip works fine
@@ -110,10 +110,6 @@ https://github.com/semgrep/semgrep/blob/077885931f5dc296aa39cb609d9ef7ddd73d38de
 I guess we can just lower the minimum to `musllinux_1_0` to match `packaging`:
 
 https://github.com/pypa/packaging/blob/d0d5ad8687f666bea942d1ab4ee2feb5fa019d04/src/packaging/_musllinux.py#L71C1-L72C62
-
----
-
-_Referenced in [astral-sh/uv#13289](../../astral-sh/uv/pulls/13289.md) on 2025-05-04 23:50_
 
 ---
 

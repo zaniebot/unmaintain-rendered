@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-23T23:53:47Z
 updated_at: 2025-04-19T18:11:57Z
 url: https://github.com/astral-sh/uv/issues/10130
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Is it possible to skip fetching git submodules for some repositories?
@@ -98,10 +98,6 @@ _Comment by @MrNaif2018 on 2024-12-27 11:42_
 _Comment by @charliermarsh on 2024-12-27 16:57_
 
 I think something like this is reasonable (we've also tried to support shallow clones in the past), but it might be somewhat difficult to implement right now since we share a Git clone across packages. So we'd need some way to detect whether the repository was cloned with `gitmodules=false` or similar.
-
----
-
-_Referenced in [astral-sh/uv#9822](../../astral-sh/uv/issues/9822.md) on 2025-01-09 19:13_
 
 ---
 

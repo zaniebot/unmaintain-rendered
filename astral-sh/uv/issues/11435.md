@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-12T04:49:47Z
 updated_at: 2025-04-26T15:02:06Z
 url: https://github.com/astral-sh/uv/issues/11435
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Enable multiple tools in one env
@@ -56,10 +56,6 @@ Thank you, that does what I asked for. I have a follow-up that I still don't see
 ---
 
 _Closed by @nixjdm on 2025-02-12 05:29_
-
----
-
-_Referenced in [astral-sh/uv#11436](../../astral-sh/uv/issues/11436.md) on 2025-02-12 05:33_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T06:40:32Z
 updated_at: 2025-04-04T06:40:32Z
 url: https://github.com/astral-sh/uv/issues/12663
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Uv run or tools lockfile
@@ -39,9 +39,5 @@ _No response_
 ---
 
 _Label `enhancement` added by @gsemet on 2025-04-04 06:40_
-
----
-
-_Referenced in [astral-sh/uv#17089](../../astral-sh/uv/issues/17089.md) on 2025-12-11 18:20_
 
 ---

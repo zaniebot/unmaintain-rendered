@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-24T03:16:48Z
 updated_at: 2025-04-01T16:27:46Z
 url: https://github.com/astral-sh/uv/issues/6565
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # Docker documentation should cover pinning with sha256
@@ -55,10 +55,6 @@ _Label `good first issue` added by @zanieb on 2024-08-26 17:22_
 _Comment by @zanieb on 2024-08-26 17:23_
 
 Fine with mentioning this in a tip or something. Pinning to a version is already more than most people do — if you're in a serious production environment you should already have internal best practices around using SHA pins. As noted, we shouldn't try to keep this synced to the latest SHA — we should use something that's clearly a dummy example.
-
----
-
-_Referenced in [astral-sh/uv#10955](../../astral-sh/uv/pulls/10955.md) on 2025-01-25 06:40_
 
 ---
 

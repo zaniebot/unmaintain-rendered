@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T15:50:50Z
 updated_at: 2025-05-05T14:57:48Z
 url: https://github.com/astral-sh/uv/issues/13235
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # When using `--no-sync`, the environment should not be invalidated
@@ -92,10 +92,6 @@ _Label `bug` added by @zanieb on 2025-04-30 15:50_
 
 ---
 
-_Referenced in [astral-sh/uv#13234](../../astral-sh/uv/pulls/13234.md) on 2025-04-30 15:51_
-
----
-
 _Comment by @zanieb on 2025-04-30 15:56_
 
 This doesn't look like a regression, this behavior existed already
@@ -138,10 +134,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2025-05-04 16:03_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-05-04 21:43_
-
----
-
-_Referenced in [astral-sh/uv#13287](../../astral-sh/uv/pulls/13287.md) on 2025-05-04 22:30_
 
 ---
 

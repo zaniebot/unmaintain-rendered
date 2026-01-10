@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-19T20:25:21Z
 updated_at: 2025-04-16T18:52:11Z
 url: https://github.com/astral-sh/uv/issues/11637
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # uvx does not work when installed with `pipx install --suffix=... uv`
@@ -137,17 +137,9 @@ The constraint I was working under was that they system doesn't have `uv` or `uv
 
 ---
 
-_Referenced in [astral-sh/uv#11925](../../astral-sh/uv/pulls/11925.md) on 2025-03-03 16:11_
-
----
-
 _Comment by @cliebBS on 2025-03-03 16:31_
 
 Decided to take a swing at a fix for this issue: #11925 
-
----
-
-_Referenced in [astral-sh/uv#12923](../../astral-sh/uv/pulls/12923.md) on 2025-04-16 18:23_
 
 ---
 

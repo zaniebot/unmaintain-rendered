@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-20T18:46:06Z
 updated_at: 2025-04-20T20:38:16Z
 url: https://github.com/astral-sh/uv/issues/12991
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # `uv add` fails for dependencies with sys_platform in escaped quotes, like `sys_platform != \"win32\"`
@@ -130,9 +130,5 @@ thx
 ---
 
 _Closed by @bartlomiejcieszkowski on 2025-04-20 20:38_
-
----
-
-_Referenced in [psychopy/psychopy#7166](../../psychopy/psychopy/issues/7166.md) on 2025-04-23 02:56_
 
 ---

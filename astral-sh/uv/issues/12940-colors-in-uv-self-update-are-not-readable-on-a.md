@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-17T12:27:03Z
 updated_at: 2025-04-17T16:58:38Z
 url: https://github.com/astral-sh/uv/issues/12940
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # colors in `uv self update` are not readable on a light theme
@@ -65,10 +65,6 @@ _Label `bug` added by @kdheepak on 2025-04-17 12:27_
 _Comment by @charliermarsh on 2025-04-17 13:00_
 
 Let's just change this to not use white. We don't really use white anywhere else, it feels out-of-sync with our style guide.
-
----
-
-_Referenced in [astral-sh/uv#12943](../../astral-sh/uv/pulls/12943.md) on 2025-04-17 13:07_
 
 ---
 

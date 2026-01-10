@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-14T15:37:02Z
 updated_at: 2025-03-25T16:03:47Z
 url: https://github.com/astral-sh/uv/issues/7395
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:41:46Z
 ```
 
 # `.lock` created in the wrong place on NixOS
@@ -152,10 +152,6 @@ If you're filing a bug report, please consider including the following informati
 
 ---
 
-_Referenced in [astral-sh/uv#4450](../../astral-sh/uv/issues/4450.md) on 2024-09-14 15:49_
-
----
-
 _Comment by @charliermarsh on 2024-09-14 17:11_
 
 In the third example, what "is" `/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env`? Is that the path to the system Python? Or the virtual environment?
@@ -173,10 +169,6 @@ Reading #4450 more carefully, that seems to be at the heart of the issue: runnin
 My use case for `withPackages` is to get binary dependencies for [Playwright](https://pypi.org/project/playwright/) into the environment. I do install a specific Playwright version with Pip once those are in place.
 
 It seems installing both `pkgs.python3` and `pkgs.python3.withPackages` and running `uv` with `pkgs.python3` may work just fine. I'll need to verify that Playwright actually works, too.
-
----
-
-_Referenced in [jetify-com/devbox#2411](../../jetify-com/devbox/issues/2411.md) on 2024-12-16 04:27_
 
 ---
 

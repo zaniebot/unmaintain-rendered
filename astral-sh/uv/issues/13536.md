@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-19T13:51:02Z
 updated_at: 2025-05-30T16:12:40Z
 url: https://github.com/astral-sh/uv/issues/13536
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:41:47Z
 ```
 
 # Add support for `uvx pypy`
@@ -74,10 +74,6 @@ No worries
 _Comment by @oconnor663 on 2025-05-20 19:13_
 
 Yep on it! I should've grabbed the "assignee".
-
----
-
-_Referenced in [astral-sh/uv#13583](../../astral-sh/uv/pulls/13583.md) on 2025-05-21 20:15_
 
 ---
 
