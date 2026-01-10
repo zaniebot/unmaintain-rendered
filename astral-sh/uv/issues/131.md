@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-19T02:28:41Z
 updated_at: 2024-01-12T17:44:21Z
 url: https://github.com/astral-sh/uv/issues/131
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support hash-checking mode in `pip-compile` output
@@ -70,14 +70,6 @@ _Renamed from "Add hash annotations to `pip-compile` output" to "Support hash-ch
 
 ---
 
-_Referenced in [astral-sh/uv#474](../../astral-sh/uv/issues/474.md) on 2023-11-21 13:19_
-
----
-
-_Referenced in [astral-sh/uv#888](../../astral-sh/uv/issues/888.md) on 2024-01-11 17:27_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-12 03:58_
 
 ---
@@ -89,10 +81,6 @@ _Unassigned @zanieb by @charliermarsh on 2024-01-12 03:58_
 _Comment by @charliermarsh on 2024-01-12 03:59_
 
 I'll do this part (the output), which should be the easier part...
-
----
-
-_Referenced in [astral-sh/uv#894](../../astral-sh/uv/pulls/894.md) on 2024-01-12 04:26_
 
 ---
 

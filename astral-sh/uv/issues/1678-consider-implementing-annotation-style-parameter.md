@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-19T02:30:10Z
 updated_at: 2024-02-21T14:08:10Z
 url: https://github.com/astral-sh/uv/issues/1678
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Consider implementing `--annotation-style` parameter
@@ -32,10 +32,6 @@ If you're filing a bug report, please consider including the following informati
 -->
 Hi guys! I've recently found your project and want to give it a try in my work! Unfortunately, we're using `--annotation-style=line` in our lock files and I don't want to change them to splitted annotations. I've made a PR to your awesome project to add this ability!
 
-
----
-
-_Referenced in [astral-sh/uv#1679](../../astral-sh/uv/pulls/1679.md) on 2024-02-19 02:37_
 
 ---
 

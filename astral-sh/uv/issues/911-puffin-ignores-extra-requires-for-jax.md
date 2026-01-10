@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-14T14:29:04Z
 updated_at: 2024-01-14T17:16:56Z
 url: https://github.com/astral-sh/uv/issues/911
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Puffin ignores extra requires for jax
@@ -81,10 +81,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-14 15:46_
 _Comment by @charliermarsh on 2024-01-14 15:49_
 
 This is a really good bug.
-
----
-
-_Referenced in [astral-sh/uv#915](../../astral-sh/uv/pulls/915.md) on 2024-01-14 16:08_
 
 ---
 

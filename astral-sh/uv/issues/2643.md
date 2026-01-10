@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-25T02:26:51Z
 updated_at: 2024-03-27T22:17:10Z
 url: https://github.com/astral-sh/uv/issues/2643
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Accept prereleases for direct dependencies of path-based dependencies
@@ -27,19 +27,7 @@ _Label `enhancement` added by @charliermarsh on 2024-03-25 02:26_
 
 ---
 
-_Referenced in [Lightning-AI/litgpt#952](../../Lightning-AI/litgpt/pulls/952.md) on 2024-03-25 02:26_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-25 03:00_
-
----
-
-_Referenced in [astral-sh/uv#1853](../../astral-sh/uv/issues/1853.md) on 2024-03-26 03:08_
-
----
-
-_Referenced in [astral-sh/uv#2671](../../astral-sh/uv/pulls/2671.md) on 2024-03-26 16:03_
 
 ---
 

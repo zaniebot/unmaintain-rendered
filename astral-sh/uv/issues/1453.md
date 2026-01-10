@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T08:38:09Z
 updated_at: 2024-02-20T15:57:52Z
 url: https://github.com/astral-sh/uv/issues/1453
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Installing from a github zip archive extracts files with zero permissions.
@@ -63,10 +63,6 @@ I'm able to reproduce this, thank you!
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-02-16 15:16_
-
----
-
-_Referenced in [astral-sh/uv#1757](../../astral-sh/uv/pulls/1757.md) on 2024-02-20 15:03_
 
 ---
 

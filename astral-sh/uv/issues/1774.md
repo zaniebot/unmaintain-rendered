@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T18:40:58Z
 updated_at: 2024-02-22T22:00:14Z
 url: https://github.com/astral-sh/uv/issues/1774
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # No changelog after 0.1.3
@@ -66,10 +66,6 @@ We don't follow conventional commits, instead we use pull request labels on GitH
 _Comment by @orhun on 2024-02-21 08:52_
 
 With the [last version](https://git-cliff.org/blog/2.0.0#-github-integration) of `git-cliff` that's also possible! Are you using the GitHub's changelog format? I would like to give it a shot to generate the changelog in the style you prefer - I'm also curious how that would turn out.
-
----
-
-_Referenced in [astral-sh/uv#1881](../../astral-sh/uv/pulls/1881.md) on 2024-02-22 19:42_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-24T01:14:43Z
 updated_at: 2023-11-22T13:25:37Z
 url: https://github.com/astral-sh/uv/issues/175
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Avoid parsing unnecessary Metadata 2.1
@@ -47,19 +47,11 @@ The simplest thing here is literally to just remove the fields we don't need.
 
 ---
 
-_Referenced in [astral-sh/uv#375](../../astral-sh/uv/issues/375.md) on 2023-11-09 14:27_
-
----
-
 _Unassigned @konstin by @konstin on 2023-11-22 12:11_
 
 ---
 
 _Assigned to @charliermarsh by @konstin on 2023-11-22 12:11_
-
----
-
-_Referenced in [astral-sh/uv#488](../../astral-sh/uv/pulls/488.md) on 2023-11-22 12:53_
 
 ---
 

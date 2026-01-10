@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-08T13:55:48Z
 updated_at: 2023-10-08T19:46:08Z
 url: https://github.com/astral-sh/uv/issues/57
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add way more user-facing output to install command
@@ -54,10 +54,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-10-08 14:51_
 _Comment by @charliermarsh on 2023-10-08 14:57_
 
 We could consider using tracing for user-facing and debug output, and allowing a flag like `--verbose` which toggles the output _format_ of tracing messages (to include timestamps in the `--verbose` case, etc.).
-
----
-
-_Referenced in [astral-sh/uv#63](../../astral-sh/uv/pulls/63.md) on 2023-10-08 19:42_
 
 ---
 

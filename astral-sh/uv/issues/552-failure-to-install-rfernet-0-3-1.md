@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-04T22:03:55Z
 updated_at: 2023-12-12T14:46:39Z
 url: https://github.com/astral-sh/uv/issues/552
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failure to install `rfernet==0.3.1`
@@ -57,10 +57,6 @@ _Comment by @charliermarsh on 2023-12-04 22:04_
 ---
 
 _Assigned to @konstin by @konstin on 2023-12-05 12:51_
-
----
-
-_Referenced in [astral-sh/uv#567](../../astral-sh/uv/pulls/567.md) on 2023-12-05 12:58_
 
 ---
 

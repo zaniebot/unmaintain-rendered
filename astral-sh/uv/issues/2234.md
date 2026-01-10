@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-06T08:14:44Z
 updated_at: 2024-03-06T20:37:30Z
 url: https://github.com/astral-sh/uv/issues/2234
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv pip install --system` doesn't not respect `PIP_BREAK_SYSTEM_PACKAGES`
@@ -38,10 +38,6 @@ We're willing to add support for the command line flag, we just haven't done so 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-06 17:39_
-
----
-
-_Referenced in [astral-sh/uv#2249](../../astral-sh/uv/pulls/2249.md) on 2024-03-06 20:17_
 
 ---
 

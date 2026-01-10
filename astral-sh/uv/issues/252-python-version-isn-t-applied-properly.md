@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-31T12:48:28Z
 updated_at: 2023-11-02T01:20:33Z
 url: https://github.com/astral-sh/uv/issues/252
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Python version isn't applied properly
@@ -65,10 +65,6 @@ _Comment by @charliermarsh on 2023-10-31 15:48_
 ---
 
 _Assigned to @zanieb by @zanieb on 2023-11-01 04:51_
-
----
-
-_Referenced in [astral-sh/uv#282](../../astral-sh/uv/pulls/282.md) on 2023-11-01 21:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-31T17:53:45Z
 updated_at: 2024-01-31T20:11:54Z
 url: https://github.com/astral-sh/uv/issues/1210
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Create a `BENCHMARKS.md` with graphs from our benchmark script
@@ -37,10 +37,6 @@ _Label `documentation` added by @charliermarsh on 2024-01-31 17:53_
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2024-01-31 17:53_
-
----
-
-_Referenced in [astral-sh/uv#1211](../../astral-sh/uv/pulls/1211.md) on 2024-01-31 18:59_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-26T18:09:00Z
 updated_at: 2024-02-28T12:50:58Z
 url: https://github.com/astral-sh/uv/issues/1988
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `Failed to spawn the python child process: The system cannot find the file specified.`
@@ -77,10 +77,6 @@ _Label `windows` added by @charliermarsh on 2024-02-26 23:17_
 
 ---
 
-_Referenced in [astral-sh/uv#2000](../../astral-sh/uv/pulls/2000.md) on 2024-02-27 01:56_
-
----
-
 _Closed by @charliermarsh on 2024-02-28 02:10_
 
 ---
@@ -132,9 +128,5 @@ _Comment by @kexul on 2024-02-28 12:50_
 > Charlie's changes have not been released yet. Please create a new issue if you're still experience issues with the new version that we release soon and include more details: What commands did you run? What's your operating system? What package do you use, etc.
 
 Get it! Thanks for your great work!
-
----
-
-_Referenced in [astral-sh/uv#6008](../../astral-sh/uv/issues/6008.md) on 2024-08-11 14:44_
 
 ---

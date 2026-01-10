@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-19T02:27:28Z
 updated_at: 2023-12-12T17:16:02Z
 url: https://github.com/astral-sh/uv/issues/129
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `puffin pip-install` to do a consolidated `pip install`
@@ -52,14 +52,6 @@ _Reopened by @charliermarsh on 2023-11-14 01:10_
 _Comment by @charliermarsh on 2023-11-14 01:10_
 
 (Accidentally closed.)
-
----
-
-_Referenced in [astral-sh/uv#410](../../astral-sh/uv/issues/410.md) on 2023-11-14 04:35_
-
----
-
-_Referenced in [astral-sh/uv#607](../../astral-sh/uv/pulls/607.md) on 2023-12-11 19:23_
 
 ---
 

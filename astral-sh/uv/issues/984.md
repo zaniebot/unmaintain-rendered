@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T00:14:25Z
 updated_at: 2024-01-22T14:20:32Z
 url: https://github.com/astral-sh/uv/issues/984
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Should we allow relative URLs in direct path dependencies?
@@ -49,10 +49,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-19 16:28_
 _Comment by @charliermarsh on 2024-01-19 16:28_
 
 Okay, I'll change it today. It won't be compatible with `pip` but it will be a superset...
-
----
-
-_Referenced in [astral-sh/uv#1027](../../astral-sh/uv/pulls/1027.md) on 2024-01-20 19:22_
 
 ---
 

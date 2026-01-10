@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T14:17:54Z
 updated_at: 2024-02-23T10:55:40Z
 url: https://github.com/astral-sh/uv/issues/1693
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Bad error message when python query encounters python 2
@@ -82,10 +82,6 @@ Thanks @MichaReiser for the quick response
 
 ---
 
-_Referenced in [astral-sh/uv#1698](../../astral-sh/uv/issues/1698.md) on 2024-02-19 15:17_
-
----
-
 _Comment by @fervand1 on 2024-02-19 15:19_
 
 @MichaReiser I created #1698 just as observation. It is possibly a side effect of the issue you are working on already but reported just in case it can help to improve the solution. thanks
@@ -127,10 +123,6 @@ _Comment by @konstin on 2024-02-22 19:35_
 > The question that remains is if we should be more lenient when it comes to failures querying the python information and instead continue searching for other "functioning" installation. @konstin what do you think?
 
 We should special case python 2 (e.g. returns a specific json message), but otherwise it think we should at least for now show errors. If we encounter many unrelated errors, we can be more lenient later
-
----
-
-_Referenced in [astral-sh/uv#1905](../../astral-sh/uv/pulls/1905.md) on 2024-02-23 08:46_
 
 ---
 

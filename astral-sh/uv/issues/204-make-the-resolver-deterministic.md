@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-26T13:58:15Z
 updated_at: 2023-10-29T18:42:27Z
 url: https://github.com/astral-sh/uv/issues/204
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Make the resolver deterministic
@@ -35,14 +35,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-10-26 15:14_
 
 ---
 
-_Referenced in [astral-sh/uv#218](../../astral-sh/uv/pulls/218.md) on 2023-10-29 18:39_
-
----
-
 _Closed by @charliermarsh on 2023-10-29 18:42_
-
----
-
-_Referenced in [astral-sh/uv#7239](../../astral-sh/uv/pulls/7239.md) on 2024-09-12 02:41_
 
 ---

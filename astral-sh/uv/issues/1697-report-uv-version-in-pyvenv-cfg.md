@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T15:00:22Z
 updated_at: 2024-02-22T19:39:38Z
 url: https://github.com/astral-sh/uv/issues/1697
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Report uv version in pyvenv.cfg
@@ -60,10 +60,6 @@ It lives in this repo.
 _Comment by @charliermarsh on 2024-02-19 17:55_
 
 (To avoid confusion: there's a version at https://github.com/konstin/gourgeist but we ended up moving all the crates into this repo so that we could develop them as a monorepo. We'll likely either deprecate https://github.com/konstin/gourgeist and publish from here in the future, or back changes from this repo back out to https://github.com/konstin/gourgeist. But all development should happen on the version of `gourgeist` in `crates`.)
-
----
-
-_Referenced in [astral-sh/uv#1852](../../astral-sh/uv/pulls/1852.md) on 2024-02-22 03:44_
 
 ---
 

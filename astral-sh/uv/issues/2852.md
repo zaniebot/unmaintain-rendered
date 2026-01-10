@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-06T13:31:07Z
 updated_at: 2024-04-10T16:05:59Z
 url: https://github.com/astral-sh/uv/issues/2852
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Annotate the index from which a package is pulled in `uv pip compile`
@@ -76,10 +76,6 @@ Ah cool makes sense. As long as there's not an expectation that we will guarante
 ---
 
 _Label `help wanted` added by @zanieb on 2024-04-06 19:35_
-
----
-
-_Referenced in [astral-sh/uv#2926](../../astral-sh/uv/pulls/2926.md) on 2024-04-09 04:14_
 
 ---
 

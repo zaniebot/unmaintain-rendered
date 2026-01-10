@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-21T19:54:19Z
 updated_at: 2024-03-22T21:26:13Z
 url: https://github.com/astral-sh/uv/issues/1827
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Difference with pip on local non-editable installs
@@ -63,9 +63,5 @@ _Closed by @charliermarsh on 2024-02-21 19:55_
 _Comment by @charliermarsh on 2024-03-22 21:26_
 
 This is supported as of `v0.1.24`. You can `uv pip install .` directly, without including a package name.
-
----
-
-_Referenced in [astral-sh/uv#10941](../../astral-sh/uv/issues/10941.md) on 2025-01-24 18:10_
 
 ---

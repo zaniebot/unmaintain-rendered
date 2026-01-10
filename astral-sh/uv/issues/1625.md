@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T04:49:42Z
 updated_at: 2024-02-18T08:12:54Z
 url: https://github.com/astral-sh/uv/issues/1625
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install` cannot be used with non-default venv names created by `uv venv` without venv activation
@@ -89,9 +89,5 @@ _Label `duplicate` added by @zanieb on 2024-02-18 08:07_
 _Comment by @zanieb on 2024-02-18 08:07_
 
 Thanks for the clear issue by the way! It's nicely written
-
----
-
-_Referenced in [astral-sh/uv#1632](../../astral-sh/uv/issues/1632.md) on 2024-02-18 18:01_
 
 ---

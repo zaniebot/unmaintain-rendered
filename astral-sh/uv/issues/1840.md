@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T22:53:53Z
 updated_at: 2024-02-24T13:31:36Z
 url: https://github.com/astral-sh/uv/issues/1840
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Can't import rlax library when installed via uv install
@@ -203,10 +203,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-22 01:01_
 
 ---
 
-_Referenced in [astral-sh/uv#1843](../../astral-sh/uv/pulls/1843.md) on 2024-02-22 01:10_
-
----
-
 _Closed by @charliermarsh on 2024-02-22 01:38_
 
 ---
@@ -335,9 +331,5 @@ Can you try running “uv cache clean” beforehand? Otherwise, uv will contain 
 _Comment by @Artur-Galstyan on 2024-02-24 13:31_
 
 Indeed, that did the trick! Thanks!
-
----
-
-_Referenced in [astral-sh/uv#2326](../../astral-sh/uv/issues/2326.md) on 2024-03-10 05:08_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T10:18:59Z
 updated_at: 2024-03-03T23:47:53Z
 url: https://github.com/astral-sh/uv/issues/1473
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # environment variable references in requirements files are not resolved
@@ -61,17 +61,9 @@ _Comment by @charliermarsh on 2024-02-17 19:58_
 
 ---
 
-_Referenced in [astral-sh/uv#1618](../../astral-sh/uv/pulls/1618.md) on 2024-02-17 23:37_
-
----
-
 _Comment by @inoa-jboliveira on 2024-02-17 23:38_
 
 Added support for both cases in the PR above
-
----
-
-_Referenced in [astral-sh/uv#2143](../../astral-sh/uv/pulls/2143.md) on 2024-03-03 23:42_
 
 ---
 
@@ -82,9 +74,5 @@ _Closed by @charliermarsh on 2024-03-03 23:47_
 _Comment by @charliermarsh on 2024-03-03 23:47_
 
 The originating issue here (supporting environment variables in `-r` and `-c` paths, within requirements files) is now fixed by https://github.com/astral-sh/uv/pull/2143. If folks want environment variable expansion for other parts of the file (like version specifiers), we need to handle those on a case-by-case basis, so feel free to open a new issue to track it.
-
----
-
-_Referenced in [astral-sh/uv#4592](../../astral-sh/uv/issues/4592.md) on 2024-06-27 18:02_
 
 ---

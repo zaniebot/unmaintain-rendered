@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-05T23:06:42Z
 updated_at: 2024-01-10T20:16:24Z
 url: https://github.com/astral-sh/uv/issues/810
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Improve formatting of version range logic
@@ -40,14 +40,6 @@ _Renamed from "Improve formatting of version specifiers" to "Improve formatting 
 ---
 
 _Label `error messages` added by @zanieb on 2024-01-05 23:07_
-
----
-
-_Referenced in [astral-sh/uv#838](../../astral-sh/uv/pulls/838.md) on 2024-01-08 18:53_
-
----
-
-_Referenced in [astral-sh/uv#864](../../astral-sh/uv/pulls/864.md) on 2024-01-10 00:20_
 
 ---
 

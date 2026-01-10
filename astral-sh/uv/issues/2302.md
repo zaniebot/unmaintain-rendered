@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-08T15:34:32Z
 updated_at: 2024-03-08T19:53:50Z
 url: https://github.com/astral-sh/uv/issues/2302
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # A bit too strict pyproject.toml validation for uv 0.1.16
@@ -142,10 +142,6 @@ Awesome :) I'll take a look!
 
 ---
 
-_Referenced in [apache/airflow#37996](../../apache/airflow/pulls/37996.md) on 2024-03-08 15:46_
-
----
-
 _Comment by @notatallshaw on 2024-03-08 18:32_
 
 This is weird, the error is coming from setuptools, both uv and pip are making the same `Distribution(dist_args).parse_config_files()`. I don't see anything obvious on the setuptools side that would cause this issue, looking through the changelog, prs, and issues.
@@ -245,18 +241,6 @@ Confirmed, our imports are getting the shimmed `setuptools` version:
 
 ---
 
-_Referenced in [astral-sh/uv#2305](../../astral-sh/uv/pulls/2305.md) on 2024-03-08 19:41_
-
----
-
 _Closed by @charliermarsh on 2024-03-08 19:53_
-
----
-
-_Referenced in [astral-sh/uv#2411](../../astral-sh/uv/issues/2411.md) on 2024-03-13 13:22_
-
----
-
-_Referenced in [astral-sh/uv#10819](../../astral-sh/uv/pulls/10819.md) on 2025-01-21 17:46_
 
 ---

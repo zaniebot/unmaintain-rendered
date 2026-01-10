@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-05T22:20:50Z
 updated_at: 2024-01-22T06:32:04Z
 url: https://github.com/astral-sh/uv/issues/806
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Improve `requires-python` incompatibility message
@@ -28,10 +28,6 @@ we say "there is no version of Python available matching >=3.10" but there may b
 ---
 
 _Label `error messages` added by @zanieb on 2024-01-05 22:36_
-
----
-
-_Referenced in [astral-sh/uv#986](../../astral-sh/uv/pulls/986.md) on 2024-01-19 00:34_
 
 ---
 

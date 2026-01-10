@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T19:29:50Z
 updated_at: 2024-02-16T19:48:55Z
 url: https://github.com/astral-sh/uv/issues/1532
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failed to detect operating system version on amazonlinux:2023 and rocky 8/9
@@ -31,19 +31,11 @@ This may be related to https://github.com/astral-sh/uv/issues/1427 but I made a 
 
 ---
 
-_Referenced in [Chia-Network/chia-blockchain#17572](../../Chia-Network/chia-blockchain/pulls/17572.md) on 2024-02-16 19:30_
-
----
-
 _Label `bug` added by @zanieb on 2024-02-16 19:32_
 
 ---
 
 _Label `linux` added by @zanieb on 2024-02-16 19:32_
-
----
-
-_Referenced in [astral-sh/uv#1534](../../astral-sh/uv/pulls/1534.md) on 2024-02-16 19:43_
 
 ---
 

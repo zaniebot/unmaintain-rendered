@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-02T14:38:30Z
 updated_at: 2024-03-25T22:26:52Z
 url: https://github.com/astral-sh/uv/issues/2130
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # The "standard" installation use `pyproject.toml` in UV rather than dynamic dependencies via build hooks (comparing to PIP)
@@ -649,10 +649,6 @@ v + jsonschema==4.21.1
 
 ---
 
-_Referenced in [astral-sh/uv#2633](../../astral-sh/uv/pulls/2633.md) on 2024-03-24 23:34_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-24 23:55_
 
 ---
@@ -1101,10 +1097,6 @@ Yes, thanks.
 
 ---
 
-_Referenced in [astral-sh/uv#2645](../../astral-sh/uv/pulls/2645.md) on 2024-03-25 03:57_
-
----
-
 _Comment by @charliermarsh on 2024-03-25 04:02_
 
 It looks like the example use-case from the Hatch issue (https://github.com/pypa/hatch/issues/532) doesn't use dynamic dependencies. I was hoping I could instead do something even more specific, like look for the presence of Hatch plugins (`[tool.hatch.build.targets.wheel.hooks]`, etc.), but that example _also_ doesn't seem to use that, it registers a custom entrypoint.
@@ -1141,10 +1133,6 @@ _Comment by @potiuk on 2024-03-25 08:57_
 > I'd find it worrying if a trends develops for frontends to special case for specific backends, or backends to special case for specific frontends.
 
 Agree. I think we have to find a solution that is generic in both directions. Maybe something to discuss in Pittsburgh :) 
-
----
-
-_Referenced in [pypa/hatch#1348](../../pypa/hatch/issues/1348.md) on 2024-03-25 09:06_
 
 ---
 
@@ -1284,13 +1272,5 @@ I ended up special-casing `hatchling` in https://github.com/astral-sh/uv/pull/26
 ---
 
 _Closed by @charliermarsh on 2024-03-25 22:26_
-
----
-
-_Referenced in [astral-sh/uv#2703](../../astral-sh/uv/issues/2703.md) on 2024-03-28 09:22_
-
----
-
-_Referenced in [prefix-dev/pixi#1121](../../prefix-dev/pixi/pulls/1121.md) on 2024-04-05 13:28_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-04T16:23:49Z
 updated_at: 2024-03-04T17:01:27Z
 url: https://github.com/astral-sh/uv/issues/2163
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv pip compile` does not include extras in the generated files
@@ -57,13 +57,5 @@ Thanks! This is a duplicate of an existing issue: https://github.com/astral-sh/u
 ---
 
 _Closed by @charliermarsh on 2024-03-04 17:01_
-
----
-
-_Referenced in [astral-sh/uv#3343](../../astral-sh/uv/issues/3343.md) on 2024-05-03 13:15_
-
----
-
-_Referenced in [open-zaak/open-zaak#1828](../../open-zaak/open-zaak/pulls/1828.md) on 2024-12-19 11:17_
 
 ---

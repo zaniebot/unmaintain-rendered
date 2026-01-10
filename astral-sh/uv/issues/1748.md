@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-20T11:54:57Z
 updated_at: 2024-02-20T14:54:30Z
 url: https://github.com/astral-sh/uv/issues/1748
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Source installs fail due to timestamps/zip for `flit`-based sdists
@@ -72,10 +72,6 @@ This looks like the same issue as #579, but it doesn't appear to be fixed by #63
 ---
 
 _Assigned to @konstin by @konstin on 2024-02-20 12:07_
-
----
-
-_Referenced in [astral-sh/uv#1749](../../astral-sh/uv/pulls/1749.md) on 2024-02-20 12:27_
 
 ---
 

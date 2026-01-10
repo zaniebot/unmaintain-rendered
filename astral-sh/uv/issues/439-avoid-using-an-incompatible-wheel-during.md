@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-16T19:00:14Z
 updated_at: 2023-11-17T02:10:55Z
 url: https://github.com/astral-sh/uv/issues/439
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Avoid using an incompatible wheel during resolution if no source distribution is available
@@ -32,10 +32,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-16 19:00_
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2023-11-16 19:00_
-
----
-
-_Referenced in [astral-sh/uv#441](../../astral-sh/uv/pulls/441.md) on 2023-11-17 02:04_
 
 ---
 

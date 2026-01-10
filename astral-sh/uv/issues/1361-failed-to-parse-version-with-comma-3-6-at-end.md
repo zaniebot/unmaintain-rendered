@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T21:40:05Z
 updated_at: 2024-02-16T02:08:06Z
 url: https://github.com/astral-sh/uv/issues/1361
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failed to parse version with 'comma', `>=3.6,` at end
@@ -77,10 +77,6 @@ Thanks we might treat those differently!
 
 ---
 
-_Referenced in [astral-sh/uv#1402](../../astral-sh/uv/issues/1402.md) on 2024-02-16 00:29_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-16 01:49_
 
 ---
@@ -95,14 +91,6 @@ I can take this one real quick.
 
 ---
 
-_Referenced in [astral-sh/uv#1409](../../astral-sh/uv/pulls/1409.md) on 2024-02-16 01:56_
-
----
-
 _Closed by @charliermarsh on 2024-02-16 02:08_
-
----
-
-_Referenced in [astral-sh/uv#1464](../../astral-sh/uv/issues/1464.md) on 2024-02-16 14:45_
 
 ---

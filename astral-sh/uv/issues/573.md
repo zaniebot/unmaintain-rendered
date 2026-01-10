@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-05T18:26:58Z
 updated_at: 2023-12-05T22:41:24Z
 url: https://github.com/astral-sh/uv/issues/573
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Remove `.whl` extension from unzipped wheels
@@ -32,10 +32,6 @@ _Added to milestone `Initial release` by @charliermarsh on 2023-12-05 18:27_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-05 20:31_
-
----
-
-_Referenced in [astral-sh/uv#574](../../astral-sh/uv/pulls/574.md) on 2023-12-05 21:15_
 
 ---
 

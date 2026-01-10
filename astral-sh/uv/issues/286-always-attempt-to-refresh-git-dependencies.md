@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-02T03:19:17Z
 updated_at: 2023-11-03T16:26:59Z
 url: https://github.com/astral-sh/uv/issues/286
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Always attempt to refresh Git dependencies
@@ -32,10 +32,6 @@ _Added to milestone `Feature complete` by @charliermarsh on 2023-11-02 03:19_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-02 03:25_
-
----
-
-_Referenced in [astral-sh/uv#299](../../astral-sh/uv/pulls/299.md) on 2023-11-02 20:05_
 
 ---
 

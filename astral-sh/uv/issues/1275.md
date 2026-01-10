@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-11T23:16:00Z
 updated_at: 2024-02-12T02:26:42Z
 url: https://github.com/astral-sh/uv/issues/1275
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Editable installs move around (relative to `pip-compile`)
@@ -50,10 +50,6 @@ _Label `bug` added by @charliermarsh on 2024-02-11 23:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-12 00:49_
-
----
-
-_Referenced in [astral-sh/uv#1278](../../astral-sh/uv/pulls/1278.md) on 2024-02-12 02:00_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-22T08:38:59Z
 updated_at: 2023-12-04T02:29:02Z
 url: https://github.com/astral-sh/uv/issues/484
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Deduplicate .dist-info/METADATA reading code 
@@ -39,10 +39,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-28 06:05_
 _Comment by @charliermarsh on 2023-11-28 06:05_
 
 Good plane task for tomorrow.
-
----
-
-_Referenced in [astral-sh/uv#531](../../astral-sh/uv/pulls/531.md) on 2023-12-04 02:17_
 
 ---
 

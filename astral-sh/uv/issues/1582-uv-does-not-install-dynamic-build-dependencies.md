@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T11:43:13Z
 updated_at: 2024-02-19T19:59:16Z
 url: https://github.com/astral-sh/uv/issues/1582
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv does not install dynamic build dependencies before preparing metadata
@@ -30,10 +30,6 @@ Here is a reproducer.
 This fails about an invalid Name metadata, where it should succeed. This is most likely because the dynamic build dependency `setuptools-odoo` which is declared in [setup.py](https://github.com/OCA/mis-builder/blob/3aea4235697bac0f74d446e610e2b934b0994e06/setup/mis_builder/setup.py#L4) has not been installed in the build environment.
 
 With setuptools, `setup_requires` entries are returned by `get_requires_for_build_wheel` and must be installed before preparing metadata.
-
----
-
-_Referenced in [astral-sh/uv#861](../../astral-sh/uv/issues/861.md) on 2024-02-17 11:56_
 
 ---
 
@@ -95,15 +91,7 @@ I think the solutions may be different. `mis_builder` I can fix trivially by ens
 
 ---
 
-_Referenced in [astral-sh/uv#1590](../../astral-sh/uv/pulls/1590.md) on 2024-02-17 14:18_
-
----
-
 _Closed by @charliermarsh on 2024-02-17 14:24_
-
----
-
-_Referenced in [Dao-AILab/flash-attention#833](../../Dao-AILab/flash-attention/issues/833.md) on 2024-02-17 19:18_
 
 ---
 
@@ -119,16 +107,8 @@ We might want to track that use-case in a separate issue.
 
 ---
 
-_Referenced in [astral-sh/uv#1715](../../astral-sh/uv/issues/1715.md) on 2024-02-19 19:58_
-
----
-
 _Comment by @Taytay on 2024-02-19 19:59_
 
 @zanieb : Done here: #1715 
-
----
-
-_Referenced in [astral-sh/uv#13321](../../astral-sh/uv/issues/13321.md) on 2025-05-06 22:13_
 
 ---

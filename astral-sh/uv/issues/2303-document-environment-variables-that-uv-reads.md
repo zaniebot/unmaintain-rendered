@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-08T15:58:37Z
 updated_at: 2024-03-10T00:47:47Z
 url: https://github.com/astral-sh/uv/issues/2303
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Document environment variables that uv reads
@@ -27,15 +27,7 @@ _Label `documentation` added by @konstin on 2024-03-08 15:58_
 
 ---
 
-_Referenced in [astral-sh/uv#2297](../../astral-sh/uv/pulls/2297.md) on 2024-03-08 15:58_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-08 23:46_
-
----
-
-_Referenced in [astral-sh/uv#2318](../../astral-sh/uv/pulls/2318.md) on 2024-03-10 00:17_
 
 ---
 

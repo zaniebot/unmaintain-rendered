@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-03T18:38:23Z
 updated_at: 2024-03-22T11:58:08Z
 url: https://github.com/astral-sh/uv/issues/313
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support URL and path dependencies without a package name
@@ -129,42 +129,6 @@ Will do!
 
 ---
 
-_Referenced in [astral-sh/uv#669](../../astral-sh/uv/pulls/669.md) on 2023-12-16 21:11_
-
----
-
-_Referenced in [astral-sh/uv#1378](../../astral-sh/uv/issues/1378.md) on 2024-02-15 23:10_
-
----
-
-_Referenced in [astral-sh/uv#1372](../../astral-sh/uv/issues/1372.md) on 2024-02-16 00:25_
-
----
-
-_Referenced in [astral-sh/uv#1403](../../astral-sh/uv/issues/1403.md) on 2024-02-16 00:44_
-
----
-
-_Referenced in [astral-sh/uv#1407](../../astral-sh/uv/issues/1407.md) on 2024-02-16 01:57_
-
----
-
-_Referenced in [astral-sh/uv#1424](../../astral-sh/uv/pulls/1424.md) on 2024-02-16 04:34_
-
----
-
-_Referenced in [astral-sh/uv#1499](../../astral-sh/uv/issues/1499.md) on 2024-02-16 15:14_
-
----
-
-_Referenced in [astral-sh/uv#1500](../../astral-sh/uv/issues/1500.md) on 2024-02-16 15:18_
-
----
-
-_Referenced in [astral-sh/uv#1484](../../astral-sh/uv/issues/1484.md) on 2024-02-16 16:55_
-
----
-
 _Comment by @sfc-gh-jcarroll on 2024-02-16 21:10_
 
 It seems like this is also an issue for installing a local whl file?
@@ -203,33 +167,9 @@ _Renamed from "Support URL dependencies without a package name" to "Support URL 
 
 ---
 
-_Referenced in [astral-sh/uv#1589](../../astral-sh/uv/issues/1589.md) on 2024-02-17 14:19_
-
----
-
 _Comment by @charliermarsh on 2024-02-17 14:23_
 
 👍 I want to support this, requires a bunch of internal refactors but definitely doable.
-
----
-
-_Referenced in [astral-sh/uv#1603](../../astral-sh/uv/issues/1603.md) on 2024-02-17 19:24_
-
----
-
-_Referenced in [astral-sh/uv#1506](../../astral-sh/uv/issues/1506.md) on 2024-02-18 03:10_
-
----
-
-_Referenced in [astral-sh/uv#1531](../../astral-sh/uv/pulls/1531.md) on 2024-02-18 07:09_
-
----
-
-_Referenced in [scikit-hep/pyhf#2444](../../scikit-hep/pyhf/pulls/2444.md) on 2024-02-18 07:10_
-
----
-
-_Referenced in [astral-sh/uv#1680](../../astral-sh/uv/issues/1680.md) on 2024-02-19 05:15_
 
 ---
 
@@ -321,18 +261,6 @@ pkg-core @ file:///home/python/pdm-example-monorepo/packages/pkg-core
 
 ---
 
-_Referenced in [pdm-project/pdm#2641](../../pdm-project/pdm/issues/2641.md) on 2024-02-21 02:02_
-
----
-
-_Referenced in [astral-sh/uv#1815](../../astral-sh/uv/issues/1815.md) on 2024-02-21 14:59_
-
----
-
-_Referenced in [astral-sh/uv#1827](../../astral-sh/uv/issues/1827.md) on 2024-02-21 19:55_
-
----
-
 _Comment by @kkpattern on 2024-02-22 07:30_
 
 We have a similar use case; we want to install a package in a local directory without `editable.`
@@ -381,38 +309,6 @@ _Comment by @charliermarsh on 2024-02-22 16:12_
 
 ---
 
-_Referenced in [astral-sh/uv#1896](../../astral-sh/uv/issues/1896.md) on 2024-02-23 03:40_
-
----
-
-_Referenced in [meltano/meltano#8410](../../meltano/meltano/issues/8410.md) on 2024-02-23 15:34_
-
----
-
-_Referenced in [astral-sh/uv#1945](../../astral-sh/uv/issues/1945.md) on 2024-02-23 22:37_
-
----
-
-_Referenced in [astral-sh/uv#2002](../../astral-sh/uv/issues/2002.md) on 2024-02-27 05:22_
-
----
-
-_Referenced in [astral-sh/uv#2050](../../astral-sh/uv/issues/2050.md) on 2024-02-28 18:35_
-
----
-
-_Referenced in [pre-commit/pre-commit#3141](../../pre-commit/pre-commit/pulls/3141.md) on 2024-03-01 16:03_
-
----
-
-_Referenced in [astral-sh/uv#2132](../../astral-sh/uv/issues/2132.md) on 2024-03-02 17:49_
-
----
-
-_Referenced in [python/typing_extensions#348](../../python/typing_extensions/pulls/348.md) on 2024-03-04 06:25_
-
----
-
 _Comment by @jkgenser on 2024-03-09 18:29_
 
 👍  for this feature. I'm liking UV so much that I'm using `pip install path/to/my.whl` (which is slow) and then `uv pip install` after.
@@ -451,14 +347,6 @@ I'd guess `uv pip install package[extra]@location`.
 
 ---
 
-_Referenced in [astral-sh/uv#2356](../../astral-sh/uv/issues/2356.md) on 2024-03-11 13:12_
-
----
-
-_Referenced in [astral-sh/uv#2418](../../astral-sh/uv/issues/2418.md) on 2024-03-13 15:16_
-
----
-
 _Comment by @jeremander on 2024-03-15 21:46_
 
 Loving `uv` so far!
@@ -467,17 +355,9 @@ Will supporting this also allow the very basic `uv pip install .` (non-editable)
 
 ---
 
-_Referenced in [astral-sh/uv#2484](../../astral-sh/uv/issues/2484.md) on 2024-03-16 03:27_
-
----
-
 _Comment by @charliermarsh on 2024-03-16 13:17_
 
 Yup!
-
----
-
-_Referenced in [astral-sh/uv#2494](../../astral-sh/uv/issues/2494.md) on 2024-03-17 15:52_
 
 ---
 
@@ -526,30 +406,6 @@ We don't support editable installs for Git and URL dependencies. I'd suggest jus
 
 ---
 
-_Referenced in [astral-sh/uv#2567](../../astral-sh/uv/pulls/2567.md) on 2024-03-20 15:54_
-
----
-
-_Referenced in [astral-sh/uv#2571](../../astral-sh/uv/pulls/2571.md) on 2024-03-20 23:39_
-
----
-
-_Referenced in [astral-sh/uv#2575](../../astral-sh/uv/pulls/2575.md) on 2024-03-20 23:40_
-
----
-
-_Referenced in [astral-sh/uv#2569](../../astral-sh/uv/pulls/2569.md) on 2024-03-20 23:40_
-
----
-
-_Referenced in [astral-sh/uv#2577](../../astral-sh/uv/pulls/2577.md) on 2024-03-20 23:41_
-
----
-
-_Referenced in [astral-sh/uv#2578](../../astral-sh/uv/pulls/2578.md) on 2024-03-20 23:41_
-
----
-
 _Comment by @charliermarsh on 2024-03-20 23:44_
 
 Okay, this is now in review.
@@ -569,17 +425,5 @@ _Closed by @charliermarsh on 2024-03-22 03:10_
 _Comment by @franciscoafonsoo on 2024-03-22 11:58_
 
 Thank you so much for making this, makes a world of a difference !
-
----
-
-_Referenced in [materialsproject/atomate2#783](../../materialsproject/atomate2/pulls/783.md) on 2024-03-22 14:52_
-
----
-
-_Referenced in [datahub-project/datahub#10114](../../datahub-project/datahub/pulls/10114.md) on 2024-04-04 22:35_
-
----
-
-_Referenced in [KinglyShade/University-landing-page#7](../../KinglyShade/University-landing-page/issues/7.md) on 2025-11-18 17:17_
 
 ---

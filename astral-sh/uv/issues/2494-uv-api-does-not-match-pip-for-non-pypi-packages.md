@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-17T14:52:36Z
 updated_at: 2024-03-23T01:49:23Z
 url: https://github.com/astral-sh/uv/issues/2494
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv API does not match pip for non-pypi packages
@@ -59,10 +59,6 @@ error: Failed to build: asdlkj @ file:///home/charles/titanoboa
 ```
 
 so the `"asdlkj @"` part can just be completely dropped i think. matching pip here, or even going further and allowing you to skip the `.` (so `uv pip install`) would be great.
-
----
-
-_Referenced in [astral-sh/uv#2495](../../astral-sh/uv/issues/2495.md) on 2024-03-17 15:03_
 
 ---
 

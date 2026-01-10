@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-11T12:11:58Z
 updated_at: 2024-01-14T15:39:17Z
 url: https://github.com/astral-sh/uv/issues/883
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `--python-version` isn't respected in pip-compile for tf-models-nightly
@@ -141,10 +141,6 @@ Okay, I think I agree with your description. (The thing that was confusing is th
 
 ---
 
-_Referenced in [astral-sh/uv#890](../../astral-sh/uv/pulls/890.md) on 2024-01-12 02:19_
-
----
-
 _Comment by @zanieb on 2024-01-12 14:30_
 
 We should write a scenario for this? It seems within our capabilities. I still do not fully understand the situation. It'd be nice to have it described in that format.
@@ -181,10 +177,6 @@ See https://github.com/zanieb/packse/blob/main/scenarios/requires-python.json an
 
 ---
 
-_Referenced in [astral-sh/uv#909](../../astral-sh/uv/pulls/909.md) on 2024-01-13 23:14_
-
----
-
 _Comment by @charliermarsh on 2024-01-13 23:16_
 
 How do we pass `--python-version` to packse scenarios?
@@ -204,9 +196,5 @@ So... we have a way to set the Python version for the environment but _not_ a se
 ---
 
 _Closed by @charliermarsh on 2024-01-14 15:39_
-
----
-
-_Referenced in [astral-sh/uv#1011](../../astral-sh/uv/pulls/1011.md) on 2024-01-19 22:31_
 
 ---

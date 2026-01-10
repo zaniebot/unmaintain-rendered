@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-24T21:28:16Z
 updated_at: 2024-01-25T16:44:23Z
 url: https://github.com/astral-sh/uv/issues/1084
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Strip windows prefixes from paths in messages
@@ -44,10 +44,6 @@ I can help with this.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-24 21:30_
-
----
-
-_Referenced in [astral-sh/uv#1086](../../astral-sh/uv/pulls/1086.md) on 2024-01-24 22:27_
 
 ---
 

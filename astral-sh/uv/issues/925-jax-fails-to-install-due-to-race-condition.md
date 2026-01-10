@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-15T09:25:56Z
 updated_at: 2024-01-16T21:07:40Z
 url: https://github.com/astral-sh/uv/issues/925
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # jax fails to install due to race condition
@@ -93,10 +93,6 @@ _Label `bug` added by @konstin on 2024-01-15 09:25_
 ---
 
 _Renamed from "Installing nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl though jax fails" to "jax fails to install due to race condition" by @konstin on 2024-01-15 10:09_
-
----
-
-_Referenced in [astral-sh/uv#929](../../astral-sh/uv/pulls/929.md) on 2024-01-15 10:24_
 
 ---
 

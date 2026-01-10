@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-23T03:29:01Z
 updated_at: 2024-02-23T03:29:15Z
 url: https://github.com/astral-sh/uv/issues/1895
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `pip-compile` should print to `stdout` even with `-o` is provided
@@ -19,10 +19,6 @@ synced_at: 2026-01-10T01:57:04Z
 _Issue opened by @charliermarsh on 2024-02-23 03:29_
 
 For `pip-tools` compatibility.
-
----
-
-_Referenced in [astral-sh/uv#1892](../../astral-sh/uv/pulls/1892.md) on 2024-02-23 03:29_
 
 ---
 

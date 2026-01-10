@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-23T05:40:40Z
 updated_at: 2024-03-21T18:07:50Z
 url: https://github.com/astral-sh/uv/issues/1059
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add a garbage collection command for the cache
@@ -35,10 +35,6 @@ _Comment by @charliermarsh on 2024-01-23 05:40_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-23 14:34_
-
----
-
-_Referenced in [astral-sh/uv#1217](../../astral-sh/uv/pulls/1217.md) on 2024-02-01 04:29_
 
 ---
 

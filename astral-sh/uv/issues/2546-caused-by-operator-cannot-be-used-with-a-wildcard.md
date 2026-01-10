@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-19T17:58:57Z
 updated_at: 2024-03-20T15:38:46Z
 url: https://github.com/astral-sh/uv/issues/2546
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Caused by: Operator >= cannot be used with a wildcard version specifier
@@ -84,10 +84,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-19 18:44_
 _Comment by @webcoderz on 2024-03-19 18:51_
 
 thanks @zanieb 
-
----
-
-_Referenced in [astral-sh/uv#2550](../../astral-sh/uv/pulls/2550.md) on 2024-03-19 19:21_
 
 ---
 

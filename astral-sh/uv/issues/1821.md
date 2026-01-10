@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T17:39:00Z
 updated_at: 2024-02-22T02:28:00Z
 url: https://github.com/astral-sh/uv/issues/1821
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Raise error on duplicate editables
@@ -48,10 +48,6 @@ _Comment by @charliermarsh on 2024-02-21 17:46_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-21 18:13_
-
----
-
-_Referenced in [astral-sh/uv#1796](../../astral-sh/uv/pulls/1796.md) on 2024-02-21 18:14_
 
 ---
 

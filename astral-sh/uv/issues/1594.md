@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-17T15:09:29Z
 updated_at: 2024-03-06T15:25:43Z
 url: https://github.com/astral-sh/uv/issues/1594
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Implement "uv pip show"
@@ -87,10 +87,6 @@ _Label `help wanted` added by @zanieb on 2024-02-17 16:24_
 
 ---
 
-_Referenced in [astral-sh/uv#2115](../../astral-sh/uv/pulls/2115.md) on 2024-03-01 15:57_
-
----
-
 _Comment by @charliermarsh on 2024-03-06 15:25_
 
 This was added in https://github.com/astral-sh/uv/pull/2115.
@@ -104,9 +100,5 @@ _Closed by @charliermarsh on 2024-03-06 15:25_
 _Comment by @charliermarsh on 2024-03-06 15:25_
 
 Thanks @ChannyClaus!
-
----
-
-_Referenced in [astral-sh/uv#2526](../../astral-sh/uv/issues/2526.md) on 2024-03-18 21:50_
 
 ---

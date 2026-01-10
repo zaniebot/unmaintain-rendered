@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-14T02:21:18Z
 updated_at: 2023-11-15T18:22:13Z
 url: https://github.com/astral-sh/uv/issues/421
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Respect wheel tag priorities
@@ -32,10 +32,6 @@ _Added to milestone `Feature complete` by @charliermarsh on 2023-11-14 02:21_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-14 02:37_
-
----
-
-_Referenced in [astral-sh/uv#422](../../astral-sh/uv/pulls/422.md) on 2023-11-14 04:12_
 
 ---
 

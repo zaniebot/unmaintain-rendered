@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-03T07:05:47Z
 updated_at: 2024-04-12T21:08:58Z
 url: https://github.com/astral-sh/uv/issues/2798
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv pip install` and `uv pip sync` both perform each uninstall twice causing the second one to fail
@@ -82,10 +82,6 @@ _Comment by @charliermarsh on 2024-04-03 14:17_
 
 ---
 
-_Referenced in [astral-sh/uv#2806](../../astral-sh/uv/pulls/2806.md) on 2024-04-03 14:32_
-
----
-
 _Comment by @zanieb on 2024-04-03 14:44_
 
 @Daverball I put up https://github.com/astral-sh/uv/pull/2806 if you want to give it a try — I'm having a hard time constructing a test case.
@@ -103,10 +99,6 @@ _Unassigned @zanieb by @charliermarsh on 2024-04-11 22:09_
 _Comment by @charliermarsh on 2024-04-11 22:09_
 
 I was able to reproduce in a container.
-
----
-
-_Referenced in [astral-sh/uv#3002](../../astral-sh/uv/pulls/3002.md) on 2024-04-11 23:03_
 
 ---
 

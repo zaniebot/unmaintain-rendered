@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-02T12:06:34Z
 updated_at: 2024-04-04T02:05:56Z
 url: https://github.com/astral-sh/uv/issues/2772
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Unable to install from git branch. revspec not found
@@ -76,10 +76,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-02 21:24_
 _Comment by @krishnasism on 2024-04-02 21:27_
 
 Thanks :) I'll try this in the meanwhile
-
----
-
-_Referenced in [astral-sh/uv#2795](../../astral-sh/uv/pulls/2795.md) on 2024-04-03 03:13_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-14T06:33:02Z
 updated_at: 2024-03-14T12:37:47Z
 url: https://github.com/astral-sh/uv/issues/2450
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv venv` is broken on `macos-latest` github CI runner
@@ -88,18 +88,6 @@ _Label `virtualenv` added by @AlexWaygood on 2024-03-14 07:33_
 
 ---
 
-_Referenced in [python/typeshed#11598](../../python/typeshed/pulls/11598.md) on 2024-03-14 10:51_
-
----
-
-_Referenced in [AlexWaygood/typeshed-stats#204](../../AlexWaygood/typeshed-stats/issues/204.md) on 2024-03-14 10:53_
-
----
-
-_Referenced in [mxstack/mxmake#33](../../mxstack/mxmake/pulls/33.md) on 2024-03-14 11:03_
-
----
-
 _Comment by @jensens on 2024-03-14 11:07_
 
 This fails when uv 0.1.20 is used in Github Actions with `macos-latest` runners. My configuration is:
@@ -141,14 +129,6 @@ Full test uv output
 
 ---
 
-_Referenced in [astral-sh/uv#2454](../../astral-sh/uv/pulls/2454.md) on 2024-03-14 12:28_
-
----
-
 _Closed by @konstin on 2024-03-14 12:37_
-
----
-
-_Referenced in [zenml-io/zenml#2529](../../zenml-io/zenml/pulls/2529.md) on 2024-03-14 14:11_
 
 ---

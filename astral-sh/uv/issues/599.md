@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-09T04:26:54Z
 updated_at: 2024-01-10T00:07:39Z
 url: https://github.com/astral-sh/uv/issues/599
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Use `prepare_metadata_for_build_wheel` in resolver
@@ -46,23 +46,11 @@ Note that this call changes the state, you must pass the output as `metadata_dir
 
 ---
 
-_Referenced in [astral-sh/uv#616](../../astral-sh/uv/pulls/616.md) on 2023-12-12 13:00_
-
----
-
 _Unassigned @charliermarsh by @charliermarsh on 2023-12-12 17:41_
 
 ---
 
-_Referenced in [astral-sh/uv#653](../../astral-sh/uv/pulls/653.md) on 2023-12-15 03:46_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-08 04:30_
-
----
-
-_Referenced in [astral-sh/uv#842](../../astral-sh/uv/pulls/842.md) on 2024-01-08 22:14_
 
 ---
 

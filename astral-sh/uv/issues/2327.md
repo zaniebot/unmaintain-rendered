@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-10T06:46:26Z
 updated_at: 2024-03-11T08:42:17Z
 url: https://github.com/astral-sh/uv/issues/2327
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv venv` reports using a different interpreter path than it uses
@@ -141,10 +141,6 @@ EOF
 ```
 
 </details>
-
----
-
-_Referenced in [astral-sh/uv#1795](../../astral-sh/uv/issues/1795.md) on 2024-03-10 06:55_
 
 ---
 

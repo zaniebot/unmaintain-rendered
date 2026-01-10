@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-25T21:52:30Z
 updated_at: 2024-01-31T15:42:33Z
 url: https://github.com/astral-sh/uv/issues/1109
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Document virtualenv discovery
@@ -58,10 +58,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-30 21:12_
 _Comment by @charliermarsh on 2024-01-30 21:12_
 
 I will do this, but will request review for correctness.
-
----
-
-_Referenced in [astral-sh/uv#1194](../../astral-sh/uv/pulls/1194.md) on 2024-01-30 21:32_
 
 ---
 

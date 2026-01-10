@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-07T07:14:40Z
 updated_at: 2024-03-07T23:47:32Z
 url: https://github.com/astral-sh/uv/issues/2266
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # pip compile constraining combined with git based dependencies
@@ -64,10 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-07 14:17_
 _Comment by @charliermarsh on 2024-03-07 14:17_
 
 I'm just gonna categorize it as a bug since that's what users would expect.
-
----
-
-_Referenced in [astral-sh/uv#2285](../../astral-sh/uv/pulls/2285.md) on 2024-03-07 19:18_
 
 ---
 

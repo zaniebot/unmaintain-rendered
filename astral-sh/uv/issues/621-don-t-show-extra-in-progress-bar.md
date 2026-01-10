@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-12-12T16:43:07Z
 updated_at: 2023-12-12T17:41:20Z
 url: https://github.com/astral-sh/uv/issues/621
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Don't show extra in progress bar
@@ -37,10 +37,6 @@ We should show the package name without extra instead.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-12 16:50_
-
----
-
-_Referenced in [astral-sh/uv#623](../../astral-sh/uv/pulls/623.md) on 2023-12-12 16:54_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-30T22:28:56Z
 updated_at: 2023-11-07T00:50:02Z
 url: https://github.com/astral-sh/uv/issues/246
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Revisit decision to keep all wheels in-memory
@@ -60,10 +60,6 @@ _Removed from milestone `Future` by @charliermarsh on 2023-11-06 21:06_
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2023-11-06 21:06_
-
----
-
-_Referenced in [astral-sh/uv#348](../../astral-sh/uv/pulls/348.md) on 2023-11-07 00:34_
 
 ---
 

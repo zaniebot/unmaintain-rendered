@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-21T16:15:49Z
 updated_at: 2024-01-11T16:54:26Z
 url: https://github.com/astral-sh/uv/issues/480
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Use index as cache shard
@@ -21,10 +21,6 @@ synced_at: 2026-01-10T01:57:01Z
 _Issue opened by @konstin on 2023-11-21 16:15_
 
 We should flip the current cache structure and use the index as cache shard, or `url/<digest(url)>`/`git/<digest(repo_url)>`/`path/<digest(path)>` where no index is used. The process of doing this ensures that we properly separate by index (which we currently don't) and it allow clearing a single index from the cache.
-
----
-
-_Referenced in [astral-sh/uv#481](../../astral-sh/uv/issues/481.md) on 2023-11-21 16:17_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-24T01:16:09Z
 updated_at: 2023-11-21T16:18:45Z
 url: https://github.com/astral-sh/uv/issues/176
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Explore the use of a secondary cache atop the HTTP cache
@@ -48,10 +48,6 @@ I'd cache (package, version) -> Vec<File>, i found deserializing all files becom
 _Comment by @charliermarsh on 2023-10-24 16:29_
 
 Yeah, that information is also immutable
-
----
-
-_Referenced in [astral-sh/uv#111](../../astral-sh/uv/issues/111.md) on 2023-10-24 19:21_
 
 ---
 

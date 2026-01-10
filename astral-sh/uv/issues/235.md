@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-30T16:28:04Z
 updated_at: 2024-01-05T15:01:07Z
 url: https://github.com/astral-sh/uv/issues/235
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # pip-resolve shouldn't require a venv
@@ -19,14 +19,6 @@ synced_at: 2026-01-10T01:57:00Z
 _Issue opened by @konstin on 2023-10-30 16:28_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/uv#492](../../astral-sh/uv/pulls/492.md) on 2023-11-23 08:53_
-
----
-
-_Referenced in [astral-sh/uv#494](../../astral-sh/uv/pulls/494.md) on 2023-11-23 10:02_
 
 ---
 

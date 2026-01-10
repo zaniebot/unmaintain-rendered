@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-16T00:21:50Z
 updated_at: 2024-02-26T11:33:09Z
 url: https://github.com/astral-sh/uv/issues/1401
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `uv pip list`
@@ -122,15 +122,7 @@ _Comment by @ismail on 2024-02-16 07:45_
 
 ---
 
-_Referenced in [astral-sh/uv#1550](../../astral-sh/uv/issues/1550.md) on 2024-02-17 00:31_
-
----
-
 _Label `help wanted` added by @zanieb on 2024-02-17 05:40_
-
----
-
-_Referenced in [astral-sh/uv#1594](../../astral-sh/uv/issues/1594.md) on 2024-02-17 15:45_
 
 ---
 
@@ -140,15 +132,7 @@ pip list also shows editable install locations (if any) as compared to pip freez
 
 ---
 
-_Referenced in [astral-sh/uv#1662](../../astral-sh/uv/pulls/1662.md) on 2024-02-18 18:00_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-02-19 16:12_
-
----
-
-_Referenced in [astral-sh/uv#1741](../../astral-sh/uv/issues/1741.md) on 2024-02-20 10:50_
 
 ---
 
@@ -191,13 +175,5 @@ wheel==0.42.0
 -e c:\users\user\desktop\uvtest
 ```
 Yes, they are different, but I'd like to `pip list --format freeze` supersede `pip freeze`. tracked in #1970.
-
----
-
-_Referenced in [astral-sh/uv#1985](../../astral-sh/uv/pulls/1985.md) on 2024-02-26 14:18_
-
----
-
-_Referenced in [astral-sh/uv#2150](../../astral-sh/uv/issues/2150.md) on 2024-03-04 11:02_
 
 ---

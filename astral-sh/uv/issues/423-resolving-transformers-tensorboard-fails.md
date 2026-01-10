@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-14T14:38:56Z
 updated_at: 2023-12-13T17:36:30Z
 url: https://github.com/astral-sh/uv/issues/423
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Resolving `transformers[tensorboard]` fails
@@ -35,19 +35,7 @@ _Label `bug` added by @konstin on 2023-11-14 14:39_
 
 ---
 
-_Referenced in [astral-sh/uv#382](../../astral-sh/uv/pulls/382.md) on 2023-11-17 11:59_
-
----
-
-_Referenced in [astral-sh/uv#444](../../astral-sh/uv/pulls/444.md) on 2023-11-17 17:14_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-12 21:57_
-
----
-
-_Referenced in [astral-sh/uv#627](../../astral-sh/uv/pulls/627.md) on 2023-12-12 22:27_
 
 ---
 

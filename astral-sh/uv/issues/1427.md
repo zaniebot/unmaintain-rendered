@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T04:36:50Z
 updated_at: 2024-02-16T23:19:18Z
 url: https://github.com/astral-sh/uv/issues/1427
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failed to detect operating system version on Alpine Linux
@@ -48,22 +48,6 @@ _Renamed from "Support alpine linux" to "Failed to detect operating system versi
 
 ---
 
-_Referenced in [astral-sh/uv#1392](../../astral-sh/uv/issues/1392.md) on 2024-02-16 04:43_
-
----
-
-_Referenced in [astral-sh/uv#1438](../../astral-sh/uv/issues/1438.md) on 2024-02-16 12:21_
-
----
-
-_Referenced in [astral-sh/uv#1496](../../astral-sh/uv/issues/1496.md) on 2024-02-16 14:52_
-
----
-
-_Referenced in [astral-sh/uv#1532](../../astral-sh/uv/issues/1532.md) on 2024-02-16 19:29_
-
----
-
 _Comment by @BurntSushi on 2024-02-16 19:54_
 
 I'm able to reproduce this via the `alpine:latest` docker image:
@@ -79,10 +63,6 @@ $ docker run --rm -it --mount type=bind,src=$PWD,dst=/host alpine:latest /bin/sh
 
 ---
 
-_Referenced in [astral-sh/uv#1545](../../astral-sh/uv/pulls/1545.md) on 2024-02-16 21:25_
-
----
-
 _Closed by @BurntSushi on 2024-02-16 21:37_
 
 ---
@@ -94,13 +74,5 @@ _Assigned to @BurntSushi by @BurntSushi on 2024-02-16 21:38_
 _Comment by @mgasner on 2024-02-16 23:19_
 
 you guys are amazing, tysm
-
----
-
-_Referenced in [astral-sh/uv#1927](../../astral-sh/uv/issues/1927.md) on 2024-02-23 17:54_
-
----
-
-_Referenced in [astral-sh/uv#7529](../../astral-sh/uv/issues/7529.md) on 2024-09-19 01:47_
 
 ---

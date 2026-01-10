@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-16T23:22:43Z
 updated_at: 2024-01-23T23:30:27Z
 url: https://github.com/astral-sh/uv/issues/945
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support refreshing cached data during `pip compile`
@@ -53,14 +53,6 @@ My current thinking...
 _Comment by @charliermarsh on 2024-01-17 00:33_
 
 \cc @zanieb @konstin 
-
----
-
-_Referenced in [astral-sh/uv#949](../../astral-sh/uv/pulls/949.md) on 2024-01-17 15:12_
-
----
-
-_Referenced in [astral-sh/uv#1057](../../astral-sh/uv/pulls/1057.md) on 2024-01-23 05:53_
 
 ---
 

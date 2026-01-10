@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-08T16:42:42Z
 updated_at: 2023-10-20T05:15:00Z
 url: https://github.com/astral-sh/uv/issues/60
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Record source of all resolved requirements
@@ -37,10 +37,6 @@ Not working on this but we still need to do it. The PubGrub graph doesn't make t
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-20 00:57_
-
----
-
-_Referenced in [astral-sh/uv#149](../../astral-sh/uv/pulls/149.md) on 2023-10-20 04:50_
 
 ---
 

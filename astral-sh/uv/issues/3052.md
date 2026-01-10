@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-16T07:12:45Z
 updated_at: 2024-04-16T13:20:01Z
 url: https://github.com/astral-sh/uv/issues/3052
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `install --require-hashes`'s "must be pinned upfront" error should say where the requirement comes from
@@ -49,10 +49,6 @@ _Comment by @bluetech on 2024-04-16 07:15_
 > Note: the "setuptools from " part I don't personally care about.
 
 Correction: the "69.5.1" part (the version of the missing transitive dep) *is* helpful, it lets me know to which version I should pin the dep when I add it to the requirements.
-
----
-
-_Referenced in [astral-sh/uv#3054](../../astral-sh/uv/issues/3054.md) on 2024-04-16 07:26_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T20:53:14Z
 updated_at: 2024-02-15T23:53:14Z
 url: https://github.com/astral-sh/uv/issues/1335
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # "uv venv" doesn't find python (Linux)
@@ -29,10 +29,6 @@ Yes, Python is installed. Running `python3 --version` works. `which python3` ret
 I'm on Zorin OS 17 (derivative of Ubuntu), current python version is 3.10.12.
 
 Is there some more information I can give?
-
----
-
-_Referenced in [astral-sh/uv#1337](../../astral-sh/uv/issues/1337.md) on 2024-02-15 20:58_
 
 ---
 

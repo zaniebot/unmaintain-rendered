@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T23:54:45Z
 updated_at: 2024-02-23T20:05:58Z
 url: https://github.com/astral-sh/uv/issues/1392
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Installer does not work on Alpine Linux: no package for `aarch64-unknown-linux-musl-dynamic`
@@ -118,10 +118,6 @@ Usage: /lib/ld-musl-aarch64.so.1 [options] [--] pathname
 ---
 
 _Renamed from "Support alpine linux" to "Support alpine linux (on Apple Silicon)" by @mgasner on 2024-02-16 00:50_
-
----
-
-_Referenced in [astral-sh/uv#1427](../../astral-sh/uv/issues/1427.md) on 2024-02-16 04:36_
 
 ---
 
@@ -269,15 +265,7 @@ _Label `question` removed by @MichaReiser on 2024-02-16 12:10_
 
 ---
 
-_Referenced in [astral-sh/uv#1635](../../astral-sh/uv/issues/1635.md) on 2024-02-19 08:52_
-
----
-
 _Label `musl` added by @konstin on 2024-02-20 13:55_
-
----
-
-_Referenced in [astral-sh/uv#1927](../../astral-sh/uv/issues/1927.md) on 2024-02-23 20:04_
 
 ---
 
@@ -292,13 +280,5 @@ _Closed by @MichaReiser on 2024-02-23 20:04_
 ---
 
 _Closed by @MichaReiser on 2024-02-23 20:05_
-
----
-
-_Referenced in [astral-sh/uv#2732](../../astral-sh/uv/issues/2732.md) on 2024-03-30 14:06_
-
----
-
-_Referenced in [acts-project/acts#4104](../../acts-project/acts/pulls/4104.md) on 2025-02-20 13:54_
 
 ---

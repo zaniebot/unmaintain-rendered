@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-12-04T11:04:14Z
 updated_at: 2024-01-16T05:37:16Z
 url: https://github.com/astral-sh/uv/issues/541
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Forward partial resolution to source dist building
@@ -31,10 +31,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-09 04:09_
 _Comment by @charliermarsh on 2024-01-09 04:09_
 
 I'll give this a shot.
-
----
-
-_Referenced in [astral-sh/uv#906](../../astral-sh/uv/pulls/906.md) on 2024-01-13 03:45_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T17:18:38Z
 updated_at: 2024-01-22T19:31:11Z
 url: https://github.com/astral-sh/uv/issues/1010
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Missing comma before conclusions
@@ -27,10 +27,6 @@ _Originally posted by @charliermarsh in https://github.com/astral-sh/puffin/pull
 ---
 
 _Label `error messages` added by @zanieb on 2024-01-19 17:18_
-
----
-
-_Referenced in [astral-sh/uv#1042](../../astral-sh/uv/pulls/1042.md) on 2024-01-22 19:20_
 
 ---
 

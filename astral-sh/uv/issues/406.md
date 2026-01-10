@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-13T08:32:25Z
 updated_at: 2024-01-03T15:20:46Z
 url: https://github.com/astral-sh/uv/issues/406
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Treat python version as a dependency when resolving
@@ -130,10 +130,6 @@ _Label `error messages` added by @konstin on 2023-11-13 08:32_
 
 ---
 
-_Referenced in [astral-sh/uv#398](../../astral-sh/uv/pulls/398.md) on 2023-11-13 11:34_
-
----
-
 _Comment by @konstin on 2023-11-13 12:16_
 
 Update: Wheels also have a `requires-python` we have to consider, this also answers the question what we do when there is no source dist
@@ -155,10 +151,6 @@ In most cases, the tag is `py3-none-any`, while `requires-python` specifies a mi
 _Comment by @charliermarsh on 2024-01-02 21:10_
 
 I will give this a shot.
-
----
-
-_Referenced in [astral-sh/uv#745](../../astral-sh/uv/pulls/745.md) on 2024-01-02 22:13_
 
 ---
 

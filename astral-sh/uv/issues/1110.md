@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-25T21:58:17Z
 updated_at: 2024-01-26T01:41:51Z
 url: https://github.com/astral-sh/uv/issues/1110
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Ensure that markers with file references are parsed correctly
@@ -64,9 +64,5 @@ _Closed by @charliermarsh on 2024-01-26 01:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-26 01:41_
-
----
-
-_Referenced in [astral-sh/uv#1637](../../astral-sh/uv/issues/1637.md) on 2024-02-18 15:03_
 
 ---

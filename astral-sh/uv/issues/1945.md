@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T21:06:12Z
 updated_at: 2024-03-22T21:26:37Z
 url: https://github.com/astral-sh/uv/issues/1945
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv pip install .` and `uv pip install ".[dev]"` do not work, results in error
@@ -80,10 +80,6 @@ _Closed by @charliermarsh on 2024-02-23 22:37_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-02-23 23:01_
-
----
-
-_Referenced in [mesa/mesa#2038](../../mesa/mesa/pulls/2038.md) on 2024-03-12 06:29_
 
 ---
 

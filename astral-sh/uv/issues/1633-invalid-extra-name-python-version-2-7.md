@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T08:21:35Z
 updated_at: 2024-02-20T03:26:31Z
 url: https://github.com/astral-sh/uv/issues/1633
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Invalid extra name - python_version_2.7_
@@ -44,10 +44,6 @@ _Comment by @chrisgoddard on 2024-02-18 23:04_
 _Comment by @charliermarsh on 2024-02-20 02:58_
 
 I can look at this.
-
----
-
-_Referenced in [astral-sh/uv#1731](../../astral-sh/uv/pulls/1731.md) on 2024-02-20 03:15_
 
 ---
 

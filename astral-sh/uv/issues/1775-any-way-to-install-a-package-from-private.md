@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T19:11:15Z
 updated_at: 2024-02-21T01:31:17Z
 url: https://github.com/astral-sh/uv/issues/1775
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Any way to install a package from private repository with deploy key?
@@ -32,10 +32,6 @@ Yup! We're working on it right now. Hopefully this week.
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-02-20 19:25_
-
----
-
-_Referenced in [astral-sh/uv#1781](../../astral-sh/uv/pulls/1781.md) on 2024-02-20 20:08_
 
 ---
 

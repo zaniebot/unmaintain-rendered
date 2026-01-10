@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T11:03:38Z
 updated_at: 2024-02-19T13:12:39Z
 url: https://github.com/astral-sh/uv/issues/1639
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Executables installed via `uv` don't work in GitHub Actions on Windows
@@ -41,14 +41,6 @@ _Label `bug` added by @AlexWaygood on 2024-02-18 11:03_
 ---
 
 _Label `windows` added by @AlexWaygood on 2024-02-18 11:03_
-
----
-
-_Referenced in [astral-sh/uv#1612](../../astral-sh/uv/issues/1612.md) on 2024-02-18 11:04_
-
----
-
-_Referenced in [AlexWaygood/typeshed-stats#190](../../AlexWaygood/typeshed-stats/pulls/190.md) on 2024-02-18 11:18_
 
 ---
 
@@ -153,9 +145,5 @@ Closing in favour of #1386
 ---
 
 _Closed by @AlexWaygood on 2024-02-19 13:12_
-
----
-
-_Referenced in [astral-sh/uv#1779](../../astral-sh/uv/issues/1779.md) on 2024-02-20 21:09_
 
 ---

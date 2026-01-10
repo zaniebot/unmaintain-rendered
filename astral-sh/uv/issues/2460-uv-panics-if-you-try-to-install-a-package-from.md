@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-14T14:52:26Z
 updated_at: 2024-03-14T17:47:17Z
 url: https://github.com/astral-sh/uv/issues/2460
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv` panics if you try to install a package from git using a web URL and you incorrectly put two colons after `https`
@@ -91,10 +91,6 @@ _Renamed from "`uv` panics if you try to use `uv` to install `uv` from git" to "
 ---
 
 _Renamed from "`uv` panics if you try to install a package from git using a web URL and you put two colons after `https`" to "`uv` panics if you try to install a package from git using a web URL and you incorrectly put two colons after `https`" by @AlexWaygood on 2024-03-14 15:33_
-
----
-
-_Referenced in [astral-sh/uv#2461](../../astral-sh/uv/pulls/2461.md) on 2024-03-14 17:37_
 
 ---
 

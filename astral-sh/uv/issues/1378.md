@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-15T23:05:50Z
 updated_at: 2024-03-22T21:23:22Z
 url: https://github.com/astral-sh/uv/issues/1378
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add uv pip install git+ssh:// new feature
@@ -46,9 +46,5 @@ _Closed by @charliermarsh on 2024-02-15 23:10_
 _Comment by @charliermarsh on 2024-03-22 21:23_
 
 This is supported as of `v0.1.24`. You can `uv pip install git+ssh://...` directly, without including a package name.
-
----
-
-_Referenced in [astral-sh/uv#10811](../../astral-sh/uv/issues/10811.md) on 2025-01-21 12:40_
 
 ---

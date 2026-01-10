@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-07T13:33:22Z
 updated_at: 2023-11-08T14:57:28Z
 url: https://github.com/astral-sh/uv/issues/356
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Default pubgrub no solution output doesn't give any information
@@ -37,10 +37,6 @@ One option would be to always wrap pubgrub errors into a custom error type
 ---
 
 _Label `bug` added by @charliermarsh on 2023-11-08 05:02_
-
----
-
-_Referenced in [astral-sh/uv#365](../../astral-sh/uv/pulls/365.md) on 2023-11-08 05:03_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T00:15:31Z
 updated_at: 2024-03-22T21:37:12Z
 url: https://github.com/astral-sh/uv/issues/1400
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add pre-commit support
@@ -43,10 +43,6 @@ In addition to locking the dependencies for replicating the exact environment, w
 _Comment by @neumann-nico on 2024-02-26 15:32_
 
 There is a PR for it: https://github.com/astral-sh/ruff-pre-commit/pull/68
-
----
-
-_Referenced in [edgarrmondragon/citric#1115](../../edgarrmondragon/citric/pulls/1115.md) on 2024-03-08 00:11_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-08T22:43:10Z
 updated_at: 2024-04-05T17:40:29Z
 url: https://github.com/astral-sh/uv/issues/2310
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Question: How to handle multiple private extra indexes?
@@ -143,14 +143,6 @@ _Comment by @korhojoa on 2024-03-10 07:00_
 Looser requirements, that's pretty much the "if the dependencies line up in a bad way" cop-out in my sentence.
 In general if you have satiable dependencies for production versions, then install the production "requirements layer" first, then the staging layer and finally the development layer. This would let you have a setup with packages that are compatible, but if strict versioning is in use and they don't have the same version requirements in lower layers, it could be a problem.
 Try it, it could work for you.
-
----
-
-_Referenced in [astral-sh/uv#2478](../../astral-sh/uv/issues/2478.md) on 2024-03-15 19:26_
-
----
-
-_Referenced in [astral-sh/uv#2718](../../astral-sh/uv/issues/2718.md) on 2024-03-28 19:19_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-27T13:33:13Z
 updated_at: 2023-11-03T15:47:03Z
 url: https://github.com/astral-sh/uv/issues/214
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Improve error messages involving "root" package
@@ -32,14 +32,6 @@ _Added to milestone `Initial release` by @charliermarsh on 2023-10-27 13:33_
 ---
 
 _Assigned to @zanieb by @zanieb on 2023-10-30 21:34_
-
----
-
-_Referenced in [astral-sh/uv#295](../../astral-sh/uv/pulls/295.md) on 2023-11-02 17:28_
-
----
-
-_Referenced in [astral-sh/uv#300](../../astral-sh/uv/pulls/300.md) on 2023-11-02 21:25_
 
 ---
 

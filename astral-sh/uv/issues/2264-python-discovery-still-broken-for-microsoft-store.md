@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-07T06:24:46Z
 updated_at: 2024-03-07T22:30:08Z
 url: https://github.com/astral-sh/uv/issues/2264
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Python discovery still broken for Microsoft Store
@@ -212,10 +212,6 @@ _Label `bug` added by @charliermarsh on 2024-03-07 16:59_
 _Comment by @charliermarsh on 2024-03-07 17:58_
 
 The main issue is I can't figure out a reliable way to determine if the `python.exe` or `python3.exe` is a redirect to the Windows Store. `CreateFileW` is returning `INVALID_HANDLE_VALUE` for one of the two redirectors when trying to read the reparse point.
-
----
-
-_Referenced in [astral-sh/uv#2284](../../astral-sh/uv/pulls/2284.md) on 2024-03-07 18:40_
 
 ---
 

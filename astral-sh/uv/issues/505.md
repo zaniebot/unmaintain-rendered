@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-27T15:56:30Z
 updated_at: 2024-03-23T16:03:49Z
 url: https://github.com/astral-sh/uv/issues/505
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Override `max-age` response header to 0
@@ -221,14 +221,6 @@ _Closed by @konstin on 2024-02-02 20:00_
 
 ---
 
-_Referenced in [astral-sh/uv#1572](../../astral-sh/uv/issues/1572.md) on 2024-02-17 16:57_
-
----
-
-_Referenced in [astral-sh/uv#2538](../../astral-sh/uv/issues/2538.md) on 2024-03-19 03:37_
-
----
-
 _Comment by @bewinsnw on 2024-03-23 16:02_
 
 Commenting not to reopen, but to record another argument against that pip feature (partly because I see someone talking about it again)
@@ -240,13 +232,5 @@ We think the artifactory behaviour regressed, we saw that change last summer aft
 In summary, uv's `--refresh-package` is the better choice.
 
 
-
----
-
-_Referenced in [astral-sh/uv#5351](../../astral-sh/uv/issues/5351.md) on 2024-07-23 17:15_
-
----
-
-_Referenced in [simple-repository/simple-repository-server#12](../../simple-repository/simple-repository-server/issues/12.md) on 2024-09-09 14:34_
 
 ---

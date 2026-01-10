@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-30T00:54:12Z
 updated_at: 2023-10-30T02:00:10Z
 url: https://github.com/astral-sh/uv/issues/223
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add user feedback (e.g., progress bar) during resolution
@@ -36,10 +36,6 @@ _Removed from milestone `Feature complete` by @charliermarsh on 2023-10-30 00:54
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2023-10-30 00:54_
-
----
-
-_Referenced in [astral-sh/uv#225](../../astral-sh/uv/pulls/225.md) on 2023-10-30 01:57_
 
 ---
 

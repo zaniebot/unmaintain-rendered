@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-05T17:41:56Z
 updated_at: 2024-03-06T13:01:47Z
 url: https://github.com/astral-sh/uv/issues/2208
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Ignore Windows shims for (e.g.) `python3.12.exe`
@@ -48,14 +48,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-05 17:42_
 
 ---
 
-_Referenced in [astral-sh/uv#2105](../../astral-sh/uv/issues/2105.md) on 2024-03-05 17:42_
-
----
-
-_Referenced in [astral-sh/uv#2209](../../astral-sh/uv/pulls/2209.md) on 2024-03-05 17:53_
-
----
-
 _Closed by @charliermarsh on 2024-03-05 18:25_
 
 ---
@@ -63,9 +55,5 @@ _Closed by @charliermarsh on 2024-03-05 18:25_
 _Comment by @madig on 2024-03-06 13:01_
 
 I can confirm that 0.1.15 fixes the issue :) thanks for working on it!
-
----
-
-_Referenced in [astral-sh/uv#2264](../../astral-sh/uv/issues/2264.md) on 2024-03-07 06:24_
 
 ---

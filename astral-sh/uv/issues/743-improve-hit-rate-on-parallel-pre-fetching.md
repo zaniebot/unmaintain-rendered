@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-02T16:38:51Z
 updated_at: 2024-01-03T10:37:46Z
 url: https://github.com/astral-sh/uv/issues/743
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Improve hit-rate on parallel pre-fetching
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-02 16:38_
 ---
 
 _Label `performance` added by @charliermarsh on 2024-01-02 16:38_
-
----
-
-_Referenced in [astral-sh/uv#744](../../astral-sh/uv/pulls/744.md) on 2024-01-02 20:59_
 
 ---
 

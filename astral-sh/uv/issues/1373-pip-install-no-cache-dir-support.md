@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T22:30:53Z
 updated_at: 2024-02-15T23:26:17Z
 url: https://github.com/astral-sh/uv/issues/1373
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `pip install --no-cache-dir` support
@@ -47,10 +47,6 @@ Yes we can add a hidden alias for this, thanks for reporting!
 ---
 
 _Label `good first issue` added by @zanieb on 2024-02-15 22:37_
-
----
-
-_Referenced in [astral-sh/uv#1380](../../astral-sh/uv/pulls/1380.md) on 2024-02-15 23:09_
 
 ---
 

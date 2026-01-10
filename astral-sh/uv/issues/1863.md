@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-22T13:04:23Z
 updated_at: 2024-02-22T15:12:25Z
 url: https://github.com/astral-sh/uv/issues/1863
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv venv fails to create a venv if the directory if not empty
@@ -128,13 +128,5 @@ Maybe something like `uv venv --permissive` that skips the "directory already ex
 
 That would be safer than build-system `shutil.rmtree` shenanigans... :)
 
-
----
-
-_Referenced in [astral-sh/uv#1824](../../astral-sh/uv/pulls/1824.md) on 2024-02-25 17:57_
-
----
-
-_Referenced in [astral-sh/uv#2548](../../astral-sh/uv/pulls/2548.md) on 2024-03-19 19:04_
 
 ---

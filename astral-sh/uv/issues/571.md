@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-05T18:20:17Z
 updated_at: 2023-12-11T15:42:32Z
 url: https://github.com/astral-sh/uv/issues/571
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Modify install pipeline to download, build, and unzip in a single continuous loop
@@ -50,10 +50,6 @@ I have this working, now need to benchmark.
 _Comment by @charliermarsh on 2023-12-09 20:45_
 
 Performance is roughly identical, maybe a small speedup.
-
----
-
-_Referenced in [astral-sh/uv#605](../../astral-sh/uv/pulls/605.md) on 2023-12-10 01:31_
 
 ---
 

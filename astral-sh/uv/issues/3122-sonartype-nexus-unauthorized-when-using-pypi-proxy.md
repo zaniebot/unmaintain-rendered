@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-18T14:02:50Z
 updated_at: 2024-04-19T15:12:01Z
 url: https://github.com/astral-sh/uv/issues/3122
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Sonartype Nexus - Unauthorized when using PyPi Proxy
@@ -91,18 +91,6 @@ build-backend = "setuptools.build_meta"
 
 The output of command `RUST_LOG=trace uv pip sync requirements.txt --index-url https://nexus.internal/repository/pypi-group/simple --cache-dir .uv_cache --verbose` is uploaded here because it is too long:
 https://paste.ec/paste/8pAMIGZV#+p-t45+mOpgwb4QaRm9R08tenqqcbrDNzXXUR0NLw9M
-
----
-
-_Referenced in [astral-sh/uv#3123](../../astral-sh/uv/issues/3123.md) on 2024-04-18 16:09_
-
----
-
-_Referenced in [astral-sh/uv#3124](../../astral-sh/uv/pulls/3124.md) on 2024-04-18 17:53_
-
----
-
-_Referenced in [astral-sh/uv#3130](../../astral-sh/uv/pulls/3130.md) on 2024-04-18 22:44_
 
 ---
 

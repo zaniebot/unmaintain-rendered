@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-17T14:28:36Z
 updated_at: 2024-03-01T09:05:51Z
 url: https://github.com/astral-sh/uv/issues/1593
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Special case pip entrypoint names
@@ -152,18 +152,6 @@ _Assigned to @konstin by @konstin on 2024-02-20 18:58_
 
 ---
 
-_Referenced in [astral-sh/uv#1783](../../astral-sh/uv/issues/1783.md) on 2024-02-20 21:17_
-
----
-
-_Referenced in [pypa/packaging.python.org#1505](../../pypa/packaging.python.org/issues/1505.md) on 2024-02-21 09:59_
-
----
-
-_Referenced in [astral-sh/uv#1918](../../astral-sh/uv/pulls/1918.md) on 2024-02-23 15:29_
-
----
-
 _Closed by @konstin on 2024-02-23 18:01_
 
 ---
@@ -175,10 +163,6 @@ Reopening because the upstream fix breaks my workaround: https://github.com/pypa
 ---
 
 _Reopened by @konstin on 2024-02-23 22:50_
-
----
-
-_Referenced in [astral-sh/uv#1982](../../astral-sh/uv/pulls/1982.md) on 2024-02-26 13:18_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-12T14:43:27Z
 updated_at: 2024-04-01T21:32:02Z
 url: https://github.com/astral-sh/uv/issues/2383
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # pip incompatibility
@@ -55,10 +55,6 @@ _Closed by @charliermarsh on 2024-03-12 14:45_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-03-12 14:46_
-
----
-
-_Referenced in [astral-sh/uv#2596](../../astral-sh/uv/pulls/2596.md) on 2024-03-21 21:49_
 
 ---
 

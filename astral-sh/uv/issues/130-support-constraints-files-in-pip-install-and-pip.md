@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-19T02:28:33Z
 updated_at: 2023-10-20T00:24:07Z
 url: https://github.com/astral-sh/uv/issues/130
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support constraints files (in `pip-install` and `pip-compile`)
@@ -23,10 +23,6 @@ _No description provided._
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-19 04:35_
-
----
-
-_Referenced in [astral-sh/uv#144](../../astral-sh/uv/pulls/144.md) on 2023-10-20 00:21_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-15T21:48:37Z
 updated_at: 2024-02-16T14:36:38Z
 url: https://github.com/astral-sh/uv/issues/1364
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv venv`'s `-p` help has incorrectly rendered list
@@ -95,10 +95,6 @@ You can try `#[clap(verbatim_doc_comment)]` on the option. But it turns off some
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-02-16 05:06_
-
----
-
-_Referenced in [astral-sh/uv#1459](../../astral-sh/uv/pulls/1459.md) on 2024-02-16 09:22_
 
 ---
 

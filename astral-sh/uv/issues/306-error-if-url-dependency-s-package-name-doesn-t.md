@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-03T14:49:42Z
 updated_at: 2023-11-03T22:58:13Z
 url: https://github.com/astral-sh/uv/issues/306
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Error if URL dependency's package name doesn't match that of the source distribution
@@ -31,15 +31,7 @@ _Added to milestone `Initial release` by @charliermarsh on 2023-11-03 14:49_
 
 ---
 
-_Referenced in [astral-sh/uv#304](../../astral-sh/uv/pulls/304.md) on 2023-11-03 14:55_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-03 21:50_
-
----
-
-_Referenced in [astral-sh/uv#315](../../astral-sh/uv/pulls/315.md) on 2023-11-03 22:54_
 
 ---
 

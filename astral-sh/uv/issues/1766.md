@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-20T16:52:29Z
 updated_at: 2024-02-22T15:10:04Z
 url: https://github.com/astral-sh/uv/issues/1766
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Windows: symbolic link to the `exe` created by uv can not work
@@ -111,10 +111,6 @@ Error: The system cannot find the file specified.
 
 ---
 
-_Referenced in [astral-sh/rye#696](../../astral-sh/rye/issues/696.md) on 2024-02-20 16:52_
-
----
-
 _Comment by @MichaReiser on 2024-02-20 17:10_
 
 Thanks for reporting. Hmm, that's going to be interesting. What I understand from the error is that our shim fails to locate the `pyton.exe` path because it searches it relative to the executed command. We may need to check if the file is a symlink before resolving the python exe.
@@ -160,10 +156,6 @@ https://github.com/pypa/setuptools/blob/569fd7b0b587409f4043f127a766131a25b366dd
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-02-21 11:22_
-
----
-
-_Referenced in [astral-sh/uv#1803](../../astral-sh/uv/pulls/1803.md) on 2024-02-21 11:22_
 
 ---
 

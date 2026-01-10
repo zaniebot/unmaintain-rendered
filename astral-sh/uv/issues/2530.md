@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-18T23:38:23Z
 updated_at: 2024-03-20T00:54:06Z
 url: https://github.com/astral-sh/uv/issues/2530
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Package not importable post install without a process restart
@@ -89,10 +89,6 @@ It might be macOS only... per the original reporter, but is really weird because
 ~/git/github/tox-uv on  main [!?⇕]
 ❯ .venv/bin/python -c 'import editables'
 ```
-
----
-
-_Referenced in [tox-dev/tox-uv#41](../../tox-dev/tox-uv/issues/41.md) on 2024-03-18 23:38_
 
 ---
 
@@ -309,10 +305,6 @@ _Comment by @pfmoore on 2024-03-19 17:48_
 > Sorry to chime in without having read the thread, but FWIW on macOS we use reflinks 
 
 Thanks - I couldn't find any docs that stated what the defaults were on different platforms but I wondered if that might be a relevant difference.
-
----
-
-_Referenced in [astral-sh/uv#2545](../../astral-sh/uv/pulls/2545.md) on 2024-03-19 17:50_
 
 ---
 

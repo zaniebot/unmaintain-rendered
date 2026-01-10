@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-24T22:37:48Z
 updated_at: 2024-02-25T01:31:48Z
 url: https://github.com/astral-sh/uv/issues/1957
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv does not correctly sync `project.scripts` when changed
@@ -263,10 +263,6 @@ _Label `bug` added by @charliermarsh on 2024-02-24 22:40_
 _Comment by @charliermarsh on 2024-02-24 22:40_
 
 Thanks! I'll make this caching a little smarter.
-
----
-
-_Referenced in [astral-sh/uv#1959](../../astral-sh/uv/pulls/1959.md) on 2024-02-25 00:16_
 
 ---
 

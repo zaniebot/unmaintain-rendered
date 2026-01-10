@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-05T18:17:12Z
 updated_at: 2024-02-02T20:18:54Z
 url: https://github.com/astral-sh/uv/issues/569
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Store and respect zipped wheels throughout caching pipeline
@@ -31,10 +31,6 @@ _Label `enhancement` added by @charliermarsh on 2023-12-05 18:17_
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2023-12-05 18:17_
-
----
-
-_Referenced in [astral-sh/uv#571](../../astral-sh/uv/issues/571.md) on 2023-12-05 18:20_
 
 ---
 

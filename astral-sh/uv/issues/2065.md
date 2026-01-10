@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T00:31:17Z
 updated_at: 2024-03-04T23:51:30Z
 url: https://github.com/astral-sh/uv/issues/2065
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Confusing error message when a constraint is the cause of not finding a version
@@ -106,13 +106,5 @@ $ echo "apache-airflow==2.3.4" | uv pip compile - --constraint constraints-3.10.
 
 
 The confusing part is `apache-airflow==2.3.4 depends on pendulum==1.0.0` without mentioning that `pendulum==1.0.0` comes from the constraints. It would be more confusing if pendulum was a more distant transitive dependency.
-
----
-
-_Referenced in [astral-sh/uv#2685](../../astral-sh/uv/issues/2685.md) on 2024-03-27 03:41_
-
----
-
-_Referenced in [astral-sh/uv#1398](../../astral-sh/uv/issues/1398.md) on 2024-04-12 23:56_
 
 ---

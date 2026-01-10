@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-18T14:37:45Z
 updated_at: 2024-01-18T15:32:32Z
 url: https://github.com/astral-sh/uv/issues/965
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Puffin fails with python-build-standalone
@@ -80,14 +80,6 @@ _Label `bug` added by @konstin on 2024-01-18 14:37_
 
 ---
 
-_Referenced in [astral-sh/uv#966](../../astral-sh/uv/pulls/966.md) on 2024-01-18 15:30_
-
----
-
 _Closed by @konstin on 2024-01-18 15:32_
-
----
-
-_Referenced in [astral-sh/uv#1640](../../astral-sh/uv/issues/1640.md) on 2024-03-02 02:16_
 
 ---

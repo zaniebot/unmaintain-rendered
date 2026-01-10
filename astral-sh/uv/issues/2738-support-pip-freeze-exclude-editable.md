@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-30T17:34:59Z
 updated_at: 2024-03-31T17:59:31Z
 url: https://github.com/astral-sh/uv/issues/2738
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Support `pip freeze --exclude-editable`
@@ -47,10 +47,6 @@ _Comment by @hmc-cs-mdrissi on 2024-03-31 01:15_
 Unsafe is just historical naming. The name history has to do with originally only fixed set of packages were excluded and users could not avoid emitting others. The code evolved from that but intent of excluding them is unrelated to “safety”. The flag’s actual purpose is solely way for user to specify exclusions. I can say this with confidence as I was one who implemented the original pip-compile flag. Uv also calls it separate name that doesn’t mention unsafe.
 
 Yes it does require you to name all of your editables once. My own use case for that flag was solely to remove editables but instead of designing flag for very specific thing it was easier to make a broader flag that had that power.
-
----
-
-_Referenced in [astral-sh/uv#2740](../../astral-sh/uv/pulls/2740.md) on 2024-03-31 08:18_
 
 ---
 

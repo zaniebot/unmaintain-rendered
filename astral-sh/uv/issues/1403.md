@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-16T00:40:32Z
 updated_at: 2024-03-22T21:23:39Z
 url: https://github.com/astral-sh/uv/issues/1403
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Installing from local wheel fails when using pip install <path> 
@@ -55,18 +55,6 @@ Okay thanks!
 ---
 
 _Closed by @zanieb on 2024-02-16 00:55_
-
----
-
-_Referenced in [astral-sh/uv#1407](../../astral-sh/uv/issues/1407.md) on 2024-02-16 01:57_
-
----
-
-_Referenced in [astral-sh/uv#1414](../../astral-sh/uv/issues/1414.md) on 2024-02-16 02:35_
-
----
-
-_Referenced in [astral-sh/uv#2356](../../astral-sh/uv/issues/2356.md) on 2024-03-11 13:02_
 
 ---
 

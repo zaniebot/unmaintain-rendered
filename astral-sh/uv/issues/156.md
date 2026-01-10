@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-20T15:04:15Z
 updated_at: 2023-10-23T03:18:32Z
 url: https://github.com/astral-sh/uv/issues/156
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support multiple registries
@@ -29,10 +29,6 @@ So `--index-url` sets the index URL (which defaults to https://pypi.org/simple),
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-21 02:30_
-
----
-
-_Referenced in [astral-sh/uv#169](../../astral-sh/uv/pulls/169.md) on 2023-10-23 03:13_
 
 ---
 

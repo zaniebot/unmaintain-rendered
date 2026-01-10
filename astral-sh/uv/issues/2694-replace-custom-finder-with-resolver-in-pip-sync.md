@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-27T16:20:54Z
 updated_at: 2024-03-27T21:36:39Z
 url: https://github.com/astral-sh/uv/issues/2694
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Replace custom `Finder` with `Resolver` in `pip sync`
@@ -31,10 +31,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-27 16:20_
 ---
 
 _Label `internal` added by @charliermarsh on 2024-03-27 16:20_
-
----
-
-_Referenced in [astral-sh/uv#2696](../../astral-sh/uv/pulls/2696.md) on 2024-03-27 17:22_
 
 ---
 

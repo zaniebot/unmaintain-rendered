@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T07:18:14Z
 updated_at: 2024-02-16T23:48:36Z
 url: https://github.com/astral-sh/uv/issues/1447
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Missing support for recursive dep groups
@@ -671,18 +671,6 @@ _Comment by @charliermarsh on 2024-02-16 18:00_
 
 ---
 
-_Referenced in [astral-sh/uv#1531](../../astral-sh/uv/pulls/1531.md) on 2024-02-16 19:26_
-
----
-
-_Referenced in [inventree/InvenTree#6499](../../inventree/InvenTree/pulls/6499.md) on 2024-02-16 19:52_
-
----
-
 _Closed by @charliermarsh on 2024-02-16 23:48_
-
----
-
-_Referenced in [astral-sh/uv#1680](../../astral-sh/uv/issues/1680.md) on 2024-02-19 05:16_
 
 ---

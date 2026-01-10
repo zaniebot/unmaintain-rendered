@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-04T15:43:37Z
 updated_at: 2024-01-07T01:44:06Z
 url: https://github.com/astral-sh/uv/issues/782
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Migrate to anstream for colors
@@ -48,10 +48,6 @@ Looks like `anstream` and [`color-print`](https://docs.rs/color-print)?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-06 23:31_
-
----
-
-_Referenced in [astral-sh/uv#823](../../astral-sh/uv/pulls/823.md) on 2024-01-07 01:27_
 
 ---
 

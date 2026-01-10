@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-04-19T14:46:09Z
 updated_at: 2024-04-19T14:53:23Z
 url: https://github.com/astral-sh/uv/issues/3141
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Improve `pip freeze`
@@ -32,10 +32,6 @@ IMO, by these improvements, `freeze` and `list` would be the same mostly!
 
 ---
 
-_Referenced in [astral-sh/uv#2150](../../astral-sh/uv/issues/2150.md) on 2024-04-19 14:47_
-
----
-
 _Label `enhancement` added by @zanieb on 2024-04-19 14:53_
 
 ---
@@ -45,13 +41,5 @@ _Label `compatibility` added by @zanieb on 2024-04-19 14:53_
 ---
 
 _Label `cli` added by @zanieb on 2024-04-19 14:53_
-
----
-
-_Referenced in [astral-sh/uv#9550](../../astral-sh/uv/issues/9550.md) on 2024-12-01 10:19_
-
----
-
-_Referenced in [astral-sh/uv#17045](../../astral-sh/uv/pulls/17045.md) on 2025-12-09 10:20_
 
 ---

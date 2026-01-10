@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T21:25:47Z
 updated_at: 2024-02-17T18:53:39Z
 url: https://github.com/astral-sh/uv/issues/1355
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Fails `uv pip install --no-deps -e .` missing module `pathspec`
@@ -67,14 +67,6 @@ Maybe related? https://github.com/pypa/hatch/issues/432
 ---
 
 _Renamed from "Fails `uv pip install --no-deps -e .`" to "Fails `uv pip install --no-deps -e .` missing module `pathspec`" by @zanieb on 2024-02-15 21:47_
-
----
-
-_Referenced in [mesa/mesa#2038](../../mesa/mesa/pulls/2038.md) on 2024-02-16 08:01_
-
----
-
-_Referenced in [tox-dev/tox-uv#13](../../tox-dev/tox-uv/issues/13.md) on 2024-02-17 14:56_
 
 ---
 
@@ -577,14 +569,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-17 18:21_
 _Comment by @charliermarsh on 2024-02-17 18:21_
 
 I got this one.
-
----
-
-_Referenced in [astral-sh/uv#1588](../../astral-sh/uv/issues/1588.md) on 2024-02-17 18:23_
-
----
-
-_Referenced in [astral-sh/uv#1607](../../astral-sh/uv/pulls/1607.md) on 2024-02-17 18:31_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-26T11:05:09Z
 updated_at: 2024-03-26T14:38:15Z
 url: https://github.com/astral-sh/uv/issues/2669
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv` installs the wrong version of `multiprocess` for Python 3.11+
@@ -263,10 +263,6 @@ Installed 1 package in 2ms
 
 ---
 
-_Referenced in [sybrenjansen/mpire#127](../../sybrenjansen/mpire/issues/127.md) on 2024-03-26 14:07_
-
----
-
 _Comment by @ma-sadeghi on 2024-03-26 14:19_
 
 **Update**: I switched back and forth between Python 3.10 and 3.12, and I can no longer reproduce the issue, even without removing the cache. Feel free to close this issue, unless you think there's more to it. Thanks for the quick follow up!
@@ -280,9 +276,5 @@ That's weird! Must be something related to caching the interpreter state... But 
 ---
 
 _Closed by @charliermarsh on 2024-03-26 14:38_
-
----
-
-_Referenced in [datachain-ai/datachain#1256](../../datachain-ai/datachain/issues/1256.md) on 2025-07-28 16:56_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-22T13:08:22Z
 updated_at: 2023-12-29T16:08:09Z
 url: https://github.com/astral-sh/uv/issues/489
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Consider requires-python for path and url wheel
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:57:01Z
 _Issue opened by @konstin on 2023-11-22 13:08_
 
 For index wheel, we get the `requires-python` field in the simple api. For path and url wheels, we have to read their metadata to get the `Require-Python` field value, which tells us if this path distribution is even allowed with the current python version.
-
----
-
-_Referenced in [astral-sh/uv#488](../../astral-sh/uv/pulls/488.md) on 2023-11-22 13:10_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-19T09:46:38Z
 updated_at: 2024-02-19T21:26:13Z
 url: https://github.com/astral-sh/uv/issues/1683
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Trailing slash needed in URL link address in requirements.in when `uv pip compile requirements.in`
@@ -80,10 +80,6 @@ Do you have a public index that I can reproduce this with?
 _Comment by @charliermarsh on 2024-02-19 21:16_
 
 Nevermind, found one.
-
----
-
-_Referenced in [astral-sh/uv#1720](../../astral-sh/uv/pulls/1720.md) on 2024-02-19 21:21_
 
 ---
 

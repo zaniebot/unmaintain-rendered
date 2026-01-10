@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-10T10:47:15Z
 updated_at: 2024-04-10T14:25:30Z
 url: https://github.com/astral-sh/uv/issues/2958
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # installing private packages from a custom pypi repo -  requirements are unsatisfiable.
@@ -137,10 +137,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-10 13:56_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-04-10 13:56_
-
----
-
-_Referenced in [astral-sh/uv#2961](../../astral-sh/uv/pulls/2961.md) on 2024-04-10 14:13_
 
 ---
 

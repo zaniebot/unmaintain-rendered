@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-08T03:21:52Z
 updated_at: 2023-12-09T04:12:42Z
 url: https://github.com/astral-sh/uv/issues/591
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # In install summary, break ties by change kind
@@ -73,10 +73,6 @@ _Label `good first issue` added by @charliermarsh on 2023-12-08 03:24_
 _Comment by @konstin on 2023-12-08 08:21_
 
 I'd still go with `Updated {package} {version_or_url_old} to {version_or_url_new}`
-
----
-
-_Referenced in [astral-sh/uv#598](../../astral-sh/uv/pulls/598.md) on 2023-12-09 04:09_
 
 ---
 

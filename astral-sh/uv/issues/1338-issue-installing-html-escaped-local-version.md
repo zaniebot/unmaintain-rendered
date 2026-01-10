@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T20:57:29Z
 updated_at: 2024-02-16T06:15:52Z
 url: https://github.com/astral-sh/uv/issues/1338
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Issue installing HTML-escaped local version
@@ -88,14 +88,6 @@ _Comment by @charliermarsh on 2024-02-15 22:56_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-02-16 05:06_
-
----
-
-_Referenced in [astral-sh/uv#1440](../../astral-sh/uv/pulls/1440.md) on 2024-02-16 06:12_
-
----
-
-_Referenced in [astral-sh/uv#1441](../../astral-sh/uv/issues/1441.md) on 2024-02-16 06:15_
 
 ---
 

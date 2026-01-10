@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-05T01:01:26Z
 updated_at: 2024-03-12T12:56:43Z
 url: https://github.com/astral-sh/uv/issues/1248
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # panic in resolver during torture test
@@ -90,10 +90,6 @@ _Label `bug` added by @BurntSushi on 2024-02-05 01:01_
 ---
 
 _Renamed from "panic in resolver during tortue test" to "panic in resolver during torture test" by @AlexWaygood on 2024-02-05 12:06_
-
----
-
-_Referenced in [astral-sh/uv#2377](../../astral-sh/uv/issues/2377.md) on 2024-03-12 07:11_
 
 ---
 

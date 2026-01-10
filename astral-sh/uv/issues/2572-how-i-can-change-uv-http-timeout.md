@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-20T19:39:15Z
 updated_at: 2024-03-20T20:39:52Z
 url: https://github.com/astral-sh/uv/issues/2572
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # How i can change UV_HTTP_TIMEOUT ? 
@@ -276,9 +276,5 @@ _Closed by @Technolog796 on 2024-03-20 20:33_
 ---
 
 _Label `question` added by @zanieb on 2024-03-20 20:39_
-
----
-
-_Referenced in [stitionai/devika#101](../../stitionai/devika/pulls/101.md) on 2024-03-24 20:11_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-10T16:39:17Z
 updated_at: 2024-03-10T17:35:56Z
 url: https://github.com/astral-sh/uv/issues/2342
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Special case error message when `wheel` is missing with no build isolation
@@ -61,9 +61,5 @@ _Comment by @baggiponte on 2024-03-10 17:35_
 Also posting the solution provided by @charliermarsh : you just have to install `wheel`.
 
 (Also: will you eventually re-implement `wheel` so that `uv` can handle these cases?)
-
----
-
-_Referenced in [astral-sh/uv#4069](../../astral-sh/uv/issues/4069.md) on 2024-06-05 20:22_
 
 ---

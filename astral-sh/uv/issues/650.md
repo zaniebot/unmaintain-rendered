@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-14T14:39:36Z
 updated_at: 2023-12-16T21:14:36Z
 url: https://github.com/astral-sh/uv/issues/650
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add custom error messages for package name-less requirements
@@ -46,10 +46,6 @@ I wrote this during a 1:1. It'll be filled in later.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-15 04:17_
-
----
-
-_Referenced in [astral-sh/uv#669](../../astral-sh/uv/pulls/669.md) on 2023-12-16 21:11_
 
 ---
 

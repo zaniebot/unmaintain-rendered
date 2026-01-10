@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T21:03:18Z
 updated_at: 2024-03-08T14:58:47Z
 url: https://github.com/astral-sh/uv/issues/1666
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support alternative requirements file encodings
@@ -86,26 +86,10 @@ _Label `wontfix` added by @zanieb on 2024-02-19 00:16_
 
 ---
 
-_Referenced in [astral-sh/uv#2276](../../astral-sh/uv/issues/2276.md) on 2024-03-07 17:27_
-
----
-
-_Referenced in [astral-sh/uv#2283](../../astral-sh/uv/pulls/2283.md) on 2024-03-07 18:05_
-
----
-
 _Closed by @BurntSushi on 2024-03-08 14:10_
 
 ---
 
 _Label `wontfix` removed by @zanieb on 2024-03-08 14:58_
-
----
-
-_Referenced in [ofek/pyapp#75](../../ofek/pyapp/issues/75.md) on 2024-03-12 15:13_
-
----
-
-_Referenced in [astral-sh/uv#7733](../../astral-sh/uv/issues/7733.md) on 2024-09-27 09:24_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T19:25:30Z
 updated_at: 2024-03-19T01:02:20Z
 url: https://github.com/astral-sh/uv/issues/1530
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip compile` updates hashes in lockfile without `--upgrade`
@@ -178,18 +178,6 @@ Planning to fix this today.
 
 ---
 
-_Referenced in [astral-sh/uv#2532](../../astral-sh/uv/pulls/2532.md) on 2024-03-19 00:14_
-
----
-
 _Closed by @charliermarsh on 2024-03-19 01:02_
-
----
-
-_Referenced in [opendatahub-io/notebooks#1882](../../opendatahub-io/notebooks/issues/1882.md) on 2025-08-11 19:38_
-
----
-
-_Referenced in [astral-sh/uv#16104](../../astral-sh/uv/issues/16104.md) on 2025-10-02 17:22_
 
 ---

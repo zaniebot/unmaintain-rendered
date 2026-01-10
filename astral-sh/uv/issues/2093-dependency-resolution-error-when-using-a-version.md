@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-29T18:29:44Z
 updated_at: 2024-04-01T21:31:52Z
 url: https://github.com/astral-sh/uv/issues/2093
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Dependency resolution error when using a version not yet on PyPI
@@ -54,10 +54,6 @@ _Closed by @charliermarsh on 2024-02-29 18:59_
 _Comment by @Andrew-S-Rosen on 2024-02-29 19:04_
 
 Thanks! You're right. That's the same issue, I believe. 
-
----
-
-_Referenced in [astral-sh/uv#2596](../../astral-sh/uv/pulls/2596.md) on 2024-03-21 21:49_
 
 ---
 

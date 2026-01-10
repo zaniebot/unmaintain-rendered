@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-07T01:58:27Z
 updated_at: 2023-10-09T18:14:34Z
 url: https://github.com/astral-sh/uv/issues/36
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # How do we handle uninstalls?
@@ -31,10 +31,6 @@ Actually looks fairly straightforward. You just iterate over the entries in the 
 _Comment by @konstin on 2023-10-09 12:05_
 
 `.pyc` files should also be part of the RECORD
-
----
-
-_Referenced in [astral-sh/uv#77](../../astral-sh/uv/pulls/77.md) on 2023-10-09 18:06_
 
 ---
 

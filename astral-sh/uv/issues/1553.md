@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T23:37:15Z
 updated_at: 2024-02-17T00:15:26Z
 url: https://github.com/astral-sh/uv/issues/1553
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Wheel names should be URL decoded before validating
@@ -60,10 +60,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-16 23:51_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-02-17 00:04_
-
----
-
-_Referenced in [astral-sh/uv#1555](../../astral-sh/uv/pulls/1555.md) on 2024-02-17 00:04_
 
 ---
 

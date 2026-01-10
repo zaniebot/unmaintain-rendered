@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T12:33:32Z
 updated_at: 2024-03-04T01:54:09Z
 url: https://github.com/astral-sh/uv/issues/1484
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # How can I integrate `tox` into `uv`?
@@ -99,17 +99,9 @@ tox devs published owns tox-uv plugin https://github.com/tox-dev/tox-uv (but it 
 
 ---
 
-_Referenced in [tox-dev/tox-uv#1](../../tox-dev/tox-uv/issues/1.md) on 2024-02-16 17:18_
-
----
-
 _Comment by @gaborbernat on 2024-02-16 20:40_
 
 @charliermarsh now that https://pypi.org/project/tox-uv/ is launched, I think we can close this. Unless you want to document it somewhere, the advice to use that. sdists seem to still be troublesome occasionally, but otherwise work well.
-
----
-
-_Referenced in [astral-sh/uv#1585](../../astral-sh/uv/issues/1585.md) on 2024-02-17 12:14_
 
 ---
 

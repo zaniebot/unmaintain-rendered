@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T09:29:49Z
 updated_at: 2024-03-27T01:12:31Z
 url: https://github.com/astral-sh/uv/issues/1461
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip compile|install` can't handle `--no-binary lxml` option in requirements file
@@ -118,14 +118,6 @@ I have it automated on my containers, so I'll make some workaround just for some
 
 ---
 
-_Referenced in [astral-sh/uv#1687](../../astral-sh/uv/issues/1687.md) on 2024-02-19 14:30_
-
----
-
-_Referenced in [astral-sh/uv#2594](../../astral-sh/uv/issues/2594.md) on 2024-03-21 17:39_
-
----
-
 _Comment by @feelmyears on 2024-03-26 22:16_
 
 Hi is there any update on supporting `--no-binary` in a requirements file?
@@ -142,14 +134,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-26 22:36_
 
 ---
 
-_Referenced in [astral-sh/uv#2680](../../astral-sh/uv/pulls/2680.md) on 2024-03-27 00:01_
-
----
-
 _Closed by @charliermarsh on 2024-03-27 01:12_
-
----
-
-_Referenced in [astral-sh/uv#4420](../../astral-sh/uv/issues/4420.md) on 2024-06-19 21:51_
 
 ---

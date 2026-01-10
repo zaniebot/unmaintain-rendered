@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T05:13:01Z
 updated_at: 2024-02-16T14:24:30Z
 url: https://github.com/astral-sh/uv/issues/1431
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Docs: `contributing.md` Python section anchor does not exist
@@ -38,10 +38,6 @@ _Label `documentation` added by @zanieb on 2024-02-16 05:16_
 ---
 
 _Label `good first issue` added by @zanieb on 2024-02-16 05:16_
-
----
-
-_Referenced in [astral-sh/uv#1434](../../astral-sh/uv/pulls/1434.md) on 2024-02-16 05:24_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T15:17:03Z
 updated_at: 2024-02-28T04:21:56Z
 url: https://github.com/astral-sh/uv/issues/1698
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Weird behavior on windows when creating uv venv
@@ -136,10 +136,6 @@ Relates to https://github.com/astral-sh/uv/issues/1693
 
 ---
 
-_Referenced in [astral-sh/uv#1693](../../astral-sh/uv/issues/1693.md) on 2024-02-19 15:19_
-
----
-
 _Comment by @zanieb on 2024-02-19 15:49_
 
 Hi! I We don't seed `pip` by default so when you run `pip list` you're not running a command in your environment. I think you're just seeing whatever global `pip` has there. You can run `uv venv --seed` to get `pip` which should resolve this.
@@ -168,9 +164,5 @@ Not entirely a solution, but `uv pip freeze` work fine
 ---
 
 _Closed by @charliermarsh on 2024-02-28 04:21_
-
----
-
-_Referenced in [astral-sh/uv#12265](../../astral-sh/uv/issues/12265.md) on 2025-03-18 14:43_
 
 ---

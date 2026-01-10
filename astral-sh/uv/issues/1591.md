@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T14:21:39Z
 updated_at: 2024-03-19T20:02:50Z
 url: https://github.com/astral-sh/uv/issues/1591
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv self update
@@ -51,18 +51,10 @@ This is on the roadmap, probably via [`cargo-dist`](https://github.com/axodotdev
 
 ---
 
-_Referenced in [astral-sh/uv#2228](../../astral-sh/uv/pulls/2228.md) on 2024-03-06 05:13_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-06 05:20_
 
 ---
 
 _Closed by @charliermarsh on 2024-03-19 20:02_
-
----
-
-_Referenced in [casey/just#2006](../../casey/just/issues/2006.md) on 2024-04-17 10:02_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T22:14:10Z
 updated_at: 2024-02-23T07:17:25Z
 url: https://github.com/astral-sh/uv/issues/1371
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # HTTP 401 Unauthorized for private package index
@@ -47,15 +47,7 @@ Thank you! Will take a look.
 
 ---
 
-_Referenced in [astral-sh/uv#1388](../../astral-sh/uv/issues/1388.md) on 2024-02-15 23:45_
-
----
-
 _Label `index` added by @zanieb on 2024-02-15 23:47_
-
----
-
-_Referenced in [astral-sh/uv#1458](../../astral-sh/uv/issues/1458.md) on 2024-02-16 09:22_
 
 ---
 
@@ -80,10 +72,6 @@ Yep this is a priority for me next week!
 _Comment by @MarcSkovMadsen on 2024-02-19 11:09_
 
 +1. Same issue for me.
-
----
-
-_Referenced in [astral-sh/uv#1688](../../astral-sh/uv/issues/1688.md) on 2024-02-19 12:31_
 
 ---
 
@@ -162,10 +150,6 @@ For my own sanity, note this is also being tracked in https://github.com/astral-
 
 ---
 
-_Referenced in [astral-sh/uv#1886](../../astral-sh/uv/pulls/1886.md) on 2024-02-22 22:20_
-
----
-
 _Comment by @zanieb on 2024-02-22 22:31_
 
 A fix is up at https://github.com/astral-sh/uv/pull/1886 if anyone wants to give it a try against a private index.
@@ -187,9 +171,5 @@ _Closed by @zanieb on 2024-02-23 00:10_
 _Comment by @exs-avianello on 2024-02-23 07:17_
 
 I can confirm as well ❤️ Thank you so much!
-
----
-
-_Referenced in [astral-sh/uv#1981](../../astral-sh/uv/issues/1981.md) on 2024-02-26 11:38_
 
 ---

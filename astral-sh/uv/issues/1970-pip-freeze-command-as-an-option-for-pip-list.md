@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-25T20:24:47Z
 updated_at: 2024-03-06T01:46:14Z
 url: https://github.com/astral-sh/uv/issues/1970
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `pip freeze` command as an option for `pip list`
@@ -31,10 +31,6 @@ We should add `--format=freeze`, probably, to make it compatible with `pip`.
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-02-26 03:35_
-
----
-
-_Referenced in [astral-sh/uv#1401](../../astral-sh/uv/issues/1401.md) on 2024-02-26 11:33_
 
 ---
 
@@ -61,10 +57,6 @@ pip freeze | grep PACKAGE
 ```
 
 I'll add the freeze format in a follow-up PR
-
----
-
-_Referenced in [astral-sh/uv#1998](../../astral-sh/uv/pulls/1998.md) on 2024-02-26 22:56_
 
 ---
 

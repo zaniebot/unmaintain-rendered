@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-11T14:18:41Z
 updated_at: 2024-03-21T18:48:58Z
 url: https://github.com/astral-sh/uv/issues/2357
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `requirements-txt` should respect our `Reqwest` middleware
@@ -24,18 +24,6 @@ I changed this in https://github.com/astral-sh/uv/pull/2350 to make the client l
 ---
 
 _Label `internal` added by @charliermarsh on 2024-03-11 14:18_
-
----
-
-_Referenced in [astral-sh/uv#2425](../../astral-sh/uv/pulls/2425.md) on 2024-03-13 22:10_
-
----
-
-_Referenced in [astral-sh/uv#2431](../../astral-sh/uv/pulls/2431.md) on 2024-03-13 22:11_
-
----
-
-_Referenced in [astral-sh/uv#2434](../../astral-sh/uv/pulls/2434.md) on 2024-03-15 17:12_
 
 ---
 

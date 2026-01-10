@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-27T10:21:09Z
 updated_at: 2024-03-08T16:02:33Z
 url: https://github.com/astral-sh/uv/issues/2009
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Use Metadata 2.2+ for source distributions
@@ -61,10 +61,6 @@ I might do this because it looks fun.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-08 02:22_
-
----
-
-_Referenced in [astral-sh/uv#2293](../../astral-sh/uv/pulls/2293.md) on 2024-03-08 02:51_
 
 ---
 

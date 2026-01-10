@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T01:01:04Z
 updated_at: 2024-03-06T20:48:32Z
 url: https://github.com/astral-sh/uv/issues/1405
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support .netrc files
@@ -85,14 +85,6 @@ In my situation, the error we need to skip is an HTTP 401.
 
 ---
 
-_Referenced in [astral-sh/uv#2241](../../astral-sh/uv/pulls/2241.md) on 2024-03-06 15:35_
-
----
-
 _Closed by @charliermarsh on 2024-03-06 20:48_
-
----
-
-_Referenced in [astral-sh/uv#3338](../../astral-sh/uv/issues/3338.md) on 2024-05-02 13:21_
 
 ---

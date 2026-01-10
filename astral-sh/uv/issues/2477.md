@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-15T17:27:57Z
 updated_at: 2024-03-17T16:04:34Z
 url: https://github.com/astral-sh/uv/issues/2477
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Bug: Prioritize newest manylinux platform tags
@@ -111,14 +111,6 @@ We’re probably just pushing the tags in version order, but we should be iterat
 
 ---
 
-_Referenced in [astral-sh/uv#2482](../../astral-sh/uv/pulls/2482.md) on 2024-03-15 20:47_
-
----
-
-_Referenced in [astral-sh/uv#2483](../../astral-sh/uv/pulls/2483.md) on 2024-03-15 20:51_
-
----
-
 _Comment by @zanieb on 2024-03-15 20:52_
 
 I've written a test case demonstrating this in #2482 and a fix is up at https://github.com/astral-sh/uv/pull/2483 — it'd be nice to have coverage for this in a resolver test too.
@@ -132,9 +124,5 @@ _Closed by @zanieb on 2024-03-16 22:33_
 _Comment by @raybellwaves on 2024-03-17 16:04_
 
 many (linux) thanks!
-
----
-
-_Referenced in [rapidsai/docs#510](../../rapidsai/docs/pulls/510.md) on 2024-04-14 02:53_
 
 ---

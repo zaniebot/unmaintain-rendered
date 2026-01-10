@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-21T13:19:41Z
 updated_at: 2024-04-10T19:09:05Z
 url: https://github.com/astral-sh/uv/issues/474
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support hash-checking mode in `pip-sync`
@@ -39,19 +39,11 @@ _Renamed from "Support Hash-checking mode in `pip-sync`" to "Support hash-checki
 
 ---
 
-_Referenced in [astral-sh/uv#888](../../astral-sh/uv/issues/888.md) on 2024-01-11 17:27_
-
----
-
 _Label `wish` added by @charliermarsh on 2024-01-11 17:30_
 
 ---
 
 _Added to milestone `Feature complete` by @charliermarsh on 2024-01-11 17:30_
-
----
-
-_Referenced in [astral-sh/uv#1533](../../astral-sh/uv/issues/1533.md) on 2024-02-16 19:34_
 
 ---
 
@@ -63,22 +55,6 @@ _Label `security` added by @zanieb on 2024-02-17 04:18_
 
 ---
 
-_Referenced in [gip-inclusion/les-emplois#3682](../../gip-inclusion/les-emplois/pulls/3682.md) on 2024-02-19 08:50_
-
----
-
-_Referenced in [astral-sh/uv#1951](../../astral-sh/uv/issues/1951.md) on 2024-02-24 15:33_
-
----
-
-_Referenced in [dagger/dagger#6884](../../dagger/dagger/pulls/6884.md) on 2024-03-30 11:06_
-
----
-
-_Referenced in [richardsheridan/trio-parallel#404](../../richardsheridan/trio-parallel/issues/404.md) on 2024-04-02 02:14_
-
----
-
 _Comment by @charliermarsh on 2024-04-04 20:55_
 
 I've started to work on this. Doing something I've never done, sharing my existing notes on how it works: https://astral-sh.notion.site/Hash-checking-in-uv-fd27f5a51e8f4f5f8547a183fbf3e006
@@ -86,10 +62,6 @@ I've started to work on this. Doing something I've never done, sharing my existi
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-04 20:55_
-
----
-
-_Referenced in [astral-sh/uv#2945](../../astral-sh/uv/pulls/2945.md) on 2024-04-09 20:15_
 
 ---
 

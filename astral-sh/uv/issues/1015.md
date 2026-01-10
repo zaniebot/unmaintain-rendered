@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T20:13:27Z
 updated_at: 2024-01-19T22:29:12Z
 url: https://github.com/astral-sh/uv/issues/1015
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Re-enable support for S390x and PowerPC wheels
@@ -24,10 +24,6 @@ See https://github.com/astral-sh/puffin/pull/1012 which enabled support for ARM,
 ---
 
 _Label `bug` added by @charliermarsh on 2024-01-19 20:14_
-
----
-
-_Referenced in [astral-sh/uv#1017](../../astral-sh/uv/pulls/1017.md) on 2024-01-19 22:29_
 
 ---
 

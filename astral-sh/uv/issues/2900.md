@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-08T12:06:55Z
 updated_at: 2024-04-08T17:18:55Z
 url: https://github.com/astral-sh/uv/issues/2900
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv panics when trying to create more than one RequirementsSource from a file without `-r`
@@ -118,10 +118,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2024-04-08 13:29_
 _Comment by @charliermarsh on 2024-04-08 13:42_
 
 My read is that `set_handler` _will_ return an error if called twice. But if there's an existing handler set by the system, it will overwrite it. So I think we should proceed with your change. PR welcome.
-
----
-
-_Referenced in [astral-sh/uv#2903](../../astral-sh/uv/pulls/2903.md) on 2024-04-08 15:16_
 
 ---
 

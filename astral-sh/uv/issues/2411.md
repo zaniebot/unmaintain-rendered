@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-13T13:22:11Z
 updated_at: 2024-03-14T01:45:21Z
 url: https://github.com/astral-sh/uv/issues/2411
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Installing some old dependencies migh fail local builds
@@ -182,9 +182,5 @@ If `--no-build` is an option then yes, we can close it, I just thought that in t
 ---
 
 _Closed by @potiuk on 2024-03-14 01:45_
-
----
-
-_Referenced in [astral-sh/uv#2821](../../astral-sh/uv/issues/2821.md) on 2024-04-04 18:02_
 
 ---

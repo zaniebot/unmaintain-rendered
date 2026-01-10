@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-19T14:04:16Z
 updated_at: 2023-10-31T19:44:41Z
 url: https://github.com/astral-sh/uv/issues/137
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support `--extra` flag in `pip-compile`
@@ -69,10 +69,6 @@ Probably worth supporting.
 
 ---
 
-_Referenced in [astral-sh/uv#244](../../astral-sh/uv/issues/244.md) on 2023-10-30 22:19_
-
----
-
 _Comment by @zanieb on 2023-10-31 19:44_
 
 Done in #239 
@@ -80,9 +76,5 @@ Done in #239
 ---
 
 _Closed by @zanieb on 2023-10-31 19:44_
-
----
-
-_Referenced in [astral-sh/uv#262](../../astral-sh/uv/pulls/262.md) on 2023-10-31 19:58_
 
 ---

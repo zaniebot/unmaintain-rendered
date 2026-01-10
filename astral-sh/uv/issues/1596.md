@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-17T15:27:48Z
 updated_at: 2024-02-21T03:12:22Z
 url: https://github.com/astral-sh/uv/issues/1596
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Use async zip streaming for non-range-request supporting registries
@@ -59,10 +59,6 @@ _Label `index` added by @zanieb on 2024-02-18 07:53_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-20 14:58_
-
----
-
-_Referenced in [astral-sh/uv#1792](../../astral-sh/uv/pulls/1792.md) on 2024-02-21 03:01_
 
 ---
 

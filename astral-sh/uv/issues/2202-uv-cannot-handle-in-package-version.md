@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-05T13:57:31Z
 updated_at: 2024-03-05T19:26:55Z
 url: https://github.com/astral-sh/uv/issues/2202
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv cannot handle `+` in package version
@@ -75,10 +75,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-05 19:20_
 
 ---
 
-_Referenced in [astral-sh/uv#2215](../../astral-sh/uv/pulls/2215.md) on 2024-03-05 19:21_
-
----
-
 _Comment by @charliermarsh on 2024-03-05 19:22_
 
 The proximate issue is fixed in https://github.com/astral-sh/uv/pull/2215, but there are a few other problems here:
@@ -95,9 +91,5 @@ Tracking the second issue in https://github.com/astral-sh/uv/issues/2216.
 ---
 
 _Closed by @charliermarsh on 2024-03-05 19:26_
-
----
-
-_Referenced in [astral-sh/uv#2216](../../astral-sh/uv/issues/2216.md) on 2024-03-05 22:05_
 
 ---

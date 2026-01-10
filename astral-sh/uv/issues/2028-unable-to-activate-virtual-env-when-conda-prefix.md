@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-28T00:25:55Z
 updated_at: 2024-03-20T20:14:45Z
 url: https://github.com/astral-sh/uv/issues/2028
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Unable to activate VIRTUAL_ENV when CONDA_PREFIX exists
@@ -118,10 +118,6 @@ When conda is activated it can be considered a globally available Python, theref
 This has come up a few of times on pip issues, I'll try and find the discussion .
 
 But anecdotally when I was a heavy conda user this is what I would have expected.
-
----
-
-_Referenced in [astral-sh/uv#2574](../../astral-sh/uv/pulls/2574.md) on 2024-03-20 19:51_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-14T03:17:07Z
 updated_at: 2024-03-21T12:53:51Z
 url: https://github.com/astral-sh/uv/issues/2445
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # pyinstaller installed by uv cannot work on Windows
@@ -482,17 +482,5 @@ No worries and you're right. `uv` should do a better job at warning when it's us
 ---
 
 _Closed by @MichaReiser on 2024-03-21 12:53_
-
----
-
-_Referenced in [astral-sh/uv#2587](../../astral-sh/uv/issues/2587.md) on 2024-03-21 12:57_
-
----
-
-_Referenced in [astral-sh/uv#4548](../../astral-sh/uv/issues/4548.md) on 2024-06-26 14:05_
-
----
-
-_Referenced in [astral-sh/uv#8649](../../astral-sh/uv/pulls/8649.md) on 2024-10-29 11:23_
 
 ---

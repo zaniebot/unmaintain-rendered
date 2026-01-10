@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-05T16:56:36Z
 updated_at: 2024-02-05T17:15:46Z
 url: https://github.com/astral-sh/uv/issues/1252
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Warn about yanked package in pip install
@@ -52,10 +52,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-05 17:04_
 _Comment by @charliermarsh on 2024-02-05 17:10_
 
 Fixing.
-
----
-
-_Referenced in [astral-sh/uv#1253](../../astral-sh/uv/pulls/1253.md) on 2024-02-05 17:11_
 
 ---
 

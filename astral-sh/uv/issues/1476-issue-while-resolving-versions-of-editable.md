@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T10:29:57Z
 updated_at: 2024-04-01T21:31:40Z
 url: https://github.com/astral-sh/uv/issues/1476
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Issue while resolving versions of editable packages.  `uv pip install  -e {package}`
@@ -53,10 +53,6 @@ This is the same as https://github.com/astral-sh/uv/issues/1661. (Gonna merge in
 ---
 
 _Closed by @charliermarsh on 2024-02-22 03:14_
-
----
-
-_Referenced in [astral-sh/uv#2596](../../astral-sh/uv/pulls/2596.md) on 2024-03-21 21:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T03:50:40Z
 updated_at: 2024-03-27T22:17:10Z
 url: https://github.com/astral-sh/uv/issues/1853
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv pip install` does not install `git+ssh://` dependency declared in `setup.cfg`
@@ -105,10 +105,6 @@ We made this as a safety choice, but perhaps we can reconsider or allow opt-in t
 
 ---
 
-_Referenced in [astral-sh/uv#1855](../../astral-sh/uv/issues/1855.md) on 2024-02-22 04:34_
-
----
-
 _Comment by @charliermarsh on 2024-02-22 04:35_
 
 I also consider it a correctness issue. Imagine you declare a direct dependency on Flask at 3.0.0, but then some other package deep in the tree declares a direct URL dependency on some other Flask, that also resolves to a version called 3.0.0. What happens?
@@ -128,10 +124,6 @@ It seems that if `pip` is presented with two conflicting VCS requirements, it th
 The project I have been most interested in pointing `uv` at (which has created most of my filed issues in one way or another) does actually have a requirements workflow, but it isn't really load-bearing in this way yet. That might end up being okay since my interest is less in `uv pip install` than in `uv pip compile` _anyway_, but I'm still assessing where the sharp edges of that speculative workflow are going to be once the "just bugs" stuff is sorted out.
 
 As a user, I'd say that if `uv` has a different philosophy from `pip` about whether "transitive" (in the sense of _"it's in the project metadata"_ as distinguished from _"my project depends on something else that has a VCS dep"_) dependencies of this sort are allowed, it's definitely something I would want flagged to me as a fundamentally different behavior.
-
----
-
-_Referenced in [astral-sh/uv#1808](../../astral-sh/uv/issues/1808.md) on 2024-02-22 14:49_
 
 ---
 
@@ -170,18 +162,10 @@ This will have the same fix as https://github.com/astral-sh/uv/issues/2643.
 
 ---
 
-_Referenced in [astral-sh/uv#2671](../../astral-sh/uv/pulls/2671.md) on 2024-03-26 16:03_
-
----
-
 _Closed by @charliermarsh on 2024-03-27 22:17_
 
 ---
 
 _Closed by @charliermarsh on 2024-03-27 22:17_
-
----
-
-_Referenced in [thinkingmachines/geowrangler#236](../../thinkingmachines/geowrangler/pulls/236.md) on 2024-07-04 11:02_
 
 ---

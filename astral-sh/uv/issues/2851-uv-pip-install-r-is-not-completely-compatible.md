@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-06T12:49:51Z
 updated_at: 2024-04-06T14:27:50Z
 url: https://github.com/astral-sh/uv/issues/2851
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip install -r is not completely compatible with the original pip install -r - does not accept extra options
@@ -77,9 +77,5 @@ _Closed by @charliermarsh on 2024-04-06 13:59_
 _Comment by @flyaroundme on 2024-04-06 14:27_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/uv#8558](../../astral-sh/uv/issues/8558.md) on 2025-10-08 18:46_
 
 ---

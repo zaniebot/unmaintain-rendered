@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-11-19T14:02:16Z
 updated_at: 2023-12-27T13:53:22Z
 url: https://github.com/astral-sh/uv/issues/455
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support relative urls in index types
@@ -57,10 +57,6 @@ Thanks will do!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-24 17:05_
-
----
-
-_Referenced in [astral-sh/uv#721](../../astral-sh/uv/pulls/721.md) on 2023-12-24 20:45_
 
 ---
 

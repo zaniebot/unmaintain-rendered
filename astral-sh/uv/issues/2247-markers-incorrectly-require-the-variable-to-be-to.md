@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-06T18:08:45Z
 updated_at: 2024-03-07T12:22:17Z
 url: https://github.com/astral-sh/uv/issues/2247
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Markers (incorrectly?) require the variable to be to the left of the operator
@@ -49,10 +49,6 @@ _Probably_ a bug but I defer to @konstin.
 ---
 
 _Assigned to @konstin by @konstin on 2024-03-07 11:38_
-
----
-
-_Referenced in [astral-sh/uv#2273](../../astral-sh/uv/pulls/2273.md) on 2024-03-07 12:12_
 
 ---
 

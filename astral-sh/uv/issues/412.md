@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-13T13:55:31Z
 updated_at: 2023-12-24T16:04:02Z
 url: https://github.com/astral-sh/uv/issues/412
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support the html PEP 503 simple repository api
@@ -60,18 +60,6 @@ _Label `wish` added by @charliermarsh on 2023-11-13 14:29_
 
 ---
 
-_Referenced in [astral-sh/uv#428](../../astral-sh/uv/pulls/428.md) on 2023-11-15 18:53_
-
----
-
-_Referenced in [astral-sh/uv#705](../../astral-sh/uv/issues/705.md) on 2023-12-19 18:08_
-
----
-
-_Referenced in [astral-sh/uv#706](../../astral-sh/uv/issues/706.md) on 2023-12-19 18:45_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-21 02:49_
 
 ---
@@ -79,10 +67,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-12-21 02:49_
 _Comment by @charliermarsh on 2023-12-21 02:49_
 
 I'm on this one. Will take me a bit.
-
----
-
-_Referenced in [astral-sh/uv#719](../../astral-sh/uv/pulls/719.md) on 2023-12-24 15:24_
 
 ---
 

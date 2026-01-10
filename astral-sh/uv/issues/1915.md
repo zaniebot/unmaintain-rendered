@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T15:06:53Z
 updated_at: 2024-02-24T22:15:02Z
 url: https://github.com/astral-sh/uv/issues/1915
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Difference between `lowest` and `lowest-direct`?
@@ -60,10 +60,6 @@ How about this:
 By default, uv follows the standard Python dependency resolution strategy of preferring the latest compatible version of each package. For example, `uv pip install flask>=2.0.0` will install the latest version of Flask (at time of writing: `3.0.0`).
 
 However, you can configure uv's resolution strategy to support alternative workflows. By using `--resolution=lowest`, uv will install the **lowest** compatible versions for all dependencies, both **direct** and **transitive**. Alternatively, `--resolution=lowest-direct` focuses only on **direct** dependencies, opting for their **lowest** compatible versions, while using **latest** compatible versions for **transitive** dependencies. This distinction can be particularly useful for library authors who wish to test against the lowest supported versions of direct dependencies without restricting the versions of transitive dependencies.
-
----
-
-_Referenced in [astral-sh/uv#1954](../../astral-sh/uv/pulls/1954.md) on 2024-02-24 19:28_
 
 ---
 

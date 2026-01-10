@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-01T14:55:37Z
 updated_at: 2024-03-01T16:00:46Z
 url: https://github.com/astral-sh/uv/issues/2112
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip install --resolution lowest-direct not working with in editable installs
@@ -127,10 +127,6 @@ Fixing now.
 _Comment by @tlambert03 on 2024-03-01 15:18_
 
 you're awesome
-
----
-
-_Referenced in [astral-sh/uv#2114](../../astral-sh/uv/pulls/2114.md) on 2024-03-01 15:27_
 
 ---
 

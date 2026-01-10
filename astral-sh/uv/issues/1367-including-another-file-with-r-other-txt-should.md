@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T21:58:45Z
 updated_at: 2024-02-16T04:19:44Z
 url: https://github.com/astral-sh/uv/issues/1367
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Including another file with `-r other.txt` should resolve relative to the containing file
@@ -66,10 +66,6 @@ Note that pip-compile also matches pip behaviour, resolving relative to the file
 
 ---
 
-_Referenced in [astral-sh/uv#1416](../../astral-sh/uv/issues/1416.md) on 2024-02-16 02:54_
-
----
-
 _Comment by @charliermarsh on 2024-02-16 02:57_
 
 Okay, I think the reason I was confused is that relative directories (like `-e ../..`) are interpreted relative to the current working directory. But it looks like requirements and constraints files are interpreted relative to the containing file.
@@ -88,14 +84,6 @@ Will fix tonight.
 
 ---
 
-_Referenced in [astral-sh/uv#1421](../../astral-sh/uv/pulls/1421.md) on 2024-02-16 03:57_
-
----
-
 _Closed by @charliermarsh on 2024-02-16 04:19_
-
----
-
-_Referenced in [astral-sh/uv#1470](../../astral-sh/uv/issues/1470.md) on 2024-02-16 10:57_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-02T03:19:55Z
 updated_at: 2023-11-07T14:17:33Z
 url: https://github.com/astral-sh/uv/issues/287
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add user-facing feedback when fetching Git dependencies
@@ -28,10 +28,6 @@ _Label `enhancement` added by @charliermarsh on 2023-11-02 03:19_
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2023-11-02 03:19_
-
----
-
-_Referenced in [astral-sh/uv#298](../../astral-sh/uv/issues/298.md) on 2023-11-02 19:13_
 
 ---
 
@@ -106,10 +102,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-06 21:06_
 _Comment by @charliermarsh on 2023-11-06 21:06_
 
 Gonna add something simple here to at least wire up the data.
-
----
-
-_Referenced in [astral-sh/uv#347](../../astral-sh/uv/pulls/347.md) on 2023-11-06 22:41_
 
 ---
 

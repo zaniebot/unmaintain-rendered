@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-06T07:17:48Z
 updated_at: 2024-03-06T13:32:08Z
 url: https://github.com/astral-sh/uv/issues/2232
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # pip_list tests fail (padding substitution doesn't work?)
@@ -241,10 +241,6 @@ $1 = "file:///var/tmp/portage/dev\\-python/uv\\-0\\.1\\.13/work/uv\\-0\\.1\\.13/
 _Comment by @mgorny on 2024-03-06 09:46_
 
 I'm going to try making a pull request.
-
----
-
-_Referenced in [astral-sh/uv#2237](../../astral-sh/uv/pulls/2237.md) on 2024-03-06 10:03_
 
 ---
 

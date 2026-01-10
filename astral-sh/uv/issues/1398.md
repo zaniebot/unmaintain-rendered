@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T00:07:41Z
 updated_at: 2024-04-17T00:18:31Z
 url: https://github.com/astral-sh/uv/issues/1398
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # "Slow" performance resolution for requirements
@@ -121,14 +121,6 @@ _Label `resolver` added by @zanieb on 2024-02-16 14:57_
 
 ---
 
-_Referenced in [astral-sh/uv#1560](../../astral-sh/uv/issues/1560.md) on 2024-02-17 03:27_
-
----
-
-_Referenced in [astral-sh/uv#1575](../../astral-sh/uv/issues/1575.md) on 2024-02-18 02:43_
-
----
-
 _Comment by @Eh2406 on 2024-02-19 15:03_
 
 > poetry fairly recently adopted the heuristic "first try to decide the package with the most available versions", motivated by this case
@@ -153,14 +145,6 @@ I did some mild testing for other requirements and found that this branch was at
 That said, to get this to work for resolvelib I had to add a completely new API, which substantially changes the path of the algorithm, and it would need to be carefully checked it can still soundly resolve any given requirement, I don't expect I'll ever be able to contribute this to either the resolvelib or pip project.
 
 Edit: Also I should mention I did have to hack resolvelib into understanding a bit about extras, as part of the core issue here is both the requirement on `urllib3` and `urllib3[socks]`. Not sure how you handle extras and optimizations in resolutions.
-
----
-
-_Referenced in [astral-sh/uv#2062](../../astral-sh/uv/issues/2062.md) on 2024-02-29 20:42_
-
----
-
-_Referenced in [pubgrub-rs/pubgrub#191](../../pubgrub-rs/pubgrub/issues/191.md) on 2024-03-18 16:05_
 
 ---
 
@@ -345,10 +329,6 @@ If you think of my idea as an extention to any given dependency resolution algor
  * And hence, if the original algorithm can guarantee termination so can the extension
 
 I understand though, in the general case, of making pubgrub-rs more flexible that cannot be guaranteed, and this approach may not seem like a strong enough case to support it in either the core library or the fork. I will at some point try and get myself sufficently familiar with the algorithm and implementation to see if I can make a proof of concept.
-
----
-
-_Referenced in [astral-sh/uv#2821](../../astral-sh/uv/issues/2821.md) on 2024-04-04 18:08_
 
 ---
 
@@ -832,41 +812,5 @@ Personally, I think it would be more fruitful to continue these discussions in s
 ---
 
 _Closed by @notatallshaw on 2024-04-17 00:18_
-
----
-
-_Referenced in [astral-sh/uv#3087](../../astral-sh/uv/pulls/3087.md) on 2024-04-17 16:43_
-
----
-
-_Referenced in [astral-sh/uv#3078](../../astral-sh/uv/issues/3078.md) on 2024-04-18 03:44_
-
----
-
-_Referenced in [astral-sh/uv#4333](../../astral-sh/uv/issues/4333.md) on 2024-06-15 02:06_
-
----
-
-_Referenced in [astral-sh/uv#4372](../../astral-sh/uv/issues/4372.md) on 2024-06-18 00:34_
-
----
-
-_Referenced in [astral-sh/uv#5962](../../astral-sh/uv/issues/5962.md) on 2024-08-09 22:18_
-
----
-
-_Referenced in [astral-sh/uv#6404](../../astral-sh/uv/issues/6404.md) on 2024-08-22 17:04_
-
----
-
-_Referenced in [astral-sh/uv#8128](../../astral-sh/uv/issues/8128.md) on 2024-10-11 17:29_
-
----
-
-_Referenced in [astral-sh/uv#7810](../../astral-sh/uv/issues/7810.md) on 2024-10-15 15:14_
-
----
-
-_Referenced in [pypa/pip#13001](../../pypa/pip/pulls/13001.md) on 2024-10-18 01:01_
 
 ---

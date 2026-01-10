@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T23:15:00Z
 updated_at: 2024-02-15T23:36:54Z
 url: https://github.com/astral-sh/uv/issues/1382
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support for `UV_CACHE_DIR=/dev/null` or equivalent
@@ -58,10 +58,6 @@ _Comment by @charliermarsh on 2024-02-15 23:23_
 >  But my current use case is that I have some code that builds a container where for reasons I currently feel most comfortable using --link-mode=copy and I'd prefer to not end up with two copies
 
 This part is also interesting, maybe worth considering better support for this workflow in `uv`.
-
----
-
-_Referenced in [astral-sh/uv#1383](../../astral-sh/uv/pulls/1383.md) on 2024-02-15 23:28_
 
 ---
 

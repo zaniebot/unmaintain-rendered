@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T18:00:03Z
 updated_at: 2024-04-01T22:10:47Z
 url: https://github.com/astral-sh/uv/issues/1661
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install` fails for dependencies on already-installed local packages
@@ -80,14 +80,6 @@ I am curious, though- the venv seems like a pretty reasonable source of packages
 
 ---
 
-_Referenced in [astral-sh/uv#1476](../../astral-sh/uv/issues/1476.md) on 2024-02-22 03:14_
-
----
-
-_Referenced in [astral-sh/uv#1856](../../astral-sh/uv/issues/1856.md) on 2024-02-22 05:27_
-
----
-
 _Comment by @charliermarsh on 2024-02-22 05:31_
 
 I think it's probably correct for us to fix this. It just changes a lot of assumptions -- right now, we perform a resolution that's independent of the virtual environment.
@@ -132,25 +124,9 @@ _Comment by @charliermarsh on 2024-02-25 21:39_
 
 ---
 
-_Referenced in [astral-sh/uv#2093](../../astral-sh/uv/issues/2093.md) on 2024-02-29 18:59_
-
----
-
-_Referenced in [astral-sh/uv#2282](../../astral-sh/uv/issues/2282.md) on 2024-03-07 15:56_
-
----
-
 _Comment by @charliermarsh on 2024-03-07 16:44_
 
 (I intend to fix this.)
-
----
-
-_Referenced in [astral-sh/uv#2383](../../astral-sh/uv/issues/2383.md) on 2024-03-12 14:45_
-
----
-
-_Referenced in [astral-sh/uv#2560](../../astral-sh/uv/issues/2560.md) on 2024-03-20 13:57_
 
 ---
 
@@ -158,19 +134,7 @@ _Assigned to @zanieb by @zanieb on 2024-03-21 17:41_
 
 ---
 
-_Referenced in [astral-sh/uv#2596](../../astral-sh/uv/pulls/2596.md) on 2024-03-21 21:21_
-
----
-
-_Referenced in [astral-sh/rye#813](../../astral-sh/rye/issues/813.md) on 2024-03-24 05:23_
-
----
-
 _Closed by @zanieb on 2024-03-28 18:49_
-
----
-
-_Referenced in [astral-sh/uv#2726](../../astral-sh/uv/issues/2726.md) on 2024-03-29 13:36_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-22T09:40:24Z
 updated_at: 2024-02-22T20:31:52Z
 url: https://github.com/astral-sh/uv/issues/1860
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # 0.1.7 broke AWS CodeArtifact
@@ -45,10 +45,6 @@ I can confirm this is a regression from 0.1.6 to 0.1.7, thanks for the report!
 ---
 
 _Label `registry` added by @zanieb on 2024-02-22 15:18_
-
----
-
-_Referenced in [astral-sh/uv#1874](../../astral-sh/uv/pulls/1874.md) on 2024-02-22 15:38_
 
 ---
 

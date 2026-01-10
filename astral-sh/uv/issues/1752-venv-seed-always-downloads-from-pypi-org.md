@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T14:09:39Z
 updated_at: 2024-02-21T06:24:47Z
 url: https://github.com/astral-sh/uv/issues/1752
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # venv --seed always downloads from pypi.org
@@ -49,10 +49,6 @@ Looks like a bug, thanks!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-20 14:38_
-
----
-
-_Referenced in [astral-sh/uv#1755](../../astral-sh/uv/pulls/1755.md) on 2024-02-20 14:45_
 
 ---
 

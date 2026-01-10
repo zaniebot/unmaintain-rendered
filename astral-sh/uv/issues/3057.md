@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-16T08:28:06Z
 updated_at: 2024-04-16T12:54:41Z
 url: https://github.com/astral-sh/uv/issues/3057
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Can the `--help` output be wrapped differently?
@@ -51,10 +51,6 @@ _Label `cli` added by @AlexWaygood on 2024-04-16 08:52_
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2024-04-16 09:06_
-
----
-
-_Referenced in [astral-sh/uv#3058](../../astral-sh/uv/pulls/3058.md) on 2024-04-16 09:22_
 
 ---
 

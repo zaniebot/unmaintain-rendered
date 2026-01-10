@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-09T02:31:30Z
 updated_at: 2024-03-10T23:34:38Z
 url: https://github.com/astral-sh/uv/issues/2313
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Remove wheel for PEP 517 fallback builds
@@ -45,14 +45,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-10 16:16_
 
 ---
 
-_Referenced in [astral-sh/uv#2341](../../astral-sh/uv/pulls/2341.md) on 2024-03-10 16:16_
-
----
-
 _Closed by @charliermarsh on 2024-03-10 23:34_
-
----
-
-_Referenced in [astral-sh/uv#4069](../../astral-sh/uv/issues/4069.md) on 2024-06-24 14:48_
 
 ---

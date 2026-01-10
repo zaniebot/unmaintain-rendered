@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T15:44:19Z
 updated_at: 2024-02-29T23:51:11Z
 url: https://github.com/astral-sh/uv/issues/2084
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Is the installation of `uv` from `conda-forge` officially supported?
@@ -90,9 +90,5 @@ _Closed by @charliermarsh on 2024-02-29 23:50_
 _Comment by @charliermarsh on 2024-02-29 23:51_
 
 (So yes, I consider it fine and I'm happy to support it, but we would need to be added as feedstock maintainers before I would consider us "supporting it".)
-
----
-
-_Referenced in [conda-forge/uv-feedstock#6](../../conda-forge/uv-feedstock/pulls/6.md) on 2024-03-01 13:00_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-30T22:54:00Z
 updated_at: 2024-01-31T15:22:15Z
 url: https://github.com/astral-sh/uv/issues/1196
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Bootstrap scripts fails on macOS
@@ -27,10 +27,6 @@ scripts/bootstrap/install.sh: line 83: readarray: command not found
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-30 23:04_
-
----
-
-_Referenced in [astral-sh/uv#1198](../../astral-sh/uv/pulls/1198.md) on 2024-01-31 00:21_
 
 ---
 

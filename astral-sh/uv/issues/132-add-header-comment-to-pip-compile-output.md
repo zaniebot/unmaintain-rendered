@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-19T02:28:55Z
 updated_at: 2023-10-20T00:57:29Z
 url: https://github.com/astral-sh/uv/issues/132
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add header comment to `pip-compile` output
@@ -19,10 +19,6 @@ synced_at: 2026-01-10T01:57:00Z
 _Issue opened by @charliermarsh on 2023-10-19 02:28_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/uv#145](../../astral-sh/uv/pulls/145.md) on 2023-10-20 00:48_
 
 ---
 

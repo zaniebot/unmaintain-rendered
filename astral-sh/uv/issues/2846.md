@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-05T22:39:43Z
 updated_at: 2024-04-06T14:58:24Z
 url: https://github.com/astral-sh/uv/issues/2846
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Remove duplicate "because" in unavailable dependencies error
@@ -28,10 +28,6 @@ _Label `error messages` added by @charliermarsh on 2024-04-05 22:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-05 22:39_
-
----
-
-_Referenced in [astral-sh/uv#2849](../../astral-sh/uv/pulls/2849.md) on 2024-04-06 00:29_
 
 ---
 

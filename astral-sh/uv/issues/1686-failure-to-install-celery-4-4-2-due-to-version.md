@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T11:43:16Z
 updated_at: 2024-02-20T20:27:31Z
 url: https://github.com/astral-sh/uv/issues/1686
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failure to Install Celery 4.4.2 Due to Version Parsing Error in Metadata
@@ -114,14 +114,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-20 19:25_
 
 ---
 
-_Referenced in [astral-sh/uv#1776](../../astral-sh/uv/pulls/1776.md) on 2024-02-20 19:25_
-
----
-
 _Closed by @charliermarsh on 2024-02-20 20:27_
-
----
-
-_Referenced in [astral-sh/uv#1800](../../astral-sh/uv/issues/1800.md) on 2024-02-21 09:34_
 
 ---

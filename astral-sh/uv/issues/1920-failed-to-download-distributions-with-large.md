@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T16:55:02Z
 updated_at: 2024-02-24T11:56:22Z
 url: https://github.com/astral-sh/uv/issues/1920
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Failed to download distributions with large requirements file
@@ -104,10 +104,6 @@ _Comment by @zanieb on 2024-02-23 17:06_
 Duplicate of:
 
 - https://github.com/astral-sh/uv/issues/1912
-
----
-
-_Referenced in [astral-sh/uv#1921](../../astral-sh/uv/issues/1921.md) on 2024-02-23 17:07_
 
 ---
 

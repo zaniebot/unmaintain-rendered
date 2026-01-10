@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-16T06:17:40Z
 updated_at: 2024-04-16T19:07:50Z
 url: https://github.com/astral-sh/uv/issues/3051
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # pip_sync: install_registry_source_dist_cached fails on Gentoo amd64
@@ -64,10 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-16 17:54_
 _Comment by @charliermarsh on 2024-04-16 18:16_
 
 I can fix this up real quick.
-
----
-
-_Referenced in [astral-sh/uv#3071](../../astral-sh/uv/pulls/3071.md) on 2024-04-16 18:18_
 
 ---
 

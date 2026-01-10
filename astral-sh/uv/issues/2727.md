@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-30T01:07:52Z
 updated_at: 2024-03-30T02:37:11Z
 url: https://github.com/astral-sh/uv/issues/2727
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Installing from subdirectories is broken in 0.1.26 (and 0.1.25 probably)
@@ -97,10 +97,6 @@ Sorry, yes it is. Easy fix, my mistake.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-30 01:36_
-
----
-
-_Referenced in [astral-sh/uv#2728](../../astral-sh/uv/pulls/2728.md) on 2024-03-30 02:15_
 
 ---
 

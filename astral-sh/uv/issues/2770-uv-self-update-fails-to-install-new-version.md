@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-02T07:59:36Z
 updated_at: 2024-04-02T21:23:57Z
 url: https://github.com/astral-sh/uv/issues/2770
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv self update` fails to install new version
@@ -89,10 +89,6 @@ It's now fixed upstream. I'll update once a new release has been cut.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-02 19:01_
-
----
-
-_Referenced in [astral-sh/uv#2783](../../astral-sh/uv/pulls/2783.md) on 2024-04-02 21:15_
 
 ---
 

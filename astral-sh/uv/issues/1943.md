@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T20:03:10Z
 updated_at: 2024-02-26T01:09:06Z
 url: https://github.com/astral-sh/uv/issues/1943
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Upgrade to `actions/*-artifact@v4`
@@ -32,14 +32,6 @@ _Label `help wanted` added by @zanieb on 2024-02-23 20:03_
 ---
 
 _Label `internal` added by @zanieb on 2024-02-23 20:03_
-
----
-
-_Referenced in [astral-sh/ruff#10105](../../astral-sh/ruff/pulls/10105.md) on 2024-02-23 20:50_
-
----
-
-_Referenced in [astral-sh/uv#1947](../../astral-sh/uv/pulls/1947.md) on 2024-02-24 03:33_
 
 ---
 

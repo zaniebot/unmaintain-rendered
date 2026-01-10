@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-09T14:54:27Z
 updated_at: 2023-11-15T18:22:13Z
 url: https://github.com/astral-sh/uv/issues/380
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Use "any" wheel when resolving
@@ -32,10 +32,6 @@ _Added to milestone `Initial release` by @charliermarsh on 2023-11-09 14:54_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-14 02:37_
-
----
-
-_Referenced in [astral-sh/uv#422](../../astral-sh/uv/pulls/422.md) on 2023-11-14 04:12_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-11T12:23:51Z
 updated_at: 2024-04-11T17:31:36Z
 url: https://github.com/astral-sh/uv/issues/2990
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Mismatch between documentation and code comment on PyPI Index priority
@@ -69,10 +69,6 @@ _Comment by @charliermarsh on 2024-04-11 14:06_
 _Comment by @tdejager on 2024-04-11 15:33_
 
 Great thank you! :)
-
----
-
-_Referenced in [astral-sh/uv#2996](../../astral-sh/uv/pulls/2996.md) on 2024-04-11 17:22_
 
 ---
 

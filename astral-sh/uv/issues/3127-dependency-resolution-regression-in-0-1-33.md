@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-18T22:06:39Z
 updated_at: 2024-04-19T08:30:49Z
 url: https://github.com/astral-sh/uv/issues/3127
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Dependency resolution regression in 0.1.33
@@ -613,10 +613,6 @@ As someone thinking about Python packaging resolution for awhile I reallly find 
 
 ---
 
-_Referenced in [astral-sh/uv#3133](../../astral-sh/uv/pulls/3133.md) on 2024-04-19 01:52_
-
----
-
 _Comment by @charliermarsh on 2024-04-19 02:04_
 
 Ok, I tested it out on your project, and https://github.com/astral-sh/uv/pull/3133 should fix it. I think there's a "deeper" fix I want to pursue here for some other pathological cases, but that should be good for now.
@@ -627,18 +623,10 @@ _Closed by @charliermarsh on 2024-04-19 02:05_
 
 ---
 
-_Referenced in [astral-sh/uv#3135](../../astral-sh/uv/issues/3135.md) on 2024-04-19 04:16_
-
----
-
 _Comment by @burgholzer on 2024-04-19 08:30_
 
 Yeah. I can confirm that this fixes all the regressions we were seeing.
 Thanks for the extremely fast fix. Keep up the good work 🎉 
 It's really cool to follow these developments!
-
----
-
-_Referenced in [astral-sh/uv#3143](../../astral-sh/uv/issues/3143.md) on 2024-04-19 17:47_
 
 ---

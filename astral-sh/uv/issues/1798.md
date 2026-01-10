@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T08:59:27Z
 updated_at: 2024-02-22T05:24:57Z
 url: https://github.com/astral-sh/uv/issues/1798
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Cannot install prefect<1.0.0
@@ -41,10 +41,6 @@ error: Failed to download: prefect==0.15.13
 kubernetes (>=9.0.0a1.0) ; extra == 'all_extras'
             ^^^^^^^^^^^
 ```
-
----
-
-_Referenced in [astral-sh/uv#1800](../../astral-sh/uv/issues/1800.md) on 2024-02-21 09:34_
 
 ---
 
@@ -83,10 +79,6 @@ Oops, that's well within my tenure :)
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-21 19:33_
-
----
-
-_Referenced in [astral-sh/uv#1825](../../astral-sh/uv/pulls/1825.md) on 2024-02-21 19:37_
 
 ---
 

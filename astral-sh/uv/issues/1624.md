@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T04:44:09Z
 updated_at: 2024-03-25T20:27:43Z
 url: https://github.com/astral-sh/uv/issues/1624
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip compile pyproject.toml` ignores dependencies declared in `setup.cfg`
@@ -123,18 +123,6 @@ So it looks like `pip-tools` will actually perform a PEP 517 call when passed a 
 
 ---
 
-_Referenced in [astral-sh/uv#2167](../../astral-sh/uv/issues/2167.md) on 2024-03-04 21:13_
-
----
-
-_Referenced in [brycedrennan/imaginAIry#474](../../brycedrennan/imaginAIry/pulls/474.md) on 2024-03-06 03:41_
-
----
-
-_Referenced in [astral-sh/uv#1644](../../astral-sh/uv/issues/1644.md) on 2024-03-10 13:25_
-
----
-
 _Comment by @sbidoul on 2024-03-10 13:27_
 
 This could be solved similarly to https://github.com/astral-sh/uv/pull/2029.
@@ -159,17 +147,9 @@ _Comment by @charliermarsh on 2024-03-10 15:18_
 
 ---
 
-_Referenced in [astral-sh/uv#2475](../../astral-sh/uv/issues/2475.md) on 2024-03-15 16:04_
-
----
-
 _Comment by @charliermarsh on 2024-03-22 04:31_
 
 I'll be looking into this tomorrow.
-
----
-
-_Referenced in [astral-sh/uv#2633](../../astral-sh/uv/pulls/2633.md) on 2024-03-23 02:04_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-21T12:41:02Z
 updated_at: 2023-11-24T17:47:59Z
 url: https://github.com/astral-sh/uv/issues/473
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Build source distributions in parallel in pip-sync
@@ -37,10 +37,6 @@ _Label `wish` added by @konstin on 2023-11-21 12:41_
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2023-11-21 12:54_
-
----
-
-_Referenced in [astral-sh/uv#468](../../astral-sh/uv/pulls/468.md) on 2023-11-24 09:46_
 
 ---
 

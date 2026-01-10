@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-20T00:26:00Z
 updated_at: 2024-02-20T05:14:28Z
 url: https://github.com/astral-sh/uv/issues/1723
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # pip compile: --prerelease and/or --extra-index-url not getting correct dependency version
@@ -62,9 +62,5 @@ Related to #1451
 ---
 
 _Closed by @sebslight on 2024-02-20 05:14_
-
----
-
-_Referenced in [astral-sh/rye#668](../../astral-sh/rye/issues/668.md) on 2024-02-21 03:01_
 
 ---

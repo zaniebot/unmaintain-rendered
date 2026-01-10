@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-20T11:40:20Z
 updated_at: 2024-02-22T05:00:56Z
 url: https://github.com/astral-sh/uv/issues/1747
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Uv doesn't support index-url fallback as pip
@@ -277,10 +277,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-21 05:42_
 _Comment by @charliermarsh on 2024-02-21 14:50_
 
 Thanks, reproduced.
-
----
-
-_Referenced in [astral-sh/uv#1816](../../astral-sh/uv/pulls/1816.md) on 2024-02-21 15:01_
 
 ---
 

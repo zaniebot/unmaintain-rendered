@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-09T18:28:32Z
 updated_at: 2024-04-09T21:01:57Z
 url: https://github.com/astral-sh/uv/issues/2941
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # potential breaking change / bug in `uv==0.1.30`
@@ -106,14 +106,6 @@ https://github.com/datahub-project/datahub/actions/runs/8620627386/job/236278244
 
 ---
 
-_Referenced in [astral-sh/uv#2942](../../astral-sh/uv/pulls/2942.md) on 2024-04-09 18:53_
-
----
-
-_Referenced in [astral-sh/uv#2943](../../astral-sh/uv/pulls/2943.md) on 2024-04-09 18:57_
-
----
-
 _Comment by @zanieb on 2024-04-09 19:03_
 
 We've identified this is most likely caused by #2452 and resolved by #2943 though we're still confirming with a reproduction. This wasn't caught by our unit test suite (and you'll only see it in some cases) because the cause is a performance optimization which is only applied when backtracking occurs several times.
@@ -148,10 +140,6 @@ v0.1.31 is out now, which hopefully resolves this.
 
 ---
 
-_Referenced in [PrefectHQ/prefect#12633](../../PrefectHQ/prefect/pulls/12633.md) on 2024-04-09 20:12_
-
----
-
 _Comment by @zzstoatzz on 2024-04-09 20:15_
 
 it does indeed appear to be resolved for us on v0.1.31 ✨ 
@@ -167,17 +155,5 @@ _Closed by @zzstoatzz on 2024-04-09 20:24_
 _Comment by @charliermarsh on 2024-04-09 20:33_
 
 Awesome, thanks for reporting, glad we could resolve!
-
----
-
-_Referenced in [huggingface/datasets#6794](../../huggingface/datasets/pulls/6794.md) on 2024-04-12 15:14_
-
----
-
-_Referenced in [aiidateam/aiida-core#6363](../../aiidateam/aiida-core/pulls/6363.md) on 2024-04-22 07:21_
-
----
-
-_Referenced in [astral-sh/uv#3184](../../astral-sh/uv/issues/3184.md) on 2024-04-22 13:07_
 
 ---

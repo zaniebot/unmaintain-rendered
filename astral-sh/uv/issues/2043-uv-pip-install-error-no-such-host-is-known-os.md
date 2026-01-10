@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-28T13:30:44Z
 updated_at: 2024-03-12T02:41:23Z
 url: https://github.com/astral-sh/uv/issues/2043
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip install error: No such host is known. (os error 11001)
@@ -118,10 +118,6 @@ index = https://artifactory.url/artifactory/api/pypi/pypi-remote/
 _Comment by @zanieb on 2024-02-29 16:25_
 
 You can set the `UV_INDEX_URL` and `UV_EXTRA_INDEX_URL` environment variables or use the corresponding CLI flags.
-
----
-
-_Referenced in [astral-sh/uv#2124](../../astral-sh/uv/pulls/2124.md) on 2024-03-01 23:38_
 
 ---
 

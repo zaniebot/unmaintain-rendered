@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-19T18:45:12Z
 updated_at: 2023-12-24T21:57:01Z
 url: https://github.com/astral-sh/uv/issues/706
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Display better error when index does not support requested format
@@ -54,13 +54,5 @@ I'm okay with the current improvements, presumedly the 406 would tell you that t
 ---
 
 _Closed by @charliermarsh on 2023-12-24 21:57_
-
----
-
-_Referenced in [astral-sh/uv#705](../../astral-sh/uv/issues/705.md) on 2023-12-25 00:26_
-
----
-
-_Referenced in [astral-sh/uv#4907](../../astral-sh/uv/issues/4907.md) on 2024-07-24 07:58_
 
 ---

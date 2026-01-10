@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T04:07:03Z
 updated_at: 2024-02-23T04:16:47Z
 url: https://github.com/astral-sh/uv/issues/1899
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Rename `uv pip` command
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:57:04Z
 _Issue opened by @gotmax23 on 2024-02-23 04:07_
 
 Thanks for your work on uv and ruff! I would like to suggest changing the `uv pip` subcommand name. `uv` and `pip` are different tools. `uv` is not necessarily going to implement the same interface as `pip`. It feels a bit crummy to write a replacement to another tool and then take its name. I would suggest renaming the subcommand to `pkg` or something similar that's more descriptive and won't lead to unnecessary confusion. Leaving `pip` as an undocumented alias makes sense, but I don't think it should be the default name for the package management subcommand.
-
----
-
-_Referenced in [astral-sh/uv#1657](../../astral-sh/uv/issues/1657.md) on 2024-02-23 04:14_
 
 ---
 
@@ -44,21 +40,5 @@ Note the intent is only for this to be our `pip`-compatible interface and we do 
 ---
 
 _Closed by @zanieb on 2024-02-23 04:16_
-
----
-
-_Referenced in [astral-sh/uv#1173](../../astral-sh/uv/issues/1173.md) on 2024-03-19 11:31_
-
----
-
-_Referenced in [astral-sh/uv#3185](../../astral-sh/uv/issues/3185.md) on 2024-04-22 14:23_
-
----
-
-_Referenced in [astral-sh/uv#4039](../../astral-sh/uv/issues/4039.md) on 2024-06-05 12:25_
-
----
-
-_Referenced in [astral-sh/uv#10949](../../astral-sh/uv/issues/10949.md) on 2025-01-24 23:10_
 
 ---

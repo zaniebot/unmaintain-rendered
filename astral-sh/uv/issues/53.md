@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-08T04:59:38Z
 updated_at: 2023-10-08T05:31:21Z
 url: https://github.com/astral-sh/uv/issues/53
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Cache environment markers
@@ -23,10 +23,6 @@ Turns out this is really expensive (at least on a relative basis), since it's bo
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-08 05:02_
-
----
-
-_Referenced in [astral-sh/uv#55](../../astral-sh/uv/pulls/55.md) on 2023-10-08 05:22_
 
 ---
 

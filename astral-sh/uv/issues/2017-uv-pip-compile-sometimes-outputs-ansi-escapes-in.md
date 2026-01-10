@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-27T15:16:30Z
 updated_at: 2024-02-27T16:02:24Z
 url: https://github.com/astral-sh/uv/issues/2017
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip compile sometimes outputs ansi escapes in file
@@ -76,14 +76,6 @@ _Assigned to @konstin by @konstin on 2024-02-27 15:36_
 
 ---
 
-_Referenced in [astral-sh/uv#2018](../../astral-sh/uv/pulls/2018.md) on 2024-02-27 15:45_
-
----
-
 _Closed by @konstin on 2024-02-27 16:02_
-
----
-
-_Referenced in [tox-dev/tox-uv#38](../../tox-dev/tox-uv/issues/38.md) on 2024-03-14 20:09_
 
 ---

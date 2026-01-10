@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-07T04:31:12Z
 updated_at: 2024-03-07T14:04:56Z
 url: https://github.com/astral-sh/uv/issues/2261
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv installs wheel for a different python version for `multiprocess`
@@ -211,10 +211,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-07 04:45_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-03-07 04:46_
-
----
-
-_Referenced in [astral-sh/uv#2263](../../astral-sh/uv/pulls/2263.md) on 2024-03-07 04:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-10T14:52:50Z
 updated_at: 2023-11-10T18:17:53Z
 url: https://github.com/astral-sh/uv/issues/389
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # pip-sync error when removing __pycache__
@@ -55,10 +55,6 @@ I guess the RECORD is including a directory? I can't reproduce but that feels wr
 _Comment by @charliermarsh on 2023-11-10 17:30_
 
 Found a way to reproduce.
-
----
-
-_Referenced in [astral-sh/uv#394](../../astral-sh/uv/pulls/394.md) on 2023-11-10 17:35_
 
 ---
 

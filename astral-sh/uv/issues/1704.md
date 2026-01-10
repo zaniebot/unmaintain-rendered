@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T16:29:57Z
 updated_at: 2024-02-19T20:49:17Z
 url: https://github.com/astral-sh/uv/issues/1704
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add --no-header-version CLI flag?
@@ -86,10 +86,6 @@ _Comment by @charliermarsh on 2024-02-19 18:30_
 _Comment by @mikeckennedy on 2024-02-19 18:30_
 
 Welcome! Thanks for the thoughts @charliermarsh 
-
----
-
-_Referenced in [astral-sh/uv#1716](../../astral-sh/uv/pulls/1716.md) on 2024-02-19 20:03_
 
 ---
 

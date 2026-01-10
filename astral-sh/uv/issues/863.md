@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-10T00:10:29Z
 updated_at: 2024-01-28T14:27:23Z
 url: https://github.com/astral-sh/uv/issues/863
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Flakey test failure in `dependency_excludes_range_of_compatible_versions`
@@ -73,27 +73,7 @@ Ah interesting the diff is at `c depends on b<=1.0.0 | >=3.0.0` and `c depends o
 
 ---
 
-_Referenced in [astral-sh/uv#886](../../astral-sh/uv/issues/886.md) on 2024-01-11 14:43_
-
----
-
-_Referenced in [astral-sh/uv#993](../../astral-sh/uv/pulls/993.md) on 2024-01-19 02:04_
-
----
-
-_Referenced in [astral-sh/uv#996](../../astral-sh/uv/pulls/996.md) on 2024-01-19 02:41_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-01-22 16:46_
-
----
-
-_Referenced in [astral-sh/uv#1138](../../astral-sh/uv/pulls/1138.md) on 2024-01-26 21:17_
-
----
-
-_Referenced in [astral-sh/uv#1144](../../astral-sh/uv/pulls/1144.md) on 2024-01-27 18:46_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-16T03:37:50Z
 updated_at: 2023-10-16T18:14:37Z
 url: https://github.com/astral-sh/uv/issues/102
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Surface detailed PubGrub error messages
@@ -23,10 +23,6 @@ Right now, we're dropping the derivation tree.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-16 17:23_
-
----
-
-_Referenced in [astral-sh/uv#108](../../astral-sh/uv/pulls/108.md) on 2023-10-16 18:03_
 
 ---
 

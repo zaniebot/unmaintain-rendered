@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T15:41:36Z
 updated_at: 2024-02-21T15:52:34Z
 url: https://github.com/astral-sh/uv/issues/1763
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv venv creates path starting with \\?\ in activate.bat which doesn't work
@@ -63,10 +63,6 @@ _Assigned to @MichaReiser by @MichaReiser on 2024-02-20 15:54_
 _Comment by @charliermarsh on 2024-02-20 16:02_
 
 @MichaReiser - (We have a `normalize()` trait method for this.)
-
----
-
-_Referenced in [astral-sh/uv#1817](../../astral-sh/uv/pulls/1817.md) on 2024-02-21 15:48_
 
 ---
 

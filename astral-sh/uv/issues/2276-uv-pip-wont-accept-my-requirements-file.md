@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-07T13:03:12Z
 updated_at: 2024-03-08T14:10:16Z
 url: https://github.com/astral-sh/uv/issues/2276
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip wont accept my requirements file
@@ -269,18 +269,6 @@ We could still change our mind though.
 
 ---
 
-_Referenced in [astral-sh/uv#2283](../../astral-sh/uv/pulls/2283.md) on 2024-03-07 18:05_
-
----
-
 _Closed by @BurntSushi on 2024-03-08 14:10_
-
----
-
-_Referenced in [ofek/pyapp#75](../../ofek/pyapp/issues/75.md) on 2024-03-12 15:13_
-
----
-
-_Referenced in [astral-sh/uv#7733](../../astral-sh/uv/issues/7733.md) on 2024-09-27 09:24_
 
 ---

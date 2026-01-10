@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-02T03:18:52Z
 updated_at: 2024-01-26T03:29:38Z
 url: https://github.com/astral-sh/uv/issues/285
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Integrate Cargo-like Git known-host checking
@@ -44,10 +44,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-26 02:47_
 _Comment by @charliermarsh on 2024-01-26 02:47_
 
 Blocker for launch.
-
----
-
-_Referenced in [astral-sh/uv#1118](../../astral-sh/uv/pulls/1118.md) on 2024-01-26 03:18_
 
 ---
 

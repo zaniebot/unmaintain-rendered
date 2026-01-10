@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-19T20:04:45Z
 updated_at: 2024-01-22T14:22:29Z
 url: https://github.com/astral-sh/uv/issues/1013
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support pypy and other interpreters
@@ -55,10 +55,6 @@ I can do it, looks fun, and requires me to install Pypy.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-20 18:48_
-
----
-
-_Referenced in [astral-sh/uv#1028](../../astral-sh/uv/pulls/1028.md) on 2024-01-20 22:29_
 
 ---
 

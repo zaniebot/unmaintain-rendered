@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T15:00:25Z
 updated_at: 2024-03-04T19:40:53Z
 url: https://github.com/astral-sh/uv/issues/1651
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install` does not install any new dependencies
@@ -86,10 +86,6 @@ uv 0.1.4
 
 ---
 
-_Referenced in [wntrblm/nox#762](../../wntrblm/nox/pulls/762.md) on 2024-02-18 15:00_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-02-18 15:06_
 
 ---
@@ -105,14 +101,6 @@ _Comment by @agriyakhetarpal on 2024-02-18 18:36_
 I am currently facing the same issue, but in other ways. It seems as if `uv` is auditing the installation of a package based on the metadata stored in the `<mypackage>.dist-info` directory – which is why if I delete the `<mypackage>` directory from a virtual environment, it successfully audits <mypackage> based on the metadata directory's contents and believes that `<mypackage>` is still installed. Of course, this isn't recommended behaviour (deleting a package's installation from the virtual environment, that is) and this problem is in-line with what `pip` itself does (I should probably open an issue there as well).
 
 A potential solution to mitigate this problem could be to store the checksums of the `pyproject.toml`/`setup.py`/`setup.cfg` files in the `uv` cache and validate them at the time of the audit.
-
----
-
-_Referenced in [astral-sh/rye#723](../../astral-sh/rye/issues/723.md) on 2024-02-21 07:29_
-
----
-
-_Referenced in [astral-sh/uv#1948](../../astral-sh/uv/issues/1948.md) on 2024-02-24 14:36_
 
 ---
 
@@ -199,10 +187,6 @@ Installed 17 packages in 66ms
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-04 01:57_
-
----
-
-_Referenced in [astral-sh/uv#2169](../../astral-sh/uv/pulls/2169.md) on 2024-03-04 19:11_
 
 ---
 

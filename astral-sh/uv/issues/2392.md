@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-12T20:38:50Z
 updated_at: 2024-03-13T00:11:51Z
 url: https://github.com/astral-sh/uv/issues/2392
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv pip compile` uses overly specific `python_version` with `-p` markers
@@ -34,15 +34,7 @@ _Label `bug` added by @charliermarsh on 2024-03-12 20:38_
 
 ---
 
-_Referenced in [astral-sh/rye#875](../../astral-sh/rye/issues/875.md) on 2024-03-12 20:38_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-12 20:39_
-
----
-
-_Referenced in [astral-sh/uv#2395](../../astral-sh/uv/pulls/2395.md) on 2024-03-12 21:16_
 
 ---
 

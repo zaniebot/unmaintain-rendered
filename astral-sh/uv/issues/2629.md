@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-22T23:36:24Z
 updated_at: 2024-03-27T14:34:19Z
 url: https://github.com/astral-sh/uv/issues/2629
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Consider reading `pyproject.toml` metadata directly
@@ -66,10 +66,6 @@ Example https://pdm-project.org/latest/usage/dependency/#local-dependencies
 _Comment by @charliermarsh on 2024-03-23 13:27_
 
 My impression is that those usages are not spec compliant. But they do exist in the wild, so we'll have to detect them and skip the optimization in that case.
-
----
-
-_Referenced in [astral-sh/uv#2676](../../astral-sh/uv/pulls/2676.md) on 2024-03-26 20:23_
 
 ---
 

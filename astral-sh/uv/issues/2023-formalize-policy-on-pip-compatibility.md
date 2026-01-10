@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-27T17:42:43Z
 updated_at: 2024-03-06T21:51:14Z
 url: https://github.com/astral-sh/uv/issues/2023
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Formalize policy on pip compatibility
@@ -36,27 +36,7 @@ _Renamed from "Formalice policy on pip compatibility" to "Formalize policy on pi
 
 ---
 
-_Referenced in [astral-sh/uv#2007](../../astral-sh/uv/issues/2007.md) on 2024-02-27 20:47_
-
----
-
-_Referenced in [astral-sh/uv#2037](../../astral-sh/uv/issues/2037.md) on 2024-02-28 13:35_
-
----
-
-_Referenced in [astral-sh/uv#1998](../../astral-sh/uv/pulls/1998.md) on 2024-02-28 13:42_
-
----
-
-_Referenced in [astral-sh/uv#1789](../../astral-sh/uv/issues/1789.md) on 2024-03-05 13:46_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-06 15:57_
-
----
-
-_Referenced in [astral-sh/uv#2244](../../astral-sh/uv/pulls/2244.md) on 2024-03-06 16:19_
 
 ---
 

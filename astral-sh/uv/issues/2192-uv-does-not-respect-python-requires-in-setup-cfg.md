@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-05T02:02:26Z
 updated_at: 2024-03-14T02:06:07Z
 url: https://github.com/astral-sh/uv/issues/2192
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv does not respect `python_requires` in setup.cfg
@@ -148,10 +148,6 @@ But we should add this validation at install time.
 
 ---
 
-_Referenced in [astral-sh/uv#2194](../../astral-sh/uv/pulls/2194.md) on 2024-03-05 04:00_
-
----
-
 _Comment by @danielhollas on 2024-03-05 04:08_
 
 > By the way, if you run with --strict, I confirmed that we will warn after-the-fact:
@@ -161,13 +157,5 @@ Cool! Funny, I've just found out about `--strict` an hour ago, and was a bit sur
 ---
 
 _Closed by @charliermarsh on 2024-03-05 04:20_
-
----
-
-_Referenced in [astral-sh/uv#2195](../../astral-sh/uv/issues/2195.md) on 2024-03-05 04:21_
-
----
-
-_Referenced in [astral-sh/uv#10373](../../astral-sh/uv/issues/10373.md) on 2025-01-07 18:05_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T07:40:51Z
 updated_at: 2024-02-23T18:40:53Z
 url: https://github.com/astral-sh/uv/issues/1904
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # [BUG] Running `py --list-paths` failed with status exit code: 0
@@ -40,10 +40,6 @@ and when I try to execute `uv venv` as mentioned in the Getting Started guide in
   │ ---
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#1885](../../astral-sh/uv/pulls/1885.md) on 2024-02-23 07:42_
 
 ---
 

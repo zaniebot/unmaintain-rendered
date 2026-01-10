@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T19:26:14Z
 updated_at: 2024-02-21T00:20:07Z
 url: https://github.com/astral-sh/uv/issues/1777
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # "uv venv"  should ask for confirmation before overwriting an existing venv
@@ -139,9 +139,5 @@ Thanks for the thorough report but we'll track this in the original issue.
 ---
 
 _Closed by @zanieb on 2024-02-21 00:20_
-
----
-
-_Referenced in [astral-sh/uv#4276](../../astral-sh/uv/issues/4276.md) on 2024-06-12 15:35_
 
 ---

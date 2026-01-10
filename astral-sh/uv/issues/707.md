@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-19T18:52:37Z
 updated_at: 2023-12-20T10:53:50Z
 url: https://github.com/astral-sh/uv/issues/707
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Panic when `requires-python` is missing from JSON responses
@@ -71,10 +71,6 @@ https://github.com/astral-sh/puffin/blob/12eedb1c12acd3e1ea51cd71aaa7cca12b1d70a
 _Comment by @zanieb on 2023-12-19 18:58_
 
 Can confirm this works with our custom deserializer disabled
-
----
-
-_Referenced in [astral-sh/uv#708](../../astral-sh/uv/pulls/708.md) on 2023-12-19 19:07_
 
 ---
 

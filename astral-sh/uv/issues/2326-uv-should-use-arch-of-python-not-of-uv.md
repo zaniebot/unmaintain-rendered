@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-10T05:04:04Z
 updated_at: 2024-03-13T11:51:16Z
 url: https://github.com/astral-sh/uv/issues/2326
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv should use arch of python, not of uv
@@ -439,22 +439,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2024-03-11 13:36_
 
 ---
 
-_Referenced in [astral-sh/uv#2380](../../astral-sh/uv/pulls/2380.md) on 2024-03-12 09:28_
-
----
-
-_Referenced in [astral-sh/uv#2381](../../astral-sh/uv/pulls/2381.md) on 2024-03-12 12:47_
-
----
-
 _Closed by @charliermarsh on 2024-03-13 11:51_
-
----
-
-_Referenced in [astral-sh/uv#2637](../../astral-sh/uv/issues/2637.md) on 2024-03-24 03:54_
-
----
-
-_Referenced in [astral-sh/uv#13378](../../astral-sh/uv/issues/13378.md) on 2025-05-10 12:37_
 
 ---

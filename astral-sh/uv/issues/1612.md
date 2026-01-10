@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-17T19:49:10Z
 updated_at: 2024-02-18T11:04:11Z
 url: https://github.com/astral-sh/uv/issues/1612
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Executables installed via `uv` cannot be run from a subprocess on Windows
@@ -68,10 +68,6 @@ _Label `windows` added by @AlexWaygood on 2024-02-17 19:49_
 
 ---
 
-_Referenced in [astral-sh/uv#1609](../../astral-sh/uv/issues/1609.md) on 2024-02-17 19:49_
-
----
-
 _Comment by @MichaReiser on 2024-02-17 22:04_
 
 I think that should be fixed by https://github.com/astral-sh/uv/pull/1523
@@ -98,9 +94,5 @@ _Comment by @AlexWaygood on 2024-02-18 11:04_
 
 This is the new issue:
 - #1639
-
----
-
-_Referenced in [astral-sh/uv#1639](../../astral-sh/uv/issues/1639.md) on 2024-02-18 12:02_
 
 ---

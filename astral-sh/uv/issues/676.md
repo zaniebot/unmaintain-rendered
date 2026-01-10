@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-17T19:51:50Z
 updated_at: 2023-12-18T09:28:16Z
 url: https://github.com/astral-sh/uv/issues/676
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Remove non-editable installs of packages in install plan
@@ -40,14 +40,6 @@ I know how to fix this, though for `pip-sync` we'll need to build the editables 
 _Comment by @charliermarsh on 2023-12-17 20:55_
 
 I think we can come up with an abstraction that will let us build only the editables we _need_ prior to creating the install plan.
-
----
-
-_Referenced in [astral-sh/uv#677](../../astral-sh/uv/pulls/677.md) on 2023-12-18 02:14_
-
----
-
-_Referenced in [astral-sh/uv#682](../../astral-sh/uv/pulls/682.md) on 2023-12-18 09:23_
 
 ---
 

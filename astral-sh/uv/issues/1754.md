@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-20T14:36:47Z
 updated_at: 2024-03-06T23:21:45Z
 url: https://github.com/astral-sh/uv/issues/1754
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install` with Nexus give "Missing 'Content-Type"` error 
@@ -170,10 +170,6 @@ It works using `--no-cache` but `uv` loose a lot of value :(
 
 ---
 
-_Referenced in [astral-sh/uv#1978](../../astral-sh/uv/pulls/1978.md) on 2024-02-26 04:20_
-
----
-
 _Comment by @Djailla on 2024-02-26 22:12_
 
 You can close this issue, thanks @charliermarsh 
@@ -271,10 +267,6 @@ $3 = http::status::StatusCode (core::num::nonzero::NonZeroU16 (304))
 
 ---
 
-_Referenced in [astral-sh/uv#171](../../astral-sh/uv/issues/171.md) on 2024-03-05 19:41_
-
----
-
 _Comment by @charliermarsh on 2024-03-05 19:47_
 
 Any idea what Sonatype Nexus version you're on?
@@ -294,10 +286,6 @@ I'm able to _sort of_ reproduce it by forcing some error paths manually.
 _Comment by @charliermarsh on 2024-03-05 20:14_
 
 If I put up a branch with some additional logic and logging, would anyone here be able to test against their Nexus repos?
-
----
-
-_Referenced in [astral-sh/uv#2218](../../astral-sh/uv/pulls/2218.md) on 2024-03-05 20:25_
 
 ---
 
@@ -389,13 +377,5 @@ _Closed by @charliermarsh on 2024-03-06 22:51_
 _Comment by @charliermarsh on 2024-03-06 23:21_
 
 I merged the fallback behavior, which should allow using Nexus with only a slight performance hit. (This only affects fetching metadata, which isn't that expensive anyway.) I'll open a separate issue to understand the root cause for Nexus (i.e., why it's not returning a `Last-Modified`).
-
----
-
-_Referenced in [astral-sh/uv#2253](../../astral-sh/uv/issues/2253.md) on 2024-03-06 23:21_
-
----
-
-_Referenced in [simple-repository/simple-repository-server#6](../../simple-repository/simple-repository-server/issues/6.md) on 2024-05-26 00:56_
 
 ---

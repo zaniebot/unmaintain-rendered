@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-14T02:43:49Z
 updated_at: 2024-03-20T14:43:40Z
 url: https://github.com/astral-sh/uv/issues/2444
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Version 0.1.19 breaks AWS CodeArtifact authentication
@@ -80,14 +80,6 @@ _Label `registry` added by @charliermarsh on 2024-03-14 03:21_
 
 ---
 
-_Referenced in [astral-sh/uv#2446](../../astral-sh/uv/pulls/2446.md) on 2024-03-14 03:23_
-
----
-
-_Referenced in [astral-sh/uv#2447](../../astral-sh/uv/issues/2447.md) on 2024-03-14 03:37_
-
----
-
 _Closed by @charliermarsh on 2024-03-14 03:46_
 
 ---
@@ -137,9 +129,5 @@ _Comment by @ealap on 2024-03-20 14:43_
 Sorry, I thought the root issue was generally for basic HTTP authentication / in-URL credentials.
 
 I will create a separate issue. 
-
----
-
-_Referenced in [astral-sh/uv#2566](../../astral-sh/uv/issues/2566.md) on 2024-03-20 15:13_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-28T17:50:37Z
 updated_at: 2024-02-28T19:03:07Z
 url: https://github.com/astral-sh/uv/issues/2047
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Add hidden `--pre` alias for `--prereleases=allow`
@@ -35,14 +35,6 @@ _Label `cli` added by @zanieb on 2024-02-28 17:50_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-28 18:20_
-
----
-
-_Referenced in [astral-sh/uv#2049](../../astral-sh/uv/pulls/2049.md) on 2024-02-28 18:23_
-
----
-
-_Referenced in [astral-sh/uv#2037](../../astral-sh/uv/issues/2037.md) on 2024-02-28 18:32_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-01T14:22:50Z
 updated_at: 2024-02-01T15:00:38Z
 url: https://github.com/astral-sh/uv/issues/1224
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Jupyter sometimes fails to install
@@ -72,10 +72,6 @@ These are all data directories, that's on the `install_data` path. Could it be h
 _Comment by @charliermarsh on 2024-02-01 14:36_
 
 Ahh you're a hero! TOCTOU
-
----
-
-_Referenced in [astral-sh/uv#1227](../../astral-sh/uv/pulls/1227.md) on 2024-02-01 14:51_
 
 ---
 

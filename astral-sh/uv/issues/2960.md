@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-10T14:08:45Z
 updated_at: 2024-04-10T14:29:00Z
 url: https://github.com/astral-sh/uv/issues/2960
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Support -e Flag in requirements.in for pip compile/install?
@@ -62,9 +62,5 @@ Thanks for the fast reply - you are just as fast as your programs.
 ---
 
 _Closed by @brberry on 2024-04-10 14:29_
-
----
-
-_Referenced in [astral-sh/uv#3483](../../astral-sh/uv/issues/3483.md) on 2024-05-09 12:20_
 
 ---

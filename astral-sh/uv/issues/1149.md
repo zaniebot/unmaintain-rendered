@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-27T10:55:07Z
 updated_at: 2024-01-29T03:52:26Z
 url: https://github.com/astral-sh/uv/issues/1149
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Platform support tiers
@@ -41,10 +41,6 @@ _Assigned to @charliermarsh by @konstin on 2024-01-27 10:55_
 _Comment by @charliermarsh on 2024-01-28 02:58_
 
 Will document this.
-
----
-
-_Referenced in [astral-sh/uv#1158](../../astral-sh/uv/pulls/1158.md) on 2024-01-29 01:49_
 
 ---
 

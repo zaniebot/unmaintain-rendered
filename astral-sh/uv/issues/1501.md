@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T15:22:31Z
 updated_at: 2024-02-16T18:55:25Z
 url: https://github.com/astral-sh/uv/issues/1501
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # venv must be activated even when running via `venv/bin/python -m uv`
@@ -89,18 +89,6 @@ Related https://github.com/astral-sh/uv/issues/1396
 
 ---
 
-_Referenced in [astral-sh/uv#1504](../../astral-sh/uv/pulls/1504.md) on 2024-02-16 16:03_
-
----
-
-_Referenced in [Chia-Network/chia-blockchain#17572](../../Chia-Network/chia-blockchain/pulls/17572.md) on 2024-02-16 16:19_
-
----
-
 _Closed by @zanieb on 2024-02-16 18:55_
-
----
-
-_Referenced in [astral-sh/uv#1625](../../astral-sh/uv/issues/1625.md) on 2024-02-18 08:05_
 
 ---

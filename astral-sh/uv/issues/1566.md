@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T03:08:58Z
 updated_at: 2024-02-17T19:14:13Z
 url: https://github.com/astral-sh/uv/issues/1566
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Feature request: machine-readable/parseable output
@@ -75,9 +75,5 @@ FWIW, pip's got a `--report` flag that provides installation-related reports: ht
 _Comment by @joeyballentine on 2024-02-17 19:14_
 
 @pradyunsg that does look interesting, but after a little investigation it looks like the report gets output _after_ it's done doing what it usually does. So while it does output the wheel url in a nicely parseable format, it does so after it would even matter, which is unfortunate. and it doesn't change the way download progress is logged.
-
----
-
-_Referenced in [moreati/ansible-uv#2](../../moreati/ansible-uv/issues/2.md) on 2024-11-29 22:09_
 
 ---

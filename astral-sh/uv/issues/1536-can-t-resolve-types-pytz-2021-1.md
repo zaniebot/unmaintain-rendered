@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T19:51:31Z
 updated_at: 2024-02-16T21:30:55Z
 url: https://github.com/astral-sh/uv/issues/1536
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # can't resolve types-pytz==2021.1
@@ -92,10 +92,6 @@ _Comment by @raylu on 2024-02-16 20:36_
 > If you update your requirements.txt to ==2021.1.0, it'll work as expected.
 
 oh I probably should've mentioned that this is what I ended up doing to work around it
-
----
-
-_Referenced in [astral-sh/uv#1543](../../astral-sh/uv/pulls/1543.md) on 2024-02-16 21:09_
 
 ---
 

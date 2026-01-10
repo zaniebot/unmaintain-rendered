@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-10T04:36:58Z
 updated_at: 2024-04-10T05:13:34Z
 url: https://github.com/astral-sh/uv/issues/2953
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Behaviour when metadata is incorrect differs from pip
@@ -74,14 +74,6 @@ docutils==0.21
 
 ---
 
-_Referenced in [astral-sh/uv#2954](../../astral-sh/uv/pulls/2954.md) on 2024-04-10 05:03_
-
----
-
 _Closed by @charliermarsh on 2024-04-10 05:13_
-
----
-
-_Referenced in [astral-sh/uv#2969](../../astral-sh/uv/pulls/2969.md) on 2024-04-10 15:28_
 
 ---

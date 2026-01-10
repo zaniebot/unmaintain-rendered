@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T00:27:22Z
 updated_at: 2024-02-29T01:16:25Z
 url: https://github.com/astral-sh/uv/issues/2063
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv and pip do not have the same behavior when pinning a constraint to a prerelease
@@ -75,14 +75,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-29 00:45_
 
 ---
 
-_Referenced in [astral-sh/uv#2069](../../astral-sh/uv/pulls/2069.md) on 2024-02-29 01:09_
-
----
-
 _Closed by @charliermarsh on 2024-02-29 01:16_
-
----
-
-_Referenced in [astral-sh/uv#2065](../../astral-sh/uv/issues/2065.md) on 2024-03-02 14:27_
 
 ---

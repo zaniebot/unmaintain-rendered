@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T12:02:40Z
 updated_at: 2024-02-25T21:02:59Z
 url: https://github.com/astral-sh/uv/issues/1861
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Cannot install `flit-core==2.3.0` from source
@@ -70,10 +70,6 @@ We can make this more permissive.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-25 19:38_
-
----
-
-_Referenced in [astral-sh/uv#1969](../../astral-sh/uv/pulls/1969.md) on 2024-02-25 20:18_
 
 ---
 

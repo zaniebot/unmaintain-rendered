@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-03T07:23:45Z
 updated_at: 2024-04-07T00:29:45Z
 url: https://github.com/astral-sh/uv/issues/2799
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # feature request : shiv/pyinstaller like functionality?
@@ -59,17 +59,5 @@ From purely a build perspective, if uv had an exposed [pip wheel](https://pip.py
 ---
 
 _Label `wish` added by @charliermarsh on 2024-04-07 00:29_
-
----
-
-_Referenced in [astral-sh/uv#5802](../../astral-sh/uv/issues/5802.md) on 2024-09-03 23:23_
-
----
-
-_Referenced in [pex-tool/pex#2371](../../pex-tool/pex/issues/2371.md) on 2024-09-04 00:49_
-
----
-
-_Referenced in [astral-sh/uv#13503](../../astral-sh/uv/issues/13503.md) on 2025-05-17 10:42_
 
 ---

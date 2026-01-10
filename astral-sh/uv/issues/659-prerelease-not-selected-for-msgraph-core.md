@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-15T11:15:02Z
 updated_at: 2023-12-29T02:44:36Z
 url: https://github.com/astral-sh/uv/issues/659
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Prerelease not selected for msgraph-core
@@ -74,10 +74,6 @@ _Comment by @charliermarsh on 2023-12-15 18:47_
 
 ---
 
-_Referenced in [astral-sh/uv#666](../../astral-sh/uv/pulls/666.md) on 2023-12-15 20:06_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-15 20:08_
 
 ---
@@ -90,10 +86,6 @@ A few options:
 - Just leave it, but add a dedicated error message to suggest using `--prerelease allow`.
 - Allow pre-releases if it's _ever_ necessary (i.e., if the only versions satisfying a range are pre-releases, even if the user didn't request it). Right now, we allow pre-releases if _all_ versions of a package are pre-releases, but that's a much stricter constraint. The downside of this change is that we'd start to select pre-releases when they weren't explicitly requested.
 - Try to allow pre-releases whenever at least one requiring package uses a pre-release marker for the package. Might be impossible...
-
----
-
-_Referenced in [astral-sh/uv#697](../../astral-sh/uv/pulls/697.md) on 2023-12-19 05:35_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-18T20:02:14Z
 updated_at: 2024-03-19T15:06:58Z
 url: https://github.com/astral-sh/uv/issues/2520
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv pip check` gives a different result to `pip check`
@@ -52,10 +52,6 @@ I'm not sure what `pip check` looks for exactly. Seems like it doesn't validate 
 
 ---
 
-_Referenced in [zenml-io/zenml#2520](../../zenml-io/zenml/pulls/2520.md) on 2024-03-19 08:34_
-
----
-
 _Comment by @strickvl on 2024-03-19 08:56_
 
 Ok so the trick there was just to use virtual environments instead of installing into the raw global system... Thanks for this explanation. I'm sure what you wrote above would be useful for an eventual docs page for `uv`, along with guidance around using uv with github actions.
@@ -77,9 +73,5 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-19 15:06_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-03-19 15:06_
-
----
-
-_Referenced in [astral-sh/uv#2540](../../astral-sh/uv/issues/2540.md) on 2024-03-19 15:07_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-23T15:00:57Z
 updated_at: 2024-04-01T14:35:22Z
 url: https://github.com/astral-sh/uv/issues/1062
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Ensure that uv works with `conda` Python distributions
@@ -129,10 +129,6 @@ Edit: It looks like uv will try and build a local package against a newer versio
 ---
 
 _Unassigned @konstin by @konstin on 2024-02-20 10:28_
-
----
-
-_Referenced in [astral-sh/uv#1848](../../astral-sh/uv/issues/1848.md) on 2024-02-22 02:46_
 
 ---
 

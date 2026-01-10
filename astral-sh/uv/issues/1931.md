@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T18:53:44Z
 updated_at: 2024-02-24T17:50:21Z
 url: https://github.com/astral-sh/uv/issues/1931
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv freezes vcs subdirectory requirements in non-roundtrippable format
@@ -101,10 +101,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-23 19:35_
 
 ---
 
-_Referenced in [astral-sh/uv#1936](../../astral-sh/uv/pulls/1936.md) on 2024-02-23 19:43_
-
----
-
 _Closed by @charliermarsh on 2024-02-23 20:01_
 
 ---
@@ -118,9 +114,5 @@ I was going to submit a PR for this myself, but tbh would not have figured out t
 _Comment by @charliermarsh on 2024-02-24 17:50_
 
 No prob, thanks for reporting @mqudsi!
-
----
-
-_Referenced in [astral-sh/uv#2677](../../astral-sh/uv/issues/2677.md) on 2024-03-26 21:23_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-26T13:32:15Z
 updated_at: 2024-01-16T05:37:16Z
 url: https://github.com/astral-sh/uv/issues/200
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Track and share resolver's in-memory index globally
@@ -24,10 +24,6 @@ If we have to do a resolution as part of building a source distribution, we shou
 ---
 
 _Label `performance` added by @charliermarsh on 2023-10-26 13:32_
-
----
-
-_Referenced in [astral-sh/uv#906](../../astral-sh/uv/pulls/906.md) on 2024-01-13 03:45_
 
 ---
 

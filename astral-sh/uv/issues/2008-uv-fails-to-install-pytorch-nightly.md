@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-27T09:30:22Z
 updated_at: 2024-03-19T14:14:03Z
 url: https://github.com/astral-sh/uv/issues/2008
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv fails to install pytorch nightly
@@ -148,9 +148,5 @@ The index contains multiple packages. Each of the is either suffixed or non suff
 _Comment by @charliermarsh on 2024-03-19 14:14_
 
 Got it. Hard to map these onto a global dependency resolution context, but we'll try.
-
----
-
-_Referenced in [astral-sh/uv#2541](../../astral-sh/uv/issues/2541.md) on 2024-03-19 15:14_
 
 ---

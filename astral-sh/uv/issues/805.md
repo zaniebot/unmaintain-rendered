@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-05T22:18:20Z
 updated_at: 2024-01-08T18:33:03Z
 url: https://github.com/astral-sh/uv/issues/805
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Fix display of negated versions
@@ -36,10 +36,6 @@ _Label `error messages` added by @zanieb on 2024-01-05 22:36_
 _Comment by @zanieb on 2024-01-08 17:24_
 
 Comes from https://github.com/zanieb/pubgrub/blob/f64c499f83e5798a583f9850fac28d2e7bf1dfbf/src/term.rs#L179-L186
-
----
-
-_Referenced in [astral-sh/uv#836](../../astral-sh/uv/pulls/836.md) on 2024-01-08 18:09_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-15T21:41:47Z
 updated_at: 2024-02-16T20:11:21Z
 url: https://github.com/astral-sh/uv/issues/1362
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip compile fails to resolve packages that pip-compile resolves with internal pypi artifactory repo
@@ -192,10 +192,6 @@ error: Failed to download and build: requests==2.31.0
 ```
 
 
-
----
-
-_Referenced in [astral-sh/uv#1388](../../astral-sh/uv/issues/1388.md) on 2024-02-15 23:45_
 
 ---
 

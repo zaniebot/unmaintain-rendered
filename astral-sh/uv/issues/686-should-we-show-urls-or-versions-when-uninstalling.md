@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-12-18T15:02:34Z
 updated_at: 2023-12-18T22:21:39Z
 url: https://github.com/astral-sh/uv/issues/686
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Should we show URLs or versions when uninstalling URL-based dependencies?
@@ -46,10 +46,6 @@ black==23.10.2.dev15+gf7cbe4a [from git+https://github.com/psf/black]
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-18 16:55_
-
----
-
-_Referenced in [astral-sh/uv#690](../../astral-sh/uv/pulls/690.md) on 2023-12-18 17:43_
 
 ---
 

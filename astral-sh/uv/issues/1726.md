@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T01:28:43Z
 updated_at: 2024-02-20T03:37:37Z
 url: https://github.com/astral-sh/uv/issues/1726
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv install with extras does not register when the package is already installed
@@ -44,10 +44,6 @@ Darwin x86_64
 
 ---
 
-_Referenced in [datahub-project/datahub#9885](../../datahub-project/datahub/pulls/9885.md) on 2024-02-20 01:29_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-02-20 01:29_
 
 ---
@@ -59,10 +55,6 @@ Thanks!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-20 01:29_
-
----
-
-_Referenced in [astral-sh/uv#1727](../../astral-sh/uv/pulls/1727.md) on 2024-02-20 01:49_
 
 ---
 

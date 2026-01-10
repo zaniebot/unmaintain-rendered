@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-30T02:58:56Z
 updated_at: 2024-01-30T05:20:37Z
 url: https://github.com/astral-sh/uv/issues/1181
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Confusing "relative path without a working directory" error
@@ -42,14 +42,6 @@ That's a bug (we shouldn't be calling `Requirement::from_str`).
 ---
 
 _Label `bug` added by @zanieb on 2024-01-30 03:04_
-
----
-
-_Referenced in [astral-sh/uv#1180](../../astral-sh/uv/pulls/1180.md) on 2024-01-30 03:07_
-
----
-
-_Referenced in [astral-sh/uv#1182](../../astral-sh/uv/pulls/1182.md) on 2024-01-30 03:09_
 
 ---
 

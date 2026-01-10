@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-30T14:28:41Z
 updated_at: 2023-10-30T15:21:12Z
 url: https://github.com/astral-sh/uv/issues/231
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Make candidate selection sdist vs. wheel-agnostic
@@ -32,10 +32,6 @@ _Added to milestone `Feature complete` by @charliermarsh on 2023-10-30 14:28_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-30 14:28_
-
----
-
-_Referenced in [astral-sh/uv#232](../../astral-sh/uv/pulls/232.md) on 2023-10-30 14:47_
 
 ---
 

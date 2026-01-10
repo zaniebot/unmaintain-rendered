@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T09:34:48Z
 updated_at: 2024-04-05T22:13:25Z
 url: https://github.com/astral-sh/uv/issues/1800
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Skip over versions with invalid metadata
@@ -35,10 +35,6 @@ _Renamed from "Skip over versions with invalid medata" to "Skip over versions wi
 
 ---
 
-_Referenced in [astral-sh/uv#1798](../../astral-sh/uv/issues/1798.md) on 2024-02-21 10:33_
-
----
-
 _Label `bug` removed by @charliermarsh on 2024-03-22 04:15_
 
 ---
@@ -48,10 +44,6 @@ _Label `enhancement` removed by @charliermarsh on 2024-03-22 04:15_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-03-22 04:15_
-
----
-
-_Referenced in [astral-sh/uv#2821](../../astral-sh/uv/issues/2821.md) on 2024-04-04 18:11_
 
 ---
 

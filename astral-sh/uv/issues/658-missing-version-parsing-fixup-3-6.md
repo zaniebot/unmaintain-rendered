@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-15T11:06:25Z
 updated_at: 2023-12-15T18:11:23Z
 url: https://github.com/astral-sh/uv/issues/658
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Missing version parsing fixup: ` >="3.6"`
@@ -39,10 +39,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-12-15 17:01_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-12-15 17:01_
-
----
-
-_Referenced in [astral-sh/uv#663](../../astral-sh/uv/pulls/663.md) on 2023-12-15 18:07_
 
 ---
 

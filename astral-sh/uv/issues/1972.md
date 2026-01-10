@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-25T21:21:13Z
 updated_at: 2024-02-28T15:43:14Z
 url: https://github.com/astral-sh/uv/issues/1972
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Workspace package name clash with builtins - when uv is enabled
@@ -247,10 +247,6 @@ This is an extremely rare issue for building packages, since most tools would ex
 
 ---
 
-_Referenced in [astral-sh/uv#1975](../../astral-sh/uv/pulls/1975.md) on 2024-02-26 01:02_
-
----
-
 _Closed by @charliermarsh on 2024-02-26 01:14_
 
 ---
@@ -258,10 +254,6 @@ _Closed by @charliermarsh on 2024-02-26 01:14_
 _Comment by @henryiii on 2024-02-27 14:37_
 
 FYI, `python -m venv .venv` doesn't work in the directory either, due to Python putting it at the top of the PATH. This means `pipx run` can't be used in this directory either. Also, it seems runpy triggers the import before it loads `__main__`, so not sure it's something we can even work around in build.
-
----
-
-_Referenced in [pypa/build#741](../../pypa/build/pulls/741.md) on 2024-02-27 14:39_
 
 ---
 

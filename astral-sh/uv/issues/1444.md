@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T06:46:05Z
 updated_at: 2024-02-22T05:01:31Z
 url: https://github.com/astral-sh/uv/issues/1444
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add copy fallback for reflink-based linker
@@ -42,10 +42,6 @@ error: Failed to build editables
   Caused by: Failed to reflink /Volumes/casesensitive/uvc/archive-v0/Zgihw_1YQkIZZNdz81Rtf/setuptools-69.1.0.dist-info to /private/var/folders/43/29_b2rv50rj6c9t29s0t5w5whc959c/T/.tmpYrzRHM/.venv/lib/python3.10/site-packages/setuptools-69.1.0.dist-info
   Caused by: Cross-device link (os error 18)
 ```
-
----
-
-_Referenced in [astral-sh/uv#1513](../../astral-sh/uv/issues/1513.md) on 2024-02-16 17:05_
 
 ---
 
@@ -180,10 +176,6 @@ where we create a temporary directory to actually perform the build but it is no
 
 ---
 
-_Referenced in [astral-sh/uv#1628](../../astral-sh/uv/pulls/1628.md) on 2024-02-18 07:38_
-
----
-
 _Comment by @humanzz on 2024-02-19 10:56_
 
 I've just tried the `0.1.5` release and it finally works :)
@@ -212,10 +204,6 @@ Thank you!
 ---
 
 _Assigned to @snowsignal by @zanieb on 2024-02-19 18:13_
-
----
-
-_Referenced in [astral-sh/uv#1773](../../astral-sh/uv/pulls/1773.md) on 2024-02-20 18:08_
 
 ---
 

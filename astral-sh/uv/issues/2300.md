@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-08T10:04:52Z
 updated_at: 2024-03-12T06:41:08Z
 url: https://github.com/astral-sh/uv/issues/2300
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv hangs on install
@@ -117,15 +117,7 @@ Actually, to be more specific, I could see it manifesting without `--no-deps`, b
 
 ---
 
-_Referenced in [astral-sh/uv#2373](../../astral-sh/uv/pulls/2373.md) on 2024-03-12 03:29_
-
----
-
 _Closed by @charliermarsh on 2024-03-12 03:44_
-
----
-
-_Referenced in [astral-sh/uv#2374](../../astral-sh/uv/pulls/2374.md) on 2024-03-12 04:04_
 
 ---
 

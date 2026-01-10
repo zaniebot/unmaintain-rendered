@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-23T14:31:14Z
 updated_at: 2024-04-04T04:00:53Z
 url: https://github.com/astral-sh/uv/issues/1061
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Store symlinked directories under their SHA
@@ -343,9 +343,5 @@ Found 8 outliers among 100 measurements (8.00%)
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-04-04 04:00_
-
----
-
-_Referenced in [astral-sh/uv#16816](../../astral-sh/uv/pulls/16816.md) on 2025-11-22 03:05_
 
 ---

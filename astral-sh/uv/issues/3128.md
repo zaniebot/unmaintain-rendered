@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-18T22:15:59Z
 updated_at: 2024-04-19T14:23:57Z
 url: https://github.com/astral-sh/uv/issues/3128
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # [Crash] transitive URL installs from localhost are erroneously interpreted as local paths
@@ -64,10 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-18 22:36_
 _Comment by @charliermarsh on 2024-04-18 22:36_
 
 Assigning to myself.
-
----
-
-_Referenced in [astral-sh/uv#3132](../../astral-sh/uv/pulls/3132.md) on 2024-04-19 00:30_
 
 ---
 

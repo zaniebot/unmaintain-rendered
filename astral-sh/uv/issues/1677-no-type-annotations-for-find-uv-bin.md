@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-19T01:55:40Z
 updated_at: 2024-02-20T15:21:59Z
 url: https://github.com/astral-sh/uv/issues/1677
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # No type annotations for find_uv_bin
@@ -68,18 +68,6 @@ _Label `good first issue` added by @zanieb on 2024-02-19 04:48_
 
 ---
 
-_Referenced in [astral-sh/uv#1685](../../astral-sh/uv/pulls/1685.md) on 2024-02-19 11:29_
-
----
-
-_Referenced in [astral-sh/uv#1728](../../astral-sh/uv/pulls/1728.md) on 2024-02-20 02:01_
-
----
-
 _Closed by @zanieb on 2024-02-20 15:21_
-
----
-
-_Referenced in [astral-sh/ruff#18153](../../astral-sh/ruff/issues/18153.md) on 2025-05-17 20:58_
 
 ---

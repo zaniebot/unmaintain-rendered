@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T23:28:09Z
 updated_at: 2024-02-17T01:33:41Z
 url: https://github.com/astral-sh/uv/issues/1552
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # allow duplicates of the same version of the same package
@@ -28,10 +28,6 @@ error: Failed to determine installation plan
 ```
 
 I think the check here is too strict https://github.com/astral-sh/uv/blob/4e0b6f8f849bdbc9e21ab302eb8c8dcb1e81fe6d/crates/uv-installer/src/plan.rs#L125-L130
-
----
-
-_Referenced in [astral-sh/uv#1554](../../astral-sh/uv/issues/1554.md) on 2024-02-16 23:58_
 
 ---
 
@@ -83,10 +79,6 @@ Incompatible requirements found: packaging<=24 (from -r /dev/fd/12 (line 1)) and
 _Comment by @ericbn on 2024-02-17 00:30_
 
 See https://github.com/jazzband/pip-tools/issues/786
-
----
-
-_Referenced in [astral-sh/uv#1558](../../astral-sh/uv/pulls/1558.md) on 2024-02-17 01:19_
 
 ---
 

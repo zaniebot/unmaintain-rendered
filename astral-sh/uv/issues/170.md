@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-23T15:36:36Z
 updated_at: 2024-04-08T14:28:58Z
 url: https://github.com/astral-sh/uv/issues/170
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Fetch version metadata in batches
@@ -62,25 +62,13 @@ Yes, it basically does not make sense to work on this until https://github.com/p
 
 ---
 
-_Referenced in [astral-sh/uv#1398](../../astral-sh/uv/issues/1398.md) on 2024-02-16 00:31_
-
----
-
 _Comment by @konstin on 2024-02-20 10:33_
 
 As an update, pubgrub is much faster now, and it will be even faster for this case with https://github.com/pubgrub-rs/pubgrub/pull/177 (the benchmark i used hits the boto case), so we can retry doing this.
 
 ---
 
-_Referenced in [astral-sh/uv#2421](../../astral-sh/uv/pulls/2421.md) on 2024-03-13 18:57_
-
----
-
 _Assigned to @konstin by @konstin on 2024-03-14 10:53_
-
----
-
-_Referenced in [astral-sh/uv#2452](../../astral-sh/uv/pulls/2452.md) on 2024-03-14 11:01_
 
 ---
 

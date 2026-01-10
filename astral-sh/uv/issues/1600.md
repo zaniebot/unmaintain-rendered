@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-17T16:53:53Z
 updated_at: 2024-02-29T16:57:09Z
 url: https://github.com/astral-sh/uv/issues/1600
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # --extra-index-url failing when package not in --index-url (polygraphy 0.47.1)
@@ -84,10 +84,6 @@ _Closed by @kafonek on 2024-02-17 21:46_
 
 ---
 
-_Referenced in [astral-sh/uv#1451](../../astral-sh/uv/issues/1451.md) on 2024-02-17 21:47_
-
----
-
 _Label `duplicate` added by @zanieb on 2024-02-18 06:59_
 
 ---
@@ -96,30 +92,6 @@ _Closed by @zanieb on 2024-02-18 06:59_
 
 ---
 
-_Referenced in [astral-sh/uv#171](../../astral-sh/uv/issues/171.md) on 2024-02-29 12:52_
-
----
-
-_Referenced in [astral-sh/uv#2083](../../astral-sh/uv/pulls/2083.md) on 2024-02-29 15:16_
-
----
-
 _Closed by @BurntSushi on 2024-02-29 16:57_
-
----
-
-_Referenced in [astral-sh/uv#2159](../../astral-sh/uv/issues/2159.md) on 2024-03-04 17:03_
-
----
-
-_Referenced in [astral-sh/uv#2205](../../astral-sh/uv/issues/2205.md) on 2024-03-05 16:42_
-
----
-
-_Referenced in [astral-sh/uv#2542](../../astral-sh/uv/issues/2542.md) on 2024-03-19 17:20_
-
----
-
-_Referenced in [astral-sh/uv#2718](../../astral-sh/uv/issues/2718.md) on 2024-03-28 19:19_
 
 ---

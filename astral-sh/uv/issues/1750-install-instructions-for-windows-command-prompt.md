@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-20T12:37:17Z
 updated_at: 2024-02-22T09:25:34Z
 url: https://github.com/astral-sh/uv/issues/1750
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Install instructions for Windows command prompt
@@ -73,14 +73,6 @@ _Renamed from "Install instructions fpr Windows command prompt" to "Install inst
 _Comment by @konstin on 2024-02-20 17:49_
 
 Ref: https://github.com/axodotdev/cargo-dist/issues/458 
-
----
-
-_Referenced in [astral-sh/uv#1811](../../astral-sh/uv/pulls/1811.md) on 2024-02-21 15:56_
-
----
-
-_Referenced in [astral-sh/uv#1836](../../astral-sh/uv/pulls/1836.md) on 2024-02-21 22:01_
 
 ---
 

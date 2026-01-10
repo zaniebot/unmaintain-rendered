@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-29T11:58:44Z
 updated_at: 2024-01-30T18:58:46Z
 url: https://github.com/astral-sh/uv/issues/1166
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Guide user towards `-r` flag in `pip install`
@@ -65,10 +65,6 @@ _Comment by @charliermarsh on 2024-01-29 15:32_
 Funny, pip only does this for _exactly_ `requirements.txt`. (`requirements.txt` is actually a valid package name per the spec, but it's forbidden by PyPI.) See: https://github.com/pypa/pip/pull/9915.
 
 Meanwhile, `requirements-dev.txt` actually _is_ a valid package name but it's squatted on PyPI (https://pypi.org/project/requirements-dev.txt/) to guard against this.
-
----
-
-_Referenced in [astral-sh/uv#1180](../../astral-sh/uv/pulls/1180.md) on 2024-01-30 01:40_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-16T05:54:05Z
 updated_at: 2024-02-16T12:21:53Z
 url: https://github.com/astral-sh/uv/issues/1438
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # ARMv7 Linux Musl
@@ -64,9 +64,5 @@ Closing this for now as duplicate of #1427
 ---
 
 _Closed by @dynasticorpheus on 2024-02-16 12:21_
-
----
-
-_Referenced in [astral-sh/uv#7529](../../astral-sh/uv/issues/7529.md) on 2024-09-19 01:47_
 
 ---

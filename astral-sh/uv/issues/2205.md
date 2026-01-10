@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-05T16:16:04Z
 updated_at: 2024-03-13T00:05:08Z
 url: https://github.com/astral-sh/uv/issues/2205
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Installing packages from multiple indexes fails if the desired versions are not found from the first index where the package is available.
@@ -738,14 +738,6 @@ Currently we just use pip by adding all our indexes as extra-index-urls, and all
 This is not possible with uv currently, because if we request a dev version, the resolution stops at the first index where the package has any versions, even if it's invalid or doesn't match the request.
 
 In my idea if uv were to look for resolutions in the indexes in a specific order, and only stop if it finds a valid version that satisfies the request that would solve many pip incompatibilities.
-
----
-
-_Referenced in [astral-sh/uv#171](../../astral-sh/uv/issues/171.md) on 2024-03-05 21:49_
-
----
-
-_Referenced in [astral-sh/uv#2310](../../astral-sh/uv/issues/2310.md) on 2024-03-08 22:43_
 
 ---
 

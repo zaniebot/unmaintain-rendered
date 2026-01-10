@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-29T21:01:36Z
 updated_at: 2024-01-29T21:11:43Z
 url: https://github.com/astral-sh/uv/issues/1176
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Deduplicate `pep440_rs`
@@ -33,10 +33,6 @@ Please re-run this command with one of the following specifications:
 ---
 
 _Label `internal` added by @charliermarsh on 2024-01-29 21:01_
-
----
-
-_Referenced in [astral-sh/uv#1177](../../astral-sh/uv/pulls/1177.md) on 2024-01-29 21:04_
 
 ---
 

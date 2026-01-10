@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-05T18:22:26Z
 updated_at: 2023-12-08T19:58:44Z
 url: https://github.com/astral-sh/uv/issues/572
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add a `--rebuild` flag to force rebuild of source distributions
@@ -38,14 +38,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-12-07 05:28_
 _Comment by @charliermarsh on 2023-12-07 05:42_
 
 I'm gonna start by making `clean` take a list of packages, so we can implement the "cache purge" API.
-
----
-
-_Referenced in [astral-sh/uv#589](../../astral-sh/uv/pulls/589.md) on 2023-12-08 01:55_
-
----
-
-_Referenced in [astral-sh/uv#590](../../astral-sh/uv/pulls/590.md) on 2023-12-08 02:33_
 
 ---
 

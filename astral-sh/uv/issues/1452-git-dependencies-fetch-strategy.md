@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T08:27:10Z
 updated_at: 2024-02-21T18:44:33Z
 url: https://github.com/astral-sh/uv/issues/1452
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Git dependencies fetch strategy
@@ -54,18 +54,6 @@ _Label `bug` added by @MichaReiser on 2024-02-16 08:52_
 _Comment by @TudorAndrei on 2024-02-16 10:02_
 
 I'm encountering the same issue
-
----
-
-_Referenced in [astral-sh/uv#1514](../../astral-sh/uv/issues/1514.md) on 2024-02-18 12:29_
-
----
-
-_Referenced in [astral-sh/uv#1717](../../astral-sh/uv/pulls/1717.md) on 2024-02-19 20:28_
-
----
-
-_Referenced in [astral-sh/uv#1781](../../astral-sh/uv/pulls/1781.md) on 2024-02-21 00:09_
 
 ---
 

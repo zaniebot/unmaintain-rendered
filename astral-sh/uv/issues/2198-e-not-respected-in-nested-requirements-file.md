@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-05T09:19:49Z
 updated_at: 2024-03-05T16:47:38Z
 url: https://github.com/astral-sh/uv/issues/2198
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `-e .` not respected in nested requirements file
@@ -354,10 +354,6 @@ _Label `bug` added by @charliermarsh on 2024-03-05 14:23_
 _Comment by @charliermarsh on 2024-03-05 14:23_
 
 Confirmed, easy fix! Thanks!
-
----
-
-_Referenced in [astral-sh/uv#2204](../../astral-sh/uv/pulls/2204.md) on 2024-03-05 14:32_
 
 ---
 

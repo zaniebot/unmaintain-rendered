@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-12T09:25:14Z
 updated_at: 2024-04-12T18:48:04Z
 url: https://github.com/astral-sh/uv/issues/3012
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # normalize_path breaks relative python interpreters
@@ -50,10 +50,6 @@ I suppose I can take this.
 _Comment by @charliermarsh on 2024-04-12 13:59_
 
 It looks like `normalize_path` assumes the argument path is absolute. I'll fix and document.
-
----
-
-_Referenced in [astral-sh/uv#3013](../../astral-sh/uv/pulls/3013.md) on 2024-04-12 14:25_
 
 ---
 

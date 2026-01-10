@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T23:00:03Z
 updated_at: 2024-02-17T00:31:25Z
 url: https://github.com/astral-sh/uv/issues/1550
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Allow uv to install global packages with supporting flag
@@ -53,9 +53,5 @@ _Closed by @zanieb on 2024-02-17 00:31_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-02-17 00:31_
-
----
-
-_Referenced in [astral-sh/uv#16757](../../astral-sh/uv/issues/16757.md) on 2025-11-20 15:11_
 
 ---

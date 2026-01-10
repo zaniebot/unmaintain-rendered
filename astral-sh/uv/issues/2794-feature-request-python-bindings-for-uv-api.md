@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-03T03:00:51Z
 updated_at: 2024-04-03T04:01:41Z
 url: https://github.com/astral-sh/uv/issues/2794
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # [feature request] python bindings for uv api
@@ -51,13 +51,5 @@ _Closed by @zanieb on 2024-04-03 04:01_
 ---
 
 _Label `wontfix` added by @zanieb on 2024-04-03 04:01_
-
----
-
-_Referenced in [astral-sh/uv#6080](../../astral-sh/uv/issues/6080.md) on 2024-08-14 14:42_
-
----
-
-_Referenced in [astral-sh/uv#11778](../../astral-sh/uv/issues/11778.md) on 2025-02-25 16:00_
 
 ---

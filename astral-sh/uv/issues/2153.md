@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-04T12:56:26Z
 updated_at: 2024-03-05T21:13:26Z
 url: https://github.com/astral-sh/uv/issues/2153
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # For some python implementations uv expects a different `site-packages` path than it creates
@@ -65,10 +65,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-04 14:30_
 _Comment by @charliermarsh on 2024-03-04 14:30_
 
 Thanks! This is the same as https://github.com/astral-sh/uv/issues/2095 but I'll keep it open since it's useful to have a concrete example.
-
----
-
-_Referenced in [astral-sh/uv#2188](../../astral-sh/uv/pulls/2188.md) on 2024-03-05 00:19_
 
 ---
 

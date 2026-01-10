@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T14:31:50Z
 updated_at: 2024-02-18T18:32:12Z
 url: https://github.com/astral-sh/uv/issues/1648
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Tag created venvs as a cache dir to avoid most of in-project venv downsides
@@ -42,10 +42,6 @@ _Label `enhancement` added by @charliermarsh on 2024-02-18 14:53_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-18 15:27_
-
----
-
-_Referenced in [astral-sh/uv#1653](../../astral-sh/uv/pulls/1653.md) on 2024-02-18 15:31_
 
 ---
 

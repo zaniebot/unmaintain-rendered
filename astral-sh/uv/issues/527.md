@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-03T19:57:04Z
 updated_at: 2023-12-04T10:13:43Z
 url: https://github.com/astral-sh/uv/issues/527
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Unable to install `ujson==5.7.0`
@@ -95,10 +95,6 @@ Example from build: https://github.com/pypa/build/blob/de5b44b0c28c598524832dff6
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-03 22:41_
-
----
-
-_Referenced in [astral-sh/uv#530](../../astral-sh/uv/pulls/530.md) on 2023-12-04 01:18_
 
 ---
 

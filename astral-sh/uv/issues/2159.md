@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-04T15:47:22Z
 updated_at: 2024-03-06T08:16:40Z
 url: https://github.com/astral-sh/uv/issues/2159
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Can't find public pypi package when using extra-index-url
@@ -121,10 +121,6 @@ _Comment by @albertferras-vrf on 2024-03-05 08:33_
 _Comment by @zanieb on 2024-03-05 15:16_
 
 I believe the description of https://github.com/astral-sh/uv/pull/2083 should clarify things — we will not discover package versions across multiple indexes so if any version of a package is present in your extra index URL then it will not be read from the public index.
-
----
-
-_Referenced in [astral-sh/uv#2205](../../astral-sh/uv/issues/2205.md) on 2024-03-05 16:42_
 
 ---
 

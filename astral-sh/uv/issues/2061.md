@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-29T00:14:30Z
 updated_at: 2024-02-29T03:00:25Z
 url: https://github.com/astral-sh/uv/issues/2061
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `EXTERNALLY-MANAGED` error message is cutoff
@@ -33,10 +33,6 @@ _Label `error messages` added by @charliermarsh on 2024-02-29 00:14_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-29 02:48_
-
----
-
-_Referenced in [astral-sh/uv#2073](../../astral-sh/uv/pulls/2073.md) on 2024-02-29 02:49_
 
 ---
 

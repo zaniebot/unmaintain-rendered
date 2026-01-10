@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-12T13:15:38Z
 updated_at: 2023-10-12T17:09:02Z
 url: https://github.com/astral-sh/uv/issues/89
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Use `requirements_txt.rs` from `poc-monotrail`
@@ -23,10 +23,6 @@ Replace the ad hoc parser I wrote.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-12 13:25_
-
----
-
-_Referenced in [astral-sh/uv#90](../../astral-sh/uv/pulls/90.md) on 2023-10-12 16:48_
 
 ---
 

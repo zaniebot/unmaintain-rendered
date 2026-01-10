@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-21T09:23:11Z
 updated_at: 2024-03-21T20:58:59Z
 url: https://github.com/astral-sh/uv/issues/2585
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv self update` does not work on windows
@@ -69,10 +69,6 @@ C:\Users\Konstantin\.cargo\bin\uv.exe
 ---
 
 _Label `windows` added by @zanieb on 2024-03-21 14:45_
-
----
-
-_Referenced in [astral-sh/uv#2598](../../astral-sh/uv/pulls/2598.md) on 2024-03-21 20:43_
 
 ---
 

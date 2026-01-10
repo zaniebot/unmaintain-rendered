@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-30T22:18:39Z
 updated_at: 2023-11-01T18:39:51Z
 url: https://github.com/astral-sh/uv/issues/244
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `--all-extras` support to `pip-compile`
@@ -23,10 +23,6 @@ Follow-up to base functionality of https://github.com/astral-sh/puffin/issues/13
 ---
 
 _Added to milestone `Feature complete` by @zanieb on 2023-10-30 22:19_
-
----
-
-_Referenced in [astral-sh/uv#259](../../astral-sh/uv/pulls/259.md) on 2023-10-31 19:34_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T09:07:46Z
 updated_at: 2024-02-23T12:34:15Z
 url: https://github.com/astral-sh/uv/issues/1458
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Authentication for index-url not being used
@@ -43,10 +43,6 @@ Which results in the error
 ```
 Caused by: HTTP status client error (405 Method Not Allowed) for url (https://pkgs.dev.azure.com/[redacted]-py3-none-any.whl#sha256=[redacted])
 ```
-
----
-
-_Referenced in [astral-sh/uv#1450](../../astral-sh/uv/issues/1450.md) on 2024-02-16 09:13_
 
 ---
 
@@ -130,10 +126,6 @@ _Assigned to @zanieb by @zanieb on 2024-02-16 21:57_
 
 ---
 
-_Referenced in [astral-sh/uv#1449](../../astral-sh/uv/issues/1449.md) on 2024-02-17 07:05_
-
----
-
 _Comment by @J3ronimo on 2024-02-17 10:48_
 
 Same here. I have user and token in a Gitlab url passed with `uv pip install --extra-index-url ...`, which makes it find the package (so the credentials must be OK). but then fails with 
@@ -144,10 +136,6 @@ error: Failed to download: ...
 ```
 
 where `url` is missing the url-encoded credentials now. Can't say if they were sent in HTTP headers though.
-
----
-
-_Referenced in [astral-sh/uv#1569](../../astral-sh/uv/issues/1569.md) on 2024-02-18 23:46_
 
 ---
 
@@ -213,10 +201,6 @@ Yeah, I've seen the two different error codes:
 
 ---
 
-_Referenced in [astral-sh/uv#1688](../../astral-sh/uv/issues/1688.md) on 2024-02-19 14:28_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-19 14:42_
 
 ---
@@ -228,18 +212,6 @@ _Unassigned @zanieb by @charliermarsh on 2024-02-19 14:42_
 _Comment by @charliermarsh on 2024-02-19 14:42_
 
 Ahh thank you, ok, I can take this one.
-
----
-
-_Referenced in [astral-sh/uv#1371](../../astral-sh/uv/issues/1371.md) on 2024-02-19 14:43_
-
----
-
-_Referenced in [astral-sh/uv#1709](../../astral-sh/uv/issues/1709.md) on 2024-02-19 17:41_
-
----
-
-_Referenced in [astral-sh/uv#1713](../../astral-sh/uv/pulls/1713.md) on 2024-02-19 19:09_
 
 ---
 

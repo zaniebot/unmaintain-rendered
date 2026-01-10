@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T22:57:05Z
 updated_at: 2024-02-20T04:37:57Z
 url: https://github.com/astral-sh/uv/issues/1549
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Operation Timeout on Pip Install
@@ -50,28 +50,12 @@ _Label `configuration` added by @zanieb on 2024-02-17 00:34_
 
 ---
 
-_Referenced in [astral-sh/uv#1451](../../astral-sh/uv/issues/1451.md) on 2024-02-17 08:29_
-
----
-
 _Comment by @ilkersigirci on 2024-02-19 13:28_
 
 This is really frustrating since I couldn't able to install pytorch. I hope it will be fixed soon
 
 ---
 
-_Referenced in [astral-sh/uv#1694](../../astral-sh/uv/pulls/1694.md) on 2024-02-19 14:24_
-
----
-
 _Closed by @zanieb on 2024-02-20 04:37_
-
----
-
-_Referenced in [llamastack/llama-stack#929](../../llamastack/llama-stack/pulls/929.md) on 2025-02-02 22:02_
-
----
-
-_Referenced in [vllm-project/vllm#13850](../../vllm-project/vllm/pulls/13850.md) on 2025-02-25 22:03_
 
 ---

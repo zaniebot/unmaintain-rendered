@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-09T13:02:13Z
 updated_at: 2024-01-05T16:57:34Z
 url: https://github.com/astral-sh/uv/issues/373
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Manual PEP 440 version parser
@@ -51,22 +51,10 @@ I agree that getting rid of the regex captures and hand-rolling a version parser
 
 ---
 
-_Referenced in [astral-sh/uv#399](../../astral-sh/uv/pulls/399.md) on 2023-11-10 19:36_
-
----
-
-_Referenced in [astral-sh/uv#789](../../astral-sh/uv/pulls/789.md) on 2024-01-04 19:55_
-
----
-
 _Assigned to @BurntSushi by @charliermarsh on 2024-01-05 04:33_
 
 ---
 
 _Closed by @BurntSushi on 2024-01-05 16:57_
-
----
-
-_Referenced in [astral-sh/uv#1138](../../astral-sh/uv/pulls/1138.md) on 2024-01-26 22:01_
 
 ---

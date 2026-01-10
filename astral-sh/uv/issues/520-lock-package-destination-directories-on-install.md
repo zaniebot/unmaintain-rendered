@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-30T16:12:36Z
 updated_at: 2024-02-02T20:06:17Z
 url: https://github.com/astral-sh/uv/issues/520
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Lock package destination directories on install
@@ -26,10 +26,6 @@ See https://github.com/astral-sh/puffin/pull/516#issuecomment-1834067560
 ---
 
 _Added to milestone `Initial release` by @zanieb on 2023-11-30 16:13_
-
----
-
-_Referenced in [astral-sh/uv#516](../../astral-sh/uv/pulls/516.md) on 2023-11-30 16:15_
 
 ---
 
@@ -64,10 +60,6 @@ puffin-dev failed
   Caused by: File exists (os error 17)
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#732](../../astral-sh/uv/pulls/732.md) on 2023-12-26 16:55_
 
 ---
 

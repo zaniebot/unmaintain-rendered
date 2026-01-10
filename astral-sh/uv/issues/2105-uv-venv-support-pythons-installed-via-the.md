@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-01T09:56:10Z
 updated_at: 2024-03-05T17:42:19Z
 url: https://github.com/astral-sh/uv/issues/2105
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv venv: support Pythons installed via the Microsoft Store
@@ -100,10 +100,6 @@ Yeah I'm working on this now. Should work soon.
 
 ---
 
-_Referenced in [astral-sh/uv#2122](../../astral-sh/uv/pulls/2122.md) on 2024-03-01 21:21_
-
----
-
 _Closed by @charliermarsh on 2024-03-03 17:55_
 
 ---
@@ -150,16 +146,8 @@ If I push to a branch, would you be able to test locally by running `cargo build
 
 ---
 
-_Referenced in [astral-sh/uv#2208](../../astral-sh/uv/issues/2208.md) on 2024-03-05 17:41_
-
----
-
 _Comment by @charliermarsh on 2024-03-05 17:42_
 
 Creating a new issue for this specific fix (https://github.com/astral-sh/uv/issues/2208), which I'm working on now.
-
----
-
-_Referenced in [astral-sh/uv#2264](../../astral-sh/uv/issues/2264.md) on 2024-03-07 06:24_
 
 ---

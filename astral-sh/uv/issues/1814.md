@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-21T14:46:33Z
 updated_at: 2024-02-23T19:01:16Z
 url: https://github.com/astral-sh/uv/issues/1814
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Do not add `--upgrade` flag to generated output file
@@ -66,10 +66,6 @@ Another one that's ignored by `pip-tools`: `--quiet`
 Additionally, this is nothing too serious, but I thought I'd mention it: From what I've seen `pip-tools` also re-orders the CLI args before creating the output file. So when changing order of the CLI params in our scripts, the generated file is still the same.
 
 I tested this by running `pip-compile --strip-extras --quiet --extra-index-url=https://pypi.example.net/...`. The command in the `requirements.txt` will look like this: `pip-compile --extra-index-url=https://pypi.example.net/... --strip-extras`
-
----
-
-_Referenced in [astral-sh/uv#1873](../../astral-sh/uv/pulls/1873.md) on 2024-02-22 15:35_
 
 ---
 

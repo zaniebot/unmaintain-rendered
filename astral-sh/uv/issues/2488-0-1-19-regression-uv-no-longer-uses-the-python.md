@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-16T15:40:31Z
 updated_at: 2024-03-18T19:39:41Z
 url: https://github.com/astral-sh/uv/issues/2488
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # [0.1.19 regression] `uv` no longer uses the Python interpreter set by `pyenv`
@@ -174,10 +174,6 @@ We could put it in a zipapp... :)
 _Comment by @charliermarsh on 2024-03-18 02:28_
 
 I tried, it actually is meaningfully slower lol
-
----
-
-_Referenced in [astral-sh/uv#2503](../../astral-sh/uv/pulls/2503.md) on 2024-03-18 02:39_
 
 ---
 

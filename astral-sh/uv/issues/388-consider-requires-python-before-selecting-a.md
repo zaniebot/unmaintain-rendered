@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-10T14:34:50Z
 updated_at: 2023-11-13T16:14:09Z
 url: https://github.com/astral-sh/uv/issues/388
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Consider requires-python before selecting a source distribution
@@ -68,10 +68,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2023-11-10 15:00_
 _Comment by @charliermarsh on 2023-11-10 15:01_
 
 Likely requires changes to both the resolver (where we build the version map) and the installer (in the distribution finder).
-
----
-
-_Referenced in [astral-sh/uv#398](../../astral-sh/uv/pulls/398.md) on 2023-11-10 19:25_
 
 ---
 

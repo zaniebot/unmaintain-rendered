@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-10T16:47:05Z
 updated_at: 2023-11-13T20:00:14Z
 url: https://github.com/astral-sh/uv/issues/393
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Don't print colors when stderr is redirected to a file
@@ -149,10 +149,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-13 19:22_
 _Comment by @charliermarsh on 2023-11-13 19:22_
 
 Gonna investigate this real quick.
-
----
-
-_Referenced in [astral-sh/uv#415](../../astral-sh/uv/pulls/415.md) on 2023-11-13 19:50_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-16T11:19:36Z
 updated_at: 2024-04-19T14:11:57Z
 url: https://github.com/astral-sh/uv/issues/3061
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Use standalone Python builds when creating a virtual environment
@@ -39,10 +39,6 @@ We'll support this.
 ---
 
 _Label `enhancement` added by @zanieb on 2024-04-16 13:10_
-
----
-
-_Referenced in [astral-sh/uv#3139](../../astral-sh/uv/issues/3139.md) on 2024-04-19 14:11_
 
 ---
 

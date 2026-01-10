@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-17T04:34:11Z
 updated_at: 2024-02-19T10:09:14Z
 url: https://github.com/astral-sh/uv/issues/1573
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # entry points/scripts  with additional "attributes" are not generated correctly (e.g. for Pyinvoke)
@@ -157,14 +157,6 @@ I can look into this.
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-02-17 22:02_
-
----
-
-_Referenced in [astral-sh/uv#1622](../../astral-sh/uv/pulls/1622.md) on 2024-02-18 02:28_
-
----
-
-_Referenced in [astral-sh/uv#1682](../../astral-sh/uv/issues/1682.md) on 2024-02-19 09:28_
 
 ---
 

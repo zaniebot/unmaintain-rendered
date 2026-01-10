@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-08T20:23:24Z
 updated_at: 2024-03-08T21:00:40Z
 url: https://github.com/astral-sh/uv/issues/2306
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Show users a custom message when `wheel` is not installed
@@ -24,10 +24,6 @@ _No description provided._
 ---
 
 _Label `error messages` added by @charliermarsh on 2024-03-08 20:23_
-
----
-
-_Referenced in [astral-sh/uv#2307](../../astral-sh/uv/pulls/2307.md) on 2024-03-08 20:51_
 
 ---
 

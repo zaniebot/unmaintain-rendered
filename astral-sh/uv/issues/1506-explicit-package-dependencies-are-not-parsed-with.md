@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T15:53:47Z
 updated_at: 2024-02-18T03:10:56Z
 url: https://github.com/astral-sh/uv/issues/1506
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # explicit `package @ .` dependencies are not parsed with `--editable` but should be
@@ -129,10 +129,6 @@ _Label `compatibility` added by @zanieb on 2024-02-16 15:59_
 _Comment by @zanieb on 2024-02-16 15:59_
 
 Thanks for the report! Looks like an oversight.
-
----
-
-_Referenced in [Chia-Network/chia-blockchain#17572](../../Chia-Network/chia-blockchain/pulls/17572.md) on 2024-02-16 16:19_
 
 ---
 

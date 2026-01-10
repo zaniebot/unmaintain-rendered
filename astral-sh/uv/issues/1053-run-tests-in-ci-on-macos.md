@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-22T23:02:09Z
 updated_at: 2024-01-31T15:27:05Z
 url: https://github.com/astral-sh/uv/issues/1053
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Run tests in CI on macOS
@@ -43,10 +43,6 @@ Note: Fails to compile with all features (which we don’t use). The project doe
 _Comment by @zanieb on 2024-01-23 04:58_
 
 👍 yeah I wasn't sure if it was a feature thing or something to do with the GitHub Actions runners.
-
----
-
-_Referenced in [astral-sh/uv#1193](../../astral-sh/uv/pulls/1193.md) on 2024-01-31 01:32_
 
 ---
 

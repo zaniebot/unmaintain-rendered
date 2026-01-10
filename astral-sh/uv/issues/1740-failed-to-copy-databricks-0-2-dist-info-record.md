@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-20T08:51:12Z
 updated_at: 2024-02-20T15:41:06Z
 url: https://github.com/astral-sh/uv/issues/1740
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failed to copy databricks-0.2.dist-info/RECORD
@@ -48,10 +48,6 @@ If you're filing a bug report, please consider including the following informati
 ---
 
 _Assigned to @konstin by @konstin on 2024-02-20 09:05_
-
----
-
-_Referenced in [astral-sh/uv#1743](../../astral-sh/uv/pulls/1743.md) on 2024-02-20 09:31_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-05T22:36:23Z
 updated_at: 2024-01-07T17:40:24Z
 url: https://github.com/astral-sh/uv/issues/807
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Simplify ranges in prerelease specifier hints
@@ -32,10 +32,6 @@ _Label `error messages` added by @zanieb on 2024-01-05 22:36_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-07 02:18_
-
----
-
-_Referenced in [astral-sh/uv#825](../../astral-sh/uv/pulls/825.md) on 2024-01-07 02:32_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T09:57:45Z
 updated_at: 2024-02-26T23:11:58Z
 url: https://github.com/astral-sh/uv/issues/1801
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # pip compile --no-deps fails with extras
@@ -57,10 +57,6 @@ Happens with `uv 0.1.6` and earlier.
 
 ---
 
-_Referenced in [astral-sh/rye#668](../../astral-sh/rye/issues/668.md) on 2024-02-21 09:58_
-
----
-
 _Label `bug` added by @konstin on 2024-02-21 10:04_
 
 ---
@@ -72,10 +68,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-21 12:43_
 _Comment by @charliermarsh on 2024-02-21 14:19_
 
 Fixing now.
-
----
-
-_Referenced in [astral-sh/uv#1812](../../astral-sh/uv/pulls/1812.md) on 2024-02-21 14:37_
 
 ---
 

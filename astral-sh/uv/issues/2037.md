@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-28T08:25:56Z
 updated_at: 2024-04-04T03:55:11Z
 url: https://github.com/astral-sh/uv/issues/2037
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Error while installing pytorch with uv
@@ -48,10 +48,6 @@ _Comment by @jensens on 2024-02-28 13:35_
 
 Probably because of `--pre` - I just stumbled over the same issue. Same in uv is `--prerelease=allow`. Another thing to document as pip incompatibility (see also #2023)
 Question is it would not be better to keep `--pre` working as it is use a lot with pip.
-
----
-
-_Referenced in [astral-sh/uv#2047](../../astral-sh/uv/issues/2047.md) on 2024-02-28 17:50_
 
 ---
 

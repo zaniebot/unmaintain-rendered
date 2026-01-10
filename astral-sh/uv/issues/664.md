@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-15T18:12:54Z
 updated_at: 2023-12-15T18:43:25Z
 url: https://github.com/astral-sh/uv/issues/664
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `puffin pip-install` shows resolution errors twice
@@ -36,10 +36,6 @@ _Label `bug` added by @charliermarsh on 2023-12-15 18:13_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-15 18:13_
-
----
-
-_Referenced in [astral-sh/uv#665](../../astral-sh/uv/pulls/665.md) on 2023-12-15 18:37_
 
 ---
 

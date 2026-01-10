@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T11:54:52Z
 updated_at: 2024-03-09T11:45:46Z
 url: https://github.com/astral-sh/uv/issues/1641
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # pydantic<2.0.0 installs pydantic=2.0b3 when prereleases are allowed
@@ -499,10 +499,6 @@ Unfortunately, tt seems like Azure publishes, like, everything as a pre-release?
 
 ---
 
-_Referenced in [astral-sh/uv#1695](../../astral-sh/uv/issues/1695.md) on 2024-02-19 14:27_
-
----
-
 _Comment by @erdembanak on 2024-02-19 14:31_
 
 Just before I have seen your reply, I have created a separate issue for this; sorry @charliermarsh . Yes, this is the expected behavior from the documentation, just wanted to open a separate issue to make sure the discussion doesn't get lost in here; but you already replied. Thanks.
@@ -584,10 +580,6 @@ _Comment by @mpizenberg on 2024-02-22 08:36_
 _Comment by @charliermarsh on 2024-02-22 13:33_
 
 @llucax - this feels like a misrepresentation of what’s been said in the thread and even a little antagonistic. The reference to “our design” is with respect to how users opt-in or out of pre-release handling. The fact that “<2.0.0” should not include “2.0.0b3” is acknowledged as a bug.
-
----
-
-_Referenced in [astral-sh/uv#1878](../../astral-sh/uv/pulls/1878.md) on 2024-02-22 17:00_
 
 ---
 
@@ -714,10 +706,6 @@ I would favor prohibiting prereleases (since it is a shaky concept); but current
 
 ---
 
-_Referenced in [astral-sh/uv#1919](../../astral-sh/uv/pulls/1919.md) on 2024-02-23 15:54_
-
----
-
 _Closed by @charliermarsh on 2024-02-24 23:02_
 
 ---
@@ -841,10 +829,6 @@ The core challenge is that you open the door to changing the "available versions
 
 ---
 
-_Referenced in [astral-sh/uv#2240](../../astral-sh/uv/pulls/2240.md) on 2024-03-06 14:27_
-
----
-
 _Comment by @notatallshaw on 2024-03-06 15:42_
 
 > > That's not ideal either, my project doesn't use x explicitly, so if my direct dependency stops using x, or uses a different version, my dependency will be incorrect. That's exposing implementation details of dependencies I should not care about.
@@ -866,10 +850,6 @@ So for uv to match this behavior bug for bug, uv would need to:
 2. Implement pip's behavior of *sometimes* selecting prereleases based on the order it received them
 
 Otherwise uv would forever either not select prerelease when pip does or selecting prereleases when pip doesn't.
-
----
-
-_Referenced in [astral-sh/uv#2244](../../astral-sh/uv/pulls/2244.md) on 2024-03-06 17:31_
 
 ---
 
@@ -1027,9 +1007,5 @@ I can understand the current approach is a feature for you but it is a bug for o
 Anyway I don't want to waste more of your time, I think I said everything I had to say to try to convince you there is value in supporting this user care so I'll stop now.
 
 Thanks again for the great tool and for taking the time to reply to my comments!
-
----
-
-_Referenced in [astral-sh/uv#7810](../../astral-sh/uv/issues/7810.md) on 2024-10-15 14:49_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T10:01:43Z
 updated_at: 2024-02-17T11:24:41Z
 url: https://github.com/astral-sh/uv/issues/1467
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Direct URL constraints are ignored
@@ -60,15 +60,7 @@ Thanks! Will fix.
 
 ---
 
-_Referenced in [astral-sh/uv#1561](../../astral-sh/uv/issues/1561.md) on 2024-02-17 02:13_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-17 02:13_
-
----
-
-_Referenced in [astral-sh/uv#1565](../../astral-sh/uv/pulls/1565.md) on 2024-02-17 03:07_
 
 ---
 

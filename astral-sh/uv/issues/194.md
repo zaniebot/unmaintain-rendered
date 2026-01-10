@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-26T11:39:21Z
 updated_at: 2023-11-02T11:03:57Z
 url: https://github.com/astral-sh/uv/issues/194
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Create docker container for testing with common build requirements
@@ -32,10 +32,6 @@ I had https://pypi.org/project/nvidia-pyindex/ modify my local pip config so i'l
 ---
 
 _Assigned to @konstin by @konstin on 2023-10-27 12:38_
-
----
-
-_Referenced in [astral-sh/uv#238](../../astral-sh/uv/pulls/238.md) on 2023-10-31 11:33_
 
 ---
 

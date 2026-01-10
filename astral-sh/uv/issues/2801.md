@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-03T10:09:14Z
 updated_at: 2024-04-03T15:23:27Z
 url: https://github.com/astral-sh/uv/issues/2801
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Cannot install extras from pyproject.toml and poetry
@@ -74,10 +74,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-03 13:23_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-04-03 13:23_
-
----
-
-_Referenced in [astral-sh/uv#2811](../../astral-sh/uv/pulls/2811.md) on 2024-04-03 15:17_
 
 ---
 

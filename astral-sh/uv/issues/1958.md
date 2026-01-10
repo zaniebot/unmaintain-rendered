@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-25T00:12:35Z
 updated_at: 2024-03-18T10:46:59Z
 url: https://github.com/astral-sh/uv/issues/1958
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Include linehaul information in user agent
@@ -81,10 +81,6 @@ If pip were to skip getting setuptools version then pip's user agent constructio
 
 ---
 
-_Referenced in [rust-lang/rustup#2626](../../rust-lang/rustup/issues/2626.md) on 2024-02-25 14:07_
-
----
-
 _Comment by @konstin on 2024-02-25 14:15_
 
 I've asked upstream about `rustc` startup time: https://github.com/rust-lang/rustup/issues/2626#issuecomment-1962952569. Is there a page i can link with rust version stats to motivate this use case?
@@ -130,30 +126,10 @@ Ah. I'm not aware of any website that displays rust versions for all of PyPI.
 
 ---
 
-_Referenced in [astral-sh/uv#1977](../../astral-sh/uv/issues/1977.md) on 2024-02-26 03:23_
-
----
-
-_Referenced in [rust-lang/rust#121631](../../rust-lang/rust/issues/121631.md) on 2024-02-26 12:12_
-
----
-
-_Referenced in [astral-sh/uv#2136](../../astral-sh/uv/pulls/2136.md) on 2024-03-03 02:59_
-
----
-
 _Assigned to @konstin by @konstin on 2024-03-14 09:27_
 
 ---
 
-_Referenced in [astral-sh/uv#2493](../../astral-sh/uv/pulls/2493.md) on 2024-03-17 03:29_
-
----
-
 _Closed by @konstin on 2024-03-18 10:46_
-
----
-
-_Referenced in [pypi/linehaul-cloud-function#162](../../pypi/linehaul-cloud-function/pulls/162.md) on 2024-03-25 12:55_
 
 ---

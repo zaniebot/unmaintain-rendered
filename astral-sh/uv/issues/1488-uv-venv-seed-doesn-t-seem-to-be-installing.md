@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-16T13:00:52Z
 updated_at: 2024-03-01T17:44:28Z
 url: https://github.com/astral-sh/uv/issues/1488
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv venv --seed` doesn't seem to be installing `setuptools` for pypy
@@ -108,29 +108,13 @@ _Assigned to @BurntSushi by @BurntSushi on 2024-02-19 16:11_
 
 ---
 
-_Referenced in [tox-dev/tox-uv#15](../../tox-dev/tox-uv/issues/15.md) on 2024-02-20 22:30_
-
----
-
 _Comment by @edgarrmondragon on 2024-02-20 22:32_
 
 I think this is a general issue with build requirements in PyPy. See also https://github.com/tox-dev/tox-uv/issues/15.
 
 ---
 
-_Referenced in [edgarrmondragon/citric#1098](../../edgarrmondragon/citric/pulls/1098.md) on 2024-02-21 06:00_
-
----
-
 _Label `pypy` added by @konstin on 2024-02-21 16:02_
-
----
-
-_Referenced in [astral-sh/uv#1849](../../astral-sh/uv/issues/1849.md) on 2024-02-22 02:50_
-
----
-
-_Referenced in [astral-sh/uv#2094](../../astral-sh/uv/pulls/2094.md) on 2024-02-29 20:37_
 
 ---
 

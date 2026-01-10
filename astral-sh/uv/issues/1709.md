@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T17:09:54Z
 updated_at: 2024-02-24T20:00:21Z
 url: https://github.com/astral-sh/uv/issues/1709
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip install resulting in 401 Unauthorized with private index url
@@ -296,15 +296,7 @@ These are some high-quality comments, thanks @rth.
 
 ---
 
-_Referenced in [astral-sh/uv#1371](../../astral-sh/uv/issues/1371.md) on 2024-02-22 21:27_
-
----
-
 _Assigned to @zanieb by @zanieb on 2024-02-22 21:28_
-
----
-
-_Referenced in [astral-sh/uv#1886](../../astral-sh/uv/pulls/1886.md) on 2024-02-22 22:19_
 
 ---
 
@@ -385,14 +377,6 @@ https://github.com/astral-sh/uv/pull/1902 should resolve this.
 
 ---
 
-_Referenced in [prefix-dev/async_http_range_reader#9](../../prefix-dev/async_http_range_reader/pulls/9.md) on 2024-02-23 05:29_
-
----
-
-_Referenced in [astral-sh/uv#1902](../../astral-sh/uv/pulls/1902.md) on 2024-02-23 05:32_
-
----
-
 _Comment by @gwdekker on 2024-02-23 07:08_
 
 fingers crossed! FWIW same issue on gitlab pypi registry (at uv 0.1.9, after cleaning the cache).
@@ -453,10 +437,6 @@ _Closed by @zanieb on 2024-02-23 15:21_
 
 ---
 
-_Referenced in [astral-sh/uv#1907](../../astral-sh/uv/issues/1907.md) on 2024-02-23 15:56_
-
----
-
 _Comment by @adrienball on 2024-02-23 16:42_
 
 After having installed `uv 0.1.9`, I still have a `403 Forbidden` issue when trying to `uv pip install` a package hosted on a private **artifactory** repository.
@@ -474,17 +454,5 @@ Thanks for fixing it so fast ! Nice to see this projet moving forward as swiftly
 _Comment by @gwdekker on 2024-02-24 20:00_
 
 awesome, works now for me as well! Your speed is super impressive, thank you so much!
-
----
-
-_Referenced in [astral-sh/uv#2025](../../astral-sh/uv/issues/2025.md) on 2024-02-27 22:13_
-
----
-
-_Referenced in [astral-sh/uv#8510](../../astral-sh/uv/issues/8510.md) on 2024-10-23 22:37_
-
----
-
-_Referenced in [astral-sh/uv#11102](../../astral-sh/uv/issues/11102.md) on 2025-01-30 17:06_
 
 ---

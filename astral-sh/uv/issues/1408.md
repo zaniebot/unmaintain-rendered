@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-16T01:55:12Z
 updated_at: 2024-02-28T08:53:18Z
 url: https://github.com/astral-sh/uv/issues/1408
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Warn if not in a virtual environment and `.venv` is present in the working directory
@@ -30,10 +30,6 @@ _Label `enhancement` added by @zanieb on 2024-02-16 01:56_
 ---
 
 _Label `error messages` added by @zanieb on 2024-02-16 01:56_
-
----
-
-_Referenced in [astral-sh/uv#1505](../../astral-sh/uv/pulls/1505.md) on 2024-02-16 15:50_
 
 ---
 

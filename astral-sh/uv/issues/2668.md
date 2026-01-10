@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-26T10:19:05Z
 updated_at: 2024-04-03T07:53:08Z
 url: https://github.com/astral-sh/uv/issues/2668
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Prompt not showed correctly.
@@ -179,9 +179,5 @@ Thank you for your time!
 ---
 
 _Closed by @hodeinavarro on 2024-04-03 07:51_
-
----
-
-_Referenced in [romkatv/powerlevel10k#2628](../../romkatv/powerlevel10k/issues/2628.md) on 2024-04-03 16:57_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T05:22:57Z
 updated_at: 2024-04-01T21:31:46Z
 url: https://github.com/astral-sh/uv/issues/1856
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Uv cannot locate dependency which is installed as editable
@@ -109,10 +109,6 @@ _Closed by @charliermarsh on 2024-02-22 05:27_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-02-22 05:27_
-
----
-
-_Referenced in [astral-sh/uv#2596](../../astral-sh/uv/pulls/2596.md) on 2024-03-21 21:49_
 
 ---
 

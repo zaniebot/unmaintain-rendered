@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-01T15:12:29Z
 updated_at: 2024-03-05T21:23:37Z
 url: https://github.com/astral-sh/uv/issues/2113
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Modify install paths for prior Debian system Pythons
@@ -78,10 +78,6 @@ Yes, possible, `virtualenv` does it without providing a dist name.
 
 ---
 
-_Referenced in [astral-sh/uv#2131](../../astral-sh/uv/pulls/2131.md) on 2024-03-02 15:00_
-
----
-
 _Comment by @charliermarsh on 2024-03-02 15:04_
 
 The thing we want to do here is:
@@ -93,10 +89,6 @@ The thing we want to do here is:
 Add all of this to `get_interpreter_info.py`, and change our internal structs to use the `Scheme` schema rather than `SysconfigPaths` (i.e., a subset). However, instead of `headers`, we should use `include`, and omit the distribution name from the end, so that it's generic across distributions. (It _should_ (?) be okay to omit the distribution name when calling `distutils`, virtualenv omits it, although I'm not 100% sure.)
 
 You can also see an example of how virtualenv does this: https://github.com/pypa/virtualenv/blob/5cd543fdf8047600ff2737babec4a635ad74d169/src/virtualenv/discovery/py_info.py#L80.
-
----
-
-_Referenced in [astral-sh/uv#2193](../../astral-sh/uv/pulls/2193.md) on 2024-03-05 02:07_
 
 ---
 

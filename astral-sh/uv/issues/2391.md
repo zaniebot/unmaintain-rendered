@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-12T19:48:07Z
 updated_at: 2024-03-15T17:39:56Z
 url: https://github.com/astral-sh/uv/issues/2391
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Implement `uv pip check`
@@ -70,10 +70,6 @@ _Label `cli` added by @charliermarsh on 2024-03-12 19:49_
 _Comment by @charliermarsh on 2024-03-12 19:50_
 
 Seems reasonable to me (and yes, looks like exposing `--strict` as its own command).
-
----
-
-_Referenced in [astral-sh/uv#2397](../../astral-sh/uv/pulls/2397.md) on 2024-03-13 00:03_
 
 ---
 

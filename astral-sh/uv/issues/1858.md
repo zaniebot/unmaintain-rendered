@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-22T08:55:49Z
 updated_at: 2024-02-24T03:22:15Z
 url: https://github.com/astral-sh/uv/issues/1858
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Unpacking source distribution fails when there is a symlink in the archive
@@ -254,10 +254,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-23 18:57_
 _Comment by @charliermarsh on 2024-02-23 20:21_
 
 Thankfully it seems that wheels are not permitted to contain symlinks.
-
----
-
-_Referenced in [astral-sh/uv#1944](../../astral-sh/uv/pulls/1944.md) on 2024-02-23 20:47_
 
 ---
 

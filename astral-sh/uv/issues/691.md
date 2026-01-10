@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-18T18:15:56Z
 updated_at: 2023-12-18T21:44:47Z
 url: https://github.com/astral-sh/uv/issues/691
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add lock around virtual environment
@@ -46,10 +46,6 @@ I actually think `InstallLocation::acquire_lock` may not be sufficient because w
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-18 19:39_
-
----
-
-_Referenced in [astral-sh/uv#695](../../astral-sh/uv/pulls/695.md) on 2023-12-18 21:31_
 
 ---
 

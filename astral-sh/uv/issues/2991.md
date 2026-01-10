@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-11T12:57:51Z
 updated_at: 2024-04-11T17:19:53Z
 url: https://github.com/astral-sh/uv/issues/2991
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # ImportError when installing a package with a dependency on another package even though the required package is installed
@@ -180,10 +180,6 @@ UV Version: uv 0.1.31
 _Comment by @AlessandroPomponio on 2024-04-11 12:59_
 
 The fact that `setuptools` gets installed in a temporary venv despite being available in the currently active venv makes me think the installation process is working in isolation and ends up causing the error I encountered
-
----
-
-_Referenced in [astral-sh/uv#2841](../../astral-sh/uv/issues/2841.md) on 2024-04-11 13:54_
 
 ---
 

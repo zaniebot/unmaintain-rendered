@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-08T14:50:46Z
 updated_at: 2023-10-10T17:46:27Z
 url: https://github.com/astral-sh/uv/issues/58
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `venv` command
@@ -19,10 +19,6 @@ synced_at: 2026-01-10T01:57:00Z
 _Issue opened by @charliermarsh on 2023-10-08 14:50_
 
 To create a virtual environment via `gourgeist`.
-
----
-
-_Referenced in [astral-sh/uv#83](../../astral-sh/uv/pulls/83.md) on 2023-10-10 17:39_
 
 ---
 

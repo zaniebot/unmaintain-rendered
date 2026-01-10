@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-10T03:15:30Z
 updated_at: 2024-03-10T15:02:26Z
 url: https://github.com/astral-sh/uv/issues/2323
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # 401 Installing from Internal Index due to .netrc
@@ -183,10 +183,6 @@ Think I figured out a way to do it with the middleware API.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-10 04:13_
-
----
-
-_Referenced in [astral-sh/uv#2325](../../astral-sh/uv/pulls/2325.md) on 2024-03-10 04:16_
 
 ---
 

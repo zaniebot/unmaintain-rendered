@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-17T01:23:02Z
 updated_at: 2024-03-05T03:35:26Z
 url: https://github.com/astral-sh/uv/issues/1559
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv` with `pytest` and `filterwarnings` triggers a host of `SyntaxWarning`s as errors; `pip-tools` does not
@@ -512,10 +512,6 @@ It looks like the same thing to me
 
 ---
 
-_Referenced in [astral-sh/uv#2086](../../astral-sh/uv/pulls/2086.md) on 2024-02-29 16:33_
-
----
-
 _Comment by @charliermarsh on 2024-03-01 19:37_
 
 Gonna merge into that issue.
@@ -527,9 +523,5 @@ _Closed by @charliermarsh on 2024-03-01 19:37_
 ---
 
 _Closed by @charliermarsh on 2024-03-05 03:35_
-
----
-
-_Referenced in [astral-sh/uv#10691](../../astral-sh/uv/issues/10691.md) on 2025-01-16 17:57_
 
 ---

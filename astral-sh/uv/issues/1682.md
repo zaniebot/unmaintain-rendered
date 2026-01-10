@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T09:27:13Z
 updated_at: 2024-02-19T17:33:48Z
 url: https://github.com/astral-sh/uv/issues/1682
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Incorrect entrypoint parsing of `setup.py` based projects calling methods on a variable
@@ -58,10 +58,6 @@ Duplicate of #1573.
 ---
 
 _Closed by @MartinBernstorff on 2024-02-19 09:28_
-
----
-
-_Referenced in [Aarhus-Psychiatry-Research/timeseriesflattener#455](../../Aarhus-Psychiatry-Research/timeseriesflattener/issues/455.md) on 2024-02-19 09:33_
 
 ---
 

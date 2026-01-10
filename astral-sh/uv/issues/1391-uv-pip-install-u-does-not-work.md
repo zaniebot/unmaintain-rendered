@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T23:52:31Z
 updated_at: 2024-02-16T01:25:29Z
 url: https://github.com/astral-sh/uv/issues/1391
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip install -U does not work
@@ -37,10 +37,6 @@ _Label `enhancement` added by @zanieb on 2024-02-15 23:54_
 ---
 
 _Label `compatibility` added by @zanieb on 2024-02-15 23:54_
-
----
-
-_Referenced in [astral-sh/uv#1379](../../astral-sh/uv/pulls/1379.md) on 2024-02-15 23:54_
 
 ---
 

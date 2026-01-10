@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T19:35:40Z
 updated_at: 2024-02-28T02:10:30Z
 url: https://github.com/astral-sh/uv/issues/1779
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv fails to find python in non-venv install on Windows
@@ -31,10 +31,6 @@ Error: The system cannot find the file specified.
 See https://github.com/tox-dev/tox-uv/actions/runs/7978647392/job/21784221224?pr=19
 
 I'm using uv find_uv_bin...
-
----
-
-_Referenced in [tox-dev/tox-uv#19](../../tox-dev/tox-uv/pulls/19.md) on 2024-02-20 20:12_
 
 ---
 
@@ -81,10 +77,6 @@ _Label `windows` added by @MichaReiser on 2024-02-21 06:39_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-02-21 06:39_
-
----
-
-_Referenced in [astral-sh/uv#1803](../../astral-sh/uv/pulls/1803.md) on 2024-02-21 11:21_
 
 ---
 
@@ -157,18 +149,6 @@ Yup I'm on it.
 
 ---
 
-_Referenced in [astral-sh/uv#1988](../../astral-sh/uv/issues/1988.md) on 2024-02-26 18:13_
-
----
-
-_Referenced in [astral-sh/uv#2000](../../astral-sh/uv/pulls/2000.md) on 2024-02-27 01:56_
-
----
-
 _Closed by @charliermarsh on 2024-02-28 02:10_
-
----
-
-_Referenced in [astral-sh/uv#6008](../../astral-sh/uv/issues/6008.md) on 2024-08-11 14:44_
 
 ---

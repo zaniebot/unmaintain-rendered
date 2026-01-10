@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-08T00:45:54Z
 updated_at: 2024-03-08T02:24:15Z
 url: https://github.com/astral-sh/uv/issues/2292
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Is an venv created by uv updatable by pip?
@@ -30,10 +30,6 @@ So, would a venv created by uv, still be compatible (enough) for pip to modify t
 
 
 Thanks again for your project, it's amazing how much progress was made in the last two weeks!
-
----
-
-_Referenced in [oxsecurity/megalinter#3389](../../oxsecurity/megalinter/issues/3389.md) on 2024-03-08 00:46_
 
 ---
 

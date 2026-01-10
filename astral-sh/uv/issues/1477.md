@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T11:04:19Z
 updated_at: 2024-03-19T17:24:54Z
 url: https://github.com/astral-sh/uv/issues/1477
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip install fails with comparator on wildcard version specifier
@@ -68,10 +68,6 @@ _Assigned to @BurntSushi by @BurntSushi on 2024-02-16 14:58_
 
 ---
 
-_Referenced in [astral-sh/uv#1529](../../astral-sh/uv/pulls/1529.md) on 2024-02-16 19:03_
-
----
-
 _Closed by @BurntSushi on 2024-02-16 20:52_
 
 ---
@@ -91,9 +87,5 @@ still running into this problem
 _Comment by @charliermarsh on 2024-03-19 17:24_
 
 Can you open a new issue please?
-
----
-
-_Referenced in [astral-sh/uv#2546](../../astral-sh/uv/issues/2546.md) on 2024-03-19 18:42_
 
 ---

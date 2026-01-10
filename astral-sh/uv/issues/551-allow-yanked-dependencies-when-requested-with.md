@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-04T21:56:13Z
 updated_at: 2023-12-05T08:44:08Z
 url: https://github.com/astral-sh/uv/issues/551
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Allow yanked dependencies when requested with `==`
@@ -37,10 +37,6 @@ _Label `enhancement` removed by @charliermarsh on 2023-12-05 00:00_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-12-05 00:00_
-
----
-
-_Referenced in [astral-sh/uv#561](../../astral-sh/uv/pulls/561.md) on 2023-12-05 05:13_
 
 ---
 

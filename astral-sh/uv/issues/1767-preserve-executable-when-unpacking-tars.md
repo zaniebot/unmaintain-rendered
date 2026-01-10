@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-20T17:12:26Z
 updated_at: 2024-02-21T14:18:45Z
 url: https://github.com/astral-sh/uv/issues/1767
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Preserve executable when unpacking tars
@@ -52,10 +52,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-21 00:26_
 _Comment by @charliermarsh on 2024-02-21 00:29_
 
 I'll fix this tonight, I've worked with these async unzip crates several times.
-
----
-
-_Referenced in [astral-sh/uv#1790](../../astral-sh/uv/pulls/1790.md) on 2024-02-21 01:26_
 
 ---
 

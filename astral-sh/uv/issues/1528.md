@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-16T19:03:29Z
 updated_at: 2024-02-22T17:22:02Z
 url: https://github.com/astral-sh/uv/issues/1528
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip compile does not find a package that pip-compile does (nltk==3.6)
@@ -108,10 +108,6 @@ uv 0.1.2
 
 ---
 
-_Referenced in [astral-sh/uv#1362](../../astral-sh/uv/issues/1362.md) on 2024-02-16 20:11_
-
----
-
 _Comment by @charliermarsh on 2024-02-16 22:13_
 
 Do you mind sharing what the `requires-python` values look like in the index? Like if you download one of the wheels manually, and open it, and look at `METADATA`, what is the `requires-python`? It looks like it's invalid -- we do some manual correction for common mistakes, but we might be missing one here.
@@ -152,10 +148,6 @@ nltk-3.6.dist-info/METADATA
 65:Requires-Dist: twython ; extra == 'twitter'
 68:natural language processing.  NLTK requires Python 3.5, 3.6, 3.7, 3.8, or 3.9.
 ```
-
----
-
-_Referenced in [astral-sh/uv#1768](../../astral-sh/uv/issues/1768.md) on 2024-02-20 17:19_
 
 ---
 

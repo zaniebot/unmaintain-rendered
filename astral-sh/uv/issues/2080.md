@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T13:42:55Z
 updated_at: 2024-03-16T14:25:56Z
 url: https://github.com/astral-sh/uv/issues/2080
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Local version identifiers resolved incorrectly
@@ -50,10 +50,6 @@ I believe this is a duplicate of #1855. And note the work-around linked from the
 ---
 
 _Closed by @BurntSushi on 2024-02-29 13:55_
-
----
-
-_Referenced in [astral-sh/uv#2430](../../astral-sh/uv/pulls/2430.md) on 2024-03-13 20:58_
 
 ---
 

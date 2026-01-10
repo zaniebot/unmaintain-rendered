@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-29T16:45:18Z
 updated_at: 2024-03-04T17:51:21Z
 url: https://github.com/astral-sh/uv/issues/2088
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Expose flag to enable dependency resolution based on packages that were available on a target date
@@ -118,24 +118,12 @@ _Assigned to @zanieb by @zanieb on 2024-03-01 15:49_
 
 ---
 
-_Referenced in [python/typing_extensions#348](../../python/typing_extensions/pulls/348.md) on 2024-03-04 06:25_
-
----
-
 _Comment by @hauntsaninja on 2024-03-04 06:25_
 
 I'd love for this to be a documented feature! Currently attempting to use it in https://github.com/python/typing_extensions/pull/348
 
 ---
 
-_Referenced in [astral-sh/uv#2166](../../astral-sh/uv/pulls/2166.md) on 2024-03-04 17:28_
-
----
-
 _Closed by @zanieb on 2024-03-04 17:51_
-
----
-
-_Referenced in [astral-sh/uv#5492](../../astral-sh/uv/issues/5492.md) on 2024-07-26 20:06_
 
 ---

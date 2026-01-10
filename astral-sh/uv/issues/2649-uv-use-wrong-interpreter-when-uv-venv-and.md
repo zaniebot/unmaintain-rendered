@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-25T15:07:57Z
 updated_at: 2024-03-26T03:03:42Z
 url: https://github.com/astral-sh/uv/issues/2649
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv use wrong interpreter when `uv venv`, and activated wrong environment when activate venv
@@ -183,9 +183,5 @@ Closing in favor of those related issues. Thanks!
 ---
 
 _Closed by @charliermarsh on 2024-03-26 03:03_
-
----
-
-_Referenced in [astral-sh/uv#3736](../../astral-sh/uv/pulls/3736.md) on 2024-05-22 14:14_
 
 ---

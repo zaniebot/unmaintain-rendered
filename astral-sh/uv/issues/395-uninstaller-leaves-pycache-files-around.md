@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-10T17:39:43Z
 updated_at: 2023-11-10T19:55:34Z
 url: https://github.com/astral-sh/uv/issues/395
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Uninstaller leaves `__pycache__` files around
@@ -32,10 +32,6 @@ _Label `bug` added by @charliermarsh on 2023-11-10 17:39_
 ---
 
 _Renamed from "Installer leaves `__pycache__` files around" to "Uninstaller leaves `__pycache__` files around" by @charliermarsh on 2023-11-10 17:39_
-
----
-
-_Referenced in [astral-sh/uv#397](../../astral-sh/uv/pulls/397.md) on 2023-11-10 18:26_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-10T20:34:29Z
 updated_at: 2024-03-12T04:05:51Z
 url: https://github.com/astral-sh/uv/issues/2346
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Investigate overhead in initializing HTTP client
@@ -63,14 +63,6 @@ Either way, I’m going to make the client initialization lazy.
 
 ---
 
-_Referenced in [astral-sh/uv#2350](../../astral-sh/uv/pulls/2350.md) on 2024-03-11 00:29_
-
----
-
-_Referenced in [astral-sh/uv#2351](../../astral-sh/uv/pulls/2351.md) on 2024-03-11 02:17_
-
----
-
 _Comment by @konstin on 2024-03-11 12:41_
 
 Is that mac specific or do i need to set an environment variable? I tried to reproduce but client building is 4ms on my ubuntu machine.
@@ -88,10 +80,6 @@ _Label `macos` added by @konstin on 2024-03-11 13:22_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-11 13:54_
-
----
-
-_Referenced in [astral-sh/uv#2362](../../astral-sh/uv/pulls/2362.md) on 2024-03-11 20:00_
 
 ---
 

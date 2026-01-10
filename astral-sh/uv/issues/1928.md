@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T18:08:33Z
 updated_at: 2024-03-05T03:35:26Z
 url: https://github.com/astral-sh/uv/issues/1928
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # package showing different import behavior with `pip install` vs `uv pip install`
@@ -778,10 +778,6 @@ I guess I don't understand why this warning is only getting raised when installi
 
 ---
 
-_Referenced in [python/cpython#116042](../../python/cpython/issues/116042.md) on 2024-02-28 11:53_
-
----
-
 _Comment by @konstin on 2024-02-28 12:14_
 
 tl;dr: pip install's bytecode compilation (or any successful import) removes the syntax warning.
@@ -874,42 +870,10 @@ Thanks for the detailed explanation @konstin, that makes a lot of sense!
 
 ---
 
-_Referenced in [astral-sh/uv#1559](../../astral-sh/uv/issues/1559.md) on 2024-02-29 15:52_
-
----
-
-_Referenced in [astral-sh/uv#2086](../../astral-sh/uv/pulls/2086.md) on 2024-02-29 16:33_
-
----
-
 _Closed by @charliermarsh on 2024-03-05 03:35_
 
 ---
 
 _Closed by @charliermarsh on 2024-03-05 03:35_
-
----
-
-_Referenced in [astral-sh/uv#2238](../../astral-sh/uv/issues/2238.md) on 2024-03-06 13:43_
-
----
-
-_Referenced in [astral-sh/uv#4758](../../astral-sh/uv/issues/4758.md) on 2024-07-03 11:56_
-
----
-
-_Referenced in [scikit-rf/scikit-rf#1171](../../scikit-rf/scikit-rf/pulls/1171.md) on 2024-09-04 23:00_
-
----
-
-_Referenced in [python/peps#4132](../../python/peps/pulls/4132.md) on 2024-11-21 08:57_
-
----
-
-_Referenced in [astral-sh/uv#10691](../../astral-sh/uv/issues/10691.md) on 2025-01-16 17:57_
-
----
-
-_Referenced in [astral-sh/uv#2637](../../astral-sh/uv/issues/2637.md) on 2025-09-02 12:43_
 
 ---

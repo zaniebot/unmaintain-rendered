@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T09:09:51Z
 updated_at: 2024-02-21T09:24:26Z
 url: https://github.com/astral-sh/uv/issues/1635
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # support on manylinux builder image (older glibc)?
@@ -98,9 +98,5 @@ So my question is: as opposed to (or in addition to) fixing the static musl fall
 _Comment by @konstin on 2024-02-21 09:24_
 
 I think this is cargo-dist being overly strict, the value looks [hardcoded](https://github.com/axodotdev/cargo-dist/blob/6d50ff6ea148033028285db6e1002a3908f89d98/cargo-dist/templates/installer/installer.sh.j2#L545) (CC @gankra; For context, you need to use an image such as manylinux_2_28 with glibc 2.28 if you want to build python packages with that compatibility tag, i we unfortunatly should support ancient distros). The other problem is that we need an aarch64-unknown-linux-musl-static package.
-
----
-
-_Referenced in [astral-sh/uv#8549](../../astral-sh/uv/issues/8549.md) on 2024-10-24 22:49_
 
 ---

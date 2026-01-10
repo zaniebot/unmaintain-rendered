@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-30T05:10:19Z
 updated_at: 2024-01-30T13:48:57Z
 url: https://github.com/astral-sh/uv/issues/1184
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add compatibility API for `pip sync`
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-30 05:10_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-01-30 05:10_
-
----
-
-_Referenced in [astral-sh/uv#1185](../../astral-sh/uv/pulls/1185.md) on 2024-01-30 05:19_
 
 ---
 

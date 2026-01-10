@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-30T13:52:17Z
 updated_at: 2024-01-30T19:54:59Z
 url: https://github.com/astral-sh/uv/issues/1188
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `--no-deps` to `pip install`
@@ -34,10 +34,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-30 16:28_
 _Comment by @charliermarsh on 2024-01-30 19:15_
 
 Doing this real quick.
-
----
-
-_Referenced in [astral-sh/uv#1191](../../astral-sh/uv/pulls/1191.md) on 2024-01-30 19:30_
 
 ---
 

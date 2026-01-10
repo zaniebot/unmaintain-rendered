@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-04T20:28:32Z
 updated_at: 2024-03-05T08:18:23Z
 url: https://github.com/astral-sh/uv/issues/2172
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Error to resolve dependencies: There is no version
@@ -265,10 +265,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-04 20:32_
 _Comment by @charliermarsh on 2024-03-04 20:32_
 
 Think I see the issue. We're missing a platform gate somewhere, so it's assuming you want to use a URL dependency for `miniupnpc`.
-
----
-
-_Referenced in [astral-sh/uv#2176](../../astral-sh/uv/pulls/2176.md) on 2024-03-04 21:57_
 
 ---
 

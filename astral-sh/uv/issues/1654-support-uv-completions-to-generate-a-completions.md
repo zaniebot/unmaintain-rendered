@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T15:43:46Z
 updated_at: 2024-02-19T03:43:19Z
 url: https://github.com/astral-sh/uv/issues/1654
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # support 'uv --completions' to generate a completions file for bash/zsh/fish/powershell
@@ -44,10 +44,6 @@ _Label `help wanted` added by @zanieb on 2024-02-18 17:18_
 _Comment by @zanieb on 2024-02-18 17:18_
 
 Thanks this seems reasonable to add. We'd probably want to mirror whatever we do in Ruff.
-
----
-
-_Referenced in [astral-sh/uv#1675](../../astral-sh/uv/pulls/1675.md) on 2024-02-19 01:31_
 
 ---
 

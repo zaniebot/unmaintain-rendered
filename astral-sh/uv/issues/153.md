@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-20T10:51:41Z
 updated_at: 2023-10-23T01:07:46Z
 url: https://github.com/astral-sh/uv/issues/153
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Resolving torch fails through nvidia-cuda-nvrtc-cu12 with 500 Internal Server Error
@@ -40,10 +40,6 @@ Perhaps we should do both... But importantly, for now, we should add support for
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-23 00:38_
-
----
-
-_Referenced in [astral-sh/uv#168](../../astral-sh/uv/pulls/168.md) on 2023-10-23 01:05_
 
 ---
 

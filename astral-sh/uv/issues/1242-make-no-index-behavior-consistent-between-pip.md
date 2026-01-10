@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-03T16:45:22Z
 updated_at: 2024-02-04T23:46:03Z
 url: https://github.com/astral-sh/uv/issues/1242
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Make `--no-index` behavior consistent between `pip sync` and `pip install`
@@ -59,10 +59,6 @@ Added a test case in https://github.com/astral-sh/puffin/pull/1241/commits/915bd
 _Comment by @charliermarsh on 2024-02-03 17:33_
 
 Sorry yes, you're right, the behavior _is_ consistent. We may just want to change the documentation for the setting. (And we may want a `--offline` flag, which is tracked elsewhere.)
-
----
-
-_Referenced in [astral-sh/uv#1243](../../astral-sh/uv/pulls/1243.md) on 2024-02-03 17:42_
 
 ---
 

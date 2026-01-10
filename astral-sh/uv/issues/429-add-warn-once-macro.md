@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-15T19:44:17Z
 updated_at: 2023-11-17T02:34:07Z
 url: https://github.com/astral-sh/uv/issues/429
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add warn_once macro
@@ -32,10 +32,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-16 18:18_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2023-11-16 21:03_
-
----
-
-_Referenced in [astral-sh/uv#442](../../astral-sh/uv/pulls/442.md) on 2023-11-17 02:20_
 
 ---
 

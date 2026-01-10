@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-10T21:24:35Z
 updated_at: 2024-04-11T15:26:51Z
 url: https://github.com/astral-sh/uv/issues/2979
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Allow unnamed requirements with `--require-hashes`
@@ -28,10 +28,6 @@ _Label `enhancement` added by @charliermarsh on 2024-04-10 21:24_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-11 04:45_
-
----
-
-_Referenced in [astral-sh/uv#2993](../../astral-sh/uv/pulls/2993.md) on 2024-04-11 14:29_
 
 ---
 

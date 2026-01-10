@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-01T11:18:50Z
 updated_at: 2024-02-04T21:56:01Z
 url: https://github.com/astral-sh/uv/issues/1221
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Document minimum supported python version
@@ -54,14 +54,6 @@ I don't want to encourage using unsupported versions and we'd have to build 3.7 
 
 ---
 
-_Referenced in [astral-sh/uv#1239](../../astral-sh/uv/pulls/1239.md) on 2024-02-02 21:55_
-
----
-
 _Closed by @charliermarsh on 2024-02-04 21:56_
-
----
-
-_Referenced in [astral-sh/uv#10454](../../astral-sh/uv/issues/10454.md) on 2025-01-10 02:52_
 
 ---

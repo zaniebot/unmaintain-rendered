@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-13T03:59:30Z
 updated_at: 2024-03-13T15:10:35Z
 url: https://github.com/astral-sh/uv/issues/2404
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Create site packages directory if missing
@@ -37,10 +37,6 @@ _Label `compatibility` added by @zanieb on 2024-03-13 03:59_
 
 ---
 
-_Referenced in [astral-sh/uv#2403](../../astral-sh/uv/pulls/2403.md) on 2024-03-13 03:59_
-
----
-
 _Comment by @charliermarsh on 2024-03-13 04:01_
 
 I suspect this is also https://github.com/astral-sh/uv/issues/2353.
@@ -48,10 +44,6 @@ I suspect this is also https://github.com/astral-sh/uv/issues/2353.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-13 14:24_
-
----
-
-_Referenced in [astral-sh/uv#2413](../../astral-sh/uv/pulls/2413.md) on 2024-03-13 14:27_
 
 ---
 

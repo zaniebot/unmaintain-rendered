@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T00:28:08Z
 updated_at: 2024-02-16T02:12:11Z
 url: https://github.com/astral-sh/uv/issues/1402
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Confusing error if uv thinks `requires-python` is invalid
@@ -83,14 +83,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-16 01:33_
 
 ---
 
-_Referenced in [astral-sh/uv#1410](../../astral-sh/uv/pulls/1410.md) on 2024-02-16 02:04_
-
----
-
 _Closed by @charliermarsh on 2024-02-16 02:12_
-
----
-
-_Referenced in [astral-sh/uv#1412](../../astral-sh/uv/issues/1412.md) on 2024-02-16 02:14_
 
 ---

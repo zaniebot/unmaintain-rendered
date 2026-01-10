@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T07:29:03Z
 updated_at: 2024-02-18T07:49:51Z
 url: https://github.com/astral-sh/uv/issues/1627
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add homebrew install instructions to readme
@@ -34,10 +34,6 @@ Thanks for adding this @baod-rate! https://github.com/Homebrew/homebrew-core/pul
 ---
 
 _Label `documentation` added by @zanieb on 2024-02-18 07:43_
-
----
-
-_Referenced in [astral-sh/uv#1629](../../astral-sh/uv/pulls/1629.md) on 2024-02-18 07:45_
 
 ---
 

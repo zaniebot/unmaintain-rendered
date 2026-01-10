@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T16:31:56Z
 updated_at: 2024-02-18T08:12:07Z
 url: https://github.com/astral-sh/uv/issues/1598
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Enhancement Request: `uv pip install` with explicit venv path
@@ -68,14 +68,6 @@ Hm yeah it seems like we should probably stub `uv` into the environment by defau
 _Comment by @charlesnicholson on 2024-02-17 19:34_
 
 If the Python `uv` package uses uv functionality by bundling the executable, it might be nice to have a venv-creation bootstrap copy-in the `uv` executable that invoked the `venv` command. That would be nice for pinning versions etc; for a single-file executable like this, we'd version it by just checking it into git.
-
----
-
-_Referenced in [astral-sh/uv#1625](../../astral-sh/uv/issues/1625.md) on 2024-02-18 08:05_
-
----
-
-_Referenced in [astral-sh/uv#1632](../../astral-sh/uv/issues/1632.md) on 2024-02-18 08:06_
 
 ---
 

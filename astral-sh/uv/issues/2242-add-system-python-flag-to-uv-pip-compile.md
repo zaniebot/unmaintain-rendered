@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-06T15:38:25Z
 updated_at: 2024-04-18T04:55:50Z
 url: https://github.com/astral-sh/uv/issues/2242
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Add --system/--python flag to uv pip compile
@@ -47,10 +47,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-06 21:47_
 ---
 
 _Label `cli` added by @charliermarsh on 2024-03-06 21:47_
-
----
-
-_Referenced in [astral-sh/uv#3115](../../astral-sh/uv/pulls/3115.md) on 2024-04-18 04:45_
 
 ---
 

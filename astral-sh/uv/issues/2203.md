@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-05T13:58:55Z
 updated_at: 2024-03-05T17:25:07Z
 url: https://github.com/astral-sh/uv/issues/2203
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv attempts (and fails) to install ancient setuptools
@@ -57,10 +57,6 @@ _Comment by @mdekstrand on 2024-03-05 14:55_
 ---
 
 _Label `bug` added by @zanieb on 2024-03-05 15:13_
-
----
-
-_Referenced in [astral-sh/uv#2207](../../astral-sh/uv/pulls/2207.md) on 2024-03-05 16:57_
 
 ---
 

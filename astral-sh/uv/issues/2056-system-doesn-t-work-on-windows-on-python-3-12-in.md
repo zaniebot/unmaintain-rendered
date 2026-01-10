@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-28T21:59:38Z
 updated_at: 2024-02-29T15:06:30Z
 url: https://github.com/astral-sh/uv/issues/2056
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # --system doesn't work on Windows on Python <3.12 in GitHub Actions
@@ -34,10 +34,6 @@ _Label `windows` added by @AlexWaygood on 2024-02-28 21:59_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-28 22:02_
-
----
-
-_Referenced in [astral-sh/uv#2057](../../astral-sh/uv/pulls/2057.md) on 2024-02-28 22:02_
 
 ---
 
@@ -64,14 +60,6 @@ I've confirmed that this works as expected locally. If I install Python 3.10 fro
 ---
 
 _Renamed from "--system doesn't work on Windows on Python <3.12" to "--system doesn't work on Windows on Python <3.12 in GitHub Actions" by @AlexWaygood on 2024-02-28 22:09_
-
----
-
-_Referenced in [ispg-group/harmonwig#3](../../ispg-group/harmonwig/pulls/3.md) on 2024-02-28 22:58_
-
----
-
-_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-02-28 23:02_
 
 ---
 
@@ -156,10 +144,6 @@ Above is the preset configuration.
 
 ---
 
-_Referenced in [CederGroupHub/chgnet#133](../../CederGroupHub/chgnet/pulls/133.md) on 2024-02-29 12:18_
-
----
-
 _Comment by @ofek on 2024-02-29 14:01_
 
 Yes, that is true. However almost everyone enables that checkbox to add to PATH because you only install with that GUI if you're an average user and the vast majority of folks have no idea about the registry PEP (why would they) so in order to make it usable you check the box not even so much for external tools but so you have a `python` available on the command line. So, that group will always have PATH updated.
@@ -192,9 +176,5 @@ Yeah, having been exclusively a Windows user until very recently, I agree with b
 ---
 
 _Closed by @charliermarsh on 2024-02-29 15:06_
-
----
-
-_Referenced in [zenml-io/zenml#2442](../../zenml-io/zenml/pulls/2442.md) on 2024-03-01 17:16_
 
 ---

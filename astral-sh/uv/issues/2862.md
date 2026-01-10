@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-07T20:27:38Z
 updated_at: 2024-04-09T06:55:04Z
 url: https://github.com/astral-sh/uv/issues/2862
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Detect conda environment managed by micromamba
@@ -103,10 +103,6 @@ Okay thanks, that's good to know.
 _Comment by @zanieb on 2024-04-08 01:10_
 
 Should we open an upstream issue before adding support?
-
----
-
-_Referenced in [mamba-org/micromamba-docker#458](../../mamba-org/micromamba-docker/issues/458.md) on 2024-04-08 01:49_
 
 ---
 

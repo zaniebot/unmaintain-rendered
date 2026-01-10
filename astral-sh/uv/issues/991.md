@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T01:59:52Z
 updated_at: 2024-01-19T20:16:14Z
 url: https://github.com/astral-sh/uv/issues/991
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Re-enable source distribution builds in release pipeline
@@ -24,10 +24,6 @@ We can actually omit these until we flip the switch to public, but for some reas
 ---
 
 _Label `bug` added by @charliermarsh on 2024-01-19 01:59_
-
----
-
-_Referenced in [astral-sh/uv#1014](../../astral-sh/uv/pulls/1014.md) on 2024-01-19 20:06_
 
 ---
 

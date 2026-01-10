@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-23T08:17:37Z
 updated_at: 2024-03-30T21:00:28Z
 url: https://github.com/astral-sh/uv/issues/2635
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # pip interop for relative packages
@@ -111,10 +111,6 @@ _Label `compatibility` added by @zanieb on 2024-03-25 17:42_
 
 ---
 
-_Referenced in [pypa/pip#12597](../../pypa/pip/issues/12597.md) on 2024-03-25 17:45_
-
----
-
 _Comment by @serjflint on 2024-03-25 17:53_
 
 When I use `f'file://localhost/{PACKAGE_PATH}#egg=sub_package'` I get an error
@@ -172,10 +168,6 @@ _Comment by @serjflint on 2024-03-25 18:12_
 Actually yes. I removed it and it solved the problem. Thank you very much for your time and patience.
 
 P.S.: even the egg part works with uv --version 0.1.24
-
----
-
-_Referenced in [astral-sh/uv#2652](../../astral-sh/uv/issues/2652.md) on 2024-03-25 18:12_
 
 ---
 

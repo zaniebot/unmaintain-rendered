@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T13:58:49Z
 updated_at: 2024-02-20T19:08:57Z
 url: https://github.com/astral-sh/uv/issues/1692
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `--index-url` from `requirements.txt` is ignored
@@ -83,10 +83,6 @@ Not yet, but we will support persistent configuration of registries in the futur
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-19 20:01_
-
----
-
-_Referenced in [astral-sh/uv#1719](../../astral-sh/uv/pulls/1719.md) on 2024-02-19 20:45_
 
 ---
 

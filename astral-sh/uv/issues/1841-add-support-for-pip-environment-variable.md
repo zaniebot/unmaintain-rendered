@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-21T23:21:00Z
 updated_at: 2024-02-22T00:48:27Z
 url: https://github.com/astral-sh/uv/issues/1841
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Add support for `PIP_*` environment variable
@@ -50,9 +50,5 @@ Agree, want to add these.
 ---
 
 _Closed by @charliermarsh on 2024-02-22 00:48_
-
----
-
-_Referenced in [astral-sh/uv#3162](../../astral-sh/uv/pulls/3162.md) on 2024-04-20 16:07_
 
 ---

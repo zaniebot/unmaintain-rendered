@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-01T11:12:55Z
 updated_at: 2024-03-01T18:12:51Z
 url: https://github.com/astral-sh/uv/issues/2107
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv pip install --python=.venv/bin/python` error: failed to create file `/usr/.lock`
@@ -61,10 +61,6 @@ _Label `bug` added by @konstin on 2024-03-01 13:56_
 _Comment by @charliermarsh on 2024-03-01 17:55_
 
 Fixing now so I can include in release.
-
----
-
-_Referenced in [astral-sh/uv#2117](../../astral-sh/uv/pulls/2117.md) on 2024-03-01 17:58_
 
 ---
 

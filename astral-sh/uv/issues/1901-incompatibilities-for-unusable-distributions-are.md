@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T04:23:23Z
 updated_at: 2024-04-10T22:15:57Z
 url: https://github.com/astral-sh/uv/issues/1901
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Incompatibilities for unusable distributions are not combined 
@@ -113,17 +113,5 @@ _Label `error messages` added by @zanieb on 2024-02-23 04:23_
 _Comment by @Eh2406 on 2024-04-10 22:15_
 
 From the pubgrub perspective this should get the same fix is described in https://github.com/astral-sh/uv/issues/2519#issuecomment-2009842106
-
----
-
-_Referenced in [astral-sh/uv#3225](../../astral-sh/uv/pulls/3225.md) on 2024-04-23 22:52_
-
----
-
-_Referenced in [astral-sh/uv#1009](../../astral-sh/uv/issues/1009.md) on 2024-06-27 11:25_
-
----
-
-_Referenced in [astral-sh/uv#3877](../../astral-sh/uv/issues/3877.md) on 2024-06-27 11:25_
 
 ---

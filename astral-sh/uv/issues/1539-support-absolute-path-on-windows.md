@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T20:43:54Z
 updated_at: 2024-02-20T01:36:55Z
 url: https://github.com/astral-sh/uv/issues/1539
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support absolute path on windows
@@ -75,17 +75,9 @@ This didn't go out in v0.1.3, but will be fixed soon.
 
 ---
 
-_Referenced in [astral-sh/uv#1676](../../astral-sh/uv/issues/1676.md) on 2024-02-19 01:33_
-
----
-
 _Comment by @gaborbernat on 2024-02-19 01:33_
 
 This is blocking currently `tox-uv` supporting Windows (https://github.com/tox-dev/tox-uv/pull/19).
-
----
-
-_Referenced in [tox-dev/tox-uv#19](../../tox-dev/tox-uv/pulls/19.md) on 2024-02-19 01:34_
 
 ---
 
@@ -95,14 +87,6 @@ _Comment by @charliermarsh on 2024-02-19 01:56_
 
 ---
 
-_Referenced in [astral-sh/uv#1725](../../astral-sh/uv/pulls/1725.md) on 2024-02-20 01:03_
-
----
-
 _Closed by @charliermarsh on 2024-02-20 01:36_
-
----
-
-_Referenced in [LiberTEM/LiberTEM#1598](../../LiberTEM/LiberTEM/pulls/1598.md) on 2024-02-20 08:06_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-09T14:51:05Z
 updated_at: 2023-11-14T00:57:06Z
 url: https://github.com/astral-sh/uv/issues/379
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Skip yanked packages
@@ -37,10 +37,6 @@ _Label `good first issue` added by @charliermarsh on 2023-11-09 17:07_
 ---
 
 _Assigned to @zanieb by @zanieb on 2023-11-10 15:43_
-
----
-
-_Referenced in [astral-sh/uv#413](../../astral-sh/uv/pulls/413.md) on 2023-11-13 14:29_
 
 ---
 

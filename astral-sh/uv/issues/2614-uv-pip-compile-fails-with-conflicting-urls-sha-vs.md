@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-22T14:04:35Z
 updated_at: 2024-04-02T23:36:37Z
 url: https://github.com/astral-sh/uv/issues/2614
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip compile fails with conflicting urls (sha vs tag) across dependencies
@@ -57,10 +57,6 @@ The common way to support this is to add `git+ssh://git@github.com/cerebrotech/p
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-02 00:04_
-
----
-
-_Referenced in [astral-sh/uv#2769](../../astral-sh/uv/pulls/2769.md) on 2024-04-02 02:27_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T10:27:43Z
 updated_at: 2024-03-12T23:56:07Z
 url: https://github.com/astral-sh/uv/issues/1313
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Allow `pip compile` to work with stdin
@@ -24,10 +24,6 @@ Currently you cannot compile a requirements.txt file from stdin. Only `/dev/stdi
 ---
 
 _Label `compatibility` added by @zanieb on 2024-02-15 14:38_
-
----
-
-_Referenced in [astral-sh/uv#1314](../../astral-sh/uv/pulls/1314.md) on 2024-02-15 15:54_
 
 ---
 

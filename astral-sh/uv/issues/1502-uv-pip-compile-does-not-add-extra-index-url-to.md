@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T15:34:38Z
 updated_at: 2024-03-27T14:55:26Z
 url: https://github.com/astral-sh/uv/issues/1502
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip compile` does not add `extra-index-url` to the generated output file
@@ -247,20 +247,12 @@ _Comment by @nsphung on 2024-02-22 10:51_
 
 ---
 
-_Referenced in [astral-sh/rye#802](../../astral-sh/rye/issues/802.md) on 2024-02-27 17:55_
-
----
-
 _Comment by @charliermarsh on 2024-02-28 04:30_
 
 @thomasaarholt -- Unrelated to this issue, but heads up: if you're using Gemfury, you need to use `pypi.fury.io` instead of `repo.fury.io` in your index URL. Gemfury relies on the User Agent to do that mapping, and we (of course) don't send `pip` in our User Agent:
 
 ![Screenshot 2024-02-27 at 9 18 01 PM](https://github.com/astral-sh/uv/assets/1309177/258682e2-9366-49bc-9e0c-e952f401f4e9)
 
-
----
-
-_Referenced in [astral-sh/uv#2035](../../astral-sh/uv/issues/2035.md) on 2024-02-28 04:39_
 
 ---
 
@@ -452,14 +444,6 @@ _Comment by @iflare3g on 2024-03-08 18:01_
 > @iflare3g - Do you mind following up here? https://github.com/astral-sh/uv/issues/2138 I think these issues are unrelated to the `--extra-index-url` emit behavior, and it's making the thread a little hard to follow.
 
 Sure, thanks!
-
----
-
-_Referenced in [astral-sh/uv#2138](../../astral-sh/uv/issues/2138.md) on 2024-03-09 17:36_
-
----
-
-_Referenced in [astral-sh/uv#2691](../../astral-sh/uv/pulls/2691.md) on 2024-03-27 14:48_
 
 ---
 

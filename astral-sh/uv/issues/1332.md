@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T20:31:17Z
 updated_at: 2024-03-06T04:18:13Z
 url: https://github.com/astral-sh/uv/issues/1332
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support remote constraints files
@@ -108,14 +108,6 @@ Yeah actually that does look like the case, adding test coverage for `pip instal
 
 ---
 
-_Referenced in [astral-sh/uv#1334](../../astral-sh/uv/pulls/1334.md) on 2024-02-15 20:43_
-
----
-
-_Referenced in [astral-sh/uv#1461](../../astral-sh/uv/issues/1461.md) on 2024-02-16 09:32_
-
----
-
 _Comment by @recrsn on 2024-02-16 13:12_
 
 Looks like we don't have support for remote constraint URLs yet, not even on the `--constraint` flag
@@ -164,18 +156,6 @@ Plone
 ```
 
 That said, this is an essential feature of pip to get remote constraints.
-
----
-
-_Referenced in [astral-sh/uv#2067](../../astral-sh/uv/issues/2067.md) on 2024-02-29 00:45_
-
----
-
-_Referenced in [astral-sh/uv#2081](../../astral-sh/uv/pulls/2081.md) on 2024-02-29 14:35_
-
----
-
-_Referenced in [astral-sh/uv#2147](../../astral-sh/uv/issues/2147.md) on 2024-03-04 11:34_
 
 ---
 

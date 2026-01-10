@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-24T21:36:58Z
 updated_at: 2024-01-25T09:06:40Z
 url: https://github.com/astral-sh/uv/issues/1085
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Windows: Permission error writing to source distribution cache due to symlinking
@@ -81,10 +81,6 @@ _Closed by @konstin on 2024-01-24 21:39_
 ---
 
 _Reopened by @charliermarsh on 2024-01-24 21:40_
-
----
-
-_Referenced in [astral-sh/uv#1087](../../astral-sh/uv/pulls/1087.md) on 2024-01-25 01:26_
 
 ---
 

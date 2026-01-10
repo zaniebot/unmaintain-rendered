@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-09T16:19:16Z
 updated_at: 2023-12-10T00:11:32Z
 url: https://github.com/astral-sh/uv/issues/603
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Write wheels to temporary files while downloading
@@ -28,10 +28,6 @@ _Label `bug` added by @charliermarsh on 2023-12-09 16:19_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-09 16:21_
-
----
-
-_Referenced in [astral-sh/uv#604](../../astral-sh/uv/pulls/604.md) on 2023-12-09 20:36_
 
 ---
 

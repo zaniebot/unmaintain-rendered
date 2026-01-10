@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-21T02:43:23Z
 updated_at: 2024-01-04T00:09:25Z
 url: https://github.com/astral-sh/uv/issues/717
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Treat partial directories as a diagnostic rather than hard failure
@@ -24,10 +24,6 @@ During the verification phase.
 ---
 
 _Label `bug` added by @charliermarsh on 2023-12-21 02:43_
-
----
-
-_Referenced in [astral-sh/uv#761](../../astral-sh/uv/pulls/761.md) on 2024-01-03 22:37_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-30T11:50:19Z
 updated_at: 2024-04-04T04:33:26Z
 url: https://github.com/astral-sh/uv/issues/2730
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Document that it's safe to run multiple `uv` instances in a single venv
@@ -52,14 +52,6 @@ Will do!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-30 17:18_
-
----
-
-_Referenced in [astral-sh/uv#2767](../../astral-sh/uv/issues/2767.md) on 2024-04-02 02:23_
-
----
-
-_Referenced in [astral-sh/uv#2818](../../astral-sh/uv/pulls/2818.md) on 2024-04-04 04:22_
 
 ---
 

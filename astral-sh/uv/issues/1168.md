@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-29T12:07:52Z
 updated_at: 2024-02-22T07:47:35Z
 url: https://github.com/astral-sh/uv/issues/1168
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Properly handle `python.exe` xor `py` being present on windows
@@ -36,10 +36,6 @@ _Renamed from "Properly handle `python.ex` xor `py` being present on windows" to
 
 ---
 
-_Referenced in [astral-sh/uv#1310](../../astral-sh/uv/issues/1310.md) on 2024-02-15 08:37_
-
----
-
 _Comment by @mjclarke94 on 2024-02-15 22:05_
 
 There's also [python-launcher for unix](https://python-launcher.app) which also provides a `py` command (and is waaaay faster than pyenv et al). Might be worth tying it to the presence of a `py` command in the Path rather than just Windows.
@@ -53,10 +49,6 @@ Related https://github.com/astral-sh/uv/issues/1521
 ---
 
 _Assigned to @MichaReiser by @konstin on 2024-02-19 12:56_
-
----
-
-_Referenced in [astral-sh/uv#1711](../../astral-sh/uv/pulls/1711.md) on 2024-02-20 14:29_
 
 ---
 

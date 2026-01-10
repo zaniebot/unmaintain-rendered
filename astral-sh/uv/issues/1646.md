@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T14:07:17Z
 updated_at: 2024-02-20T04:29:11Z
 url: https://github.com/astral-sh/uv/issues/1646
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `pip cache dir`
@@ -203,17 +203,9 @@ Yeah feel free to create a separate issue for `pip cache info`. That looks usefu
 
 ---
 
-_Referenced in [astral-sh/uv#1655](../../astral-sh/uv/issues/1655.md) on 2024-02-18 15:45_
-
----
-
 _Comment by @hugovk on 2024-02-18 15:46_
 
 Thanks, I created https://github.com/astral-sh/uv/issues/1655 and sneaked `pip cache list` in there too.
-
----
-
-_Referenced in [pybamm-team/PyBaMM#3825](../../pybamm-team/PyBaMM/issues/3825.md) on 2024-02-19 06:07_
 
 ---
 
@@ -227,14 +219,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-20 03:31_
 
 ---
 
-_Referenced in [astral-sh/uv#1734](../../astral-sh/uv/pulls/1734.md) on 2024-02-20 04:24_
-
----
-
 _Closed by @charliermarsh on 2024-02-20 04:29_
-
----
-
-_Referenced in [blinklabs-io/dingo#1058](../../blinklabs-io/dingo/pulls/1058.md) on 2025-11-24 23:07_
 
 ---

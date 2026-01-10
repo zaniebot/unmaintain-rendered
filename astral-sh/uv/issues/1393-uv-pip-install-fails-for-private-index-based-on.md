@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T23:58:42Z
 updated_at: 2024-02-19T02:00:08Z
 url: https://github.com/astral-sh/uv/issues/1393
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip install fails for private index based on Artifactory
@@ -133,17 +133,9 @@ _Closed by @gaborbernat on 2024-02-16 16:52_
 
 ---
 
-_Referenced in [astral-sh/uv#1528](../../astral-sh/uv/issues/1528.md) on 2024-02-16 19:42_
-
----
-
 _Comment by @tafia on 2024-02-19 02:00_
 
 Working for me too!
 Thanks!
-
----
-
-_Referenced in [astral-sh/uv#11102](../../astral-sh/uv/issues/11102.md) on 2025-01-30 17:06_
 
 ---

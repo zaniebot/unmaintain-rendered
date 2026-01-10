@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T21:06:02Z
 updated_at: 2024-02-16T21:47:05Z
 url: https://github.com/astral-sh/uv/issues/1542
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv` does not understand URL-encoded link data
@@ -45,10 +45,6 @@ _Label `bug` added by @charliermarsh on 2024-02-16 21:19_
 _Comment by @charliermarsh on 2024-02-16 21:19_
 
 Thanks! I reproduced, I'll fix this now.
-
----
-
-_Referenced in [astral-sh/uv#1544](../../astral-sh/uv/pulls/1544.md) on 2024-02-16 21:23_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-05T23:30:19Z
 updated_at: 2024-01-10T20:16:25Z
 url: https://github.com/astral-sh/uv/issues/812
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Clarify references to previous conlusions
@@ -28,10 +28,6 @@ has conclusions (1) and (2) and references to those conclusions later on, but it
 ---
 
 _Label `error messages` added by @zanieb on 2024-01-05 23:30_
-
----
-
-_Referenced in [astral-sh/uv#864](../../astral-sh/uv/pulls/864.md) on 2024-01-10 01:16_
 
 ---
 

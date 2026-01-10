@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T16:12:46Z
 updated_at: 2024-02-17T02:11:27Z
 url: https://github.com/astral-sh/uv/issues/1508
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # pip install error: failed to rename file from ../.tmp to real package
@@ -65,10 +65,6 @@ Thanks!
 ---
 
 _Label `bug` added by @charliermarsh on 2024-02-16 16:13_
-
----
-
-_Referenced in [dagster-io/dagster#19871](../../dagster-io/dagster/pulls/19871.md) on 2024-02-16 20:38_
 
 ---
 

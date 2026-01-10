@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-27T05:09:57Z
 updated_at: 2024-03-08T20:55:10Z
 url: https://github.com/astral-sh/uv/issues/2003
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Requirement with `--only-binary apache-beam` fails to resolve even though solution exists
@@ -38,10 +38,6 @@ apache-beam==2.54.0
 ...
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#1560](../../astral-sh/uv/issues/1560.md) on 2024-02-27 05:10_
 
 ---
 
@@ -82,10 +78,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-28 21:47_
 _Comment by @charliermarsh on 2024-02-28 21:47_
 
 Looking into this, I think I see the path forward.
-
----
-
-_Referenced in [astral-sh/uv#2066](../../astral-sh/uv/pulls/2066.md) on 2024-02-29 00:32_
 
 ---
 

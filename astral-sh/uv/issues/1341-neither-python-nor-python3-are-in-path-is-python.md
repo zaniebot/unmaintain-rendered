@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-15T21:03:15Z
 updated_at: 2024-02-15T22:29:50Z
 url: https://github.com/astral-sh/uv/issues/1341
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # "× Neither `python` nor `python3` are in `PATH`. Is Python installed?" even though Python is installed and in PATH
@@ -79,10 +79,6 @@ Forgot to mention that `pip install uv` worked, thought it might be useful.
 _Comment by @zanieb on 2024-02-15 21:14_
 
 Oh thanks that's good to know!
-
----
-
-_Referenced in [astral-sh/uv#1346](../../astral-sh/uv/issues/1346.md) on 2024-02-15 21:14_
 
 ---
 

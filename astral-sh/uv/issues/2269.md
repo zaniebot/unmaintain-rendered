@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-07T09:54:18Z
 updated_at: 2024-03-07T14:45:10Z
 url: https://github.com/astral-sh/uv/issues/2269
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Python interpreter query fails on Windows in a conda environment starting with 0.1.14
@@ -75,10 +75,6 @@ Awesome work btw! I honestly still gasp each time I use `uv` to install packages
 _Comment by @charliermarsh on 2024-03-07 14:24_
 
 Thanks :) I'll install micromamba now. Seems like I unintentionally broke something!
-
----
-
-_Referenced in [astral-sh/uv#2279](../../astral-sh/uv/pulls/2279.md) on 2024-03-07 14:40_
 
 ---
 

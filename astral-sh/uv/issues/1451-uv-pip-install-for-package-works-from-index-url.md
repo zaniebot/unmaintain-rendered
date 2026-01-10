@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T08:15:26Z
 updated_at: 2024-04-03T06:49:42Z
 url: https://github.com/astral-sh/uv/issues/1451
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip install for package works from --index-url but not from --extra-index-url
@@ -114,10 +114,6 @@ I see this with `rye` (https://rye-up.com/guide/sources/) 0.24.0 and https://doc
 
 ---
 
-_Referenced in [astral-sh/uv#1600](../../astral-sh/uv/issues/1600.md) on 2024-02-17 21:06_
-
----
-
 _Comment by @kafonek on 2024-02-17 21:47_
 
 Per #1600 (closed as dupe), another library to test with is `polygraphy==0.47.1`, which has an entry on the nvidia repo but not PyPI.
@@ -133,33 +129,9 @@ Yeah I suspect the general problem here is that we only look at versions from Py
 
 ---
 
-_Referenced in [astral-sh/uv#1723](../../astral-sh/uv/issues/1723.md) on 2024-02-20 05:14_
-
----
-
-_Referenced in [astral-sh/rye#668](../../astral-sh/rye/issues/668.md) on 2024-02-21 03:01_
-
----
-
 _Comment by @zyd14 on 2024-02-21 18:30_
 
 I'm also running into this issue. However, @charliermarsh, the packages I'm trying to install exist on PyPI as well as in CodeArtifact - but the specific version I want to install from CodeArtifact only exists in CodeArtifact (it is differentiated by adding a `+etx` to the end of the version).
-
----
-
-_Referenced in [astral-sh/uv#1823](../../astral-sh/uv/issues/1823.md) on 2024-02-21 18:30_
-
----
-
-_Referenced in [astral-sh/rye#802](../../astral-sh/rye/issues/802.md) on 2024-02-27 17:56_
-
----
-
-_Referenced in [astral-sh/uv#171](../../astral-sh/uv/issues/171.md) on 2024-02-29 12:52_
-
----
-
-_Referenced in [astral-sh/uv#2083](../../astral-sh/uv/pulls/2083.md) on 2024-02-29 15:16_
 
 ---
 
@@ -168,18 +140,6 @@ _Label `bug` added by @BurntSushi on 2024-02-29 15:30_
 ---
 
 _Closed by @BurntSushi on 2024-02-29 16:57_
-
----
-
-_Referenced in [astral-sh/uv#2135](../../astral-sh/uv/pulls/2135.md) on 2024-03-02 23:22_
-
----
-
-_Referenced in [astral-sh/uv#2542](../../astral-sh/uv/issues/2542.md) on 2024-03-19 17:20_
-
----
-
-_Referenced in [astral-sh/uv#2718](../../astral-sh/uv/issues/2718.md) on 2024-03-28 19:19_
 
 ---
 

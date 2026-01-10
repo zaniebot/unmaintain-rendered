@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-02T19:55:05Z
 updated_at: 2024-02-12T00:51:38Z
 url: https://github.com/astral-sh/uv/issues/1238
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Puffin can't build ujson on windows due to pip difference
@@ -141,10 +141,6 @@ _Comment by @charliermarsh on 2024-02-05 15:40_
 
 ---
 
-_Referenced in [astral-sh/uv#1231](../../astral-sh/uv/pulls/1231.md) on 2024-02-05 20:06_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-11 19:20_
 
 ---
@@ -186,10 +182,6 @@ I think this has something to do with setting the current working directory.
 _Comment by @charliermarsh on 2024-02-11 20:27_
 
 It's possible this issue will drive me insane though.
-
----
-
-_Referenced in [astral-sh/uv#1277](../../astral-sh/uv/pulls/1277.md) on 2024-02-12 00:47_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T00:46:45Z
 updated_at: 2024-02-29T02:32:54Z
 url: https://github.com/astral-sh/uv/issues/2068
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Weird interaction between pyenv and `uv pip install --python ...`
@@ -149,10 +149,6 @@ Yeah, I think either should work (though the pyenv behavior is buggy, will fix).
 _Comment by @charliermarsh on 2024-02-29 01:35_
 
 (I see the issue, will fix for the next release.)
-
----
-
-_Referenced in [astral-sh/uv#2072](../../astral-sh/uv/pulls/2072.md) on 2024-02-29 02:17_
 
 ---
 

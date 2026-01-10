@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T00:04:59Z
 updated_at: 2024-01-19T05:48:56Z
 url: https://github.com/astral-sh/uv/issues/983
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Validate that installed version matches wheel filename
@@ -28,10 +28,6 @@ _Label `bug` added by @charliermarsh on 2024-01-19 00:05_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-19 00:05_
-
----
-
-_Referenced in [astral-sh/uv#1002](../../astral-sh/uv/pulls/1002.md) on 2024-01-19 05:39_
 
 ---
 

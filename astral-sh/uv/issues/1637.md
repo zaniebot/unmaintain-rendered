@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T10:07:12Z
 updated_at: 2024-02-20T16:38:37Z
 url: https://github.com/astral-sh/uv/issues/1637
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failed to parse `example @ example.whl; sys_platform == 'win32'`
@@ -80,10 +80,6 @@ I think we can require the space, but we should have a better error message for 
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-02-20 02:01_
-
----
-
-_Referenced in [astral-sh/uv#1746](../../astral-sh/uv/pulls/1746.md) on 2024-02-20 11:21_
 
 ---
 

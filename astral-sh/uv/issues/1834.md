@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-21T21:39:02Z
 updated_at: 2024-02-23T09:25:26Z
 url: https://github.com/astral-sh/uv/issues/1834
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Consider to hide `--index-url` and `--extra-index-url` if `--emit-index-url` flag is not presented
@@ -37,10 +37,6 @@ I've created a small PR to do this, but if this is "by design", than I'll just c
 _Comment by @charliermarsh on 2024-02-21 21:39_
 
 We hide these by default in the body, right? So would this mainly be to remove them from the comment header?
-
----
-
-_Referenced in [astral-sh/uv#1835](../../astral-sh/uv/pulls/1835.md) on 2024-02-21 21:40_
 
 ---
 

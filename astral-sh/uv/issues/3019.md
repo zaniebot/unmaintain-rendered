@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-13T18:08:11Z
 updated_at: 2024-04-15T20:31:59Z
 url: https://github.com/astral-sh/uv/issues/3019
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Allow artificial delay for security considerations for uv pip compile
@@ -84,9 +84,5 @@ _Comment by @zanieb on 2024-04-15 20:31_
 See 
 - https://github.com/astral-sh/uv/pull/3007
 - #1511
-
----
-
-_Referenced in [astral-sh/uv#14992](../../astral-sh/uv/issues/14992.md) on 2025-07-31 15:46_
 
 ---

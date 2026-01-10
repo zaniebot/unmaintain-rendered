@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-06T03:49:08Z
 updated_at: 2024-04-19T14:14:24Z
 url: https://github.com/astral-sh/uv/issues/815
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `pip-compile` usage statistics
@@ -65,10 +65,6 @@ This is a work in progress. Prompted by looking for good candidate projects to t
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-01-08 15:07_
-
----
-
-_Referenced in [astral-sh/uv#1468](../../astral-sh/uv/issues/1468.md) on 2024-02-16 10:04_
 
 ---
 

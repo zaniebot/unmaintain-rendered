@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-16T13:24:30Z
 updated_at: 2023-11-21T11:49:44Z
 url: https://github.com/astral-sh/uv/issues/436
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support path dependencies
@@ -41,14 +41,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-17 02:33_
 
 ---
 
-_Referenced in [astral-sh/uv#471](../../astral-sh/uv/pulls/471.md) on 2023-11-20 23:50_
-
----
-
 _Closed by @charliermarsh on 2023-11-21 11:49_
-
----
-
-_Referenced in [astral-sh/uv#472](../../astral-sh/uv/issues/472.md) on 2023-11-21 11:50_
 
 ---

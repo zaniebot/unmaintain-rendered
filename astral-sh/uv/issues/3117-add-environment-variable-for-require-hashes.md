@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-18T07:31:03Z
 updated_at: 2024-04-18T21:07:09Z
 url: https://github.com/astral-sh/uv/issues/3117
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Add environment variable for require-hashes
@@ -80,10 +80,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-18 19:59_
 _Comment by @charliermarsh on 2024-04-18 19:59_
 
 I can do this.
-
----
-
-_Referenced in [astral-sh/uv#3125](../../astral-sh/uv/pulls/3125.md) on 2024-04-18 20:57_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-21T16:17:19Z
 updated_at: 2023-11-28T00:11:06Z
 url: https://github.com/astral-sh/uv/issues/481
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Move simple index queries to `CachedClient`
@@ -28,10 +28,6 @@ _Label `performance` added by @charliermarsh on 2023-11-25 17:25_
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2023-11-25 17:26_
-
----
-
-_Referenced in [astral-sh/uv#504](../../astral-sh/uv/pulls/504.md) on 2023-11-27 14:00_
 
 ---
 

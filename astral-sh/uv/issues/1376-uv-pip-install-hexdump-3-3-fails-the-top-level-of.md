@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T22:52:27Z
 updated_at: 2024-02-17T04:17:37Z
 url: https://github.com/astral-sh/uv/issues/1376
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip install hexdump==3.3 fails: The top level of the archive must only contain a list directory
@@ -83,10 +83,6 @@ Thank you! And thanks for looking into the root cause, the zip structure, etc. T
 
 ---
 
-_Referenced in [astral-sh/uv#1389](../../astral-sh/uv/pulls/1389.md) on 2024-02-15 23:46_
-
----
-
 _Comment by @charliermarsh on 2024-02-16 01:47_
 
 Ok, it looks like pip has a slightly different implementation, which is that if every file is scoped under the same directory, it flattens that directory: https://github.com/pypa/pip/blob/51de88ca6459fdd5213f86a54b021a80884572f9/src/pip/_internal/utils/unpacking.py#L62
@@ -94,10 +90,6 @@ Ok, it looks like pip has a slightly different implementation, which is that if 
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-02-16 04:58_
-
----
-
-_Referenced in [astral-sh/uv#1564](../../astral-sh/uv/pulls/1564.md) on 2024-02-17 02:48_
 
 ---
 

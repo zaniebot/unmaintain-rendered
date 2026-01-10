@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T09:23:17Z
 updated_at: 2024-02-23T19:47:59Z
 url: https://github.com/astral-sh/uv/issues/1906
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Unable to install `pynacl==1.4.0`
@@ -80,10 +80,6 @@ As usual, i advocate for emitting a warning when we install such as a package, s
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-23 19:14_
-
----
-
-_Referenced in [astral-sh/uv#1933](../../astral-sh/uv/pulls/1933.md) on 2024-02-23 19:18_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-02T18:08:48Z
 updated_at: 2024-04-12T20:12:24Z
 url: https://github.com/astral-sh/uv/issues/2133
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # API usage
@@ -56,13 +56,5 @@ I don't think our Rust APIs are stable enough for this — we would rather focus
 ---
 
 _Closed by @zanieb on 2024-04-12 20:12_
-
----
-
-_Referenced in [aspect-build/rules_py#345](../../aspect-build/rules_py/issues/345.md) on 2024-06-03 12:57_
-
----
-
-_Referenced in [astral-sh/uv#6080](../../astral-sh/uv/issues/6080.md) on 2024-08-14 14:41_
 
 ---

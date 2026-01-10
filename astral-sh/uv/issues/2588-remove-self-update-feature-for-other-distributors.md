@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-21T13:34:29Z
 updated_at: 2024-03-22T04:23:10Z
 url: https://github.com/astral-sh/uv/issues/2588
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Remove self-update feature for other distributors
@@ -54,10 +54,6 @@ I think the feature should be opt-in not opt-out, if we're the only ones that wa
 _Comment by @charliermarsh on 2024-03-21 14:18_
 
 We can turn it off for `pip install uv`, but it requires writing the release pipeline to build separate binaries for PyPI vs. the installers, and then running every release build twice.
-
----
-
-_Referenced in [astral-sh/uv#2606](../../astral-sh/uv/pulls/2606.md) on 2024-03-22 04:10_
 
 ---
 

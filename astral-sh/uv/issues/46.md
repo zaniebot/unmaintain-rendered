@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-07T19:42:43Z
 updated_at: 2023-10-09T12:10:30Z
 url: https://github.com/astral-sh/uv/issues/46
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Do we need to support .egg files?
@@ -35,9 +35,5 @@ We’re going Yoshi mode
 ---
 
 _Closed by @charliermarsh on 2023-10-09 12:10_
-
----
-
-_Referenced in [pdm-project/pdm#2641](../../pdm-project/pdm/issues/2641.md) on 2024-02-19 23:17_
 
 ---

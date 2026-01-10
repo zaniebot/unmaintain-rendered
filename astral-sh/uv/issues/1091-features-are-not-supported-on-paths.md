@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-25T09:33:52Z
 updated_at: 2024-01-26T12:07:53Z
 url: https://github.com/astral-sh/uv/issues/1091
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Features are not supported on paths
@@ -74,10 +74,6 @@ I will fix this today.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-25 15:01_
-
----
-
-_Referenced in [astral-sh/uv#1113](../../astral-sh/uv/pulls/1113.md) on 2024-01-26 00:17_
 
 ---
 

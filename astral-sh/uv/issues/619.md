@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-12T16:36:58Z
 updated_at: 2023-12-12T19:59:47Z
 url: https://github.com/astral-sh/uv/issues/619
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Resolution non-deterministically hangs
@@ -65,10 +65,6 @@ It's hanging in `get_cached_with_callback`...
 _Comment by @charliermarsh on 2023-12-12 18:41_
 
 Or maybe not? Actually really can't tell where it's hanging now.
-
----
-
-_Referenced in [astral-sh/uv#624](../../astral-sh/uv/pulls/624.md) on 2023-12-12 19:46_
 
 ---
 

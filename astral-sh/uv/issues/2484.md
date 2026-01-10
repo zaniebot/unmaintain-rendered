@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-16T03:04:56Z
 updated_at: 2024-03-18T17:35:16Z
 url: https://github.com/astral-sh/uv/issues/2484
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Fail if req name and metadata name mismatch
@@ -57,14 +57,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-18 01:27_
 
 ---
 
-_Referenced in [astral-sh/uv#2516](../../astral-sh/uv/pulls/2516.md) on 2024-03-18 17:20_
-
----
-
 _Closed by @charliermarsh on 2024-03-18 17:35_
-
----
-
-_Referenced in [astral-sh/uv#7714](../../astral-sh/uv/issues/7714.md) on 2024-09-26 16:04_
 
 ---

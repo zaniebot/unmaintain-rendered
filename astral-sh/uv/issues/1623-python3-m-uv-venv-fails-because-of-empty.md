@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-18T04:22:14Z
 updated_at: 2024-02-22T03:12:52Z
 url: https://github.com/astral-sh/uv/issues/1623
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `python3 -m uv venv` fails because of empty subprocess environment
@@ -65,14 +65,6 @@ Creating virtualenv at: test_venv
 ```
 
 But it is inconvenient that the behavior between the two is not consistent.
-
----
-
-_Referenced in [astral-sh/uv#1624](../../astral-sh/uv/issues/1624.md) on 2024-02-18 04:44_
-
----
-
-_Referenced in [astral-sh/uv#1625](../../astral-sh/uv/issues/1625.md) on 2024-02-18 04:49_
 
 ---
 
@@ -153,10 +145,6 @@ That said, it does seem like `PATH` would be important to preserve, particularly
 ---
 
 _Label `virtualenv` added by @zanieb on 2024-02-18 20:37_
-
----
-
-_Referenced in [astral-sh/uv#1667](../../astral-sh/uv/pulls/1667.md) on 2024-02-18 21:11_
 
 ---
 

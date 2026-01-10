@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T19:05:15Z
 updated_at: 2024-02-20T12:39:43Z
 url: https://github.com/astral-sh/uv/issues/1326
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv venv` does not suggest how to activate
@@ -51,10 +51,6 @@ created virtual environment CPython3.12.0.final.0-64 in 250ms
 
 ---
 
-_Referenced in [astral-sh/uv#1386](../../astral-sh/uv/issues/1386.md) on 2024-02-15 23:39_
-
----
-
 _Comment by @0v00 on 2024-02-16 01:31_
 
 @zanieb For prompting activation, would it be sufficient to add the following to `crates/uv/src/commands/venv.rs` inside of `venv_impl`?
@@ -81,10 +77,6 @@ I think so! Maybe styled like "Activate with `source ....`"?
 _Comment by @zanieb on 2024-02-16 14:49_
 
 Note we also need a separate hint to Windows users
-
----
-
-_Referenced in [astral-sh/uv#1580](../../astral-sh/uv/pulls/1580.md) on 2024-02-17 10:03_
 
 ---
 

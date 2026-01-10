@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-17T19:23:15Z
 updated_at: 2024-02-17T20:33:28Z
 url: https://github.com/astral-sh/uv/issues/1609
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Can no longer create an editable install of `typeshed-stats` on Windows after upgrading to `uv==0.1.3`
@@ -105,10 +105,6 @@ error: Failed to build editables
 
 ---
 
-_Referenced in [astral-sh/uv#1571](../../astral-sh/uv/issues/1571.md) on 2024-02-17 19:27_
-
----
-
 _Comment by @zanieb on 2024-02-17 19:27_
 
 Yeah this looks like a cache upgrade bug, if you `uv clean` it should be fixed
@@ -158,9 +154,5 @@ _Closed by @charliermarsh on 2024-02-17 20:27_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-02-17 20:33_
-
----
-
-_Referenced in [astral-sh/uv#1699](../../astral-sh/uv/issues/1699.md) on 2024-02-19 16:30_
 
 ---

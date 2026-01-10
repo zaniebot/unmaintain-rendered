@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-09T17:37:53Z
 updated_at: 2024-01-10T01:45:58Z
 url: https://github.com/astral-sh/uv/issues/852
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support `--seed-packages` in `puffin venv`
@@ -39,10 +39,6 @@ The option is a shortcut for `puffin venv && puffin pip-install pip wheel setupt
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-09 23:46_
-
----
-
-_Referenced in [astral-sh/uv#865](../../astral-sh/uv/pulls/865.md) on 2024-01-10 01:33_
 
 ---
 

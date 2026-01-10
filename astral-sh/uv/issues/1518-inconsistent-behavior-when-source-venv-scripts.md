@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T17:33:51Z
 updated_at: 2024-02-17T23:08:08Z
 url: https://github.com/astral-sh/uv/issues/1518
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Inconsistent behavior when `source .venv/Scripts/activate` on Windows
@@ -40,10 +40,6 @@ echo $PATH  # ".venv/bin" is added into PATH, and this is wrong
 ---
 
 _Label `windows` added by @zanieb on 2024-02-16 17:47_
-
----
-
-_Referenced in [astral-sh/uv#1577](../../astral-sh/uv/pulls/1577.md) on 2024-02-17 06:26_
 
 ---
 

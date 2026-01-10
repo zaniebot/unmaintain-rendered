@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-19T12:04:12Z
 updated_at: 2023-11-19T15:10:59Z
 url: https://github.com/astral-sh/uv/issues/449
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # The integration tests should use `--exclude-newer` where possible
@@ -38,10 +38,6 @@ _Label `internal` added by @charliermarsh on 2023-11-19 13:44_
 ---
 
 _Renamed from "The intergration tests should use `--exclude-newer` where possible" to "The integration tests should use `--exclude-newer` where possible" by @konstin on 2023-11-19 13:45_
-
----
-
-_Referenced in [astral-sh/uv#456](../../astral-sh/uv/pulls/456.md) on 2023-11-19 15:00_
 
 ---
 

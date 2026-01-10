@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T13:43:44Z
 updated_at: 2024-02-22T16:44:38Z
 url: https://github.com/astral-sh/uv/issues/1866
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip compile conflicting URLs error for the same URL dependency
@@ -68,10 +68,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-22 13:44_
 _Comment by @charliermarsh on 2024-02-22 13:45_
 
 Thanks for the clear issue — this is my bad. That fix is roughly correct (though we should wrap both imports in CanonicalUrl so that we allow URLs that are “the same”). I can get to it and get this out today.
-
----
-
-_Referenced in [astral-sh/uv#1877](../../astral-sh/uv/pulls/1877.md) on 2024-02-22 16:34_
 
 ---
 

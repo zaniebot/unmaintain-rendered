@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-22T02:46:56Z
 updated_at: 2024-02-23T22:20:47Z
 url: https://github.com/astral-sh/uv/issues/1848
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Found duplicate package in environment
@@ -80,10 +80,6 @@ vs.
 
 ---
 
-_Referenced in [actions/setup-python#785](../../actions/setup-python/issues/785.md) on 2024-02-22 10:04_
-
----
-
 _Comment by @konstin on 2024-02-22 10:09_
 
 This is a bug in github actions: https://github.com/actions/setup-python/issues/785
@@ -109,10 +105,6 @@ I’ll take this one.
 _Comment by @charliermarsh on 2024-02-22 18:22_
 
 Okay, I looked at pip's behavior. They just do a `listdir` and omit packages they've already seen.
-
----
-
-_Referenced in [astral-sh/uv#1893](../../astral-sh/uv/pulls/1893.md) on 2024-02-23 02:15_
 
 ---
 

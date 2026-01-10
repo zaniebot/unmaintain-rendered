@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-23T09:48:42Z
 updated_at: 2023-11-28T05:55:06Z
 url: https://github.com/astral-sh/uv/issues/493
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Panic when ldd is not in path
@@ -57,10 +57,6 @@ Thanks :)
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-25 23:35_
-
----
-
-_Referenced in [astral-sh/uv#506](../../astral-sh/uv/pulls/506.md) on 2023-11-28 05:51_
 
 ---
 

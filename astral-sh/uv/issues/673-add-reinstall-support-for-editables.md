@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-17T03:59:41Z
 updated_at: 2023-12-17T15:41:59Z
 url: https://github.com/astral-sh/uv/issues/673
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `--reinstall` support for editables
@@ -34,10 +34,6 @@ I'm working on this.
 ---
 
 _Label `enhancement` added by @charliermarsh on 2023-12-17 04:01_
-
----
-
-_Referenced in [astral-sh/uv#674](../../astral-sh/uv/pulls/674.md) on 2023-12-17 13:01_
 
 ---
 

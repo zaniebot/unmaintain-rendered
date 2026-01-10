@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-11T09:03:57Z
 updated_at: 2024-03-14T07:53:07Z
 url: https://github.com/astral-sh/uv/issues/2353
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Regression from 0.1.15 to 0.1.16/17 when using --system on some RHEL based Docker images
@@ -153,14 +153,6 @@ My bad, some caching hid this error. I will attempt another MRE (this is a bit n
 _Comment by @charliermarsh on 2024-03-11 16:43_
 
 @alexprengere - No rush, I just want to get it fixed as soon as I'm able to! :)
-
----
-
-_Referenced in [astral-sh/uv#2387](../../astral-sh/uv/issues/2387.md) on 2024-03-12 17:40_
-
----
-
-_Referenced in [astral-sh/uv#2404](../../astral-sh/uv/issues/2404.md) on 2024-03-13 04:01_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-29T11:59:28Z
 updated_at: 2024-01-30T09:52:47Z
 url: https://github.com/astral-sh/uv/issues/1167
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Improve error message for missing Python version
@@ -36,10 +36,6 @@ _Label `error messages` added by @charliermarsh on 2024-01-29 11:59_
 ---
 
 _Assigned to @konstin by @konstin on 2024-01-29 12:06_
-
----
-
-_Referenced in [astral-sh/uv#1169](../../astral-sh/uv/pulls/1169.md) on 2024-01-29 12:14_
 
 ---
 

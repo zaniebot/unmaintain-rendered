@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-19T18:40:54Z
 updated_at: 2024-03-20T02:56:04Z
 url: https://github.com/astral-sh/uv/issues/2547
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # py3.9 and 3.10 error if typing is importable from cwd
@@ -98,10 +98,6 @@ Thanks. We use `PYTHONSAFEPATH` which was added in 3.11. I'll fix.
 ---
 
 _Label `bug` added by @charliermarsh on 2024-03-19 18:43_
-
----
-
-_Referenced in [astral-sh/uv#2552](../../astral-sh/uv/pulls/2552.md) on 2024-03-19 19:53_
 
 ---
 

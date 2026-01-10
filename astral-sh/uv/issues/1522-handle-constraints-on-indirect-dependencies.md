@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-16T18:38:35Z
 updated_at: 2024-02-22T05:01:22Z
 url: https://github.com/astral-sh/uv/issues/1522
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # handle constraints on indirect dependencies
@@ -79,10 +79,6 @@ _Label `bug` added by @zanieb on 2024-02-16 18:44_
 
 ---
 
-_Referenced in [inventree/InvenTree#6499](../../inventree/InvenTree/pulls/6499.md) on 2024-02-16 19:52_
-
----
-
 _Comment by @charliermarsh on 2024-02-18 02:15_
 
 Ah yeah, ok, I see the issue here.
@@ -96,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-18 02:15_
 _Comment by @charliermarsh on 2024-02-18 02:22_
 
 Have a fix but needs a few more test cases.
-
----
-
-_Referenced in [astral-sh/uv#1621](../../astral-sh/uv/pulls/1621.md) on 2024-02-18 02:24_
 
 ---
 
@@ -127,10 +119,6 @@ uv pip compile <(printf '%s\n' 'psycopg[c]>=3') -o <(printf '%s\n' 'psycopg==3.1
 _Comment by @charliermarsh on 2024-02-19 21:35_
 
 Thank you! I'm hoping to fix it today.
-
----
-
-_Referenced in [astral-sh/uv#1796](../../astral-sh/uv/pulls/1796.md) on 2024-02-21 18:14_
 
 ---
 

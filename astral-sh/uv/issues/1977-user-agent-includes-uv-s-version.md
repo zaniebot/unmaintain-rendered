@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-26T03:03:13Z
 updated_at: 2024-03-04T19:48:42Z
 url: https://github.com/astral-sh/uv/issues/1977
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # User Agent includes uv's version
@@ -81,10 +81,6 @@ I was intitially thinking it would be ideal to be uv's version and not uv-client
 _Comment by @charliermarsh on 2024-02-26 20:46_
 
 Oh yes, sorry, it should definitely be the `uv` version. (I was confused because we use `env!("CARGO_PKG_VERSION")` for the virtualenv, but that code is actually in the `uv` crate, not a layer below.)
-
----
-
-_Referenced in [astral-sh/uv#2136](../../astral-sh/uv/pulls/2136.md) on 2024-03-03 02:55_
 
 ---
 

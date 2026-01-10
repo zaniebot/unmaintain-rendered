@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T12:31:14Z
 updated_at: 2024-02-19T16:01:22Z
 url: https://github.com/astral-sh/uv/issues/1688
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # PIP_EXTRA_INDEX_URL not used. Multiple artifacts feeds not parsed correctly.
@@ -148,9 +148,5 @@ I can open an issue to track that — although I think the solution here is to p
 _Comment by @zanieb on 2024-02-19 16:01_
 
 - https://github.com/astral-sh/uv/issues/1702
-
----
-
-_Referenced in [astral-sh/uv#1702](../../astral-sh/uv/issues/1702.md) on 2024-02-19 16:01_
 
 ---

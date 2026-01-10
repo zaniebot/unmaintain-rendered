@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-12T07:57:57Z
 updated_at: 2024-04-10T20:02:46Z
 url: https://github.com/astral-sh/uv/issues/2378
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Hash is missing for url based dependencies
@@ -49,10 +49,6 @@ This would be quite interesting. Currently, uv downloads and builds the source b
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-07 00:12_
-
----
-
-_Referenced in [astral-sh/uv#2952](../../astral-sh/uv/pulls/2952.md) on 2024-04-10 01:43_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-06T04:20:09Z
 updated_at: 2024-02-06T19:25:08Z
 url: https://github.com/astral-sh/uv/issues/1256
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Special-case `puffin install`, `puffin compile`, etc.
@@ -28,10 +28,6 @@ _Label `error messages` added by @charliermarsh on 2024-02-06 04:20_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-06 04:30_
-
----
-
-_Referenced in [astral-sh/uv#1257](../../astral-sh/uv/pulls/1257.md) on 2024-02-06 04:55_
 
 ---
 

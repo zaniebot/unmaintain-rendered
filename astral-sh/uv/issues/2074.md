@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-29T07:35:43Z
 updated_at: 2024-03-07T04:35:23Z
 url: https://github.com/astral-sh/uv/issues/2074
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Editable package install fails after a previous uninstall
@@ -308,10 +308,6 @@ I don't have a system to test this on, so the best I can do is try a refactor an
 _Comment by @charliermarsh on 2024-03-07 03:22_
 
 Good news, I'm able to reproduce this on Windows 2019 in GitHub Actions! https://github.com/astral-sh/uv/pull/2259
-
----
-
-_Referenced in [astral-sh/uv#2259](../../astral-sh/uv/pulls/2259.md) on 2024-03-07 04:30_
 
 ---
 

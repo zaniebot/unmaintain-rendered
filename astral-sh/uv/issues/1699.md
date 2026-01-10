@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T15:53:01Z
 updated_at: 2024-02-19T16:30:17Z
 url: https://github.com/astral-sh/uv/issues/1699
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # devise testing strategy for uv's cache
@@ -34,13 +34,5 @@ _Label `testing` added by @BurntSushi on 2024-02-19 15:53_
 ---
 
 _Label `needs-design` added by @BurntSushi on 2024-02-19 15:53_
-
----
-
-_Referenced in [astral-sh/uv#1707](../../astral-sh/uv/pulls/1707.md) on 2024-02-19 16:59_
-
----
-
-_Referenced in [astral-sh/uv#16927](../../astral-sh/uv/pulls/16927.md) on 2025-12-02 11:10_
 
 ---

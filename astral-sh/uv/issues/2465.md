@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-14T18:45:29Z
 updated_at: 2024-04-17T19:05:25Z
 url: https://github.com/astral-sh/uv/issues/2465
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Add unit test coverage for netrc authentication
@@ -51,21 +51,9 @@ It's not sufficient because it does doesn't ensure we're properly applying authe
 
 ---
 
-_Referenced in [astral-sh/uv#2984](../../astral-sh/uv/pulls/2984.md) on 2024-04-12 19:48_
-
----
-
-_Referenced in [astral-sh/uv#2976](../../astral-sh/uv/pulls/2976.md) on 2024-04-15 19:55_
-
----
-
 _Comment by @zanieb on 2024-04-16 16:50_
 
 We have more test coverage in https://github.com/astral-sh/uv/pull/2976 now but still not end-to-end.
-
----
-
-_Referenced in [astral-sh/uv#3068](../../astral-sh/uv/pulls/3068.md) on 2024-04-16 17:47_
 
 ---
 

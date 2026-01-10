@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T12:03:07Z
 updated_at: 2024-03-06T04:25:30Z
 url: https://github.com/astral-sh/uv/issues/1481
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install` cannot fetch requirement file from remote URL
@@ -69,24 +69,12 @@ _Assigned to @ottaviohartman by @zanieb on 2024-02-17 04:17_
 
 ---
 
-_Referenced in [ottaviohartman/uv#1](../../ottaviohartman/uv/pulls/1.md) on 2024-02-17 23:03_
-
----
-
 _Comment by @ottaviohartman on 2024-02-17 23:09_
 
 Thanks @zanieb !
 
 I opened a draft PR into my fork since it's still WIP. I will keep trying to get it to work, but I would appreciate any help to get me unstuck. I've left some comments with questions on that PR.
 
-
----
-
-_Referenced in [astral-sh/uv#1643](../../astral-sh/uv/pulls/1643.md) on 2024-02-18 13:43_
-
----
-
-_Referenced in [callowayproject/bump-my-version#148](../../callowayproject/bump-my-version/issues/148.md) on 2024-02-27 05:49_
 
 ---
 

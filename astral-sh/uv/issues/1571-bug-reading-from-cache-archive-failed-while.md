@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-17T04:27:18Z
 updated_at: 2024-02-19T17:33:36Z
 url: https://github.com/astral-sh/uv/issues/1571
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # BUG: `Reading from cache archive failed` while upgrading `pytest`
@@ -140,10 +140,6 @@ _Label `cache` added by @zanieb on 2024-02-17 04:32_
 
 ---
 
-_Referenced in [astral-sh/uv#1609](../../astral-sh/uv/issues/1609.md) on 2024-02-17 19:25_
-
----
-
 _Comment by @AlexWaygood on 2024-02-17 19:27_
 
 (I just opened #1609, which is possibly a duplicate of this issue)
@@ -159,14 +155,6 @@ Cross-posting: I believe I've confirmed locally that this was caused by https://
 _Comment by @charliermarsh on 2024-02-17 20:28_
 
 It might be worth adding test coverage for these kinds of bumps, or some other form of testing and enforcement. (\cc @BurntSushi just for visibility.)
-
----
-
-_Referenced in [astral-sh/uv#1699](../../astral-sh/uv/issues/1699.md) on 2024-02-19 15:53_
-
----
-
-_Referenced in [astral-sh/uv#1707](../../astral-sh/uv/pulls/1707.md) on 2024-02-19 16:56_
 
 ---
 

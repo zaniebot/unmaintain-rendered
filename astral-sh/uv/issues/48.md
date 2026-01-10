@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-08T00:56:48Z
 updated_at: 2023-10-09T02:17:20Z
 url: https://github.com/astral-sh/uv/issues/48
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Consider looking in the on-disk cache for compatible versions
@@ -39,10 +39,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2023-10-08 18:22_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-08 20:23_
-
----
-
-_Referenced in [astral-sh/uv#70](../../astral-sh/uv/pulls/70.md) on 2023-10-09 02:02_
 
 ---
 

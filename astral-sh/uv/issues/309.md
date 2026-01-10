@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-11-03T15:25:11Z
 updated_at: 2024-02-26T21:12:12Z
 url: https://github.com/astral-sh/uv/issues/309
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Confusing error messages on package resolution failure
@@ -62,10 +62,6 @@ $ cargo run -p puffin-cli -- pip-compile example.in
 A pinned incompatible version of an indirect requirement.
 
 This one is relatively reasonable? It's just quite verbose. We need to do better on `root` is forbidden cases.
-
----
-
-_Referenced in [astral-sh/uv#310](../../astral-sh/uv/issues/310.md) on 2023-11-03 15:38_
 
 ---
 
@@ -141,14 +137,6 @@ The conflict is caused by:
 
 ---
 
-_Referenced in [astral-sh/uv#338](../../astral-sh/uv/pulls/338.md) on 2023-11-06 16:51_
-
----
-
-_Referenced in [astral-sh/uv#342](../../astral-sh/uv/pulls/342.md) on 2023-11-06 18:16_
-
----
-
 _Comment by @konstin on 2023-11-10 13:23_
 
 Extras are handles badly. EDIT: Filed as #386
@@ -167,10 +155,6 @@ And because dependencies of torch[sagemaker] at version ==1.13.0 are unavailable
 And because dependencies of torch[sagemaker] at version ==2.0.0 are unavailable and dependencies of torch[sagemaker] at version ==2.0.1 are unavailable, torch[sagemaker]<2.1.0, >2.1.0 is forbidden.
 And because dependencies of torch[sagemaker] at version ==2.1.0 are unavailable and root ==0a0.dev0 depends on torch[sagemaker], version solving failed.
 ```
-
----
-
-_Referenced in [astral-sh/uv#424](../../astral-sh/uv/pulls/424.md) on 2023-11-14 16:49_
 
 ---
 

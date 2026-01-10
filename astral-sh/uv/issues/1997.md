@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-26T22:43:03Z
 updated_at: 2024-03-01T12:49:46Z
 url: https://github.com/astral-sh/uv/issues/1997
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # permission denied on installed CLI's 
@@ -478,10 +478,6 @@ _Closed by @Tomperez98 on 2024-02-29 00:21_
 _Comment by @konstin on 2024-02-29 08:51_
 
 Oh no, i see the problem now: There's an unescaped space, so we're running `/Users/tomasperez/Documents` with the argument `Local/customer-engine/backend/.venv/bin/python`, which has a permission denied error since `/Users/tomasperez/Documents` but is executable, as a directory.
-
----
-
-_Referenced in [astral-sh/uv#2076](../../astral-sh/uv/issues/2076.md) on 2024-02-29 09:00_
 
 ---
 

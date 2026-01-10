@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-11T12:24:19Z
 updated_at: 2024-02-02T18:00:27Z
 url: https://github.com/astral-sh/uv/issues/884
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # No solution error any-of list is inverted
@@ -85,10 +85,6 @@ Thanks! This one is on my radar but the examples are helpful.
 _Comment by @konstin on 2024-01-11 15:27_
 
 Here's a recent run of pypi top 10k most dependents with builds reduced to errors, it has a bunch of examples: https://gist.github.com/konstin/b32a9cf1a07e061ac0236776eab34f3c . I'd expect that those a underrepresented in our scenarios since they have less versions and lack the progression of increasing requirements over releases.
-
----
-
-_Referenced in [astral-sh/uv#1233](../../astral-sh/uv/pulls/1233.md) on 2024-02-02 17:28_
 
 ---
 

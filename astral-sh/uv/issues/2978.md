@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-10T21:23:49Z
 updated_at: 2024-04-11T01:25:59Z
 url: https://github.com/astral-sh/uv/issues/2978
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Install plan doesn't pick up cached `--find-links` source distributions
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-10 21:23_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-04-10 21:23_
-
----
-
-_Referenced in [astral-sh/uv#2986](../../astral-sh/uv/pulls/2986.md) on 2024-04-11 00:57_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-12-18T15:48:19Z
 updated_at: 2023-12-18T22:10:25Z
 url: https://github.com/astral-sh/uv/issues/687
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Should we show absolute or verbatim URLs for editable installs?
@@ -47,10 +47,6 @@ I think resolved makes sense to me!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-18 16:55_
-
----
-
-_Referenced in [astral-sh/uv#689](../../astral-sh/uv/pulls/689.md) on 2023-12-18 17:40_
 
 ---
 

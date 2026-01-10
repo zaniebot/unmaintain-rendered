@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-13T09:49:10Z
 updated_at: 2023-12-04T10:27:38Z
 url: https://github.com/astral-sh/uv/issues/407
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Injecting a python version when building source distributions
@@ -25,10 +25,6 @@ Possible options:
  * Build the source distribution with the real python version, pick the wheel with the local python version tag (even if it mismatches the faked environment), assume that wheels built for different python versions have the same metadata (this is a somewhat necessary assumption anyway, without it a sane reusable resolution becomes all but impossible). We would keep two environments around, the main fake one and the secondary real one.
  * Provision the fake python from python-build-standalone for builds, making it a real python.
  * Ban source distribution builds when `--python-version` is set.
-
----
-
-_Referenced in [astral-sh/uv#398](../../astral-sh/uv/pulls/398.md) on 2023-11-13 10:03_
 
 ---
 
@@ -59,10 +55,6 @@ I think it's broken on both main and #398 atm, this is a separate task to implem
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-29 15:11_
-
----
-
-_Referenced in [astral-sh/uv#532](../../astral-sh/uv/pulls/532.md) on 2023-12-04 03:16_
 
 ---
 

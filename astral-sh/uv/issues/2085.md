@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-29T16:32:33Z
 updated_at: 2024-02-29T23:48:05Z
 url: https://github.com/astral-sh/uv/issues/2085
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Installing on Windows 2016 fails because of TLS versions
@@ -36,10 +36,6 @@ Perhaphs it'd be good to add it to the docs?
 _Comment by @Gankra on 2024-02-29 16:44_
 
 We explicitly pass `--tlsv1.2` to curl for the shell installer already, so that seems supremely reasonable for the powershell installer to set too.
-
----
-
-_Referenced in [axodotdev/cargo-dist#823](../../axodotdev/cargo-dist/issues/823.md) on 2024-02-29 16:47_
 
 ---
 

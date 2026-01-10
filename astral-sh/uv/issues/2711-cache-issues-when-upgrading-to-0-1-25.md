@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-28T16:32:23Z
 updated_at: 2024-03-28T17:29:31Z
 url: https://github.com/astral-sh/uv/issues/2711
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Cache issues when upgrading to 0.1.25
@@ -67,22 +67,6 @@ Thanks for raising. We'll be addressing this immediately.
 
 ---
 
-_Referenced in [astral-sh/uv#2712](../../astral-sh/uv/pulls/2712.md) on 2024-03-28 17:18_
-
----
-
 _Closed by @zanieb on 2024-03-28 17:29_
-
----
-
-_Referenced in [astral-sh/uv#2714](../../astral-sh/uv/pulls/2714.md) on 2024-03-28 17:37_
-
----
-
-_Referenced in [astral-sh/uv#2715](../../astral-sh/uv/pulls/2715.md) on 2024-03-28 18:14_
-
----
-
-_Referenced in [astral-sh/uv#2716](../../astral-sh/uv/issues/2716.md) on 2024-03-28 18:26_
 
 ---

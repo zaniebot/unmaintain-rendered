@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-17T02:48:11Z
 updated_at: 2024-02-17T18:53:40Z
 url: https://github.com/astral-sh/uv/issues/1563
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install` gets stuck combining `--resolution=lowest-direct` and `--upgrade` flags
@@ -42,10 +42,6 @@ I think you can reproduce with just: `cargo run pip install --resolution=lowest-
 
 ---
 
-_Referenced in [adamtheturtle/sphinx-substitution-extensions#679](../../adamtheturtle/sphinx-substitution-extensions/pulls/679.md) on 2024-02-17 03:21_
-
----
-
 _Label `bug` added by @zanieb on 2024-02-17 04:08_
 
 ---
@@ -55,10 +51,6 @@ _Label `resolver` added by @zanieb on 2024-02-17 04:08_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-17 18:23_
-
----
-
-_Referenced in [astral-sh/uv#1607](../../astral-sh/uv/pulls/1607.md) on 2024-02-17 18:31_
 
 ---
 

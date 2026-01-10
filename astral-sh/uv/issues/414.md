@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-13T18:37:40Z
 updated_at: 2023-12-04T14:31:02Z
 url: https://github.com/astral-sh/uv/issues/414
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Don't remove pip from the user's venv
@@ -106,14 +106,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-30 01:54_
 
 ---
 
-_Referenced in [astral-sh/uv#535](../../astral-sh/uv/pulls/535.md) on 2023-12-04 04:33_
-
----
-
 _Closed by @charliermarsh on 2023-12-04 14:31_
-
----
-
-_Referenced in [astral-sh/uv#9860](../../astral-sh/uv/pulls/9860.md) on 2024-12-13 03:53_
 
 ---

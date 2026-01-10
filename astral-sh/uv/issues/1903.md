@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T07:13:24Z
 updated_at: 2024-03-07T23:47:32Z
 url: https://github.com/astral-sh/uv/issues/1903
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Duplicate git dependencies that resolve to the same commit are treated as conflicting
@@ -154,14 +154,6 @@ dev = [
 
 ---
 
-_Referenced in [astral-sh/uv#2285](../../astral-sh/uv/pulls/2285.md) on 2024-03-07 19:19_
-
----
-
 _Closed by @charliermarsh on 2024-03-07 23:47_
-
----
-
-_Referenced in [astral-sh/uv#2614](../../astral-sh/uv/issues/2614.md) on 2024-03-22 14:22_
 
 ---

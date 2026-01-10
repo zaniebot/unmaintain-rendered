@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-06T19:39:32Z
 updated_at: 2023-12-13T15:11:03Z
 url: https://github.com/astral-sh/uv/issues/579
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failure to install `tomli` from source distribution
@@ -72,14 +72,6 @@ Filed upstream: https://github.com/alexcrichton/tar-rs/issues/349
 
 ---
 
-_Referenced in [astral-sh/uv#634](../../astral-sh/uv/pulls/634.md) on 2023-12-13 11:08_
-
----
-
 _Closed by @konstin on 2023-12-13 15:11_
-
----
-
-_Referenced in [astral-sh/uv#1748](../../astral-sh/uv/issues/1748.md) on 2024-02-20 11:54_
 
 ---

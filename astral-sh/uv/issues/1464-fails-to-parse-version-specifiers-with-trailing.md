@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T09:49:25Z
 updated_at: 2024-02-17T01:47:26Z
 url: https://github.com/astral-sh/uv/issues/1464
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # fails to parse version specifiers with trailing comma
@@ -56,10 +56,6 @@ _Label `bug` added by @zanieb on 2024-02-16 14:45_
 _Comment by @davidszotten on 2024-02-16 16:10_
 
 e6c4c77ba10bd54dbf06 (which includes that fix) still has the issue. will make a pr with a failing test (and a suggested fix)
-
----
-
-_Referenced in [astral-sh/uv#1507](../../astral-sh/uv/pulls/1507.md) on 2024-02-16 16:10_
 
 ---
 

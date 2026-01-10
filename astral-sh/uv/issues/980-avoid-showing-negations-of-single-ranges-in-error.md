@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-18T23:47:32Z
 updated_at: 2024-01-19T17:07:16Z
 url: https://github.com/astral-sh/uv/issues/980
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Avoid showing negations of single ranges in error messages
@@ -26,10 +26,6 @@ we have `!( a>=3.0.0 )` but since it's just a single item in the negation we sho
 ---
 
 _Label `error messages` added by @zanieb on 2024-01-18 23:47_
-
----
-
-_Referenced in [astral-sh/uv#981](../../astral-sh/uv/pulls/981.md) on 2024-01-18 23:50_
 
 ---
 

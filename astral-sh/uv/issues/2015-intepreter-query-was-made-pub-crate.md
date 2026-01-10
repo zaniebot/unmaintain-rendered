@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-27T14:25:36Z
 updated_at: 2024-02-27T14:39:58Z
 url: https://github.com/astral-sh/uv/issues/2015
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `Intepreter::query` was made `pub(crate)`
@@ -38,10 +38,6 @@ Said function: https://github.com/astral-sh/uv/blob/f487b2e8c18f1667f2afd03b560b
 _Comment by @tdejager on 2024-02-27 14:31_
 
 Made a PR for it: https://github.com/astral-sh/uv/pull/2016
-
----
-
-_Referenced in [astral-sh/uv#2016](../../astral-sh/uv/pulls/2016.md) on 2024-02-27 14:32_
 
 ---
 

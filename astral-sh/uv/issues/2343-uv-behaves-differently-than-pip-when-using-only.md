@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-10T17:48:10Z
 updated_at: 2024-03-12T23:21:42Z
 url: https://github.com/astral-sh/uv/issues/2343
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv` behaves differently than `pip` when using `--only-binary=:all:` for editable installs
@@ -107,10 +107,6 @@ Thank you, @zanieb. It's been great integrating `uv` into our build system so fa
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-03-12 19:16_
-
----
-
-_Referenced in [astral-sh/uv#2393](../../astral-sh/uv/pulls/2393.md) on 2024-03-12 20:58_
 
 ---
 

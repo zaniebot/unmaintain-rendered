@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-03T20:16:24Z
 updated_at: 2024-03-12T06:19:32Z
 url: https://github.com/astral-sh/uv/issues/1244
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `--dry-run` flag for `pip install`
@@ -42,10 +42,6 @@ _Label `compatibility` added by @zanieb on 2024-02-03 20:16_
 
 ---
 
-_Referenced in [astral-sh/uv#1348](../../astral-sh/uv/issues/1348.md) on 2024-02-15 22:18_
-
----
-
 _Comment by @JacobCoffee on 2024-02-16 05:37_
 
 May I try this? @zanieb 
@@ -69,18 +65,6 @@ Although I'm not yet sure how to pull versions to display..
 
 ---
 
-_Referenced in [astral-sh/uv#1436](../../astral-sh/uv/pulls/1436.md) on 2024-02-16 05:42_
-
----
-
-_Referenced in [astral-sh/uv#1442](../../astral-sh/uv/issues/1442.md) on 2024-02-16 06:16_
-
----
-
 _Closed by @zanieb on 2024-03-12 06:19_
-
----
-
-_Referenced in [astral-sh/uv#9557](../../astral-sh/uv/pulls/9557.md) on 2024-12-01 22:41_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-26T13:22:19Z
 updated_at: 2023-11-16T12:54:29Z
 url: https://github.com/astral-sh/uv/issues/199
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Make home assistant work
@@ -33,14 +33,6 @@ _Label `bug` added by @charliermarsh on 2023-10-26 13:30_
 ---
 
 _Assigned to @konstin by @charliermarsh on 2023-10-26 13:30_
-
----
-
-_Referenced in [astral-sh/uv#252](../../astral-sh/uv/issues/252.md) on 2023-10-31 12:49_
-
----
-
-_Referenced in [astral-sh/uv#336](../../astral-sh/uv/pulls/336.md) on 2023-11-06 16:05_
 
 ---
 

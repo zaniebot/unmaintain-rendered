@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-26T21:34:19Z
 updated_at: 2024-01-27T01:37:57Z
 url: https://github.com/astral-sh/uv/issues/1140
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support `--emit-index-url` and `--emit-find-links`
@@ -28,10 +28,6 @@ _Label `compatibility` added by @charliermarsh on 2024-01-26 21:34_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-26 21:37_
-
----
-
-_Referenced in [astral-sh/uv#1142](../../astral-sh/uv/pulls/1142.md) on 2024-01-27 01:21_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-06T21:20:05Z
 updated_at: 2023-12-07T05:26:43Z
 url: https://github.com/astral-sh/uv/issues/582
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Repeated packages in `requirement.txt` leads to `pip-sync` hang
@@ -33,10 +33,6 @@ _Label `bug` added by @charliermarsh on 2023-12-06 21:43_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-06 22:14_
-
----
-
-_Referenced in [astral-sh/uv#584](../../astral-sh/uv/pulls/584.md) on 2023-12-07 05:22_
 
 ---
 

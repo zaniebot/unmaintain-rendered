@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-16T02:48:43Z
 updated_at: 2024-02-16T04:19:45Z
 url: https://github.com/astral-sh/uv/issues/1416
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Included requirements files should be relative to parent, not cwd
@@ -98,10 +98,6 @@ I don't care about^ case at all
 _Comment by @charliermarsh on 2024-02-16 03:02_
 
 Okay yeah, makes sense.
-
----
-
-_Referenced in [astral-sh/uv#1421](../../astral-sh/uv/pulls/1421.md) on 2024-02-16 03:57_
 
 ---
 

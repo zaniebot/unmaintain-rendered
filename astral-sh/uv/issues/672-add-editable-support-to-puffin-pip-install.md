@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-17T03:59:31Z
 updated_at: 2023-12-18T08:52:34Z
 url: https://github.com/astral-sh/uv/issues/672
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add editable support to `puffin pip-install`
@@ -34,10 +34,6 @@ _Label `enhancement` added by @charliermarsh on 2023-12-17 04:01_
 _Comment by @charliermarsh on 2023-12-17 04:02_
 
 I'm working on this (think it's good for me to get more familiar with editables).
-
----
-
-_Referenced in [astral-sh/uv#675](../../astral-sh/uv/pulls/675.md) on 2023-12-17 19:01_
 
 ---
 

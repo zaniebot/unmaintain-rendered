@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-21T16:06:58Z
 updated_at: 2023-12-07T13:03:35Z
 url: https://github.com/astral-sh/uv/issues/477
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Fix wheel caching
@@ -30,10 +30,6 @@ _Assigned to @konstin by @konstin on 2023-11-21 16:07_
 
 ---
 
-_Referenced in [astral-sh/uv#377](../../astral-sh/uv/issues/377.md) on 2023-11-21 16:22_
-
----
-
 _Added to milestone `Feature complete` by @konstin on 2023-11-21 16:22_
 
 ---
@@ -43,10 +39,6 @@ _Label `bug` added by @konstin on 2023-11-21 16:22_
 ---
 
 _Renamed from "Fix unzipped wheel caching" to "Fix wheel caching" by @konstin on 2023-11-26 15:16_
-
----
-
-_Referenced in [astral-sh/uv#501](../../astral-sh/uv/pulls/501.md) on 2023-11-26 15:56_
 
 ---
 

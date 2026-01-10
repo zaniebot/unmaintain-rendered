@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-17T17:16:07Z
 updated_at: 2024-01-17T19:31:53Z
 url: https://github.com/astral-sh/uv/issues/950
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Update only a single package in pip compile
@@ -28,10 +28,6 @@ _Label `enhancement` added by @konstin on 2024-01-17 17:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-17 17:30_
-
----
-
-_Referenced in [astral-sh/uv#953](../../astral-sh/uv/pulls/953.md) on 2024-01-17 18:55_
 
 ---
 

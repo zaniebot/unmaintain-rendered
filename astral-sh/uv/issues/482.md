@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-22T08:27:47Z
 updated_at: 2023-11-22T15:10:29Z
 url: https://github.com/astral-sh/uv/issues/482
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Use new cargo lint table
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-22 13:22_
 ---
 
 _Label `internal` added by @charliermarsh on 2023-11-22 13:37_
-
----
-
-_Referenced in [astral-sh/uv#490](../../astral-sh/uv/pulls/490.md) on 2023-11-22 14:58_
 
 ---
 

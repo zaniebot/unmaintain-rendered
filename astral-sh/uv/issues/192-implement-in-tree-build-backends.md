@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-26T08:46:46Z
 updated_at: 2023-11-10T10:54:25Z
 url: https://github.com/astral-sh/uv/issues/192
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Implement in-tree build backends
@@ -22,10 +22,6 @@ _Issue opened by @konstin on 2023-10-26 08:46_
 https://peps.python.org/pep-0517/#in-tree-build-backends
 
 This is required to resolve home-assistant
-
----
-
-_Referenced in [astral-sh/uv#5](../../astral-sh/uv/issues/5.md) on 2023-10-26 09:10_
 
 ---
 
@@ -62,10 +58,6 @@ ModuleNotFoundError: No module named 'setuptools_rust'
 _Comment by @konstin on 2023-10-26 18:55_
 
 Done: #207
-
----
-
-_Referenced in [astral-sh/uv#385](../../astral-sh/uv/pulls/385.md) on 2023-11-10 09:14_
 
 ---
 

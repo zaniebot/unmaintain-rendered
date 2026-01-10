@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T21:30:23Z
 updated_at: 2024-02-20T17:57:29Z
 url: https://github.com/astral-sh/uv/issues/1357
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support Python versions with trailing `+`
@@ -36,10 +36,6 @@ The [Local Version Identifiers section of the Version Specifiers spec](https://p
 So at least with respect to the spec, it seems like the version number here is invalid. Is there any particular reason why `3.11.4+` is being used? If it's just a mistake, then perhaps that should be fixed instead.
 
 But if this is a widespread or common practice, then perhaps there isn't too much harm in making our version parser slightly more flexible. I think the point here though would be to decide what the semantics of `3.11.4+` are. Is the version identical to `3.11.4`? And in particular, if someone gave us a `3.11.4+` version and we spit `3.11.4` back out at some point, would that be an issue? The question might seem strange, but it's the difference between a "version without a local segment" and a "version with an empty local segment." (The current representation of a `Version` doesn't distinguish between those cases.)
-
----
-
-_Referenced in [astral-sh/uv#1402](../../astral-sh/uv/issues/1402.md) on 2024-02-16 00:29_
 
 ---
 
@@ -101,10 +97,6 @@ They're different versions — the `+` has meaning. Similar to `1.0.0rc`being di
 
 ---
 
-_Referenced in [astral-sh/uv#1478](../../astral-sh/uv/issues/1478.md) on 2024-02-16 11:53_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-02-16 15:17_
 
 ---
@@ -114,14 +106,6 @@ _Comment by @konstin on 2024-02-20 12:10_
 `python_full_version` needs to be a PEP 440 compliant version, otherwise environment markers break ([PEP 508 environment marker comparisons](https://peps.python.org/pep-0508/#environment-markers)). Depending on your interpretation of PEP 508, we would fall back to stringly comparisons for `python_full_version` where '3.9.0' is lower than '3.11.4+'.
 
 There's an upstream cpython bug: https://github.com/python/cpython/issues/99968
-
----
-
-_Referenced in [python/cpython#99968](../../python/cpython/issues/99968.md) on 2024-02-20 16:48_
-
----
-
-_Referenced in [astral-sh/uv#1771](../../astral-sh/uv/pulls/1771.md) on 2024-02-20 17:35_
 
 ---
 

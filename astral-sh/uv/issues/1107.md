@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-25T21:50:46Z
 updated_at: 2024-01-26T12:14:19Z
 url: https://github.com/astral-sh/uv/issues/1107
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `--no-header`
@@ -36,10 +36,6 @@ _Label `compatibility` added by @charliermarsh on 2024-01-25 21:53_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-26 01:54_
-
----
-
-_Referenced in [astral-sh/uv#1117](../../astral-sh/uv/pulls/1117.md) on 2024-01-26 02:35_
 
 ---
 

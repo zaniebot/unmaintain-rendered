@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-27T01:22:55Z
 updated_at: 2024-02-20T22:14:34Z
 url: https://github.com/astral-sh/uv/issues/1143
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support parsing `--find-links`, `--index-url`, and `--extra-index-url` from `requirements.txt`
@@ -28,10 +28,6 @@ _Label `enhancement` added by @charliermarsh on 2024-01-27 01:22_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-27 02:41_
-
----
-
-_Referenced in [astral-sh/uv#1146](../../astral-sh/uv/pulls/1146.md) on 2024-01-27 03:33_
 
 ---
 
@@ -146,10 +142,6 @@ urllib3==2.2.0
 _Comment by @charliermarsh on 2024-02-15 22:56_
 
 Thanks, will take a look!
-
----
-
-_Referenced in [astral-sh/uv#1502](../../astral-sh/uv/issues/1502.md) on 2024-02-16 15:34_
 
 ---
 

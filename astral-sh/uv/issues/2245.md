@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-06T16:24:44Z
 updated_at: 2024-03-07T15:33:13Z
 url: https://github.com/astral-sh/uv/issues/2245
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Sometimes bytecode compilations fails
@@ -125,10 +125,6 @@ _Label `great writeup` added by @konstin on 2024-03-07 14:14_
 
 ---
 
-_Referenced in [astral-sh/uv#2278](../../astral-sh/uv/pulls/2278.md) on 2024-03-07 14:15_
-
----
-
 _Closed by @konstin on 2024-03-07 15:07_
 
 ---
@@ -136,9 +132,5 @@ _Closed by @konstin on 2024-03-07 15:07_
 _Comment by @gozdal on 2024-03-07 15:33_
 
 Thank you for a quick patch!
-
----
-
-_Referenced in [astral-sh/uv#2300](../../astral-sh/uv/issues/2300.md) on 2024-03-08 10:24_
 
 ---

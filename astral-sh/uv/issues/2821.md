@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-04T18:02:02Z
 updated_at: 2024-04-05T22:00:49Z
 url: https://github.com/astral-sh/uv/issues/2821
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Consider dropping candidates that have parse errors for resolution instead of failing the installation
@@ -118,25 +118,13 @@ _Label `bug` added by @zanieb on 2024-04-04 18:26_
 
 ---
 
-_Referenced in [astral-sh/uv#1560](../../astral-sh/uv/issues/1560.md) on 2024-04-04 19:40_
-
----
-
 _Comment by @charliermarsh on 2024-04-05 04:24_
 
 I can do this tomorrow as a fun thing, it seems interesting.
 
 ---
 
-_Referenced in [apache/airflow#38753](../../apache/airflow/pulls/38753.md) on 2024-04-05 08:24_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-05 13:22_
-
----
-
-_Referenced in [astral-sh/uv#2834](../../astral-sh/uv/pulls/2834.md) on 2024-04-05 14:23_
 
 ---
 

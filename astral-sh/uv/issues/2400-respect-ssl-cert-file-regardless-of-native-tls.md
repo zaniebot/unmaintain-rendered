@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-13T01:55:06Z
 updated_at: 2024-03-13T04:33:11Z
 url: https://github.com/astral-sh/uv/issues/2400
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Respect `SSL_CERT_FILE` regardless of `--native-tls` flag
@@ -24,10 +24,6 @@ _No description provided._
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-03-13 01:55_
-
----
-
-_Referenced in [astral-sh/uv#2401](../../astral-sh/uv/pulls/2401.md) on 2024-03-13 02:55_
 
 ---
 

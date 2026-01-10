@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-23T14:21:57Z
 updated_at: 2024-01-24T00:16:26Z
 url: https://github.com/astral-sh/uv/issues/1060
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Avoid relying on `mtime` for Python interpreter caching
@@ -41,9 +41,5 @@ Closed by #1067.
 ---
 
 _Closed by @charliermarsh on 2024-01-24 00:16_
-
----
-
-_Referenced in [astral-sh/uv#9263](../../astral-sh/uv/issues/9263.md) on 2024-11-20 03:52_
 
 ---

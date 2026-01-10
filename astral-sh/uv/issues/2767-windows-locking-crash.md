@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-02T00:35:23Z
 updated_at: 2024-04-03T14:02:42Z
 url: https://github.com/astral-sh/uv/issues/2767
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Windows locking crash
@@ -107,10 +107,6 @@ Oh it's the try part that fails! I'll see about a PR that handles that better to
 _Comment by @charlesnicholson on 2024-04-02 13:26_
 
 Nice! Feel free to ping me here if you'd like me to try any PR branches. I'm holding steady by just having the dedicated uv build lane only for the Windows build; uv has been a huge speedup over pip even when running 100% serially.
-
----
-
-_Referenced in [astral-sh/uv#2800](../../astral-sh/uv/pulls/2800.md) on 2024-04-03 08:56_
 
 ---
 

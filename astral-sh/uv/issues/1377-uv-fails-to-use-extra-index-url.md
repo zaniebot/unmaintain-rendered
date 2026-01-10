@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T23:03:26Z
 updated_at: 2024-02-29T16:57:08Z
 url: https://github.com/astral-sh/uv/issues/1377
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv fails to use extra index url
@@ -177,14 +177,6 @@ In short:
 
 ---
 
-_Referenced in [Chia-Network/chia-blockchain#17572](../../Chia-Network/chia-blockchain/pulls/17572.md) on 2024-02-16 14:57_
-
----
-
-_Referenced in [astral-sh/uv#1600](../../astral-sh/uv/issues/1600.md) on 2024-02-17 16:53_
-
----
-
 _Comment by @groodt on 2024-02-19 02:42_
 
 Please consider dependency confusion attacks: https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610
@@ -233,10 +225,6 @@ I've quickly read PEP 708, and I definitely support it instead of ordered indexe
 
 ---
 
-_Referenced in [astral-sh/uv#171](../../astral-sh/uv/issues/171.md) on 2024-02-19 09:30_
-
----
-
 _Comment by @pawamoy on 2024-02-19 11:43_
 
 `pypiserver` by default falls back to PyPI.org when it can't find the specified project within its own distributions. If it finds the package within its own dists, it does not look into PyPI.org. So if I allow it to fall back, and I point uv at it, I get what I wanted: my private, local packages take precedence over packages on PyPI.org, even if more recent versions are on PyPI.org :tada: Perfs are good :slightly_smiling_face: 
@@ -257,10 +245,6 @@ pip install \
   --extra-index-url=https://dl.cloudsmith.io/$(CLOUDSMITH_DEVELOPMENT_SECRET)/acme/development/python/index/ \
   -r requirements.txt
 ```
-
----
-
-_Referenced in [astral-sh/uv#1502](../../astral-sh/uv/issues/1502.md) on 2024-02-22 10:48_
 
 ---
 
@@ -338,34 +322,6 @@ I've got a similar situation here as well. Torch==2.2.0+cpu requires a special i
 
 ---
 
-_Referenced in [pypa/hatch#1282](../../pypa/hatch/issues/1282.md) on 2024-02-24 18:15_
-
----
-
-_Referenced in [astral-sh/uv#2011](../../astral-sh/uv/issues/2011.md) on 2024-02-27 15:35_
-
----
-
-_Referenced in [astral-sh/uv#2083](../../astral-sh/uv/pulls/2083.md) on 2024-02-29 15:16_
-
----
-
 _Closed by @BurntSushi on 2024-02-29 16:57_
-
----
-
-_Referenced in [astral-sh/uv#2159](../../astral-sh/uv/issues/2159.md) on 2024-03-04 17:03_
-
----
-
-_Referenced in [astral-sh/uv#2205](../../astral-sh/uv/issues/2205.md) on 2024-03-05 16:42_
-
----
-
-_Referenced in [astral-sh/uv#2542](../../astral-sh/uv/issues/2542.md) on 2024-03-19 17:20_
-
----
-
-_Referenced in [astral-sh/uv#2718](../../astral-sh/uv/issues/2718.md) on 2024-03-28 19:19_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T08:14:58Z
 updated_at: 2024-03-06T08:25:34Z
 url: https://github.com/astral-sh/uv/issues/1450
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # PIP_EXTRA_INDEX_URL ignored
@@ -60,10 +60,6 @@ I don't love reading environment variables that are specifically intended for ot
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-02-16 17:04_
-
----
-
-_Referenced in [astral-sh/uv#1515](../../astral-sh/uv/pulls/1515.md) on 2024-02-16 17:04_
 
 ---
 

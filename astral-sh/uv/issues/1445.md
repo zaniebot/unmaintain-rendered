@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T07:08:27Z
 updated_at: 2024-02-19T19:30:18Z
 url: https://github.com/astral-sh/uv/issues/1445
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Request: Support uv venv --prompt 
@@ -103,10 +103,6 @@ _Unassigned @konstin by @dhruvmanila on 2024-02-17 03:36_
 
 ---
 
-_Referenced in [astral-sh/uv#1570](../../astral-sh/uv/pulls/1570.md) on 2024-02-17 04:24_
-
----
-
 _Unassigned @dhruvmanila by @dhruvmanila on 2024-02-17 04:34_
 
 ---
@@ -141,9 +137,5 @@ If I read #1570 correctly, the upcoming behaviour is that `uv venv` even automat
 _Comment by @dhruvmanila on 2024-02-19 19:30_
 
 @reinout Yes, that's correct. All thanks to @methane for the idea and the PR :) 
-
----
-
-_Referenced in [astral-sh/uv#7001](../../astral-sh/uv/issues/7001.md) on 2024-09-04 10:01_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-13T12:20:20Z
 updated_at: 2023-12-13T08:13:45Z
 url: https://github.com/astral-sh/uv/issues/410
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # When installing, check that the installation fits with the `.dist-info/METADATA`
@@ -42,14 +42,6 @@ This will also be required for #129, since if a package is installed, we should 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-13 03:11_
-
----
-
-_Referenced in [astral-sh/uv#629](../../astral-sh/uv/pulls/629.md) on 2023-12-13 03:35_
-
----
-
-_Referenced in [astral-sh/uv#630](../../astral-sh/uv/pulls/630.md) on 2023-12-13 03:41_
 
 ---
 

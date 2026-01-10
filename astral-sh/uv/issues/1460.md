@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-16T09:26:34Z
 updated_at: 2024-02-23T00:53:46Z
 url: https://github.com/astral-sh/uv/issues/1460
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install -C`/`--config-settings`
@@ -59,10 +59,6 @@ Note this is called `-C / --config-setting` (no s) in build. And while it's pret
 
 ---
 
-_Referenced in [astral-sh/uv#1510](../../astral-sh/uv/issues/1510.md) on 2024-02-16 16:26_
-
----
-
 _Comment by @smackesey on 2024-02-16 21:28_
 
 We need this feature to cleanly port the [Dagster](https://github.com/dagster-io/dagster) dev/CI setup over to `uv` since we rely on `pip install -e <pkg> --config-settings editable-mode=compat`.
@@ -91,32 +87,12 @@ I can take this one, hopefully today.
 
 ---
 
-_Referenced in [astral-sh/uv#1833](../../astral-sh/uv/pulls/1833.md) on 2024-02-21 21:32_
-
----
-
 _Comment by @charliermarsh on 2024-02-21 23:02_
 
 PR is up.
 
 ---
 
-_Referenced in [dagster-io/dagster#19983](../../dagster-io/dagster/pulls/19983.md) on 2024-02-22 18:39_
-
----
-
 _Closed by @charliermarsh on 2024-02-23 00:53_
-
----
-
-_Referenced in [astral-sh/uv#3636](../../astral-sh/uv/issues/3636.md) on 2024-05-17 11:41_
-
----
-
-_Referenced in [astral-sh/uv#12040](../../astral-sh/uv/issues/12040.md) on 2025-03-07 11:13_
-
----
-
-_Referenced in [astral-sh/uv#15250](../../astral-sh/uv/pulls/15250.md) on 2025-08-13 09:24_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-29T09:00:48Z
 updated_at: 2024-02-29T23:19:07Z
 url: https://github.com/astral-sh/uv/issues/2076
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Support paths with spaces in launchers
@@ -82,10 +82,6 @@ FYI: https://github.com/pradyunsg/installer/blob/d01624e5f20963f046e67d58f5319e2
 _Comment by @charliermarsh on 2024-02-29 21:25_
 
 Nice, thank you.
-
----
-
-_Referenced in [astral-sh/uv#2097](../../astral-sh/uv/pulls/2097.md) on 2024-02-29 21:45_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-05T00:02:25Z
 updated_at: 2023-12-06T01:33:53Z
 url: https://github.com/astral-sh/uv/issues/557
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Path-based source distributions aren't cached
@@ -46,10 +46,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-12-05 17:51_
 _Comment by @charliermarsh on 2023-12-05 17:51_
 
 I'll do this tonight.
-
----
-
-_Referenced in [astral-sh/uv#576](../../astral-sh/uv/pulls/576.md) on 2023-12-06 01:29_
 
 ---
 

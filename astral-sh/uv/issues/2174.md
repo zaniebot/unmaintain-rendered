@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-04T21:18:30Z
 updated_at: 2024-03-05T22:28:19Z
 url: https://github.com/astral-sh/uv/issues/2174
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Print shell-specific activation command in `venv`
@@ -115,10 +115,6 @@ Thanks folks
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-05 21:13_
-
----
-
-_Referenced in [astral-sh/uv#2221](../../astral-sh/uv/pulls/2221.md) on 2024-03-05 21:42_
 
 ---
 

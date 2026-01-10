@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-27T12:30:56Z
 updated_at: 2024-02-27T15:47:22Z
 url: https://github.com/astral-sh/uv/issues/2011
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # extra-index-url is not taken into account if package exists in the index-url
@@ -57,13 +57,5 @@ _Closed by @charliermarsh on 2024-02-27 15:35_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-02-27 15:47_
-
----
-
-_Referenced in [astral-sh/uv#2159](../../astral-sh/uv/issues/2159.md) on 2024-03-04 17:03_
-
----
-
-_Referenced in [astral-sh/uv#2205](../../astral-sh/uv/issues/2205.md) on 2024-03-05 16:42_
 
 ---

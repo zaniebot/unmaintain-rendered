@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-14T21:44:28Z
 updated_at: 2024-03-20T01:02:13Z
 url: https://github.com/astral-sh/uv/issues/2467
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # error: Cannot uninstall package; RECORD file not found 
@@ -66,14 +66,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-15 03:18_
 
 ---
 
-_Referenced in [astral-sh/uv#2557](../../astral-sh/uv/pulls/2557.md) on 2024-03-20 00:36_
-
----
-
 _Closed by @charliermarsh on 2024-03-20 01:02_
-
----
-
-_Referenced in [astral-sh/uv#8690](../../astral-sh/uv/issues/8690.md) on 2024-10-29 23:41_
 
 ---

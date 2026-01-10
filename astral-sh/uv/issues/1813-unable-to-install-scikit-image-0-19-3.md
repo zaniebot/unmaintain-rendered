@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-21T14:45:09Z
 updated_at: 2024-03-09T11:49:58Z
 url: https://github.com/astral-sh/uv/issues/1813
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Unable to install `scikit-image==0.19.3`
@@ -37,10 +37,6 @@ Platform: macOS
 Version: 0.1.6
 
 
-
----
-
-_Referenced in [gradio-app/gradio#7457](../../gradio-app/gradio/pulls/7457.md) on 2024-02-21 14:47_
 
 ---
 
@@ -152,10 +148,6 @@ CPU dispatch  :
   Generated   : none
 INFO: CCompilerOpt.cache_flush[864] : write cache to path -> /private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/.tmp5ZPIbv/built-wheels-v0/pypi/scikit-image/0.19.3/hLW_f7wWeGDOPRlSazQXw/scikit-image-0.19.3.tar.gz/build/temp.macosx-12.6-arm64-3.11/ccompiler_opt_cache_ext.py
 ```
-
----
-
-_Referenced in [astral-sh/uv#2314](../../astral-sh/uv/pulls/2314.md) on 2024-03-09 03:17_
 
 ---
 

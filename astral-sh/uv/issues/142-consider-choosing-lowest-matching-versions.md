@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-19T21:16:54Z
 updated_at: 2023-10-22T02:58:07Z
 url: https://github.com/astral-sh/uv/issues/142
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Consider choosing lowest-matching versions
@@ -72,10 +72,6 @@ Gonna add this as a setting, I think it's neat.
 _Comment by @konstin on 2023-10-20 17:03_
 
 I absolutely want to have -Z minimal-versions in CI!
-
----
-
-_Referenced in [astral-sh/uv#160](../../astral-sh/uv/pulls/160.md) on 2023-10-22 01:11_
 
 ---
 

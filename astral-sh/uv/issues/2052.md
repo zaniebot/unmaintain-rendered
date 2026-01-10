@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-28T20:31:31Z
 updated_at: 2024-04-12T19:50:14Z
 url: https://github.com/astral-sh/uv/issues/2052
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Improve error message layout for wheel-build failures
@@ -43,10 +43,6 @@ _Label `error messages` added by @charliermarsh on 2024-02-28 20:31_
 _Comment by @konstin on 2024-02-29 09:15_
 
 I prefer the non-indented version, i believe we're using the screen space much better (https://github.com/astral-sh/uv/pull/354). We should add the exit code though.
-
----
-
-_Referenced in [astral-sh/uv#2108](../../astral-sh/uv/pulls/2108.md) on 2024-03-01 11:21_
 
 ---
 

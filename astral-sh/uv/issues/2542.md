@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-19T15:57:55Z
 updated_at: 2024-03-19T17:21:38Z
 url: https://github.com/astral-sh/uv/issues/2542
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # wheel on pypi.org not found when using `--extra-index-url` that includes non-compatible wheels
@@ -99,10 +99,6 @@ Successfully installed chiavdf-1.1.4
 
 ---
 
-_Referenced in [Chia-Network/chia-blockchain#17572](../../Chia-Network/chia-blockchain/pulls/17572.md) on 2024-03-19 15:58_
-
----
-
 _Comment by @charliermarsh on 2024-03-19 17:20_
 
 Thanks for the clear write-up. This is described here: https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#packages-that-exist-on-multiple-indexes.
@@ -125,13 +121,5 @@ This is currently unsupported, but you can follow along https://github.com/astra
 ---
 
 _Closed by @charliermarsh on 2024-03-19 17:21_
-
----
-
-_Referenced in [astral-sh/uv#2683](../../astral-sh/uv/issues/2683.md) on 2024-03-27 03:01_
-
----
-
-_Referenced in [astral-sh/uv#2718](../../astral-sh/uv/issues/2718.md) on 2024-03-28 19:19_
 
 ---

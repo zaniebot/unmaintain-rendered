@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-13T14:34:23Z
 updated_at: 2024-03-17T21:38:39Z
 url: https://github.com/astral-sh/uv/issues/2414
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Unable to upload `uv>=0.1.17` to Azure Artifacts due to `Metadata-Version: 2.3`
@@ -36,10 +36,6 @@ _Comment by @zanieb on 2024-03-13 14:38_
 Thanks for the report!
 
 This is unfortunate, I'm not sure what our best option is here. Can you build the wheels yourself?
-
----
-
-_Referenced in [PyO3/maturin#1993](../../PyO3/maturin/issues/1993.md) on 2024-03-14 16:34_
 
 ---
 

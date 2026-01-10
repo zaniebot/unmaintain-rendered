@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-04T03:24:37Z
 updated_at: 2023-12-05T02:38:51Z
 url: https://github.com/astral-sh/uv/issues/533
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support minor versions in `--python-version`
@@ -24,10 +24,6 @@ This is _necessary_ for `ruff-lsp`, where we want to resolve for Python 3.7, but
 ---
 
 _Label `enhancement` added by @charliermarsh on 2023-12-04 03:24_
-
----
-
-_Referenced in [astral-sh/uv#534](../../astral-sh/uv/pulls/534.md) on 2023-12-04 03:30_
 
 ---
 

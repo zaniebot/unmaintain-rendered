@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-10T17:59:13Z
 updated_at: 2024-01-05T16:57:34Z
 url: https://github.com/astral-sh/uv/issues/396
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # lots of time is spent in allocation in `puffin-dev resolve-many` for the top PyPI packages
@@ -40,10 +40,6 @@ Anyway, this is just what I have off the top of my head. I'm actually not even c
 ---
 
 _Label `performance` added by @BurntSushi on 2023-11-10 17:59_
-
----
-
-_Referenced in [astral-sh/uv#373](../../astral-sh/uv/issues/373.md) on 2023-11-10 17:59_
 
 ---
 
@@ -77,10 +73,6 @@ Perfwise we shouldn't see the difference, but `smallvec` would be more ergonomic
 
 ---
 
-_Referenced in [astral-sh/uv#399](../../astral-sh/uv/pulls/399.md) on 2023-11-10 19:34_
-
----
-
 _Comment by @BurntSushi on 2023-11-10 19:50_
 
 #399 gets a ~10% perf win by switching the global allocator. I did attempt a smallvec optimization experiment (as mentioned above) but couldn't observe any measurable win. I'm not 100% convinced that smallvec has no role to play and I'm sure there is more that can still be done here.
@@ -90,10 +82,6 @@ _Comment by @BurntSushi on 2023-11-10 19:50_
 _Comment by @charliermarsh on 2024-01-05 04:36_
 
 @BurntSushi - Should we close this when merging #789 or is there more that's worth tracking here?
-
----
-
-_Referenced in [astral-sh/uv#789](../../astral-sh/uv/pulls/789.md) on 2024-01-05 12:38_
 
 ---
 

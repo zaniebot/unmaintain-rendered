@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-03T14:50:25Z
 updated_at: 2023-11-03T19:28:39Z
 url: https://github.com/astral-sh/uv/issues/307
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add support for subdirectory paths in VCS dependencies
@@ -32,10 +32,6 @@ _Added to milestone `Feature complete` by @charliermarsh on 2023-11-03 14:50_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-03 14:50_
-
----
-
-_Referenced in [astral-sh/uv#312](../../astral-sh/uv/pulls/312.md) on 2023-11-03 18:25_
 
 ---
 

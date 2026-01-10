@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-06T17:36:57Z
 updated_at: 2024-03-08T21:37:10Z
 url: https://github.com/astral-sh/uv/issues/2246
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # install.ps1 doesn't work on ARM64 devices
@@ -46,10 +46,6 @@ The problem seems to be that the `Download` function in the PowerShell script co
 _Comment by @charliermarsh on 2024-03-06 17:39_
 
 Thank you! Do you mind filing an issue or PR on https://github.com/axodotdev/cargo-dist?
-
----
-
-_Referenced in [axodotdev/cargo-dist#834](../../axodotdev/cargo-dist/issues/834.md) on 2024-03-06 18:21_
 
 ---
 

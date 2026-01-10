@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-08T20:51:58Z
 updated_at: 2023-10-10T03:29:10Z
 url: https://github.com/astral-sh/uv/issues/66
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Refine `puffin sync` output format
@@ -33,10 +33,6 @@ Personally i'm a fan of minimal output by default, e.g. only a progress bar (whi
 
 ---
 
-_Referenced in [astral-sh/uv#72](../../astral-sh/uv/issues/72.md) on 2023-10-09 16:14_
-
----
-
 _Comment by @charliermarsh on 2023-10-09 16:15_
 
 I think I'm gonna try a progress bar for the various stages, and then outputting a summary at the end.
@@ -44,10 +40,6 @@ I think I'm gonna try a progress bar for the various stages, and then outputting
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-10 00:06_
-
----
-
-_Referenced in [astral-sh/uv#81](../../astral-sh/uv/pulls/81.md) on 2023-10-10 02:20_
 
 ---
 

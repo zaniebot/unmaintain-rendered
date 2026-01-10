@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-27T05:29:48Z
 updated_at: 2024-02-28T15:00:01Z
 url: https://github.com/astral-sh/uv/issues/2005
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # UV pip list does not give system package list.
@@ -73,10 +73,6 @@ Maybe a good "second" issue :)
 _Comment by @charliermarsh on 2024-02-28 04:04_
 
 Oops too late
-
----
-
-_Referenced in [astral-sh/uv#2033](../../astral-sh/uv/pulls/2033.md) on 2024-02-28 04:06_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T07:17:54Z
 updated_at: 2024-02-21T13:26:28Z
 url: https://github.com/astral-sh/uv/issues/1446
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Can't install fasttext with uv
@@ -88,10 +88,6 @@ This may need to be fixed in `fasttext` itself, or we'd have to special-case `fa
 
 ---
 
-_Referenced in [astral-sh/uv#1805](../../astral-sh/uv/pulls/1805.md) on 2024-02-21 13:15_
-
----
-
 _Comment by @konstin on 2024-02-21 13:24_
 
 This has been fixed on fasttext's side by adding a pyproject.toml, `uv pip install "fasttext @ git+https://github.com/facebookresearch/fastText"` installs succesfully.
@@ -99,13 +95,5 @@ This has been fixed on fasttext's side by adding a pyproject.toml, `uv pip insta
 ---
 
 _Closed by @charliermarsh on 2024-02-21 13:26_
-
----
-
-_Referenced in [astral-sh/uv#1469](../../astral-sh/uv/issues/1469.md) on 2024-05-24 06:53_
-
----
-
-_Referenced in [astral-sh/uv#12437](../../astral-sh/uv/issues/12437.md) on 2025-03-24 16:04_
 
 ---

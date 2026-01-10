@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-27T08:35:43Z
 updated_at: 2024-02-28T17:48:06Z
 url: https://github.com/astral-sh/uv/issues/2006
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `PackageName` include non-normalized name
@@ -49,10 +49,6 @@ I think the problem you are describing is a different one. If you don't feel lik
 
 ---
 
-_Referenced in [prefix-dev/pixi#863](../../prefix-dev/pixi/pulls/863.md) on 2024-02-27 13:50_
-
----
-
 _Label `enhancement` added by @charliermarsh on 2024-02-27 16:11_
 
 ---
@@ -76,9 +72,5 @@ Similar to `VerbatimUrl` basically. We want to store the normalized package name
 ---
 
 _Label `rustlib` added by @zanieb on 2024-02-28 17:48_
-
----
-
-_Referenced in [astral-sh/uv#10061](../../astral-sh/uv/issues/10061.md) on 2024-12-20 17:06_
 
 ---

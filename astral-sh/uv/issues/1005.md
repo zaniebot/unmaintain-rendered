@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T09:43:03Z
 updated_at: 2024-01-22T16:22:05Z
 url: https://github.com/astral-sh/uv/issues/1005
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Ecosystem check panics at "This operation is never cancelled" at pywin32
@@ -48,14 +48,6 @@ Good catch.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-19 14:01_
-
----
-
-_Referenced in [astral-sh/uv#1032](../../astral-sh/uv/pulls/1032.md) on 2024-01-22 01:13_
-
----
-
-_Referenced in [astral-sh/uv#1036](../../astral-sh/uv/pulls/1036.md) on 2024-01-22 16:19_
 
 ---
 

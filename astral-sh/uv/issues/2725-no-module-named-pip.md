@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-29T08:52:45Z
 updated_at: 2024-03-29T14:23:40Z
 url: https://github.com/astral-sh/uv/issues/2725
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # No module named 'pip'
@@ -135,9 +135,5 @@ _Closed by @shenwpo on 2024-03-29 14:20_
 _Comment by @zanieb on 2024-03-29 14:23_
 
 Thank you! I'd recommend reporting this upstream.
-
----
-
-_Referenced in [qmk/qmk_firmware#25374](../../qmk/qmk_firmware/issues/25374.md) on 2025-06-15 14:08_
 
 ---

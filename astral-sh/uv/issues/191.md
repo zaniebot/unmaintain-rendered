@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-26T08:37:51Z
 updated_at: 2023-10-29T18:31:56Z
 url: https://github.com/astral-sh/uv/issues/191
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Don't select a prerelease if a stable version is available
@@ -120,10 +120,6 @@ Okay, I'm going to do this:
 - If all available versions for a package are pre-releases, then accept pre-releases.
 - If a pre-release was already chosen in the lockfile, allow that pre-release.
 - If a package was specified as a _direct dependency_ with a pre-release marker in its version specifier, allow pre-releases for that package. (I don't think we can really support this for transitive dependencies.)
-
----
-
-_Referenced in [astral-sh/uv#216](../../astral-sh/uv/pulls/216.md) on 2023-10-29 18:26_
 
 ---
 

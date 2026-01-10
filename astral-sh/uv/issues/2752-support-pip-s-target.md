@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-01T03:53:37Z
 updated_at: 2024-04-02T08:31:10Z
 url: https://github.com/astral-sh/uv/issues/2752
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Support pip's --target
@@ -55,9 +55,5 @@ Regarding `--no-compile` we can definitely do that we have other arguments like 
 _Comment by @henryiii on 2024-04-02 08:31_
 
 I thought I searched - okay, thanks, did that. Also opened #2771 for `--no-compile`.
-
----
-
-_Referenced in [astral-sh/uv#3164](../../astral-sh/uv/issues/3164.md) on 2024-04-22 01:53_
 
 ---

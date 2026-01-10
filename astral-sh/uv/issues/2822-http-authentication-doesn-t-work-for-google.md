@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-04T18:20:51Z
 updated_at: 2024-04-16T16:49:08Z
 url: https://github.com/astral-sh/uv/issues/2822
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # HTTP Authentication doesn't work for google artifact registry python index
@@ -212,10 +212,6 @@ but pip is doing unquote for password so `%3D%3D` will be converted to `==` http
 
 ---
 
-_Referenced in [astral-sh/uv#2947](../../astral-sh/uv/pulls/2947.md) on 2024-04-09 22:44_
-
----
-
 _Comment by @zanieb on 2024-04-09 22:47_
 
 @avelychko12 thanks for the investigation! I put up https://github.com/astral-sh/uv/pull/2947 if anyone wants to give it a try while I try to write a decent test case for this.
@@ -267,10 +263,6 @@ But still with `base64` encoded json keys I wasn't able to run this correctly.
 
 ---
 
-_Referenced in [astral-sh/uv#2976](../../astral-sh/uv/pulls/2976.md) on 2024-04-10 19:56_
-
----
-
 _Comment by @zanieb on 2024-04-16 16:49_
 
 Should be resolved by https://github.com/astral-sh/uv/pull/2976 and available in the next release.
@@ -278,9 +270,5 @@ Should be resolved by https://github.com/astral-sh/uv/pull/2976 and available in
 ---
 
 _Closed by @zanieb on 2024-04-16 16:49_
-
----
-
-_Referenced in [Homebrew/homebrew-core#169338](../../Homebrew/homebrew-core/pulls/169338.md) on 2024-04-17 18:52_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T02:01:06Z
 updated_at: 2024-01-19T20:13:09Z
 url: https://github.com/astral-sh/uv/issues/992
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Re-enable cross-compilation builds in release pipeline
@@ -35,10 +35,6 @@ _Comment by @charliermarsh on 2024-01-19 02:01_
 
 ---
 
-_Referenced in [astral-sh/uv#1006](../../astral-sh/uv/pulls/1006.md) on 2024-01-19 10:33_
-
----
-
 _Comment by @konstin on 2024-01-19 10:34_
 
 Should be fixed by https://github.com/astral-sh/puffin/pull/1006.
@@ -48,10 +44,6 @@ For me locally,
 cargo zigbuild --target aarch64-unknown-linux-gnu -p puffin
 ```
 works nicely.
-
----
-
-_Referenced in [astral-sh/uv#1012](../../astral-sh/uv/pulls/1012.md) on 2024-01-19 20:13_
 
 ---
 

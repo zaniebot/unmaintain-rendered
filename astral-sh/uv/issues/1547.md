@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T22:39:28Z
 updated_at: 2024-02-17T00:25:18Z
 url: https://github.com/astral-sh/uv/issues/1547
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip install fails when using Nexus due to md5 hash
@@ -45,14 +45,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-16 23:13_
 
 ---
 
-_Referenced in [astral-sh/uv#1556](../../astral-sh/uv/pulls/1556.md) on 2024-02-17 00:13_
-
----
-
 _Closed by @charliermarsh on 2024-02-17 00:25_
-
----
-
-_Referenced in [astral-sh/uv#4887](../../astral-sh/uv/issues/4887.md) on 2024-11-07 02:41_
 
 ---

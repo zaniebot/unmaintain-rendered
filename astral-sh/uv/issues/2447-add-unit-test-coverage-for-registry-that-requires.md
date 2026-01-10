@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-14T03:36:32Z
 updated_at: 2024-03-15T14:50:05Z
 url: https://github.com/astral-sh/uv/issues/2447
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Add unit test coverage for registry that requires basic HTTP authentication
@@ -43,18 +43,6 @@ _Assigned to @zanieb by @zanieb on 2024-03-14 15:30_
 _Comment by @zanieb on 2024-03-14 18:09_
 
 A NGINX proxy with HTTP basic authentication in progress at https://github.com/astral-sh/pypi-proxy/pull/1
-
----
-
-_Referenced in [astral-sh/uv#2463](../../astral-sh/uv/pulls/2463.md) on 2024-03-14 18:18_
-
----
-
-_Referenced in [astral-sh/uv#2464](../../astral-sh/uv/issues/2464.md) on 2024-03-14 18:44_
-
----
-
-_Referenced in [astral-sh/uv#2465](../../astral-sh/uv/issues/2465.md) on 2024-03-14 18:45_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T06:15:17Z
 updated_at: 2024-02-16T06:42:23Z
 url: https://github.com/astral-sh/uv/issues/1441
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Make hashes optional in HTML entries
@@ -35,14 +35,6 @@ _Originally posted by @davidszotten in https://github.com/astral-sh/uv/issues/13
 ---
 
 _Label `bug` added by @charliermarsh on 2024-02-16 06:15_
-
----
-
-_Referenced in [astral-sh/uv#1338](../../astral-sh/uv/issues/1338.md) on 2024-02-16 06:15_
-
----
-
-_Referenced in [astral-sh/uv#1443](../../astral-sh/uv/pulls/1443.md) on 2024-02-16 06:38_
 
 ---
 

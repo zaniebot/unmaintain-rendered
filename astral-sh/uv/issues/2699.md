@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-27T22:08:33Z
 updated_at: 2024-03-28T22:53:58Z
 url: https://github.com/astral-sh/uv/issues/2699
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Allow direct URLs to be used recursively for local projects
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-27 22:08_
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-03-27 22:08_
-
----
-
-_Referenced in [astral-sh/uv#2702](../../astral-sh/uv/pulls/2702.md) on 2024-03-28 01:51_
 
 ---
 

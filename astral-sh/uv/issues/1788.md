@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-21T00:03:13Z
 updated_at: 2024-03-05T03:35:25Z
 url: https://github.com/astral-sh/uv/issues/1788
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install` doesn't compile pyc
@@ -78,15 +78,7 @@ Will +1 @hauntsaninja's comments about added container startup latency. At [moda
 
 ---
 
-_Referenced in [astral-sh/uv#1928](../../astral-sh/uv/issues/1928.md) on 2024-02-28 12:14_
-
----
-
 _Assigned to @konstin by @konstin on 2024-02-29 15:54_
-
----
-
-_Referenced in [astral-sh/uv#2086](../../astral-sh/uv/pulls/2086.md) on 2024-02-29 16:33_
 
 ---
 
@@ -97,13 +89,5 @@ _Comment by @charliermarsh on 2024-02-29 17:25_
 ---
 
 _Closed by @charliermarsh on 2024-03-05 03:35_
-
----
-
-_Referenced in [astral-sh/uv#2528](../../astral-sh/uv/issues/2528.md) on 2024-03-18 23:18_
-
----
-
-_Referenced in [astral-sh/uv#2637](../../astral-sh/uv/issues/2637.md) on 2024-03-24 03:54_
 
 ---

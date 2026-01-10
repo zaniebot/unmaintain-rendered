@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-10T13:29:26Z
 updated_at: 2023-12-13T17:36:29Z
 url: https://github.com/astral-sh/uv/issues/386
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Error when extra of requirement is missing
@@ -48,10 +48,6 @@ echo "torch[transformers]" | pip-compile --output-file - -
 
 ---
 
-_Referenced in [astral-sh/uv#309](../../astral-sh/uv/issues/309.md) on 2023-11-10 13:30_
-
----
-
 _Comment by @charliermarsh on 2023-11-10 14:34_
 
 We should add a test for this.
@@ -73,10 +69,6 @@ _Comment by @charliermarsh on 2023-12-04 04:37_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-12 22:20_
-
----
-
-_Referenced in [astral-sh/uv#627](../../astral-sh/uv/pulls/627.md) on 2023-12-13 16:37_
 
 ---
 

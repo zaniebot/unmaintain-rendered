@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-08T19:12:24Z
 updated_at: 2024-04-11T01:07:53Z
 url: https://github.com/astral-sh/uv/issues/2908
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Cache is not robust to moves
@@ -49,10 +49,6 @@ I may try to fix this before releasing hash-checking, so it can go out in the sa
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-11 00:44_
-
----
-
-_Referenced in [astral-sh/uv#2985](../../astral-sh/uv/pulls/2985.md) on 2024-04-11 00:45_
 
 ---
 

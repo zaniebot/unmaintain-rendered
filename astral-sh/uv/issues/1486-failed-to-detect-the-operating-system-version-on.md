@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T12:43:42Z
 updated_at: 2024-02-16T14:44:48Z
 url: https://github.com/astral-sh/uv/issues/1486
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failed to detect the operating system version on Rocky Linux 9.3
@@ -80,10 +80,6 @@ $ file ~/astral/issues/uv/i1486/sh
 ```
 
 I'll put up a PR that reverts #1433 and just checks the `/bin/sh` executable instead of attempting `/bin/ls`.
-
----
-
-_Referenced in [astral-sh/uv#1493](../../astral-sh/uv/pulls/1493.md) on 2024-02-16 14:32_
 
 ---
 

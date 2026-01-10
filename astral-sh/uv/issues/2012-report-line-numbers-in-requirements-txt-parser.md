@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-27T12:33:06Z
 updated_at: 2024-03-01T21:50:13Z
 url: https://github.com/astral-sh/uv/issues/2012
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Report line numbers in requirements.txt parser
@@ -39,19 +39,7 @@ _Label `enhancement` added by @konstin on 2024-02-27 12:33_
 
 ---
 
-_Referenced in [astral-sh/uv#2007](../../astral-sh/uv/issues/2007.md) on 2024-02-27 12:33_
-
----
-
-_Referenced in [astral-sh/uv#1347](../../astral-sh/uv/issues/1347.md) on 2024-02-27 12:35_
-
----
-
 _Label `error messages` added by @MichaReiser on 2024-02-27 12:35_
-
----
-
-_Referenced in [astral-sh/uv#2100](../../astral-sh/uv/pulls/2100.md) on 2024-03-01 03:32_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T21:03:41Z
 updated_at: 2024-02-16T16:42:05Z
 url: https://github.com/astral-sh/uv/issues/1342
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip install "apache-airflow[all]"` fails to install the required extras
@@ -59,19 +59,7 @@ _Label `bug` added by @zanieb on 2024-02-15 21:24_
 
 ---
 
-_Referenced in [astral-sh/uv#1352](../../astral-sh/uv/pulls/1352.md) on 2024-02-15 21:46_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-15 21:55_
-
----
-
-_Referenced in [astral-sh/uv#1398](../../astral-sh/uv/issues/1398.md) on 2024-02-16 00:07_
-
----
-
-_Referenced in [astral-sh/uv#1435](../../astral-sh/uv/pulls/1435.md) on 2024-02-16 05:38_
 
 ---
 

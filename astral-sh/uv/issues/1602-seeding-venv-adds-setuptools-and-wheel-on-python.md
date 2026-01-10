@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-17T17:13:47Z
 updated_at: 2024-02-18T21:20:22Z
 url: https://github.com/astral-sh/uv/issues/1602
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Seeding venv adds setuptools and wheel on Python 3.12
@@ -47,10 +47,6 @@ _Label `performance` added by @AlexWaygood on 2024-02-17 17:18_
 _Comment by @charliermarsh on 2024-02-17 17:53_
 
 Oh wow!
-
----
-
-_Referenced in [astral-sh/uv#1613](../../astral-sh/uv/pulls/1613.md) on 2024-02-17 19:52_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-01T21:35:03Z
 updated_at: 2024-04-07T00:02:51Z
 url: https://github.com/astral-sh/uv/issues/2763
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Panic: Resolution should contain all packages
@@ -166,10 +166,6 @@ _Renamed from "0.1.27 breaks in Github Actions" to "Panic: Resolution should con
 
 ---
 
-_Referenced in [astral-sh/uv#2779](../../astral-sh/uv/pulls/2779.md) on 2024-04-02 16:25_
-
----
-
 _Comment by @bschoenmaeckers on 2024-04-02 19:18_
 
 > @bschoenmaeckers are any of those packages already installed locally?
@@ -186,9 +182,5 @@ I'm going to close for now since we've fixed a few issues here. If you see it ag
 ---
 
 _Closed by @charliermarsh on 2024-04-07 00:02_
-
----
-
-_Referenced in [PostHog/posthog#21389](../../PostHog/posthog/pulls/21389.md) on 2024-04-08 08:18_
 
 ---

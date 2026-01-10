@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-01T18:05:40Z
 updated_at: 2023-12-02T00:37:53Z
 url: https://github.com/astral-sh/uv/issues/280
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Ensure that all cache directories are excluded from backups and indexing
@@ -32,10 +32,6 @@ _Added to milestone `Initial release` by @charliermarsh on 2023-11-01 18:05_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-30 01:56_
-
----
-
-_Referenced in [astral-sh/uv#526](../../astral-sh/uv/pulls/526.md) on 2023-12-02 00:14_
 
 ---
 

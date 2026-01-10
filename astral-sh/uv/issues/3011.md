@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-12T08:12:52Z
 updated_at: 2024-04-12T19:56:59Z
 url: https://github.com/astral-sh/uv/issues/3011
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `uv install -r …` fails with comment in `-e ./local_package   # via other_package`
@@ -92,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-12 14:06_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-04-12 14:31_
-
----
-
-_Referenced in [astral-sh/uv#3018](../../astral-sh/uv/pulls/3018.md) on 2024-04-12 19:03_
 
 ---
 

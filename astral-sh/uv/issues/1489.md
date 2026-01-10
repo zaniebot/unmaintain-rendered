@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T13:16:41Z
 updated_at: 2024-02-17T07:59:21Z
 url: https://github.com/astral-sh/uv/issues/1489
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # output colouring for light mode terminal
@@ -99,10 +99,6 @@ With just `bold()` https://github.com/astral-sh/uv/pull/1576
 
 <img width="363" alt="Screenshot 2024-02-16 at 23 43 28" src="https://github.com/astral-sh/uv/assets/2586601/fb75d75f-8e21-4a25-bece-9e15c30bbf85">
 
-
----
-
-_Referenced in [astral-sh/uv#1576](../../astral-sh/uv/pulls/1576.md) on 2024-02-17 05:44_
 
 ---
 

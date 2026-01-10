@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-04T04:20:23Z
 updated_at: 2024-01-04T13:45:52Z
 url: https://github.com/astral-sh/uv/issues/770
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Index URL is sensitive to trailing `/`
@@ -65,10 +65,6 @@ _Comment by @charliermarsh on 2024-01-04 04:32_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-04 05:28_
-
----
-
-_Referenced in [astral-sh/uv#771](../../astral-sh/uv/pulls/771.md) on 2024-01-04 05:29_
 
 ---
 

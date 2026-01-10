@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-26T16:02:49Z
 updated_at: 2024-02-23T22:34:33Z
 url: https://github.com/astral-sh/uv/issues/1126
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Windows trampoline that works on stable rust
@@ -28,10 +28,6 @@ _Label `enhancement` added by @konstin on 2024-01-26 16:02_
 ---
 
 _Renamed from "Windows trampolinbe that works on stable rust" to "Windows trampoline that works on stable rust" by @konstin on 2024-01-26 16:02_
-
----
-
-_Referenced in [astral-sh/uv#1092](../../astral-sh/uv/pulls/1092.md) on 2024-01-26 16:57_
 
 ---
 

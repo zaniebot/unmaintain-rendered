@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-06T13:47:52Z
 updated_at: 2023-11-07T14:11:29Z
 url: https://github.com/astral-sh/uv/issues/332
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Write and read `direct_url.json`
@@ -32,14 +32,6 @@ _Added to milestone `Feature complete` by @charliermarsh on 2023-11-06 13:47_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-06 13:47_
-
----
-
-_Referenced in [astral-sh/uv#337](../../astral-sh/uv/pulls/337.md) on 2023-11-06 16:27_
-
----
-
-_Referenced in [astral-sh/uv#345](../../astral-sh/uv/pulls/345.md) on 2023-11-06 20:07_
 
 ---
 

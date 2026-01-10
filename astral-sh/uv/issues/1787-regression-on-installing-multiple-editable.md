@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T23:30:35Z
 updated_at: 2024-02-22T05:00:04Z
 url: https://github.com/astral-sh/uv/issues/1787
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Regression on installing multiple editable dependencies
@@ -40,10 +40,6 @@ note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose bac
 See https://github.com/datahub-project/datahub/pull/9885 for a live example, or you can also repro by cloning the https://github.com/datahub-project/datahub repo and installing these two paths.
 
 
-
----
-
-_Referenced in [datahub-project/datahub#9885](../../datahub-project/datahub/pulls/9885.md) on 2024-02-20 23:30_
 
 ---
 
@@ -149,10 +145,6 @@ Thanks, this was my mistake. Just a bug.
 _Comment by @charliermarsh on 2024-02-22 02:27_
 
 (The bug was in the error reporting path for editable installs with non-existent extras.)
-
----
-
-_Referenced in [astral-sh/uv#1847](../../astral-sh/uv/pulls/1847.md) on 2024-02-22 02:29_
 
 ---
 

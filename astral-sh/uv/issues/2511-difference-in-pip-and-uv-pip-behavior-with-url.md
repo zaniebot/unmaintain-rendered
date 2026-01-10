@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-18T15:29:02Z
 updated_at: 2024-03-18T17:21:09Z
 url: https://github.com/astral-sh/uv/issues/2511
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Difference in `pip` and `uv pip` behavior with URL requirements
@@ -123,9 +123,5 @@ Thanks for the explanation. The error message mislead me, asking to add a requir
 ---
 
 _Closed by @charliermarsh on 2024-03-18 17:21_
-
----
-
-_Referenced in [astral-sh/uv#11179](../../astral-sh/uv/issues/11179.md) on 2025-02-04 11:33_
 
 ---

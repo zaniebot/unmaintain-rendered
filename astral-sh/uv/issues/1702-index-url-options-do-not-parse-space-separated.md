@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T16:01:08Z
 updated_at: 2024-03-03T19:01:08Z
 url: https://github.com/astral-sh/uv/issues/1702
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Index URL options do not parse "space separated" URLs as multiple options
@@ -35,10 +35,6 @@ _Label `enhancement` added by @zanieb on 2024-02-19 16:01_
 ---
 
 _Label `compatibility` added by @zanieb on 2024-02-19 16:01_
-
----
-
-_Referenced in [astral-sh/uv#1688](../../astral-sh/uv/issues/1688.md) on 2024-02-19 16:01_
 
 ---
 
@@ -69,10 +65,6 @@ _Label `good first issue` added by @zanieb on 2024-02-26 04:36_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-03 18:54_
-
----
-
-_Referenced in [astral-sh/uv#2140](../../astral-sh/uv/pulls/2140.md) on 2024-03-03 18:54_
 
 ---
 

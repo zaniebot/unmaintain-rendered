@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T21:33:17Z
 updated_at: 2024-02-22T03:05:19Z
 url: https://github.com/astral-sh/uv/issues/1358
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Feature request: Ability to limit selected packages based on upload time
@@ -58,10 +58,6 @@ _Label `enhancement` added by @zanieb on 2024-02-15 21:36_
 
 ---
 
-_Referenced in [pypa/pip#12275](../../pypa/pip/issues/12275.md) on 2024-02-16 22:36_
-
----
-
 _Closed by @charliermarsh on 2024-02-22 03:05_
 
 ---
@@ -69,9 +65,5 @@ _Closed by @charliermarsh on 2024-02-22 03:05_
 _Comment by @charliermarsh on 2024-02-22 03:05_
 
 (Closing since we do support this.)
-
----
-
-_Referenced in [astral-sh/uv#2088](../../astral-sh/uv/issues/2088.md) on 2024-02-29 16:50_
 
 ---

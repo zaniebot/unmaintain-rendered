@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T17:33:12Z
 updated_at: 2024-02-17T20:20:24Z
 url: https://github.com/astral-sh/uv/issues/1603
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Cannot install local dependency via `pyproject.toml`: "URL dependencies must be expressed as direct requirements or constraints."
@@ -121,14 +121,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-17 19:56_
 
 ---
 
-_Referenced in [astral-sh/uv#1614](../../astral-sh/uv/pulls/1614.md) on 2024-02-17 20:11_
-
----
-
 _Closed by @charliermarsh on 2024-02-17 20:20_
-
----
-
-_Referenced in [astral-sh/uv#1808](../../astral-sh/uv/issues/1808.md) on 2024-02-21 13:48_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-08T03:35:56Z
 updated_at: 2024-04-08T03:46:06Z
 url: https://github.com/astral-sh/uv/issues/2887
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Enhancement: uv activate
@@ -42,9 +42,5 @@ _Closed by @zanieb on 2024-04-08 03:46_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-04-08 03:46_
-
----
-
-_Referenced in [astral-sh/uv#3118](../../astral-sh/uv/issues/3118.md) on 2024-04-19 00:23_
 
 ---

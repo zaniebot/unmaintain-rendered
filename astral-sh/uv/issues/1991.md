@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-26T21:17:03Z
 updated_at: 2024-02-28T01:56:26Z
 url: https://github.com/astral-sh/uv/issues/1991
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Dynamic optional dependencies not audited upon re-install
@@ -91,10 +91,6 @@ _Label `enhancement` added by @charliermarsh on 2024-02-26 23:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-26 23:17_
-
----
-
-_Referenced in [astral-sh/uv#2029](../../astral-sh/uv/pulls/2029.md) on 2024-02-28 01:28_
 
 ---
 

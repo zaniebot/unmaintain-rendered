@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-13T10:44:41Z
 updated_at: 2023-11-13T20:20:59Z
 url: https://github.com/astral-sh/uv/issues/408
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Accept more invalid version specifiers
@@ -63,14 +63,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-13 20:01_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2023-11-13 20:01_
-
----
-
-_Referenced in [astral-sh/uv#416](../../astral-sh/uv/pulls/416.md) on 2023-11-13 20:06_
-
----
-
-_Referenced in [astral-sh/uv#417](../../astral-sh/uv/pulls/417.md) on 2023-11-13 20:09_
 
 ---
 

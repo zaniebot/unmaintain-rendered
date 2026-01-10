@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-01T02:48:16Z
 updated_at: 2024-03-05T03:38:14Z
 url: https://github.com/astral-sh/uv/issues/2099
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Fetching Error with Custom Index
@@ -272,10 +272,6 @@ I'll take a look now (but need to log off in a few, so may not resolve it in the
 
 ---
 
-_Referenced in [astral-sh/uv#2123](../../astral-sh/uv/pulls/2123.md) on 2024-03-01 22:54_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-01 23:49_
 
 ---
@@ -406,10 +402,6 @@ _Comment by @charliermarsh on 2024-03-04 23:20_
 _Comment by @hmc-cs-mdrissi on 2024-03-04 23:44_
 
 It succeeded. I am now able to install internal-lib. I'll try a more complex command next (install several internal-libraries), but very promising.
-
----
-
-_Referenced in [astral-sh/uv#2186](../../astral-sh/uv/pulls/2186.md) on 2024-03-05 00:35_
 
 ---
 

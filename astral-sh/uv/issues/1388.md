@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T23:45:40Z
 updated_at: 2024-02-16T04:37:10Z
 url: https://github.com/astral-sh/uv/issues/1388
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip install/compile fails on AWS codeartifact repo
@@ -170,10 +170,6 @@ Exploring in https://github.com/astral-sh/uv/pull/1413
 
 ---
 
-_Referenced in [astral-sh/uv#1413](../../astral-sh/uv/pulls/1413.md) on 2024-02-16 02:31_
-
----
-
 _Unassigned @charliermarsh by @charliermarsh on 2024-02-16 02:43_
 
 ---
@@ -197,9 +193,5 @@ Should be fixed in https://github.com/astral-sh/uv/pull/1413/commits/829a1ed5e38
 ---
 
 _Closed by @zanieb on 2024-02-16 04:37_
-
----
-
-_Referenced in [astral-sh/uv#1458](../../astral-sh/uv/issues/1458.md) on 2024-02-16 09:22_
 
 ---

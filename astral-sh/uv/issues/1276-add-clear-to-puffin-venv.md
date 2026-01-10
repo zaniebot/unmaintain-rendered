@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-11T23:17:08Z
 updated_at: 2024-02-12T03:03:38Z
 url: https://github.com/astral-sh/uv/issues/1276
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `--clear` to `puffin venv`
@@ -38,10 +38,6 @@ Eh, we do this by default.
 ---
 
 _Closed by @charliermarsh on 2024-02-12 02:54_
-
----
-
-_Referenced in [astral-sh/uv#1282](../../astral-sh/uv/pulls/1282.md) on 2024-02-12 03:03_
 
 ---
 

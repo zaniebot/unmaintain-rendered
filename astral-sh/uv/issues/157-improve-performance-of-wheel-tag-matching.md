@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-21T02:22:27Z
 updated_at: 2023-11-09T14:01:05Z
 url: https://github.com/astral-sh/uv/issues/157
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Improve performance of wheel tag matching
@@ -34,10 +34,6 @@ _Label `performance` added by @charliermarsh on 2023-10-24 01:18_
 ---
 
 _Added to milestone `Initial release` by @charliermarsh on 2023-10-24 19:21_
-
----
-
-_Referenced in [astral-sh/uv#367](../../astral-sh/uv/pulls/367.md) on 2023-11-08 19:36_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-12T16:26:31Z
 updated_at: 2024-04-13T01:09:22Z
 url: https://github.com/astral-sh/uv/issues/3017
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Allow sha256-<hash> (for Gitea/Forgejo compatibility)
@@ -77,13 +77,5 @@ _Closed by @charliermarsh on 2024-04-13 00:58_
 _Comment by @notatallshaw on 2024-04-13 01:09_
 
 Or specifically they accepted @Zottelchen PR and backported it already 🎉
-
----
-
-_Referenced in [go-gitea/gitea#30594](../../go-gitea/gitea/pulls/30594.md) on 2024-04-19 21:58_
-
----
-
-_Referenced in [go-gitea/gitea#30612](../../go-gitea/gitea/pulls/30612.md) on 2024-04-20 01:15_
 
 ---

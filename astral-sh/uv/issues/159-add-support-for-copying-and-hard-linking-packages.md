@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-21T02:32:00Z
 updated_at: 2023-10-22T04:35:52Z
 url: https://github.com/astral-sh/uv/issues/159
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add support for copying and hard-linking packages
@@ -23,10 +23,6 @@ By default, we should use whatever's best on the current platform (probably: clo
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-22 01:11_
-
----
-
-_Referenced in [astral-sh/uv#164](../../astral-sh/uv/pulls/164.md) on 2023-10-22 04:13_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-12T06:55:39Z
 updated_at: 2024-04-15T14:46:10Z
 url: https://github.com/astral-sh/uv/issues/3009
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Cache is invalidated on token renewal
@@ -69,10 +69,6 @@ uv pip install -r requirements.txt
 
 Version: `uv 0.1.31 (7bcca28b1 2024-04-09)`
 Platform: Macbook M2 Pro - MacOS 14.0
-
----
-
-_Referenced in [astral-sh/uv#3010](../../astral-sh/uv/pulls/3010.md) on 2024-04-12 07:14_
 
 ---
 

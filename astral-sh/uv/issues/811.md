@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-05T23:11:29Z
 updated_at: 2024-01-09T14:58:40Z
 url: https://github.com/astral-sh/uv/issues/811
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Hint that prereleases are available when dependency cannot be satisfied
@@ -71,10 +71,6 @@ I can prob do this one, it's in my wheelhouse.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-09 03:02_
-
----
-
-_Referenced in [astral-sh/uv#844](../../astral-sh/uv/pulls/844.md) on 2024-01-09 03:03_
 
 ---
 

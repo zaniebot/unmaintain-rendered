@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T21:22:00Z
 updated_at: 2024-03-04T01:50:24Z
 url: https://github.com/astral-sh/uv/issues/1353
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `uv pip compile` adds setuptools (and pip) to requirements.txt
@@ -72,10 +72,6 @@ _Comment by @zanieb on 2024-02-21 20:41_
 
 ---
 
-_Referenced in [python-trio/trio#2958](../../python-trio/trio/pulls/2958.md) on 2024-02-21 20:41_
-
----
-
 _Comment by @hauntsaninja on 2024-02-21 21:34_
 
 In my opinion, `uv` has the right default behaviour, and soon pip-compile will have the right default behaviour too. If I were uv, I would implement https://github.com/astral-sh/uv/issues/1415 to let people do what they need to, and not change this. (Especially since if you are using uv, I think you have less of a need to mark pip and setuptools as unsafe)
@@ -92,10 +88,6 @@ _Label `wontfix` added by @zanieb on 2024-02-21 21:41_
 
 ---
 
-_Referenced in [astral-sh/uv#1838](../../astral-sh/uv/issues/1838.md) on 2024-02-21 22:30_
-
----
-
 _Comment by @charliermarsh on 2024-03-04 01:50_
 
 Closing as "working as intended".
@@ -103,17 +95,5 @@ Closing as "working as intended".
 ---
 
 _Closed by @charliermarsh on 2024-03-04 01:50_
-
----
-
-_Referenced in [avilaton/dependabot-core#2](../../avilaton/dependabot-core/pulls/2.md) on 2024-08-18 21:25_
-
----
-
-_Referenced in [dependabot/dependabot-core#10040](../../dependabot/dependabot-core/pulls/10040.md) on 2024-08-19 06:51_
-
----
-
-_Referenced in [maykinmedia/open-inwoner#1671](../../maykinmedia/open-inwoner/pulls/1671.md) on 2025-03-18 09:21_
 
 ---

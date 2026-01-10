@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-20T04:39:19Z
 updated_at: 2024-04-03T05:57:38Z
 url: https://github.com/astral-sh/uv/issues/2560
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Old version of torch will be reinstalled.
@@ -927,10 +927,6 @@ _Comment by @bamps53 on 2024-03-20 22:22_
 @charliermarsh 
 In my opinion, it is unrealistic to accurately resolve all custom build versions such as `torch-2.3.0a0`. (or even just commit hash for some case)
 If we could manually register the library version (for instance, I would like to register torch as 2.3.0), it would provide a more flexible way to handle corner cases.
-
----
-
-_Referenced in [astral-sh/uv#2596](../../astral-sh/uv/pulls/2596.md) on 2024-03-21 21:50_
 
 ---
 

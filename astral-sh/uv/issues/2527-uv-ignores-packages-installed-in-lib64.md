@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-18T22:08:47Z
 updated_at: 2024-03-19T03:06:17Z
 url: https://github.com/astral-sh/uv/issues/2527
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv ignores packages installed in lib64/
@@ -113,10 +113,6 @@ There were a lot of big changes in that releases so it's not immediately apparen
 _Comment by @charliermarsh on 2024-03-18 22:26_
 
 Yeah installing everything into `lib/` was also wrong, but I guess it was "consistently wrong" so this problem didn't show up :)
-
----
-
-_Referenced in [astral-sh/uv#2537](../../astral-sh/uv/pulls/2537.md) on 2024-03-19 02:53_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-19T02:27:12Z
 updated_at: 2023-10-19T04:14:22Z
 url: https://github.com/astral-sh/uv/issues/128
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Remove extraneous packages during `pip-sync`
@@ -23,10 +23,6 @@ _No description provided._
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-19 03:33_
-
----
-
-_Referenced in [astral-sh/uv#135](../../astral-sh/uv/pulls/135.md) on 2023-10-19 04:12_
 
 ---
 

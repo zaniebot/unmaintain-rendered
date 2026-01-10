@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-11T23:02:34Z
 updated_at: 2024-02-17T01:39:57Z
 url: https://github.com/astral-sh/uv/issues/1274
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Allow `uv venv ${dir}` for empty (not existing) directories
@@ -38,10 +38,6 @@ _Renamed from "Allow `puffin venv ${dir}` for empty (not existing) directories" 
 _Comment by @zanieb on 2024-02-15 19:50_
 
 We delete existing directories right now, right? Should we not?
-
----
-
-_Referenced in [astral-sh/uv#1472](../../astral-sh/uv/issues/1472.md) on 2024-02-16 14:47_
 
 ---
 

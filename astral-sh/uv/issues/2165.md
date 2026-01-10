@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-04T17:22:37Z
 updated_at: 2024-04-16T06:14:00Z
 url: https://github.com/astral-sh/uv/issues/2165
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # The test suite fails if another Python version than 3.11.7 is installed
@@ -184,14 +184,6 @@ _Assigned to @zanieb by @zanieb on 2024-03-05 16:22_
 
 ---
 
-_Referenced in [astral-sh/uv#2930](../../astral-sh/uv/pulls/2930.md) on 2024-04-09 13:33_
-
----
-
-_Referenced in [astral-sh/uv#2940](../../astral-sh/uv/pulls/2940.md) on 2024-04-09 17:48_
-
----
-
 _Closed by @zanieb on 2024-04-10 14:01_
 
 ---
@@ -213,9 +205,5 @@ Thanks a lot! I'll test it with the next release.
 _Comment by @mgorny on 2024-04-16 06:13_
 
 Thanks a lot again! This resolved almost all test failures we were having. I'll file a separate bug for the one I'm seeing right now.
-
----
-
-_Referenced in [astral-sh/uv#3051](../../astral-sh/uv/issues/3051.md) on 2024-04-16 06:17_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-21T14:26:11Z
 updated_at: 2024-02-21T16:49:50Z
 url: https://github.com/astral-sh/uv/issues/1810
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Couldn't parse /bin/sh for detecting the ld version
@@ -48,10 +48,6 @@ Thanks for your effort and keep up the good work!
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-02-21 15:44_
-
----
-
-_Referenced in [astral-sh/uv#1818](../../astral-sh/uv/pulls/1818.md) on 2024-02-21 16:02_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-16T12:07:19Z
 updated_at: 2024-03-01T14:05:20Z
 url: https://github.com/astral-sh/uv/issues/1483
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv venv --system-site-packages support
@@ -90,26 +90,10 @@ base-executable = /Users/samforeman/micromamba/envs/2023-11-11/bin/python3.11
 
 ---
 
-_Referenced in [astral-sh/uv#2038](../../astral-sh/uv/issues/2038.md) on 2024-02-28 18:09_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-29 21:55_
 
 ---
 
-_Referenced in [astral-sh/uv#2101](../../astral-sh/uv/pulls/2101.md) on 2024-03-01 03:35_
-
----
-
 _Closed by @charliermarsh on 2024-03-01 14:05_
-
----
-
-_Referenced in [astral-sh/uv#7999](../../astral-sh/uv/issues/7999.md) on 2024-10-08 10:45_
-
----
-
-_Referenced in [astral-sh/uv#16511](../../astral-sh/uv/issues/16511.md) on 2025-10-30 14:28_
 
 ---

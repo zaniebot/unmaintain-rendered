@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-18T01:20:46Z
 updated_at: 2024-03-18T17:06:13Z
 url: https://github.com/astral-sh/uv/issues/2501
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv fails to install wheel from path with fragment
@@ -48,10 +48,6 @@ Thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-18 01:24_
-
----
-
-_Referenced in [astral-sh/uv#2502](../../astral-sh/uv/pulls/2502.md) on 2024-03-18 01:30_
 
 ---
 

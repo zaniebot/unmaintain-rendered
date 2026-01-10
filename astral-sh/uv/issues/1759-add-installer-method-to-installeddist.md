@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T15:09:18Z
 updated_at: 2024-02-20T17:07:10Z
 url: https://github.com/astral-sh/uv/issues/1759
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add `installer` method to InstalledDist
@@ -44,10 +44,6 @@ _Assigned to @tdejager by @charliermarsh on 2024-02-20 15:13_
 _Comment by @tdejager on 2024-02-20 15:37_
 
 Thanks @charliermarsh. Here it is: https://github.com/astral-sh/uv/pull/1762
-
----
-
-_Referenced in [astral-sh/uv#1762](../../astral-sh/uv/pulls/1762.md) on 2024-02-20 15:37_
 
 ---
 

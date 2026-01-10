@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T20:24:07Z
 updated_at: 2024-02-22T02:28:00Z
 url: https://github.com/astral-sh/uv/issues/1615
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Treat URLs in editable requirements as higher priority
@@ -25,10 +25,6 @@ If you add `iniconfig` as a top-level requirement in `compile_editable_url_requi
 ---
 
 _Label `bug` added by @charliermarsh on 2024-02-17 20:24_
-
----
-
-_Referenced in [astral-sh/uv#1796](../../astral-sh/uv/pulls/1796.md) on 2024-02-21 19:45_
 
 ---
 

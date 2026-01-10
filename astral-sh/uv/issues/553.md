@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-04T22:09:46Z
 updated_at: 2023-12-05T17:50:09Z
 url: https://github.com/astral-sh/uv/issues/553
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Distribution database deletes local wheels
@@ -43,10 +43,6 @@ I think we're also writing the built wheels to the wrong place, since the `path`
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-05 03:38_
-
----
-
-_Referenced in [astral-sh/uv#560](../../astral-sh/uv/pulls/560.md) on 2023-12-05 03:43_
 
 ---
 

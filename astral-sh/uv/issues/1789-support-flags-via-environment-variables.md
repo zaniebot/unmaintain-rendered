@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-21T00:25:58Z
 updated_at: 2024-04-19T14:12:08Z
 url: https://github.com/astral-sh/uv/issues/1789
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support flags via environment variables
@@ -70,18 +70,6 @@ but others doesn't like `--color`  or `--verbose`  . Couldn't be the support for
 ---
 
 _Label `good first issue` added by @zanieb on 2024-02-21 20:38_
-
----
-
-_Referenced in [astral-sh/uv#1839](../../astral-sh/uv/issues/1839.md) on 2024-02-21 22:39_
-
----
-
-_Referenced in [astral-sh/uv#1841](../../astral-sh/uv/issues/1841.md) on 2024-02-21 23:24_
-
----
-
-_Referenced in [napari/napari#6668](../../napari/napari/pulls/6668.md) on 2024-02-27 11:56_
 
 ---
 
@@ -155,10 +143,6 @@ We plan to have our own environment variables and our own persistent configurati
 
 ---
 
-_Referenced in [astral-sh/uv#1404](../../astral-sh/uv/issues/1404.md) on 2024-03-05 15:10_
-
----
-
 _Comment by @tafia on 2024-03-06 00:41_
 
 I think I understand where you're coming from but pip.conf is a de-facto standard. I don't remember ever changing it so I'd say it is particularly stable and deserves an exception.
@@ -189,10 +173,6 @@ Happy to add -- do you mind creating a separate issue just for tracking?
 
 ---
 
-_Referenced in [astral-sh/uv#2710](../../astral-sh/uv/issues/2710.md) on 2024-03-28 15:23_
-
----
-
 _Comment by @charliermarsh on 2024-04-19 14:12_
 
 Closing for now as we have many of these.
@@ -200,9 +180,5 @@ Closing for now as we have many of these.
 ---
 
 _Closed by @charliermarsh on 2024-04-19 14:12_
-
----
-
-_Referenced in [astral-sh/uv#3162](../../astral-sh/uv/pulls/3162.md) on 2024-04-20 16:07_
 
 ---

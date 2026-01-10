@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T04:34:19Z
 updated_at: 2024-03-16T14:25:53Z
 url: https://github.com/astral-sh/uv/issues/1855
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Local version identifiers are not ignored when testing version equality
@@ -184,22 +184,6 @@ One temporary workaround using overrides: https://github.com/astral-sh/uv/issues
 
 ---
 
-_Referenced in [astral-sh/uv#1497](../../astral-sh/uv/issues/1497.md) on 2024-02-22 14:52_
-
----
-
-_Referenced in [astral-sh/uv#1871](../../astral-sh/uv/pulls/1871.md) on 2024-02-22 14:59_
-
----
-
-_Referenced in [astral-sh/uv#1989](../../astral-sh/uv/issues/1989.md) on 2024-02-26 20:40_
-
----
-
-_Referenced in [astral-sh/uv#2008](../../astral-sh/uv/issues/2008.md) on 2024-02-27 12:12_
-
----
-
 _Comment by @BurntSushi on 2024-02-27 16:37_
 
 OK, so I've been looking into this recently, and after a ~day of yak-shaving to get tests working, I've had a chance to dig in a bit more. I was specifically digging into this in the context of #1497, but I believe that issue and this one are at least connected and likely share the same underlying problem.
@@ -237,45 +221,13 @@ For now, I'm going to clean up my `packse` tests and get those merged. They will
 
 ---
 
-_Referenced in [astral-sh/uv#2022](../../astral-sh/uv/pulls/2022.md) on 2024-02-27 17:36_
-
----
-
-_Referenced in [astral-sh/uv#2038](../../astral-sh/uv/issues/2038.md) on 2024-02-28 18:09_
-
----
-
-_Referenced in [astral-sh/uv#2080](../../astral-sh/uv/issues/2080.md) on 2024-02-29 13:55_
-
----
-
 _Unassigned @BurntSushi by @BurntSushi on 2024-02-29 15:29_
-
----
-
-_Referenced in [astral-sh/uv#2202](../../astral-sh/uv/issues/2202.md) on 2024-03-05 19:22_
-
----
-
-_Referenced in [astral-sh/uv#2328](../../astral-sh/uv/issues/2328.md) on 2024-03-10 12:48_
 
 ---
 
 _Comment by @charliermarsh on 2024-03-12 21:32_
 
 I'm going to pick this back up, wish me luck.
-
----
-
-_Referenced in [astral-sh/rye#878](../../astral-sh/rye/issues/878.md) on 2024-03-13 03:58_
-
----
-
-_Referenced in [astral-sh/uv#2430](../../astral-sh/uv/pulls/2430.md) on 2024-03-13 20:58_
-
----
-
-_Referenced in [astral-sh/uv#2478](../../astral-sh/uv/issues/2478.md) on 2024-03-15 19:26_
 
 ---
 
@@ -286,9 +238,5 @@ _Closed by @charliermarsh on 2024-03-16 14:24_
 _Comment by @charliermarsh on 2024-03-16 14:25_
 
 This will be supported in the next release via https://github.com/astral-sh/uv/pull/2430.
-
----
-
-_Referenced in [astral-sh/uv#3711](../../astral-sh/uv/pulls/3711.md) on 2024-05-21 18:25_
 
 ---

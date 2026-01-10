@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T15:11:13Z
 updated_at: 2024-03-22T21:24:50Z
 url: https://github.com/astral-sh/uv/issues/1499
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `.` only works with `--editable`
@@ -133,19 +133,11 @@ Please do, happy to help.
 
 ---
 
-_Referenced in [Chia-Network/chia-blockchain#17572](../../Chia-Network/chia-blockchain/pulls/17572.md) on 2024-02-16 16:19_
-
----
-
 _Comment by @henryiii on 2024-02-16 22:43_
 
 I was testing this out as a replacement for `nox`, and this will break a lot of nox scripts which assume `pip install .` works, it's a very common idiom.
 
 It is insanely fast though as a nox backend. :)
-
----
-
-_Referenced in [wntrblm/nox#762](../../wntrblm/nox/pulls/762.md) on 2024-02-16 22:47_
 
 ---
 
@@ -155,16 +147,8 @@ I believe the idea is that the case reported here would be addressed by https://
 
 ---
 
-_Referenced in [astral-sh/uv#1506](../../astral-sh/uv/issues/1506.md) on 2024-02-18 03:10_
-
----
-
 _Comment by @charliermarsh on 2024-03-22 21:24_
 
 This is supported as of `v0.1.24`. You can `uv pip install .` directly, without including a package name.
-
----
-
-_Referenced in [astral-sh/uv#10941](../../astral-sh/uv/issues/10941.md) on 2025-01-24 18:10_
 
 ---

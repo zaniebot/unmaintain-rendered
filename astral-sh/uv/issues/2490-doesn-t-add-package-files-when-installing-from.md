@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-16T17:46:28Z
 updated_at: 2024-03-22T19:36:08Z
 url: https://github.com/astral-sh/uv/issues/2490
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Doesn't add package files when installing from sdist on PyPy
@@ -314,10 +314,6 @@ _Label `installer` added by @zanieb on 2024-03-16 17:48_
 
 ---
 
-_Referenced in [astral-sh/uv#2096](../../astral-sh/uv/issues/2096.md) on 2024-03-16 17:52_
-
----
-
 _Label `pypy` added by @AlexWaygood on 2024-03-16 17:52_
 
 ---
@@ -356,14 +352,6 @@ I was able to reproduce (but not with CPython, so that's good at least).
 
 ---
 
-_Referenced in [astral-sh/uv#2491](../../astral-sh/uv/issues/2491.md) on 2024-03-16 18:24_
-
----
-
-_Referenced in [fpgmaas/deptry#613](../../fpgmaas/deptry/issues/613.md) on 2024-03-16 18:37_
-
----
-
 _Comment by @charliermarsh on 2024-03-16 18:51_
 
 @konstin - I'm not sure what the issue is here. Building `python -m build` gives me a reasonable wheel, but our build is producing a wheel with just `rust.pypy310-pp73-darwin.so` in it.
@@ -389,10 +377,6 @@ Rewriting Cargo.toml at /Users/crmarsh/workspace/deptry/Cargo.toml
 ---
 
 _Assigned to @konstin by @charliermarsh on 2024-03-18 01:24_
-
----
-
-_Referenced in [astral-sh/uv#2615](../../astral-sh/uv/pulls/2615.md) on 2024-03-22 15:42_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-02T04:17:42Z
 updated_at: 2024-03-02T20:36:30Z
 url: https://github.com/astral-sh/uv/issues/2127
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip install does not accept empty extras
@@ -50,10 +50,6 @@ _Label `good first issue` added by @charliermarsh on 2024-03-02 04:28_
 _Comment by @charliermarsh on 2024-03-02 04:28_
 
 Oh wow, didn't know this was allowed, thank you!
-
----
-
-_Referenced in [astral-sh/uv#2128](../../astral-sh/uv/pulls/2128.md) on 2024-03-02 09:49_
 
 ---
 

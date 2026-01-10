@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-29T07:01:59Z
 updated_at: 2024-04-07T00:42:31Z
 url: https://github.com/astral-sh/uv/issues/2724
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # sdist is missing license files
@@ -35,10 +35,6 @@ _Label `bug` added by @zanieb on 2024-03-29 13:37_
 ---
 
 _Label `release` added by @zanieb on 2024-03-29 13:37_
-
----
-
-_Referenced in [astral-sh/uv#2855](../../astral-sh/uv/pulls/2855.md) on 2024-04-07 00:09_
 
 ---
 

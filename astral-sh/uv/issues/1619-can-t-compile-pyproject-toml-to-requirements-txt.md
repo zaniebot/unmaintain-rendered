@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T00:18:25Z
 updated_at: 2024-03-25T20:30:54Z
 url: https://github.com/astral-sh/uv/issues/1619
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Can't compile pyproject.toml to requirements.txt
@@ -122,10 +122,6 @@ Also reported in https://github.com/astral-sh/uv/issues/1597
 
 ---
 
-_Referenced in [astral-sh/uv#1630](../../astral-sh/uv/issues/1630.md) on 2024-02-18 07:47_
-
----
-
 _Comment by @zanieb on 2024-02-18 07:48_
 
 Closing in favor of https://github.com/astral-sh/uv/issues/1630. Thanks for reporting!
@@ -133,18 +129,6 @@ Closing in favor of https://github.com/astral-sh/uv/issues/1630. Thanks for repo
 ---
 
 _Closed by @zanieb on 2024-02-18 07:48_
-
----
-
-_Referenced in [astral-sh/uv#1712](../../astral-sh/uv/issues/1712.md) on 2024-02-19 18:52_
-
----
-
-_Referenced in [astral-sh/uv#1437](../../astral-sh/uv/issues/1437.md) on 2024-02-19 18:52_
-
----
-
-_Referenced in [astral-sh/uv#2633](../../astral-sh/uv/pulls/2633.md) on 2024-03-25 19:41_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-17T20:22:12Z
 updated_at: 2024-04-18T03:59:45Z
 url: https://github.com/astral-sh/uv/issues/3106
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # `--emit-index-annotation` should redact usernames and passwords in index URL
@@ -62,14 +62,6 @@ _Renamed from "`--emit-index-annotation` should redact passwords in index URL" t
 
 ---
 
-_Referenced in [astral-sh/uv#3112](../../astral-sh/uv/pulls/3112.md) on 2024-04-18 03:21_
-
----
-
 _Closed by @charliermarsh on 2024-04-18 03:59_
-
----
-
-_Referenced in [astral-sh/uv#5119](../../astral-sh/uv/issues/5119.md) on 2024-07-16 18:10_
 
 ---

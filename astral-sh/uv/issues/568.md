@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-05T18:15:05Z
 updated_at: 2023-12-06T04:02:08Z
 url: https://github.com/astral-sh/uv/issues/568
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Avoid storing zipped wheels in the cache
@@ -24,10 +24,6 @@ Every cache location should be "unique".
 ---
 
 _Label `internal` added by @charliermarsh on 2023-12-05 18:15_
-
----
-
-_Referenced in [astral-sh/uv#569](../../astral-sh/uv/issues/569.md) on 2023-12-05 18:17_
 
 ---
 

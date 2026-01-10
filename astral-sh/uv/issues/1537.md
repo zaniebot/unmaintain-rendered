@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T19:51:40Z
 updated_at: 2024-02-16T21:11:17Z
 url: https://github.com/astral-sh/uv/issues/1537
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Percent-encoded URL in dependency specifier rejected
@@ -49,14 +49,6 @@ Will fix now.
 
 ---
 
-_Referenced in [astral-sh/uv#1541](../../astral-sh/uv/pulls/1541.md) on 2024-02-16 20:56_
-
----
-
 _Closed by @charliermarsh on 2024-02-16 21:11_
-
----
-
-_Referenced in [astral-sh/uv#1553](../../astral-sh/uv/issues/1553.md) on 2024-02-16 23:44_
 
 ---

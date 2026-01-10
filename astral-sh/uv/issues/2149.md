@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-04T09:50:37Z
 updated_at: 2024-03-04T19:39:02Z
 url: https://github.com/astral-sh/uv/issues/2149
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Invalid wheel: pip OK but uv KO
@@ -60,10 +60,6 @@ Pip doesn't check the `WHEEL` file as far as I'm aware, so it looks like `uv` is
 
 ---
 
-_Referenced in [astral-sh/uv#2151](../../astral-sh/uv/pulls/2151.md) on 2024-03-04 11:50_
-
----
-
 _Comment by @konstin on 2024-03-04 11:51_
 
 Sorry that's just an off-by-one error separate from this issue, fixed in #2151.
@@ -75,10 +71,6 @@ _Label `compatibility` added by @charliermarsh on 2024-03-04 14:31_
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2024-03-04 14:31_
-
----
-
-_Referenced in [openturns/build-wheels#2](../../openturns/build-wheels/issues/2.md) on 2024-03-04 16:31_
 
 ---
 
@@ -126,14 +118,6 @@ I'll fix this real quick.
 
 ---
 
-_Referenced in [astral-sh/uv#2170](../../astral-sh/uv/pulls/2170.md) on 2024-03-04 19:25_
-
----
-
 _Closed by @charliermarsh on 2024-03-04 19:39_
-
----
-
-_Referenced in [justin-yan/pybin#13](../../justin-yan/pybin/issues/13.md) on 2024-03-27 22:15_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-28T19:08:39Z
 updated_at: 2024-04-07T00:10:29Z
 url: https://github.com/astral-sh/uv/issues/2718
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # uv pip install a wheel with extra index url doesn't resolve, normal pip works in fresh env
@@ -115,10 +115,6 @@ pip install sedonaai_cpu-0.1.1-py3-none-any.whl torchvision==0.17.0+cpu torch==2
 ---
 
 _Label `question` added by @charliermarsh on 2024-03-28 20:19_
-
----
-
-_Referenced in [astral-sh/uv#2812](../../astral-sh/uv/issues/2812.md) on 2024-04-03 16:08_
 
 ---
 

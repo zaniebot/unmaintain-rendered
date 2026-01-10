@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-26T16:04:21Z
 updated_at: 2024-02-26T21:15:59Z
 url: https://github.com/astral-sh/uv/issues/1987
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Recursive extra dependencies don't compile like pip-tools
@@ -117,10 +117,6 @@ _Comment by @charliermarsh on 2024-02-26 19:44_
 
 ---
 
-_Referenced in [astral-sh/uv#1990](../../astral-sh/uv/pulls/1990.md) on 2024-02-26 20:38_
-
----
-
 _Closed by @charliermarsh on 2024-02-26 20:44_
 
 ---
@@ -134,9 +130,5 @@ Fixed in the next release, thanks.
 _Comment by @jdawang on 2024-02-26 21:15_
 
 Thanks for the quick fix!
-
----
-
-_Referenced in [jazzband/pip-tools#2110](../../jazzband/pip-tools/issues/2110.md) on 2024-12-03 03:20_
 
 ---

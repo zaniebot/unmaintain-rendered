@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-09T14:21:36Z
 updated_at: 2024-03-18T14:42:33Z
 url: https://github.com/astral-sh/uv/issues/846
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Use a single python process across all steps of building a source dist
@@ -91,14 +91,6 @@ I'm confident in my ability to do something robust on the Python side, although 
 _Comment by @konstin on 2024-01-09 22:51_
 
 It needs an async interface you can tell it to invoke one of the [PEP 517](https://peps.python.org/pep-0517/#build-wheel) hooks with it's respective argument(s) and get a `Result<(return value, stderr), (stdout, stderr with backtrace)>` on the rust side. It needs to be resilient to the child process aborting (it should retain stderr) and large amount of output (will not fit in a 64KB pipe buffer).
-
----
-
-_Referenced in [astral-sh/uv#861](../../astral-sh/uv/issues/861.md) on 2024-01-09 23:23_
-
----
-
-_Referenced in [astral-sh/uv#895](../../astral-sh/uv/pulls/895.md) on 2024-01-12 04:31_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-13T02:20:23Z
 updated_at: 2024-02-19T00:01:01Z
 url: https://github.com/astral-sh/uv/issues/1292
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Yank warnings should display at the end
@@ -48,10 +48,6 @@ _Label `good first issue` added by @zanieb on 2024-02-18 17:30_
 ---
 
 _Label `error messages` added by @zanieb on 2024-02-18 17:30_
-
----
-
-_Referenced in [astral-sh/uv#1669](../../astral-sh/uv/pulls/1669.md) on 2024-02-18 23:23_
 
 ---
 

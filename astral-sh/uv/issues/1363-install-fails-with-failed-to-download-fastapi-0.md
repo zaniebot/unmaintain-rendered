@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T21:47:03Z
 updated_at: 2024-02-16T05:01:22Z
 url: https://github.com/astral-sh/uv/issues/1363
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Install fails with Failed to download: fastapi==0.10.1
@@ -51,14 +51,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-16 04:29_
 
 ---
 
-_Referenced in [astral-sh/uv#1428](../../astral-sh/uv/pulls/1428.md) on 2024-02-16 04:52_
-
----
-
 _Closed by @charliermarsh on 2024-02-16 05:01_
-
----
-
-_Referenced in [astral-sh/uv#1800](../../astral-sh/uv/issues/1800.md) on 2024-02-21 09:34_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-04T22:17:30Z
 updated_at: 2023-12-06T02:36:13Z
 url: https://github.com/astral-sh/uv/issues/554
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Repeatedly building local source distribution fails
@@ -73,19 +73,7 @@ It looks like https://github.com/astral-sh/puffin/pull/545 fixes some both not a
 
 ---
 
-_Referenced in [astral-sh/uv#559](../../astral-sh/uv/pulls/559.md) on 2023-12-05 01:47_
-
----
-
-_Referenced in [astral-sh/uv#570](../../astral-sh/uv/issues/570.md) on 2023-12-05 18:18_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-05 21:29_
-
----
-
-_Referenced in [astral-sh/uv#577](../../astral-sh/uv/pulls/577.md) on 2023-12-06 02:32_
 
 ---
 

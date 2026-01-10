@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-15T04:18:18Z
 updated_at: 2023-12-15T17:27:18Z
 url: https://github.com/astral-sh/uv/issues/655
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Building source distributions leads to double-resolution
@@ -28,10 +28,6 @@ _Label `bug` added by @charliermarsh on 2023-12-15 04:18_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-15 04:18_
-
----
-
-_Referenced in [astral-sh/uv#656](../../astral-sh/uv/pulls/656.md) on 2023-12-15 04:57_
 
 ---
 

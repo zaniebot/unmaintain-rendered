@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T10:13:18Z
 updated_at: 2024-02-17T21:47:41Z
 url: https://github.com/astral-sh/uv/issues/1471
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # No activate.bat Created with venv Command on Windows
@@ -33,10 +33,6 @@ _Label `compatibility` added by @MichaReiser on 2024-02-16 12:15_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-02-16 14:01_
-
----
-
-_Referenced in [astral-sh/uv#1523](../../astral-sh/uv/pulls/1523.md) on 2024-02-16 18:41_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-29T18:30:21Z
 updated_at: 2023-12-01T18:53:29Z
 url: https://github.com/astral-sh/uv/issues/515
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Reflink obscures errors when copying directories
@@ -45,10 +45,6 @@ error: Failed to install: example-pkg-b @ git+https://github.com/pypa/sample-nam
 _Comment by @zanieb on 2023-11-29 18:33_
 
 Since macOS supports `clonefile` with directories, I'm unsure of the intent of this error transposition.
-
----
-
-_Referenced in [astral-sh/uv#516](../../astral-sh/uv/pulls/516.md) on 2023-11-29 19:11_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-27T07:49:26Z
 updated_at: 2024-03-27T14:46:40Z
 url: https://github.com/astral-sh/uv/issues/2687
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Activation prompt shows wrong path on windows and nushell
@@ -51,10 +51,6 @@ overlay use .venv\Scripts\activate.nu
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-27 14:31_
-
----
-
-_Referenced in [astral-sh/uv#2690](../../astral-sh/uv/pulls/2690.md) on 2024-03-27 14:35_
 
 ---
 

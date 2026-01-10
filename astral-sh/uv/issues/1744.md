@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T09:59:47Z
 updated_at: 2024-02-21T14:06:32Z
 url: https://github.com/astral-sh/uv/issues/1744
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Fail to read metadata from `.dist-info`: data did not match any variant of untagged enum DirectUrl
@@ -122,18 +122,6 @@ We should at least handle this gracefully though, I think...
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-21 03:21_
-
----
-
-_Referenced in [astral-sh/uv#1793](../../astral-sh/uv/pulls/1793.md) on 2024-02-21 04:20_
-
----
-
-_Referenced in [pypa/packaging.python.org#1506](../../pypa/packaging.python.org/pulls/1506.md) on 2024-02-21 10:29_
-
----
-
-_Referenced in [python-poetry/poetry#8999](../../python-poetry/poetry/issues/8999.md) on 2024-02-21 13:42_
 
 ---
 

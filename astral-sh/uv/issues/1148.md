@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-27T10:47:16Z
 updated_at: 2024-01-28T00:22:45Z
 url: https://github.com/astral-sh/uv/issues/1148
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Set executable bit
@@ -94,10 +94,6 @@ I'll add a test too. Though not Zig becomes the binary is insanely large lmao.
 _Comment by @charliermarsh on 2024-01-27 12:34_
 
 Okay actually not trivial because the executable bits are stored in the central directory archive and not as part of the entry. Looking into it.
-
----
-
-_Referenced in [astral-sh/uv#1151](../../astral-sh/uv/pulls/1151.md) on 2024-01-28 00:10_
 
 ---
 

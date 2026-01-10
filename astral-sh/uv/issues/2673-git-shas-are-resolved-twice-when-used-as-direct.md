@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-26T19:41:08Z
 updated_at: 2024-03-27T01:39:02Z
 url: https://github.com/astral-sh/uv/issues/2673
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Git SHAs are resolved twice when used as direct references
@@ -52,10 +52,6 @@ The behavior is ultimately correct, we should just avoid the second lookup.
 ---
 
 _Label `performance` added by @zanieb on 2024-03-26 20:40_
-
----
-
-_Referenced in [astral-sh/uv#2682](../../astral-sh/uv/pulls/2682.md) on 2024-03-27 01:28_
 
 ---
 

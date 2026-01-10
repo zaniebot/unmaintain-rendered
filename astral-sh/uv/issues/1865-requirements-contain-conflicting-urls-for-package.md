@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T13:27:35Z
 updated_at: 2024-02-22T16:44:37Z
 url: https://github.com/astral-sh/uv/issues/1865
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # "Requirements contain conflicting URLs for package" when using Git dependency, but they're the same URL
@@ -67,10 +67,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-22 13:30_
 _Comment by @charliermarsh on 2024-02-22 13:30_
 
 Ah thanks. Oversight on my part. Will fix today.
-
----
-
-_Referenced in [astral-sh/uv#1877](../../astral-sh/uv/pulls/1877.md) on 2024-02-22 16:34_
 
 ---
 

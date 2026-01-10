@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-18T09:53:20Z
 updated_at: 2024-03-05T07:33:38Z
 url: https://github.com/astral-sh/uv/issues/1636
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Windows: "uv venv" gives "exit 2" with tox-uv
@@ -59,10 +59,6 @@ git checkout fd9f3f426449541a111560585c4230e31d2e0adf
 ```
 
 Possibly a tox-uv bug?
-
----
-
-_Referenced in [tox-dev/tox-uv#15](../../tox-dev/tox-uv/issues/15.md) on 2024-02-18 10:26_
 
 ---
 
@@ -159,10 +155,6 @@ https://github.com/python/cpython/blob/d457345bbc6414db0443819290b04a9a4333313d/
 _Comment by @charliermarsh on 2024-03-04 21:36_
 
 I asked a question about it on discuss: https://discuss.python.org/t/when-should-venv-scripts-nt-python-exe-be-present/47620
-
----
-
-_Referenced in [astral-sh/uv#2171](../../astral-sh/uv/pulls/2171.md) on 2024-03-04 21:45_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-13T12:43:20Z
 updated_at: 2024-03-13T14:30:54Z
 url: https://github.com/astral-sh/uv/issues/2409
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Prefer system TLS cert store by default
@@ -53,10 +53,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-13 14:15_
 ---
 
 _Label `question` added by @zanieb on 2024-03-13 14:17_
-
----
-
-_Referenced in [astral-sh/uv#2412](../../astral-sh/uv/pulls/2412.md) on 2024-03-13 14:18_
 
 ---
 

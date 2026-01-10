@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T15:17:03Z
 updated_at: 2024-02-26T14:15:09Z
 url: https://github.com/astral-sh/uv/issues/1916
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Configure `disallowed_method` to ensure we use `fs_err`
@@ -27,19 +27,11 @@ _Originally posted by @MichaReiser in https://github.com/astral-sh/uv/pull/1893#
 
 ---
 
-_Referenced in [astral-sh/uv#1893](../../astral-sh/uv/pulls/1893.md) on 2024-02-23 15:17_
-
----
-
 _Label `good first issue` added by @zanieb on 2024-02-23 15:17_
 
 ---
 
 _Label `internal` added by @zanieb on 2024-02-23 15:17_
-
----
-
-_Referenced in [astral-sh/uv#1950](../../astral-sh/uv/pulls/1950.md) on 2024-02-24 12:10_
 
 ---
 

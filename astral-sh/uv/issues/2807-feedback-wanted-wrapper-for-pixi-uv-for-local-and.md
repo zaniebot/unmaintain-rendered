@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-03T14:35:36Z
 updated_at: 2024-04-03T14:37:19Z
 url: https://github.com/astral-sh/uv/issues/2807
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Feedback wanted: wrapper for pixi+uv for local and containerized python
@@ -48,13 +48,5 @@ I've been thinking about how I want to organize my python work going forward, an
 
 
 If you'd like to give it a try and offer feedback, it would be much appreciated!
-
----
-
-_Referenced in [astral-sh/uv#2661](../../astral-sh/uv/issues/2661.md) on 2024-04-03 15:03_
-
----
-
-_Referenced in [winpython/winpython#1290](../../winpython/winpython/issues/1290.md) on 2024-04-14 08:34_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T00:12:26Z
 updated_at: 2024-02-16T05:01:22Z
 url: https://github.com/astral-sh/uv/issues/1399
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Some existing packages have unexpected extra names
@@ -70,14 +70,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-16 04:21_
 
 ---
 
-_Referenced in [astral-sh/uv#1428](../../astral-sh/uv/pulls/1428.md) on 2024-02-16 04:52_
-
----
-
 _Closed by @charliermarsh on 2024-02-16 05:01_
-
----
-
-_Referenced in [astral-sh/uv#1633](../../astral-sh/uv/issues/1633.md) on 2024-02-18 08:21_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-23T21:27:10Z
 updated_at: 2023-10-27T00:41:04Z
 url: https://github.com/astral-sh/uv/issues/172
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support constraints in `requirements.txt` files
@@ -89,14 +89,6 @@ The second is the most reasonable so I'll just run with that for now.
 
 ---
 
-_Referenced in [astral-sh/uv#212](../../astral-sh/uv/pulls/212.md) on 2023-10-27 00:32_
-
----
-
 _Closed by @charliermarsh on 2023-10-27 00:41_
-
----
-
-_Referenced in [astral-sh/uv#1332](../../astral-sh/uv/issues/1332.md) on 2024-02-15 20:31_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T13:15:59Z
 updated_at: 2024-02-17T21:33:37Z
 url: https://github.com/astral-sh/uv/issues/1588
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv hangs when using tox-uv
@@ -129,9 +129,5 @@ yes, #1607 seems to fix this. thanks!
 ---
 
 _Closed by @davidszotten on 2024-02-17 21:33_
-
----
-
-_Referenced in [tox-dev/tox-uv#11](../../tox-dev/tox-uv/issues/11.md) on 2024-02-20 08:40_
 
 ---

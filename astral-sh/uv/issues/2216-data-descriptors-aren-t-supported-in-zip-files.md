@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-05T19:24:31Z
 updated_at: 2024-04-05T20:23:49Z
 url: https://github.com/astral-sh/uv/issues/2216
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Data descriptors aren't supported in zip files
@@ -42,10 +42,6 @@ _Label `bug` added by @charliermarsh on 2024-03-05 19:24_
 ---
 
 _Label `registry` added by @charliermarsh on 2024-03-05 19:24_
-
----
-
-_Referenced in [astral-sh/uv#2202](../../astral-sh/uv/issues/2202.md) on 2024-03-05 19:24_
 
 ---
 
@@ -93,10 +89,6 @@ In theory it should be possible to make it work for Deflate, since the compresse
 _Comment by @charliermarsh on 2024-03-06 22:34_
 
 I think the best path is to catch this error and fall back to downloading + unzipping from disk. It's not _that_ much of a slowdown.
-
----
-
-_Referenced in [astral-sh/uv#2320](../../astral-sh/uv/pulls/2320.md) on 2024-03-10 02:26_
 
 ---
 

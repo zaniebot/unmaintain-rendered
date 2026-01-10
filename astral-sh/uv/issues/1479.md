@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T11:41:54Z
 updated_at: 2024-02-16T14:25:33Z
 url: https://github.com/astral-sh/uv/issues/1479
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Extras specifiers in `project.scripts` cause a spurious "failed to install" error
@@ -79,10 +79,6 @@ _Assigned to @akx by @MichaReiser on 2024-02-16 12:03_
 ---
 
 _Unassigned @MichaReiser by @MichaReiser on 2024-02-16 12:03_
-
----
-
-_Referenced in [astral-sh/uv#1482](../../astral-sh/uv/pulls/1482.md) on 2024-02-16 12:03_
 
 ---
 

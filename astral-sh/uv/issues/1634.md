@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T09:06:44Z
 updated_at: 2024-03-25T20:30:32Z
 url: https://github.com/astral-sh/uv/issues/1634
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Question: How to use uv with poetry on CI?
@@ -73,10 +73,6 @@ error: failed to read from file `.\requirements.txt`
 
 ---
 
-_Referenced in [astral-sh/uv#1666](../../astral-sh/uv/issues/1666.md) on 2024-02-18 21:03_
-
----
-
 _Comment by @Secrus on 2024-02-19 00:11_
 
 > for now:
@@ -89,10 +85,6 @@ _Comment by @Secrus on 2024-02-19 00:11_
 > ```
 
 Do not redirect stream from `poetry export`, use `-o` flag to specify output file (it properly handles user messages and the actual dependency output).
-
----
-
-_Referenced in [astral-sh/uv#2633](../../astral-sh/uv/pulls/2633.md) on 2024-03-25 19:41_
 
 ---
 

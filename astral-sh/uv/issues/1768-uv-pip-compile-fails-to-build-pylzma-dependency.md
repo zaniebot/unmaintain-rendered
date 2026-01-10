@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T17:19:42Z
 updated_at: 2024-02-20T20:37:07Z
 url: https://github.com/astral-sh/uv/issues/1768
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # uv pip compile fails to build pylzma dependency
@@ -92,10 +92,6 @@ _Label `bug` added by @charliermarsh on 2024-02-20 19:37_
 _Comment by @charliermarsh on 2024-02-20 19:37_
 
 I consider this a bug though. I've seen it in other packages too.
-
----
-
-_Referenced in [astral-sh/uv#1782](../../astral-sh/uv/pulls/1782.md) on 2024-02-20 20:16_
 
 ---
 

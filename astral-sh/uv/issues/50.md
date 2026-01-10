@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-08T04:02:41Z
 updated_at: 2023-10-08T04:28:05Z
 url: https://github.com/astral-sh/uv/issues/50
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Store packages in the cache indexed by dist-info-like name
@@ -19,10 +19,6 @@ synced_at: 2026-01-10T01:57:00Z
 _Issue opened by @charliermarsh on 2023-10-08 04:02_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/uv#52](../../astral-sh/uv/pulls/52.md) on 2023-10-08 04:22_
 
 ---
 

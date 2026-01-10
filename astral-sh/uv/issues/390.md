@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-10T14:56:15Z
 updated_at: 2023-11-10T20:24:21Z
 url: https://github.com/astral-sh/uv/issues/390
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Failed to install jupyter: File exists
@@ -50,10 +50,6 @@ The current consensus is overriding the existing file
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-10 19:55_
-
----
-
-_Referenced in [astral-sh/uv#402](../../astral-sh/uv/pulls/402.md) on 2023-11-10 20:19_
 
 ---
 

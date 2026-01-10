@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-10T14:25:17Z
 updated_at: 2024-04-16T08:15:08Z
 url: https://github.com/astral-sh/uv/issues/2964
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Running uv for the second time is slower on a mounted docker volume
@@ -146,10 +146,6 @@ _Comment by @jaap3 on 2024-04-10 17:22_
 @notatallshaw this is not about baking dependencies into an image. This is about using a fairly bare bones python image to mount a project and installing it's dependencies into a venv that's also in the mounted directory.
 
 Re-installing happens when the container is restarted (or recreated) when switching branches, pulling work etc.
-
----
-
-_Referenced in [astral-sh/uv#3015](../../astral-sh/uv/pulls/3015.md) on 2024-04-12 14:54_
 
 ---
 

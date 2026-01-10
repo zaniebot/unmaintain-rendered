@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-26T13:46:37Z
 updated_at: 2023-11-02T15:14:57Z
 url: https://github.com/astral-sh/uv/issues/202
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support VCS dependencies
@@ -62,10 +62,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-10-29 19:34_
 ---
 
 _Label `wish` added by @charliermarsh on 2023-10-29 19:34_
-
----
-
-_Referenced in [astral-sh/uv#283](../../astral-sh/uv/pulls/283.md) on 2023-11-02 01:29_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-27T09:49:49Z
 updated_at: 2024-03-27T16:32:38Z
 url: https://github.com/astral-sh/uv/issues/2688
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # is uv pip sync with --find-links broken?
@@ -120,10 +120,6 @@ _Label `bug` added by @charliermarsh on 2024-03-27 15:20_
 
 ---
 
-_Referenced in [astral-sh/uv#2692](../../astral-sh/uv/pulls/2692.md) on 2024-03-27 15:55_
-
----
-
 _Closed by @charliermarsh on 2024-03-27 16:15_
 
 ---
@@ -143,9 +139,5 @@ Thanks a lot! Just a quick check: does it work without —no-index because it fi
 _Comment by @charliermarsh on 2024-03-27 16:32_
 
 It finds both (like pip), but it correctly selects the local library since you pinned the version (in my testing).
-
----
-
-_Referenced in [astral-sh/uv#2696](../../astral-sh/uv/pulls/2696.md) on 2024-03-27 17:22_
 
 ---

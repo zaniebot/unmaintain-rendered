@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-05T16:40:10Z
 updated_at: 2024-03-01T14:48:33Z
 url: https://github.com/astral-sh/uv/issues/1251
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support msys2 python
@@ -29,14 +29,6 @@ _Label `bug` added by @konstin on 2024-02-05 16:40_
 ---
 
 _Label `windows` added by @konstin on 2024-02-05 16:40_
-
----
-
-_Referenced in [astral-sh/uv#1577](../../astral-sh/uv/pulls/1577.md) on 2024-02-17 10:55_
-
----
-
-_Referenced in [astral-sh/uv#2102](../../astral-sh/uv/pulls/2102.md) on 2024-03-01 10:04_
 
 ---
 

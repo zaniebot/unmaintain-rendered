@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-04T07:03:19Z
 updated_at: 2024-03-04T15:49:50Z
 url: https://github.com/astral-sh/uv/issues/2146
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Verbosity level to see output from build backend
@@ -42,14 +42,6 @@ I think this is the same as https://github.com/astral-sh/uv/issues/1567
 ---
 
 _Assigned to @konstin by @konstin on 2024-03-04 13:51_
-
----
-
-_Referenced in [astral-sh/uv#2156](../../astral-sh/uv/pulls/2156.md) on 2024-03-04 14:46_
-
----
-
-_Referenced in [astral-sh/uv#2158](../../astral-sh/uv/issues/2158.md) on 2024-03-04 15:47_
 
 ---
 

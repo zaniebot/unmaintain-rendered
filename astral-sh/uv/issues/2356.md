@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-11T12:55:50Z
 updated_at: 2024-03-22T21:27:33Z
 url: https://github.com/astral-sh/uv/issues/2356
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Failed to install wheel file: `Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.`
@@ -68,10 +68,6 @@ _Closed by @konstin on 2024-03-11 13:12_
 ---
 
 _Label `error messages` added by @charliermarsh on 2024-03-11 21:58_
-
----
-
-_Referenced in [astral-sh/uv#2369](../../astral-sh/uv/pulls/2369.md) on 2024-03-11 22:19_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-08T10:24:18Z
 updated_at: 2024-04-08T21:04:28Z
 url: https://github.com/astral-sh/uv/issues/2899
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # failing to install a package from private pypi repo - Caused by: relative URL without a base
@@ -175,14 +175,6 @@ We're getting confused by the `remote=https://...` piece. Will fix.
 
 ---
 
-_Referenced in [astral-sh/uv#2904](../../astral-sh/uv/pulls/2904.md) on 2024-04-08 17:27_
-
----
-
 _Closed by @charliermarsh on 2024-04-08 21:04_
-
----
-
-_Referenced in [astral-sh/uv#2958](../../astral-sh/uv/issues/2958.md) on 2024-04-10 10:47_
 
 ---

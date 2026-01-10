@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-18T17:51:35Z
 updated_at: 2024-02-22T07:47:35Z
 url: https://github.com/astral-sh/uv/issues/1660
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Bug: `uv venv` on windows cannot find python from pyenv
@@ -119,10 +119,6 @@ _Label `windows` added by @zanieb on 2024-02-18 21:00_
 _Comment by @ofek on 2024-02-18 23:13_
 
 https://github.com/astral-sh/uv/issues/1310
-
----
-
-_Referenced in [astral-sh/uv#1711](../../astral-sh/uv/pulls/1711.md) on 2024-02-20 14:27_
 
 ---
 

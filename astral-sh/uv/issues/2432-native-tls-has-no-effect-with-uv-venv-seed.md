@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-13T22:33:18Z
 updated_at: 2024-03-13T22:54:53Z
 url: https://github.com/astral-sh/uv/issues/2432
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # --native-tls has no effect with uv venv --seed
@@ -51,10 +51,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-13 22:42_
 _Comment by @charliermarsh on 2024-03-13 22:42_
 
 Thanks, that's my fault. I'll fix now.
-
----
-
-_Referenced in [astral-sh/uv#2433](../../astral-sh/uv/pulls/2433.md) on 2024-03-13 22:43_
 
 ---
 

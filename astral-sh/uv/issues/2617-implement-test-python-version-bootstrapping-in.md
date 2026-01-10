@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-22T16:49:08Z
 updated_at: 2024-04-12T19:55:59Z
 url: https://github.com/astral-sh/uv/issues/2617
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Implement test Python version bootstrapping in Rust
@@ -43,14 +43,6 @@ _Assigned to @zanieb by @zanieb on 2024-03-22 16:49_
 ---
 
 _Label `internal` added by @zanieb on 2024-03-22 16:49_
-
----
-
-_Referenced in [astral-sh/uv#2739](../../astral-sh/uv/issues/2739.md) on 2024-03-31 14:11_
-
----
-
-_Referenced in [astral-sh/uv#2842](../../astral-sh/uv/pulls/2842.md) on 2024-04-05 22:19_
 
 ---
 

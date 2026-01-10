@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-20T13:20:33Z
 updated_at: 2024-04-16T16:49:15Z
 url: https://github.com/astral-sh/uv/issues/2563
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # How to set username for keyring cli based pip authorization (Azure artifacts) 
@@ -117,23 +117,11 @@ _Assigned to @BakerNet by @zanieb on 2024-03-20 14:32_
 
 ---
 
-_Referenced in [astral-sh/uv#2570](../../astral-sh/uv/pulls/2570.md) on 2024-03-20 18:55_
-
----
-
 _Comment by @BakerNet on 2024-03-25 17:42_
 
 The PR for this has been ready for a few days (#2570 )
 
 I don't mean to rush, just an FYI in case it wasn't clear it's ready for review.
-
----
-
-_Referenced in [astral-sh/uv#2984](../../astral-sh/uv/pulls/2984.md) on 2024-04-11 20:24_
-
----
-
-_Referenced in [astral-sh/uv#2976](../../astral-sh/uv/pulls/2976.md) on 2024-04-15 19:55_
 
 ---
 
@@ -144,9 +132,5 @@ Should be resolved by https://github.com/astral-sh/uv/pull/2976 and available in
 ---
 
 _Closed by @zanieb on 2024-04-16 16:49_
-
----
-
-_Referenced in [Homebrew/homebrew-core#169338](../../Homebrew/homebrew-core/pulls/169338.md) on 2024-04-17 18:52_
 
 ---

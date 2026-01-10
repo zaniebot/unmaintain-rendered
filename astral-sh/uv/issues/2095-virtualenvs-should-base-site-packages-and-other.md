@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-29T20:45:50Z
 updated_at: 2024-03-05T21:13:25Z
 url: https://github.com/astral-sh/uv/issues/2095
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # virtualenvs should base `site-packages` and other directories on `sysconfig` paths
@@ -35,31 +35,7 @@ _Label `bug` added by @charliermarsh on 2024-02-29 20:45_
 
 ---
 
-_Referenced in [astral-sh/uv#2094](../../astral-sh/uv/pulls/2094.md) on 2024-02-29 20:47_
-
----
-
-_Referenced in [astral-sh/uv#2092](../../astral-sh/uv/issues/2092.md) on 2024-02-29 20:48_
-
----
-
 _Label `pypy` added by @charliermarsh on 2024-02-29 20:50_
-
----
-
-_Referenced in [astral-sh/uv#2096](../../astral-sh/uv/issues/2096.md) on 2024-02-29 20:58_
-
----
-
-_Referenced in [astral-sh/uv#2102](../../astral-sh/uv/pulls/2102.md) on 2024-03-01 14:46_
-
----
-
-_Referenced in [astral-sh/uv#2153](../../astral-sh/uv/issues/2153.md) on 2024-03-04 14:30_
-
----
-
-_Referenced in [astral-sh/uv#2188](../../astral-sh/uv/pulls/2188.md) on 2024-03-05 00:19_
 
 ---
 

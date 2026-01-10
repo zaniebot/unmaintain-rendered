@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-24T17:14:47Z
 updated_at: 2024-03-19T02:08:27Z
 url: https://github.com/astral-sh/uv/issues/1952
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Wrong architecture detected for library install with Nix on M1
@@ -88,10 +88,6 @@ Great, thanks! Sounds like it's time for me to install Nix...
 ---
 
 _Label `bug` added by @charliermarsh on 2024-02-26 20:48_
-
----
-
-_Referenced in [astral-sh/uv#2330](../../astral-sh/uv/issues/2330.md) on 2024-03-10 14:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-11T20:45:27Z
 updated_at: 2024-04-12T19:51:18Z
 url: https://github.com/astral-sh/uv/issues/3000
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # UV_SYSTEM_PYTHON cannot be switched off
@@ -91,18 +91,6 @@ Okay, I believe I know how to fix this.
 
 ---
 
-_Referenced in [astral-sh/uv#3001](../../astral-sh/uv/pulls/3001.md) on 2024-04-11 22:01_
-
----
-
 _Closed by @charliermarsh on 2024-04-12 19:51_
-
----
-
-_Referenced in [astral-sh/uv#3829](../../astral-sh/uv/issues/3829.md) on 2024-05-24 18:50_
-
----
-
-_Referenced in [astral-sh/uv#3830](../../astral-sh/uv/pulls/3830.md) on 2024-05-24 18:53_
 
 ---

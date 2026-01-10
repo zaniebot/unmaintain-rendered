@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-08T16:06:19Z
 updated_at: 2023-12-14T15:09:15Z
 url: https://github.com/astral-sh/uv/issues/592
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Expand environment variables when resolving URLs
@@ -92,18 +92,6 @@ Doing this today. The only hard part is ensuring that we preserve the environmen
 
 ---
 
-_Referenced in [astral-sh/uv#640](../../astral-sh/uv/pulls/640.md) on 2023-12-13 21:52_
-
----
-
 _Closed by @charliermarsh on 2023-12-14 15:09_
-
----
-
-_Referenced in [pdm-project/pdm#2641](../../pdm-project/pdm/issues/2641.md) on 2024-02-21 23:48_
-
----
-
-_Referenced in [pypa/pip#12597](../../pypa/pip/issues/12597.md) on 2024-03-25 20:45_
 
 ---

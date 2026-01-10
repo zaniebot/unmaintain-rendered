@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-31T03:43:54Z
 updated_at: 2023-10-31T12:22:53Z
 url: https://github.com/astral-sh/uv/issues/249
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # `venv` creation fails when recreating a `venv` from within that `venv`
@@ -40,10 +40,6 @@ _Added to milestone `Feature complete` by @charliermarsh on 2023-10-31 03:44_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-31 03:46_
-
----
-
-_Referenced in [astral-sh/uv#250](../../astral-sh/uv/pulls/250.md) on 2023-10-31 03:47_
 
 ---
 

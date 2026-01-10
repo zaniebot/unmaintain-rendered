@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-21T02:43:04Z
 updated_at: 2024-01-04T03:51:18Z
 url: https://github.com/astral-sh/uv/issues/716
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Remove partial directories during uninstall operations
@@ -38,10 +38,6 @@ _Closed by @charliermarsh on 2024-01-03 22:33_
 ---
 
 _Reopened by @charliermarsh on 2024-01-03 22:33_
-
----
-
-_Referenced in [astral-sh/uv#762](../../astral-sh/uv/pulls/762.md) on 2024-01-03 22:40_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-11-19T10:39:40Z
 updated_at: 2023-11-20T08:48:17Z
 url: https://github.com/astral-sh/uv/issues/448
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Track which index a `File` came from
@@ -27,10 +27,6 @@ We should track that information so that for every package name we know the inde
 ---
 
 _Assigned to @konstin by @konstin on 2023-11-19 12:04_
-
----
-
-_Referenced in [astral-sh/uv#452](../../astral-sh/uv/pulls/452.md) on 2023-11-19 19:35_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-10T22:53:09Z
 updated_at: 2024-04-10T23:35:05Z
 url: https://github.com/astral-sh/uv/issues/2983
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Why does the existance of an output file speed up resolution?
@@ -71,10 +71,6 @@ _Label `performance` added by @AlexWaygood on 2024-04-10 23:02_
 _Comment by @charliermarsh on 2024-04-10 23:10_
 
 Because we use the existing resolution in the output file as the starting point for the subsequent resolution, unless you run with the upgrade flag.
-
----
-
-_Referenced in [astral-sh/uv#1398](../../astral-sh/uv/issues/1398.md) on 2024-04-10 23:14_
 
 ---
 

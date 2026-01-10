@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-02T18:12:45Z
 updated_at: 2023-11-02T19:10:04Z
 url: https://github.com/astral-sh/uv/issues/296
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Add support for Git revision references in VCS URLs
@@ -32,10 +32,6 @@ _Label `bug` added by @charliermarsh on 2023-11-02 18:12_
 ---
 
 _Added to milestone `Feature complete` by @charliermarsh on 2023-11-02 18:12_
-
----
-
-_Referenced in [astral-sh/uv#297](../../astral-sh/uv/pulls/297.md) on 2023-11-02 18:45_
 
 ---
 

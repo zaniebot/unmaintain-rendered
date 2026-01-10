@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-11T15:33:50Z
 updated_at: 2024-03-12T07:36:39Z
 url: https://github.com/astral-sh/uv/issues/2358
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Resolver panics due to missing key in inverse
@@ -79,10 +79,6 @@ no entry found for key
 
 ---
 
-_Referenced in [astral-sh/uv#2359](../../astral-sh/uv/issues/2359.md) on 2024-03-11 15:39_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-03-11 16:42_
 
 ---
@@ -94,10 +90,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-11 16:42_
 _Comment by @charliermarsh on 2024-03-11 16:42_
 
 Wow nice, thanks! I'll take these.
-
----
-
-_Referenced in [astral-sh/uv#2360](../../astral-sh/uv/pulls/2360.md) on 2024-03-11 17:18_
 
 ---
 

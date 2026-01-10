@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-26T18:54:58Z
 updated_at: 2023-11-03T08:29:46Z
 url: https://github.com/astral-sh/uv/issues/207
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Build fails when there are requires but no build backend
@@ -31,10 +31,6 @@ this is arguably a wrong usage of pyproject.toml, since PEP 517 says
 > If the pyproject.toml file is absent, or the build-backend key is missing, the source tree is not using this specification, and tools should revert to the legacy behaviour of running setup.py (either directly, or by implicitly invoking the setuptools.build_meta:__legacy__ backend).
 
 . Currently, puffin will ignore the requires and fall back to running `setup.py`. In the future, puffin a) emit a warning b) run `setup.py` in a venv with `build-system.requires` installed instead of the default set.
-
----
-
-_Referenced in [astral-sh/uv#192](../../astral-sh/uv/issues/192.md) on 2023-10-26 18:55_
 
 ---
 

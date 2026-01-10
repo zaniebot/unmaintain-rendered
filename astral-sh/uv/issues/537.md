@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-04T04:57:48Z
 updated_at: 2023-12-04T16:26:16Z
 url: https://github.com/astral-sh/uv/issues/537
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Invalid unpack operation when building source distribution
@@ -65,18 +65,6 @@ So when I try to install 4.8.0, we can't find it in the cache; and then we also 
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2023-12-04 05:02_
-
----
-
-_Referenced in [astral-sh/uv#538](../../astral-sh/uv/pulls/538.md) on 2023-12-04 05:12_
-
----
-
-_Referenced in [astral-sh/uv#541](../../astral-sh/uv/issues/541.md) on 2023-12-04 11:04_
-
----
-
-_Referenced in [astral-sh/uv#543](../../astral-sh/uv/pulls/543.md) on 2023-12-04 14:21_
 
 ---
 

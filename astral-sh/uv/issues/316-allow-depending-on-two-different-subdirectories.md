@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-04T13:39:51Z
 updated_at: 2023-11-04T15:46:44Z
 url: https://github.com/astral-sh/uv/issues/316
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Allow depending on two different subdirectories from the same Git repository
@@ -32,10 +32,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-04 13:39_
 ---
 
 _Added to milestone `Feature complete` by @charliermarsh on 2023-11-04 13:39_
-
----
-
-_Referenced in [astral-sh/uv#317](../../astral-sh/uv/pulls/317.md) on 2023-11-04 15:35_
 
 ---
 

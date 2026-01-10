@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T12:14:19Z
 updated_at: 2024-02-19T15:37:10Z
 url: https://github.com/astral-sh/uv/issues/1687
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # error: Expected '--hash', found '"--only-binary=:all:"' in `requirements.txt`
@@ -87,10 +87,6 @@ There are other options like `--no-binary`, `--prefer-binary` and more:
 
 ---
 
-_Referenced in [tox-dev/tox-uv#16](../../tox-dev/tox-uv/issues/16.md) on 2024-02-19 12:18_
-
----
-
 _Comment by @charliermarsh on 2024-02-19 14:30_
 
 Ah yeah, we don't support those in requirements files right now. We can probably add them. I think I will merge with https://github.com/astral-sh/uv/issues/1461, since it's the same issue but for `--no-binary`.
@@ -102,9 +98,5 @@ _Closed by @charliermarsh on 2024-02-19 14:30_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-02-19 15:37_
-
----
-
-_Referenced in [astral-sh/uv#4420](../../astral-sh/uv/issues/4420.md) on 2024-06-19 21:51_
 
 ---

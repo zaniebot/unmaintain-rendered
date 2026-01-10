@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-02T23:54:39Z
 updated_at: 2023-11-05T17:09:59Z
 url: https://github.com/astral-sh/uv/issues/303
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Require that URL dependencies are declared upfront
@@ -40,10 +40,6 @@ _Removed from milestone `Initial release` by @charliermarsh on 2023-11-04 17:11_
 ---
 
 _Added to milestone `Feature complete` by @charliermarsh on 2023-11-04 17:11_
-
----
-
-_Referenced in [astral-sh/uv#319](../../astral-sh/uv/pulls/319.md) on 2023-11-04 19:31_
 
 ---
 

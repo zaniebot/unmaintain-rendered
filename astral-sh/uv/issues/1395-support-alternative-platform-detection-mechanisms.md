@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T00:01:47Z
 updated_at: 2024-02-16T12:51:35Z
 url: https://github.com/astral-sh/uv/issues/1395
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support alternative platform detection mechanisms other than reading /bin/ls
@@ -49,22 +49,6 @@ Yes, with `/bin/sh` it works for me.
 
 ---
 
-_Referenced in [astral-sh/uv#1392](../../astral-sh/uv/issues/1392.md) on 2024-02-16 00:49_
-
----
-
-_Referenced in [astral-sh/uv#1418](../../astral-sh/uv/issues/1418.md) on 2024-02-16 03:45_
-
----
-
-_Referenced in [astral-sh/uv#1433](../../astral-sh/uv/pulls/1433.md) on 2024-02-16 05:14_
-
----
-
 _Closed by @BurntSushi on 2024-02-16 12:51_
-
----
-
-_Referenced in [astral-sh/uv#1493](../../astral-sh/uv/pulls/1493.md) on 2024-02-16 14:32_
 
 ---

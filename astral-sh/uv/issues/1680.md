@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-19T05:08:59Z
 updated_at: 2024-02-20T02:56:22Z
 url: https://github.com/astral-sh/uv/issues/1680
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Recursive extras not supported when installing a local package with `package-name[extra] @ .`
@@ -140,10 +140,6 @@ _Comment by @edgarrmondragon on 2024-02-19 21:03_
 > You'd need to do `uv pip install -e '.[typing]'`
 
 Oh yeah, that totally works 👍
-
----
-
-_Referenced in [astral-sh/uv#1729](../../astral-sh/uv/pulls/1729.md) on 2024-02-20 02:43_
 
 ---
 

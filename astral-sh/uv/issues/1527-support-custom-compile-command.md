@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T18:50:10Z
 updated_at: 2024-03-21T09:17:50Z
 url: https://github.com/astral-sh/uv/issues/1527
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # support CUSTOM_COMPILE_COMMAND
@@ -67,14 +67,6 @@ and has now turned into:
 ```
 
 (I am looking if we can simplify this setup with `-c` options, but back when this was set up that didn't work properly yet)
-
----
-
-_Referenced in [pypa/cibuildwheel#1778](../../pypa/cibuildwheel/pulls/1778.md) on 2024-03-15 10:44_
-
----
-
-_Referenced in [astral-sh/uv#2554](../../astral-sh/uv/pulls/2554.md) on 2024-03-19 22:23_
 
 ---
 

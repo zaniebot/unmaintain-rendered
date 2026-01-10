@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T13:13:09Z
 updated_at: 2024-02-18T20:29:48Z
 url: https://github.com/astral-sh/uv/issues/1587
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 #  uv-x86_64-pc-windows-msvc.zip is getting flagged by Windows Defender
@@ -87,17 +87,5 @@ Update from the Analyst at Microsoft:
 > Thank you for contacting Microsoft.
 > 
 So as far as I understand `uv` should no longer trigger a Microsoft Defender quarantine with the latest update 🎉 
-
----
-
-_Referenced in [astral-sh/uv#4300](../../astral-sh/uv/issues/4300.md) on 2024-06-13 12:39_
-
----
-
-_Referenced in [microsoft/winget-pkgs#157541](../../microsoft/winget-pkgs/pulls/157541.md) on 2024-06-13 13:10_
-
----
-
-_Referenced in [posit-dev/air#272](../../posit-dev/air/issues/272.md) on 2025-03-03 22:38_
 
 ---

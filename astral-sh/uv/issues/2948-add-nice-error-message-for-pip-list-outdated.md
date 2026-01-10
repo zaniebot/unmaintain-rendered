@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-09T23:01:12Z
 updated_at: 2024-04-16T13:31:02Z
 url: https://github.com/astral-sh/uv/issues/2948
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Add nice error message for `pip list --outdated` 
@@ -29,14 +29,6 @@ _Label `good first issue` added by @zanieb on 2024-04-09 23:01_
 ---
 
 _Label `compatibility` added by @zanieb on 2024-04-09 23:01_
-
----
-
-_Referenced in [astral-sh/uv#2935](../../astral-sh/uv/issues/2935.md) on 2024-04-09 23:01_
-
----
-
-_Referenced in [astral-sh/uv#3055](../../astral-sh/uv/pulls/3055.md) on 2024-04-16 07:36_
 
 ---
 

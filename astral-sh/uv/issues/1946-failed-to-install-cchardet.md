@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-24T00:25:14Z
 updated_at: 2024-02-26T23:11:40Z
 url: https://github.com/astral-sh/uv/issues/1946
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Failed to install cchardet
@@ -85,9 +85,5 @@ It looks like there's nothing for us to address here. (please let us know if tha
 ---
 
 _Closed by @zanieb on 2024-02-26 23:11_
-
----
-
-_Referenced in [astral-sh/uv#2646](../../astral-sh/uv/issues/2646.md) on 2024-03-25 11:35_
 
 ---

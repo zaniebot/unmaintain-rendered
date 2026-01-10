@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-02T01:48:58Z
 updated_at: 2024-04-14T16:19:03Z
 url: https://github.com/astral-sh/uv/issues/2126
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:40:32Z
 ```
 
 # Add `uv-virtualenv` tests for a wide range of Pythons
@@ -29,10 +29,6 @@ _Label `help wanted` added by @charliermarsh on 2024-03-02 01:49_
 ---
 
 _Label `internal` added by @charliermarsh on 2024-03-02 01:49_
-
----
-
-_Referenced in [astral-sh/uv#2139](../../astral-sh/uv/pulls/2139.md) on 2024-03-03 17:05_
 
 ---
 

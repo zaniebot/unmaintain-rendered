@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-09T18:53:55Z
 updated_at: 2024-01-19T17:17:43Z
 url: https://github.com/astral-sh/uv/issues/857
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Refer to user instead of "root" when no package name is available
@@ -32,10 +32,6 @@ _Label `error messages` added by @zanieb on 2024-01-09 18:53_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-01-09 18:57_
-
----
-
-_Referenced in [astral-sh/uv#982](../../astral-sh/uv/pulls/982.md) on 2024-01-19 00:02_
 
 ---
 

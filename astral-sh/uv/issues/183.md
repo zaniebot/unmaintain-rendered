@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-25T16:29:39Z
 updated_at: 2024-01-23T02:55:05Z
 url: https://github.com/astral-sh/uv/issues/183
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T05:40:31Z
 ```
 
 # Support `pip-compile` resolutions for alternate platforms and Python versions
@@ -60,10 +60,6 @@ Sounds good. This would be a really cool differentiating feature to support if e
 _Comment by @charliermarsh on 2023-10-25 16:48_
 
 Like even for our own projects I would love to have this. I hate that I have to use Python 3.7 to get a Python 3.7-compatible resolution.
-
----
-
-_Referenced in [astral-sh/uv#364](../../astral-sh/uv/pulls/364.md) on 2023-11-08 04:27_
 
 ---
 
