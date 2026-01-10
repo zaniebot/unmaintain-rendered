@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-28T14:44:11Z
 updated_at: 2025-03-02T01:36:40Z
 url: https://github.com/astral-sh/uv/issues/11857
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # unable use uv install  onnxruntime package on intel64 macos
@@ -103,10 +103,6 @@ Very interesting. My guess is that we cached the information about your environm
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-01 03:31_
-
----
-
-_Referenced in [astral-sh/uv#11875](../../astral-sh/uv/pulls/11875.md) on 2025-03-01 03:40_
 
 ---
 

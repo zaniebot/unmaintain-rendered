@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-01T03:51:45Z
 updated_at: 2025-03-02T01:12:52Z
 url: https://github.com/astral-sh/uv/issues/11877
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv tool uninstall` errors if `UV_TOOL_DIR` is subdirectory of current directory
@@ -53,10 +53,6 @@ It's because the parent of the path is `""`, and trying to query that fails.
 _Comment by @charliermarsh on 2025-03-01 03:53_
 
 Also, it turns out that `uv_fs::directories` just returns an empty iterator on error. That might be bad, we should probably change it.
-
----
-
-_Referenced in [astral-sh/uv#11889](../../astral-sh/uv/pulls/11889.md) on 2025-03-02 01:03_
 
 ---
 

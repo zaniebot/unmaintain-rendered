@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-06T09:23:46Z
 updated_at: 2025-02-10T18:05:54Z
 url: https://github.com/astral-sh/uv/issues/2235
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # CI/Github Action Failed to extract archive: /home/runner/.cache/uv/.tmppavima/extracted
@@ -72,10 +72,6 @@ _Comment by @anilbey on 2024-03-12 09:18_
 With the newer versions of uv and tox-uv, restarting the workflow does not change the outcome. If the cache fails, the whole workflow fails.
 
 I rolled back to uv==0.1.14 and tox-uv==1.4.0
-
----
-
-_Referenced in [BlueBrain/BlueCelluLab#149](../../BlueBrain/BlueCelluLab/pulls/149.md) on 2024-03-13 14:24_
 
 ---
 
@@ -286,17 +282,9 @@ Attaching the archive that `tokio-tar` fails to unpack (but `tar-rs` unpacks wit
 
 ---
 
-_Referenced in [astral-sh/tokio-tar#1](../../astral-sh/tokio-tar/pulls/1.md) on 2025-02-09 02:39_
-
----
-
 _Comment by @charliermarsh on 2025-02-09 03:19_
 
 I _think_ I have a fix here: https://github.com/astral-sh/tokio-tar/pull/40. It now successfully unpacks the linked archive.
-
----
-
-_Referenced in [astral-sh/uv#11359](../../astral-sh/uv/pulls/11359.md) on 2025-02-09 18:58_
 
 ---
 
@@ -323,10 +311,6 @@ thank you! i really appreciate your work narrowing down these difficult to repro
 _Comment by @charliermarsh on 2025-02-10 01:10_
 
 Thanks for your help! I'm so happy that we were able to fix it.
-
----
-
-_Referenced in [DetachHead/basedpyright#1053](../../DetachHead/basedpyright/pulls/1053.md) on 2025-02-10 10:30_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-12T15:08:45Z
 updated_at: 2025-02-18T18:12:52Z
 url: https://github.com/astral-sh/uv/issues/11447
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Insert `pyproject.toml` `[dependency-groups]` entries in sorted order
@@ -87,10 +87,6 @@ Seems reasonable to do what we do for dependencies — insertions should be sort
 ---
 
 _Renamed from "sort dependency groups in pyproject.toml" to "Insert `pyproject.toml` `[dependency-groups]` entries in sorted order" by @zanieb on 2025-02-16 19:53_
-
----
-
-_Referenced in [astral-sh/uv#11591](../../astral-sh/uv/pulls/11591.md) on 2025-02-18 09:25_
 
 ---
 

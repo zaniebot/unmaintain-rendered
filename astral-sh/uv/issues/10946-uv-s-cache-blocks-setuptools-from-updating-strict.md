@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-24T20:41:09Z
 updated_at: 2025-02-16T13:59:29Z
 url: https://github.com/astral-sh/uv/issues/10946
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv's cache blocks setuptools from updating strict-mode editable install sandbox symlinks
@@ -179,14 +179,6 @@ It's kind of a bummer that it exists today but is broken, with no warnings.
 
 ---
 
-_Referenced in [astral-sh/uv#11488](../../astral-sh/uv/issues/11488.md) on 2025-02-13 19:18_
-
----
-
-_Referenced in [neutrinoceros/gpgi#269](../../neutrinoceros/gpgi/pulls/269.md) on 2025-02-16 09:33_
-
----
-
 _Comment by @eli-schwartz on 2025-02-16 10:09_
 
 Since this is about a setuptools mode, not a uv mode, I wonder if the ticket should have its title changed.
@@ -220,9 +212,5 @@ _Renamed from "Strict `uv pip install -e` doesn't update symlinks when files cha
 _Comment by @charlesnicholson on 2025-02-16 13:59_
 
 (I made a minor edit to the top-level description to indicate that the issue is around re-running setuptools)
-
----
-
-_Referenced in [astral-sh/uv#9637](../../astral-sh/uv/issues/9637.md) on 2025-02-24 15:39_
 
 ---

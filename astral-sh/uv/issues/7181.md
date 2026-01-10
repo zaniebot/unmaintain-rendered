@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-07T21:05:27Z
 updated_at: 2025-02-06T07:49:22Z
 url: https://github.com/astral-sh/uv/issues/7181
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Make `uv init` options more user-friendly
@@ -46,14 +46,6 @@ _Assigned to @zanieb by @zanieb on 2024-09-08 02:51_
 ---
 
 _Label `documentation` added by @zanieb on 2024-09-08 02:51_
-
----
-
-_Referenced in [astral-sh/uv#7199](../../astral-sh/uv/issues/7199.md) on 2024-09-08 20:53_
-
----
-
-_Referenced in [astral-sh/uv#11192](../../astral-sh/uv/pulls/11192.md) on 2025-02-03 19:55_
 
 ---
 

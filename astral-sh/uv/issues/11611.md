@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-02-19T01:30:09Z
 updated_at: 2025-03-14T06:47:01Z
 url: https://github.com/astral-sh/uv/issues/11611
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Support --compile-bytecode for only the installed packages
@@ -125,10 +125,6 @@ Interesting. Why not just compile bytecode at the end?
 > I don't think there is a safe way to install it regardless how we do the install because to my best understanding it is always last-writer-win. I don't think it is the installer's responsibility to handle this not-working scenarios.
 
 It's the difference between two partially installed packages (with arbitrarily mixed overrides) and one fully installed package with another partially overridden. Unfortunately, this is something we need to consider as some packages do this intentionally.
-
----
-
-_Referenced in [astral-sh/uv#11633](../../astral-sh/uv/pulls/11633.md) on 2025-02-19 19:03_
 
 ---
 

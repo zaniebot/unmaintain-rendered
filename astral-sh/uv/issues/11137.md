@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-31T18:01:19Z
 updated_at: 2025-02-01T01:58:52Z
 url: https://github.com/astral-sh/uv/issues/11137
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Build backend should not expand recursive extras
@@ -33,10 +33,6 @@ _Label `bug` added by @charliermarsh on 2025-01-31 18:01_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-31 19:24_
-
----
-
-_Referenced in [astral-sh/uv#11142](../../astral-sh/uv/pulls/11142.md) on 2025-01-31 19:26_
 
 ---
 

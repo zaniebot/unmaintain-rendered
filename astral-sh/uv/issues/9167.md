@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-16T17:01:44Z
 updated_at: 2025-02-12T18:08:58Z
 url: https://github.com/astral-sh/uv/issues/9167
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Modules override `[project.scripts]` for `uv run`
@@ -130,26 +130,10 @@ I think this roughly matches your suggestion with `Undetermined`, just with more
 
 ---
 
-_Referenced in [astral-sh/uv#9722](../../astral-sh/uv/pulls/9722.md) on 2024-12-08 15:58_
-
----
-
 _Comment by @2022tgoel on 2024-12-08 16:02_
 
 Hi, 
 I liked your idea, so I implemented something along those lines in https://github.com/astral-sh/uv/pull/9722. Could you take a look at this? Thanks.
-
----
-
-_Referenced in [ManimCommunity/manim#4138](../../ManimCommunity/manim/pulls/4138.md) on 2025-01-27 00:26_
-
----
-
-_Referenced in [astral-sh/uv#11423](../../astral-sh/uv/issues/11423.md) on 2025-02-11 21:30_
-
----
-
-_Referenced in [astral-sh/uv#11431](../../astral-sh/uv/pulls/11431.md) on 2025-02-11 22:10_
 
 ---
 

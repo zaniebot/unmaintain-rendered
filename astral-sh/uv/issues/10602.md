@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-14T16:45:51Z
 updated_at: 2025-01-29T16:23:33Z
 url: https://github.com/astral-sh/uv/issues/10602
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # recognizing uv.sources when building .whl files
@@ -70,9 +70,5 @@ I think we can track it in the linked issue.
 ---
 
 _Closed by @charliermarsh on 2025-01-29 16:23_
-
----
-
-_Referenced in [astral-sh/uv#11587](../../astral-sh/uv/issues/11587.md) on 2025-02-18 14:28_
 
 ---

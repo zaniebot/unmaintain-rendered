@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-20T20:16:53Z
 updated_at: 2025-02-20T22:05:05Z
 url: https://github.com/astral-sh/uv/issues/11678
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv tool install` sets up correct Python environment only on second installation
@@ -349,10 +349,6 @@ If I readd the dependency, build, publish, and the issue reappears (2.0.7 TestPy
 _Comment by @charliermarsh on 2025-02-20 21:45_
 
 I'm not sure why this is happening in some cases but not others, but it does look like a clear bug in the code (after looking at the relevant routines). We're continuing to use the "bad" interpreter further down, when we should be overriding it.
-
----
-
-_Referenced in [astral-sh/uv#11680](../../astral-sh/uv/pulls/11680.md) on 2025-02-20 21:56_
 
 ---
 

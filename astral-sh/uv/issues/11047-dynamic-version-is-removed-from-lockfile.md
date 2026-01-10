@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T01:12:32Z
 updated_at: 2025-01-29T01:27:10Z
 url: https://github.com/astral-sh/uv/issues/11047
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Dynamic version is removed from lockfile occasionally
@@ -38,10 +38,6 @@ _Issue opened by @charliermarsh on 2025-01-29 01:12_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-01-29 01:12_
-
----
-
-_Referenced in [astral-sh/uv#11046](../../astral-sh/uv/pulls/11046.md) on 2025-01-29 01:13_
 
 ---
 

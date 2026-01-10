@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-21T11:32:12Z
 updated_at: 2025-01-29T14:50:48Z
 url: https://github.com/astral-sh/uv/issues/6318
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Make it possible to lock dependencies in a script
@@ -86,10 +86,6 @@ No, we need to design it. Are you interested in helping with that?
 
 ---
 
-_Referenced in [astral-sh/uv#7483](../../astral-sh/uv/issues/7483.md) on 2024-09-20 03:23_
-
----
-
 _Comment by @SummerGram on 2024-09-20 16:53_
 
 Hi, @zanieb
@@ -97,10 +93,6 @@ Hi, @zanieb
 I do not see the information about the compiled_dependencies in https://packaging.python.org/en/latest/specifications/inline-script-metadata/#inline-script-metadata
 
 Where can I search more information?
-
----
-
-_Referenced in [astral-sh/uv#7538](../../astral-sh/uv/issues/7538.md) on 2024-09-20 18:22_
 
 ---
 
@@ -250,10 +242,6 @@ I'm into that interface, yeah. What about `uv add --script` — won't create?
 
 ---
 
-_Referenced in [astral-sh/uv#9688](../../astral-sh/uv/issues/9688.md) on 2024-12-11 21:47_
-
----
-
 _Comment by @schrockn on 2024-12-21 14:25_
 
 +1 to this feature! Was surprised it wasn't already there. 
@@ -284,14 +272,6 @@ And thank for all your work on this spectacular tool!
 
 ---
 
-_Referenced in [astral-sh/uv#10123](../../astral-sh/uv/pulls/10123.md) on 2024-12-23 18:43_
-
----
-
-_Referenced in [astral-sh/uv#10135](../../astral-sh/uv/pulls/10135.md) on 2024-12-25 19:01_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-25 19:18_
 
 ---
@@ -318,10 +298,6 @@ It was easier to put it elsewhere — but I'm generally in favor of support an e
 
 ---
 
-_Referenced in [astral-sh/uv#11064](../../astral-sh/uv/issues/11064.md) on 2025-01-29 14:30_
-
----
-
 _Comment by @charliermarsh on 2025-01-29 14:43_
 
 I personally think the embedded lockfile is somewhat impractical -- just way too big. But we can probably support it.
@@ -331,9 +307,5 @@ I personally think the embedded lockfile is somewhat impractical -- just way too
 _Comment by @zanieb on 2025-01-29 14:50_
 
 Let's discuss further in #11064 
-
----
-
-_Referenced in [astral-sh/uv#12303](../../astral-sh/uv/issues/12303.md) on 2025-03-20 17:30_
 
 ---

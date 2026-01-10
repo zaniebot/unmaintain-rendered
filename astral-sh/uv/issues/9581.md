@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-02T19:37:11Z
 updated_at: 2025-02-17T08:42:46Z
 url: https://github.com/astral-sh/uv/issues/9581
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv pip` ignores `.python-version` file
@@ -65,10 +65,6 @@ It would be nice if for example `uv pip compile` defaults `--python-version` if 
 
 If it is too tricky or undesirable to untangle with the current default / pip compatibility for the version of the Python interpreter used, then perhaps a new option could be added like `--python-version-file` similar to how the [`setup-python` action allows](https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md#using-the-python-version-file-input)? Or perhaps `--python-version` could accept a filename of `pyproject.toml` or `.python-version` as an argument?
 
-
----
-
-_Referenced in [astral-sh/uv-pre-commit#34](../../astral-sh/uv-pre-commit/issues/34.md) on 2025-01-06 14:40_
 
 ---
 
@@ -139,9 +135,5 @@ With #11486 we'll respect `UV_PYTHON` in `uv pip compile`
 _Comment by @staticf0x on 2025-02-17 08:42_
 
 Can confirm with 0.6.0 that `UV_PYTHON` is honored, but `.python-version` still isn't.
-
----
-
-_Referenced in [astral-sh/uv#14624](../../astral-sh/uv/pulls/14624.md) on 2025-07-15 14:18_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-04T03:05:13Z
 updated_at: 2025-02-28T13:44:31Z
 url: https://github.com/astral-sh/uv/issues/8796
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Virtual environments created by uv are backed up by Time Machine
@@ -43,10 +43,6 @@ Cargo's solution to this was to use the `core-foundation` crate to set the relev
 - https://github.com/rust-lang/cargo/pull/4386
 - https://github.com/rust-lang/cargo/blob/392d68bff462015e8e7d8588333a09b08b4a10a6/crates/cargo-util/src/paths.rs#L840-L861
 - https://developer.apple.com/documentation/foundation/nsurlisexcludedfrombackupkey
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-02-26 19:26_
 
 ---
 

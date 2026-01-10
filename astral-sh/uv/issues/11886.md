@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-01T22:48:29Z
 updated_at: 2025-03-03T16:07:57Z
 url: https://github.com/astral-sh/uv/issues/11886
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Handling of signal exit from subprocess is incorrect
@@ -134,9 +134,5 @@ _Comment by @geofft on 2025-03-03 16:07_
 > Does this mean that even though we have `[[noreturn]] void exit(int status);`, there is no way to set the signal + code dumped byte ourselves on exit to get the shell handling as if we had `execve`'d?
 
 Correct, there is no way unless you count `raise(SIGSEGV)` (i.e., `kill(getpid(), SIGSEGV)`).
-
----
-
-_Referenced in [astral-sh/uv#12658](../../astral-sh/uv/issues/12658.md) on 2025-04-03 19:10_
 
 ---

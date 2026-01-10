@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T17:21:49Z
 updated_at: 2025-02-20T08:11:17Z
 url: https://github.com/astral-sh/uv/issues/11103
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Display the built file name instead of the canonicalized name in `uv build`
@@ -93,14 +93,6 @@ _Renamed from "Files built by `uv build` do not necessarily match the "success" 
 ---
 
 _Unassigned @konstin by @konstin on 2025-02-18 08:42_
-
----
-
-_Referenced in [astral-sh/uv#11593](../../astral-sh/uv/pulls/11593.md) on 2025-02-18 11:04_
-
----
-
-_Referenced in [astral-sh/uv#11635](../../astral-sh/uv/issues/11635.md) on 2025-02-19 19:59_
 
 ---
 

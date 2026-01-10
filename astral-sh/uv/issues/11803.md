@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-26T17:05:33Z
 updated_at: 2025-03-01T03:32:49Z
 url: https://github.com/astral-sh/uv/issues/11803
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # No `uv tool update-shell` suggestion in powershell
@@ -80,10 +80,6 @@ https://github.com/astral-sh/uv/blob/4c161d284bac47104db1ccd2e73daeb2e4d0d182/cr
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-28 02:07_
-
----
-
-_Referenced in [astral-sh/uv#11846](../../astral-sh/uv/pulls/11846.md) on 2025-02-28 02:24_
 
 ---
 

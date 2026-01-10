@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-18T21:29:36Z
 updated_at: 2025-02-18T22:46:06Z
 url: https://github.com/astral-sh/uv/issues/11605
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Mininum Python requirement from dependency greater than root project.
@@ -93,10 +93,6 @@ dependencies = [
     "sphinx>=8.2.0; python_version >= '3.11'"
 ]
 ```
-
----
-
-_Referenced in [astral-sh/uv#11606](../../astral-sh/uv/issues/11606.md) on 2025-02-18 22:40_
 
 ---
 

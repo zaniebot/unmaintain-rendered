@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-24T20:20:37Z
 updated_at: 2025-02-12T18:04:21Z
 url: https://github.com/astral-sh/uv/issues/10945
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Platform-dependent dependency bug (`sling-mac-arm64`)
@@ -59,10 +59,6 @@ Right, pip doesn't read this metadata.
 
 ---
 
-_Referenced in [dagster-io/dagster#27365](../../dagster-io/dagster/pulls/27365.md) on 2025-01-24 20:34_
-
----
-
 _Comment by @charliermarsh on 2025-01-24 20:40_
 
 If helpful, you should be able to add this to your configuration file in the interim:
@@ -100,10 +96,6 @@ _Added to milestone `v0.6.0` by @charliermarsh on 2025-01-24 21:52_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-24 21:53_
-
----
-
-_Referenced in [astral-sh/uv#11395](../../astral-sh/uv/pulls/11395.md) on 2025-02-10 18:57_
 
 ---
 

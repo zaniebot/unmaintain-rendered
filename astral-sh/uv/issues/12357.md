@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T08:19:11Z
 updated_at: 2025-03-22T15:53:25Z
 url: https://github.com/astral-sh/uv/issues/12357
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Does auto option in ``torch-backend`` preview only select the highest supported CUDA version?
@@ -90,10 +90,6 @@ _Assigned to @charliermarsh by @zanieb on 2025-03-21 13:38_
 _Comment by @charliermarsh on 2025-03-21 14:03_
 
 Yeah it should be trying each compatible version in sequence. This should be easy to fix. Thanks. 
-
----
-
-_Referenced in [astral-sh/uv#12385](../../astral-sh/uv/pulls/12385.md) on 2025-03-22 00:37_
 
 ---
 

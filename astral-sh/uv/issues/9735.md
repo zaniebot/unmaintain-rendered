@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-09T09:50:22Z
 updated_at: 2025-02-18T12:44:14Z
 url: https://github.com/astral-sh/uv/issues/9735
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Very large lockfile and clean up
@@ -329,10 +329,6 @@ _Label `bug` added by @konstin on 2025-02-06 13:58_
 ---
 
 _Assigned to @BurntSushi by @konstin on 2025-02-06 15:10_
-
----
-
-_Referenced in [astral-sh/uv#11293](../../astral-sh/uv/pulls/11293.md) on 2025-02-06 19:59_
 
 ---
 

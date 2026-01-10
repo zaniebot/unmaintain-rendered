@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-21T17:25:45Z
 updated_at: 2025-03-12T00:34:56Z
 url: https://github.com/astral-sh/uv/issues/9331
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Can't resolve a package version from private gitlab package index
@@ -50,10 +50,6 @@ Both projects are pure python and have exactly the same `Requires-Python: >=3.11
 _Comment by @zanieb on 2024-11-21 17:29_
 
 Hm, I think we're just incorrectly displaying that hint. It sounds like your dependency isn't on the index though? Can you share the verbose output? Are you sure it's there?
-
----
-
-_Referenced in [astral-sh/uv#9332](../../astral-sh/uv/pulls/9332.md) on 2024-11-21 17:38_
 
 ---
 
@@ -752,10 +748,6 @@ index-mode='gitlab'
 
 Another option would be retrying with authentication even after 404, but who knows what that breaks!
 Also, python tools already handle pypi, github and gitlab so it's "only" matter of copying their behaviour, isn't it?
-
----
-
-_Referenced in [astral-sh/uv#9008](../../astral-sh/uv/issues/9008.md) on 2024-11-25 23:09_
 
 ---
 
@@ -1796,10 +1788,6 @@ edit: I don't commit or contribute, other than that documentation I intend to do
 
 ---
 
-_Referenced in [astral-sh/uv#9583](../../astral-sh/uv/pulls/9583.md) on 2024-12-02 19:52_
-
----
-
 _Comment by @rafalkrupinski on 2024-12-03 09:32_
 
 @zanieb @samypr100 
@@ -1842,10 +1830,6 @@ _Comment by @rafalkrupinski on 2024-12-03 14:26_
 _Comment by @charliermarsh on 2024-12-03 18:58_
 
 Yeah, either manual edit or repeat the URL.
-
----
-
-_Referenced in [astral-sh/uv#11600](../../astral-sh/uv/issues/11600.md) on 2025-02-18 15:25_
 
 ---
 

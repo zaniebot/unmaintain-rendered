@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-10T16:37:20Z
 updated_at: 2025-02-19T23:41:53Z
 url: https://github.com/astral-sh/uv/issues/4204
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Improve message when distutil is not available on legacy python. 
@@ -184,10 +184,6 @@ _Comment by @zanieb on 2025-01-17 05:43_
 Thank you!
 
 I need to figure out if we _should_ be failing or if we should just switchover to sysconfig when distutils is not installed.
-
----
-
-_Referenced in [astral-sh/uv#10713](../../astral-sh/uv/pulls/10713.md) on 2025-01-17 15:53_
 
 ---
 
@@ -367,10 +363,6 @@ Audited 133 packages in 0.38ms
 XXX on  main [!] via 🐍 v3.12.7
 ❯
 ```
-
----
-
-_Referenced in [astral-sh/uv#10819](../../astral-sh/uv/pulls/10819.md) on 2025-01-21 17:31_
 
 ---
 

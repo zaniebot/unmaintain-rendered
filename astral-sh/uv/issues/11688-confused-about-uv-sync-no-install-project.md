@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-21T05:36:01Z
 updated_at: 2025-02-23T00:14:17Z
 url: https://github.com/astral-sh/uv/issues/11688
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Confused about uv sync --no-install-project
@@ -105,9 +105,5 @@ I wonder how to best expose this… I suppose there’s no way to know if the pr
 Perhaps `ub knit` console output, or better yet pry project.toml generated could have a note about this?
 
 I also wonder if it would help to add the inverse flag, `--install-project`? Somehow having to “shell out” to uv pip install seems clunky.
-
----
-
-_Referenced in [arg-tech/papa#27](../../arg-tech/papa/pulls/27.md) on 2025-10-09 14:20_
 
 ---

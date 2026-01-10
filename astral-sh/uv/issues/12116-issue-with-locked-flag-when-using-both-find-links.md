@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-11T16:33:22Z
 updated_at: 2025-03-14T01:16:55Z
 url: https://github.com/astral-sh/uv/issues/12116
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Issue with --locked flag when using both find-links and custom indices in workspaces
@@ -183,13 +183,5 @@ Thanks for the clear issue. This is the same as https://github.com/astral-sh/uv/
 ---
 
 _Closed by @charliermarsh on 2025-03-14 01:16_
-
----
-
-_Referenced in [astral-sh/uv#12272](../../astral-sh/uv/issues/12272.md) on 2025-03-18 14:16_
-
----
-
-_Referenced in [astral-sh/uv#11419](../../astral-sh/uv/issues/11419.md) on 2025-05-20 17:20_
 
 ---

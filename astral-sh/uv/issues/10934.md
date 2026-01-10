@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-24T10:27:11Z
 updated_at: 2025-03-19T05:38:09Z
 url: https://github.com/astral-sh/uv/issues/10934
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Better default for uv sync
@@ -99,14 +99,6 @@ The benefit being that, if uv or the monorepo layout/commands change in the futu
 
 ---
 
-_Referenced in [astral-sh/uv#11797](../../astral-sh/uv/issues/11797.md) on 2025-02-26 12:01_
-
----
-
-_Referenced in [astral-sh/uv#11958](../../astral-sh/uv/issues/11958.md) on 2025-03-04 18:34_
-
----
-
 _Comment by @johnthagen on 2025-03-08 15:31_
 
 I wanted to voice my support for `--all-groups` being the default for `uv sync`. We are looking to migrate from Poetry, Poetry does this, and I've always thought it provided the smoothest, least-surprising experience. We've already had several new team members be surprised that they added some dependencies in a dependency group and they showed up in the lock file, but are not installed with `uv sync` by default.
@@ -157,10 +149,6 @@ But now-adays I think moving forward it would be ideal if `dev` wasn't special a
 
 ---
 
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2025-03-08 15:32_
-
----
-
 _Comment by @rsyring on 2025-03-08 15:37_
 
 Related: https://github.com/astral-sh/uv/issues/11691
@@ -196,10 +184,6 @@ Not sure what I think on special casing for the dev group.  I like that it's a s
 
 ---
 
-_Referenced in [astral-sh/uv#12067](../../astral-sh/uv/issues/12067.md) on 2025-03-08 15:57_
-
----
-
 _Comment by @zanieb on 2025-03-08 18:39_
 
 I'd be more in favor of adding a special "all" key to `default-groups` (e.g., `default-groups = list[str] | literal["all"]`) than changing the default here. I think, as we don't sync all `optional-dependencies` by default, it'd feel surprising to sync all `dependency-groups` by default.
@@ -228,10 +212,6 @@ That seems super reasonable, especially since it's not syntactically ambiguous i
 
 ---
 
-_Referenced in [astral-sh/uv#12289](../../astral-sh/uv/pulls/12289.md) on 2025-03-18 16:24_
-
----
-
 _Comment by @Gankra on 2025-03-18 16:25_
 
 Put up an implementation of that in #12289
@@ -257,9 +237,5 @@ I kind of expect all workspace members to be installed by default, as it's alrea
 Since the workspace accepts glob patterns, not always one might know all packages that will be installed - my use case is that I have a directory of meta/private/others packages on my monorepo, included as `members = ["meta/*"]`. The names would leak on the public `pyproject.toml` in `dev-dependencies` (DRY issues also) but `--all-packages` fixes it
 
 Can we have the opt-in sugar for it as well? Can open a new issue if you'd like, thanks 🙂
-
----
-
-_Referenced in [astral-sh/uv#12353](../../astral-sh/uv/issues/12353.md) on 2025-03-20 22:43_
 
 ---

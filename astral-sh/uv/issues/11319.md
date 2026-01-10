@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-07T15:36:18Z
 updated_at: 2025-02-15T08:48:23Z
 url: https://github.com/astral-sh/uv/issues/11319
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Indicate the version of uv that was used to generate/update the uv.lock file in the file itself
@@ -62,10 +62,6 @@ _Renamed from "Indicate the version of uv that was used to lock the dependencies
 ---
 
 _Assigned to @charliermarsh by @zanieb on 2025-02-07 15:38_
-
----
-
-_Referenced in [astral-sh/uv#11353](../../astral-sh/uv/pulls/11353.md) on 2025-02-09 13:18_
 
 ---
 

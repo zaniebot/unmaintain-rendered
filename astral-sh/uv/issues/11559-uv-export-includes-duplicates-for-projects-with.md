@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-16T18:12:58Z
 updated_at: 2025-02-20T20:19:47Z
 url: https://github.com/astral-sh/uv/issues/11559
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv export` includes duplicates for projects with conflicts
@@ -88,14 +88,6 @@ _Label `bug` added by @charliermarsh on 2025-02-16 18:13_
 _Comment by @charliermarsh on 2025-02-16 19:58_
 
 To clarify, this is only true for the given example after #11513 \cc @BurntSushi since before that PR, this example doesn't write any conflict markers to the lockfile.
-
----
-
-_Referenced in [astral-sh/uv#11513](../../astral-sh/uv/pulls/11513.md) on 2025-02-18 01:27_
-
----
-
-_Referenced in [astral-sh/uv#11643](../../astral-sh/uv/pulls/11643.md) on 2025-02-19 22:29_
 
 ---
 

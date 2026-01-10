@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-05T12:24:03Z
 updated_at: 2025-02-05T16:13:47Z
 url: https://github.com/astral-sh/uv/issues/11242
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Invalid checkout setting ``fetch-depth`` in ``publish-docs`` action
@@ -83,10 +83,6 @@ I previously considered putting the ``git-revision-date-localized-plugin`` in ``
 _Comment by @zanieb on 2025-02-05 15:39_
 
 Oh, you only put it in the non-insiders file? :D that explains that
-
----
-
-_Referenced in [astral-sh/uv#11246](../../astral-sh/uv/pulls/11246.md) on 2025-02-05 15:43_
 
 ---
 

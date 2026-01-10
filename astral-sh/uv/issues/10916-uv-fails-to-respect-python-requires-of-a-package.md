@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-23T22:14:25Z
 updated_at: 2025-01-29T16:13:43Z
 url: https://github.com/astral-sh/uv/issues/10916
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv fails to respect `python-requires` of a package
@@ -83,10 +83,6 @@ _Label `bug` added by @PhilipVinc on 2025-01-23 22:14_
 
 ---
 
-_Referenced in [QuSpin/QuSpin#742](../../QuSpin/QuSpin/issues/742.md) on 2025-01-23 22:14_
-
----
-
 _Comment by @zanieb on 2025-01-23 22:17_
 
 Thanks for all the details in the report! Unfortunately this is by-design and a duplicate. Please see https://github.com/astral-sh/uv/issues/4022 (and the linked issues there).
@@ -102,9 +98,5 @@ _Label `duplicate` added by @zanieb on 2025-01-23 22:18_
 ---
 
 _Closed by @charliermarsh on 2025-01-29 16:13_
-
----
-
-_Referenced in [astral-sh/uv#4022](../../astral-sh/uv/issues/4022.md) on 2025-09-18 09:11_
 
 ---

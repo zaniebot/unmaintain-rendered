@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-14T23:50:15Z
 updated_at: 2025-02-06T22:04:29Z
 url: https://github.com/astral-sh/uv/issues/10619
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Non-deterministic .pyc file with `UV_COMPILE_BYTECODE`
@@ -256,10 +256,6 @@ I'm not sure yet if we can mitigate this downstream.
 ---
 
 _Label `upstream` added by @konstin on 2025-02-03 14:16_
-
----
-
-_Referenced in [python/cpython#129724](../../python/cpython/issues/129724.md) on 2025-02-06 12:42_
 
 ---
 

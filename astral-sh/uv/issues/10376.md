@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-07T18:47:45Z
 updated_at: 2025-01-28T17:17:36Z
 url: https://github.com/astral-sh/uv/issues/10376
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Document that we ignore upper bounds on Python
@@ -24,10 +24,6 @@ See https://github.com/astral-sh/uv/issues/4022 and linked issues for details.
 ---
 
 _Label `documentation` added by @zanieb on 2025-01-07 18:47_
-
----
-
-_Referenced in [astral-sh/uv#10373](../../astral-sh/uv/issues/10373.md) on 2025-01-07 18:47_
 
 ---
 
@@ -46,10 +42,6 @@ Maybe
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-25 21:29_
-
----
-
-_Referenced in [astral-sh/uv#10964](../../astral-sh/uv/pulls/10964.md) on 2025-01-25 22:54_
 
 ---
 

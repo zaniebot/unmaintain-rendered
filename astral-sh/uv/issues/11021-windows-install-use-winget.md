@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-28T15:12:22Z
 updated_at: 2025-01-28T15:22:03Z
 url: https://github.com/astral-sh/uv/issues/11021
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Windows Install - Use winget
@@ -59,9 +59,5 @@ Thanks @FishAlchemist
 ---
 
 _Closed by @jfmatth on 2025-01-28 15:22_
-
----
-
-_Referenced in [astral-sh/uv#11456](../../astral-sh/uv/issues/11456.md) on 2025-02-12 18:02_
 
 ---

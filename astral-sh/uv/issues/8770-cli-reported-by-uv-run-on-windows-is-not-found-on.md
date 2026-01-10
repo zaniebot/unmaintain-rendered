@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-03T05:58:08Z
 updated_at: 2025-03-10T11:08:10Z
 url: https://github.com/astral-sh/uv/issues/8770
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # CLI reported by `uv run` on Windows is not found on invocation
@@ -69,10 +69,6 @@ This issue has been reported and being discussed in Nuitka project at: https://g
 
 ---
 
-_Referenced in [Nuitka/Nuitka#3173](../../Nuitka/Nuitka/issues/3173.md) on 2024-11-03 05:58_
-
----
-
 _Comment by @kayhayen on 2024-11-03 11:33_
 
 Just to provide you with what you are lacking there. Nuitka is providing its own scripts for Windows, these are cmd files, passed as `scripts` to `setup()` and not use entry points. The point being, that Nuitka wants a clean Python interpreter, so those scripts effectively only do `python -m nuitka` for the user.
@@ -117,23 +113,11 @@ I believe the recommendation is to use the formalized [executable entrypoints](h
 
 ---
 
-_Referenced in [astral-sh/uv#8888](../../astral-sh/uv/issues/8888.md) on 2024-11-09 17:31_
-
----
-
 _Comment by @kayhayen on 2024-11-11 13:22_
 
 Yes, I am sure that's the recommendation, however, with Nuitka supporting a wide range of Python versions, some of which predate these things being any good, I really don't want to deal with making the move like that. Do you consider to become compatible by placing the said scripts unchanged to where they belong, even though packagers should (generally) not do it?
 
 And if that's not the case, is there a way for me to detect installation by uv pip so I can inform the users, that they should use standard pip instead, and alternatively how to invoke it, or maybe install a nuitka console script on Windows, that does only that?
-
----
-
-_Referenced in [astral-sh/uv#9010](../../astral-sh/uv/issues/9010.md) on 2024-11-12 17:51_
-
----
-
-_Referenced in [astral-sh/uv#9099](../../astral-sh/uv/pulls/9099.md) on 2024-11-13 20:37_
 
 ---
 
@@ -216,14 +200,6 @@ _Comment by @zanieb on 2024-11-15 14:41_
 Oh, I see. Hm. Thanks for that additional context.
 
 We can track in https://github.com/astral-sh/uv/issues/9151
-
----
-
-_Referenced in [astral-sh/uv#9151](../../astral-sh/uv/issues/9151.md) on 2024-11-15 14:44_
-
----
-
-_Referenced in [astral-sh/uv#9303](../../astral-sh/uv/issues/9303.md) on 2024-11-21 04:26_
 
 ---
 

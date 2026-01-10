@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-09T19:39:28Z
 updated_at: 2025-03-13T11:02:52Z
 url: https://github.com/astral-sh/uv/issues/9747
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Downloading python from behind corporate proxy fails to download in `uv` but works with `wget` and `rye`
@@ -158,14 +158,6 @@ _Label `bug` added by @charliermarsh on 2024-12-09 21:59_
 
 ---
 
-_Referenced in [astral-sh/uv#9753](../../astral-sh/uv/pulls/9753.md) on 2024-12-09 22:06_
-
----
-
 _Closed by @charliermarsh on 2024-12-10 12:33_
-
----
-
-_Referenced in [astral-sh/uv#12149](../../astral-sh/uv/issues/12149.md) on 2025-03-13 11:00_
 
 ---

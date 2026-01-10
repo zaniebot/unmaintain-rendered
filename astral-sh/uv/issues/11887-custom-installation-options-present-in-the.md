@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-01T23:41:41Z
 updated_at: 2025-03-16T01:39:15Z
 url: https://github.com/astral-sh/uv/issues/11887
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Custom installation options present in the pyproject.toml
@@ -134,25 +134,5 @@ So you want some declarative configuration which `renovate` could use to know th
 _Comment by @hongbo-miao on 2025-03-02 22:58_
 
 Yup, that will help Renovate, otherwise all dependencies failed to bump versions and just stuck there. Thanks! ☺️
-
----
-
-_Referenced in [hongbo-miao/hongbomiao.com#24323](../../hongbo-miao/hongbomiao.com/pulls/24323.md) on 2025-03-02 22:59_
-
----
-
-_Referenced in [hongbo-miao/hongbomiao.com#24528](../../hongbo-miao/hongbomiao.com/pulls/24528.md) on 2025-03-02 22:59_
-
----
-
-_Referenced in [hongbo-miao/hongbomiao.com#24628](../../hongbo-miao/hongbomiao.com/pulls/24628.md) on 2025-03-02 22:59_
-
----
-
-_Referenced in [ultralytics/ultralytics#17527](../../ultralytics/ultralytics/pulls/17527.md) on 2025-03-15 14:58_
-
----
-
-_Referenced in [hongbo-miao/hongbomiao.com#25189](../../hongbo-miao/hongbomiao.com/pulls/25189.md) on 2025-03-16 01:39_
 
 ---

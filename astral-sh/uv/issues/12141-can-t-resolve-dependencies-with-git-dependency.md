@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-12T18:48:39Z
 updated_at: 2025-03-12T22:46:08Z
 url: https://github.com/astral-sh/uv/issues/12141
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Can't resolve dependencies with git dependency
@@ -75,10 +75,6 @@ uv 0.6.6 (Homebrew 2025-03-12)
 ---
 
 _Label `bug` added by @adriangb on 2025-03-12 18:48_
-
----
-
-_Referenced in [open-telemetry/opentelemetry-python-contrib#3012](../../open-telemetry/opentelemetry-python-contrib/pulls/3012.md) on 2025-03-12 18:50_
 
 ---
 

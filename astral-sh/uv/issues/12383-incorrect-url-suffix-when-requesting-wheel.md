@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T23:40:25Z
 updated_at: 2025-03-22T15:36:51Z
 url: https://github.com/astral-sh/uv/issues/12383
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Incorrect URL suffix when requesting wheel metadata in Simple HTML API
@@ -72,10 +72,6 @@ Thanks, it makes sense to strip these fragments.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-22 00:07_
-
----
-
-_Referenced in [astral-sh/uv#12384](../../astral-sh/uv/pulls/12384.md) on 2025-03-22 00:11_
 
 ---
 

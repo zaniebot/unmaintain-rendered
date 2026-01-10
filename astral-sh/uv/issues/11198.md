@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-03T22:14:07Z
 updated_at: 2025-02-03T22:14:17Z
 url: https://github.com/astral-sh/uv/issues/11198
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Improve `uv pip install` error when `--extra` is used
@@ -28,9 +28,5 @@ Maybe easier if we special-case a singleton? Problematic with `--all-extras` too
 ---
 
 _Label `error messages` added by @zanieb on 2025-02-03 22:14_
-
----
-
-_Referenced in [astral-sh/uv#14558](../../astral-sh/uv/issues/14558.md) on 2025-07-11 12:53_
 
 ---

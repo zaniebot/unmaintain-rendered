@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-31T17:37:24Z
 updated_at: 2025-02-17T04:20:37Z
 url: https://github.com/astral-sh/uv/issues/11136
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add hint for DevPi indexes without `/+simple`
@@ -115,9 +115,5 @@ I was leaning towards doing nothing and closing out. Wdyt?
 ---
 
 _Closed by @zanieb on 2025-02-17 04:20_
-
----
-
-_Referenced in [astral-sh/uv#13930](../../astral-sh/uv/issues/13930.md) on 2025-06-09 21:15_
 
 ---

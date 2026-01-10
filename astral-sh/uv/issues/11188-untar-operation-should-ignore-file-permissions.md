@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-03T17:56:26Z
 updated_at: 2025-02-03T19:29:12Z
 url: https://github.com/astral-sh/uv/issues/11188
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Untar operation should ignore file permissions
@@ -33,10 +33,6 @@ _Label `bug` added by @charliermarsh on 2025-02-03 17:56_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2025-02-03 17:56_
-
----
-
-_Referenced in [astral-sh/uv#11191](../../astral-sh/uv/pulls/11191.md) on 2025-02-03 19:20_
 
 ---
 

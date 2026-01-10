@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T14:19:05Z
 updated_at: 2025-02-21T21:11:58Z
 url: https://github.com/astral-sh/uv/issues/11095
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add monorepo support to uv with `uv init --monorepo` and other supporting commands
@@ -49,10 +49,6 @@ See https://github.com/matthewadams/uv-monorepo for WIP `uv` monorepo.
 ---
 
 _Label `enhancement` added by @matthewadams on 2025-01-30 14:19_
-
----
-
-_Referenced in [astral-sh/uv#10960](../../astral-sh/uv/issues/10960.md) on 2025-01-30 14:20_
 
 ---
 

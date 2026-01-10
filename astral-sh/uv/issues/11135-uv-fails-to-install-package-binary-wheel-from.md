@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-31T17:01:44Z
 updated_at: 2025-02-06T11:13:27Z
 url: https://github.com/astral-sh/uv/issues/11135
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv fails to install package (binary wheel) from internal index while pip succeeds
@@ -345,14 +345,6 @@ We're tracking support for that index type in https://github.com/astral-sh/uv/is
 ---
 
 _Closed by @zanieb on 2025-01-31 17:34_
-
----
-
-_Referenced in [astral-sh/uv#11136](../../astral-sh/uv/issues/11136.md) on 2025-01-31 17:37_
-
----
-
-_Referenced in [astral-sh/uv#11276](../../astral-sh/uv/issues/11276.md) on 2025-02-06 11:12_
 
 ---
 

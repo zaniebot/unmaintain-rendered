@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-28T14:55:50Z
 updated_at: 2025-01-30T16:58:02Z
 url: https://github.com/astral-sh/uv/issues/3883
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Configure pip compile via pyproject.toml or uv.toml
@@ -73,10 +73,6 @@ _Comment by @inoa-jboliveira on 2024-09-20 00:33_
 Hi everyone, I feel like uv lock is way more versatile and my worflow no longer contains pip compile but it does have multiple uv export which guarantee versions are the same across multiple txt files. Also I adopted the universal format long ago which greatly simplified the workflow even with pip compile.
 
 From my end, this PR can be closed. I let the maintainer decide since there are some thumbs up emojis
-
----
-
-_Referenced in [astral-sh/uv#8865](../../astral-sh/uv/issues/8865.md) on 2024-11-07 12:05_
 
 ---
 

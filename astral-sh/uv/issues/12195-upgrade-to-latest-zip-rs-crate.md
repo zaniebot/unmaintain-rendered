@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-15T20:54:57Z
 updated_at: 2025-03-16T23:58:13Z
 url: https://github.com/astral-sh/uv/issues/12195
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Upgrade to latest `zip-rs` crate
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-03-15 20:54_
 ---
 
 _Label `dependencies` added by @charliermarsh on 2025-03-15 20:55_
-
----
-
-_Referenced in [astral-sh/uv#12196](../../astral-sh/uv/pulls/12196.md) on 2025-03-15 20:59_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-22T08:15:41Z
 updated_at: 2025-02-25T14:39:47Z
 url: https://github.com/astral-sh/uv/issues/8439
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Packages being built even if flagged as "only-binary"
@@ -313,9 +313,5 @@ _Comment by @tomalf2 on 2025-02-25 14:39_
 Following the answer of @ara-incom I managed to install pyarrow also with python 3.13.2. In my case, what's in `.python-version` seems to be unimportant. The trick is to run `uv venv -p 3.13.2` before `uv pip install pyarrow`. It works also with python 3.11.11, and  might work with other python versions too, but not the 3.12.2. 
 
 What's really important here is the `-p <python-version>`. Creating an empty dir and the file `.python-version` with the version 3.13.2 (or alternatively running `uv python pin 3.13.2`) before `uv venv` without additional options, didn't work for me. The cause of the error is that `uv pip install pyarrow` tries to build pyarrow and fails with `error: command 'cmake' failed: No such file or directory`. 
-
----
-
-_Referenced in [astral-sh/uv#12447](../../astral-sh/uv/issues/12447.md) on 2025-03-25 10:37_
 
 ---

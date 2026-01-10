@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-29T17:09:50Z
 updated_at: 2025-01-31T15:00:24Z
 url: https://github.com/astral-sh/uv/issues/8670
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # FR: signed docker images
@@ -35,10 +35,6 @@ _Label `help wanted` added by @zanieb on 2024-10-29 17:18_
 ---
 
 _Label `releases` added by @zanieb on 2024-10-29 17:18_
-
----
-
-_Referenced in [astral-sh/uv#8685](../../astral-sh/uv/pulls/8685.md) on 2024-10-29 20:41_
 
 ---
 

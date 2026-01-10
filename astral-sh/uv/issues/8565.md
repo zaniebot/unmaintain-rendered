@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-25T13:33:19Z
 updated_at: 2025-01-30T16:22:23Z
 url: https://github.com/astral-sh/uv/issues/8565
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Authentication reused in two named indexes from the same GitLab
@@ -205,22 +205,10 @@ Thank you for the fast responses. Then we'll wait for #4583 to be implemented an
 
 ---
 
-_Referenced in [astral-sh/uv#9741](../../astral-sh/uv/issues/9741.md) on 2024-12-09 22:12_
-
----
-
-_Referenced in [astral-sh/uv#11074](../../astral-sh/uv/pulls/11074.md) on 2025-01-29 20:55_
-
----
-
 _Closed by @zanieb on 2025-01-30 16:22_
 
 ---
 
 _Closed by @zanieb on 2025-01-30 16:22_
-
----
-
-_Referenced in [astral-sh/uv#11244](../../astral-sh/uv/issues/11244.md) on 2025-02-05 15:15_
 
 ---

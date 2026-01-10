@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-31T02:53:06Z
 updated_at: 2025-03-15T22:34:37Z
 url: https://github.com/astral-sh/uv/issues/10247
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # uv add should use ^ instead of >= when adding dependencies to pyproject.toml
@@ -145,15 +145,7 @@ I also think there is value in adding an option like `--save-exact` to bind the 
 
 ---
 
-_Referenced in [astral-sh/uv#7810](../../astral-sh/uv/issues/7810.md) on 2025-01-03 17:55_
-
----
-
 _Closed by @zanieb on 2025-01-06 20:34_
-
----
-
-_Referenced in [astral-sh/uv#6783](../../astral-sh/uv/issues/6783.md) on 2025-01-07 19:51_
 
 ---
 

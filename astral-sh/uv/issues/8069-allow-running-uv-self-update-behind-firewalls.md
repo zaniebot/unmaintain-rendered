@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T04:59:36Z
 updated_at: 2025-02-12T17:09:13Z
 url: https://github.com/astral-sh/uv/issues/8069
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Allow running uv self update behind firewalls
@@ -38,10 +38,6 @@ We should also codify that `INSTALLER_DOWNLOAD_URL` is a supported feature and n
 
 ---
 
-_Referenced in [axodotdev/cargo-dist#1449](../../axodotdev/cargo-dist/issues/1449.md) on 2024-10-10 17:14_
-
----
-
 _Label `releases` added by @zanieb on 2024-10-10 17:15_
 
 ---
@@ -49,10 +45,6 @@ _Label `releases` added by @zanieb on 2024-10-10 17:15_
 _Comment by @gaborbernat on 2024-10-24 14:52_
 
 Contributed this feature upstream, https://github.com/axodotdev/axoupdater/pull/199. Should be available within their next release.
-
----
-
-_Referenced in [astral-sh/uv#6304](../../astral-sh/uv/issues/6304.md) on 2024-10-27 21:59_
 
 ---
 

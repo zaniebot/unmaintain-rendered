@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-13T14:44:39Z
 updated_at: 2025-02-18T12:45:26Z
 url: https://github.com/astral-sh/uv/issues/11479
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Duplicate packages with multiple conflicts
@@ -125,14 +125,6 @@ _Label `bug` added by @ElliottKasoar on 2025-02-13 14:44_
 _Comment by @BurntSushi on 2025-02-13 15:21_
 
 Thanks for the reproduction! I can confirm this is a bug.
-
----
-
-_Referenced in [stfc/janus-core#415](../../stfc/janus-core/pulls/415.md) on 2025-02-14 11:28_
-
----
-
-_Referenced in [astral-sh/uv#11513](../../astral-sh/uv/pulls/11513.md) on 2025-02-14 15:48_
 
 ---
 

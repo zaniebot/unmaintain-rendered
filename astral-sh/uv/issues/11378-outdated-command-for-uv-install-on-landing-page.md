@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-10T08:26:19Z
 updated_at: 2025-02-10T20:42:51Z
 url: https://github.com/astral-sh/uv/issues/11378
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # outdated command for uv install on landing page
@@ -49,10 +49,6 @@ _No response_
 ---
 
 _Label `bug` added by @BenediktMaag on 2025-02-10 08:26_
-
----
-
-_Referenced in [astral-sh/uv#11380](../../astral-sh/uv/pulls/11380.md) on 2025-02-10 09:26_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-20T10:18:30Z
 updated_at: 2025-02-20T11:26:16Z
 url: https://github.com/astral-sh/uv/issues/11659
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # differences between pip & uv for opencv
@@ -68,13 +68,5 @@ I wish we had a way to declare incompatibilities between packages (here, opencv-
 ---
 
 _Closed by @nim65s on 2025-02-20 11:26_
-
----
-
-_Referenced in [astral-sh/uv#13437](../../astral-sh/uv/pulls/13437.md) on 2025-05-13 20:55_
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-08-18 16:36_
 
 ---

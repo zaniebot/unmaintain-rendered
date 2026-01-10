@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T00:24:31Z
 updated_at: 2025-03-08T14:12:19Z
 url: https://github.com/astral-sh/uv/issues/6393
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # uv init command got an error on windows
@@ -165,10 +165,6 @@ _Unassigned @zanieb by @charliermarsh on 2024-08-29 14:38_
 _Comment by @charliermarsh on 2024-08-29 14:38_
 
 Thanks, I can make some improvements here now.
-
----
-
-_Referenced in [astral-sh/uv#6815](../../astral-sh/uv/pulls/6815.md) on 2024-08-29 14:45_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-18T18:04:53Z
 updated_at: 2025-01-31T18:21:44Z
 url: https://github.com/astral-sh/uv/issues/8344
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Installing PyTorch: An index URL could not be queried
@@ -64,10 +64,6 @@ leads to a different error:
 I am on a Linux System and use uv 0.4.24. 
 
 Using virtualenv and normal pip works fine, thus I suspect a problem with uv here.
-
----
-
-_Referenced in [astral-sh/uv#5945](../../astral-sh/uv/issues/5945.md) on 2024-10-18 18:05_
 
 ---
 
@@ -174,10 +170,6 @@ Perhaps you could also participate in the discussion and share your insights. Co
 _Comment by @Leon0402 on 2024-10-21 09:54_
 
 @FishAlchemist Love it! I'll have a look later. 
-
----
-
-_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-10-22 07:21_
 
 ---
 
@@ -438,9 +430,5 @@ This is a GitHub action on a custom self-hosted GitHub runner that is inside a d
 _Comment by @zanieb on 2025-01-31 18:21_
 
 Great thank you! I will open an issue to track an improvement here.
-
----
-
-_Referenced in [astral-sh/uv#11138](../../astral-sh/uv/issues/11138.md) on 2025-01-31 18:23_
 
 ---

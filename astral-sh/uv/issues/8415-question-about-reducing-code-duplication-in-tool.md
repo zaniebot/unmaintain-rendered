@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-21T11:20:09Z
 updated_at: 2025-02-25T14:45:51Z
 url: https://github.com/astral-sh/uv/issues/8415
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Question about reducing code duplication in `[tool.uv.sources]`
@@ -71,10 +71,6 @@ _Label `enhancement` added by @zanieb on 2024-10-21 14:36_
 ---
 
 _Label `wish` added by @zanieb on 2024-10-21 14:36_
-
----
-
-_Referenced in [astral-sh/uv#8577](../../astral-sh/uv/issues/8577.md) on 2024-10-25 22:00_
 
 ---
 

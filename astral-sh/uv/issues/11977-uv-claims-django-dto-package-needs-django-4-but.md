@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-05T14:54:13Z
 updated_at: 2025-03-05T16:10:28Z
 url: https://github.com/astral-sh/uv/issues/11977
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv claims django-dto package needs django <4, but thats not what the dependency declaration says
@@ -87,10 +87,6 @@ I believe that `django = "^3.0"` means `django = ">=3.0, <4"`.
 
 ---
 
-_Referenced in [nicogall/django-dto#2](../../nicogall/django-dto/issues/2.md) on 2025-03-05 14:54_
-
----
-
 _Comment by @charliermarsh on 2025-03-05 14:55_
 
 (That's non-standard syntax that is specific to Poetry.)
@@ -127,10 +123,6 @@ That gives me a pr I can send, so perfect!
 ---
 
 _Closed by @sean-abbott on 2025-03-05 15:13_
-
----
-
-_Referenced in [nicogall/django-dto#3](../../nicogall/django-dto/pulls/3.md) on 2025-03-05 15:21_
 
 ---
 

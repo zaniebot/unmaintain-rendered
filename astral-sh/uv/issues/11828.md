@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T11:01:32Z
 updated_at: 2025-02-28T01:07:37Z
 url: https://github.com/astral-sh/uv/issues/11828
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Encoding issue in Windows cmd when path contains non-ASCII characters
@@ -73,10 +73,6 @@ _Comment by @flaribbit on 2025-02-27 11:05_
 `python -m venv` do not have this issue as it `chcp 65001` before setting environment variables.
 
 https://github.com/python/cpython/blob/3.13/Lib/venv/scripts/nt/activate.bat#L3-L9
-
----
-
-_Referenced in [astral-sh/uv#11831](../../astral-sh/uv/pulls/11831.md) on 2025-02-27 11:33_
 
 ---
 

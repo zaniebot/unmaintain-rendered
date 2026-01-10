@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-06T18:06:30Z
 updated_at: 2025-03-06T19:14:40Z
 url: https://github.com/astral-sh/uv/issues/12013
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Configure dependency sources only locally
@@ -36,13 +36,5 @@ _Label `enhancement` added by @shfattig on 2025-03-06 18:06_
 _Comment by @zanieb on 2025-03-06 19:14_
 
 I think this is loosely a duplicate of https://github.com/astral-sh/uv/issues/6772
-
----
-
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2025-04-23 17:14_
-
----
-
-_Referenced in [astral-sh/uv#13073](../../astral-sh/uv/issues/13073.md) on 2025-04-23 19:27_
 
 ---

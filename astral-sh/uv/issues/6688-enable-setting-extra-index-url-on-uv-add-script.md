@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-27T14:03:22Z
 updated_at: 2025-02-12T13:49:07Z
 url: https://github.com/astral-sh/uv/issues/6688
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Enable setting extra-index-url on uv add --script
@@ -78,10 +78,6 @@ Writes the following to the script and packages in the private index are now res
 # [[tool.uv.index]]
 # url = "https://fakepackagerepo.com"
 ```
-
----
-
-_Referenced in [astral-sh/uv#11443](../../astral-sh/uv/pulls/11443.md) on 2025-02-12 12:27_
 
 ---
 

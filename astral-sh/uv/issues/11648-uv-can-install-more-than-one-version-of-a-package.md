@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-19T23:48:07Z
 updated_at: 2025-02-20T20:17:15Z
 url: https://github.com/astral-sh/uv/issues/11648
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv can install more than one version of a package at a time
@@ -1473,10 +1473,6 @@ I think it's just a bug in the installer phase though, not the resolver, which i
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-20 05:01_
-
----
-
-_Referenced in [astral-sh/uv#11653](../../astral-sh/uv/pulls/11653.md) on 2025-02-20 05:31_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-07T10:52:22Z
 updated_at: 2025-03-17T21:12:23Z
 url: https://github.com/astral-sh/uv/issues/12038
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # running `uv pip install .` should systematically reinstall the package
@@ -102,22 +102,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-03-07 20:55_
 
 ---
 
-_Referenced in [astral-sh/uv#12176](../../astral-sh/uv/pulls/12176.md) on 2025-03-14 20:15_
-
----
-
 _Closed by @charliermarsh on 2025-03-17 21:12_
 
 ---
 
 _Closed by @charliermarsh on 2025-03-17 21:12_
-
----
-
-_Referenced in [astral-sh/uv#13388](../../astral-sh/uv/issues/13388.md) on 2025-05-11 19:27_
-
----
-
-_Referenced in [astral-sh/uv#13876](../../astral-sh/uv/issues/13876.md) on 2025-06-06 00:01_
 
 ---

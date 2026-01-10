@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-27T11:19:21Z
 updated_at: 2025-03-01T03:22:38Z
 url: https://github.com/astral-sh/uv/issues/11829
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Layered environments don't inherit `include-system-site-packages`
@@ -90,10 +90,6 @@ _Label `help wanted` added by @charliermarsh on 2025-02-28 02:52_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-01 02:31_
-
----
-
-_Referenced in [astral-sh/uv#11873](../../astral-sh/uv/pulls/11873.md) on 2025-03-01 03:11_
 
 ---
 

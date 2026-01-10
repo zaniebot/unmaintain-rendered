@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-18T12:51:06Z
 updated_at: 2025-02-13T15:14:28Z
 url: https://github.com/astral-sh/uv/issues/7494
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Bug: extra indexes break uv add, uv remove without manual intervention
@@ -76,10 +76,6 @@ I'm running uv 0.4.11 on Windows 10
 _Comment by @zanieb on 2024-09-18 12:56_
 
 Thanks for the report! Adding indexes during `uv add` just isn't implemented yet — but we're working on it.
-
----
-
-_Referenced in [astral-sh/uv#7496](../../astral-sh/uv/issues/7496.md) on 2024-09-18 13:06_
 
 ---
 

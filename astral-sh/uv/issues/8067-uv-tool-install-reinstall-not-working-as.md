@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T03:12:54Z
 updated_at: 2025-02-15T13:53:50Z
 url: https://github.com/astral-sh/uv/issues/8067
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv tool install --reinstall` not working as documented
@@ -158,10 +158,6 @@ An additional note is that some packages were specifically installed with an old
 
 ---
 
-_Referenced in [astral-sh/uv#11534](../../astral-sh/uv/issues/11534.md) on 2025-02-15 11:05_
-
----
-
 _Comment by @elliot-100 on 2025-02-15 12:25_
 
 I appreciate there's an ongoing discussion about how best to handle this, but I feel this related message is wrong as it stands:
@@ -192,10 +188,6 @@ Usage: uv tool upgrade --reinstall <NAME>...
 For more information, try '--help'.
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#11535](../../astral-sh/uv/pulls/11535.md) on 2025-02-15 13:53_
 
 ---
 

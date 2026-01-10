@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-10T22:20:55Z
 updated_at: 2025-03-11T03:00:10Z
 url: https://github.com/astral-sh/uv/issues/12105
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv add` gives ambiguous error
@@ -121,10 +121,6 @@ _Label `bug` removed by @konstin on 2025-03-10 22:29_
 ---
 
 _Label `error messages` added by @konstin on 2025-03-10 22:29_
-
----
-
-_Referenced in [astral-sh/uv#12106](../../astral-sh/uv/pulls/12106.md) on 2025-03-10 22:36_
 
 ---
 

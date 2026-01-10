@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-15T13:45:46Z
 updated_at: 2025-03-23T13:29:23Z
 url: https://github.com/astral-sh/uv/issues/12187
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv_build Error when the folder name is capitalized
@@ -131,10 +131,6 @@ It probably should, yeah.
 ---
 
 _Assigned to @konstin by @konstin on 2025-03-17 13:07_
-
----
-
-_Referenced in [astral-sh/uv#12240](../../astral-sh/uv/pulls/12240.md) on 2025-03-17 14:37_
 
 ---
 

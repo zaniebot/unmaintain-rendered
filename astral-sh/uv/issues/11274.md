@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-06T08:18:39Z
 updated_at: 2025-02-06T19:52:39Z
 url: https://github.com/astral-sh/uv/issues/11274
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv selects an unavailable onnxruntime version (1.20.1) despite it not existing on PyPI for the given platform
@@ -74,10 +74,6 @@ _Label `bug` added by @markovejnovic on 2025-02-06 08:18_
 
 ---
 
-_Referenced in [python-poetry/poetry#10151](../../python-poetry/poetry/issues/10151.md) on 2025-02-06 08:22_
-
----
-
 _Comment by @charliermarsh on 2025-02-06 13:57_
 
 You can solve this with:
@@ -137,10 +133,6 @@ environments = [
 ```
 
 Which is a nicer solution in that you don't have to change your supported Python range. But it's not working as expected, so looking into that.
-
----
-
-_Referenced in [microsoft/onnxruntime#23604](../../microsoft/onnxruntime/pulls/23604.md) on 2025-02-06 19:45_
 
 ---
 

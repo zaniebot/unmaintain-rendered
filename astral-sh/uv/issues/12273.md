@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-18T10:50:14Z
 updated_at: 2025-03-19T11:06:31Z
 url: https://github.com/astral-sh/uv/issues/12273
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Cache mismatch when installing a package for differents Python versions
@@ -123,10 +123,6 @@ I think that the `bug` label is relevant for above reasons.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-18 20:56_
-
----
-
-_Referenced in [astral-sh/uv#12301](../../astral-sh/uv/pulls/12301.md) on 2025-03-18 22:16_
 
 ---
 

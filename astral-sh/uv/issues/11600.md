@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-18T15:25:29Z
 updated_at: 2025-03-10T17:24:26Z
 url: https://github.com/astral-sh/uv/issues/11600
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add an `authentication` mode to `[index]` configuration
@@ -50,10 +50,6 @@ _Label `enhancement` added by @zanieb on 2025-02-18 15:25_
 
 ---
 
-_Referenced in [astral-sh/uv#3923](../../astral-sh/uv/issues/3923.md) on 2025-02-18 15:26_
-
----
-
 _Comment by @morotti on 2025-02-18 18:24_
 
 thanks, it would be great if it can be set with an environment variable, like `UV_INDEX_AUTHENTICATION=always`
@@ -77,14 +73,6 @@ I was thinking of cases where you don't want to accidentally leak credentials to
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-02-26 15:07_
-
----
-
-_Referenced in [astral-sh/uv#11853](../../astral-sh/uv/issues/11853.md) on 2025-02-28 13:13_
-
----
-
-_Referenced in [astral-sh/uv#11896](../../astral-sh/uv/pulls/11896.md) on 2025-03-02 18:55_
 
 ---
 

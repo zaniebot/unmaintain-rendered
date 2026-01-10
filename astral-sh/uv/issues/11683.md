@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-21T02:45:28Z
 updated_at: 2025-02-21T05:14:32Z
 url: https://github.com/astral-sh/uv/issues/11683
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Request to Reintroduce HTTP Support for Git URLs
@@ -40,10 +40,6 @@ _Label `enhancement` added by @kubotty on 2025-02-21 02:45_
 _Comment by @charliermarsh on 2025-02-21 05:05_
 
 I think this might've been an oversight.
-
----
-
-_Referenced in [astral-sh/uv#11687](../../astral-sh/uv/pulls/11687.md) on 2025-02-21 05:06_
 
 ---
 

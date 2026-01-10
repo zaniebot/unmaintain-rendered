@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-06T02:28:41Z
 updated_at: 2025-02-06T02:28:45Z
 url: https://github.com/astral-sh/uv/issues/11272
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Show all downloads regardless of size in non-interactive output
@@ -28,9 +28,5 @@ I sort of agree, but have not explore the user experience.
 ---
 
 _Label `cli` added by @zanieb on 2025-02-06 02:28_
-
----
-
-_Referenced in [astral-sh/uv#11165](../../astral-sh/uv/pulls/11165.md) on 2025-02-06 02:29_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-26T17:35:25Z
 updated_at: 2025-03-06T14:01:38Z
 url: https://github.com/astral-sh/uv/issues/9446
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `tool.uv.sources` should work for indirect dependencies
@@ -113,18 +113,10 @@ _Label `needs-decision` added by @zanieb on 2025-01-07 19:57_
 
 ---
 
-_Referenced in [astral-sh/uv#11388](../../astral-sh/uv/issues/11388.md) on 2025-02-10 17:38_
-
----
-
 _Comment by @zmeir on 2025-02-10 20:51_
 
 Just adding my 2 cents here. I often have the following use-case:  
 Package `c` depends on package `b`, which in turn depends on package `a`, but package `c` does not directly depend on `a`. Then, I want to implement something in `a` and see how it affects `c`. Being able to set `a` as an editable local path for `c` via `[tool.uv.sources]` would simplify this flow, especially since I already do the same when implementing something in `b` and testing how it affects `c`.
-
----
-
-_Referenced in [dagster-io/dagster#28140](../../dagster-io/dagster/pulls/28140.md) on 2025-03-02 16:36_
 
 ---
 
@@ -151,9 +143,5 @@ override-dependencies = [
 ```
 
 Of course this will not install `indirect` as an editable package, but I use this mostly for CI so it's less of an issue for me.
-
----
-
-_Referenced in [UKGovernmentBEIS/control-arena#475](../../UKGovernmentBEIS/control-arena/issues/475.md) on 2025-07-29 11:48_
 
 ---

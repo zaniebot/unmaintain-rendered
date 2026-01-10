@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-06T14:32:59Z
 updated_at: 2025-02-06T23:52:51Z
 url: https://github.com/astral-sh/uv/issues/11282
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add `uv sync --dry-run`
@@ -33,10 +33,6 @@ _Label `cli` added by @charliermarsh on 2025-02-06 14:33_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-06 20:45_
-
----
-
-_Referenced in [astral-sh/uv#11299](../../astral-sh/uv/pulls/11299.md) on 2025-02-06 21:26_
 
 ---
 

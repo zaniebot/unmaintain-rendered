@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-11T15:34:19Z
 updated_at: 2025-02-11T22:51:19Z
 url: https://github.com/astral-sh/uv/issues/11422
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv sync --dry-run` compares to existing interpreter
@@ -33,10 +33,6 @@ _Label `bug` added by @charliermarsh on 2025-02-11 15:34_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-11 15:34_
-
----
-
-_Referenced in [astral-sh/uv#11427](../../astral-sh/uv/pulls/11427.md) on 2025-02-11 21:14_
 
 ---
 

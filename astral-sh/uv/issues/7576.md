@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-20T10:00:53Z
 updated_at: 2025-03-20T15:38:22Z
 url: https://github.com/astral-sh/uv/issues/7576
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # UV Workspaces setup  and imports
@@ -247,13 +247,5 @@ _Comment by @C-Loftus on 2025-03-20 15:38_
 > I'm noticing something similar in my VS Code environment while using [someone else's working example](https://github.com/fedragon/uv-workspace-example/tree/main#). I can successfully run a script in the root-level package that imports and executes a function from the subpackage, but Pylance complains that the package import can't be resolved, and I can't navigate to the definitions:
 
 @alexcochran Not sure about your specific example, but if it helps I have now have a working project with uv workspaces, 2 packages, and one library; it works with vscode and pylance for me. It is all open source so feel free to take a look https://github.com/cgs-earth/IODH-Mappings It should be straightforward to build with the makefile at the root.
-
----
-
-_Referenced in [astral-sh/uv#9637](../../astral-sh/uv/issues/9637.md) on 2025-05-22 02:46_
-
----
-
-_Referenced in [thromer/uv-monorepo-example#1](../../thromer/uv-monorepo-example/pulls/1.md) on 2025-06-29 21:52_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-07T16:58:00Z
 updated_at: 2025-02-08T11:17:33Z
 url: https://github.com/astral-sh/uv/issues/11321
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Allow using `latest` with extras in `uvx`
@@ -98,10 +98,6 @@ httpx[cli]@0.28
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-08 01:46_
-
----
-
-_Referenced in [astral-sh/uv#11335](../../astral-sh/uv/pulls/11335.md) on 2025-02-08 01:51_
 
 ---
 

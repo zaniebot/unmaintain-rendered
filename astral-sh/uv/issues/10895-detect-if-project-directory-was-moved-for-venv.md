@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-23T13:08:04Z
 updated_at: 2025-02-26T10:02:49Z
 url: https://github.com/astral-sh/uv/issues/10895
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Detect if project directory was moved for venv reconstruction
@@ -46,10 +46,6 @@ _Label `help wanted` added by @zanieb on 2025-01-23 14:06_
 
 ---
 
-_Referenced in [astral-sh/uv#11168](../../astral-sh/uv/pulls/11168.md) on 2025-02-02 17:39_
-
----
-
 _Comment by @eabase on 2025-02-25 07:53_
 
 Please see my .venv management proposal in #11773 
@@ -79,13 +75,5 @@ Maybe it's not, but it sounded highly relevant, unless I'm missing out on some o
 > So I thought, since the location of the venv is hardcoded in the entrypoint scripts, it would be appropriate for uv to keep track of whether the venv location has changed. For example, it could go into the pyvenv.cfg file under a uv-venv-path variable or such. 
 
 This is really not wanted. There is absolutely no sane reason to hard-code the venv environment name into a project file. 
-
----
-
-_Referenced in [astral-sh/uv#13989](../../astral-sh/uv/issues/13989.md) on 2025-06-12 13:30_
-
----
-
-_Referenced in [astral-sh/uv#13994](../../astral-sh/uv/issues/13994.md) on 2025-06-12 13:38_
 
 ---

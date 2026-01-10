@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-21T22:28:48Z
 updated_at: 2025-02-13T20:36:29Z
 url: https://github.com/astral-sh/uv/issues/8430
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Windows Clippy job failing with `GLIBC_2.39` not found
@@ -81,10 +81,6 @@ Runner Image
   Included Software: https://github.com/actions/runner-images/blob/ubuntu22/20241015.1/images/ubuntu/Ubuntu2204-Readme.md
   Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu22%2F20241015.1
 ```
-
----
-
-_Referenced in [astral-sh/uv#8466](../../astral-sh/uv/pulls/8466.md) on 2024-10-22 16:06_
 
 ---
 

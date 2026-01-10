@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-04T17:29:58Z
 updated_at: 2025-02-05T22:55:43Z
 url: https://github.com/astral-sh/uv/issues/11222
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Please consider publishing astral-tokio-tar on crates.io
@@ -48,10 +48,6 @@ _Label `enhancement` added by @musicinmybrain on 2025-02-04 17:29_
 _Comment by @charliermarsh on 2025-02-04 18:10_
 
 I'm open to this. We did change a behavior or two so I would want to update the documentation and make those changes very clear.
-
----
-
-_Referenced in [astral-sh/tokio-tar#14](../../astral-sh/tokio-tar/pulls/14.md) on 2025-02-04 18:23_
 
 ---
 

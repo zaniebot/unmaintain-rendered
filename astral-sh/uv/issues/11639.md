@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-19T20:37:00Z
 updated_at: 2025-02-20T14:54:42Z
 url: https://github.com/astral-sh/uv/issues/11639
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add a uv wrapper
@@ -75,10 +75,6 @@ With this enhancement, the user doesn't need to worry about what version of `uv`
 ---
 
 _Label `enhancement` added by @cliebBS on 2025-02-19 20:37_
-
----
-
-_Referenced in [astral-sh/uv#11637](../../astral-sh/uv/issues/11637.md) on 2025-02-19 20:43_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-07T17:10:35Z
 updated_at: 2025-02-07T22:43:34Z
 url: https://github.com/astral-sh/uv/issues/11322
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # "Narrowed range" logging always shows the initial specifiers
@@ -28,10 +28,6 @@ _Label `tracing` added by @charliermarsh on 2025-02-07 17:10_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-07 17:28_
-
----
-
-_Referenced in [astral-sh/uv#11334](../../astral-sh/uv/pulls/11334.md) on 2025-02-07 22:21_
 
 ---
 

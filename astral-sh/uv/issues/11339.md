@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-08T11:06:27Z
 updated_at: 2025-02-08T15:05:05Z
 url: https://github.com/astral-sh/uv/issues/11339
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Custom index: unexpected HTML error (but works in pip)
@@ -106,10 +106,6 @@ _Label `bug` added by @PhilipVinc on 2025-02-08 11:06_
 
 ---
 
-_Referenced in [astariul/github-hosted-pypi#84](../../astariul/github-hosted-pypi/issues/84.md) on 2025-02-08 11:07_
-
----
-
 _Comment by @PhilipVinc on 2025-02-08 11:09_
 
 Ah sorry, I suppose that is equivalent to https://github.com/astral-sh/uv/issues/2602 which is not planned.
@@ -139,10 +135,6 @@ _Label `bug` removed by @charliermarsh on 2025-02-08 13:42_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2025-02-08 13:42_
-
----
-
-_Referenced in [astral-sh/uv#11340](../../astral-sh/uv/pulls/11340.md) on 2025-02-08 13:53_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-11T21:09:45Z
 updated_at: 2025-02-13T15:35:26Z
 url: https://github.com/astral-sh/uv/issues/7312
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # uv equivalent to pipx inject
@@ -83,10 +83,6 @@ _Closed by @zachvalenta on 2024-09-12 13:00_
 
 ---
 
-_Referenced in [ManimCommunity/manim#4162](../../ManimCommunity/manim/pulls/4162.md) on 2025-02-09 01:00_
-
----
-
 _Comment by @holmboe on 2025-02-13 10:56_
 
 An observation.
@@ -105,9 +101,5 @@ With uv I don't get the `sphinx-autobuild` executable on my path.
 _Comment by @zanieb on 2025-02-13 15:35_
 
 That's #6314 
-
----
-
-_Referenced in [astral-sh/uv#14746](../../astral-sh/uv/issues/14746.md) on 2025-07-22 22:17_
 
 ---

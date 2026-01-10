@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-24T15:47:16Z
 updated_at: 2025-03-25T01:50:31Z
 url: https://github.com/astral-sh/uv/issues/12434
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Invalid dash-separated key 'description-file' on aiosonic, pytest-watch appeared in last hour
@@ -147,10 +147,6 @@ _Comment by @thundergolfer on 2025-03-24 16:06_
 Also looks like this fix requires a relatively new version of `uv`  (>=0.6.2)
 
 https://github.com/astral-sh/uv/pull/11585
-
----
-
-_Referenced in [astral-sh/uv#12438](../../astral-sh/uv/pulls/12438.md) on 2025-03-24 16:09_
 
 ---
 
@@ -348,18 +344,6 @@ Yeah we're missing one spot in `uv sync`. I will fix it.
 
 ---
 
-_Referenced in [astral-sh/uv#12437](../../astral-sh/uv/issues/12437.md) on 2025-03-24 16:43_
-
----
-
-_Referenced in [olirice/alembic_utils#153](../../olirice/alembic_utils/issues/153.md) on 2025-03-24 16:48_
-
----
-
-_Referenced in [astral-sh/uv#12440](../../astral-sh/uv/issues/12440.md) on 2025-03-24 16:48_
-
----
-
 _Comment by @darkwind-noveo on 2025-03-24 16:49_
 
 in the mean time, thanks for workaround adviced
@@ -401,22 +385,6 @@ _Comment by @jacob-bush-shopify on 2025-03-24 16:53_
 ```
 echo "setuptools<78" | uv pip install -b - gputil
 ```
-
----
-
-_Referenced in [crytic/solc-select#227](../../crytic/solc-select/pulls/227.md) on 2025-03-24 17:23_
-
----
-
-_Referenced in [ethereum/execution-spec-tests#1345](../../ethereum/execution-spec-tests/pulls/1345.md) on 2025-03-24 17:30_
-
----
-
-_Referenced in [pypa/setuptools#4910](../../pypa/setuptools/issues/4910.md) on 2025-03-24 17:46_
-
----
-
-_Referenced in [astral-sh/uv#12446](../../astral-sh/uv/issues/12446.md) on 2025-03-24 19:06_
 
 ---
 

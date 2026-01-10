@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-15T14:27:58Z
 updated_at: 2025-02-18T17:45:59Z
 url: https://github.com/astral-sh/uv/issues/11536
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add documentation for Python version requests in `uv tool install`
@@ -87,10 +87,6 @@ _Renamed from "Enable python version selection using uv tool install" to "Add do
 _Comment by @zanieb on 2025-02-15 20:09_
 
 We can add that, good catch!
-
----
-
-_Referenced in [astral-sh/uv#11598](../../astral-sh/uv/pulls/11598.md) on 2025-02-18 13:50_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-12T21:57:59Z
 updated_at: 2025-03-17T18:13:48Z
 url: https://github.com/astral-sh/uv/issues/11461
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `ModuleNotFoundError` when attempting to use certain `tool.uv.build-backend` settings
@@ -58,10 +58,6 @@ Python 3.13.2
 ---
 
 _Label `bug` added by @chrisrodrigue on 2025-02-12 21:58_
-
----
-
-_Referenced in [astral-sh/uv#11382](../../astral-sh/uv/issues/11382.md) on 2025-02-12 21:58_
 
 ---
 

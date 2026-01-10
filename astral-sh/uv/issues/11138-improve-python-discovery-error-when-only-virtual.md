@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-31T18:23:48Z
 updated_at: 2025-01-31T21:54:01Z
 url: https://github.com/astral-sh/uv/issues/11138
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Improve Python discovery error when only virtual environments are allowed
@@ -47,14 +47,6 @@ _Assigned to @zanieb by @zanieb on 2025-01-31 18:23_
 ---
 
 _Label `enhancement` removed by @zanieb on 2025-01-31 18:23_
-
----
-
-_Referenced in [astral-sh/uv#11139](../../astral-sh/uv/pulls/11139.md) on 2025-01-31 18:47_
-
----
-
-_Referenced in [astral-sh/uv#11143](../../astral-sh/uv/pulls/11143.md) on 2025-01-31 19:46_
 
 ---
 

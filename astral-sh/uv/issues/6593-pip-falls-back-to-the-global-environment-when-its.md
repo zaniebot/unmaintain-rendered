@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-24T22:18:19Z
 updated_at: 2025-02-19T21:17:55Z
 url: https://github.com/astral-sh/uv/issues/6593
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `pip` falls back to the global environment when it’s not installed in the `uv` virtual environment
@@ -125,10 +125,6 @@ _Closed by @zanieb on 2024-08-27 00:42_
 
 ---
 
-_Referenced in [astral-sh/uv#7655](../../astral-sh/uv/issues/7655.md) on 2024-09-24 09:41_
-
----
-
 _Comment by @HasanZaigam on 2025-02-19 20:31_
 
 **I am working on the Railway platform or deploying my X AI agent by using the LLM and I get this error-**
@@ -149,9 +145,5 @@ _Comment by @zanieb on 2025-02-19 21:17_
 @HasanZaigam Please don't bump old issues or ping a bunch of people. See #9452.
 
 I can't tell you what's wrong without more information — there's no output there? It also looks like you're not even using uv?
-
----
-
-_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-01 17:56_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-03-17T23:52:52Z
 updated_at: 2025-03-20T15:24:44Z
 url: https://github.com/astral-sh/uv/issues/12254
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Inconsistent version for wheel in lockfile updated by Dependabot
@@ -37,30 +37,6 @@ We continue to be excited about Dependabot support for uv. If you're working on 
 
 ---
 
-_Referenced in [astral-sh/uv#12235](../../astral-sh/uv/pulls/12235.md) on 2025-03-17 23:55_
-
----
-
-_Referenced in [astral-sh/uv#12164](../../astral-sh/uv/issues/12164.md) on 2025-03-17 23:55_
-
----
-
-_Referenced in [dependabot/dependabot-core#10478](../../dependabot/dependabot-core/issues/10478.md) on 2025-03-17 23:56_
-
----
-
-_Referenced in [Homebrew/homebrew-core#211299](../../Homebrew/homebrew-core/pulls/211299.md) on 2025-03-18 02:41_
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2025-03-18 12:12_
-
----
-
-_Referenced in [astral-sh/uv#12276](../../astral-sh/uv/issues/12276.md) on 2025-03-18 13:46_
-
----
-
 _Comment by @zanieb on 2025-03-20 15:24_
 
 I'm not seeing much activity here — so unpinning this and closing.
@@ -68,9 +44,5 @@ I'm not seeing much activity here — so unpinning this and closing.
 ---
 
 _Closed by @zanieb on 2025-03-20 15:24_
-
----
-
-_Referenced in [ToucanToco/weaverbird#2372](../../ToucanToco/weaverbird/pulls/2372.md) on 2025-03-21 14:20_
 
 ---

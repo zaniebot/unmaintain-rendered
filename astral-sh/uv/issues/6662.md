@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-26T23:15:56Z
 updated_at: 2025-02-24T15:03:14Z
 url: https://github.com/astral-sh/uv/issues/6662
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # support installing uv to the project using a wrapper script
@@ -38,10 +38,6 @@ _Comment by @zanieb on 2024-08-27 01:49_
 Sort of related to #6533 
 
 I'm honestly kind of into this. It's not on the immediate roadmap though.
-
----
-
-_Referenced in [astral-sh/uv#6679](../../astral-sh/uv/issues/6679.md) on 2024-08-27 11:36_
 
 ---
 
@@ -102,10 +98,6 @@ then once you [install pyprojectx to your project root](https://pyprojectx.githu
 _Comment by @bluetech on 2025-02-10 09:28_
 
 I didn't know about pyprojectx, it looks nice. It does seem to require that Python is already installed which I hope to avoid. Basically the request is for uv to subsume pyprojectx like it did every other Python packaging tool :)
-
----
-
-_Referenced in [astral-sh/uv#11639](../../astral-sh/uv/issues/11639.md) on 2025-02-20 09:17_
 
 ---
 
@@ -249,9 +241,5 @@ _Comment by @cliebBS on 2025-02-24 15:03_
 Sorry, I was unclear what I meant.  I wasn't saying that the version of Gradle being requested by the wrapper wasn't specified anywhere, what I meant is that the `gradlew` script is itself a versionable artifact that lacks any easy way to keep up to date or to check if it is up to date.
 
 Poetry shows why it important to have this file versioned:  A couple of years ago, Poetry changed the install script quite drastically (I think it was with version 1.2.0), and newer versions of Poetry stopped being installable with the older version of the install script.  There's nothing stopping uv from wanting to change its install process in the future, including to address a security issue.
-
----
-
-_Referenced in [astral-sh/uv#14233](../../astral-sh/uv/issues/14233.md) on 2025-06-24 09:01_
 
 ---

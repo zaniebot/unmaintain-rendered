@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-14T20:30:53Z
 updated_at: 2025-02-14T21:52:01Z
 url: https://github.com/astral-sh/uv/issues/11521
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uvx in 0.5.31 no longer runs command and instead complains about hyphens of its own imagining
@@ -106,10 +106,6 @@ Sorry, I see the problem here.
 
 ---
 
-_Referenced in [astral-sh/uv#11524](../../astral-sh/uv/pulls/11524.md) on 2025-02-14 20:47_
-
----
-
 _Label `bug` added by @charliermarsh on 2025-02-14 21:17_
 
 ---
@@ -121,9 +117,5 @@ _Closed by @charliermarsh on 2025-02-14 21:25_
 _Comment by @hauntsaninja on 2025-02-14 21:52_
 
 Thank you!
-
----
-
-_Referenced in [rusiaaman/wcgw#31](../../rusiaaman/wcgw/issues/31.md) on 2025-02-15 03:39_
 
 ---

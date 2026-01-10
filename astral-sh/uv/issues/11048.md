@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-29T01:22:53Z
 updated_at: 2025-01-31T20:03:37Z
 url: https://github.com/astral-sh/uv/issues/11048
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Entrypoint script shebang uses resolved path for symlinked Python rather than `sys.executable`
@@ -249,10 +249,6 @@ _Label `bug` added by @edmorley on 2025-01-29 01:22_
 
 ---
 
-_Referenced in [heroku/heroku-buildpack-python#1616](../../heroku/heroku-buildpack-python/issues/1616.md) on 2025-01-29 01:44_
-
----
-
 _Label `great writeup` added by @zanieb on 2025-01-29 02:14_
 
 ---
@@ -291,10 +287,6 @@ And it looks like canonicalization happens at https://github.com/astral-sh/uv/bl
 
 ---
 
-_Referenced in [astral-sh/uv#11083](../../astral-sh/uv/pulls/11083.md) on 2025-01-29 20:40_
-
----
-
 _Comment by @zanieb on 2025-01-29 20:40_
 
 Interesting. I fixed the canonicalization there, but... we still get the same value for `sys.executable` — perhaps I'm missing something? https://github.com/astral-sh/uv/pull/11083
@@ -316,9 +308,5 @@ I can confirm this is resolved with #11083 - my tests now pass - thank you!
 _Comment by @zanieb on 2025-01-31 20:03_
 
 Thanks for following up Ed!
-
----
-
-_Referenced in [astral-sh/uv#13350](../../astral-sh/uv/issues/13350.md) on 2025-05-08 17:14_
 
 ---

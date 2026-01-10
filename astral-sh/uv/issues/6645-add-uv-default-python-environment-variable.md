@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-26T15:19:54Z
 updated_at: 2025-02-03T08:12:44Z
 url: https://github.com/astral-sh/uv/issues/6645
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Add `UV_DEFAULT_PYTHON` environment variable
@@ -70,9 +70,5 @@ _Comment by @ksamuel on 2025-02-03 08:12_
 I agree. I mistakenly used `UV_PYTHON` to set the default python version when none is passed, and was surprised when running `uv run python` in a project started a different shell version than the one in .python-version.
 
 Having a `UV_DEFAULT_PYTHON` (and signal it exists in the doc  and help message for `UV_PYTHON`) would help avoid this surprise. It's not uncommon to stick to a default version of Python for a while, and update it when needed, so an env var makes for that makes sense.
-
----
-
-_Referenced in [astral-sh/uv#14748](../../astral-sh/uv/issues/14748.md) on 2025-08-04 21:18_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-20T20:39:32Z
 updated_at: 2025-03-20T23:25:29Z
 url: https://github.com/astral-sh/uv/issues/12348
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Lack of error when `--no-binary` is missing argument in `requirements.txt`
@@ -40,10 +40,6 @@ _Label `error messages` added by @charliermarsh on 2025-03-20 20:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-20 22:37_
-
----
-
-_Referenced in [astral-sh/uv#12354](../../astral-sh/uv/pulls/12354.md) on 2025-03-20 22:49_
 
 ---
 

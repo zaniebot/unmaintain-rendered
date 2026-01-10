@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-03T14:39:02Z
 updated_at: 2025-03-20T22:46:49Z
 url: https://github.com/astral-sh/uv/issues/11183
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Remember enabled groups for `uv sync`
@@ -45,10 +45,6 @@ _Comment by @zanieb on 2025-02-03 15:29_
 Perhaps you're just looking for `uv sync --inexact`?
 
 I don't think it's great for the synced groups to become a stateful, additive operation by default — it sounds confusing.
-
----
-
-_Referenced in [astral-sh/uv#11958](../../astral-sh/uv/issues/11958.md) on 2025-03-04 18:34_
 
 ---
 

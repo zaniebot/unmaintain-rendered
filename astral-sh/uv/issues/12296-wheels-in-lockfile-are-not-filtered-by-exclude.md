@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-18T18:06:37Z
 updated_at: 2025-03-22T16:27:12Z
 url: https://github.com/astral-sh/uv/issues/12296
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Wheels in lockfile are not filtered by `exclude-newer`
@@ -34,10 +34,6 @@ _Label `bug` added by @charliermarsh on 2025-03-18 18:39_
 _Comment by @charliermarsh on 2025-03-18 18:40_
 
 Note: `pip compile` is also affected in that it will include hashes generated after `--exclude-newer` if you pass `--generate-hashes`.
-
----
-
-_Referenced in [astral-sh/uv#12299](../../astral-sh/uv/pulls/12299.md) on 2025-03-18 19:27_
 
 ---
 

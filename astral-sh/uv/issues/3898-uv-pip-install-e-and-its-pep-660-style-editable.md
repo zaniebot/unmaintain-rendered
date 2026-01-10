@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-29T08:30:51Z
 updated_at: 2025-02-20T16:11:43Z
 url: https://github.com/astral-sh/uv/issues/3898
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv pip install -e` and its PEP-660-style editable installs break vscode import resolution (and probably static type checkers)
@@ -117,10 +117,6 @@ The old egg mechanism was never standardized and is basically pip-setuptools spe
 
 ---
 
-_Referenced in [dagster-io/dagster#24029](../../dagster-io/dagster/pulls/24029.md) on 2024-08-28 21:00_
-
----
-
 _Comment by @samimia-swks on 2024-11-22 23:46_
 
 For poeple stumbling on this thread, adding this to pyproject.toml makes pylance happy. https://github.com/pypa/setuptools/issues/3518 suggests the removal of 'compat' has been pushed back, so this will work for now...
@@ -173,10 +169,6 @@ This should maybe be the default setting when using `uv init`? This has been bot
 
 ---
 
-_Referenced in [astral-sh/uv#11488](../../astral-sh/uv/issues/11488.md) on 2025-02-13 19:02_
-
----
-
 _Comment by @zanieb on 2025-02-13 19:33_
 
 `uv init` doesn't use setuptools by default. Regardless, this is a setuptools problem. It's not for us to decide their default behavior.
@@ -200,21 +192,5 @@ Is anyone getting the following error after adding the suggested `editable_mode 
 ```
 
 EDIT: I think it's linked to this issue: https://github.com/astral-sh/uv/issues/10940
-
----
-
-_Referenced in [pytest-dev/pytest#13324](../../pytest-dev/pytest/issues/13324.md) on 2025-03-24 08:28_
-
----
-
-_Referenced in [astral-sh/uv#11455](../../astral-sh/uv/issues/11455.md) on 2025-07-03 23:09_
-
----
-
-_Referenced in [microsoft/pyright#10888](../../microsoft/pyright/pulls/10888.md) on 2025-09-03 10:20_
-
----
-
-_Referenced in [astral-sh/uv#15652](../../astral-sh/uv/issues/15652.md) on 2025-09-03 10:20_
 
 ---

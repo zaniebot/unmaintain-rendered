@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T19:23:17Z
 updated_at: 2025-02-10T20:36:02Z
 url: https://github.com/astral-sh/uv/issues/11397
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Flaky failure due to `setup-python` cache missing
@@ -59,10 +59,6 @@ _Comment by @charliermarsh on 2025-02-10 20:19_
 
 ---
 
-_Referenced in [astral-sh/uv#11402](../../astral-sh/uv/pulls/11402.md) on 2025-02-10 20:22_
-
----
-
 _Comment by @zanieb on 2025-02-10 20:23_
 
 https://github.com/pypa/pip/releases/tag/25.0.1 went out yesterday
@@ -72,10 +68,6 @@ https://github.com/pypa/pip/releases/tag/25.0.1 went out yesterday
 _Comment by @zanieb on 2025-02-10 20:26_
 
 However the diff is pretty sparse https://github.com/pypa/pip/compare/25.0...25.0.1
-
----
-
-_Referenced in [astral-sh/uv#11403](../../astral-sh/uv/pulls/11403.md) on 2025-02-10 20:27_
 
 ---
 

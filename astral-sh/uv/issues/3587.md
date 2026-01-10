@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-14T18:55:50Z
 updated_at: 2025-02-03T21:35:54Z
 url: https://github.com/astral-sh/uv/issues/3587
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Add support for --relocatable
@@ -25,10 +25,6 @@ Would it be possible to revive this old flag & useful feature, and just have it 
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-05-15 04:20_
-
----
-
-_Referenced in [astral-sh/uv#3863](../../astral-sh/uv/issues/3863.md) on 2024-07-22 15:16_
 
 ---
 

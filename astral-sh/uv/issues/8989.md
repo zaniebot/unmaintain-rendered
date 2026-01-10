@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-10T14:33:50Z
 updated_at: 2025-02-12T18:04:29Z
 url: https://github.com/astral-sh/uv/issues/8989
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Inconsistent/wrong dependencies inferred from egg-info in sdist
@@ -408,10 +408,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-02-10 17:37_
 ---
 
 _Added to milestone `v0.6.0` by @charliermarsh on 2025-02-10 17:38_
-
----
-
-_Referenced in [astral-sh/uv#11395](../../astral-sh/uv/pulls/11395.md) on 2025-02-10 18:57_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-26T12:51:40Z
 updated_at: 2025-01-28T17:17:28Z
 url: https://github.com/astral-sh/uv/issues/10967
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Universal resolution docs need adjusting for Python version forking
@@ -55,10 +55,6 @@ _Label `resolver` added by @zanieb on 2025-01-26 16:36_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-26 21:25_
-
----
-
-_Referenced in [astral-sh/uv#10993](../../astral-sh/uv/pulls/10993.md) on 2025-01-27 17:20_
 
 ---
 

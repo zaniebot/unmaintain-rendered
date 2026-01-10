@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-07T11:49:04Z
 updated_at: 2025-03-03T09:03:10Z
 url: https://github.com/astral-sh/uv/issues/11314
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Extension for VSCode environment manager extension
@@ -108,13 +108,5 @@ Hi, a recent uv convertee here. Not sure if this is relevant to this, but a nice
 ![Image](https://github.com/user-attachments/assets/cdfb32a8-d4b5-4bff-a077-d22ea6c1cae2)
 
 ![Image](https://github.com/user-attachments/assets/bae2eedb-5356-4a53-802d-baab3167cdf4)
-
----
-
-_Referenced in [astral-sh/uv#12363](../../astral-sh/uv/issues/12363.md) on 2025-03-21 12:35_
-
----
-
-_Referenced in [astral-sh/uv#15787](../../astral-sh/uv/issues/15787.md) on 2025-09-11 12:46_
 
 ---

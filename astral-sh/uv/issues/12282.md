@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-18T14:28:07Z
 updated_at: 2025-03-18T15:12:42Z
 url: https://github.com/astral-sh/uv/issues/12282
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv rejects `flash-attn` wheels with local versions
@@ -56,10 +56,6 @@ _Label `bug` added by @charliermarsh on 2025-03-18 14:28_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-18 14:34_
-
----
-
-_Referenced in [astral-sh/uv#12285](../../astral-sh/uv/pulls/12285.md) on 2025-03-18 14:58_
 
 ---
 

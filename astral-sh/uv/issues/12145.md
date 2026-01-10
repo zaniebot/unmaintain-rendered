@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-13T00:57:15Z
 updated_at: 2025-03-19T01:40:10Z
 url: https://github.com/astral-sh/uv/issues/12145
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv sync --script` only syncs when there are packages to add to env
@@ -65,10 +65,6 @@ _Label `bug` added by @manzt on 2025-03-13 00:57_
 
 ---
 
-_Referenced in [manzt/juv#84](../../manzt/juv/pulls/84.md) on 2025-03-13 01:31_
-
----
-
 _Comment by @charliermarsh on 2025-03-13 13:00_
 
 Thanks!
@@ -92,10 +88,6 @@ Will take a look tonight.
 _Comment by @manzt on 2025-03-13 23:18_
 
 No rush at all. Thanks!
-
----
-
-_Referenced in [astral-sh/uv#12158](../../astral-sh/uv/pulls/12158.md) on 2025-03-13 23:57_
 
 ---
 

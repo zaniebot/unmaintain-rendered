@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-28T17:28:26Z
 updated_at: 2025-01-28T19:28:55Z
 url: https://github.com/astral-sh/uv/issues/11025
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # A group of tests is not robust to some external state
@@ -161,10 +161,6 @@ _Label `testing` added by @zanieb on 2025-01-28 17:28_
 
 ---
 
-_Referenced in [astral-sh/uv#11023](../../astral-sh/uv/pulls/11023.md) on 2025-01-28 17:29_
-
----
-
 _Comment by @BurntSushi on 2025-01-28 17:36_
 
 Yeah I looked at jinja2's [release history](https://pypi.org/project/Jinja2/#history), and 3.1.5 was released about a month ago. And note that the snapshot diffs are going from `jinja2 3.1.3` to `jinja2 3.1.4`, which was released ~8 months ago. So I think there is something more sneaky happening here? Maybe?
@@ -178,10 +174,6 @@ _Renamed from "A group of tests is not robust to publish of new versions of `jin
 _Comment by @zanieb on 2025-01-28 17:39_
 
 Interesting. More vague title now...
-
----
-
-_Referenced in [astral-sh/uv#11034](../../astral-sh/uv/pulls/11034.md) on 2025-01-28 18:51_
 
 ---
 

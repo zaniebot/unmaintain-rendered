@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-20T12:19:21Z
 updated_at: 2025-02-24T15:33:20Z
 url: https://github.com/astral-sh/uv/issues/11664
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Resolution error for pywin32 with tool.uv.environments constraints
@@ -396,10 +396,6 @@ _Label `bug` added by @charliermarsh on 2025-02-20 22:13_
 
 ---
 
-_Referenced in [astral-sh/uv#11681](../../astral-sh/uv/pulls/11681.md) on 2025-02-20 22:18_
-
----
-
 _Closed by @charliermarsh on 2025-02-20 22:27_
 
 ---
@@ -495,17 +491,5 @@ I don’t expect it to work with the lowercase version, hence the bug fix. I was
 _Comment by @zanieb on 2025-02-24 15:33_
 
 Thanks for fixing it Charlie :)
-
----
-
-_Referenced in [astral-sh/uv#11870](../../astral-sh/uv/issues/11870.md) on 2025-02-28 22:35_
-
----
-
-_Referenced in [astral-sh/uv#9277](../../astral-sh/uv/issues/9277.md) on 2025-04-09 06:39_
-
----
-
-_Referenced in [PowerGridModel/power-grid-model#1206](../../PowerGridModel/power-grid-model/pulls/1206.md) on 2025-12-09 12:36_
 
 ---

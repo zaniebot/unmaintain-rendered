@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-07T22:23:08Z
 updated_at: 2025-03-12T10:17:57Z
 url: https://github.com/astral-sh/uv/issues/12059
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv-build 0.6.3 can't find `build-backend` command
@@ -133,10 +133,6 @@ _Renamed from "uv-build" to "Errro with new uv-build and tox" by @cthoyt on 2025
 ---
 
 _Renamed from "Errro with new uv-build and tox" to "Error with new uv-build and tox" by @cthoyt on 2025-03-07 22:23_
-
----
-
-_Referenced in [astral-sh/uv#8779](../../astral-sh/uv/issues/8779.md) on 2025-03-07 22:26_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-17T08:11:32Z
 updated_at: 2025-03-17T19:18:57Z
 url: https://github.com/astral-sh/uv/issues/12230
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # BaseClientBuilder could accepts a custom reqwest::Proxy
@@ -30,10 +30,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @gzm55 on 2025-03-17 08:11_
-
----
-
-_Referenced in [astral-sh/uv#12232](../../astral-sh/uv/pulls/12232.md) on 2025-03-17 09:14_
 
 ---
 

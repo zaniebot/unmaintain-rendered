@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-22T14:39:06Z
 updated_at: 2025-02-19T20:24:05Z
 url: https://github.com/astral-sh/uv/issues/8460
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv` sync in workspace during docker build doesn't install dependencies
@@ -349,10 +349,6 @@ Here it is as a PR: https://github.com/vilim/uv-workspace-test/pull/1
 _Comment by @vilim on 2024-10-25 19:08_
 
 Thank you very much, this works now! (in the original code where I had the issue I had the proper package layout, dependencies and sources configured, but not the build system, adding just the build system makes it work). Maybe it would be a good idea to mention this in the workspace documentation?
-
----
-
-_Referenced in [astral-sh/uv#7492](../../astral-sh/uv/issues/7492.md) on 2024-10-25 19:09_
 
 ---
 

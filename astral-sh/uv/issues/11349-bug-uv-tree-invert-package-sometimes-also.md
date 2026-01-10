@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-09T09:03:05Z
 updated_at: 2025-02-10T08:53:38Z
 url: https://github.com/astral-sh/uv/issues/11349
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # BUG: `uv tree --invert --package ...` sometimes also displays packages I didn't ask for
@@ -107,9 +107,5 @@ Granted. Maybe the cycle could be indicated as `...`, inspired by the Python rep
 _Comment by @JadenMajid on 2025-02-10 08:53_
 
 Hi, can i work on this?
-
----
-
-_Referenced in [astral-sh/uv#15907](../../astral-sh/uv/issues/15907.md) on 2025-09-17 11:51_
 
 ---

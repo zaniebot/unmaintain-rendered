@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T15:47:49Z
 updated_at: 2025-02-11T20:33:30Z
 url: https://github.com/astral-sh/uv/issues/11387
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Allow request and installation of Python interpreters with debug symbols
@@ -72,13 +72,5 @@ _Comment by @geofft on 2025-02-11 19:28_
 If you just want debug _symbols_ instead of a separate build with debugging enabled, those are available from the full releases at https://github.com/astral-sh/python-build-standalone/releases . `uv` installs the stripped install-only archives, but unstripped archives are available too.
 
 We can certainly do something to automate the process of downloading the right version (or maybe we should run a debuginfod server or something), but I figured I'd mention it in case you have a core file or something and want a symbolicated backtrace—you shouldn't need to recreate the problem on a separate build, you should be able to point your debugger at one of the full releases.
-
----
-
-_Referenced in [astral-sh/python-build-standalone#522](../../astral-sh/python-build-standalone/issues/522.md) on 2025-02-11 21:14_
-
----
-
-_Referenced in [astral-sh/uv#11518](../../astral-sh/uv/issues/11518.md) on 2025-02-14 19:46_
 
 ---

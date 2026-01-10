@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-17T19:05:54Z
 updated_at: 2025-01-30T13:55:32Z
 url: https://github.com/astral-sh/uv/issues/8302
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Create best practice example of uv workspace for vscode supporting tests and more
@@ -111,9 +111,5 @@ FWIW this all works flawlessly in PyCharm and sort-of in zed.dev but enabling te
 _Comment by @matthewadams on 2025-01-30 13:55_
 
 You might be interested in https://github.com/astral-sh/uv/issues/10960
-
----
-
-_Referenced in [Vibrant-Planet/geografir#16](../../Vibrant-Planet/geografir/pulls/16.md) on 2025-09-03 22:47_
 
 ---

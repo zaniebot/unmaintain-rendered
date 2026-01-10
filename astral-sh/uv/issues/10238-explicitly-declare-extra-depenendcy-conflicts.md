@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-30T12:58:38Z
 updated_at: 2025-03-14T15:21:55Z
 url: https://github.com/astral-sh/uv/issues/10238
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Explicitly declare extra depenendcy conflicts
@@ -50,10 +50,6 @@ I presume the current implementation only prevents scenarios where the dependenc
 Let me know if I missed something and this should actually be possible!
 
 BTW: I also tried it with optional groups, but groups are not exposed to pip (yet, afaik). As I want to be able to install my package with pip on downstream systems, dependency groups seem to not be an option yet.
-
----
-
-_Referenced in [astral-sh/uv#8976](../../astral-sh/uv/pulls/8976.md) on 2024-12-30 12:59_
 
 ---
 
@@ -102,10 +98,6 @@ I don't see how it would work by installing via pip? The metadata is in a Poetry
 _Comment by @zanieb on 2025-01-07 17:47_
 
 It's possible the Poetry build backend enforces these relationships, which would work for `pip install -e .` and source distributions, I guess? but not installation from a wheel.
-
----
-
-_Referenced in [astral-sh/uv#10405](../../astral-sh/uv/issues/10405.md) on 2025-01-08 19:08_
 
 ---
 

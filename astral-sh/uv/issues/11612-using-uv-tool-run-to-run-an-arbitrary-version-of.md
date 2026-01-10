@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-19T01:46:24Z
 updated_at: 2025-02-19T20:51:58Z
 url: https://github.com/astral-sh/uv/issues/11612
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Using `uv tool run` to run an arbitrary version of a tool using a compatible version of Python doesn't work unless you explicitly specify the python version
@@ -253,10 +253,6 @@ I think the solution here would be to respect Python upper bounds on the first-p
 
 ---
 
-_Referenced in [astral-sh/uv#11624](../../astral-sh/uv/issues/11624.md) on 2025-02-19 15:34_
-
----
-
 _Comment by @charliermarsh on 2025-02-19 17:28_
 
 What about expanding the refinement logic to understand these kinds of failures?
@@ -344,9 +340,5 @@ bpy-4.3.0-cp311-cp311-manylinux_2_28_x86_64.whl
 bpy-4.3.0-cp311-cp311-win_amd64.whl
 ```
 I guess that is because the local pypi repo is setup to fall back to the regular pypi.
-
----
-
-_Referenced in [astral-sh/uv#11678](../../astral-sh/uv/issues/11678.md) on 2025-02-20 20:17_
 
 ---

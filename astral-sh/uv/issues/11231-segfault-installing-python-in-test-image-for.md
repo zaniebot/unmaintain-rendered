@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-05T04:10:38Z
 updated_at: 2025-02-28T10:14:40Z
 url: https://github.com/astral-sh/uv/issues/11231
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Segfault installing Python in test image for release wheels
@@ -386,10 +386,6 @@ These failures are non-deterministic. I just retry until they pass. However, thi
 
 ---
 
-_Referenced in [astral-sh/uv#11229](../../astral-sh/uv/pulls/11229.md) on 2025-02-05 04:21_
-
----
-
 _Comment by @zanieb on 2025-02-12 20:05_
 
 And on aarch64-unknown-linux-gnu
@@ -398,16 +394,8 @@ https://github.com/astral-sh/uv/actions/runs/13293641628/job/37120192371?pr=1145
 
 ---
 
-_Referenced in [astral-sh/uv#11478](../../astral-sh/uv/pulls/11478.md) on 2025-02-13 17:01_
-
----
-
 _Comment by @MichaReiser on 2025-02-28 10:14_
 
 We're now seeing this in Ruff releases too. We're also not the only once https://github.com/flatcar/Flatcar/issues/1634
-
----
-
-_Referenced in [astral-sh/ruff#16793](../../astral-sh/ruff/pulls/16793.md) on 2025-03-17 08:43_
 
 ---

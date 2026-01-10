@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-19T23:50:05Z
 updated_at: 2025-03-20T00:28:09Z
 url: https://github.com/astral-sh/uv/issues/12325
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv doesn't respect workspace dependences when defined as extras
@@ -165,9 +165,5 @@ anyways, I had to re-add the dependencies of both packages again to root `pyproj
 @charliermarsh is there a way with `uv` to get the workspace dependencies from its `pyproejct.toml` file if it's being used as extras? that would make things cleaner and reduce the duplication ....
 
 Thanks!
-
----
-
-_Referenced in [kubeflow/sdk#20](../../kubeflow/sdk/issues/20.md) on 2025-03-20 00:50_
 
 ---

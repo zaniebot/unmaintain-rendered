@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-25T10:18:04Z
 updated_at: 2025-02-27T02:46:39Z
 url: https://github.com/astral-sh/uv/issues/11776
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Platform specific indexes not working
@@ -104,10 +104,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-02-26 01:14_
 _Comment by @charliermarsh on 2025-02-26 02:47_
 
 I've identified the problem and have some ideas on how to fix it.
-
----
-
-_Referenced in [astral-sh/uv#11815](../../astral-sh/uv/pulls/11815.md) on 2025-02-27 01:44_
 
 ---
 

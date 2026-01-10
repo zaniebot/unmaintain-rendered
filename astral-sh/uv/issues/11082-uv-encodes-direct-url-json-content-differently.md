@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-29T20:16:13Z
 updated_at: 2025-01-31T20:45:50Z
 url: https://github.com/astral-sh/uv/issues/11082
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv encodes `direct_url.json` content differently than pip
@@ -103,14 +103,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-30 03:14_
 
 ---
 
-_Referenced in [astral-sh/uv#11088](../../astral-sh/uv/pulls/11088.md) on 2025-01-30 03:44_
-
----
-
 _Closed by @charliermarsh on 2025-01-31 20:45_
-
----
-
-_Referenced in [pypa/hatch#1924](../../pypa/hatch/pulls/1924.md) on 2025-03-04 04:00_
 
 ---

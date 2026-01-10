@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-01T12:33:01Z
 updated_at: 2025-02-01T17:34:17Z
 url: https://github.com/astral-sh/uv/issues/11152
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # feature request: `uv install`
@@ -181,9 +181,5 @@ Closing because we won't add a `uv install` command with the described semantics
 ---
 
 _Closed by @zanieb on 2025-02-01 17:34_
-
----
-
-_Referenced in [astral-sh/uv#11273](../../astral-sh/uv/issues/11273.md) on 2025-06-06 10:39_
 
 ---

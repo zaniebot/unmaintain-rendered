@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-12T23:07:07Z
 updated_at: 2025-02-12T23:29:52Z
 url: https://github.com/astral-sh/uv/issues/11464
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Overriding package command with uvx in uv 0.5.31 is broken
@@ -72,10 +72,6 @@ That seems like my mistake.
 
 ---
 
-_Referenced in [astral-sh/uv#11465](../../astral-sh/uv/pulls/11465.md) on 2025-02-12 23:18_
-
----
-
 _Comment by @charliermarsh on 2025-02-12 23:19_
 
 Apologies, we somehow lacked test coverage for this. It's fixed in https://github.com/astral-sh/uv/pull/11465.
@@ -87,9 +83,5 @@ _Closed by @charliermarsh on 2025-02-12 23:29_
 ---
 
 _Closed by @charliermarsh on 2025-02-12 23:29_
-
----
-
-_Referenced in [rusiaaman/wcgw#31](../../rusiaaman/wcgw/issues/31.md) on 2025-02-15 03:42_
 
 ---

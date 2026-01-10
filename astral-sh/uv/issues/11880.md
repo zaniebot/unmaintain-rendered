@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-01T08:35:57Z
 updated_at: 2025-03-01T16:24:34Z
 url: https://github.com/astral-sh/uv/issues/11880
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Missing command in `uv --help`
@@ -60,10 +60,6 @@ Per the doc,
 > When using the --help flag, uv displays a condensed help menu. To view a longer help menu for a command, use uv help:
 
 Maybe this is how the help menu is condensed? Feel free to close this issue if this is an intentional behavior :)
-
----
-
-_Referenced in [astral-sh/uv#11882](../../astral-sh/uv/pulls/11882.md) on 2025-03-01 11:00_
 
 ---
 

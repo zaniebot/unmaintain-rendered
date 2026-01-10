@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-28T11:28:09Z
 updated_at: 2025-01-30T16:22:23Z
 url: https://github.com/astral-sh/uv/issues/11017
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Unable to add packages from several private sources
@@ -160,10 +160,6 @@ This would be solved by https://github.com/astral-sh/uv/issues/4583
 
 ---
 
-_Referenced in [astral-sh/uv#11074](../../astral-sh/uv/pulls/11074.md) on 2025-01-29 17:53_
-
----
-
 _Comment by @diskream on 2025-01-29 17:58_
 
 Thank you! I'll be waiting
@@ -183,9 +179,5 @@ _Closed by @zanieb on 2025-01-30 16:22_
 ---
 
 _Closed by @zanieb on 2025-01-30 16:22_
-
----
-
-_Referenced in [astral-sh/uv#12004](../../astral-sh/uv/issues/12004.md) on 2025-03-06 13:25_
 
 ---

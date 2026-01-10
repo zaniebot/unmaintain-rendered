@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-20T09:53:22Z
 updated_at: 2025-03-23T03:06:12Z
 url: https://github.com/astral-sh/uv/issues/12334
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # [documentation] `project.dependencies` is not a TOML table
@@ -62,10 +62,6 @@ _Label `documentation` added by @zanieb on 2025-03-20 13:14_
 ---
 
 _Label `good first issue` added by @zanieb on 2025-03-20 13:14_
-
----
-
-_Referenced in [astral-sh/uv#12388](../../astral-sh/uv/pulls/12388.md) on 2025-03-22 09:32_
 
 ---
 

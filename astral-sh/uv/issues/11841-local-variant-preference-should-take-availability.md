@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T22:05:44Z
 updated_at: 2025-02-28T01:27:19Z
 url: https://github.com/astral-sh/uv/issues/11841
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Local variant preference should take availability of distributions into account
@@ -94,9 +94,5 @@ Yeah, exactly, it's considering some but not all dimensions. Python flavour is a
 _Comment by @charliermarsh on 2025-02-28 01:27_
 
 Agreed, make sense.
-
----
-
-_Referenced in [astral-sh/uv#11294](../../astral-sh/uv/pulls/11294.md) on 2025-02-28 19:36_
 
 ---

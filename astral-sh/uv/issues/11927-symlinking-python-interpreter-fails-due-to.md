@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-03T16:06:40Z
 updated_at: 2025-03-18T19:20:40Z
 url: https://github.com/astral-sh/uv/issues/11927
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Symlinking Python interpreter fails due to different filesystem
@@ -234,9 +234,5 @@ I think we'll consider this out of scope for now. Thanks for understanding.
 ---
 
 _Closed by @zanieb on 2025-03-18 19:20_
-
----
-
-_Referenced in [astral-sh/uv#13302](../../astral-sh/uv/issues/13302.md) on 2025-05-05 15:27_
 
 ---

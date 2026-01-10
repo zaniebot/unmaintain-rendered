@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-06T16:48:29Z
 updated_at: 2025-02-13T22:17:54Z
 url: https://github.com/astral-sh/uv/issues/11285
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Treat `-p` in `uv pip compile` as `--python` and fallback to `--python-version`
@@ -30,18 +30,6 @@ _Assigned to @zanieb by @zanieb on 2025-02-06 16:48_
 ---
 
 _Label `cli` added by @zanieb on 2025-02-06 16:48_
-
----
-
-_Referenced in [astral-sh/uv#11279](../../astral-sh/uv/issues/11279.md) on 2025-02-06 17:01_
-
----
-
-_Referenced in [astral-sh/uv#11437](../../astral-sh/uv/pulls/11437.md) on 2025-02-12 06:44_
-
----
-
-_Referenced in [astral-sh/uv#11486](../../astral-sh/uv/pulls/11486.md) on 2025-02-13 18:31_
 
 ---
 

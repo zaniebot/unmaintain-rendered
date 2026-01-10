@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-19T15:33:59Z
 updated_at: 2025-02-19T17:09:13Z
 url: https://github.com/astral-sh/uv/issues/11624
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Respect `requires-python` upper bounds on first-party packages
@@ -52,10 +52,6 @@ See
 ---
 
 _Label `needs-decision` added by @zanieb on 2025-02-19 15:34_
-
----
-
-_Referenced in [astral-sh/uv#11612](../../astral-sh/uv/issues/11612.md) on 2025-02-19 15:34_
 
 ---
 
@@ -104,17 +100,5 @@ My point was mostly in response to changing the standard — the standard probab
 
 
 
-
----
-
-_Referenced in [astral-sh/ruff#16355](../../astral-sh/ruff/issues/16355.md) on 2025-02-25 17:22_
-
----
-
-_Referenced in [astral-sh/uv#8206](../../astral-sh/uv/issues/8206.md) on 2025-03-13 16:22_
-
----
-
-_Referenced in [caracal-pipeline/MosaicQueen#54](../../caracal-pipeline/MosaicQueen/issues/54.md) on 2025-11-13 12:31_
 
 ---

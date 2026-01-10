@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-14T07:19:42Z
 updated_at: 2025-03-17T23:56:09Z
 url: https://github.com/astral-sh/uv/issues/12164
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv sync --locked` does not detect incorrect `uv.lock`
@@ -58,10 +58,6 @@ When you say "change its version to any valid semver", do you mean editing the `
 
 ---
 
-_Referenced in [tattle-made/feluda#471](../../tattle-made/feluda/issues/471.md) on 2025-03-14 22:12_
-
----
-
 _Comment by @shauneccles on 2025-03-14 22:20_
 
 > When you say "change its version to any valid semver", do you mean editing the `package.version` field directly in `uv.lock`, without changing the `sdist` or `wheels` entries?
@@ -71,14 +67,6 @@ https://github.com/LedFx/LedFx/pull/1311/files
 
 ![Image](https://github.com/user-attachments/assets/a5c779e9-b1ea-45bd-abce-a20e47371f76)
 
-
----
-
-_Referenced in [astral-sh/uv#12235](../../astral-sh/uv/pulls/12235.md) on 2025-03-17 10:10_
-
----
-
-_Referenced in [astral-sh/uv#12237](../../astral-sh/uv/pulls/12237.md) on 2025-03-17 11:39_
 
 ---
 

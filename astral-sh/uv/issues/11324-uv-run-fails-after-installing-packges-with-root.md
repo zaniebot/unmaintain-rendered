@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-07T17:55:31Z
 updated_at: 2025-02-07T21:36:11Z
 url: https://github.com/astral-sh/uv/issues/11324
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv run fails after installing packges with root and uv 0.5.29
@@ -101,10 +101,6 @@ Interesting, thanks. I'll fix this in the next release. We shouldn't be failing 
 
 ---
 
-_Referenced in [astral-sh/uv#11328](../../astral-sh/uv/pulls/11328.md) on 2025-02-07 20:13_
-
----
-
 _Comment by @jamescooke on 2025-02-07 20:21_
 
 Thanks for checking and confirming @charliermarsh 👍🏻 
@@ -156,13 +152,5 @@ _Closed by @charliermarsh on 2025-02-07 21:36_
 ---
 
 _Closed by @charliermarsh on 2025-02-07 21:36_
-
----
-
-_Referenced in [astral-sh/uv#12665](../../astral-sh/uv/issues/12665.md) on 2025-04-04 09:29_
-
----
-
-_Referenced in [astral-sh/uv#16769](../../astral-sh/uv/issues/16769.md) on 2025-12-02 13:45_
 
 ---

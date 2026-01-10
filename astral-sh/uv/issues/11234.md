@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-02-05T06:38:46Z
 updated_at: 2025-03-10T19:14:55Z
 url: https://github.com/astral-sh/uv/issues/11234
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Binaries builds with Nuitka from a `uv`-installed Python fails on Ubuntu: `libpython3.13.so.1.0` not found
@@ -102,10 +102,6 @@ This has been tested with:
 - Latest `actions/setup-python`: 5.4.0
 
 This issue has also been reported at: https://github.com/Nuitka/Nuitka/issues/3325
-
----
-
-_Referenced in [Nuitka/Nuitka#3325](../../Nuitka/Nuitka/issues/3325.md) on 2025-02-05 06:39_
 
 ---
 

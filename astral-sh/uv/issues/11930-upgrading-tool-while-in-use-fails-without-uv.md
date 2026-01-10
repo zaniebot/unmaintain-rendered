@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-03T18:14:47Z
 updated_at: 2025-03-03T18:53:43Z
 url: https://github.com/astral-sh/uv/issues/11930
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Upgrading tool while in use fails without uv recognizing the failed update on subsequent upgrade attempts
@@ -65,9 +65,5 @@ _Label `bug` added by @nbaju1 on 2025-03-03 18:14_
 ---
 
 _Renamed from "Upgrading tools while in use fails without uv recognizing the failed update" to "Upgrading tool while in use fails without uv recognizing the failed update on subsequent upgrade attempts" by @nbaju1 on 2025-03-03 18:15_
-
----
-
-_Referenced in [astral-sh/uv#14520](../../astral-sh/uv/issues/14520.md) on 2025-07-09 14:48_
 
 ---

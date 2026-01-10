@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-24T16:48:43Z
 updated_at: 2025-03-25T01:50:22Z
 url: https://github.com/astral-sh/uv/issues/12440
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `setuptools` fails with "Invalid dash-separated key" or "Invalid uppercase key"
@@ -63,18 +63,6 @@ See also
 
 ---
 
-_Referenced in [astral-sh/uv#12434](../../astral-sh/uv/issues/12434.md) on 2025-03-24 16:52_
-
----
-
-_Referenced in [pypa/setuptools#4870](../../pypa/setuptools/pulls/4870.md) on 2025-03-24 17:02_
-
----
-
-_Referenced in [astral-sh/uv#12441](../../astral-sh/uv/issues/12441.md) on 2025-03-24 17:03_
-
----
-
 _Label `external` added by @zanieb on 2025-03-24 17:03_
 
 ---
@@ -122,10 +110,6 @@ Thanks for the support @zanieb
 
 ---
 
-_Referenced in [astral-sh/uv#12442](../../astral-sh/uv/issues/12442.md) on 2025-03-24 17:13_
-
----
-
 _Comment by @systemsoverload on 2025-03-24 17:15_
 
 Unfortunately `exclude-newer` will refuse to install packages that have no upload date specified, which of course, happens to include popular public packages 🤦 
@@ -134,10 +118,6 @@ Unfortunately `exclude-newer` will refuse to install packages that have no uploa
 warning: pytest_django-4.10.0.tar.gz is missing an upload date, but user provided: 2025-03-24T20:00:00Z
 warning: responses-0.17.0.tar.gz is missing an upload date, but user provided: 2025-03-24T20:00:00Z
 ```
-
----
-
-_Referenced in [MeltanoLabs/tap-gitlab#110](../../MeltanoLabs/tap-gitlab/pulls/110.md) on 2025-03-24 17:15_
 
 ---
 
@@ -196,10 +176,6 @@ uv pip install -r requirements.txt
 
 ---
 
-_Referenced in [pypa/setuptools#4910](../../pypa/setuptools/issues/4910.md) on 2025-03-24 18:37_
-
----
-
 _Comment by @charliermarsh on 2025-03-24 18:56_
 
 `uv pip --group` shipped in v0.6.7: https://github.com/astral-sh/uv/releases/tag/0.6.7
@@ -209,22 +185,6 @@ _Comment by @charliermarsh on 2025-03-24 18:56_
 _Comment by @anrooo on 2025-03-24 19:03_
 
 Also hitting the limitation with `exclude-newer`. It would be great to have a flag to ignore this constraint for packages that don't publish version data. 
-
----
-
-_Referenced in [astral-sh/uv#12446](../../astral-sh/uv/issues/12446.md) on 2025-03-24 19:06_
-
----
-
-_Referenced in [aws/s2n-tls#5215](../../aws/s2n-tls/pulls/5215.md) on 2025-03-24 19:07_
-
----
-
-_Referenced in [aws/s2n-tls#5216](../../aws/s2n-tls/issues/5216.md) on 2025-03-24 19:08_
-
----
-
-_Referenced in [astral-sh/uv#12448](../../astral-sh/uv/issues/12448.md) on 2025-03-24 19:50_
 
 ---
 
@@ -258,10 +218,6 @@ _Comment by @zanieb on 2025-03-24 20:14_
 _Comment by @zanieb on 2025-03-24 20:14_
 
 See https://github.com/pypa/setuptools/pull/4911 for the setuptools revert.
-
----
-
-_Referenced in [skodaconnect/myskoda#394](../../skodaconnect/myskoda/pulls/394.md) on 2025-03-24 20:43_
 
 ---
 

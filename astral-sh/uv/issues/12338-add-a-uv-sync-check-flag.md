@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-20T12:29:36Z
 updated_at: 2025-03-21T17:30:39Z
 url: https://github.com/astral-sh/uv/issues/12338
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add a `uv sync --check` flag
@@ -55,10 +55,6 @@ _Label `good first issue` added by @zanieb on 2025-03-20 13:10_
 _Comment by @zanieb on 2025-03-20 13:10_
 
 (On the larger side for a first issue, but it should be pretty straight-forward)
-
----
-
-_Referenced in [astral-sh/uv#12342](../../astral-sh/uv/pulls/12342.md) on 2025-03-20 16:27_
 
 ---
 

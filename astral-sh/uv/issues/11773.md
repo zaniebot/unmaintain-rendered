@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-25T07:39:27Z
 updated_at: 2025-02-26T13:37:52Z
 url: https://github.com/astral-sh/uv/issues/11773
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add a function to list all available venv environments AND decide AND show their location
@@ -71,30 +71,6 @@ Related packages:
 ---
 
 _Label `enhancement` added by @eabase on 2025-02-25 07:39_
-
----
-
-_Referenced in [astral-sh/uv#11360](../../astral-sh/uv/issues/11360.md) on 2025-02-25 07:50_
-
----
-
-_Referenced in [astral-sh/uv#10895](../../astral-sh/uv/issues/10895.md) on 2025-02-25 07:53_
-
----
-
-_Referenced in [astral-sh/uv#7957](../../astral-sh/uv/issues/7957.md) on 2025-02-25 07:57_
-
----
-
-_Referenced in [astral-sh/uv#2103](../../astral-sh/uv/issues/2103.md) on 2025-02-25 08:00_
-
----
-
-_Referenced in [astral-sh/uv#1632](../../astral-sh/uv/issues/1632.md) on 2025-02-25 08:06_
-
----
-
-_Referenced in [fohrloop/venvlink#11](../../fohrloop/venvlink/issues/11.md) on 2025-02-25 08:14_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-15T00:45:02Z
 updated_at: 2025-03-15T02:50:47Z
 url: https://github.com/astral-sh/uv/issues/12178
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv python pin --global fails when uv directory does not exists
@@ -58,10 +58,6 @@ _Label `bug` added by @samypr100 on 2025-03-15 00:45_
 _Comment by @charliermarsh on 2025-03-15 00:46_
 
 Nice, thanks. (Do you wanna take a look at this?)
-
----
-
-_Referenced in [astral-sh/uv#12180](../../astral-sh/uv/pulls/12180.md) on 2025-03-15 01:42_
 
 ---
 

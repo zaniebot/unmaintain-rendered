@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-31T23:47:22Z
 updated_at: 2025-03-09T15:04:20Z
 url: https://github.com/astral-sh/uv/issues/2744
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Bad interpreter due to incorrect shebang when running scripts from setuptools setup scripts
@@ -180,14 +180,6 @@ From the point of view of installers, a PEP 660 wheel is no different than any o
 
 ---
 
-_Referenced in [astral-sh/uv#8035](../../astral-sh/uv/issues/8035.md) on 2024-10-09 09:34_
-
----
-
-_Referenced in [astral-sh/uv#11266](../../astral-sh/uv/issues/11266.md) on 2025-02-05 22:57_
-
----
-
 _Comment by @sbidoul on 2025-02-26 17:58_
 
 @jaraco I have looked at this again.
@@ -198,10 +190,6 @@ pip is not affected by this issue because it does not use a venv to build but th
 
 IMO, the fix is for setuptools to emit `#!python` for `build_editable` too. Note this issue is only for scripts, not for entrypoints, which behave correctly.
 
-
----
-
-_Referenced in [astral-sh/uv#11962](../../astral-sh/uv/issues/11962.md) on 2025-03-05 00:04_
 
 ---
 
@@ -216,14 +204,6 @@ _Renamed from "Bad interpreter when running scripts from setuptools setup script
 _Comment by @sbidoul on 2025-03-07 06:50_
 
 I have opened https://github.com/pypa/setuptools/issues/4863 at setuptools.
-
----
-
-_Referenced in [pypa/setuptools#4863](../../pypa/setuptools/issues/4863.md) on 2025-03-07 06:50_
-
----
-
-_Referenced in [pypa/distutils#332](../../pypa/distutils/pulls/332.md) on 2025-03-08 22:28_
 
 ---
 

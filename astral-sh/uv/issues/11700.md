@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-21T17:31:05Z
 updated_at: 2025-02-24T21:05:33Z
 url: https://github.com/astral-sh/uv/issues/11700
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Switching extras uninstalls required dependency
@@ -149,17 +149,5 @@ So `pynvml` on its own doesn't even add `pyvml` to the environment. It gets it f
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2025-02-24 21:05_
-
----
-
-_Referenced in [stfc/janus-core#605](../../stfc/janus-core/issues/605.md) on 2025-09-19 10:10_
-
----
-
-_Referenced in [mlco2/codecarbon#933](../../mlco2/codecarbon/issues/933.md) on 2025-09-19 10:12_
-
----
-
-_Referenced in [mlco2/codecarbon#942](../../mlco2/codecarbon/pulls/942.md) on 2025-10-01 13:40_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-12T03:42:06Z
 updated_at: 2025-03-12T20:59:37Z
 url: https://github.com/astral-sh/uv/issues/12128
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Can't download build-backend if UV_NO_BUILD_ISOLATION=1
@@ -690,10 +690,6 @@ To me, no-build-isolation sounds like "we don't use separate venvs for build, bu
 ---
 
 _Reopened by @JakkuSakura on 2025-03-12 11:53_
-
----
-
-_Referenced in [astral-sh/uv#12134](../../astral-sh/uv/issues/12134.md) on 2025-03-12 12:22_
 
 ---
 

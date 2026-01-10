@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-13T19:56:44Z
 updated_at: 2025-02-13T21:24:28Z
 url: https://github.com/astral-sh/uv/issues/11490
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv --project=. run examples/example1.py` should add `.` to PYTHONPATH and otherwise allow `example1.py` to `import` the current project
@@ -121,10 +121,6 @@ Python 3.12.8
 ---
 
 _Label `bug` added by @mdengler on 2025-02-13 19:56_
-
----
-
-_Referenced in [astral-sh/uv#6733](../../astral-sh/uv/issues/6733.md) on 2025-02-13 19:58_
 
 ---
 

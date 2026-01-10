@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-11T21:41:33Z
 updated_at: 2025-03-07T14:20:01Z
 url: https://github.com/astral-sh/uv/issues/11428
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Backend only allows `<name>/src/<name>` structure
@@ -113,10 +113,6 @@ Main tracking issue: #8779
 ---
 
 _Renamed from "Backend expects `<package-name>/src/<package-name>` structure for in-project packages" to "Backend only allows `<name>/src/<name>` structure" by @chrisrodrigue on 2025-02-12 17:45_
-
----
-
-_Referenced in [astral-sh/uv#11884](../../astral-sh/uv/pulls/11884.md) on 2025-03-04 14:40_
 
 ---
 

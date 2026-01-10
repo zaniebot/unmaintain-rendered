@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T10:21:20Z
 updated_at: 2025-01-31T18:11:05Z
 url: https://github.com/astral-sh/uv/issues/11090
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv considers that the same URLs are different from each other, and also uses old commits to collect dependencies.
@@ -385,10 +385,6 @@ _Label `needs-mre` removed by @charliermarsh on 2025-01-30 21:36_
 ---
 
 _Label `documentation` added by @charliermarsh on 2025-01-30 21:36_
-
----
-
-_Referenced in [astral-sh/uv#11125](../../astral-sh/uv/pulls/11125.md) on 2025-01-31 03:35_
 
 ---
 

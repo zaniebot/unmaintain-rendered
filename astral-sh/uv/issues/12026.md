@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-06T22:49:15Z
 updated_at: 2025-03-07T15:48:36Z
 url: https://github.com/astral-sh/uv/issues/12026
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv publish` reports downloading files during publish
@@ -50,10 +50,6 @@ _Label `cli` added by @zanieb on 2025-03-06 22:49_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-07 01:25_
-
----
-
-_Referenced in [astral-sh/uv#12029](../../astral-sh/uv/pulls/12029.md) on 2025-03-07 01:30_
 
 ---
 

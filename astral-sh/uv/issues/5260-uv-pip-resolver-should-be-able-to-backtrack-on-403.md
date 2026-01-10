@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-21T16:29:25Z
 updated_at: 2025-03-18T01:09:54Z
 url: https://github.com/astral-sh/uv/issues/5260
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv pip` resolver should be able to backtrack on 403
@@ -119,22 +119,6 @@ https://help.sonatype.com/en/firewall-quarantine.html#firewall-quarantine
 
 ---
 
-_Referenced in [astral-sh/uv#6970](../../astral-sh/uv/issues/6970.md) on 2024-10-04 08:07_
-
----
-
-_Referenced in [astral-sh/uv#8201](../../astral-sh/uv/issues/8201.md) on 2024-10-15 10:12_
-
----
-
-_Referenced in [astral-sh/uv#9508](../../astral-sh/uv/issues/9508.md) on 2024-11-28 18:52_
-
----
-
-_Referenced in [astral-sh/uv#11463](../../astral-sh/uv/issues/11463.md) on 2025-02-12 23:22_
-
----
-
 _Comment by @charliermarsh on 2025-02-16 01:42_
 
 @paveldikov -- I want to help you with this, since I get the sense it's causing a lot of trouble. In your index, is this happening when we go to fetch the metadata for the distribution?
@@ -178,10 +162,6 @@ Would have a hard time retrieving an arbitrary binary. Is a PyPI pre-release fea
 _Comment by @charliermarsh on 2025-02-17 15:37_
 
 Hmm, unfortunately that's not a common practice for us so it would take some work. Maybe I can just ship it and we test against the released binary.
-
----
-
-_Referenced in [astral-sh/uv#12255](../../astral-sh/uv/pulls/12255.md) on 2025-03-18 01:09_
 
 ---
 

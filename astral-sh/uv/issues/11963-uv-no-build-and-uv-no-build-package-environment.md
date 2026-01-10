@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-05T00:14:57Z
 updated_at: 2025-03-05T04:58:20Z
 url: https://github.com/astral-sh/uv/issues/11963
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `UV_NO_BUILD` and `UV_NO_BUILD_PACKAGE` environment variables
@@ -68,24 +68,12 @@ Sounds good though, these make sense to add.
 
 ---
 
-_Referenced in [canonical/grafana-agent-operator#265](../../canonical/grafana-agent-operator/pulls/265.md) on 2025-03-05 00:47_
-
----
-
 _Comment by @lengau on 2025-03-05 01:59_
 
 Sorry about that! I'll try to remember for the future.
 
 ---
 
-_Referenced in [astral-sh/uv#11968](../../astral-sh/uv/pulls/11968.md) on 2025-03-05 02:00_
-
----
-
 _Closed by @zanieb on 2025-03-05 04:58_
-
----
-
-_Referenced in [astral-sh/uv#11682](../../astral-sh/uv/issues/11682.md) on 2025-03-11 14:59_
 
 ---

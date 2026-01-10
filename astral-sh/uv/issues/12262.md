@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-18T08:34:58Z
 updated_at: 2025-03-18T17:54:24Z
 url: https://github.com/astral-sh/uv/issues/12262
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv 0.6.7 tls handshake eof
@@ -102,10 +102,6 @@ I suspect this is
 - https://github.com/seanmonstar/reqwest/issues/2599
 
 It should be fixed in the next reqwest release. We could probably release with that commit if we release before them? @charliermarsh 
-
----
-
-_Referenced in [astral-sh/uv#12284](../../astral-sh/uv/pulls/12284.md) on 2025-03-18 15:58_
 
 ---
 

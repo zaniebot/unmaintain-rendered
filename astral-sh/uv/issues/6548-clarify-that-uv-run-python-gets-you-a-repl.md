@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T20:58:43Z
 updated_at: 2025-03-21T17:12:27Z
 url: https://github.com/astral-sh/uv/issues/6548
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Clarify that `uv run python` gets you a REPL
@@ -33,18 +33,6 @@ _Assigned to @zanieb by @charliermarsh on 2024-08-26 14:41_
 ---
 
 _Label `good first issue` added by @zanieb on 2024-08-26 17:37_
-
----
-
-_Referenced in [astral-sh/uv#7430](../../astral-sh/uv/issues/7430.md) on 2024-09-16 14:55_
-
----
-
-_Referenced in [astral-sh/uv#7456](../../astral-sh/uv/pulls/7456.md) on 2024-09-17 13:12_
-
----
-
-_Referenced in [astral-sh/uv#7457](../../astral-sh/uv/pulls/7457.md) on 2024-09-17 13:18_
 
 ---
 
@@ -104,10 +92,6 @@ ModuleNotFoundError: No module named 'numpy'
 
 ---
 
-_Referenced in [astral-sh/uv#8064](../../astral-sh/uv/issues/8064.md) on 2024-10-10 01:38_
-
----
-
 _Comment by @zanieb on 2024-10-10 01:38_
 
 @Michallote we just don't support that yet! i.e., we don't read the metadata because you invoked `python` not the script itself. We can track that at https://github.com/astral-sh/uv/issues/8064
@@ -129,9 +113,5 @@ _Comment by @zanieb on 2025-03-21 14:00_
 _Comment by @IliasAarab on 2025-03-21 17:12_
 
 @zanieb thanks for the response, see #12373 
-
----
-
-_Referenced in [astral-sh/uv#16649](../../astral-sh/uv/pulls/16649.md) on 2025-11-09 05:48_
 
 ---

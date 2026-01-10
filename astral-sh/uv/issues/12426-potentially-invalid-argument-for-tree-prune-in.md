@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-24T11:06:13Z
 updated_at: 2025-03-24T15:45:30Z
 url: https://github.com/astral-sh/uv/issues/12426
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Potentially invalid argument for tree --prune in the CLI's help menu
@@ -60,10 +60,6 @@ _Label `good first issue` added by @charliermarsh on 2025-03-24 13:11_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2025-03-24 13:11_
-
----
-
-_Referenced in [astral-sh/uv#12432](../../astral-sh/uv/pulls/12432.md) on 2025-03-24 15:30_
 
 ---
 

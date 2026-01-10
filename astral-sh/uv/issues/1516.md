@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T17:14:21Z
 updated_at: 2025-03-24T07:03:27Z
 url: https://github.com/astral-sh/uv/issues/1516
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Feature request: add a way to install only build dependencies
@@ -29,10 +29,6 @@ We've resorted to [compiling requirements files](https://github.com/pypa/pip/iss
 ---
 
 _Label `enhancement` added by @zanieb on 2024-02-16 17:48_
-
----
-
-_Referenced in [pypa/pip#11440](../../pypa/pip/issues/11440.md) on 2024-02-21 16:20_
 
 ---
 
@@ -164,14 +160,6 @@ Sorry, yes, I forgot that this issue was about _build_ dependencies. I came here
 
 ---
 
-_Referenced in [astral-sh/uv#5258](../../astral-sh/uv/issues/5258.md) on 2024-07-21 14:13_
-
----
-
-_Referenced in [astral-sh/uv#7247](../../astral-sh/uv/issues/7247.md) on 2024-09-10 08:50_
-
----
-
 _Comment by @kasvtv on 2024-11-07 00:16_
 
 We are also very much missing this feature. For example, wanting to run `ruff` in CI while respecting the version defined in any of `pyproject.toml`'s dependencies. Creating a separate dependency group with just ruff in there does not seem to suffice, because the group of dependencies cannot be installed without the default dependencies.
@@ -194,9 +182,5 @@ How about using `uv lock`?
 
 I found that running `uv sync` with a generated `uv.lock` file installs only the dependencies and completes the build without the `src` folder.
 
-
----
-
-_Referenced in [sagemath/sage#40089](../../sagemath/sage/pulls/40089.md) on 2025-07-17 16:39_
 
 ---

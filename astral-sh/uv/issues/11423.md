@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-11T15:50:29Z
 updated_at: 2025-02-14T11:12:23Z
 url: https://github.com/astral-sh/uv/issues/11423
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv run` seems to add package directory to `sys.path`
@@ -133,10 +133,6 @@ Agree. I thought we fixed that but perhaps not... trying to find the previous di
 _Comment by @zanieb on 2025-02-11 21:30_
 
 Aha https://github.com/astral-sh/uv/issues/9167
-
----
-
-_Referenced in [astral-sh/uv#11431](../../astral-sh/uv/pulls/11431.md) on 2025-02-11 22:10_
 
 ---
 

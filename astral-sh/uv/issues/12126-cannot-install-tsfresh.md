@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-12T01:46:08Z
 updated_at: 2025-03-14T00:28:18Z
 url: https://github.com/astral-sh/uv/issues/12126
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Cannot install tsfresh
@@ -115,13 +115,5 @@ Your problem has the same cause as https://github.com/astral-sh/uv/issues/12060#
 ---
 
 _Closed by @charliermarsh on 2025-03-14 00:28_
-
----
-
-_Referenced in [astral-sh/packse#239](../../astral-sh/packse/pulls/239.md) on 2025-03-14 14:09_
-
----
-
-_Referenced in [astral-sh/uv#12060](../../astral-sh/uv/issues/12060.md) on 2025-03-14 14:14_
 
 ---

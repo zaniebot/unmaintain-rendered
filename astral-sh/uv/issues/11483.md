@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-13T16:25:34Z
 updated_at: 2025-02-13T16:42:04Z
 url: https://github.com/astral-sh/uv/issues/11483
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Support for Resolving Explicit Prerelease Transient Dependencies
@@ -62,9 +62,5 @@ In this setting I want to run `uv lock` for `"my-lib"` and resolve the pre-relea
 ---
 
 _Label `enhancement` added by @Ghelfi on 2025-02-13 16:25_
-
----
-
-_Referenced in [sigstore/protobuf-specs#288](../../sigstore/protobuf-specs/issues/288.md) on 2025-04-10 15:24_
 
 ---

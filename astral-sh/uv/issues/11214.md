@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-04T12:11:07Z
 updated_at: 2025-02-04T21:41:39Z
 url: https://github.com/astral-sh/uv/issues/11214
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # v0.5.27 changes behavior for `uv pip sync -r requirements.txt` (breaking)
@@ -138,14 +138,6 @@ I still sort of feel my original sentiment in that comment. Maybe if it's at the
 
 ---
 
-_Referenced in [astral-sh/uv#2109](../../astral-sh/uv/issues/2109.md) on 2025-02-04 15:47_
-
----
-
-_Referenced in [astral-sh/uv#11218](../../astral-sh/uv/pulls/11218.md) on 2025-02-04 18:16_
-
----
-
 _Comment by @zanieb on 2025-02-04 19:56_
 
 I'm pretty on the fence about special casing this as in https://github.com/astral-sh/uv/pull/11218
@@ -153,9 +145,5 @@ I'm pretty on the fence about special casing this as in https://github.com/astra
 ---
 
 _Closed by @zanieb on 2025-02-04 21:41_
-
----
-
-_Referenced in [alphagov/notifications-api#4376](../../alphagov/notifications-api/pulls/4376.md) on 2025-02-05 10:59_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-06T15:59:01Z
 updated_at: 2025-02-06T10:21:53Z
 url: https://github.com/astral-sh/uv/issues/5816
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Installation of `BoltzTraP2` fails
@@ -156,10 +156,6 @@ uv pip install BoltzTraP2 --no-build-isolation
 
 ---
 
-_Referenced in [astral-sh/uv#2252](../../astral-sh/uv/issues/2252.md) on 2024-08-06 20:11_
-
----
-
 _Comment by @charliermarsh on 2024-08-06 20:13_
 
 👍 Just confirmed that this works:
@@ -210,10 +206,6 @@ _Comment by @DanielYang59 on 2024-08-07 02:38_
 Thanks a lot for the information!
 
 Update: I would expect the build dependency issue being solved for BoltzTraP2 once https://gitlab.com/sousaw/BoltzTraP2/-/merge_requests/21 is merged.
-
----
-
-_Referenced in [materialsproject/pymatgen#3786](../../materialsproject/pymatgen/pulls/3786.md) on 2024-08-07 08:21_
 
 ---
 

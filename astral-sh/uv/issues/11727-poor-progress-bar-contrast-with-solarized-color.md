@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-23T18:39:53Z
 updated_at: 2025-02-25T23:12:26Z
 url: https://github.com/astral-sh/uv/issues/11727
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Poor progress bar contrast with solarized color scheme
@@ -61,10 +61,6 @@ The picture below shows the results of disabling this setting.
 ![Image](https://github.com/user-attachments/assets/b2fd4a27-1714-45a4-9537-e673d6fb1b6a)
 
 This doesn't seem to be an issue with uv?
-
----
-
-_Referenced in [microsoft/terminal#18617](../../microsoft/terminal/issues/18617.md) on 2025-02-23 21:18_
 
 ---
 

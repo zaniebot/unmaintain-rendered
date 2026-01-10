@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-26T19:18:06Z
 updated_at: 2025-02-28T02:14:10Z
 url: https://github.com/astral-sh/uv/issues/11809
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # invalid default cache-dir on mac
@@ -85,10 +85,6 @@ hmm ok then. I'll add explicit `cache-dir` global option.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-28 02:04_
-
----
-
-_Referenced in [astral-sh/uv#11845](../../astral-sh/uv/pulls/11845.md) on 2025-02-28 02:06_
 
 ---
 

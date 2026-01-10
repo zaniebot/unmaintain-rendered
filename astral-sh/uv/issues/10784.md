@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-20T17:23:46Z
 updated_at: 2025-03-04T14:29:38Z
 url: https://github.com/astral-sh/uv/issues/10784
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Hint use of `uv run` if `uvx` is given a script path
@@ -23,19 +23,11 @@ As described in https://github.com/astral-sh/uv/issues/10695 — we attempt to i
 
 ---
 
-_Referenced in [astral-sh/uv#10695](../../astral-sh/uv/issues/10695.md) on 2025-01-20 17:23_
-
----
-
 _Label `error messages` added by @zanieb on 2025-01-20 17:24_
 
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-02-19 15:29_
-
----
-
-_Referenced in [astral-sh/uv#11623](../../astral-sh/uv/pulls/11623.md) on 2025-02-19 15:32_
 
 ---
 

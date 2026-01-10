@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T21:33:11Z
 updated_at: 2025-02-22T17:24:26Z
 url: https://github.com/astral-sh/uv/issues/11406
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Cannot install the CPU version of torch 2.6.0
@@ -467,23 +467,11 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-02-16 00:17_
 
 ---
 
-_Referenced in [astral-sh/uv#11546](../../astral-sh/uv/pulls/11546.md) on 2025-02-16 01:14_
-
----
-
 _Closed by @charliermarsh on 2025-02-16 01:35_
 
 ---
 
 _Closed by @charliermarsh on 2025-02-16 01:35_
-
----
-
-_Referenced in [astral-sh/uv#11558](../../astral-sh/uv/issues/11558.md) on 2025-02-16 16:39_
-
----
-
-_Referenced in [sdsc-ordes/kg-llm-interface#35](../../sdsc-ordes/kg-llm-interface/pulls/35.md) on 2025-02-17 10:24_
 
 ---
 

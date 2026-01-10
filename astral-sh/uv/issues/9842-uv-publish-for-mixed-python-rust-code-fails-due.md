@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T15:43:55Z
 updated_at: 2025-01-28T11:48:41Z
 url: https://github.com/astral-sh/uv/issues/9842
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # 'uv publish' for mixed python-rust code fails due to unsupported platform tag 'linux_x86_64'
@@ -131,10 +131,6 @@ _Assigned to @konstin by @zanieb on 2024-12-13 18:15_
 ---
 
 _Label `bug` added by @konstin on 2024-12-17 12:44_
-
----
-
-_Referenced in [astral-sh/uv#9970](../../astral-sh/uv/pulls/9970.md) on 2024-12-17 12:46_
 
 ---
 

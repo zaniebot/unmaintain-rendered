@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T20:50:11Z
 updated_at: 2025-02-18T15:18:32Z
 url: https://github.com/astral-sh/uv/issues/9851
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Unable to run `uvx --python [3.9|3.10|3.11|3.12] textual-paint`
@@ -308,10 +308,6 @@ _Assigned to @zanieb by @zanieb on 2024-12-12 21:17_
 ---
 
 _Label `bug` added by @zanieb on 2024-12-12 21:17_
-
----
-
-_Referenced in [1j01/textual-paint#9](../../1j01/textual-paint/pulls/9.md) on 2024-12-12 22:03_
 
 ---
 

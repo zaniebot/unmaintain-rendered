@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-02T11:09:01Z
 updated_at: 2025-02-12T18:00:42Z
 url: https://github.com/astral-sh/uv/issues/11163
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # 'Invalid cross-device link (os error 18)' during 'ruff' installation in Docker container
@@ -109,10 +109,6 @@ _Label `bug` added by @heso on 2025-02-02 11:09_
 ---
 
 _Assigned to @konstin by @konstin on 2025-02-02 14:53_
-
----
-
-_Referenced in [astral-sh/uv#11167](../../astral-sh/uv/pulls/11167.md) on 2025-02-02 16:08_
 
 ---
 

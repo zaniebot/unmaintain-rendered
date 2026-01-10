@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-26T23:53:32Z
 updated_at: 2025-02-02T14:19:54Z
 url: https://github.com/astral-sh/uv/issues/4574
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Support private virtualenvs and locks for workspace members
@@ -75,14 +75,6 @@ _Label `needs-decision` added by @zanieb on 2024-06-27 02:25_
 
 ---
 
-_Referenced in [astral-sh/uv#4499](../../astral-sh/uv/pulls/4499.md) on 2024-06-27 10:25_
-
----
-
-_Referenced in [astral-sh/uv#4610](../../astral-sh/uv/pulls/4610.md) on 2024-06-28 04:52_
-
----
-
 _Comment by @charliermarsh on 2024-06-28 10:46_
 
 How does this differ from excluding the projects from the workspace?
@@ -126,10 +118,6 @@ _Comment by @pvardanis on 2024-08-14 17:17_
 @idlsoft @charliermarsh that would be really nice to have as a feature, especially for us that work on monorepos. I'm working on such a monorepo where some of the members of the workspace have conflicting dependencies (that is common for ML libraries), but also some common ones. That would require having separate venvs/locks for those packages but I'd still like to have common dependencies for all of the packages on the workspace level vs. not having a workspace at all, so I don't have repeated/common dependencies specified in multiple `pyproject.toml` files.
 
 The example repo on your PR is exactly what I was looking for: https://github.com/astral-sh/uv/tree/5f2d0323d6330395dc8b62c6a126a234176165f0/scripts/workspaces/shared-libs.
-
----
-
-_Referenced in [astral-sh/uv#6935](../../astral-sh/uv/issues/6935.md) on 2024-09-25 21:31_
 
 ---
 

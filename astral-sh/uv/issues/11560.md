@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-16T18:15:36Z
 updated_at: 2025-02-18T20:39:30Z
 url: https://github.com/astral-sh/uv/issues/11560
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Showing color despite `--color never` or `NO_COLOR=1` on `uv python install`
@@ -115,18 +115,10 @@ _Assigned to @Gankra by @Gankra on 2025-02-18 18:41_
 
 ---
 
-_Referenced in [astral-sh/uv#11604](../../astral-sh/uv/pulls/11604.md) on 2025-02-18 20:23_
-
----
-
 _Closed by @Gankra on 2025-02-18 20:39_
 
 ---
 
 _Closed by @Gankra on 2025-02-18 20:39_
-
----
-
-_Referenced in [astral-sh/uv#15840](../../astral-sh/uv/issues/15840.md) on 2025-09-14 18:57_
 
 ---

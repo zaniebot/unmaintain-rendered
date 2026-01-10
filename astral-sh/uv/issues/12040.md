@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-07T11:13:16Z
 updated_at: 2025-03-12T12:32:56Z
 url: https://github.com/astral-sh/uv/issues/12040
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Consider using `-C` as a shortcut for `--project`
@@ -58,9 +58,5 @@ _Label `enhancement` added by @nils-werner on 2025-03-07 11:13_
 ---
 
 _Renamed from "Consider using `-C` as a shortcut for `--directory`" to "Consider using `-C` as a shortcut for `--project`" by @nils-werner on 2025-03-12 12:32_
-
----
-
-_Referenced in [astral-sh/uv#15250](../../astral-sh/uv/pulls/15250.md) on 2025-08-13 09:24_
 
 ---

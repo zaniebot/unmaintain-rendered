@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-31T13:30:43Z
 updated_at: 2025-02-10T14:17:33Z
 url: https://github.com/astral-sh/uv/issues/11133
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Duplicate packages with conflicting extras
@@ -264,14 +264,6 @@ One thing to consider here is that every conflict you define leads to a fork in 
 
 ---
 
-_Referenced in [astral-sh/uv#11323](../../astral-sh/uv/pulls/11323.md) on 2025-02-07 17:19_
-
----
-
 _Closed by @BurntSushi on 2025-02-10 14:17_
-
----
-
-_Referenced in [astral-sh/uv#11479](../../astral-sh/uv/issues/11479.md) on 2025-02-13 14:44_
 
 ---

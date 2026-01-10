@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-16T15:18:11Z
 updated_at: 2025-03-03T16:04:45Z
 url: https://github.com/astral-sh/uv/issues/6147
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # gracefully handle missing files/directories in cache storage
@@ -52,10 +52,6 @@ I think catching ENOENT and friends (at arbitrary depth?) and re-caching the dis
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-20 20:41_
-
----
-
-_Referenced in [astral-sh/uv#6284](../../astral-sh/uv/pulls/6284.md) on 2024-08-20 23:39_
 
 ---
 
@@ -119,9 +115,5 @@ So I am now stuck trying to do either of:
 
 (Unfortunately in my organisation I can't quite sidestep `tmpwatch`, so that's sadly not an option)
 
-
----
-
-_Referenced in [astral-sh/uv#16761](../../astral-sh/uv/issues/16761.md) on 2025-11-17 15:25_
 
 ---

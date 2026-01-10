@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-07T16:18:55Z
 updated_at: 2025-03-07T20:02:25Z
 url: https://github.com/astral-sh/uv/issues/12050
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # How to properly publish to TestPyPI?
@@ -655,9 +655,5 @@ You're welcome!
 ---
 
 _Closed by @willigott on 2025-03-07 20:02_
-
----
-
-_Referenced in [astral-sh/uv#12148](../../astral-sh/uv/pulls/12148.md) on 2025-03-13 04:11_
 
 ---

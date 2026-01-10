@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-08T12:25:57Z
 updated_at: 2025-01-29T16:38:19Z
 url: https://github.com/astral-sh/uv/issues/10390
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # File restructuring needs a manual sync --reinstall?
@@ -131,9 +131,5 @@ _Closed by @charliermarsh on 2025-01-29 16:24_
 _Comment by @cgravill on 2025-01-29 16:38_
 
 Excellent. The workaround is good enough for our purposes. Thanks for pointers.
-
----
-
-_Referenced in [astral-sh/uv#12047](../../astral-sh/uv/issues/12047.md) on 2025-03-14 23:50_
 
 ---

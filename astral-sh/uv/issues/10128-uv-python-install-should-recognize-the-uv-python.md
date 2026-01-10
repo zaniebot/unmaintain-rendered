@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-23T22:43:43Z
 updated_at: 2025-02-16T15:34:49Z
 url: https://github.com/astral-sh/uv/issues/10128
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv python install` should recognize the `UV_PYTHON` environment variable
@@ -48,10 +48,6 @@ _Label `good first issue` added by @zanieb on 2024-12-23 22:48_
 _Comment by @VitthalGupta on 2024-12-26 12:14_
 
 I would like to take up the issue
-
----
-
-_Referenced in [astral-sh/uv#10222](../../astral-sh/uv/pulls/10222.md) on 2024-12-29 23:55_
 
 ---
 

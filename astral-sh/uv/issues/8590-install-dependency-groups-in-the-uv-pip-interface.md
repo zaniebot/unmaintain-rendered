@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-26T11:58:43Z
 updated_at: 2025-03-17T18:44:12Z
 url: https://github.com/astral-sh/uv/issues/8590
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Install dependency groups in the `uv pip` interface, i.e., `uv pip install --group`
@@ -49,31 +49,7 @@ _Label `compatibility` added by @charliermarsh on 2024-10-26 16:46_
 
 ---
 
-_Referenced in [posit-dev/posit-sdk-py#316](../../posit-dev/posit-sdk-py/pulls/316.md) on 2024-10-29 06:15_
-
----
-
-_Referenced in [astral-sh/uv#8969](../../astral-sh/uv/issues/8969.md) on 2024-11-09 13:10_
-
----
-
-_Referenced in [astral-sh/uv#9140](../../astral-sh/uv/issues/9140.md) on 2024-11-15 21:31_
-
----
-
-_Referenced in [astral-sh/uv#9457](../../astral-sh/uv/issues/9457.md) on 2024-11-26 23:36_
-
----
-
 _Renamed from "uv pip install --group" to "Install dependency groups in the `uv pip` interface, i.e., `uv pip install --group`" by @zanieb on 2024-11-26 23:45_
-
----
-
-_Referenced in [cthoyt/cookiecutter-snekpack#32](../../cthoyt/cookiecutter-snekpack/pulls/32.md) on 2024-11-27 10:17_
-
----
-
-_Referenced in [skfolio/skfolio#107](../../skfolio/skfolio/pulls/107.md) on 2024-12-22 21:18_
 
 ---
 
@@ -82,10 +58,6 @@ _Comment by @aretrace on 2024-12-23 03:04_
 > # pypa/pip/pull/13065
 
 🙏 patiently awaiting this 🙏
-
----
-
-_Referenced in [astral-sh/uv#10287](../../astral-sh/uv/issues/10287.md) on 2025-01-03 15:29_
 
 ---
 
@@ -98,10 +70,6 @@ uv export --only-group=... | uv pip install --requirements=-
 ```
 
 to install specific dependency groups.
-
----
-
-_Referenced in [astral-sh/uv#10861](../../astral-sh/uv/pulls/10861.md) on 2025-01-22 14:55_
 
 ---
 
@@ -118,10 +86,6 @@ _Reopened by @zanieb on 2025-01-23 20:43_
 ---
 
 _Assigned to @Gankra by @charliermarsh on 2025-02-16 19:03_
-
----
-
-_Referenced in [astral-sh/uv#11686](../../astral-sh/uv/pulls/11686.md) on 2025-02-21 14:42_
 
 ---
 

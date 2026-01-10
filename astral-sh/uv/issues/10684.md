@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-16T16:26:36Z
 updated_at: 2025-03-21T15:19:22Z
 url: https://github.com/astral-sh/uv/issues/10684
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Getting no warning if uv gets 403 on Private Repository
@@ -54,9 +54,5 @@ Let me know if you have more questions here.
 ---
 
 _Closed by @zanieb on 2025-03-21 15:19_
-
----
-
-_Referenced in [astral-sh/uv#12362](../../astral-sh/uv/issues/12362.md) on 2025-03-21 15:20_
 
 ---

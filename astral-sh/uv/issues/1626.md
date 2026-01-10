@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T06:57:37Z
 updated_at: 2025-01-30T16:39:07Z
 url: https://github.com/astral-sh/uv/issues/1626
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Keep editable "." install when locking and syncing
@@ -138,10 +138,6 @@ Yes, that works. Would be nice to somehow specify that the project itself should
 
 ---
 
-_Referenced in [pypa/pip#12597](../../pypa/pip/issues/12597.md) on 2024-03-25 20:45_
-
----
-
 _Closed by @charliermarsh on 2024-04-04 03:57_
 
 ---
@@ -164,10 +160,6 @@ I verified that `uv.lock` is updated with `source = { editable = "." }` under yo
 _Comment by @joaoprocopio on 2024-10-08 04:01_
 
 thanks @atomiechen!!!!!!!!!
-
----
-
-_Referenced in [astral-sh/uv#9518](../../astral-sh/uv/issues/9518.md) on 2024-11-29 09:54_
 
 ---
 
@@ -222,9 +214,5 @@ Oh wow I've been trying for so long to make my repository importable as a packag
 _Comment by @charliermarsh on 2025-01-30 16:39_
 
 The impact of the build system is covered in the docs: https://docs.astral.sh/uv/concepts/projects/init/.
-
----
-
-_Referenced in [astral-sh/uv#12856](../../astral-sh/uv/issues/12856.md) on 2025-04-14 01:54_
 
 ---

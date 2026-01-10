@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-01T14:33:03Z
 updated_at: 2025-03-03T17:29:32Z
 url: https://github.com/astral-sh/uv/issues/11885
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Reconsider use of zlib-rs
@@ -36,10 +36,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2025-03-02 01:07_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-02 03:04_
-
----
-
-_Referenced in [astral-sh/uv#11894](../../astral-sh/uv/pulls/11894.md) on 2025-03-02 17:01_
 
 ---
 

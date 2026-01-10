@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-06T14:09:52Z
 updated_at: 2025-03-14T03:49:19Z
 url: https://github.com/astral-sh/uv/issues/12006
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Redundant output of activate.bat due to changes made with #11831
@@ -89,10 +89,6 @@ _Comment by @flaribbit on 2025-03-06 16:52_
 venv module in CPython has a `@echo off` command, which prevent the commands from being printed.
 
 But I can not fully understand the strange behavior of bat script why the paren was printed...
-
----
-
-_Referenced in [astral-sh/uv#12160](../../astral-sh/uv/pulls/12160.md) on 2025-03-14 01:25_
 
 ---
 

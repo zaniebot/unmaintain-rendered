@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-16T14:34:16Z
 updated_at: 2025-02-25T19:30:57Z
 url: https://github.com/astral-sh/uv/issues/5107
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Git prompt hidden without `--verbose` flag
@@ -119,10 +119,6 @@ Content please
 
 ---
 
-_Referenced in [astral-sh/uv#6946](../../astral-sh/uv/issues/6946.md) on 2024-09-02 21:10_
-
----
-
 _Comment by @rhoboro on 2024-10-21 09:25_
 
 @zanieb @charliermarsh 
@@ -181,27 +177,15 @@ I assume because the repo can't be found, `uv` delegates to the git CLI, and bec
 
 ---
 
-_Referenced in [astral-sh/uv#10951](../../astral-sh/uv/issues/10951.md) on 2025-01-25 00:27_
-
----
-
 _Comment by @zanieb on 2025-02-16 23:47_
 
 Same as https://github.com/astral-sh/uv/issues/3783
 
 ---
 
-_Referenced in [astral-sh/uv#3783](../../astral-sh/uv/issues/3783.md) on 2025-02-16 23:47_
-
----
-
 _Comment by @piegamesde on 2025-02-19 14:17_
 
 Looking at the code and how to resolve this, I fear that an animated spinner is fundamentally incompatible with an interactive prompt. I suggest either removing the animation, or entirely replacing all interactive prompts with a failure. Either way, the current situation is a huge foot gun and source of confusion. (There may be a third solution of detecting interactive prompts and disabling the spinner only then, but that sounds like it would be a lot of work and very brittle)
-
----
-
-_Referenced in [astral-sh/uv#11744](../../astral-sh/uv/pulls/11744.md) on 2025-02-24 11:52_
 
 ---
 
@@ -240,13 +224,5 @@ Of course it would be possible to have an option in uv to not set `GIT_TERMINAL_
 ---
 
 _Closed by @zanieb on 2025-02-25 19:30_
-
----
-
-_Referenced in [astral-sh/uv#11342](../../astral-sh/uv/issues/11342.md) on 2025-03-07 10:53_
-
----
-
-_Referenced in [astral-sh/uv#12685](../../astral-sh/uv/issues/12685.md) on 2025-04-05 14:40_
 
 ---

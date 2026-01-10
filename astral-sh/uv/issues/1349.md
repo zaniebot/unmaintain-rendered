@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-15T21:17:33Z
 updated_at: 2025-02-21T06:27:20Z
 url: https://github.com/astral-sh/uv/issues/1349
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Rename the project to puffin
@@ -74,14 +74,6 @@ We considered a _ton_ of names — it's really hard to pick a name without colli
 
 ---
 
-_Referenced in [astral-sh/uv#2479](../../astral-sh/uv/issues/2479.md) on 2024-03-15 19:21_
-
----
-
-_Referenced in [astral-sh/uv#8149](../../astral-sh/uv/issues/8149.md) on 2024-10-12 20:41_
-
----
-
 _Comment by @rfletchr on 2025-02-14 15:28_
 
 personally I always interpreted it as 'unicorn velocirator' it fits.
@@ -109,9 +101,5 @@ universal version
 _Comment by @rfletchr on 2025-02-21 06:27_
 
 unexpected venture-captial?
-
----
-
-_Referenced in [astral-sh/uv#12741](../../astral-sh/uv/issues/12741.md) on 2025-04-08 12:29_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-03T19:15:21Z
 updated_at: 2025-02-03T22:12:40Z
 url: https://github.com/astral-sh/uv/issues/11190
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv fails on `uv pip install --all-extras` with a `pyproject.toml`
@@ -114,10 +114,6 @@ all = ["project[anyio]", "project[pytest]"]
 ```
 
 Then you'd run `uv pip install ".[all]"`.
-
----
-
-_Referenced in [astral-sh/uv#11193](../../astral-sh/uv/pulls/11193.md) on 2025-02-03 19:45_
 
 ---
 

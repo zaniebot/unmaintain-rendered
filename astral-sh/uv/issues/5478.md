@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-26T12:40:27Z
 updated_at: 2025-02-19T01:24:49Z
 url: https://github.com/astral-sh/uv/issues/5478
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Error installing wheel with "invalid version"
@@ -111,10 +111,6 @@ It seems that starting with pip 24.1b1 the wheel I used as an example is no long
 
 ---
 
-_Referenced in [huggingface/huggingface_hub#2637](../../huggingface/huggingface_hub/issues/2637.md) on 2024-10-27 15:39_
-
----
-
 _Comment by @jcorrie on 2024-10-27 15:40_
 
 I'm experiencing the same issue using uv pip to install a spacy model via hugging face. The url given by hugging face for the wheels file seems only (?) to provide "any" as the version number. Agreed with @albertotb that from the pip issue referenced it seems like this is probably something hugging face will need to update. I've open a new issue [huggingface/huggingface_hub#2637](https://github.com/huggingface/huggingface_hub/issues/2637)
@@ -141,10 +137,6 @@ Probably, although not an ideal solution. You would have to re-host it somewhere
 
 ---
 
-_Referenced in [astral-sh/uv#11434](../../astral-sh/uv/pulls/11434.md) on 2025-02-12 04:38_
-
----
-
 _Comment by @notatallshaw on 2025-02-19 00:44_
 
 > We should support this, requires some refactors though.
@@ -162,9 +154,5 @@ Looking back at this, I agree with you that we shouldn't support it. Especially 
 ---
 
 _Closed by @charliermarsh on 2025-02-19 01:24_
-
----
-
-_Referenced in [huspacy/huspacy#76](../../huspacy/huspacy/issues/76.md) on 2025-10-08 16:28_
 
 ---

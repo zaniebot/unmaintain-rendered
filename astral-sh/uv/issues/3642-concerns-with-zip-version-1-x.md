@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-17T16:05:56Z
 updated_at: 2025-03-15T20:06:53Z
 url: https://github.com/astral-sh/uv/issues/3642
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Concerns with zip version 1.x
@@ -62,10 +62,6 @@ We're still considering this as a team, but it seems likely we'd pin until we ha
 
 ---
 
-_Referenced in [astral-sh/uv#3645](../../astral-sh/uv/pulls/3645.md) on 2024-05-17 19:13_
-
----
-
 _Comment by @musicinmybrain on 2024-05-17 19:13_
 
 > We're still considering this as a team, but it seems likely we'd pin until we have more details. Would you be willing to open a pull request?
@@ -78,17 +74,9 @@ _Closed by @charliermarsh on 2024-05-18 17:31_
 
 ---
 
-_Referenced in [astral-sh/ruff#11779](../../astral-sh/ruff/pulls/11779.md) on 2024-06-06 19:31_
-
----
-
 _Comment by @AlexWaygood on 2024-06-07 09:25_
 
 In https://github.com/astral-sh/ruff/pull/11779, we're adding `zip` as a dependency to Ruff as well, for red-knot. For now we're pinning it to the same version that `uv` has it pinned to.
-
----
-
-_Referenced in [astral-sh/ruff#11982](../../astral-sh/ruff/pulls/11982.md) on 2024-06-22 14:05_
 
 ---
 
@@ -103,9 +91,5 @@ This comment isn’t *asking* you to update the `zip` dependency – we expect t
 _Comment by @charliermarsh on 2025-03-15 20:06_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/uv#16907](../../astral-sh/uv/pulls/16907.md) on 2025-12-01 10:54_
 
 ---

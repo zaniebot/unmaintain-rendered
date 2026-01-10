@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-11T12:53:32Z
 updated_at: 2025-02-12T00:42:15Z
 url: https://github.com/astral-sh/uv/issues/11420
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # installing git repository ignores UV_LINK_MODE, breaks on some filesystems
@@ -114,10 +114,6 @@ _Label `needs-decision` removed by @charliermarsh on 2025-02-11 14:24_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-02-11 14:24_
-
----
-
-_Referenced in [astral-sh/uv#11421](../../astral-sh/uv/pulls/11421.md) on 2025-02-11 14:47_
 
 ---
 

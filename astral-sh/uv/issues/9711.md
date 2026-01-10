@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-07T20:46:40Z
 updated_at: 2025-03-20T18:44:58Z
 url: https://github.com/astral-sh/uv/issues/9711
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Tracking issue: package without source distribution gets an "incomplete" resolution
@@ -53,14 +53,6 @@ _Label `resolver` added by @charliermarsh on 2024-12-07 20:46_
 
 ---
 
-_Referenced in [astral-sh/uv#9840](../../astral-sh/uv/issues/9840.md) on 2024-12-12 14:20_
-
----
-
-_Referenced in [astral-sh/uv#9865](../../astral-sh/uv/issues/9865.md) on 2024-12-13 11:05_
-
----
-
 _Comment by @charliermarsh on 2024-12-15 03:10_
 
 One hard thing here is that it requires us to define a set of "required" environments... Like, if we don't see any macOS wheels, then we need to look for a different version of the package that _does_ have macOS wheels. But do we need to find both macOS ARM and x86 wheels? Or is one of the two sufficient?
@@ -86,27 +78,11 @@ Even that first condition seems a little tricky, since we don't know what the "m
 
 ---
 
-_Referenced in [astral-sh/uv#9907](../../astral-sh/uv/issues/9907.md) on 2024-12-15 13:45_
-
----
-
-_Referenced in [astral-sh/uv#9928](../../astral-sh/uv/pulls/9928.md) on 2024-12-16 03:23_
-
----
-
 _Label `resolver` removed by @charliermarsh on 2024-12-16 03:26_
 
 ---
 
 _Label `bug` added by @charliermarsh on 2024-12-16 03:26_
-
----
-
-_Referenced in [astral-sh/uv#9961](../../astral-sh/uv/issues/9961.md) on 2024-12-17 15:25_
-
----
-
-_Referenced in [astral-sh/uv#9963](../../astral-sh/uv/issues/9963.md) on 2024-12-17 21:42_
 
 ---
 
@@ -192,51 +168,11 @@ Sorry, the other example to mention here is https://github.com/astral-sh/uv/pull
 
 ---
 
-_Referenced in [astral-sh/uv#9988](../../astral-sh/uv/issues/9988.md) on 2024-12-18 17:27_
-
----
-
-_Referenced in [astral-sh/uv#10059](../../astral-sh/uv/issues/10059.md) on 2024-12-20 16:48_
-
----
-
-_Referenced in [astral-sh/uv#10056](../../astral-sh/uv/issues/10056.md) on 2024-12-20 16:51_
-
----
-
 _Comment by @charliermarsh on 2024-12-20 19:16_
 
 We shipped https://github.com/astral-sh/uv/pull/10046 which fixes this for PyTorch and packages in the PyTorch ecosystem (i.e., it's limited to inspecting local versions vs. base versions).
 
 We may return to this to make it more general in the future.
-
----
-
-_Referenced in [astral-sh/uv#10067](../../astral-sh/uv/pulls/10067.md) on 2024-12-21 04:15_
-
----
-
-_Referenced in [astral-sh/uv#10085](../../astral-sh/uv/issues/10085.md) on 2024-12-21 23:47_
-
----
-
-_Referenced in [astral-sh/uv#10849](../../astral-sh/uv/issues/10849.md) on 2025-01-22 12:08_
-
----
-
-_Referenced in [google/magika#922](../../google/magika/issues/922.md) on 2025-01-24 10:57_
-
----
-
-_Referenced in [google/magika#928](../../google/magika/issues/928.md) on 2025-01-24 12:12_
-
----
-
-_Referenced in [astral-sh/uv#9412](../../astral-sh/uv/issues/9412.md) on 2025-02-28 13:34_
-
----
-
-_Referenced in [astral-sh/uv#11855](../../astral-sh/uv/issues/11855.md) on 2025-02-28 14:15_
 
 ---
 
@@ -255,9 +191,5 @@ _Comment by @konstin on 2025-03-20 13:35_
 _Comment by @sanmai-NL on 2025-03-20 18:44_
 
 @konstin Not sure. Problem is there's no binary wheel for one of our supported platforms (aarch64 Linux) either. In that case, we want `no-build` to turn `false` and spaCy to be built from source. We now have to do a lot of trickery to do that out-of-band and get `uv` to live with that (and not try to resolve the spaCy dependency upon about every `uv` invocation).
-
----
-
-_Referenced in [napari/napari#7744](../../napari/napari/pulls/7744.md) on 2025-03-25 20:28_
 
 ---

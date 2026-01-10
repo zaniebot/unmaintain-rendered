@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-18T11:01:21Z
 updated_at: 2025-02-21T16:21:03Z
 url: https://github.com/astral-sh/uv/issues/11592
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv does not support --constraint with a URL in double quotes
@@ -92,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-02-19 19:13_
 _Comment by @charliermarsh on 2025-02-19 19:26_
 
 Gonna do this since it's easy to do on the plane, unlike things that require Internet.
-
----
-
-_Referenced in [astral-sh/uv#11644](../../astral-sh/uv/pulls/11644.md) on 2025-02-19 22:32_
 
 ---
 

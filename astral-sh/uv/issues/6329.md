@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T14:16:52Z
 updated_at: 2025-02-02T05:48:58Z
 url: https://github.com/astral-sh/uv/issues/6329
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Consider adding documentation on using `uv ...` to use a `.venv` in Jupyter notebooks
@@ -109,10 +109,6 @@ _Comment by @bluss on 2024-08-21 14:59_
 @prrao87 if you don't like to install pyproject-local-kernel ([or others](https://github.com/goerz/python-localvenv-kernel)), the following kernelspec here might be fun to install - however I share this for fun and learning, and I would actually recommend installing a dedicated python package instead of hacking around with kernelspecs..  (That said: the python package could be one with just this exact kernelspec! The reason you want to use packages is for reproducible environments, uv style!)
 
 https://bluss.github.io/pyproject-local-kernel/FAQ/#isnt-there-a-less-complicated-way-to-do-it
-
----
-
-_Referenced in [astral-sh/uv#6334](../../astral-sh/uv/issues/6334.md) on 2024-08-21 15:04_
 
 ---
 
@@ -250,10 +246,6 @@ Oops, my bad. Thanks for the clarification @baggiponte . I wasn't able to get `u
 
 ---
 
-_Referenced in [astral-sh/uv#7625](../../astral-sh/uv/pulls/7625.md) on 2024-09-22 17:56_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-22 18:07_
 
 ---
@@ -302,10 +294,6 @@ You can select this kernel in VS Code. (Select Another Kernel => Jupyter Kernel 
 
 If one uses this kernel in a newly created notebook in a new directory - no pyproject.toml's above this directory, uv will launch ipykernel in an emphemeral environment. Then `!uv init && uv add dependency` works. Then the user needs to restart the kernel ('Restart' button), and ipykernel execution will switch to the newly installed project. That's a load of magic :slightly_smiling_face: 
 
-
----
-
-_Referenced in [astral-sh/uv#7679](../../astral-sh/uv/issues/7679.md) on 2024-09-25 06:02_
 
 ---
 

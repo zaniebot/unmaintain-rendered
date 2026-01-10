@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-19T16:53:04Z
 updated_at: 2025-03-19T17:15:15Z
 url: https://github.com/astral-sh/uv/issues/12318
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `error: Failed to generate package metadata` for locally installed package (`Failed to deserialize cache entry`)
@@ -90,10 +90,6 @@ _Label `bug` added by @pnovotnak on 2025-03-19 16:53_
 _Comment by @charliermarsh on 2025-03-19 16:55_
 
 Thanks, these should be non-fatal. @Gankra I think this suggests there's something we missed here...
-
----
-
-_Referenced in [astral-sh/uv#12319](../../astral-sh/uv/pulls/12319.md) on 2025-03-19 17:02_
 
 ---
 

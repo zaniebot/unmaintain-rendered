@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-09T23:30:51Z
 updated_at: 2025-02-06T22:38:05Z
 url: https://github.com/astral-sh/uv/issues/10451
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Integration docs for Bitbucket Pipelines
@@ -29,10 +29,6 @@ _Comment by @FishAlchemist on 2025-01-10 07:23_
 If you think it's suitable for the UV document, then go ahead and create a PR.
 The creation of PRs for the integrated document is not restricted to UV team members
 https://github.com/astral-sh/uv/pulls?q=is%3Apr+Integration+docs+is%3Aclosed+label%3Adocumentation
-
----
-
-_Referenced in [astral-sh/uv#10466](../../astral-sh/uv/pulls/10466.md) on 2025-01-10 11:12_
 
 ---
 

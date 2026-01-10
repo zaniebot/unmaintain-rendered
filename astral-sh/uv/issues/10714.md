@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-17T15:51:59Z
 updated_at: 2025-02-01T19:37:30Z
 url: https://github.com/astral-sh/uv/issues/10714
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv called through hatch or tox-uv writes debug to stderr
@@ -196,9 +196,5 @@ It's proper for us to write our debug logs to stderr — that's the unix convent
 ---
 
 _Closed by @zanieb on 2025-02-01 19:37_
-
----
-
-_Referenced in [kestra-io/kestra#7798](../../kestra-io/kestra/issues/7798.md) on 2025-04-02 12:30_
 
 ---

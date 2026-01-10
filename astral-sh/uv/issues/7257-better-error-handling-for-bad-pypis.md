@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-10T15:45:09Z
 updated_at: 2025-02-10T21:07:38Z
 url: https://github.com/astral-sh/uv/issues/7257
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Better Error Handling for Bad PyPIs
@@ -91,10 +91,6 @@ You'd be surprised by the number of times "annoyed" and "Nexus" show up together
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-30 17:39_
-
----
-
-_Referenced in [astral-sh/uv#11107](../../astral-sh/uv/pulls/11107.md) on 2025-01-30 18:17_
 
 ---
 

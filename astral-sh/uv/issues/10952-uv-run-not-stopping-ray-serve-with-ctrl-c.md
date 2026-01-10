@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-25T01:30:30Z
 updated_at: 2025-01-28T20:00:39Z
 url: https://github.com/astral-sh/uv/issues/10952
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv run not stopping ray serve with ctrl c
@@ -211,10 +211,6 @@ Since a SIGINT to the immediate child works, I'm surprised that Ctrl-C is not wo
 
 ---
 
-_Referenced in [astral-sh/uv#10989](../../astral-sh/uv/pulls/10989.md) on 2025-01-27 15:31_
-
----
-
 _Comment by @zanieb on 2025-01-27 20:18_
 
 Ah interesting Ray is creating a new _process group_
@@ -268,18 +264,10 @@ zb    7973  7972  7973      0    1 S<   s011    0:01.77 /Users/zb/workspace/uv/.
 
 ---
 
-_Referenced in [astral-sh/uv#11009](../../astral-sh/uv/pulls/11009.md) on 2025-01-28 00:37_
-
----
-
 _Closed by @zanieb on 2025-01-28 20:00_
 
 ---
 
 _Closed by @zanieb on 2025-01-28 20:00_
-
----
-
-_Referenced in [astral-sh/uv#12108](../../astral-sh/uv/issues/12108.md) on 2025-06-02 18:24_
 
 ---

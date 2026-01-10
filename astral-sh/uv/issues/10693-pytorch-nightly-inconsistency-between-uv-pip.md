@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-16T20:06:07Z
 updated_at: 2025-02-21T21:50:48Z
 url: https://github.com/astral-sh/uv/issues/10693
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # PyTorch nightly inconsistency between `uv pip install` vs `uv sync` (missing nvidia packages)
@@ -697,10 +697,6 @@ Funny it appears the cpu linux/arm64 wheels have the cuda dependencies listed.
 
 ---
 
-_Referenced in [pytorch/pytorch#145021](../../pytorch/pytorch/pulls/145021.md) on 2025-01-17 00:12_
-
----
-
 _Comment by @tmm1 on 2025-01-18 05:17_
 
 I opened a PR on the pytorch repo to fix the metadata on the nightly wheels.
@@ -770,17 +766,5 @@ _Comment by @warner-benjamin on 2025-02-21 21:50_
 This is also an issue with the released PyTorch 2.6.0 Cuda 12.6 on x86. Maybe it's related to pytorch/pytorch#146679? If so, then it should be resolved for PyTorch 2.6.1.
 
 @tmm1's [solution](https://github.com/astral-sh/uv/issues/10693#issuecomment-2599538154) resolves the issue.
-
----
-
-_Referenced in [pytorch/pytorch#146679](../../pytorch/pytorch/issues/146679.md) on 2025-02-21 21:53_
-
----
-
-_Referenced in [astral-sh/uv#12774](../../astral-sh/uv/issues/12774.md) on 2025-04-15 12:39_
-
----
-
-_Referenced in [chronicler-ai/chronicle#124](../../chronicler-ai/chronicle/pulls/124.md) on 2025-10-14 04:57_
 
 ---

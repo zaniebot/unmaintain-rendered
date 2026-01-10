@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-03T06:46:52Z
 updated_at: 2025-02-04T15:57:58Z
 url: https://github.com/astral-sh/uv/issues/11176
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv tool install` with `--allow-insecure-host` does not work as expected
@@ -107,10 +107,6 @@ or:
 _Comment by @zanieb on 2025-02-04 03:06_
 
 I don't have a strong preference. I feel like it's not super relevant that `git` is being used as the protocol. It's about the HTTPS layer.
-
----
-
-_Referenced in [astral-sh/uv#11210](../../astral-sh/uv/pulls/11210.md) on 2025-02-04 03:19_
 
 ---
 

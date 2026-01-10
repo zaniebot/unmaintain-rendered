@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-05T08:18:49Z
 updated_at: 2025-02-05T16:56:35Z
 url: https://github.com/astral-sh/uv/issues/11238
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv sync` runs indefinitely when symlinks exist in src
@@ -394,9 +394,5 @@ Yep no problem! Sorry about that. We'll have our own build backend soon :)
 ---
 
 _Closed by @zanieb on 2025-02-05 16:56_
-
----
-
-_Referenced in [astral-sh/uv#12061](../../astral-sh/uv/issues/12061.md) on 2025-03-08 00:56_
 
 ---

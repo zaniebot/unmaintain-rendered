@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-13T13:06:03Z
 updated_at: 2025-02-26T22:41:59Z
 url: https://github.com/astral-sh/uv/issues/2410
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Too long cache filenames
@@ -184,10 +184,6 @@ Yeah. Note though that, AIUI, the manifest is only 1 of 2 things that are requir
 
 ---
 
-_Referenced in [astral-sh/rye#1287](../../astral-sh/rye/issues/1287.md) on 2024-07-28 18:14_
-
----
-
 _Comment by @adaamz on 2024-08-20 20:41_
 
 @potiuk Did you manage to use sqlalchemy with uv? I just tried `uv` with our codebase and it failed on the same package :-/
@@ -236,10 +232,6 @@ error: Failed to prepare distributions
 There is sometimes a second very long error message such as `Build backend failed to build wheel through build_wheel() with exit code: 1` and a large stderr after.
 
 These messages are all irrelevant IMO as they just show where in time UV crashed due to a long file name, but the solution will to shorten the path somehow.
-
----
-
-_Referenced in [astral-sh/uv#4190](../../astral-sh/uv/issues/4190.md) on 2024-10-10 10:28_
 
 ---
 
@@ -333,14 +325,6 @@ I am currently going with `{trimmed_filename}-{hash}` for filename, this should 
 
 ---
 
-_Referenced in [astral-sh/uv#11738](../../astral-sh/uv/pulls/11738.md) on 2025-02-24 05:27_
-
----
-
 _Closed by @charliermarsh on 2025-02-26 22:41_
-
----
-
-_Referenced in [astral-sh/uv#12341](../../astral-sh/uv/issues/12341.md) on 2025-03-20 16:31_
 
 ---

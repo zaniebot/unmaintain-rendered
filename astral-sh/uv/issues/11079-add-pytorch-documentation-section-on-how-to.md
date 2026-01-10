@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T19:32:08Z
 updated_at: 2025-01-30T18:48:54Z
 url: https://github.com/astral-sh/uv/issues/11079
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add pytorch documentation section on how to install for Intel GPUs
@@ -134,10 +134,6 @@ I got a warning from pytorch that it couldn't initialize numpy. Adding numpy to 
 _Comment by @charliermarsh on 2025-01-30 16:47_
 
 Thanks, I'll add something to this effect to the docs.
-
----
-
-_Referenced in [astral-sh/uv#11109](../../astral-sh/uv/pulls/11109.md) on 2025-01-30 18:44_
 
 ---
 

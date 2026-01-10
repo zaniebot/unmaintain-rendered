@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-27T07:31:37Z
 updated_at: 2025-01-28T19:44:33Z
 url: https://github.com/astral-sh/uv/issues/10978
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # New version of uv fails to build universal requirements for python version system does not have
@@ -94,14 +94,6 @@ I presume this is similar to https://github.com/astral-sh/uv/pull/10908 — sorr
 
 ---
 
-_Referenced in [astral-sh/uv#11030](../../astral-sh/uv/pulls/11030.md) on 2025-01-28 18:30_
-
----
-
 _Closed by @zanieb on 2025-01-28 19:44_
-
----
-
-_Referenced in [astral-sh/uv#11355](../../astral-sh/uv/issues/11355.md) on 2025-06-04 03:37_
 
 ---

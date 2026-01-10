@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-13T07:08:40Z
 updated_at: 2025-02-17T01:05:02Z
 url: https://github.com/astral-sh/uv/issues/11471
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `run::detect_infinite_recursion` failure (needs `python-managed` mark?)
@@ -165,10 +165,6 @@ Turning on debug logs, you can see this searches for Python instead of using the
     DEBUG Reading Python requests from version file at `[WORKSPACE]/.python-versions`
     DEBUG Searching for Python 3.13.0 in virtual environments, managed installations, or search path
 ```
-
----
-
-_Referenced in [astral-sh/uv#11481](../../astral-sh/uv/pulls/11481.md) on 2025-02-13 15:31_
 
 ---
 

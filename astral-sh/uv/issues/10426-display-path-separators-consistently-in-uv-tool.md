@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-09T13:33:24Z
 updated_at: 2025-02-20T21:28:39Z
 url: https://github.com/astral-sh/uv/issues/10426
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Display path separators consistently in `uv tool list` on Windows
@@ -47,10 +47,6 @@ _Renamed from "[minor improvement] uv tool list: Ensure paths are shown in a con
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-02-20 13:35_
-
----
-
-_Referenced in [astral-sh/uv#11667](../../astral-sh/uv/pulls/11667.md) on 2025-02-20 14:42_
 
 ---
 

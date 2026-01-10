@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T17:08:54Z
 updated_at: 2025-03-21T17:13:49Z
 url: https://github.com/astral-sh/uv/issues/12372
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Have `uv sync` default to `--locked`
@@ -43,10 +43,6 @@ _Label `enhancement` added by @johnthagen on 2025-03-21 17:08_
 
 ---
 
-_Referenced in [astral-sh/uv#10793](../../astral-sh/uv/issues/10793.md) on 2025-03-21 17:13_
-
----
-
 _Comment by @johnthagen on 2025-03-21 17:13_
 
 @zanieb Explained the current position well in
@@ -54,13 +50,5 @@ _Comment by @johnthagen on 2025-03-21 17:13_
 - https://github.com/astral-sh/uv/issues/10793#issuecomment-2743956736
 
 I'm happy to close this issue if that's the direction `uv` is going.
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2025-03-21 18:09_
-
----
-
-_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2025-03-21 18:23_
 
 ---

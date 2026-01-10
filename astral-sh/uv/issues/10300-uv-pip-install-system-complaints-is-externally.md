@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-05T00:19:30Z
 updated_at: 2025-02-04T02:13:58Z
 url: https://github.com/astral-sh/uv/issues/10300
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv pip install --system` complaints 'is externally managed'
@@ -220,9 +220,5 @@ _Comment by @zanieb on 2025-02-04 02:13_
 You can create a virtual environment and activate it as described in https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment
 
 Or, you can do `--break-system-packages` to force the install.
-
----
-
-_Referenced in [astral-sh/uv#15635](../../astral-sh/uv/issues/15635.md) on 2025-09-02 18:42_
 
 ---

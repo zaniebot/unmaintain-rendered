@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-21T04:26:43Z
 updated_at: 2025-02-12T00:06:41Z
 url: https://github.com/astral-sh/uv/issues/6296
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Allow extras in `uvx` command
@@ -45,10 +45,6 @@ Try `uvx 'httpx[cli]'`
 _Comment by @konstin on 2024-08-21 06:23_
 
 `uvx --with 'httpx[cli]' httpx` works, but this is something we should support better.
-
----
-
-_Referenced in [astral-sh/uv#6306](../../astral-sh/uv/issues/6306.md) on 2024-08-21 07:49_
 
 ---
 
@@ -131,10 +127,6 @@ Might make sense to support the extras first, then decide on version stuff later
 
 ---
 
-_Referenced in [hukkin/mdformat#332](../../hukkin/mdformat/issues/332.md) on 2024-10-30 01:33_
-
----
-
 _Comment by @dimaqq on 2024-11-12 04:27_
 
 I think one more usage pattern belongs here:
@@ -159,14 +151,6 @@ I can work around that with:
 _Comment by @charliermarsh on 2024-11-23 03:30_
 
 I'm personally okay with supporting `uvx httpx==0.6.0` (and any valid specifier).
-
----
-
-_Referenced in [apify/crawlee-python#703](../../apify/crawlee-python/issues/703.md) on 2024-12-06 10:18_
-
----
-
-_Referenced in [apify/crawlee-python#628](../../apify/crawlee-python/issues/628.md) on 2024-12-06 10:52_
 
 ---
 
@@ -227,18 +211,10 @@ Support for path-resources could also be nice, but is less important in my eyes.
 
 ---
 
-_Referenced in [astral-sh/uv#11337](../../astral-sh/uv/pulls/11337.md) on 2025-02-08 02:41_
-
----
-
 _Closed by @charliermarsh on 2025-02-12 00:06_
 
 ---
 
 _Closed by @charliermarsh on 2025-02-12 00:06_
-
----
-
-_Referenced in [apify/crawlee-python#1011](../../apify/crawlee-python/pulls/1011.md) on 2025-02-23 19:33_
 
 ---

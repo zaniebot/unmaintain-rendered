@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T02:46:42Z
 updated_at: 2025-01-29T06:23:25Z
 url: https://github.com/astral-sh/uv/issues/11050
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Build fails: `pyproject.toml` is using the `[project]` table, but the required `project.name` field is not set
@@ -74,9 +74,5 @@ _Label `question` added by @zanieb on 2025-01-29 05:13_
 ---
 
 _Closed by @mxlei01 on 2025-01-29 06:23_
-
----
-
-_Referenced in [ray-project/ray#52858](../../ray-project/ray/issues/52858.md) on 2025-05-08 00:05_
 
 ---

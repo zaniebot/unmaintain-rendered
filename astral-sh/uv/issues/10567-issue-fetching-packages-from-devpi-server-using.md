@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T15:21:41Z
 updated_at: 2025-01-31T18:18:54Z
 url: https://github.com/astral-sh/uv/issues/10567
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Issue Fetching Packages from Devpi Server Using uv and --index-url
@@ -159,10 +159,6 @@ Here’s an example of the issue and how it was resolved:
 _Comment by @zanieb on 2025-01-31 17:33_
 
 Thanks for following up! We are tracking support for the non-simple index in https://github.com/astral-sh/uv/issues/4907
-
----
-
-_Referenced in [astral-sh/uv#11136](../../astral-sh/uv/issues/11136.md) on 2025-01-31 17:37_
 
 ---
 

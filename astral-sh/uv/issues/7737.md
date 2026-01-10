@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-27T13:06:54Z
 updated_at: 2025-02-03T21:52:18Z
 url: https://github.com/astral-sh/uv/issues/7737
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Suggestion when a `.python-version` file requirement is incompatible with the project
@@ -56,10 +56,6 @@ _Comment by @SummerGram on 2024-09-28 04:01_
 Actually I asked you the same issue in the discord.
 
 Mind if I work on it?
-
----
-
-_Referenced in [astral-sh/uv#7893](../../astral-sh/uv/pulls/7893.md) on 2024-10-03 12:38_
 
 ---
 

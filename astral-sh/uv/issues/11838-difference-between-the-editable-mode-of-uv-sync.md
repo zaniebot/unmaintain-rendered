@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T19:43:42Z
 updated_at: 2025-02-28T07:40:22Z
 url: https://github.com/astral-sh/uv/issues/11838
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Difference between the Editable Mode of uv sync and uv pip install -e .
@@ -119,9 +119,5 @@ _Closed by @charliermarsh on 2025-02-28 01:55_
 _Comment by @lmanc on 2025-02-28 07:40_
 
 Yes, thanks a lot!
-
----
-
-_Referenced in [trailofbits/cookiecutter-python#47](../../trailofbits/cookiecutter-python/pulls/47.md) on 2025-04-02 16:39_
 
 ---

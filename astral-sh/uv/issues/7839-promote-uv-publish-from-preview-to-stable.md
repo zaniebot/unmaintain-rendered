@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-01T13:26:30Z
 updated_at: 2025-02-13T22:17:52Z
 url: https://github.com/astral-sh/uv/issues/7839
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Promote `uv publish` from preview to stable
@@ -78,23 +78,11 @@ _Label `preview` added by @konstin on 2024-10-28 10:26_
 
 ---
 
-_Referenced in [astral-sh/uv#8783](../../astral-sh/uv/pulls/8783.md) on 2024-11-06 15:59_
-
----
-
 _Assigned to @konstin by @konstin on 2024-11-10 11:09_
 
 ---
 
 _Removed from milestone `v0.5.0` by @konstin on 2024-11-10 11:09_
-
----
-
-_Referenced in [astral-sh/uv#9778](../../astral-sh/uv/issues/9778.md) on 2024-12-20 05:43_
-
----
-
-_Referenced in [astral-sh/uv#11032](../../astral-sh/uv/pulls/11032.md) on 2025-01-28 18:41_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-04-17T16:44:28Z
 updated_at: 2025-02-18T15:20:36Z
 url: https://github.com/astral-sh/uv/issues/3097
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Add strict command mode to `uv run`
@@ -226,14 +226,6 @@ _Comment by @zanieb on 2024-05-25 14:08_
 I appreciate the conversation, but could you describe the behavior you're looking for in a separate issue please? This issue is supposed to be focused quite narrowly on a `uv run` mode in which commands that are not in the environment are not allowed.
 
 For what it's worth: I think you're suggesting things that we're already planning on doing (and have done previously), but, as Charlie mentioned, `uv run` is in the middle of being built and is changing all the time as we explore the best way to implement things.
-
----
-
-_Referenced in [astral-sh/uv#3836](../../astral-sh/uv/issues/3836.md) on 2024-05-25 15:02_
-
----
-
-_Referenced in [astral-sh/uv#6711](../../astral-sh/uv/pulls/6711.md) on 2024-08-28 13:53_
 
 ---
 

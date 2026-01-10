@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-20T08:48:45Z
 updated_at: 2025-03-17T15:13:54Z
 url: https://github.com/astral-sh/uv/issues/10773
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv 0.5.21 leaves a stray lockfile in a Docker image's /tmp
@@ -123,34 +123,10 @@ I'm happy to review a pull request adding it to the page.
 
 ---
 
-_Referenced in [astral-sh/uv#11178](../../astral-sh/uv/pulls/11178.md) on 2025-02-03 09:45_
-
----
-
-_Referenced in [astral-sh/uv#11408](../../astral-sh/uv/issues/11408.md) on 2025-02-10 21:53_
-
----
-
-_Referenced in [astral-sh/uv#11393](../../astral-sh/uv/issues/11393.md) on 2025-03-16 09:32_
-
----
-
 _Comment by @nickurak on 2025-03-17 15:13_
 
 My 2 cents: It seems odd that (even outside of containers) `uv` is virtually the only thing I see leaving stray files in /tmp when not running.
 
 I run CI _outside_ of containers for one project (virtual envs are more than sufficient in this case) and  gathering dozens of /tmp lock files there over time stands out as unusual. It's a minor annoyance, to be sure.
-
----
-
-_Referenced in [astral-sh/uv#14385](../../astral-sh/uv/issues/14385.md) on 2025-07-01 13:07_
-
----
-
-_Referenced in [WeblateOrg/docker-base#156](../../WeblateOrg/docker-base/pulls/156.md) on 2025-07-02 08:47_
-
----
-
-_Referenced in [astral-sh/uv#16769](../../astral-sh/uv/issues/16769.md) on 2025-12-01 20:19_
 
 ---

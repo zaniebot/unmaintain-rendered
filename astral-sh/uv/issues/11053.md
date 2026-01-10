@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T08:52:09Z
 updated_at: 2025-01-29T13:54:06Z
 url: https://github.com/astral-sh/uv/issues/11053
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Transfering requirements from pyproject.toml to script drops index
@@ -58,10 +58,6 @@ _Label `bug` added by @BenediktMaag on 2025-01-29 08:52_
 
 ---
 
-_Referenced in [astral-sh/uv#6637](../../astral-sh/uv/issues/6637.md) on 2025-01-29 08:53_
-
----
-
 _Label `bug` removed by @charliermarsh on 2025-01-29 13:53_
 
 ---
@@ -73,9 +69,5 @@ _Label `needs-design` added by @charliermarsh on 2025-01-29 13:53_
 _Comment by @charliermarsh on 2025-01-29 13:54_
 
 It's intentional that `uv export` drops the index information. `requirements.txt` is much more restrictive, and we can't represent things like explicit or assigned indexes.
-
----
-
-_Referenced in [astral-sh/uv#12584](../../astral-sh/uv/issues/12584.md) on 2025-04-01 10:23_
 
 ---

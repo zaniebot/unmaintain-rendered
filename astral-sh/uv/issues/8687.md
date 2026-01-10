@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-29T21:18:58Z
 updated_at: 2025-03-05T04:19:57Z
 url: https://github.com/astral-sh/uv/issues/8687
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Proposal: `uv doc`
@@ -71,10 +71,6 @@ let doc = obj.getattr("__doc__");
 after parsing the module tree and identifying user defined functions.
 
 However as I am posting this I am realizing that neither `uv` nor `ruff` use `pyo3`. 
-
----
-
-_Referenced in [astral-sh/uv#11662](../../astral-sh/uv/issues/11662.md) on 2025-02-20 11:21_
 
 ---
 

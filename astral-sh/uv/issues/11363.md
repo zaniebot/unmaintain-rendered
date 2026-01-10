@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-09T19:23:42Z
 updated_at: 2025-02-09T19:55:12Z
 url: https://github.com/astral-sh/uv/issues/11363
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv sync --extra` and `uv sync --group` does not respect other groups and extras that are not supposed to be resolved
@@ -285,10 +285,6 @@ _Label `bug` added by @validatedev on 2025-02-09 19:23_
 
 ---
 
-_Referenced in [astral-sh/uv#9654](../../astral-sh/uv/issues/9654.md) on 2025-02-09 19:26_
-
----
-
 _Comment by @validatedev on 2025-02-09 19:28_
 
 I think the caveat is that uv tries to build the package regardless of the environment it is working in and the markers or conflicts that are set.
@@ -319,10 +315,6 @@ I can also look into it myself if I can find the build pipeline. It'd be nice to
 
 ---
 
-_Referenced in [NVIDIA/TensorRT#4352](../../NVIDIA/TensorRT/issues/4352.md) on 2025-02-09 19:53_
-
----
-
 _Comment by @validatedev on 2025-02-09 19:55_
 
 > I can also look into it myself if I can find the build pipeline. It'd be nice to get this fixed.
@@ -331,13 +323,5 @@ You're the best!
 
 I have also created an issue, probably in the right repo :)
 https://github.com/NVIDIA/TensorRT/issues/4352
-
----
-
-_Referenced in [astral-sh/uv#11675](../../astral-sh/uv/issues/11675.md) on 2025-02-20 19:45_
-
----
-
-_Referenced in [astral-sh/uv#12309](../../astral-sh/uv/issues/12309.md) on 2025-03-19 08:07_
 
 ---

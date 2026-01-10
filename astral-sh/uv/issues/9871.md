@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-13T16:05:18Z
 updated_at: 2025-02-19T07:35:30Z
 url: https://github.com/astral-sh/uv/issues/9871
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Add `uv self uninstall` command
@@ -28,10 +28,6 @@ Two suggested improvements:
 2. If neither are realistic, improve the documentation for the manual uninstall. The current instructions first mention removing the binaries, and then mention a suggestion for removing stored data. The recommended data removal process involves uv commands that will no longer be available if the binaries are gone 😄. 
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/uv#9938](../../astral-sh/uv/pulls/9938.md) on 2024-12-16 15:17_
 
 ---
 
@@ -59,10 +55,6 @@ We'll probably want a flag to keep / remove data.
 
 ---
 
-_Referenced in [astral-sh/uv#11456](../../astral-sh/uv/issues/11456.md) on 2025-02-12 21:13_
-
----
-
 _Comment by @zmievsa on 2025-02-16 19:18_
 
 I will take this if everyone's OK with it
@@ -75,10 +67,6 @@ _Comment by @zanieb on 2025-02-16 19:22_
 
 ---
 
-_Referenced in [astral-sh/uv#11613](../../astral-sh/uv/pulls/11613.md) on 2025-02-19 03:16_
-
----
-
 _Comment by @loic-lescoat on 2025-02-19 07:33_
 
 @zmievsa I am mostly done with implementing this in https://github.com/astral-sh/uv/pull/11613; would you like to contribute there?
@@ -88,9 +76,5 @@ _Comment by @loic-lescoat on 2025-02-19 07:33_
 _Comment by @zmievsa on 2025-02-19 07:35_
 
 @loic-lescoat no worries, you can just proceed with your implementation. I'm happy as long as problem is solved :)
-
----
-
-_Referenced in [astral-sh/uv#13972](../../astral-sh/uv/issues/13972.md) on 2025-06-11 17:37_
 
 ---

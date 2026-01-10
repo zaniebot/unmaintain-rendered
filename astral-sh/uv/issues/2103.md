@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-01T06:41:20Z
 updated_at: 2025-03-06T15:10:19Z
 url: https://github.com/astral-sh/uv/issues/2103
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # venv: --copies?
@@ -42,10 +42,6 @@ We're now supporting `uv venv --link-mode copy`, which will copy the installed p
 _Comment by @zanieb on 2024-07-01 21:54_
 
 Is this still an issue because we're not copying the interpreter? Should we respect `--link-mode` for the interpreter too?
-
----
-
-_Referenced in [astral-sh/uv#5147](../../astral-sh/uv/issues/5147.md) on 2024-07-17 15:43_
 
 ---
 
@@ -82,26 +78,10 @@ This is also in line with my proposal in #11773
 
 ---
 
-_Referenced in [astral-sh/uv#11996](../../astral-sh/uv/issues/11996.md) on 2025-03-06 13:58_
-
----
-
 _Comment by @chrisrodrigue on 2025-03-06 15:10_
 
 If copied, would the interpreter binary function on its own without the rest of the files in an installation?
 
 This would be an enabler for creating layouts. More on those here: https://github.com/astral-sh/uv/issues/11746
-
----
-
-_Referenced in [astral-sh/uv#12852](../../astral-sh/uv/issues/12852.md) on 2025-04-14 03:54_
-
----
-
-_Referenced in [astral-sh/uv#15607](../../astral-sh/uv/issues/15607.md) on 2025-08-31 14:17_
-
----
-
-_Referenced in [astral-sh/uv#6782](../../astral-sh/uv/issues/6782.md) on 2025-10-07 05:02_
 
 ---

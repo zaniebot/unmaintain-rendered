@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-30T19:53:08Z
 updated_at: 2025-02-04T22:45:46Z
 url: https://github.com/astral-sh/uv/issues/11117
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv run --with ...` leaves `_uv_ephemeral_overlay.pth` in ephemeral environment
@@ -111,10 +111,6 @@ Hmm, no, not seeing anything like that. I guess we should just clean it up in `u
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-31 18:37_
-
----
-
-_Referenced in [astral-sh/uv#11141](../../astral-sh/uv/pulls/11141.md) on 2025-01-31 19:15_
 
 ---
 

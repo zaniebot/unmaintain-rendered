@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-25T14:01:08Z
 updated_at: 2025-02-19T00:02:14Z
 url: https://github.com/astral-sh/uv/issues/5442
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Support for editable dependencies with URLs
@@ -83,22 +83,6 @@ _Closed by @zanieb on 2024-07-25 15:49_
 _Comment by @krmax44 on 2024-07-25 17:01_
 
 I found another difference: With `-e`, all files from the repository are available within `.venv/src`. WIthout, only relevant files (presumably as configured with setuptools) will be stored in `site-packages`. This is quite important to us, as we also include JavaScript files in the repo we need to access. (We can probably include these somehow with setuptools.)
-
----
-
-_Referenced in [avilaton/dependabot-core#2](../../avilaton/dependabot-core/pulls/2.md) on 2024-08-18 21:25_
-
----
-
-_Referenced in [dependabot/dependabot-core#10040](../../dependabot/dependabot-core/pulls/10040.md) on 2024-08-19 06:51_
-
----
-
-_Referenced in [overhangio/tutor#1088](../../overhangio/tutor/pulls/1088.md) on 2024-10-16 20:02_
-
----
-
-_Referenced in [astral-sh/uv#10992](../../astral-sh/uv/issues/10992.md) on 2025-01-27 16:37_
 
 ---
 

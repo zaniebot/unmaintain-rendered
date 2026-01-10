@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-24T17:04:36Z
 updated_at: 2025-03-24T17:28:35Z
 url: https://github.com/astral-sh/uv/issues/12442
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv sync` does not respect `build-constraint-dependencies` in workspace subpackages
@@ -140,10 +140,6 @@ build-constraint-dependencies = ["setuptools<78"]
 ```
 
 to the `bird-feeder` `pyproject.toml` has no effect, as documented.
-
----
-
-_Referenced in [pypa/setuptools#4910](../../pypa/setuptools/issues/4910.md) on 2025-03-24 17:10_
 
 ---
 

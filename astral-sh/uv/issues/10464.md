@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-10T10:14:48Z
 updated_at: 2025-02-20T11:19:47Z
 url: https://github.com/astral-sh/uv/issues/10464
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # error: Distribution `kaleido==0.2.1.post1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
@@ -175,13 +175,5 @@ I get a lockfile with sklearn-compat 0.1.3, but no `sklearn==0.0.post12`.
 _Comment by @this-josh on 2025-02-20 11:19_
 
 To anyone looking to install kaleido itself you can install the previous version with `uv add kaleido==0.2.0` which works fine on mac for me 
-
----
-
-_Referenced in [astral-sh/uv#11726](../../astral-sh/uv/issues/11726.md) on 2025-02-24 15:15_
-
----
-
-_Referenced in [astral-sh/uv#12507](../../astral-sh/uv/issues/12507.md) on 2025-04-08 09:04_
 
 ---

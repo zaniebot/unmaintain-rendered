@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-04T19:01:42Z
 updated_at: 2025-02-05T14:29:56Z
 url: https://github.com/astral-sh/uv/issues/11223
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # v0.5.27 fails to install pybabel-json==0.2.0
@@ -86,10 +86,6 @@ _Renamed from "v0.5.26 fails to install pybabel-json==0.2.0" to "v0.5.27 fails t
 _Comment by @charliermarsh on 2025-02-04 20:05_
 
 I think this package must contain a hardlink. We've already merged a fix; it'll be released today.
-
----
-
-_Referenced in [astral-sh/uv#11238](../../astral-sh/uv/issues/11238.md) on 2025-02-05 08:18_
 
 ---
 

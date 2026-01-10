@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-18T14:30:59Z
 updated_at: 2025-03-15T20:29:08Z
 url: https://github.com/astral-sh/uv/issues/11599
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Show hint when permission denied encountered during system package install
@@ -39,14 +39,6 @@ _Label `error messages` added by @zanieb on 2025-02-18 14:31_
 
 ---
 
-_Referenced in [astral-sh/uv#11609](../../astral-sh/uv/issues/11609.md) on 2025-02-18 23:20_
-
----
-
-_Referenced in [astral-sh/uv#2077](../../astral-sh/uv/issues/2077.md) on 2025-02-18 23:26_
-
----
-
 _Comment by @jtkiley on 2025-03-15 19:41_
 
 I got this error and it would be nice to have some workable guidance from the tool itself.
@@ -64,9 +56,5 @@ Perhaps consider putting out your own devcontainer feature that could smooth out
 _Comment by @zanieb on 2025-03-15 20:29_
 
 @jtkiley would you mind opening a new issue with an example problematic devcontainer? We can look into improving that experience.
-
----
-
-_Referenced in [astral-sh/uv#12197](../../astral-sh/uv/issues/12197.md) on 2025-03-15 21:06_
 
 ---

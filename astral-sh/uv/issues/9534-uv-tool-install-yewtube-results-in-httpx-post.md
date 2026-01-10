@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T22:52:50Z
 updated_at: 2025-01-29T15:37:27Z
 url: https://github.com/astral-sh/uv/issues/9534
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # uv tool install yewtube results in httpx post failure
@@ -195,9 +195,5 @@ uv tool install --with httpx==0.27.2,pip yewtube
 ```
 
 into your shell. No pipx. Nothing else. Just that.
-
----
-
-_Referenced in [mps-youtube/yewtube#1307](../../mps-youtube/yewtube/issues/1307.md) on 2025-03-11 13:48_
 
 ---

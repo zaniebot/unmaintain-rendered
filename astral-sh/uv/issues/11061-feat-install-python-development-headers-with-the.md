@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T13:36:04Z
 updated_at: 2025-01-29T16:17:24Z
 url: https://github.com/astral-sh/uv/issues/11061
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # feat: install python development headers with the virtual environment
@@ -381,10 +381,6 @@ Resolved 2 packages in 2ms
 
 ---
 
-_Referenced in [ZeyadMoustafaKamal/Gradience#1](../../ZeyadMoustafaKamal/Gradience/pulls/1.md) on 2025-01-29 15:17_
-
----
-
 _Comment by @zanieb on 2025-01-29 15:54_
 
 You can see includes like `-I/install/include/python3.12` which should be entirely removed on the latest uv version. What version are you using..?
@@ -404,13 +400,5 @@ Yeah after I updated `uv` everything works fine now. Thanks.
 ---
 
 _Closed by @ZeyadMoustafaKamal on 2025-01-29 16:17_
-
----
-
-_Referenced in [laughingman7743/PyAthena#616](../../laughingman7743/PyAthena/pulls/616.md) on 2025-10-18 07:51_
-
----
-
-_Referenced in [laughingman7743/PyAthena#615](../../laughingman7743/PyAthena/issues/615.md) on 2025-10-18 07:51_
 
 ---

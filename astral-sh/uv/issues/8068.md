@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T04:57:54Z
 updated_at: 2025-02-12T17:09:47Z
 url: https://github.com/astral-sh/uv/issues/8068
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # uv python install with custom UV_PYTHON_INSTALL_MIRROR is not respected for pypy
@@ -74,10 +74,6 @@ _Comment by @gaborbernat on 2024-10-10 13:43_
 I am not sure if i agree with you on this, but I think decisions like these are what encourage this (incorrect) behavior, that is a source of confusion for new users... And I'm not sure we should lean into that. 
 
 
-
----
-
-_Referenced in [astral-sh/uv#8186](../../astral-sh/uv/issues/8186.md) on 2024-10-14 19:41_
 
 ---
 

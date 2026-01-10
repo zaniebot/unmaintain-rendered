@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-10T17:08:00Z
 updated_at: 2025-03-13T12:48:39Z
 url: https://github.com/astral-sh/uv/issues/4972
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv python pin` should support "global" pins
@@ -41,10 +41,6 @@ _Label `preview` added by @zanieb on 2024-07-10 17:08_
 
 ---
 
-_Referenced in [astral-sh/uv#6175](../../astral-sh/uv/issues/6175.md) on 2024-08-18 12:09_
-
----
-
 _Label `preview` removed by @zanieb on 2024-08-20 18:22_
 
 ---
@@ -53,15 +49,7 @@ _Assigned to @zanieb by @zanieb on 2024-09-15 23:10_
 
 ---
 
-_Referenced in [astral-sh/uv#10204](../../astral-sh/uv/issues/10204.md) on 2024-12-27 19:45_
-
----
-
 _Assigned to @jtfmumm by @jtfmumm on 2025-03-07 11:48_
-
----
-
-_Referenced in [astral-sh/uv#12115](../../astral-sh/uv/pulls/12115.md) on 2025-03-11 14:52_
 
 ---
 

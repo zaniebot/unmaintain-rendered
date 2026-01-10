@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T16:17:38Z
 updated_at: 2025-01-30T19:37:44Z
 url: https://github.com/astral-sh/uv/issues/11101
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv fails sometimes (not reproducable) to deserialize cache entries
@@ -59,10 +59,6 @@ Not sure what is going on here yet.
 ---
 
 _Closed by @cwiede on 2025-01-30 16:35_
-
----
-
-_Referenced in [astral-sh/uv#11105](../../astral-sh/uv/pulls/11105.md) on 2025-01-30 17:35_
 
 ---
 

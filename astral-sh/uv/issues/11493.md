@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-13T21:59:23Z
 updated_at: 2025-02-19T18:01:47Z
 url: https://github.com/astral-sh/uv/issues/11493
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv 0.5.25 and later fail on Windows arm64 because they do not install Python
@@ -199,10 +199,6 @@ Since then, I did update—both with the 0.5.25 one-liner and with "uv self upda
 _Comment by @zanieb on 2025-02-16 16:43_
 
 Yeah the difference is now we have ARM64 Windows binaries of uv but only AMD64 Windows Python downloads — so you're getting the "better" uv binary for your platform but it can't find Python downloads. You could install the AMD64 uv 0.6.0 (i.e., from GitHub Releases) and it'd work as before. 
-
----
-
-_Referenced in [astral-sh/uv#11625](../../astral-sh/uv/pulls/11625.md) on 2025-02-19 16:55_
 
 ---
 

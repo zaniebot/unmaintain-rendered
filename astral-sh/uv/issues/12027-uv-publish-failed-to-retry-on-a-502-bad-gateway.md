@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-06T22:52:21Z
 updated_at: 2025-03-10T11:38:09Z
 url: https://github.com/astral-sh/uv/issues/12027
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv publish` failed to retry on a 502 bad gateway error
@@ -136,10 +136,6 @@ _Assigned to @konstin by @charliermarsh on 2025-03-07 01:31_
 _Comment by @konstin on 2025-03-07 12:55_
 
 We need to keep the `retries(0)` as the auth middleware is incompatible with upload bodies (https://github.com/seanmonstar/reqwest/issues/2416), we need to construct the retry policy ourselves.
-
----
-
-_Referenced in [astral-sh/uv#12041](../../astral-sh/uv/pulls/12041.md) on 2025-03-07 12:56_
 
 ---
 

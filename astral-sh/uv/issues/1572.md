@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T04:29:50Z
 updated_at: 2025-03-15T11:55:40Z
 url: https://github.com/astral-sh/uv/issues/1572
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # What about pixi and rip?
@@ -162,10 +162,6 @@ Here are some issues regarding the behaviors mentioned:
 
 ---
 
-_Referenced in [prefix-dev/rip#229](../../prefix-dev/rip/issues/229.md) on 2024-02-18 02:51_
-
----
-
 _Comment by @tekumara on 2024-02-18 07:21_
 
 > we decided to commit to PubGrub instead of a libsolv-style solver
@@ -184,10 +180,6 @@ https://discuss.python.org/t/uv-another-rust-tool-written-to-replace-pip/46039/5
 
 ---
 
-_Referenced in [astral-sh/uv#1724](../../astral-sh/uv/issues/1724.md) on 2024-02-20 01:26_
-
----
-
 _Comment by @ruben-arts on 2024-02-21 17:02_
 
 Following up on @wolfv's response, 
@@ -203,22 +195,6 @@ Thanks for the update! I'm going to close this as I think all the major question
 ---
 
 _Closed by @zanieb on 2024-02-21 17:24_
-
----
-
-_Referenced in [prefix-dev/rip#233](../../prefix-dev/rip/issues/233.md) on 2024-04-06 08:18_
-
----
-
-_Referenced in [CycloneDX/cyclonedx-conda#1](../../CycloneDX/cyclonedx-conda/issues/1.md) on 2024-04-27 03:22_
-
----
-
-_Referenced in [pybamm-team/PyBaMM#4353](../../pybamm-team/PyBaMM/pulls/4353.md) on 2024-08-29 19:26_
-
----
-
-_Referenced in [airspeed-velocity/asv#1436](../../airspeed-velocity/asv/issues/1436.md) on 2024-10-07 00:35_
 
 ---
 

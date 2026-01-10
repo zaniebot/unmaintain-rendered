@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-05T04:18:57Z
 updated_at: 2025-03-08T18:21:26Z
 url: https://github.com/astral-sh/uv/issues/11232
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Conflicting groups should handle conflicting inclusions automatically
@@ -163,10 +163,6 @@ So yeah, it probably makes sense to do this for extras as well. I think it only 
 
 ---
 
-_Referenced in [astral-sh/uv#12005](../../astral-sh/uv/pulls/12005.md) on 2025-03-06 14:00_
-
----
-
 _Assigned to @jtfmumm by @jtfmumm on 2025-03-07 09:36_
 
 ---
@@ -176,9 +172,5 @@ _Closed by @jtfmumm on 2025-03-08 18:21_
 ---
 
 _Closed by @jtfmumm on 2025-03-08 18:21_
-
----
-
-_Referenced in [TorchSim/torch-sim#188](../../TorchSim/torch-sim/pulls/188.md) on 2025-05-12 17:00_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T08:56:14Z
 updated_at: 2025-02-09T00:36:29Z
 url: https://github.com/astral-sh/uv/issues/1579
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # fails to find "Python.h", while pip works
@@ -383,9 +383,5 @@ Thanks for your quick response, I was able to install by using 3.10 version.
 
 > Are you on the latest version of uv and have you ensured you're on the latest Python versions? e.g., uv python install --reinstall?
 Yes used the latest version of `uv` and `Python`.
-
----
-
-_Referenced in [mab-xyz/crystal-clear#113](../../mab-xyz/crystal-clear/issues/113.md) on 2025-06-05 14:49_
 
 ---

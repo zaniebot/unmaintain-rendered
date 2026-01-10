@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-01T11:22:25Z
 updated_at: 2025-02-11T23:27:59Z
 url: https://github.com/astral-sh/uv/issues/2109
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # uv doesn't detect pyenv-virtualenv shim environments
@@ -83,10 +83,6 @@ Would be closed by https://github.com/astral-sh/uv/pull/4032
 
 ---
 
-_Referenced in [astral-sh/uv#4032](../../astral-sh/uv/pulls/4032.md) on 2024-07-01 21:56_
-
----
-
 _Comment by @zanieb on 2025-02-04 15:47_
 
 per https://github.com/astral-sh/uv/issues/4009#issuecomment-2465923877 I think this was fixed, though it may have just regressed in #11214 
@@ -94,10 +90,6 @@ per https://github.com/astral-sh/uv/issues/4009#issuecomment-2465923877 I think 
 ---
 
 _Closed by @zanieb on 2025-02-04 15:47_
-
----
-
-_Referenced in [astral-sh/uv#11218](../../astral-sh/uv/pulls/11218.md) on 2025-02-04 19:57_
 
 ---
 
@@ -143,9 +135,5 @@ But then running `uv venv` results in
 ```
 
 Is it the same issue reoccurring, or should I make a new one?
-
----
-
-_Referenced in [astral-sh/uv#11544](../../astral-sh/uv/issues/11544.md) on 2025-02-15 23:45_
 
 ---

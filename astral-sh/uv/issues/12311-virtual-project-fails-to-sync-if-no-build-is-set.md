@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-19T11:57:13Z
 updated_at: 2025-03-22T16:00:04Z
 url: https://github.com/astral-sh/uv/issues/12311
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Virtual project fails to sync if no-build is set.
@@ -73,10 +73,6 @@ We should probably allow that, yeah. Thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-19 14:25_
-
----
-
-_Referenced in [astral-sh/uv#12314](../../astral-sh/uv/pulls/12314.md) on 2025-03-19 15:31_
 
 ---
 

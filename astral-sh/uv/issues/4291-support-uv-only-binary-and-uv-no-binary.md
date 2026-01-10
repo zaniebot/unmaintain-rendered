@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-12T22:09:38Z
 updated_at: 2025-03-05T00:20:19Z
 url: https://github.com/astral-sh/uv/issues/4291
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Support `UV_ONLY_BINARY` and `UV_NO_BINARY` environment variables
@@ -37,10 +37,6 @@ pip has similiar `PIP_NO_BINARY` and `PIP_ONLY_BINARY`: https://pip.pypa.io/en/l
 
 ---
 
-_Referenced in [astral-sh/uv#1794](../../astral-sh/uv/issues/1794.md) on 2024-06-12 22:10_
-
----
-
 _Comment by @zanieb on 2024-06-13 00:50_
 
 I think we've avoided this because we're not interested in supporting the pip syntax outside of the pip interface. Maybe we could namespace them e.g. `UV_PIP_NO_BINARY` in the meantime?
@@ -54,10 +50,6 @@ _Label `configuration` added by @zanieb on 2024-06-13 00:50_
 _Comment by @henryiii on 2024-08-13 03:07_
 
 Some of them are available, though, like `UV_CONSTRAINT`, `UV_INDEX_URL`, `UV_EXTRA_INDEX_URL`, and `UV_BREAK_SYSTEM_PACKAGES`. I don't really care what it's called, but it would be nice to have, as you can't pass flags through inside cibuildwheel to every command.
-
----
-
-_Referenced in [astral-sh/uv#6428](../../astral-sh/uv/issues/6428.md) on 2024-08-23 01:00_
 
 ---
 
@@ -108,10 +100,6 @@ _Label `help wanted` added by @zanieb on 2025-02-06 16:59_
 
 ---
 
-_Referenced in [astral-sh/uv#11399](../../astral-sh/uv/pulls/11399.md) on 2025-02-10 19:55_
-
----
-
 _Comment by @lengau on 2025-02-10 20:08_
 
 I've added a version that handles build commands at https://github.com/astral-sh/uv/pull/11399.
@@ -132,10 +120,6 @@ This is a special case only needed for pip commands because of how they work.
 _Comment by @zanieb on 2025-02-10 21:06_
 
 Yeah we'd reuse the top-level uv semantics in `uv pip`, that sounds correct.
-
----
-
-_Referenced in [astral-sh/uv#11963](../../astral-sh/uv/issues/11963.md) on 2025-03-05 00:16_
 
 ---
 

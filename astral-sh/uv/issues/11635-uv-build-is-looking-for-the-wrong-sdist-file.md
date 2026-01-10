@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-19T19:33:17Z
 updated_at: 2025-02-20T08:11:17Z
 url: https://github.com/astral-sh/uv/issues/11635
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv build is looking for the wrong sdist file
@@ -124,10 +124,6 @@ Or maybe that's not actually a goal, to have full-fidelity there. We store any s
 _Comment by @jtfmumm on 2025-02-19 19:59_
 
 Based on reproducing this locally, it looks like #11593 fixes this.
-
----
-
-_Referenced in [astral-sh/uv#11593](../../astral-sh/uv/pulls/11593.md) on 2025-02-19 22:36_
 
 ---
 

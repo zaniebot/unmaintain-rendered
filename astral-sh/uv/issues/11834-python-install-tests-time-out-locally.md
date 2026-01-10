@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T15:26:41Z
 updated_at: 2025-02-27T18:28:01Z
 url: https://github.com/astral-sh/uv/issues/11834
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Python install tests time out locally
@@ -70,9 +70,5 @@ _Comment by @zanieb on 2025-02-27 18:28_
 > Does that mean that in the tests, we would only check the cache bucket -> installed Python path? 
 
 Yes. We could have some tests that specifically skip the cache, but we don't need it for every test case since we're mostly covering install behavior. I want the install behavior tests to be faster locally and in CI.
-
----
-
-_Referenced in [astral-sh/uv#12175](../../astral-sh/uv/pulls/12175.md) on 2025-03-14 19:19_
 
 ---

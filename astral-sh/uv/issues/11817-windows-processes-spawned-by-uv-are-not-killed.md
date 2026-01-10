@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T02:29:58Z
 updated_at: 2025-03-01T17:50:12Z
 url: https://github.com/astral-sh/uv/issues/11817
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # [Windows] Processes spawned by uv are not killed when uv is killed
@@ -103,17 +103,5 @@ _Comment by @zanieb on 2025-03-01 17:50_
 > Perhaps you might want to use Job Object when uv spawns Python process on Windows too? Not sure if there is perf complications.
 
 That's pretty interesting, there could be something there but I don't foresee having time to pursue it myself right now.
-
----
-
-_Referenced in [astral-sh/uv#12692](../../astral-sh/uv/issues/12692.md) on 2025-04-06 15:34_
-
----
-
-_Referenced in [pulumi/pulumi#20117](../../pulumi/pulumi/pulls/20117.md) on 2025-07-23 11:07_
-
----
-
-_Referenced in [OneDragon-Anything/ZenlessZoneZero-OneDragon#1512](../../OneDragon-Anything/ZenlessZoneZero-OneDragon/pulls/1512.md) on 2025-10-10 13:32_
 
 ---

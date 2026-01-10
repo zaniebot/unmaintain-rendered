@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-16T10:16:18Z
 updated_at: 2025-03-16T22:24:41Z
 url: https://github.com/astral-sh/uv/issues/12200
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv pip install` insists on creating a .lock file in the current venv while `pip install` does not need this
@@ -201,9 +201,5 @@ _Closed by @jiridanek on 2025-03-16 16:55_
 _Comment by @zanieb on 2025-03-16 22:24_
 
 Glad you got it worked out, thank you following up!
-
----
-
-_Referenced in [opendatahub-io/notebooks#986](../../opendatahub-io/notebooks/pulls/986.md) on 2025-03-21 15:57_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-28T09:23:07Z
 updated_at: 2025-03-11T09:53:12Z
 url: https://github.com/astral-sh/uv/issues/11849
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Failed to download https://github.com/astral-sh/uv/releases/download/0.6.3/uv-x86_64-unknown-linux-gnu.tar.gz
@@ -164,17 +164,5 @@ _Comment by @humphreyde on 2025-03-11 09:53_
 > Thanks!
 
 It really solved my problem, although my problem is : `sh uv-installer.sh` failed. It's really magic.
-
----
-
-_Referenced in [astral-sh/uv#12728](../../astral-sh/uv/issues/12728.md) on 2025-04-27 03:17_
-
----
-
-_Referenced in [boukendesho/curl-snap#1](../../boukendesho/curl-snap/issues/1.md) on 2025-04-29 08:25_
-
----
-
-_Referenced in [rust-lang/rustup#4389](../../rust-lang/rustup/pulls/4389.md) on 2025-06-19 08:50_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-06T10:13:12Z
 updated_at: 2025-03-06T18:43:35Z
 url: https://github.com/astral-sh/uv/issues/11998
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Won't resolve source distribution locally if dynamic version is set in Cargo.toml with maturin
@@ -112,14 +112,6 @@ Ah, the problem is that they have `package = false` set in the `pydantic-core/py
 ```
 
 I think we need to give you a way to override that in the `tool.uv.sources`.
-
----
-
-_Referenced in [astral-sh/uv#12014](../../astral-sh/uv/pulls/12014.md) on 2025-03-06 18:11_
-
----
-
-_Referenced in [astral-sh/uv#12015](../../astral-sh/uv/issues/12015.md) on 2025-03-06 18:21_
 
 ---
 

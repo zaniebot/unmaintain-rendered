@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-15T02:13:10Z
 updated_at: 2025-02-19T01:30:26Z
 url: https://github.com/astral-sh/uv/issues/11529
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Regression: uv fails to detect nixpkgs provided python as a valid system-managed interpreter when it's installed with libraries
@@ -256,17 +256,5 @@ For reference, if anyone bumps into this issue, here's a devshell that allows yo
 }
 ```
 You can even do `uv add pandas` just to add it to the lockfile, which is great for working in projects with non-nix users :)
-
----
-
-_Referenced in [astral-sh/uv#4450](../../astral-sh/uv/issues/4450.md) on 2025-02-19 02:08_
-
----
-
-_Referenced in [astral-sh/uv#10711](../../astral-sh/uv/issues/10711.md) on 2025-03-13 14:36_
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-03-16 02:29_
 
 ---

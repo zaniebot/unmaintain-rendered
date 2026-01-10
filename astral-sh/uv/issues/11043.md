@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-28T22:38:01Z
 updated_at: 2025-01-30T17:48:36Z
 url: https://github.com/astral-sh/uv/issues/11043
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Some packages failing to download and build due to caching
@@ -69,10 +69,6 @@ Does this reproduce on the latest version of uv?
 
 ---
 
-_Referenced in [astral-sh/uv#11101](../../astral-sh/uv/issues/11101.md) on 2025-01-30 16:20_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-30 16:39_
 
 ---
@@ -80,10 +76,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-30 16:39_
 _Comment by @charliermarsh on 2025-01-30 16:47_
 
 I'll take a look today, see if I can reproduce.
-
----
-
-_Referenced in [astral-sh/uv#11105](../../astral-sh/uv/pulls/11105.md) on 2025-01-30 17:35_
 
 ---
 

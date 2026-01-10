@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-17T04:07:20Z
 updated_at: 2025-02-28T23:49:28Z
 url: https://github.com/astral-sh/uv/issues/1569
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Use `-v`, `-vv`, `-vvv` to configure tracing levels
@@ -57,10 +57,6 @@ I totally agree though.
 
 ---
 
-_Referenced in [astral-sh/uv#1670](../../astral-sh/uv/pulls/1670.md) on 2024-02-19 00:17_
-
----
-
 _Comment by @olivierlefloch on 2024-02-19 00:18_
 
 Thanks for the tip! Actually, that failed when running `uv` with `RUST_LOG=trace python -m uv …` but worked with `RUST_LOG=trace uv …` 👍 
@@ -75,35 +71,7 @@ The `python -m ...` issue should be fixed by #1667
 
 ---
 
-_Referenced in [astral-sh/uv#1710](../../astral-sh/uv/issues/1710.md) on 2024-02-19 18:25_
-
----
-
 _Label `help wanted` added by @zanieb on 2024-02-19 18:32_
-
----
-
-_Referenced in [astral-sh/uv#1897](../../astral-sh/uv/issues/1897.md) on 2024-02-23 04:20_
-
----
-
-_Referenced in [astral-sh/uv#2146](../../astral-sh/uv/issues/2146.md) on 2024-03-04 07:03_
-
----
-
-_Referenced in [astral-sh/uv#4346](../../astral-sh/uv/issues/4346.md) on 2024-06-18 01:25_
-
----
-
-_Referenced in [astral-sh/uv#5209](../../astral-sh/uv/pulls/5209.md) on 2024-07-19 14:07_
-
----
-
-_Referenced in [astral-sh/uv#5580](../../astral-sh/uv/pulls/5580.md) on 2024-07-30 14:24_
-
----
-
-_Referenced in [astral-sh/uv#11698](../../astral-sh/uv/issues/11698.md) on 2025-02-21 17:30_
 
 ---
 
@@ -155,10 +123,6 @@ Regarding the nested formatting, I'd move that to an environment variable. It fe
 _Comment by @Gankra on 2025-02-24 18:19_
 
 Sounds good to me!
-
----
-
-_Referenced in [astral-sh/uv#11758](../../astral-sh/uv/pulls/11758.md) on 2025-02-24 21:43_
 
 ---
 

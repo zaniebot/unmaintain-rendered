@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T13:02:41Z
 updated_at: 2025-01-30T21:39:30Z
 url: https://github.com/astral-sh/uv/issues/11093
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Question about best practices for cross-compat with `pip install -e .[dev]` (pre PEP 735 support)
@@ -102,13 +102,5 @@ Thanks a bunch 🙏
 ---
 
 _Closed by @tlambert03 on 2025-01-30 21:39_
-
----
-
-_Referenced in [astral-sh/uv#11550](../../astral-sh/uv/issues/11550.md) on 2025-02-16 05:31_
-
----
-
-_Referenced in [DeiC-HPC/cotainr#126](../../DeiC-HPC/cotainr/pulls/126.md) on 2025-03-17 12:18_
 
 ---

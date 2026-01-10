@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-15T02:35:00Z
 updated_at: 2025-02-15T15:40:00Z
 url: https://github.com/astral-sh/uv/issues/11530
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv sync should warn (or fail) when lock file is out of sync with pyproject.toml dependency tables
@@ -104,10 +104,6 @@ Actually I do pass in the `--frozen` flag 🤔 https://github.com/tox-dev/tox-uv
 _Comment by @gaborbernat on 2025-02-15 04:54_
 
 So guess the question should I pass in `--locked` instead, or both `--frozen` and `--locked`.
-
----
-
-_Referenced in [tox-dev/tox-uv#177](../../tox-dev/tox-uv/pulls/177.md) on 2025-02-15 04:57_
 
 ---
 

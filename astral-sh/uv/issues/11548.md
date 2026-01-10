@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-16T03:39:16Z
 updated_at: 2025-02-20T20:19:48Z
 url: https://github.com/astral-sh/uv/issues/11548
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Strip conflict markers in `uv export`
@@ -82,22 +82,6 @@ _Label `bug` added by @charliermarsh on 2025-02-16 03:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-16 18:12_
-
----
-
-_Referenced in [astral-sh/uv#11562](../../astral-sh/uv/pulls/11562.md) on 2025-02-16 20:47_
-
----
-
-_Referenced in [astral-sh/uv#11571](../../astral-sh/uv/pulls/11571.md) on 2025-02-17 03:21_
-
----
-
-_Referenced in [astral-sh/uv#11513](../../astral-sh/uv/pulls/11513.md) on 2025-02-18 01:27_
-
----
-
-_Referenced in [astral-sh/uv#11643](../../astral-sh/uv/pulls/11643.md) on 2025-02-19 22:29_
 
 ---
 

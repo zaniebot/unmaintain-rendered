@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T16:13:25Z
 updated_at: 2025-02-10T20:44:43Z
 url: https://github.com/astral-sh/uv/issues/11389
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Syncing UV with system python [follow up]
@@ -62,9 +62,5 @@ that was exactly it, thanks @zanieb  -- i'll close this one out
 ---
 
 _Closed by @Ben-Epstein on 2025-02-10 20:44_
-
----
-
-_Referenced in [Future-House/aviary#196](../../Future-House/aviary/pulls/196.md) on 2025-02-18 23:38_
 
 ---

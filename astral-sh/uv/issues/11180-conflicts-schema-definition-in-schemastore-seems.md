@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-03T11:30:54Z
 updated_at: 2025-02-03T21:22:15Z
 url: https://github.com/astral-sh/uv/issues/11180
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `conflicts` schema definition in schemastore seems incorrect
@@ -67,10 +67,6 @@ _Label `bug` added by @mickvangelderen on 2025-02-03 11:30_
 
 ---
 
-_Referenced in [SchemaStore/schemastore#4224](../../SchemaStore/schemastore/pulls/4224.md) on 2025-02-03 11:31_
-
----
-
 _Comment by @charliermarsh on 2025-02-03 15:46_
 
 Thanks!
@@ -78,10 +74,6 @@ Thanks!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-03 19:08_
-
----
-
-_Referenced in [astral-sh/uv#11196](../../astral-sh/uv/pulls/11196.md) on 2025-02-03 21:09_
 
 ---
 

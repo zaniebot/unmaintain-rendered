@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-14T10:33:47Z
 updated_at: 2025-02-15T00:52:16Z
 url: https://github.com/astral-sh/uv/issues/11504
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add option to use symlink in site-packages to reduce disk space usage
@@ -158,10 +158,6 @@ which is like a hardlink, but superior because it will create a new copy if the 
 
 ---
 
-_Referenced in [astral-sh/uv#11528](../../astral-sh/uv/issues/11528.md) on 2025-02-15 00:51_
-
----
-
 _Comment by @zanieb on 2025-02-15 00:52_
 
 I've opened https://github.com/astral-sh/uv/issues/11528 to track the requested change to the documentation.
@@ -169,17 +165,5 @@ I've opened https://github.com/astral-sh/uv/issues/11528 to track the requested 
 ---
 
 _Closed by @zanieb on 2025-02-15 00:52_
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-08-30 14:32_
-
----
-
-_Referenced in [astral-sh/uv#10595](../../astral-sh/uv/issues/10595.md) on 2025-08-30 14:33_
-
----
-
-_Referenced in [astral-sh/uv#14628](../../astral-sh/uv/pulls/14628.md) on 2025-08-30 14:33_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T11:03:23Z
 updated_at: 2025-02-15T20:27:55Z
 url: https://github.com/astral-sh/uv/issues/7005
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv add pyqt5` error
@@ -70,10 +70,6 @@ So, is this a bug or expected behavior? I tried multiple different package manag
 
 ---
 
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
-
----
-
 _Comment by @adam-grant-hendry on 2024-12-09 21:01_
 
 > This is an inherent problem with distributions that don't ship source distributions, and have limited platform support. We can't guarantee that the set of wheels will cover all the platforms you care about. I'd suggest adding a constraint like:
@@ -98,28 +94,8 @@ Note: `pyside2` is also not available for `python >= 3.11` ([PyPI-PySide2](https
 
 ---
 
-_Referenced in [astral-sh/uv#9928](../../astral-sh/uv/pulls/9928.md) on 2024-12-16 03:23_
-
----
-
 _Comment by @charliermarsh on 2025-02-15 20:27_
 
 It looks like they added the necessary distributions here.
-
----
-
-_Referenced in [napari/napari#7744](../../napari/napari/pulls/7744.md) on 2025-03-25 18:06_
-
----
-
-_Referenced in [astral-sh/uv#13506](../../astral-sh/uv/issues/13506.md) on 2025-05-17 11:52_
-
----
-
-_Referenced in [neuroinformatics-unit/movement#683](../../neuroinformatics-unit/movement/pulls/683.md) on 2025-10-29 20:15_
-
----
-
-_Referenced in [napari/napari-plugin-template#114](../../napari/napari-plugin-template/issues/114.md) on 2025-11-27 20:50_
 
 ---

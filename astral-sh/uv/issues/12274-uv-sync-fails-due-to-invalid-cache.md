@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-18T11:52:45Z
 updated_at: 2025-03-18T15:27:22Z
 url: https://github.com/astral-sh/uv/issues/12274
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv sync fails due to invalid cache
@@ -61,10 +61,6 @@ Tagging @Gankra
 ---
 
 _Assigned to @Gankra by @charliermarsh on 2025-03-18 13:47_
-
----
-
-_Referenced in [astral-sh/uv#12281](../../astral-sh/uv/pulls/12281.md) on 2025-03-18 14:18_
 
 ---
 

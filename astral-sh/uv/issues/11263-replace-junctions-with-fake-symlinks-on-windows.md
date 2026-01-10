@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-05T21:42:44Z
 updated_at: 2025-02-13T22:17:51Z
 url: https://github.com/astral-sh/uv/issues/11263
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Replace junctions with "fake" symlinks on Windows
@@ -28,14 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-02-05 21:42_
 ---
 
 _Label `windows` added by @charliermarsh on 2025-02-05 21:42_
-
----
-
-_Referenced in [DataDog/datadog-agent-buildimages#751](../../DataDog/datadog-agent-buildimages/pulls/751.md) on 2025-02-05 23:25_
-
----
-
-_Referenced in [astral-sh/uv#11269](../../astral-sh/uv/pulls/11269.md) on 2025-02-06 01:03_
 
 ---
 

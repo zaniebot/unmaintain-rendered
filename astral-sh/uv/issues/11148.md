@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-31T22:47:57Z
 updated_at: 2025-02-04T03:28:49Z
 url: https://github.com/astral-sh/uv/issues/11148
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add "last updated" date to documentation
@@ -43,22 +43,10 @@ Hi, I would like to pick this issue, I added the mentioned dependency, and mkdoc
 
 ---
 
-_Referenced in [astral-sh/uv#11162](../../astral-sh/uv/pulls/11162.md) on 2025-02-02 10:06_
-
----
-
-_Referenced in [astral-sh/uv#11164](../../astral-sh/uv/pulls/11164.md) on 2025-02-02 11:09_
-
----
-
 _Closed by @charliermarsh on 2025-02-04 03:28_
 
 ---
 
 _Closed by @charliermarsh on 2025-02-04 03:28_
-
----
-
-_Referenced in [astral-sh/uv#11242](../../astral-sh/uv/issues/11242.md) on 2025-02-05 12:24_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-28T04:15:36Z
 updated_at: 2025-03-03T03:16:38Z
 url: https://github.com/astral-sh/uv/issues/11848
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # pip compile: explicit index + requirements.in
@@ -104,10 +104,6 @@ uv 0.6.3 (a0b9f22a2 2025-02-24)
 ---
 
 _Label `bug` added by @juftin on 2025-02-28 04:15_
-
----
-
-_Referenced in [juftin/hatch-pip-compile#90](../../juftin/hatch-pip-compile/issues/90.md) on 2025-02-28 04:16_
 
 ---
 

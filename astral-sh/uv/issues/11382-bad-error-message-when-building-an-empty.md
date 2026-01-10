@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T12:20:07Z
 updated_at: 2025-02-12T21:58:52Z
 url: https://github.com/astral-sh/uv/issues/11382
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Bad error message when building an empty pyproject.toml
@@ -49,14 +49,6 @@ uv 0.5.29
 ---
 
 _Label `error messages` added by @konstin on 2025-02-10 12:20_
-
----
-
-_Referenced in [astral-sh/uv#11344](../../astral-sh/uv/issues/11344.md) on 2025-02-10 12:22_
-
----
-
-_Referenced in [astral-sh/uv#11394](../../astral-sh/uv/pulls/11394.md) on 2025-02-10 18:55_
 
 ---
 

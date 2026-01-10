@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-05T21:47:32Z
 updated_at: 2025-03-13T05:03:16Z
 url: https://github.com/astral-sh/uv/issues/11990
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv python find` does not respect `--project`
@@ -103,10 +103,6 @@ Oh interesting. I'm... not sure if I'd expect `uv pip` to respect `--project` wh
 _Comment by @zanieb on 2025-03-06 23:44_
 
 (as an aside, I wonder if accepting the root directory there will let us drop the `current_dir` testing hack we have)
-
----
-
-_Referenced in [astral-sh/uv#12049](../../astral-sh/uv/pulls/12049.md) on 2025-03-10 14:01_
 
 ---
 

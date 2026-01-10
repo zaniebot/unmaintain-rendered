@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-18T08:06:33Z
 updated_at: 2025-02-25T08:06:38Z
 url: https://github.com/astral-sh/uv/issues/1632
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Create stub for `uv` in virtual environments
@@ -28,23 +28,7 @@ _Originally posted by @zanieb in https://github.com/astral-sh/uv/issues/1598#iss
 
 ---
 
-_Referenced in [astral-sh/uv#1625](../../astral-sh/uv/issues/1625.md) on 2024-02-18 08:06_
-
----
-
-_Referenced in [astral-sh/uv#1598](../../astral-sh/uv/issues/1598.md) on 2024-02-18 08:10_
-
----
-
-_Referenced in [astral-sh/uv#1422](../../astral-sh/uv/issues/1422.md) on 2024-02-18 08:16_
-
----
-
 _Label `enhancement` added by @zanieb on 2024-02-18 08:24_
-
----
-
-_Referenced in [astral-sh/uv#1331](../../astral-sh/uv/issues/1331.md) on 2024-02-18 17:25_
 
 ---
 
@@ -75,14 +59,6 @@ _Comment by @henryiii on 2024-02-19 14:58_
 _Comment by @zanieb on 2024-02-19 15:44_
 
 Thanks :) fixed
-
----
-
-_Referenced in [astral-sh/uv#1831](../../astral-sh/uv/issues/1831.md) on 2024-02-21 21:16_
-
----
-
-_Referenced in [astral-sh/uv#1869](../../astral-sh/uv/issues/1869.md) on 2024-02-22 18:48_
 
 ---
 
@@ -138,15 +114,7 @@ Thank you to all the developers for this awesome package!
 
 ---
 
-_Referenced in [astral-sh/uv#1396](../../astral-sh/uv/issues/1396.md) on 2024-02-23 00:41_
-
----
-
 _Label `needs-design` added by @zanieb on 2024-07-01 21:51_
-
----
-
-_Referenced in [tribut/homeassistant-docker-venv#38](../../tribut/homeassistant-docker-venv/issues/38.md) on 2024-11-07 15:03_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-16T23:50:13Z
 updated_at: 2025-03-18T01:13:35Z
 url: https://github.com/astral-sh/uv/issues/12207
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv `0.6.6` fails to build arm64 packages in the CI?
@@ -268,14 +268,6 @@ https://github.com/astral-sh/uv/blob/25e7209a33024e0776b73b8168440b2280f44a9b/cr
 And this indeed was caused by my pull request upstream
 
 
-
----
-
-_Referenced in [astral-sh/uv#12239](../../astral-sh/uv/pulls/12239.md) on 2025-03-17 14:00_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#563](../../astral-sh/python-build-standalone/pulls/563.md) on 2025-03-17 16:54_
 
 ---
 

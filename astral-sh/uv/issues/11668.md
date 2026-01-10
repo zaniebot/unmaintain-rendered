@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-20T15:16:18Z
 updated_at: 2025-02-20T22:29:30Z
 url: https://github.com/astral-sh/uv/issues/11668
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Missing a closing bracket in the cache-keys setting in the document
@@ -38,10 +38,6 @@ Linux 5.15.0-130-generic x86_64 GNU/Linux
 ---
 
 _Label `bug` added by @chilin0525 on 2025-02-20 15:16_
-
----
-
-_Referenced in [astral-sh/uv#11669](../../astral-sh/uv/pulls/11669.md) on 2025-02-20 15:17_
 
 ---
 

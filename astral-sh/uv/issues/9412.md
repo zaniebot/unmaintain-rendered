@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-25T10:05:45Z
 updated_at: 2025-02-28T13:37:31Z
 url: https://github.com/astral-sh/uv/issues/9412
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Locking / resolving a version without appropriate distribution wheels available
@@ -67,9 +67,5 @@ Returning to this because I just had the issue again with another ecmwf library,
 _Comment by @konstin on 2025-02-28 13:37_
 
 uv now supports [required environments](https://docs.astral.sh/uv/concepts/resolution/#required-environments) for which wheels must exist for a version to be selected, this should match the original problem well.
-
----
-
-_Referenced in [astral-sh/uv#11855](../../astral-sh/uv/issues/11855.md) on 2025-02-28 14:15_
 
 ---

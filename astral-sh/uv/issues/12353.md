@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-20T22:43:51Z
 updated_at: 2025-03-20T22:44:47Z
 url: https://github.com/astral-sh/uv/issues/12353
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add `default-packages = [...]` and `default-packages = "all"` for workspaces
@@ -43,9 +43,5 @@ _Label `configuration` added by @zanieb on 2025-03-20 22:44_
 ---
 
 _Label `needs-decision` added by @zanieb on 2025-03-20 22:44_
-
----
-
-_Referenced in [astral-sh/uv#12130](../../astral-sh/uv/issues/12130.md) on 2025-03-20 22:45_
 
 ---

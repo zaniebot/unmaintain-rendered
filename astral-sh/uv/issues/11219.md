@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-04T16:28:44Z
 updated_at: 2025-02-05T20:19:58Z
 url: https://github.com/astral-sh/uv/issues/11219
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Project virtual environment creation is not concurrency-safe
@@ -102,10 +102,6 @@ I thought co-location was important for some reason, but.. I can't think of a re
 _Comment by @charliermarsh on 2025-02-05 15:07_
 
 Also somewhat wondering if we can just make `virtualenv` creation robust to this somehow. I'll take a look.
-
----
-
-_Referenced in [astral-sh/uv#11259](../../astral-sh/uv/pulls/11259.md) on 2025-02-05 19:53_
 
 ---
 

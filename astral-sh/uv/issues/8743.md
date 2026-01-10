@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-01T06:34:03Z
 updated_at: 2025-01-29T22:15:06Z
 url: https://github.com/astral-sh/uv/issues/8743
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Incorrect suggestion when creating a new project with --backend instead of --build-backend
@@ -97,10 +97,6 @@ I can try to implement this if that is ok
 _Comment by @zanieb on 2025-01-24 21:15_
 
 @styvane sure!
-
----
-
-_Referenced in [astral-sh/uv#10958](../../astral-sh/uv/pulls/10958.md) on 2025-01-25 13:58_
 
 ---
 

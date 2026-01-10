@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-26T11:30:37Z
 updated_at: 2025-03-16T12:23:29Z
 url: https://github.com/astral-sh/uv/issues/11796
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Failed to spawn error with `uv run python3.12`
@@ -259,10 +259,6 @@ _Comment by @JWLee89 on 2025-03-13 05:51_
 @nkitsaini Ahh I see. If I don't find unit tests within a specific file, I guess I can just add the `mod tests` block and write the tests there. 
 
 Thank you for the clarification! 👍 
-
----
-
-_Referenced in [astral-sh/uv#12201](../../astral-sh/uv/pulls/12201.md) on 2025-03-16 12:12_
 
 ---
 

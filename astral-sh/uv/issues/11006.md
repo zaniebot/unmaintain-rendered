@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-27T21:42:07Z
 updated_at: 2025-02-20T19:32:12Z
 url: https://github.com/astral-sh/uv/issues/11006
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # A uv Environment Is Not Compatible With pyo3 Out Of The Box
@@ -238,10 +238,6 @@ So I'd like to know exactly what you're running to build and what the error mess
 ---
 
 _Label `upstream` removed by @konstin on 2025-01-28 17:25_
-
----
-
-_Referenced in [PyO3/pyo3#4813](../../PyO3/pyo3/issues/4813.md) on 2025-01-28 17:33_
 
 ---
 
@@ -503,10 +499,6 @@ fn main() {
 ```
 
 should hopefully help.
-
----
-
-_Referenced in [PyO3/pyo3#4890](../../PyO3/pyo3/pulls/4890.md) on 2025-02-03 20:58_
 
 ---
 

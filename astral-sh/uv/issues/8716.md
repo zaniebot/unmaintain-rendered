@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T08:01:19Z
 updated_at: 2025-03-03T11:27:20Z
 url: https://github.com/astral-sh/uv/issues/8716
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Automatic Python Trove Classifiers
@@ -181,20 +181,8 @@ _Comment by @MicaelJarniac on 2025-02-10 20:16_
 
 ---
 
-_Referenced in [MicaelJarniac/crustypy#190](../../MicaelJarniac/crustypy/issues/190.md) on 2025-02-11 23:35_
-
----
-
 _Comment by @ambv on 2025-03-03 11:27_
 
 Note that since this issue was opened, specifying `License ::` in trove classifiers [is now deprecated](https://packaging.python.org/en/latest/specifications/pyproject-toml/#classifiers) and the preferred spelling is to use the license text or file in `[project]`, which lands in `METADATA` without duplication.
-
----
-
-_Referenced in [opendp/tumult-core#8](../../opendp/tumult-core/pulls/8.md) on 2025-07-04 13:10_
-
----
-
-_Referenced in [MedShift/bigc#72](../../MedShift/bigc/pulls/72.md) on 2025-10-28 20:19_
 
 ---

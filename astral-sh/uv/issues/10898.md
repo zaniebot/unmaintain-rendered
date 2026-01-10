@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-23T14:45:31Z
 updated_at: 2025-02-19T00:31:05Z
 url: https://github.com/astral-sh/uv/issues/10898
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv --python` and `uv python pin` fail if Python3.6 is found on the system
@@ -133,10 +133,6 @@ Great thanks!
 
 ---
 
-_Referenced in [astral-sh/uv#10908](../../astral-sh/uv/pulls/10908.md) on 2025-01-23 18:11_
-
----
-
 _Closed by @zanieb on 2025-01-23 22:37_
 
 ---
@@ -163,9 +159,5 @@ error: Failed to inspect Python interpreter from first executable in the search 
 _Comment by @zanieb on 2025-02-19 00:31_
 
 @mpetruc Sorry about that. Can you please open a new issue with more details per #9452?
-
----
-
-_Referenced in [astral-sh/uv#16409](../../astral-sh/uv/issues/16409.md) on 2025-10-22 12:02_
 
 ---

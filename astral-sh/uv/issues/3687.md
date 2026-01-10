@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-21T08:02:45Z
 updated_at: 2025-03-20T22:12:13Z
 url: https://github.com/astral-sh/uv/issues/3687
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Failed to download whl due to the missing of credentials in URL
@@ -311,10 +311,6 @@ I think the biggest difference in this problem between `uv` and `pip`, is that `
 _Comment by @charliermarsh on 2024-05-23 02:42_
 
 We also use authentication from an index URL, but perhaps I'm misunderstanding your comment.
-
----
-
-_Referenced in [astral-sh/uv#8031](../../astral-sh/uv/issues/8031.md) on 2024-10-09 13:42_
 
 ---
 

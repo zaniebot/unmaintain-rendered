@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-26T02:18:33Z
 updated_at: 2025-02-12T16:02:18Z
 url: https://github.com/astral-sh/uv/issues/6637
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Create a virtual environment from a PEP 723 script
@@ -87,14 +87,6 @@ Thanks for the additional context. We'll discuss this and report back here.
 ---
 
 _Renamed from "feature request: create environment from PEP73 script" to "feature request: create environment from PEP723 script" by @gnosys-nmercer on 2024-09-24 16:42_
-
----
-
-_Referenced in [astral-sh/uv#8652](../../astral-sh/uv/issues/8652.md) on 2024-10-29 05:00_
-
----
-
-_Referenced in [astral-sh/uv#8856](../../astral-sh/uv/issues/8856.md) on 2024-11-06 15:38_
 
 ---
 
@@ -316,10 +308,6 @@ https://github.com/astral-sh/uv/issues/11053
 
 ---
 
-_Referenced in [astral-sh/uv#11197](../../astral-sh/uv/issues/11197.md) on 2025-02-03 21:51_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-02-07 03:29_
 
 ---
@@ -349,10 +337,6 @@ CMD uv run --script my_script.py
 
 If `my_script.py` was developed with a tool other than `uv` that supports PEP 723, it would not have a `uv.lock` file.  
 If a virtual environment is to be built from PEP 723 metadata, it would be desirable to allow environment setup even in the absence of `uv.lock`.  
-
----
-
-_Referenced in [astral-sh/uv#11361](../../astral-sh/uv/pulls/11361.md) on 2025-02-09 19:14_
 
 ---
 

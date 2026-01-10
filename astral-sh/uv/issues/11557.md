@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-16T16:30:52Z
 updated_at: 2025-02-16T18:41:06Z
 url: https://github.com/astral-sh/uv/issues/11557
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv build` with `hatchling` build backend doesn't include nested package in wheel
@@ -325,9 +325,5 @@ _Comment by @Kayrnt on 2025-02-16 18:40_
 I read https://packaging.python.org/en/latest/discussions/package-formats/ to try to understand both.
 It's not explicit if it should be mapping the repository file structure or if it should map the package structure.
 Asking ChatGPT, it points out it should map the repository structure, in which case, the configuration you suggested and that works with both tools is the "right one".
-
----
-
-_Referenced in [astral-sh/uv#12310](../../astral-sh/uv/issues/12310.md) on 2025-03-19 12:40_
 
 ---

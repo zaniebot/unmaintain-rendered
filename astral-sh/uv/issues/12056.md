@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-07T19:06:28Z
 updated_at: 2025-03-07T19:45:47Z
 url: https://github.com/astral-sh/uv/issues/12056
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # With explicit indexes, uv still pre-fetches from implicit indexes in some cases
@@ -56,10 +56,6 @@ _Label `bug` added by @charliermarsh on 2025-03-07 19:06_
 _Comment by @charliermarsh on 2025-03-07 19:06_
 
 (Assigning myself since I already figured out where the bug is.)
-
----
-
-_Referenced in [astral-sh/uv#12057](../../astral-sh/uv/pulls/12057.md) on 2025-03-07 19:28_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-28T17:31:09Z
 updated_at: 2025-02-06T10:14:24Z
 url: https://github.com/astral-sh/uv/issues/10214
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # uv does not work with meson-python editable installs
@@ -78,10 +78,6 @@ I believe there was [some effort](https://github.com/astral-sh/uv/pull/7857#issu
 
 ---
 
-_Referenced in [scikit-learn/scikit-learn#30574](../../scikit-learn/scikit-learn/pulls/30574.md) on 2025-01-03 17:42_
-
----
-
 _Comment by @lucascolley on 2025-01-03 17:48_
 
 > I believe there was some effort in getting build isolation working with in meson-python such that it works with uv,
@@ -141,21 +137,5 @@ _Comment by @lucascolley on 2025-02-06 10:13_
 For anyone coming to this issue in an attempt to make a meson-python project installable in a project workflow as editable, an alternative is to use https://pixi.sh/latest/reference/pixi_manifest/#no-build-isolation, provided that dependencies are available as conda packages. Pixi installs the conda dependencies first, so they are available when `uv` is called to resolve the PyPI dependencies and during the build process.
 
 For anyone specifically trying to develop scikit-learn with a project workflow, see https://github.com/glemaitre/scikit-learn-workspace/blob/main/src/scikit-learn/pixi.toml for how this works in practice!
-
----
-
-_Referenced in [scipy/scipy#22795](../../scipy/scipy/pulls/22795.md) on 2025-04-10 16:06_
-
----
-
-_Referenced in [mesonbuild/meson-python#730](../../mesonbuild/meson-python/issues/730.md) on 2025-04-17 09:59_
-
----
-
-_Referenced in [astral-sh/uv#10694](../../astral-sh/uv/issues/10694.md) on 2025-05-13 02:20_
-
----
-
-_Referenced in [prefix-dev/pixi#3985](../../prefix-dev/pixi/issues/3985.md) on 2025-06-21 12:26_
 
 ---

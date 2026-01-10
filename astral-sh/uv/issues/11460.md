@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-12T21:22:14Z
 updated_at: 2025-02-13T01:44:16Z
 url: https://github.com/astral-sh/uv/issues/11460
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Dynamic version is not omitted when fields other than `version` are marked as dynamic
@@ -107,18 +107,10 @@ _Comment by @charliermarsh on 2025-02-12 21:49_
 
 ---
 
-_Referenced in [astral-sh/uv#11468](../../astral-sh/uv/pulls/11468.md) on 2025-02-13 01:05_
-
----
-
 _Closed by @charliermarsh on 2025-02-13 01:44_
 
 ---
 
 _Closed by @charliermarsh on 2025-02-13 01:44_
-
----
-
-_Referenced in [reservoir-data/tap-pypistats#43](../../reservoir-data/tap-pypistats/pulls/43.md) on 2025-02-13 05:34_
 
 ---

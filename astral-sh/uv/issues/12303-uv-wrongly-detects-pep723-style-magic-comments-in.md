@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-18T23:49:43Z
 updated_at: 2025-03-24T15:17:02Z
 url: https://github.com/astral-sh/uv/issues/12303
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv wrongly detects PEP723 style magic comments in strings
@@ -130,10 +130,6 @@ The magic comment is allowed anywhere in the file because an anticipated use cas
 
 ---
 
-_Referenced in [pex-tool/pex#2722](../../pex-tool/pex/pulls/2722.md) on 2025-03-19 03:14_
-
----
-
 _Comment by @ofek on 2025-03-19 04:03_
 
 I very much dislike solutions like the one that was opened in response to this issue: https://github.com/pex-tool/pex/pull/2722
@@ -205,10 +201,6 @@ If PEP 751 lands maybe we can have a `# /// lock` block :)
 
 ---
 
-_Referenced in [pypa/packaging.python.org#1835](../../pypa/packaging.python.org/issues/1835.md) on 2025-03-21 16:21_
-
----
-
 _Comment by @ncoghlan on 2025-03-21 16:23_
 
 I agree with the folks suggesting that nothing needs to change in `uv` here - the naive parsing in the spec is intentional, not accidental, and Python's string quoting is flexible enough that it isn't *necessary* to format strings in a way that triggers a misfire when generating code that happens to include PEP 723 comments.
@@ -222,9 +214,5 @@ _Label `external` added by @zanieb on 2025-03-21 16:54_
 ---
 
 _Closed by @charliermarsh on 2025-03-24 15:17_
-
----
-
-_Referenced in [astral-sh/uv#16239](../../astral-sh/uv/issues/16239.md) on 2025-10-14 11:32_
 
 ---

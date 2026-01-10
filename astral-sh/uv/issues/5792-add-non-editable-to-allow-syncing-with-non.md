@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-05T12:53:55Z
 updated_at: 2025-02-25T17:28:36Z
 url: https://github.com/astral-sh/uv/issues/5792
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Add `--non-editable` to allow syncing with non-editable workspace members
@@ -63,10 +63,6 @@ It would mean: install the project and any workspace members as non-editable. So
 _Comment by @zanieb on 2024-08-05 17:57_
 
 Hm. `--no-editable-project`? I'm not sure. Makes sense as something to support though. Seems easy to defer to after stabilization.
-
----
-
-_Referenced in [astral-sh/uv#5958](../../astral-sh/uv/issues/5958.md) on 2024-08-09 14:20_
 
 ---
 
@@ -129,18 +125,6 @@ fi
 
 ---
 
-_Referenced in [astral-sh/uv#6935](../../astral-sh/uv/issues/6935.md) on 2024-09-02 20:53_
-
----
-
-_Referenced in [astral-sh/uv#7126](../../astral-sh/uv/issues/7126.md) on 2024-09-06 15:01_
-
----
-
-_Referenced in [astral-sh/uv#7166](../../astral-sh/uv/pulls/7166.md) on 2024-09-07 19:01_
-
----
-
 _Comment by @orf on 2024-09-11 14:33_
 
 This would be very useful when building docker images with workspaces - you would be able to do something akin to:
@@ -171,10 +155,6 @@ I think I can take this one on soon. It’s mostly about figuring the right name
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-13 01:49_
-
----
-
-_Referenced in [astral-sh/uv#7371](../../astral-sh/uv/pulls/7371.md) on 2024-09-13 18:06_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-25T15:44:21Z
 updated_at: 2025-02-18T16:32:20Z
 url: https://github.com/astral-sh/uv/issues/5450
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Filename truncated during https tar stream
@@ -201,10 +201,6 @@ I assume this is much more likely to happen if streaming from the network to unp
 
 ---
 
-_Referenced in [edera-dev/tokio-tar#3](../../edera-dev/tokio-tar/pulls/3.md) on 2024-11-05 18:40_
-
----
-
 _Comment by @RazerM on 2024-11-09 02:34_
 
 And here's a direct reproduction in uv:
@@ -279,18 +275,6 @@ You can PR your change here: https://github.com/astral-sh/tokio-tar
 
 ---
 
-_Referenced in [hynek/build-and-inspect-python-package#155](../../hynek/build-and-inspect-python-package/issues/155.md) on 2024-12-11 20:55_
-
----
-
-_Referenced in [RazerM/tokio-tar#1](../../RazerM/tokio-tar/pulls/1.md) on 2024-12-13 23:24_
-
----
-
-_Referenced in [astral-sh/tokio-tar#1](../../astral-sh/tokio-tar/pulls/1.md) on 2024-12-13 23:27_
-
----
-
 _Comment by @effigies on 2024-12-19 17:53_
 
 Hi all, this is just a note that I've got a package I can't build with `uv` because data filenames get truncated between the sdist and the wheel. If there's anything I can do to help this along, with testing for example, please let me know.
@@ -349,10 +333,6 @@ Found:   data/hlYNCGAqHrGZmUTRghgSWDmWKcRrmRWSdTjoyPjHO
 
 9993 files ok, 7 missing
 ```
-
----
-
-_Referenced in [nipreps/smriprep#466](../../nipreps/smriprep/pulls/466.md) on 2025-02-18 16:17_
 
 ---
 

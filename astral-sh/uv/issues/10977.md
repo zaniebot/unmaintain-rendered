@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-27T04:14:42Z
 updated_at: 2025-01-29T03:27:30Z
 url: https://github.com/astral-sh/uv/issues/10977
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # universal resolution occasionally doesn't work with `no-build-package` when the package is a transient dependency of a dependency included in both `dependency-groups` and `build-system.requires`
@@ -221,10 +221,6 @@ Great, thank you! I'll try again.
 _Comment by @charliermarsh on 2025-01-29 01:33_
 
 I _think_ the issue is that `libcst` is both a build dependency and a run-time dependency, and we're incorrectly sharing some resolution data between the two...
-
----
-
-_Referenced in [astral-sh/uv#11051](../../astral-sh/uv/pulls/11051.md) on 2025-01-29 02:56_
 
 ---
 

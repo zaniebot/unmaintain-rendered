@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-12T13:02:53Z
 updated_at: 2025-02-12T19:08:30Z
 url: https://github.com/astral-sh/uv/issues/11444
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Race condition in uv build --all-packages / maturin / zig
@@ -269,9 +269,5 @@ _Label `bug` removed by @konstin on 2025-02-12 19:08_
 ---
 
 _Label `upstream` added by @konstin on 2025-02-12 19:08_
-
----
-
-_Referenced in [rust-cross/cargo-zigbuild#318](../../rust-cross/cargo-zigbuild/issues/318.md) on 2025-02-12 23:34_
 
 ---

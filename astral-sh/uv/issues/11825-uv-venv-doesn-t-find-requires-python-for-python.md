@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T07:53:55Z
 updated_at: 2025-03-04T23:29:41Z
 url: https://github.com/astral-sh/uv/issues/11825
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv venv doesn't find requires-python for python interpreter with an upper limit
@@ -130,10 +130,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-03-04 14:52_
 ---
 
 _Unassigned @zanieb by @charliermarsh on 2025-03-04 14:52_
-
----
-
-_Referenced in [astral-sh/uv#11952](../../astral-sh/uv/pulls/11952.md) on 2025-03-04 15:12_
 
 ---
 

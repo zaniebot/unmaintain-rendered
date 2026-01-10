@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-28T20:32:14Z
 updated_at: 2025-01-30T22:25:12Z
 url: https://github.com/astral-sh/uv/issues/11039
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Consider changing the default behaviour of `python-preference`
@@ -103,9 +103,5 @@ I spent hours trying to debug `OSError`. The reasons behind this:
 If the behaviour of `uvx` is consistent, i.e. does not change before/after a uv-managed Python is downloaded, this kind of confusing behaviour for new users can be avoided.
 
 My use case might be niche, but there are [other documented quirks](https://gregoryszorc.com/docs/python-build-standalone/main/quirks.html) of uv-managed Python distributions. Other users may encounter similar pitfalls like mine.
-
----
-
-_Referenced in [astral-sh/uv#12122](../../astral-sh/uv/issues/12122.md) on 2025-03-12 17:53_
 
 ---

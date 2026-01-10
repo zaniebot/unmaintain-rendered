@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-24T18:18:51Z
 updated_at: 2025-01-29T22:06:01Z
 url: https://github.com/astral-sh/uv/issues/10942
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # UV binary not working on raspberry pi 5
@@ -100,10 +100,6 @@ Can you check if installing from the GitHub Release works instead?
 
 ---
 
-_Referenced in [astral-sh/uv#10943](../../astral-sh/uv/pulls/10943.md) on 2025-01-24 19:36_
-
----
-
 _Comment by @zanieb on 2025-01-24 19:50_
 
 Similarly, it'd be helpful if you tested https://github.com/astral-sh/uv/pull/10943
@@ -140,13 +136,5 @@ Should be fixed in https://github.com/astral-sh/uv/pull/10943 — lmk if not.
 ---
 
 _Closed by @zanieb on 2025-01-29 22:06_
-
----
-
-_Referenced in [astral-sh/uv#11084](../../astral-sh/uv/issues/11084.md) on 2025-01-29 22:06_
-
----
-
-_Referenced in [astral-sh/uv#15401](../../astral-sh/uv/issues/15401.md) on 2025-08-21 07:11_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-03T14:36:19Z
 updated_at: 2025-02-13T23:42:03Z
 url: https://github.com/astral-sh/uv/issues/8775
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Detect if a script is called with `uv run`
@@ -67,18 +67,6 @@ This sounds like something that would fit nicely into the `sys` module, similar 
 
 ---
 
-_Referenced in [astral-sh/uv#11220](../../astral-sh/uv/issues/11220.md) on 2025-02-04 21:23_
-
----
-
-_Referenced in [BlockstreamResearch/bip-frost-dkg#81](../../BlockstreamResearch/bip-frost-dkg/pulls/81.md) on 2025-02-06 12:46_
-
----
-
-_Referenced in [astral-sh/uv#11496](../../astral-sh/uv/pulls/11496.md) on 2025-02-13 23:40_
-
----
-
 _Comment by @zanieb on 2025-02-13 23:41_
 
 Closed in https://github.com/astral-sh/uv/pull/11326
@@ -86,9 +74,5 @@ Closed in https://github.com/astral-sh/uv/pull/11326
 ---
 
 _Closed by @zanieb on 2025-02-13 23:41_
-
----
-
-_Referenced in [astral-sh/uv#11326](../../astral-sh/uv/pulls/11326.md) on 2025-02-13 23:41_
 
 ---

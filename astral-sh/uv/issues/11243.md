@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-05T13:02:06Z
 updated_at: 2025-02-07T20:58:54Z
 url: https://github.com/astral-sh/uv/issues/11243
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # When will 3.12.9 be available to install?
@@ -90,10 +90,6 @@ cpython-3.12.9-macos-aarch64-none                   <download available>
 I did not know that. I live in Node (but Pythonista at heart!) and I'm pretty sure `fnm` (the Node equivalent) reads available Node executables from a remote list. 
 
 Perhaps this knowledge gap/assumption could be considered an improvement to the `uv python` CLI for the next person, just like me, who doesn't realize they have to upgrade `uv` to get new versions. 
-
----
-
-_Referenced in [astral-sh/uv#11331](../../astral-sh/uv/pulls/11331.md) on 2025-02-07 20:58_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-07T07:05:18Z
 updated_at: 2025-03-06T19:26:08Z
 url: https://github.com/astral-sh/uv/issues/11308
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Support discovery of multiple python versions that are not on path
@@ -37,10 +37,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @mneumei on 2025-02-07 07:05_
-
----
-
-_Referenced in [tox-dev/tox-uv#170](../../tox-dev/tox-uv/issues/170.md) on 2025-02-07 07:05_
 
 ---
 

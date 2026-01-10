@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T08:03:50Z
 updated_at: 2025-02-24T07:39:31Z
 url: https://github.com/astral-sh/uv/issues/11089
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv can not find a package for an existing version
@@ -175,10 +175,6 @@ You need to do use code blocks, e.g., visit view-source:pypi.org/simple/anyio/ (
 <br class="Apple-interchange-newline">
 ...
 ```
-
----
-
-_Referenced in [astral-sh/uv#11135](../../astral-sh/uv/issues/11135.md) on 2025-01-31 17:01_
 
 ---
 

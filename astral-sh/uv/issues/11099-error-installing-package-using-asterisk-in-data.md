@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T15:50:25Z
 updated_at: 2025-01-30T17:41:47Z
 url: https://github.com/astral-sh/uv/issues/11099
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Error installing package using * asterisk in data path on windows
@@ -165,9 +165,5 @@ I will then report it to quadax, thank you guys!
 _Comment by @charliermarsh on 2025-01-30 17:40_
 
 Thanks for following up, I appreciate it.
-
----
-
-_Referenced in [f0uriest/quadax#41](../../f0uriest/quadax/issues/41.md) on 2025-01-30 18:02_
 
 ---

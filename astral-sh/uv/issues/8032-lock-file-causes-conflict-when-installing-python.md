@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-09T03:28:18Z
 updated_at: 2025-02-20T15:08:05Z
 url: https://github.com/astral-sh/uv/issues/8032
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # .lock file causes conflict when installing python into a shared directory
@@ -153,10 +153,6 @@ _Comment by @guoci on 2024-12-28 19:01_
 Can the locking implementation be changed to check the existence of a `.lock` file? Then, the `.lock` file must be deleted when unlocking.
 
 If a `uv` process abnormally terminates without unlocking, subsequent runs may cause a deadlock. If that happens the Python environment is possibly broken and needs to be set up again anyway.
-
----
-
-_Referenced in [astral-sh/uv#10265](../../astral-sh/uv/pulls/10265.md) on 2025-01-01 20:41_
 
 ---
 

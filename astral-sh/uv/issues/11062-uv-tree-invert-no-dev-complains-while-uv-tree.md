@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T14:14:28Z
 updated_at: 2025-01-29T16:18:15Z
 url: https://github.com/astral-sh/uv/issues/11062
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv tree --invert --no-dev` complains while `uv tree --invert --no-group dev` works
@@ -70,10 +70,6 @@ Mmm, this might be an oversight.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-29 14:42_
-
----
-
-_Referenced in [astral-sh/uv#11068](../../astral-sh/uv/pulls/11068.md) on 2025-01-29 16:11_
 
 ---
 

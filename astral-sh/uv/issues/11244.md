@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-05T14:03:20Z
 updated_at: 2025-02-08T15:23:32Z
 url: https://github.com/astral-sh/uv/issues/11244
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Issue with `uv pip` Handling Multiple Private Index URLs Leading to 403 Errors
@@ -156,10 +156,6 @@ _Comment by @zanieb on 2025-02-08 01:58_
 Ah thanks for the details. #11074 was released in uv 0.5.26 — it looks like there's a bug with a trailing `/`.
 
 https://github.com/astral-sh/uv/pull/11336
-
----
-
-_Referenced in [astral-sh/uv#11336](../../astral-sh/uv/pulls/11336.md) on 2025-02-08 01:58_
 
 ---
 

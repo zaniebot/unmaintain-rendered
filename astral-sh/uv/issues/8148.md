@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-12T17:17:26Z
 updated_at: 2025-02-21T15:46:19Z
 url: https://github.com/astral-sh/uv/issues/8148
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing
@@ -174,10 +174,6 @@ Let me know if anything is unclear :relaxed:
 
 ---
 
-_Referenced in [pawamoy/duty#23](../../pawamoy/duty/issues/23.md) on 2024-10-23 10:18_
-
----
-
 _Comment by @pawamoy on 2024-10-23 12:18_
 
 One argument in favor of allowing the current project version to be imcompatible with the version required by a dependency is that when forking a repository on GitHub, tags are not copied over. Then when triggering CI on your fork, the checkout action can't fetch tags since they don't exist, and uv fails to resolve. To fix this, authors of the fork have to explicitly fetch tags from upstream and push them back into their fork.
@@ -187,10 +183,6 @@ Or that's an argument in favor of me dropping dynamic versioning and using a sta
 ---
 
 _Renamed from "uv refuses to resolve deps with --no-editable, untagged commit, and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing" to "uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing" by @pawamoy on 2024-11-01 13:13_
-
----
-
-_Referenced in [mkdocstrings/mkdocstrings#706](../../mkdocstrings/mkdocstrings/issues/706.md) on 2024-11-01 13:17_
 
 ---
 
@@ -225,10 +217,6 @@ Creating virtual environment at: .venv
 ```
 
 I'd love to have a flag (CLI flag or config option in pyproject.toml or both) to tell uv that I'm not shadowing the dependency's name, that they're the same thing, and that I want to install the current project anyway, even if its built version isn't compatible with what the dependency requires.
-
----
-
-_Referenced in [pdm-project/pdm-backend#269](../../pdm-project/pdm-backend/issues/269.md) on 2024-11-14 12:57_
 
 ---
 
@@ -402,10 +390,6 @@ _Comment by @zanieb on 2024-11-25 23:36_
 
 ---
 
-_Referenced in [astral-sh/uv#9258](../../astral-sh/uv/issues/9258.md) on 2024-11-26 00:41_
-
----
-
 _Comment by @charliermarsh on 2024-11-26 02:59_
 
 Yeah that makes sense... It seems like sources should apply to overrides and constraints too?
@@ -413,14 +397,6 @@ Yeah that makes sense... It seems like sources should apply to overrides and con
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-26 17:41_
-
----
-
-_Referenced in [astral-sh/uv#9446](../../astral-sh/uv/issues/9446.md) on 2024-11-26 18:20_
-
----
-
-_Referenced in [astral-sh/uv#9455](../../astral-sh/uv/pulls/9455.md) on 2024-11-26 22:40_
 
 ---
 
@@ -630,10 +606,6 @@ So in the end, when I'm working on `a`, I want to be able to say "I know what I'
 
 ---
 
-_Referenced in [astral-sh/uv#10121](../../astral-sh/uv/issues/10121.md) on 2024-12-23 14:47_
-
----
-
 _Comment by @adamtheturtle on 2025-02-21 15:29_
 
 I hit this with a setuptools backend.
@@ -685,9 +657,5 @@ By the way @adamtheturtle, note that I found a way to fallback using the latest 
 _Comment by @adamtheturtle on 2025-02-21 15:46_
 
 Thank you @pawamoy !
-
----
-
-_Referenced in [audeering/audformat#476](../../audeering/audformat/pulls/476.md) on 2025-10-14 13:46_
 
 ---

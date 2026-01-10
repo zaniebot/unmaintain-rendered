@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T12:07:40Z
 updated_at: 2025-02-13T22:51:03Z
 url: https://github.com/astral-sh/uv/issues/6426
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv venv`'s runtime import patching hooks are unexpected
@@ -138,10 +138,6 @@ from __future__ import annotations
 I appreciate the Python team no longer support Python 3.6, but RedHat-style Linux distributions will support Python 3.6 until [releasever 8 expires in 2029](https://access.redhat.com/support/policy/updates/errata#RHEL8_Planning_Guide). I'm happy for the community to move on, in general, but find it frustrating when key tools break due to a lack of care or a surplus of spite rather than necessity.
 
 Update: it occurs to me Python 3.6 projects might be benefiting from some of the other lines in the VIRTUALENV_PATCH. I'd like to keep those lines until either 2029 or the discovery or provision of some means to patch the environment ourselves. I regret we can't [just simply](https://justsimply.dev/) create the file between the environment's creation and use, as they're both happening during `uv pip install .` as invoked by Hatch.
-
----
-
-_Referenced in [astral-sh/uv#6996](../../astral-sh/uv/pulls/6996.md) on 2024-09-04 04:32_
 
 ---
 

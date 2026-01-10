@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-30T09:38:02Z
 updated_at: 2025-03-12T00:34:59Z
 url: https://github.com/astral-sh/uv/issues/3923
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # regression: authentication stopped working in uv 0.1.36
@@ -173,10 +173,6 @@ Hi! totally understand this "Apparently it's very very hard to satisfy all of th
 _Comment by @zanieb on 2024-08-22 17:09_
 
 I think this is mostly a matter of doing something like #4583 so we can use credentials more aggressively.
-
----
-
-_Referenced in [astral-sh/uv#11600](../../astral-sh/uv/issues/11600.md) on 2025-02-18 15:25_
 
 ---
 

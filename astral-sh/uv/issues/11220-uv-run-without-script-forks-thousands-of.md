@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-04T17:02:26Z
 updated_at: 2025-02-12T18:58:45Z
 url: https://github.com/astral-sh/uv/issues/11220
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv run without --script forks thousands of processes, then fails, on file without .py extension
@@ -176,10 +176,6 @@ I think a default `UV_RUN_RECURSION_LIMIT` of like.. 100 seems reasonable? 1000?
 
 ---
 
-_Referenced in [astral-sh/uv#11386](../../astral-sh/uv/pulls/11386.md) on 2025-02-10 14:47_
-
----
-
 _Comment by @ssanderson on 2025-02-10 15:10_
 
 @zanieb @charliermarsh: PR with an initial crack at the infinite recursion detection here: https://github.com/astral-sh/uv/pull/11386
@@ -191,9 +187,5 @@ _Closed by @zanieb on 2025-02-12 18:58_
 ---
 
 _Closed by @zanieb on 2025-02-12 18:58_
-
----
-
-_Referenced in [astral-sh/uv#11553](../../astral-sh/uv/pulls/11553.md) on 2025-02-19 13:54_
 
 ---

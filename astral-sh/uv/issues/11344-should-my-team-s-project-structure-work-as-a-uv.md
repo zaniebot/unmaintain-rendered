@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-08T23:20:33Z
 updated_at: 2025-02-14T20:54:38Z
 url: https://github.com/astral-sh/uv/issues/11344
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Should my team's project structure work as a uv workspace?
@@ -96,10 +96,6 @@ You can do that with `uv sync --all-packages`.
 
 ---
 
-_Referenced in [astral-sh/uv#11394](../../astral-sh/uv/pulls/11394.md) on 2025-02-10 18:55_
-
----
-
 _Comment by @omer54463 on 2025-02-10 22:23_
 
 Thanks @konstin!
@@ -174,9 +170,5 @@ Thanks @konstin!
 ---
 
 _Closed by @omer54463 on 2025-02-14 20:54_
-
----
-
-_Referenced in [astral-sh/uv#11514](../../astral-sh/uv/pulls/11514.md) on 2025-02-17 14:14_
 
 ---

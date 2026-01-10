@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T17:11:45Z
 updated_at: 2025-03-21T17:57:06Z
 url: https://github.com/astral-sh/uv/issues/12373
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `uv run python`  REPL does not reload module after source code modification
@@ -114,10 +114,6 @@ uv 0.6.5
 ---
 
 _Label `bug` added by @IliasAarab on 2025-03-21 17:11_
-
----
-
-_Referenced in [astral-sh/uv#6548](../../astral-sh/uv/issues/6548.md) on 2025-03-21 17:12_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-03T07:23:02Z
 updated_at: 2025-02-28T18:30:25Z
 url: https://github.com/astral-sh/uv/issues/4759
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Allow `uv init` to use `cookiecutter` and `copier` templates
@@ -47,10 +47,6 @@ _Label `projects` added by @zanieb on 2024-08-20 21:28_
 
 ---
 
-_Referenced in [astral-sh/uv#9754](../../astral-sh/uv/issues/9754.md) on 2024-12-09 22:48_
-
----
-
 _Comment by @zanieb on 2024-12-10 00:59_
 
 Some nice detailed context in https://github.com/astral-sh/uv/issues/9754
@@ -73,9 +69,5 @@ That said, my developer mind keeps coming back to "tools", and the idea that eve
 - project settings in pyproject.toml
 
 Having a simple way to set those mappings (edit config files, or a `uv` sub-command like `uv default build hatch` where hatch is installed by `uv tool`) would go a long way to generic tool support.
-
----
-
-_Referenced in [astral-sh/uv#17024](../../astral-sh/uv/issues/17024.md) on 2025-12-08 12:24_
 
 ---

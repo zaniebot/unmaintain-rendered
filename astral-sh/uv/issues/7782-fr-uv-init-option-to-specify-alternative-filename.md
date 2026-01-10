@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-29T16:56:07Z
 updated_at: 2025-02-13T22:06:49Z
 url: https://github.com/astral-sh/uv/issues/7782
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # FR: `uv init` option to specify alternative filename to `hello.py`  
@@ -67,24 +67,12 @@ _Label `cli` added by @zanieb on 2024-09-29 21:10_
 
 ---
 
-_Referenced in [astral-sh/uv#10304](../../astral-sh/uv/issues/10304.md) on 2025-01-05 20:00_
-
----
-
 _Comment by @edmorley on 2025-01-06 19:58_
 
 If it helps as a data-point: From the research I did for the Heroku Python buildpacks [1] (using metrics from many thousands of builds/apps), the most common filenames we see in "single `.py` file in the root directory" type projects are `app.py` and `main.py`. The latter I'm guessing due to guides like the FastAPI tutorial using `main.py`. The former I'm less certain about, but I know Flask does auto-detection if it finds an `app.py` - so perhaps that's the reason?
 
 
 [1]: One of the features of Heroku is that users can `git push` arbitrary code to their app, and the Heroku build system via the buildpack detection feature will determine which language their app uses, and run the appropriate buildpack to build that app. Whilst the primary signal our Python buildpack checks for is the presence of a package manager file (such as `requirements.txt`, `poetry.lock`, and in the future `uv.lock` etc), it's not uncommon for users to have manually `pip install`ed their dependencies locally and either not created a requirements file at all, or forgotten to Git commit it. So we use additional signals to determine the app's primary language is likely Python (bearing in mind apps can be multi-language, and users can have one-off Python scripts in the repo root that are for development use only), so we can then display a "the package manager file is missing" type error to those apps.
-
----
-
-_Referenced in [astral-sh/uv#10369](../../astral-sh/uv/pulls/10369.md) on 2025-01-07 15:31_
-
----
-
-_Referenced in [astral-sh/uv#10392](../../astral-sh/uv/issues/10392.md) on 2025-01-08 14:32_
 
 ---
 
@@ -162,10 +150,6 @@ _Comment by @nbbaier on 2025-02-11 23:40_
 > [<img alt="" width="16" height="16" src="https://avatars.githubusercontent.com/u/12950157?u=bd276937ff436875a00278cc05c25107a592ecf2&amp;v=4&amp;size=80">@nbbaier](https://github.com/nbbaier?rgh-link-date=2025-02-08T17%3A42%3A33.000Z) Do you have a justification? When you do `uv init --package` we create a `<package>` entrypoint so it's `uv run <package>`. Why not have `uv run <package>.py` for parity? Why is `uv run main.py` better?
 
 I honestly don't have much of a justification, to be honest. I'm mostly work with JS/TS, so I'm not used to my main entry points being named `<package>.ts`, but a consistent `<index>.ts`. 
-
----
-
-_Referenced in [astral-sh/uv#11485](../../astral-sh/uv/pulls/11485.md) on 2025-02-13 16:51_
 
 ---
 

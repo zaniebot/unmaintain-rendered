@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-20T10:29:51Z
 updated_at: 2025-03-20T18:59:47Z
 url: https://github.com/astral-sh/uv/issues/12336
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Is it intentional that UV_MANAGED_PYTHON can be set only to "true" and "false"?
@@ -73,10 +73,6 @@ I'll fix this one.
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-03-20 18:24_
-
----
-
-_Referenced in [astral-sh/uv#12345](../../astral-sh/uv/pulls/12345.md) on 2025-03-20 18:33_
 
 ---
 

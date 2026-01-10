@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-29T09:14:28Z
 updated_at: 2025-02-18T23:48:38Z
 url: https://github.com/astral-sh/uv/issues/2077
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Support `--user` flag from pip
@@ -39,14 +39,6 @@ While I can think of some creative ways (maybe I will find some) - having an equ
 
 
 
-
----
-
-_Referenced in [apache/airflow#37785](../../apache/airflow/issues/37785.md) on 2024-02-29 09:15_
-
----
-
-_Referenced in [apache/airflow#37796](../../apache/airflow/pulls/37796.md) on 2024-02-29 14:17_
 
 ---
 
@@ -187,10 +179,6 @@ airflow@a249d829a411:/opt/airflow$.
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#2352](../../astral-sh/uv/pulls/2352.md) on 2024-03-11 08:06_
 
 ---
 
@@ -405,18 +393,6 @@ Yep. My proposal is that it will just install things in `.local` (or equivalent 
 
 ---
 
-_Referenced in [astral-sh/uv#2665](../../astral-sh/uv/pulls/2665.md) on 2024-03-28 09:39_
-
----
-
-_Referenced in [astral-sh/uv#3076](../../astral-sh/uv/issues/3076.md) on 2024-04-16 22:35_
-
----
-
-_Referenced in [astral-sh/uv#3417](../../astral-sh/uv/issues/3417.md) on 2024-05-07 14:52_
-
----
-
 _Comment by @Malix-Labs on 2024-05-07 15:00_
 
 I would definitely love that
@@ -433,18 +409,6 @@ _Comment by @matthew-brett on 2024-05-07 15:04_
 > Yep. My proposal is that it will just install things in `.local` (or equivalent on other systems) venv created and used automatically by `uv` in this case. Bonus point to print warning if `.local/bin` is not on PATH
 
 I wonder though, whether anyone would worry about previous `--user` installs either being overwritten, or appearing unexpectedly in the `uv` environment?    And where would the packages go?   In `.local/site-packages` or somewhere else?
-
----
-
-_Referenced in [astral-sh/uv#1584](../../astral-sh/uv/issues/1584.md) on 2024-05-17 13:44_
-
----
-
-_Referenced in [astral-sh/uv#3635](../../astral-sh/uv/issues/3635.md) on 2024-05-17 13:45_
-
----
-
-_Referenced in [astral-sh/uv#2333](../../astral-sh/uv/issues/2333.md) on 2024-06-05 12:33_
 
 ---
 
@@ -920,14 +884,6 @@ uv pip install \
 
 ---
 
-_Referenced in [astral-sh/uv#4624](../../astral-sh/uv/issues/4624.md) on 2024-06-28 15:49_
-
----
-
-_Referenced in [astral-sh/uv#2059](../../astral-sh/uv/issues/2059.md) on 2024-07-14 16:16_
-
----
-
 _Comment by @sqrl on 2024-08-06 15:26_
 
 This workaround doesn't seem to create a `/bin` sub-directory the way `--user` does?
@@ -1115,27 +1071,11 @@ No that doesn't help. Please see the STR in https://github.com/unbit/uwsgi/issue
 
 ---
 
-_Referenced in [astral-sh/uv#5229](../../astral-sh/uv/issues/5229.md) on 2024-08-27 14:17_
-
----
-
-_Referenced in [linuxserver/docker-homeassistant#109](../../linuxserver/docker-homeassistant/issues/109.md) on 2024-10-12 14:47_
-
----
-
-_Referenced in [home-assistant/core#128214](../../home-assistant/core/issues/128214.md) on 2024-10-13 23:52_
-
----
-
 _Comment by @matthew-brett on 2024-12-20 14:43_
 
 > We very much care about supporting beginners and eliminating the need to understand virtual environments — but we don't think a global mutable environment is the way to do that.
 
 I was (as you probably saw) following the discussion over at Scipy - could you say more about the current state of play for this?  Is there a recommended `uv` way of avoiding the need to understand virtual environments?   Or is there one in the pipeline?
-
----
-
-_Referenced in [scipy/scipy.org#595](../../scipy/scipy.org/pulls/595.md) on 2024-12-20 14:50_
 
 ---
 
@@ -1150,10 +1090,6 @@ The current state is that you need declarative metadata, either in a project (vi
 _Comment by @matthew-brett on 2024-12-20 23:03_
 
 Do you think there will be a route to using `uv` that does not require specific activation of an environment or getting the environment from the current directory or specific declaration of dependencies?   I mean, similar to the workflow with the default environment of `conda`?  Or is that unlikely in the near future?
-
----
-
-_Referenced in [PrairieLearn/PrairieLearn#11039](../../PrairieLearn/PrairieLearn/pulls/11039.md) on 2025-02-11 05:00_
 
 ---
 
@@ -1324,10 +1260,6 @@ Just for reference, in a course we taught in Berkeley, to stats students, we had
 
 ---
 
-_Referenced in [astral-sh/uv#11609](../../astral-sh/uv/issues/11609.md) on 2025-02-18 23:20_
-
----
-
 _Comment by @zanieb on 2025-02-18 23:26_
 
 I think this exchange is sufficient — you've communicated your opinions on this topic and I'll ask that we don't debate these specific points more here.
@@ -1352,13 +1284,5 @@ _Closed by @potiuk on 2025-02-18 23:41_
 ---
 
 _Closed by @zanieb on 2025-02-18 23:48_
-
----
-
-_Referenced in [astral-sh/uv#12291](../../astral-sh/uv/issues/12291.md) on 2025-03-18 17:53_
-
----
-
-_Referenced in [astral-sh/uv#15923](../../astral-sh/uv/issues/15923.md) on 2025-09-18 01:21_
 
 ---

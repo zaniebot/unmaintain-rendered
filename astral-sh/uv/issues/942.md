@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-16T19:15:22Z
 updated_at: 2025-03-17T07:49:11Z
 url: https://github.com/astral-sh/uv/issues/942
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Add `--offline` flag to disallow network requests
@@ -48,10 +48,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-06 00:19_
 
 ---
 
-_Referenced in [astral-sh/uv#1270](../../astral-sh/uv/pulls/1270.md) on 2024-02-10 21:05_
-
----
-
 _Closed by @charliermarsh on 2024-02-13 03:35_
 
 ---
@@ -82,9 +78,5 @@ If this behaviour is intended, I think it should be documented. Documentation fo
 ---
 
 Off-topic: and huge thank you for `uv`!:)
-
----
-
-_Referenced in [astral-sh/uv#12234](../../astral-sh/uv/issues/12234.md) on 2025-03-17 09:53_
 
 ---

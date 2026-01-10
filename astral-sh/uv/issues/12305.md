@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-19T01:00:54Z
 updated_at: 2025-03-19T01:02:57Z
 url: https://github.com/astral-sh/uv/issues/12305
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Allow setting default `uv init` settings in persistent configuration files
@@ -39,9 +39,5 @@ _Label `enhancement` added by @zanieb on 2025-03-19 01:00_
 ---
 
 _Label `needs-design` added by @zanieb on 2025-03-19 01:00_
-
----
-
-_Referenced in [astral-sh/uv#12304](../../astral-sh/uv/issues/12304.md) on 2025-03-19 01:01_
 
 ---

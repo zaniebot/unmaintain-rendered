@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-22T02:55:07Z
 updated_at: 2025-02-26T10:10:05Z
 url: https://github.com/astral-sh/uv/issues/11704
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `Did you mean [...]?` + `ctr-c` => `thread 'main2' panicked`
@@ -70,10 +70,6 @@ I think what's going on here is that we call `console`'s `read_key` in `uv-conso
 At the beginning of `confirm` we register a Ctrl-C handler which calls `process::exit`, which runs in a background thread. Due to (1), this handler is run, which in turn calls `process::exit`. This forces the main thread to unwind, and hence the interrupted error gets returned and then `unwrap`d at crates/uv-requirements/src/sources.rs:115:78 (as given by the error message).
 
 I have a fix that looks like it works, so I'll PR it shortly
-
----
-
-_Referenced in [astral-sh/uv#11706](../../astral-sh/uv/pulls/11706.md) on 2025-02-22 07:23_
 
 ---
 

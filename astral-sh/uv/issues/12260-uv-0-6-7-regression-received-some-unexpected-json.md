@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-18T03:46:09Z
 updated_at: 2025-03-18T13:27:23Z
 url: https://github.com/astral-sh/uv/issues/12260
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv 0.6.7 regression "Received some unexpected JSON" ... "expected a borrowed string" when installing "pyenchant==3.3.0rc1"
@@ -115,10 +115,6 @@ nox > Session bump failed.
 
 ---
 
-_Referenced in [pyca/cryptography#12633](../../pyca/cryptography/pulls/12633.md) on 2025-03-18 12:15_
-
----
-
 _Comment by @charliermarsh on 2025-03-18 12:28_
 
 Apologies, I’ll fix it this morning.
@@ -135,10 +131,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-03-18 13:01_
 
 ---
 
-_Referenced in [astral-sh/uv#12278](../../astral-sh/uv/pulls/12278.md) on 2025-03-18 13:09_
-
----
-
 _Comment by @charliermarsh on 2025-03-18 13:09_
 
 Fixed in https://github.com/astral-sh/uv/pull/12278.
@@ -146,9 +138,5 @@ Fixed in https://github.com/astral-sh/uv/pull/12278.
 ---
 
 _Closed by @charliermarsh on 2025-03-18 13:27_
-
----
-
-_Referenced in [pypa/hatch#1939](../../pypa/hatch/issues/1939.md) on 2025-03-18 18:51_
 
 ---

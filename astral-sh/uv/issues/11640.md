@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-19T20:57:58Z
 updated_at: 2025-03-17T18:45:38Z
 url: https://github.com/astral-sh/uv/issues/11640
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv ignore proxy exceptions on Windows
@@ -227,10 +227,6 @@ Yes it is
 
 ---
 
-_Referenced in [seanmonstar/reqwest#1444](../../seanmonstar/reqwest/issues/1444.md) on 2025-02-19 21:46_
-
----
-
 _Comment by @zanieb on 2025-02-19 21:47_
 
 Thanks! I'll follow-up there and see if we can get this fixed.
@@ -312,9 +308,5 @@ Closing this since it's merged
 ---
 
 _Closed by @zanieb on 2025-03-17 18:45_
-
----
-
-_Referenced in [astral-sh/uv#12262](../../astral-sh/uv/issues/12262.md) on 2025-03-18 13:37_
 
 ---

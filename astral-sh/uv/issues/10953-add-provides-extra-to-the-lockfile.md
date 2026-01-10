@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-25T02:31:38Z
 updated_at: 2025-02-13T22:17:53Z
 url: https://github.com/astral-sh/uv/issues/10953
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add `provides-extra` to the lockfile
@@ -41,10 +41,6 @@ And then serialize and deserialize it like we do for `requires-dist`.
 ---
 
 _Assigned to @Gankra by @Gankra on 2025-01-25 02:58_
-
----
-
-_Referenced in [astral-sh/uv#11063](../../astral-sh/uv/pulls/11063.md) on 2025-01-29 14:20_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-27T14:05:13Z
 updated_at: 2025-01-29T22:21:12Z
 url: https://github.com/astral-sh/uv/issues/10985
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # multiple versions of the same package can be installed in some cases when using conflicting extras
@@ -126,10 +126,6 @@ _Label `bug` added by @BurntSushi on 2025-01-27 14:05_
 
 ---
 
-_Referenced in [astral-sh/uv#10590](../../astral-sh/uv/issues/10590.md) on 2025-01-27 14:05_
-
----
-
 _Comment by @BurntSushi on 2025-01-27 14:11_
 
 After creating the above two `pyproject.toml` files (`pyproject.toml` and `child-surface/pyproject.toml`), just run `uv sync --extra cpu` and I at least get (on Linux):
@@ -182,18 +178,10 @@ _Assigned to @BurntSushi by @BurntSushi on 2025-01-27 14:20_
 
 ---
 
-_Referenced in [astral-sh/uv#11075](../../astral-sh/uv/pulls/11075.md) on 2025-01-29 18:36_
-
----
-
 _Closed by @BurntSushi on 2025-01-29 22:21_
 
 ---
 
 _Closed by @BurntSushi on 2025-01-29 22:21_
-
----
-
-_Referenced in [astral-sh/uv#11133](../../astral-sh/uv/issues/11133.md) on 2025-01-31 13:30_
 
 ---

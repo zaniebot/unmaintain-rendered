@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-27T16:00:33Z
 updated_at: 2025-03-11T10:03:17Z
 url: https://github.com/astral-sh/uv/issues/6697
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Is Python 3.13 available for `uv venv`?
@@ -73,10 +73,6 @@ _Label `upstream` added by @zanieb on 2024-08-27 16:03_
 ---
 
 _Label `uv python` added by @zanieb on 2024-08-27 16:03_
-
----
-
-_Referenced in [jorenham/mainpy#42](../../jorenham/mainpy/pulls/42.md) on 2024-09-08 17:41_
 
 ---
 

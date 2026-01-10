@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-07T14:53:14Z
 updated_at: 2025-03-15T00:59:52Z
 url: https://github.com/astral-sh/uv/issues/12046
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # "uv init --package" modifies the package name
@@ -120,10 +120,6 @@ _Comment by @amal-khailtash on 2025-03-12 15:11_
 I and a few others have encountered similar issue with some packages that also include C-API.  For example, `CPyCppyy` will be converted to `cpycppyy` which messes with the include directive in one of their C-API files that uses: `include "CPyCppyy/API.h`
 
 Not sure why this normalization is needed?  Shouldn't `uv` be `pip` replaceable?
-
----
-
-_Referenced in [wlav/cppyy#292](../../wlav/cppyy/issues/292.md) on 2025-03-12 15:11_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-05T19:32:28Z
 updated_at: 2025-03-11T15:29:38Z
 url: https://github.com/astral-sh/uv/issues/11987
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add support for adding markers to all packages in `uv add`
@@ -38,15 +38,7 @@ _Label `enhancement` added by @zanieb on 2025-03-05 19:32_
 
 ---
 
-_Referenced in [astral-sh/uv#5200](../../astral-sh/uv/issues/5200.md) on 2025-03-05 19:33_
-
----
-
 _Label `good first issue` added by @zanieb on 2025-03-05 19:36_
-
----
-
-_Referenced in [astral-sh/uv#12012](../../astral-sh/uv/pulls/12012.md) on 2025-03-06 18:01_
 
 ---
 

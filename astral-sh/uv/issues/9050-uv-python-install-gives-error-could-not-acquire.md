@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-12T09:33:53Z
 updated_at: 2025-02-12T15:49:54Z
 url: https://github.com/astral-sh/uv/issues/9050
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv python install` gives `error: Could not acquire lock for '.local/share/uv/python' at '.local/share/uv/python/.lock': Function not implemented (os error 38)`
@@ -98,9 +98,5 @@ For reference
 https://github.com/astral-sh/uv/blob/711766e79c11602ce39506693d17ddeefa4bfe85/crates/uv-fs/src/lib.rs#L564
 
 https://tikv.github.io/doc/fs2/trait.FileExt.html#tymethod.try_lock_exclusive
-
----
-
-_Referenced in [astral-sh/uv#13626](../../astral-sh/uv/issues/13626.md) on 2025-05-23 20:42_
 
 ---

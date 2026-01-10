@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-09T13:54:49Z
 updated_at: 2025-02-10T14:38:22Z
 url: https://github.com/astral-sh/uv/issues/11354
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # feature: Support distributed shell completion scripts (like man pages)
@@ -61,14 +61,6 @@ After:
 ---
 
 _Label `enhancement` added by @pawamoy on 2025-02-09 13:54_
-
----
-
-_Referenced in [pypa/pipx#1604](../../pypa/pipx/issues/1604.md) on 2025-02-09 14:00_
-
----
-
-_Referenced in [pawamoy/duty#34](../../pawamoy/duty/pulls/34.md) on 2025-02-09 14:04_
 
 ---
 

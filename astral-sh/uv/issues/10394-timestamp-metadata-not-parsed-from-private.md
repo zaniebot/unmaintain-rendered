@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-08T14:08:52Z
 updated_at: 2025-03-24T17:17:54Z
 url: https://github.com/astral-sh/uv/issues/10394
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Timestamp metadata not parsed from private package index. Unexpected behavior for `--exclude-newer` option
@@ -147,9 +147,5 @@ _Comment by @herebebeasties on 2025-03-24 17:17_
 
 This is also affecting torch. Any chance we could provide a manual override in uv to workaround these issues, rather than requiring upstream publishers to fix it?
 `warning: torch-2.6.0+cu124-cp310-cp310-linux_x86_64.whl is missing an upload date`
-
----
-
-_Referenced in [astral-sh/uv#16813](../../astral-sh/uv/issues/16813.md) on 2025-11-21 21:27_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-06T17:55:38Z
 updated_at: 2025-02-23T23:59:03Z
 url: https://github.com/astral-sh/uv/issues/8870
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Allow hiding "Missing version constraint" warning via configuration, or only warn for entire workspace
@@ -196,10 +196,6 @@ alias uv='2> >(grep -vF "Missing version constraint") uv --color=always'
 
 ---
 
-_Referenced in [astral-sh/uv#11091](../../astral-sh/uv/pulls/11091.md) on 2025-01-30 11:58_
-
----
-
 _Comment by @konstin on 2025-01-30 11:58_
 
 @MrMarvel thank you for the reproducer, fixed in https://github.com/astral-sh/uv/pull/11091.
@@ -213,9 +209,5 @@ I believe we removed these.
 ---
 
 _Closed by @charliermarsh on 2025-02-23 23:59_
-
----
-
-_Referenced in [PufferAI/PufferLib#337](../../PufferAI/PufferLib/issues/337.md) on 2025-08-21 00:43_
 
 ---

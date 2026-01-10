@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-23T21:10:43Z
 updated_at: 2025-02-25T10:34:56Z
 url: https://github.com/astral-sh/uv/issues/11728
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # certificate verify failed when using uv pip as opposed to pip
@@ -83,9 +83,5 @@ I will close this issue - thanks for the help!
 ---
 
 _Closed by @KennethEnevoldsen on 2025-02-25 10:34_
-
----
-
-_Referenced in [NVIDIA-NeMo/RL#1507](../../NVIDIA-NeMo/RL/issues/1507.md) on 2025-11-11 17:13_
 
 ---

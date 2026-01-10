@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-28T14:49:33Z
 updated_at: 2025-01-28T21:09:58Z
 url: https://github.com/astral-sh/uv/issues/11020
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Security Process
@@ -54,10 +54,6 @@ _Label `enhancement` removed by @zanieb on 2025-01-28 16:32_
 ---
 
 _Label `documentation` added by @zanieb on 2025-01-28 16:32_
-
----
-
-_Referenced in [astral-sh/uv#11035](../../astral-sh/uv/pulls/11035.md) on 2025-01-28 19:45_
 
 ---
 

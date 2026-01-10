@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-18T03:35:04Z
 updated_at: 2025-02-15T20:35:06Z
 url: https://github.com/astral-sh/uv/issues/9988
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Dependency Resolver Ignores Platform-Specific Version Constraints
@@ -48,10 +48,6 @@ The expectation here is that the resolver should pick PyTorch version 2.2.2 for 
 I was hoping the introduction of the `fork-strategy` option would address this limitation, but it doesn’t seem to allow opting out of this unified resolution behavior.  
 
 Would it be possible to consider adding a new `fork-strategy` option (or another mechanism) to handle cases like this? This would allow for platform-specific resolution of dependencies as defined in the `pyproject.toml`. 
-
----
-
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-18 13:38_
 
 ---
 
@@ -113,10 +109,6 @@ That’s true, but ideally, I’d prefer if it worked the same way as pip, where
 > ```
 
 This is for a library I’m working on, and we want to support all PyTorch versions above 1.13. Forcing users to install version 2.3 or higher on some platforms wouldn’t work well since it limits compatibility for no good reason.
-
----
-
-_Referenced in [astral-sh/uv#10085](../../astral-sh/uv/issues/10085.md) on 2024-12-21 23:47_
 
 ---
 

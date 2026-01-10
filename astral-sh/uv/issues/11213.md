@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-04T12:11:01Z
 updated_at: 2025-02-04T17:38:24Z
 url: https://github.com/astral-sh/uv/issues/11213
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # new docker image bookworm-slim makes `uv build` fail
@@ -197,10 +197,6 @@ I assume you can workaround this for now by setting `UV_CACHE_DIR` to an absolut
 _Comment by @konstin on 2025-02-04 16:16_
 
 The problem is that the uv is cache is inside the project, so it gets packaged into the source dist including the hard links in the cache, and then there's the regression I'll fix that we don't support hardlinks in source distributions anymore.
-
----
-
-_Referenced in [astral-sh/uv#11221](../../astral-sh/uv/pulls/11221.md) on 2025-02-04 17:10_
 
 ---
 

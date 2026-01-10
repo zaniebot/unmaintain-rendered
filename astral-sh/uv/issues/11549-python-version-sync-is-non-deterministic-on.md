@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-16T04:07:43Z
 updated_at: 2025-02-17T14:36:39Z
 url: https://github.com/astral-sh/uv/issues/11549
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Python version sync is non-deterministic on Windows "shared" builds
@@ -33,10 +33,6 @@ _Label `bug` added by @zanieb on 2025-02-16 04:07_
 ---
 
 _Label `internal` added by @zanieb on 2025-02-16 04:07_
-
----
-
-_Referenced in [astral-sh/uv#11572](../../astral-sh/uv/pulls/11572.md) on 2025-02-17 03:46_
 
 ---
 

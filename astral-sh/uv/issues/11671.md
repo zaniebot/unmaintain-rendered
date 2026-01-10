@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-20T16:05:51Z
 updated_at: 2025-03-04T13:47:38Z
 url: https://github.com/astral-sh/uv/issues/11671
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Corrupt .pth in site-packages
@@ -246,9 +246,5 @@ dev = [
 ]
 ```
 I noticed that .venv\Lib\site-packages\sphinxcontrib_jsmath-1.0.1-py3.7-nspkg.pth and .venv\Lib\site-packages\pytest-cov.pth (as in the original issue) seemed to be scrambled more often than the rest, but my sample size is small and it very well could be non significant. I believe i have seen all other pth files scrambled at least once except .venv\Lib\site-packages\_virtualenv.pth (but again, i could have been lucky).
-
----
-
-_Referenced in [astral-sh/uv#13274](../../astral-sh/uv/issues/13274.md) on 2025-05-03 14:30_
 
 ---

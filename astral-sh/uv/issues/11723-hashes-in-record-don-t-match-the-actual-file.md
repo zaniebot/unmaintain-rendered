@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-23T14:40:59Z
 updated_at: 2025-02-23T23:53:46Z
 url: https://github.com/astral-sh/uv/issues/11723
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Hashes in `RECORD` don't match the actual file hashes
@@ -125,13 +125,5 @@ Looks like the final `=` was omitted in RECORD.
 ---
 
 _Closed by @charliermarsh on 2025-02-23 23:53_
-
----
-
-_Referenced in [winpython/winpython#1481](../../winpython/winpython/issues/1481.md) on 2025-02-24 06:19_
-
----
-
-_Referenced in [PyVRP/VRPLIB#131](../../PyVRP/VRPLIB/issues/131.md) on 2025-09-01 11:36_
 
 ---

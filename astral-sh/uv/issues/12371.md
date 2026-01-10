@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-21T17:07:13Z
 updated_at: 2025-03-22T15:36:44Z
 url: https://github.com/astral-sh/uv/issues/12371
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # The `uv tool run` seems doesn't have way to read `.env` file
@@ -56,15 +56,7 @@ _Label `enhancement` added by @zanieb on 2025-03-21 17:17_
 
 ---
 
-_Referenced in [Azure/co-op-translator#81](../../Azure/co-op-translator/issues/81.md) on 2025-03-21 17:22_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-22 00:52_
-
----
-
-_Referenced in [astral-sh/uv#12386](../../astral-sh/uv/pulls/12386.md) on 2025-03-22 01:12_
 
 ---
 

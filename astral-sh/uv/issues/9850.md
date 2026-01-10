@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-12T20:10:25Z
 updated_at: 2025-02-24T15:36:34Z
 url: https://github.com/astral-sh/uv/issues/9850
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # CLI Option to save logs to a file
@@ -124,10 +124,6 @@ That's also my use case, i.e. directing users to a detailed log file in case ins
 
 ---
 
-_Referenced in [meltano/meltano#9016](../../meltano/meltano/issues/9016.md) on 2025-01-14 18:45_
-
----
-
 _Comment by @Choudhry18 on 2025-02-22 20:42_
 
 @zanieb I have been working on this issue and on the requirements I am unsure about is when using file logs when running snapshot tests do you think it is so that we break the current snapshot tests that end in failure by adding a "See <path> for more logs" to the snapshot or omit doing that when running snapshots
@@ -143,13 +139,5 @@ _Comment by @zanieb on 2025-02-24 15:36_
 It's fine to add content to the existing snapshots.
 
 cc @Gankra for general awareness about output changes
-
----
-
-_Referenced in [astral-sh/uv#11762](../../astral-sh/uv/pulls/11762.md) on 2025-02-25 03:35_
-
----
-
-_Referenced in [meltano/meltano#9400](../../meltano/meltano/pulls/9400.md) on 2025-07-22 03:02_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-05T19:30:39Z
 updated_at: 2025-03-17T21:27:34Z
 url: https://github.com/astral-sh/uv/issues/11986
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Add support for constraints in `uv add`
@@ -32,10 +32,6 @@ The new experience would be a one-line `uv add -r requirements.in -c requirement
 ---
 
 _Label `enhancement` added by @zanieb on 2025-03-05 19:30_
-
----
-
-_Referenced in [astral-sh/uv#5200](../../astral-sh/uv/issues/5200.md) on 2025-03-05 19:33_
 
 ---
 
@@ -73,10 +69,6 @@ Yeah I don't think we should add them.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-17 00:37_
-
----
-
-_Referenced in [astral-sh/uv#12209](../../astral-sh/uv/pulls/12209.md) on 2025-03-17 00:37_
 
 ---
 

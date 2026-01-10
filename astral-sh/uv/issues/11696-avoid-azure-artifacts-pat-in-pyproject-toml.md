@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-21T12:11:36Z
 updated_at: 2025-03-09T12:22:42Z
 url: https://github.com/astral-sh/uv/issues/11696
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # avoid azure artifacts PAT in pyproject.toml
@@ -54,10 +54,6 @@ https://docs.astral.sh/uv/configuration/indexes/#providing-credentials
 _Comment by @zkurtz on 2025-02-22 14:27_
 
 That worked! Here is a PR to clarify the docs https://github.com/astral-sh/uv/pull/11709
-
----
-
-_Referenced in [astral-sh/uv#11709](../../astral-sh/uv/pulls/11709.md) on 2025-02-22 16:36_
 
 ---
 

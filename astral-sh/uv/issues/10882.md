@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-23T02:46:31Z
 updated_at: 2025-02-14T15:54:29Z
 url: https://github.com/astral-sh/uv/issues/10882
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv export does not check for existence of groups when used with --frozen
@@ -78,10 +78,6 @@ Yeah, I _think_ we should be able to fix it.
 
 ---
 
-_Referenced in [Flexget/Flexget#4190](../../Flexget/Flexget/pulls/4190.md) on 2025-01-23 03:45_
-
----
-
 _Label `bug` removed by @charliermarsh on 2025-01-23 13:52_
 
 ---
@@ -94,18 +90,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-01-23 18:53_
 
 ---
 
-_Referenced in [astral-sh/uv#11499](../../astral-sh/uv/pulls/11499.md) on 2025-02-14 00:14_
-
----
-
 _Closed by @zanieb on 2025-02-14 15:54_
 
 ---
 
 _Closed by @zanieb on 2025-02-14 15:54_
-
----
-
-_Referenced in [Flexget/Flexget#4352](../../Flexget/Flexget/pulls/4352.md) on 2025-04-14 11:07_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-27T08:40:31Z
 updated_at: 2025-01-30T20:50:00Z
 url: https://github.com/astral-sh/uv/issues/10979
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv lock --script example.py not working
@@ -115,10 +115,6 @@ _Label `needs-mre` removed by @charliermarsh on 2025-01-30 14:03_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-01-30 14:03_
-
----
-
-_Referenced in [astral-sh/uv#11118](../../astral-sh/uv/pulls/11118.md) on 2025-01-30 20:41_
 
 ---
 

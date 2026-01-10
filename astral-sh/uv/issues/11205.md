@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-03T23:12:31Z
 updated_at: 2025-02-07T15:41:01Z
 url: https://github.com/astral-sh/uv/issues/11205
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv --no-dev --group dev does not install dev group
@@ -203,10 +203,6 @@ Yes.
 
 ---
 
-_Referenced in [tox-dev/tox-uv#165](../../tox-dev/tox-uv/pulls/165.md) on 2025-02-04 02:05_
-
----
-
 _Comment by @Gankra on 2025-02-05 20:45_
 
 Now that I've properly overhauled this subsystem (in #11224), I can give some more concrete insight on how this is extra fun/weird.
@@ -217,18 +213,10 @@ In the new impl we could definitely warn if you enable something only to disable
 
 ---
 
-_Referenced in [astral-sh/uv#11284](../../astral-sh/uv/pulls/11284.md) on 2025-02-06 16:31_
-
----
-
 _Closed by @Gankra on 2025-02-07 15:41_
 
 ---
 
 _Closed by @Gankra on 2025-02-07 15:41_
-
----
-
-_Referenced in [astral-sh/uv#3248](../../astral-sh/uv/issues/3248.md) on 2025-03-03 03:26_
 
 ---

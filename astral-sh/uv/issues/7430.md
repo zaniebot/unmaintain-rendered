@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-16T14:50:31Z
 updated_at: 2025-01-30T17:53:59Z
 url: https://github.com/astral-sh/uv/issues/7430
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Support `uvx python` and `uvx python@<version>`
@@ -74,18 +74,6 @@ I'm not sure what the best way to refactor it is. Maybe we want a new `Target` v
 _Comment by @zanieb on 2024-09-17 15:50_
 
 Then we'd have to introduce more variants for `python@latest` and such though, so maybe we just want to special case the "python" name around https://github.com/astral-sh/uv/blob/4f2349119cf341eedf738d06a50ed136a5f207db/crates/uv/src/commands/tool/run.rs#L352-L404
-
----
-
-_Referenced in [astral-sh/uv#7491](../../astral-sh/uv/pulls/7491.md) on 2024-09-18 11:37_
-
----
-
-_Referenced in [astral-sh/uv#10122](../../astral-sh/uv/issues/10122.md) on 2024-12-23 18:09_
-
----
-
-_Referenced in [astral-sh/uv#11076](../../astral-sh/uv/pulls/11076.md) on 2025-01-29 18:57_
 
 ---
 

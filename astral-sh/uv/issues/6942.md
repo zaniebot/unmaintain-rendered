@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-02T20:03:53Z
 updated_at: 2025-03-15T01:37:54Z
 url: https://github.com/astral-sh/uv/issues/6942
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Question: Does `uv` support multiple environments?
@@ -68,10 +68,6 @@ This might be useful in scenarios when packages are incompatible and you need to
 _Comment by @sohang3112 on 2025-02-21 01:19_
 
 @asmith26 Is there any way currently to have multiple environments (eg. gpu, cpu) in the same folder? If not, this issue should be re-opened - this is a very common use case. 
-
----
-
-_Referenced in [tattle-made/feluda#513](../../tattle-made/feluda/issues/513.md) on 2025-02-23 12:20_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-28T18:31:49Z
 updated_at: 2025-03-05T00:36:22Z
 url: https://github.com/astral-sh/uv/issues/11863
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Available PyPy3.10 is listed as 3.10.19 but it's actually 3.10.16
@@ -71,10 +71,6 @@ _Assigned to @zanieb by @zanieb on 2025-02-28 18:49_
 
 ---
 
-_Referenced in [pypy/pypy#5236](../../pypy/pypy/issues/5236.md) on 2025-03-03 21:06_
-
----
-
 _Comment by @zanieb on 2025-03-03 21:06_
 
 This looks wrong upstream https://github.com/pypy/pypy/issues/5236
@@ -102,10 +98,6 @@ The `uv python list` output derives the key from the metadata reported by the in
 _Comment by @zanieb on 2025-03-05 00:25_
 
 Will be fixed by https://github.com/astral-sh/uv/pull/11965
-
----
-
-_Referenced in [astral-sh/uv#11965](../../astral-sh/uv/pulls/11965.md) on 2025-03-05 00:25_
 
 ---
 

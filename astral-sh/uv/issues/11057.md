@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T11:14:05Z
 updated_at: 2025-01-29T14:08:10Z
 url: https://github.com/astral-sh/uv/issues/11057
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # --no-modify-path has been deprecated
@@ -83,9 +83,5 @@ _Closed by @ohmydds on 2025-01-29 14:07_
 _Comment by @charliermarsh on 2025-01-29 14:08_
 
 Thank you!
-
----
-
-_Referenced in [axodotdev/cargo-dist#1733](../../axodotdev/cargo-dist/issues/1733.md) on 2025-01-29 14:18_
 
 ---

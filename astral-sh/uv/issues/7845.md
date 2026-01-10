@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-01T14:39:41Z
 updated_at: 2025-02-03T22:12:40Z
 url: https://github.com/astral-sh/uv/issues/7845
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Editable installation with extras
@@ -107,14 +107,6 @@ _Label `question` added by @zanieb on 2024-10-01 18:52_
 
 ---
 
-_Referenced in [astral-sh/uv#8416](../../astral-sh/uv/issues/8416.md) on 2024-10-21 21:58_
-
----
-
-_Referenced in [pypa/pip#12963](../../pypa/pip/issues/12963.md) on 2024-10-26 16:03_
-
----
-
 _Comment by @pamelafox on 2024-11-12 19:41_
 
 I was just writing up a similar experience when I found this one. What I wrote up--
@@ -180,10 +172,6 @@ $ uv pip install -e .
 Using Python 3.12.7 environment at: /home/akaihola/.cache/myproject/.venv
 Audited 1 package in 131ms
 ```
-
----
-
-_Referenced in [astral-sh/uv#11193](../../astral-sh/uv/pulls/11193.md) on 2025-02-03 20:37_
 
 ---
 

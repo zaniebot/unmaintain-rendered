@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-04T21:41:28Z
 updated_at: 2025-02-04T21:41:41Z
 url: https://github.com/astral-sh/uv/issues/11227
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Improve error message for incompatible virtual environment
@@ -29,9 +29,5 @@ It's not clear how to do better yet. I think the main problem is we filter the i
 ---
 
 _Label `error messages` added by @zanieb on 2025-02-04 21:41_
-
----
-
-_Referenced in [astral-sh/uv#11389](../../astral-sh/uv/issues/11389.md) on 2025-02-10 16:18_
 
 ---

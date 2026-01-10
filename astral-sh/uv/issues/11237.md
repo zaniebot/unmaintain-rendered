@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-05T07:56:30Z
 updated_at: 2025-02-06T12:41:48Z
 url: https://github.com/astral-sh/uv/issues/11237
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Two `run.rs` test regressions in 0.5.28, apparently due to installing `typing-extensions` (?)
@@ -243,10 +243,6 @@ Yeah this is plenty. Thanks.
 _Comment by @charliermarsh on 2025-02-05 17:58_
 
 Just to confirm, do you disable the use of the `python-build-standalone` Pythons in the test suite?
-
----
-
-_Referenced in [astral-sh/uv#11254](../../astral-sh/uv/pulls/11254.md) on 2025-02-05 19:11_
 
 ---
 

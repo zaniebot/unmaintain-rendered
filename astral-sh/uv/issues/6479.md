@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T00:34:57Z
 updated_at: 2025-02-01T05:38:25Z
 url: https://github.com/astral-sh/uv/issues/6479
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Should `uv python list` show `pyenv` versions as well?
@@ -80,10 +80,6 @@ If `pyenv` puts executables on the PATH, we'll find them, but we don't support q
 ---
 
 _Label `question` added by @zanieb on 2024-08-23 12:39_
-
----
-
-_Referenced in [astral-sh/uv#7400](../../astral-sh/uv/issues/7400.md) on 2024-09-16 07:11_
 
 ---
 

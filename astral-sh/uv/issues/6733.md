@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-28T00:07:46Z
 updated_at: 2025-02-13T20:34:04Z
 url: https://github.com/astral-sh/uv/issues/6733
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv run` with a different root directory
@@ -142,14 +142,6 @@ _Comment by @bluss on 2024-08-28 18:20_
 
 ---
 
-_Referenced in [astral-sh/ruff#13074](../../astral-sh/ruff/pulls/13074.md) on 2024-08-28 18:46_
-
----
-
-_Referenced in [astral-sh/uv#5613](../../astral-sh/uv/issues/5613.md) on 2024-09-13 01:57_
-
----
-
 _Comment by @charliermarsh on 2024-09-24 00:54_
 
 We now support `--project` which accepts a path to a directory like this.
@@ -168,10 +160,6 @@ _Comment by @bgolinvaux on 2024-10-08 11:21_
 
 Thank your for this `--project` flag and, more generally, for `uv` :smile:  
 I am in love with uv. It's been a while since a two-letter CLI tool gave me so much joy.
-
----
-
-_Referenced in [modelcontextprotocol/docs#121](../../modelcontextprotocol/docs/issues/121.md) on 2025-01-28 02:23_
 
 ---
 
@@ -264,10 +252,6 @@ _Comment by @charliermarsh on 2025-02-13 19:27_
 
 ---
 
-_Referenced in [astral-sh/uv#11490](../../astral-sh/uv/issues/11490.md) on 2025-02-13 19:56_
-
----
-
 _Comment by @mdengler on 2025-02-13 19:58_
 
 @charliermarsh sure; I opened #11490.
@@ -323,9 +307,5 @@ Thanks @mdengler -- I appreciate it. I just find it hard to keep track of outsta
 _Comment by @mdengler on 2025-02-13 20:34_
 
 Understood -- you all are doing tons.  Thanks for `uv` and the great work.
-
----
-
-_Referenced in [astral-sh/uv#14585](../../astral-sh/uv/issues/14585.md) on 2025-07-13 10:22_
 
 ---

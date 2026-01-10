@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-26T14:38:32Z
 updated_at: 2025-02-18T15:49:30Z
 url: https://github.com/astral-sh/uv/issues/7710
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # uv python install at fixed location?
@@ -109,9 +109,5 @@ Also, feel free to close this issue if you also think those features cover this 
 ---
 
 _Closed by @zanieb on 2025-02-18 15:49_
-
----
-
-_Referenced in [vllm-project/vllm#15302](../../vllm-project/vllm/pulls/15302.md) on 2025-03-21 19:54_
 
 ---

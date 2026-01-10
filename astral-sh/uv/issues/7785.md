@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-29T20:42:44Z
 updated_at: 2025-02-19T15:33:30Z
 url: https://github.com/astral-sh/uv/issues/7785
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Support getting the project version (like Rye and poetry) from the pyproject.toml
@@ -108,9 +108,5 @@ uv tool install pyproject-parser[cli]>=v0.13.0b1
 pyproject-info project.version
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#6298](../../astral-sh/uv/issues/6298.md) on 2025-05-18 21:53_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-09T13:10:41Z
 updated_at: 2025-03-18T12:47:34Z
 url: https://github.com/astral-sh/uv/issues/8969
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Lock dependency groups in the `uv pip` interface, i.e., `uv pip compile --group`
@@ -56,23 +56,7 @@ _Comment by @charliermarsh on 2024-11-09 13:40_
 
 ---
 
-_Referenced in [astral-sh/uv#9457](../../astral-sh/uv/issues/9457.md) on 2024-11-26 23:36_
-
----
-
 _Renamed from "uv pip compile --group " to "Lock dependency groups in the `uv pip` interface, i.e., `uv pip compile --group`" by @zanieb on 2024-11-26 23:45_
-
----
-
-_Referenced in [cthoyt/cookiecutter-snekpack#32](../../cthoyt/cookiecutter-snekpack/pulls/32.md) on 2024-11-27 10:17_
-
----
-
-_Referenced in [astral-sh/uv#10379](../../astral-sh/uv/issues/10379.md) on 2025-01-07 21:48_
-
----
-
-_Referenced in [gip-inclusion/la-communaute#875](../../gip-inclusion/la-communaute/pulls/875.md) on 2025-01-09 14:09_
 
 ---
 
@@ -88,10 +72,6 @@ But this won't respect the lock file.
 
 ---
 
-_Referenced in [astral-sh/uv#10861](../../astral-sh/uv/pulls/10861.md) on 2025-01-22 14:55_
-
----
-
 _Closed by @Gankra on 2025-01-23 13:47_
 
 ---
@@ -104,19 +84,7 @@ _Reopened by @zanieb on 2025-01-23 20:43_
 
 ---
 
-_Referenced in [astral-sh/uv#11474](../../astral-sh/uv/issues/11474.md) on 2025-02-13 10:22_
-
----
-
 _Assigned to @Gankra by @charliermarsh on 2025-02-16 19:02_
-
----
-
-_Referenced in [astral-sh/uv#11686](../../astral-sh/uv/pulls/11686.md) on 2025-02-21 14:42_
-
----
-
-_Referenced in [open-telemetry/opentelemetry-python-contrib#3304](../../open-telemetry/opentelemetry-python-contrib/pulls/3304.md) on 2025-03-03 18:49_
 
 ---
 

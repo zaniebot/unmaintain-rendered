@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-14T05:57:04Z
 updated_at: 2025-02-19T13:12:55Z
 url: https://github.com/astral-sh/uv/issues/11501
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Can't install packages from private PYPI source since v0.5.15
@@ -386,10 +386,6 @@ _Comment by @zanieb on 2025-02-14 15:41_
 
 ---
 
-_Referenced in [astral-sh/uv#11512](../../astral-sh/uv/pulls/11512.md) on 2025-02-14 15:46_
-
----
-
 _Comment by @zanieb on 2025-02-14 15:49_
 
 Sort of suspicious of https://github.com/seanmonstar/reqwest/pull/2503 (there aren't many changes to pick from).
@@ -612,10 +608,6 @@ Can you confirm what kind of PyPI server you're using? Is it provided by Alibaba
 
 ---
 
-_Referenced in [astral-sh/uv#11539](../../astral-sh/uv/pulls/11539.md) on 2025-02-15 17:28_
-
----
-
 _Comment by @Remalloc on 2025-02-16 02:47_
 
 > Interesting. That suggests the change is that in 0.5.15 we are using `HEAD` but in 0.5.14 we know the index does not support range requests for some reason and are using `GET` per
@@ -670,9 +662,5 @@ _Comment by @Remalloc on 2025-02-19 13:12_
 Hello, I cloned this repository and found that the commit https://github.com/astral-sh/uv/commit/7182a34aa414f788d1a76a15690f2cd14e398e77 caused the issue. Do you have any ideas? 
 @zanieb @charliermarsh 
 
-
----
-
-_Referenced in [prefix-dev/pixi#3181](../../prefix-dev/pixi/issues/3181.md) on 2025-02-21 10:48_
 
 ---

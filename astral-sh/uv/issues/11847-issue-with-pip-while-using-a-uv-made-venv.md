@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-28T03:04:12Z
 updated_at: 2025-03-03T06:15:56Z
 url: https://github.com/astral-sh/uv/issues/11847
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Issue with pip while using a UV made venv
@@ -78,10 +78,6 @@ I believe this would be closed by https://github.com/astral-sh/uv/pull/8649, but
 
 ---
 
-_Referenced in [astral-sh/uv#8649](../../astral-sh/uv/pulls/8649.md) on 2025-03-03 04:00_
-
----
-
 _Comment by @Elmekior on 2025-03-03 06:15_
 
 I can certainly understand the reasoning behind all of this. In my case, we are still working with Python 3.7 systems and updating this is out of my scope for the next 2 years at the very least. 
@@ -89,9 +85,5 @@ I can certainly understand the reasoning behind all of this. In my case, we are 
 I understand you guys not wanting to support python 3.7 for most of the UV code but hopefully this gets patched at least so that the generated venv has the same behavior than the others. I'll watch this ticket from time to time to see if this ever gets resolved :) 
 
 Again appreciate the time and help
-
----
-
-_Referenced in [astral-sh/uv#12122](../../astral-sh/uv/issues/12122.md) on 2025-03-11 22:49_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-27T16:59:09Z
 updated_at: 2025-01-29T23:18:43Z
 url: https://github.com/astral-sh/uv/issues/10200
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Workflow Headache: when dev dependencies have stricter requirements than runtime deps
@@ -44,10 +44,6 @@ _Label `question` added by @samypr100 on 2024-12-27 23:47_
 ---
 
 _Label `needs-mre` added by @samypr100 on 2024-12-27 23:47_
-
----
-
-_Referenced in [astral-sh/uv#10201](../../astral-sh/uv/issues/10201.md) on 2024-12-27 23:59_
 
 ---
 

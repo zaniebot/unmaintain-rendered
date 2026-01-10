@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-13T14:06:42Z
 updated_at: 2025-02-26T15:52:46Z
 url: https://github.com/astral-sh/uv/issues/9867
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Update AWS CodeArtifact documentation to cover `[[tool.uv.index]]` API
@@ -289,18 +289,6 @@ wheels = [
 Now, I'm searching how I could instead use the `production` index instead when deploying into production with the CI (i.e. `https://company-123456789.d.codeartifact.eu-central-1.amazonaws.com/pypi/production/simple/`).
 
 One way would be to do `uv export --frozen --no-dev --no-hashes > requirements.txt`, then install using `pip` like I would usually do before using `uv`, but it's not a great solution...
-
----
-
-_Referenced in [astral-sh/uv#9544](../../astral-sh/uv/issues/9544.md) on 2025-01-07 19:31_
-
----
-
-_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2025-01-10 15:28_
-
----
-
-_Referenced in [astral-sh/uv#10826](../../astral-sh/uv/pulls/10826.md) on 2025-01-21 21:16_
 
 ---
 

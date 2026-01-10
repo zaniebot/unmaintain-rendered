@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T17:06:37Z
 updated_at: 2025-01-31T09:54:22Z
 url: https://github.com/astral-sh/uv/issues/11102
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # 401 Unauthorized for artifactory repo when running uv pip install
@@ -133,9 +133,5 @@ Ok - I found out what the issue was - I had to use my 'api key' for the password
 ---
 
 _Closed by @edeustace on 2025-01-31 09:54_
-
----
-
-_Referenced in [astral-sh/uv#11130](../../astral-sh/uv/issues/11130.md) on 2025-01-31 10:43_
 
 ---

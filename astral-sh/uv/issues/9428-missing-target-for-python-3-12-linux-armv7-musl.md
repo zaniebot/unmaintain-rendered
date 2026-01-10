@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-25T21:38:30Z
 updated_at: 2025-02-17T15:32:50Z
 url: https://github.com/astral-sh/uv/issues/9428
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # missing target for python 3.12-linux-armv7-musl
@@ -45,10 +45,6 @@ Thanks -- this is a duplicate of #6890. We don't provide musl builds right now. 
 ---
 
 _Closed by @charliermarsh on 2024-11-25 21:40_
-
----
-
-_Referenced in [astral-sh/uv#9430](../../astral-sh/uv/pulls/9430.md) on 2024-11-25 22:41_
 
 ---
 

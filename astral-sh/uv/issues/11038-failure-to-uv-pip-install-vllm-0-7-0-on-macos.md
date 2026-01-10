@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-28T20:18:11Z
 updated_at: 2025-02-11T22:26:41Z
 url: https://github.com/astral-sh/uv/issues/11038
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Failure to `uv pip install vllm==0.7.0` on macOS
@@ -75,10 +75,6 @@ Oh, this is the most recent version? Hmm, bummer.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-28 20:34_
-
----
-
-_Referenced in [vllm-project/vllm#12525](../../vllm-project/vllm/issues/12525.md) on 2025-01-28 20:43_
 
 ---
 
@@ -194,10 +190,6 @@ Yeah, the issue is that the the `setup.py` reports that the version is `gptqmode
 _Comment by @charliermarsh on 2025-02-11 16:01_
 
 I will review pip's behavior and determine whether we should make a change here.
-
----
-
-_Referenced in [astral-sh/uv#11429](../../astral-sh/uv/pulls/11429.md) on 2025-02-11 21:45_
 
 ---
 

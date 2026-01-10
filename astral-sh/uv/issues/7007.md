@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-04T11:37:59Z
 updated_at: 2025-03-24T06:43:05Z
 url: https://github.com/astral-sh/uv/issues/7007
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `dev-dependencies` defined in `uv.toml` are not handled
@@ -132,10 +132,6 @@ _Comment by @charliermarsh on 2024-09-04 13:44_
 
 ---
 
-_Referenced in [astral-sh/uv#7053](../../astral-sh/uv/pulls/7053.md) on 2024-09-04 22:08_
-
----
-
 _Comment by @mkniewallner on 2024-09-04 22:20_
 
 Trying something out in https://github.com/astral-sh/uv/pull/7053, with the idea of separating the "project metadata" and "configuration" options into 2 distinct sections. WIP for now, as it needs a bit of polishing.
@@ -161,10 +157,6 @@ I've noted 2 follow-up items that could further help clarify things in https://g
 ---
 
 _Label `bug` removed by @charliermarsh on 2024-10-14 23:29_
-
----
-
-_Referenced in [renovatebot/renovate#31189](../../renovatebot/renovate/pulls/31189.md) on 2024-10-27 11:04_
 
 ---
 

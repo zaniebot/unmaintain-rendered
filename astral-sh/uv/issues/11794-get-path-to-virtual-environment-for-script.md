@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-26T09:48:48Z
 updated_at: 2025-03-21T01:49:01Z
 url: https://github.com/astral-sh/uv/issues/11794
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Get path to virtual environment for script
@@ -58,10 +58,6 @@ _Label `enhancement` added by @zanieb on 2025-02-26 15:28_
 _Comment by @isak102 on 2025-02-26 17:37_
 
 I think `uv python find` sounds good. Maybe return an error if the environment has not been created? Or maybe create if it it doesn't exist, but that sounds like `uv sync`.
-
----
-
-_Referenced in [astral-sh/uv#11891](../../astral-sh/uv/pulls/11891.md) on 2025-03-02 12:55_
 
 ---
 

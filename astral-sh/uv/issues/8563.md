@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-25T12:10:38Z
 updated_at: 2025-02-07T09:49:03Z
 url: https://github.com/astral-sh/uv/issues/8563
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Getting dependency from a private Gitlab package registry in CI works with Personal and Deploy token, but not Job token
@@ -728,9 +728,5 @@ _Comment by @ihelmer07 on 2025-02-07 01:30_
 _Comment by @tomschelsen on 2025-02-07 09:49_
 
 In a project Settings > CI/CD > Job Tokens, you can set from which other projects/groups you accept Job Tokens from. 
-
----
-
-_Referenced in [astral-sh/uv#13815](../../astral-sh/uv/issues/13815.md) on 2025-06-03 14:22_
 
 ---

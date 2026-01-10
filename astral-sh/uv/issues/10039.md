@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-19T18:18:49Z
 updated_at: 2025-02-17T03:07:01Z
 url: https://github.com/astral-sh/uv/issues/10039
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Regression in uv 5.10 installing from directory/git package with pyproject.toml
@@ -100,10 +100,6 @@ _Closed by @peterroelants on 2024-12-20 08:36_
 ---
 
 _Reopened by @peterroelants on 2024-12-20 08:37_
-
----
-
-_Referenced in [mckinsey/vizro#934](../../mckinsey/vizro/pulls/934.md) on 2024-12-24 12:05_
 
 ---
 

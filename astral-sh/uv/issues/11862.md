@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-28T18:04:06Z
 updated_at: 2025-03-11T14:54:44Z
 url: https://github.com/astral-sh/uv/issues/11862
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # can't publish to private pypiserver
@@ -214,10 +214,6 @@ How do I create a pull request for that ? do I have permissions to create a pull
 _Comment by @konstin on 2025-03-11 10:47_
 
 You can create a fork on GitHub (in the UI), push the commit to the fork and then create the pull request from the fork, https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo and https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork should have information about that.
-
----
-
-_Referenced in [astral-sh/uv#12111](../../astral-sh/uv/pulls/12111.md) on 2025-03-11 10:48_
 
 ---
 

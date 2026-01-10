@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-04T20:13:16Z
 updated_at: 2025-02-07T12:17:32Z
 url: https://github.com/astral-sh/uv/issues/9647
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # `uv sync`: Distribution `markupsafe==3.0.2 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
@@ -127,10 +127,6 @@ We should at least have a better error message for the original.
 
 ---
 
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-07 20:47_
-
----
-
 _Comment by @charliermarsh on 2024-12-14 01:56_
 
 I'm starting to think about this problem.
@@ -138,18 +134,6 @@ I'm starting to think about this problem.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-12-15 03:10_
-
----
-
-_Referenced in [astral-sh/uv#9928](../../astral-sh/uv/pulls/9928.md) on 2024-12-16 03:23_
-
----
-
-_Referenced in [astral-sh/uv#10237](../../astral-sh/uv/issues/10237.md) on 2024-12-30 15:29_
-
----
-
-_Referenced in [replit/upm#323](../../replit/upm/pulls/323.md) on 2024-12-31 19:37_
 
 ---
 
@@ -177,10 +161,6 @@ name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 ``` 
-
----
-
-_Referenced in [astral-sh/uv#10520](../../astral-sh/uv/issues/10520.md) on 2025-01-11 17:08_
 
 ---
 
@@ -333,9 +313,5 @@ Installed 12 packages in 2.01s
 ```
 
 Proposal: Add a `--explicit` flag or maybe `--explicit-index` which will set the index as explicit? 
-
----
-
-_Referenced in [Avasam/typed-D3DShot#5](../../Avasam/typed-D3DShot/pulls/5.md) on 2025-10-19 16:13_
 
 ---

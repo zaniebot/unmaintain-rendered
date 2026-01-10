@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T14:57:19Z
 updated_at: 2025-02-09T14:16:27Z
 url: https://github.com/astral-sh/uv/issues/1497
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:50:29Z
 ```
 
 # Cannot install the CPU version of torch
@@ -170,10 +170,6 @@ Adding a debug log and it looks like we're filtering these out before candidate 
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-02-16 15:25_
-
----
-
-_Referenced in [open-webui/open-webui#758](../../open-webui/open-webui/pulls/758.md) on 2024-02-16 20:41_
 
 ---
 
@@ -381,10 +377,6 @@ For now I can live with this.
 _Comment by @charliermarsh on 2024-02-22 13:25_
 
 Thanks @baskervilski - that makes sense to me actually (that it works), I believe the bug here relates to our handling of local versions which we’ll need to fix.
-
----
-
-_Referenced in [astral-sh/uv#1855](../../astral-sh/uv/issues/1855.md) on 2024-02-22 13:47_
 
 ---
 
@@ -627,23 +619,7 @@ https://github.com/astral-sh/uv/issues/1497#issuecomment-1951600402
 
 ---
 
-_Referenced in [astral-sh/uv#2080](../../astral-sh/uv/issues/2080.md) on 2024-02-29 13:55_
-
----
-
 _Unassigned @BurntSushi by @BurntSushi on 2024-02-29 15:29_
-
----
-
-_Referenced in [kornia/workflows#15](../../kornia/workflows/pulls/15.md) on 2024-03-11 21:45_
-
----
-
-_Referenced in [astral-sh/uv#2430](../../astral-sh/uv/pulls/2430.md) on 2024-03-15 14:48_
-
----
-
-_Referenced in [astral-sh/uv#2478](../../astral-sh/uv/issues/2478.md) on 2024-03-15 19:26_
 
 ---
 
@@ -672,10 +648,6 @@ _Comment by @johnnv1 on 2024-03-20 11:00_
 @charliermarsh do you have any plans to add support for the most common case? 
 `uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu`
 
-
----
-
-_Referenced in [astral-sh/uv#2655](../../astral-sh/uv/issues/2655.md) on 2024-03-25 19:12_
 
 ---
 
@@ -772,14 +744,6 @@ Installed 9 packages in 210ms
 ```
 
 uv has known limitations around [local version identifiers](https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers) but unsure why pip is able to make this work the way pytorch has documented https://pytorch.org/get-started/previous-versions/#v222 but uv can't
-
----
-
-_Referenced in [astral-sh/uv#3437](../../astral-sh/uv/issues/3437.md) on 2024-05-08 02:59_
-
----
-
-_Referenced in [OpenMined/PySyft#8605](../../OpenMined/PySyft/pulls/8605.md) on 2024-05-08 08:18_
 
 ---
 
@@ -1019,10 +983,6 @@ Installed 9 packages in 307ms
 
 ---
 
-_Referenced in [astral-sh/uv#7144](../../astral-sh/uv/issues/7144.md) on 2024-09-06 22:46_
-
----
-
 _Comment by @mgrachten on 2024-11-05 10:54_
 
 I encountered a version of this issue today, installing torchaudio cpuonly as per pytorch instructions.  Pip without uv succeeds:
@@ -1169,9 +1129,5 @@ wheels = [
 _Comment by @charliermarsh on 2025-02-09 14:16_
 
 Do you mind creating a new issue so that I remember to follow-up?
-
----
-
-_Referenced in [astral-sh/uv#11406](../../astral-sh/uv/issues/11406.md) on 2025-02-10 21:33_
 
 ---

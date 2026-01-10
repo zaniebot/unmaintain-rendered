@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-23T09:16:07Z
 updated_at: 2025-02-05T20:31:24Z
 url: https://github.com/astral-sh/uv/issues/10890
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # `--no-default-groups` should be able to use with `--no-group` and `--all-groups`
@@ -91,10 +91,6 @@ _Label `bug` added by @j178 on 2025-01-23 09:16_
 
 ---
 
-_Referenced in [astral-sh/uv#10891](../../astral-sh/uv/pulls/10891.md) on 2025-01-23 09:56_
-
----
-
 _Comment by @charliermarsh on 2025-01-23 13:57_
 
 So you're saying these should be allowed, just (effectively) no-ops?
@@ -104,10 +100,6 @@ So you're saying these should be allowed, just (effectively) no-ops?
 _Comment by @charliermarsh on 2025-01-23 13:58_
 
 Sorry, nevermind. I think what you're saying here is correct?
-
----
-
-_Referenced in [astral-sh/uv#11224](../../astral-sh/uv/pulls/11224.md) on 2025-02-04 20:43_
 
 ---
 

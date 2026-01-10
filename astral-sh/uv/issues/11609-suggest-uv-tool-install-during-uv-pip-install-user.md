@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-18T23:20:18Z
 updated_at: 2025-02-18T23:20:22Z
 url: https://github.com/astral-sh/uv/issues/11609
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Suggest `uv tool install` during `uv pip install --user`
@@ -28,9 +28,5 @@ We can suggest the preferred alternatives here.
 ---
 
 _Label `error messages` added by @zanieb on 2025-02-18 23:20_
-
----
-
-_Referenced in [astral-sh/uv#2077](../../astral-sh/uv/issues/2077.md) on 2025-02-18 23:26_
 
 ---

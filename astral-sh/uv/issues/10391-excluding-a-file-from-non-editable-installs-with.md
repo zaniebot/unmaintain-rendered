@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-08T12:56:18Z
 updated_at: 2025-01-30T00:28:20Z
 url: https://github.com/astral-sh/uv/issues/10391
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:50:30Z
 ```
 
 # Excluding a file from non-editable installs with uv sync --no-editable
@@ -290,9 +290,5 @@ _Comment by @micolous on 2025-01-30 00:26_
 This issue can also manifest when *including* a file (from a parent directory) with `force-include`: it only gets collected correctly when building a `wheel` from `sdist`, not `uv sync`.
 
 https://github.com/pypa/hatch/issues/1230#issuecomment-1922254244 seems to suggest that this is a product of Hatch's behaviour.
-
----
-
-_Referenced in [astral-sh/uv#11557](../../astral-sh/uv/issues/11557.md) on 2025-02-16 16:52_
 
 ---

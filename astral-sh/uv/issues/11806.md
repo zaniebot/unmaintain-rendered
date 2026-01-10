@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-26T17:53:39Z
 updated_at: 2025-03-02T00:48:11Z
 url: https://github.com/astral-sh/uv/issues/11806
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Problem with `opencv-python-headless` installed via uv but not via pip
@@ -139,13 +139,5 @@ I don't know why pip works in some of those cases but you definitely don't want 
 ---
 
 _Closed by @charliermarsh on 2025-03-02 00:48_
-
----
-
-_Referenced in [astral-sh/uv#13437](../../astral-sh/uv/pulls/13437.md) on 2025-05-13 20:55_
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-08-18 16:36_
 
 ---

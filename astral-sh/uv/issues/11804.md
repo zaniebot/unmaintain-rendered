@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-26T17:10:11Z
 updated_at: 2025-02-27T21:33:59Z
 url: https://github.com/astral-sh/uv/issues/11804
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # uv doesn't complain if two indexes defined in `pyproject.toml` have the same name
@@ -88,10 +88,6 @@ _Label `bug` removed by @charliermarsh on 2025-02-27 00:06_
 ---
 
 _Label `error messages` added by @charliermarsh on 2025-02-27 00:06_
-
----
-
-_Referenced in [astral-sh/uv#11824](../../astral-sh/uv/pulls/11824.md) on 2025-02-27 07:09_
 
 ---
 

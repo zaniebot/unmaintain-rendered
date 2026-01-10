@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-21T07:25:23Z
 updated_at: 2025-02-21T09:28:20Z
 url: https://github.com/astral-sh/uv/issues/11691
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:50:31Z
 ```
 
 # Clarify interaction of `--group` and default dev dependencies
@@ -92,13 +92,5 @@ _Label `question` added by @rsyring on 2025-02-21 07:25_
 _Comment by @T-256 on 2025-02-21 08:48_
 
 IIUC, You mean using `--group` should disable `tool.uv.default-groups` functionality. I'm favor of that then 👍 
-
----
-
-_Referenced in [astral-sh/uv#10934](../../astral-sh/uv/issues/10934.md) on 2025-03-08 15:37_
-
----
-
-_Referenced in [astral-sh/uv#12067](../../astral-sh/uv/issues/12067.md) on 2025-03-08 15:57_
 
 ---
