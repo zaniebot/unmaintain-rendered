@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit a diagnostic on an attempt to create a &quot;generic enum&quot; - astral-sh/ty #2416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit a diagnostic on an attempt to create a &quot;generic enum&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2416">#2416</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2026-01-09 14:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 14:06</div>
+            <div class="timeline-body"><p>This class statement fails at runtime, but ty does not detect it:</p>
+<pre><code class="language-py">from enum import Enum
+
+class Foo[T](Enum):
+    X = list[T]()
+</code></pre>
+<p>Runtime:</p>
+<pre><code class="language-pytb">&gt;&gt;&gt; from enum import Enum
+... 
+... class Foo[T](Enum):
+...     X = list[T]()
+...     
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 3, in &lt;module&gt;
+    class Foo[T](Enum):
+        X = list[T]()
+  File &quot;&lt;python-input-0&gt;&quot;, line 3, in &lt;generic parameters of Foo&gt;
+    class Foo[T](Enum):
+        X = list[T]()
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/enum.py&quot;, line 491, in __prepare__
+    member_type, first_enum = metacls._get_mixins_(cls, bases)
+                              ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/enum.py&quot;, line 956, in _get_mixins_
+    raise TypeError(&quot;new enumerations should be created as &quot;
+            &quot;`EnumName([mixin_type, ...] [data_type,] enum_type)`&quot;)
+TypeError: new enumerations should be created as `EnumName([mixin_type, ...] [data_type,] enum_type)`
+</code></pre>
+<p>This also fails in the same way, and again, we emit no error:</p>
+<pre><code class="language-py">from enum import Enum
+from typing import Generic, TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+class Foo(Enum, Generic[T]):
+    X = list[T]()
+</code></pre>
+<p>The only way you can get a &quot;generic enum&quot; to not immediately fail is by putting <code>Generic[T]</code> <em>first</em> in the bases list (contrary to the usual recommendation that <code>Generic[T]</code> should always be the last base class). But even if you do this, things do not work at runtime in the way you'd expect -- it's illegal to specialize such a class at runtime, because <code>Generic.__class_getitem__</code> is totally clobbered by <code>EnumMeta.__getitem__</code>:</p>
+<pre><code class="language-pytb">&gt;&gt; from enum import Enum
+&gt;&gt;&gt; from typing import Generic, TypeVar
+&gt;&gt;&gt; T = TypeVar(&quot;T&quot;)
+&gt;&gt;&gt; class Foo(Generic[T], Enum):
+...     X = list[T]()
+...     
+&gt;&gt;&gt; Foo[int]
+Traceback (most recent call last):
+  File &quot;&lt;python-input-5&gt;&quot;, line 1, in &lt;module&gt;
+    Foo[int]
+    ~~~^^^^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/enum.py&quot;, line 789, in __getitem__
+    return cls._member_map_[name]
+           ~~~~~~~~~~~~~~~~^^^^^^
+KeyError: &lt;class 'int'&gt;
+</code></pre>
+<p>Aside from whether or not it works at runtime, the concept of a generic enum just isn't very coherent on a conceptual level anyway. We currently don't permit them to exist in our internal model, and mypy/pyrefly both emit diagnostics if a user tries to create one:</p>
+<ul>
+<li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=35ef91038c460dd48cd557bb8704076d</li>
+<li>https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0BxGOhiUIAYwA0dACrMYANVSUAOujDV6wgK70uPPnQCi6XWrUy6AXlnyllABQqQM5wEpz6cVFRw4dADFcXAchETFxAG0ZAF1pE103RDU6VLp8RFk1EEkQbQZoOBJyRBAAYjoAVQKoCCY6MG0vAtx0OE9MGDAG3hpUBgB9UxpsUQcMznQGNzoAWgA%2BOjgGSmT0NLpKGAZtSnWwZwA5XVHVumB8AF9nbNyyLbAoUkIGWigKCoAFUgenpYwcAQ6OJWpA2Lt%2BhBWoQ1BUAMowGB0AAWDAYxDgiAA9Fj7l0noReGwscIsZhcOI4FiQeoIODKJDWliepQ6KgAG6oaCobCwYGgukQlrrXDEYVFNRkBjI1qzdmiOBQ9Y2ZwAZkIAEYAEw3dAgS65VDiArygLQGAUNBYPBEMj6oA</li>
+</ul>
+<p>We should do the same as mypy/pyrefly here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2026-01-09 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2026-01-09 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2026-01-09 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-09 19:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

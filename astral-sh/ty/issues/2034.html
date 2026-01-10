@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vscode extension -- ty not discovering pyproject.toml file - missing/no configuration option for &quot;path to config file&quot;? - astral-sh/ty #2034</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>vscode extension -- ty not discovering pyproject.toml file - missing/no configuration option for &quot;path to config file&quot;?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2034">#2034</a>
+        opened by <a href="https://github.com/ColemanDunn">@ColemanDunn</a>
+        on 2025-12-17 20:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ColemanDunn">@ColemanDunn</a> on 2025-12-17 20:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given a project structure like this:</p>
+<pre><code>my_repo
+├── backend
+│   ├── pyproject.toml
+│   ├── .venv
+│   └── app
+├── frontend
+└── README.md
+</code></pre>
+<p>The ty extension is both able to find the executable in my <code>.venv</code> folder (although I suspect this is because it is the chosen environment for my vscode (cursor) project) and support go to definition for both first and third party modules.</p>
+<p>However, rule configuration in my <code>pyproject.toml</code> are not respected and first party module auto imports do not work. I suspect both of these are due to the ty extension not discovering my <code>pyproject.toml</code> file.</p>
+<p>If I do</p>
+<pre><code class="language-toml">[tool.ty.rules]
+unsupported-operator = &quot;ignore&quot;
+</code></pre>
+<p>or set it to <code>warn</code>, <code>a = 10 + &quot;test&quot;</code> still shows as an error.</p>
+<p>Ruff configuration still works however without me having to point it to the toml file via some setting.</p>
+<p>A lot if not most linter extensions have some sort of &quot;path to config file&quot; setting (including the (now old) ruff extension on pycharm), though given how ruff auto-discovers it just fine, perhaps a setting like this is not needed and it this could be a bug in <code>ty</code> if not a missing feature.</p>
+<p>Thanks! Excited to use <code>ty</code> in vscode</p>
+<h3>Version</h3>
+<p>0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @carljm on 2025-12-17 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-12-17 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 09:14</div>
+            <div class="timeline-body"><p>Yes, this is a known limitation that ty only picks up your configuration if it's directly in the folder you opened in your editor or any of its ancestor directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-18 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 17:34</div>
+            <div class="timeline-body"><p>I'll re-open this. While https://github.com/astral-sh/ruff/pull/22053 will help in the described instance, there will still be inconsistencies if the configuration file uses any relative paths (because the LSP resolves the paths relative to the workspace root whereas the CLI resolves them relative to the <code>pyproject.toml</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-12-18 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ColemanDunn">@ColemanDunn</a> on 2025-12-22 19:26</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll re-open this. While <a href="https://github.com/astral-sh/ruff/pull/22053">astral-sh/ruff#22053</a> will help in the described instance, there will still be inconsistencies if the configuration file uses any relative paths (because the LSP resolves the paths relative to the workspace root whereas the CLI resolves them relative to the <code>pyproject.toml</code>).</p>
+</blockquote>
+<p>Thanks! In fact my config does use relative paths (to the <code>pyproject.toml</code>). I would also like to add that just with auto discovery, Ruff handles this no problem currently (both in vscode extension and the cli).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ColemanDunn">@ColemanDunn</a> on 2025-12-30 00:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll re-open this. While <a href="https://github.com/astral-sh/ruff/pull/22053">astral-sh/ruff#22053</a> will help in the described instance, there will still be inconsistencies if the configuration file uses any relative paths (because the LSP resolves the paths relative to the workspace root whereas the CLI resolves them relative to the <code>pyproject.toml</code>).</p>
+</blockquote>
+<p>Speaking of https://github.com/astral-sh/ruff/pull/22053, it seems this only supports <code>ty.toml</code>. I tried pointing the vscode setting to my <code>pyproject.toml</code> but got errors in the logs. Should it also support <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-30 05:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Should it also support <code>pyproject.toml</code>?</p>
+</blockquote>
+<p>cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-30 07:41</div>
+            <div class="timeline-body"><p>Not supporting <code>pyproject.toml</code> is intentional to align the option with the CLI <code>--config-file</code> option. It's also aligned with uv's <code>--config-file</code> option.</p>
+<p>The main idea of these options is sharing ty configurations between projects (or have them in non-standard locations). For that use case, using <code>pyproject.toml</code> doesn't make much sense becuase <code>pyproject.toml</code>s are for packages.</p>
+<p>I can see how using a <code>pyproject.toml</code> would be slightly more convenient than using a <code>ty.toml</code> in your use case. But, I don't think it's a reason enough to accept <code>pyproject.toml</code> files because <code>configurationFile</code> isn't the proper solution for your use case, as outlined above. Instead, we have to solve projects with configurations in sub-folders more holistically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ColemanDunn">@ColemanDunn</a> on 2025-12-30 16:43</div>
+            <div class="timeline-body"><p>Thanks that makes sense. For what it's worth, ty, uv, and ruff config docs all mention using <code>pyproject.toml</code> first before mentioning their respective more specific TOML files. Ruff also accepts both files in the cli with the <code>--config</code> option (though it is a different flag technically):</p>
+<pre><code>--config &lt;CONFIG_OPTION&gt;
+          Either a path to a TOML configuration file (`pyproject.toml` or
+          `ruff.toml`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ColemanDunn">@ColemanDunn</a> on 2026-01-10 01:03</div>
+            <div class="timeline-body"><p>Come to think of it, since it is the case that <code>--config-file</code> is more for sharing ty configurations between projects rather than for a given project as a whole, should this issue be modified more specifically to a feature request that supports something like a &quot;project configuration file&quot; setting? This would match the many linters and LSPs across different languages out there that have some sort of setting equivalent to this in their respective vscode extensions. Perhaps that is too much lift and clashes with solving configurations in sub folders more holistically which would ideally handle this anyway as it does in ruff. If that is the case then maybe this issue should be closed?</p>
+<p>Should a new issue be opened addressing resolving to the nearest <code>pyproject.toml</code> when it comes to monorepos/repos with nested projects <a href="https://docs.astral.sh/ruff/configuration/#config-file-discovery">as ruff does</a> as well as other tools?</p>
+<p>Is ruff's solution a good golden standard for this for a possible PR? Assuming the implementations aren't currently wildly different already of course.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

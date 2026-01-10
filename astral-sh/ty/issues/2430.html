@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A property `str` shadowing str results in an invalid-type-form error - astral-sh/ty #2430</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A property `str` shadowing str results in an invalid-type-form error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2430">#2430</a>
+        opened by <a href="https://github.com/rchui">@rchui</a>
+        on 2026-01-09 23:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rchui">@rchui</a> on 2026-01-09 23:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The issue is that ty resolves str in the type annotation to the .str property defined in the same class, rather than the builtin str type.</p>
+<p>https://play.ty.dev/b20b7f2e-34de-442a-8867-30a786c58dba</p>
+<pre><code class="language-python"># shadow_example.py
+class Foo:
+    @property
+    def str(self) -&gt; &quot;StringAccessor&quot;:
+        &quot;&quot;&quot;This property shadows the builtin str type.&quot;&quot;&quot;
+        return StringAccessor()
+
+    def greet(self, name: str) -&gt; str:
+        &quot;&quot;&quot;ty thinks 'str' here refers to the property above, not builtin str.&quot;&quot;&quot;
+        return f&quot;Hello, {name}&quot;
+
+
+class StringAccessor:
+    pass
+</code></pre>
+<p>Run ty check shadow_example.py:</p>
+<pre><code class="language-python">error[invalid-type-form]: Variable of type `property` is not allowed in a type expression
+ --&gt; shadow_example.py:8:24
+  |
+6 |         return StringAccessor()
+7 |
+8 |     def greet(self, name: str) -&gt; str:
+  |                          ^^^
+9 |         &quot;&quot;&quot;ty thinks 'str' here refers to the property above, not builtin str.&quot;&quot;&quot;
+  |
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2026-01-09 23:26</div>
+            <div class="timeline-body"><p>Thank you for the bug report. For a more thorough explanation of why this happens see <a href="https://github.com/astral-sh/ty/issues/900#issuecomment-3151616356">this comment</a>, but this is expected behavior. ty respects the normal runtime name resolution rules, and at the definition of <code>greet</code> <code>str</code> is that property. You can see this if you try to use <code>str</code> to make a default value for that code:
+https://play.ty.dev/91a3122d-ad78-431d-8dea-321920d99334</p>
+<pre><code class="language-py"># shadow_example.py
+class Foo:
+    @property
+    def str(self) -&gt; &quot;StringAccessor&quot;:
+        &quot;&quot;&quot;This property shadows the builtin str type.&quot;&quot;&quot;
+        return StringAccessor()
+
+    def greet(self, name: str = str()) -&gt; str:
+        &quot;&quot;&quot;ty thinks 'str' here refers to the property above, not builtin str.&quot;&quot;&quot;
+        return f&quot;Hello, {name}&quot;
+
+
+class StringAccessor:
+    pass
+</code></pre>
+<p>At runtime this crashes with <code>TypeError: 'property' object is not callable</code> at the <code>str()</code>, showing that ty's interpretation is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-10 00:01</div>
+            <div class="timeline-body"><p>Recommend aliasing <code>str</code> (e.g. <code>builtin_str = str</code>) at top level of your module, and then annotating using <code>builtin_str</code>, to get around this, if you must have a method/property named <code>str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-10 00:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit errors on invalid defaulted TypeVar constructions - astral-sh/ty #2429</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit errors on invalid defaulted TypeVar constructions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2429">#2429</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2026-01-09 22:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2026-01-09 22:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When a TypeVar has a default, there are some bounds/constraints that may be invalid. ty should emit an error for these cases. This is probably already part of the typing conformance suite somewhere, but I couldn't find an existing issue for it, so I figured I'd open one.</p>
+<p>From these links:
+https://typing.python.org/en/latest/spec/generics.html#bound-rules
+https://typing.python.org/en/latest/spec/generics.html#constraint-rules</p>
+<p>https://play.ty.dev/8b5084ae-3a52-439a-b28a-6aedaad52466</p>
+<pre><code class="language-py">from typing import TypeVar
+
+T1 = TypeVar(&quot;T1&quot;, bound=int)
+Ok = TypeVar(&quot;Ok&quot;, default=T1, bound=float)     # Valid
+AlsoOk = TypeVar(&quot;AlsoOk&quot;, default=T1, bound=int)   # Valid
+Invalid = TypeVar(&quot;Invalid&quot;, default=T1, bound=str)  # Invalid: int is not assignable to str
+
+T2 = TypeVar(&quot;T2&quot;, bound=int)
+Invalid1 = TypeVar(&quot;Invalid1&quot;, float, str, default=T2)         # Invalid: upper bound int is incompatible with constraints float or str
+
+T3 = TypeVar(&quot;T3&quot;, int, str)
+AlsoOk1 = TypeVar(&quot;AlsoOk1&quot;, int, str, bool, default=T3)      # Valid
+AlsoInvalid = TypeVar(&quot;AlsoInvalid&quot;, bool, complex, default=T3)  # Invalid: {bool, complex} is not a superset of {int, str}
+</code></pre>
+<p>Currently none of the <code>Invalid</code> lines give an error.</p>
+<h3>Version</h3>
+<p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 22:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

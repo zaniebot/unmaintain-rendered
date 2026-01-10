@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function returning `Awaitable[R]` returns `T | None` on Python 3.13 but `T` on Python 3.12 - astral-sh/ty #2131</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Function returning `Awaitable[R]` returns `T | None` on Python 3.13 but `T` on Python 3.12</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2131">#2131</a>
+        opened by <a href="https://github.com/yamaaaaaa31">@yamaaaaaa31</a>
+        on 2025-12-20 18:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yamaaaaaa31">@yamaaaaaa31</a> on 2025-12-20 18:02</div>
+            <div class="timeline-body"><h2>Description</h2>
+<p>When using a function decorated with <code>@overload</code> as a method decorator, ty incorrectly infers the return type as <code>T | None</code> on Python 3.13, but correctly infers <code>T</code> on Python 3.12.</p>
+<h2>Reproduction</h2>
+<pre><code class="language-python"># log_fn.py
+import asyncio
+from collections.abc import Awaitable, Callable
+from functools import wraps
+from typing import Any, ParamSpec, TypeVar, overload
+
+P = ParamSpec(&quot;P&quot;)
+R = TypeVar(&quot;R&quot;)
+
+@overload
+def log_fn(fn: Callable[P, Awaitable[R]]) -&gt; Callable[P, Awaitable[R]]: ...
+@overload
+def log_fn(fn: Callable[P, R]) -&gt; Callable[P, R]: ...
+def log_fn(fn: Any) -&gt; Any:
+    if asyncio.iscoroutinefunction(fn):
+        @wraps(fn)
+        async def async_wrapper(*args: Any, **kwargs: Any) -&gt; Any:
+            return await fn(*args, **kwargs)
+        return async_wrapper
+    @wraps(fn)
+    def wrapper(*args: Any, **kwargs: Any) -&gt; Any:
+        return fn(*args, **kwargs)
+    return wrapper
+</code></pre>
+<pre><code class="language-python"># use_case.py
+from dataclasses import dataclass
+from injector import inject
+from log_fn import log_fn
+
+@dataclass
+class Result:
+    value: str
+
+@inject
+@dataclass
+class UseCase:
+    @log_fn
+    async def run(self) -&gt; Result:
+        return Result(value=&quot;test&quot;)
+</code></pre>
+<pre><code class="language-python"># router.py
+from use_case import UseCase, Result
+
+async def main():
+    result = await UseCase().run()
+    print(result.value)  # Error on 3.13: possibly-missing-attribute
+</code></pre>
+<h2>Commands</h2>
+<pre><code class="language-bash">ty check --python-version 3.12 router.py  # All checks passed!
+ty check --python-version 3.13 router.py  # Error: Attribute 'value' may be missing on object of type 'Result | None'
+</code></pre>
+<h2>Expected</h2>
+<p>No error on Python 3.13 (same behavior as Python 3.12)</p>
+<h2>Actual</h2>
+<p><code>possibly-missing-attribute</code> and <code>invalid-argument-type</code> errors on Python 3.13:</p>
+<pre><code>error[possibly-missing-attribute]: Attribute 'value' may be missing on object of type 'Result | None'
+</code></pre>
+<h2>Environment</h2>
+<ul>
+<li>ty version: 0.0.4</li>
+<li>OS: macOS</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-21 07:42</div>
+            <div class="timeline-body"><p>Not sure what's going on here, but I made a smaller repro on the playground that shows some interesting things:
+https://play.ty.dev/1ddf219d-1ad3-426a-bcb2-cb07fb152237</p>
+<pre><code class="language-py">from collections.abc import Awaitable, Callable
+
+def log_fn[R, **P](fn: Callable[P, Awaitable[R]]) -&gt; Callable[P, Awaitable[R]]:
+    raise NotImplementedError
+
+@log_fn
+async def run() -&gt; int:
+    return 1
+
+async def main():
+    reveal_type(await run())  # `Unknown` on 3.12, `int | None` on 3.13
+</code></pre>
+<p>The noteworthy thing being type solving is completely not working on 3.12, giving <code>Unknown</code>, so this actually has nothing to do with overloads, and is two separate issues depending on the version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 20:17</div>
+            <div class="timeline-body"><p>Thanks for the report, and thanks @MeGaGiGaGon for further minimization!</p>
+<p>It looks like the use of <code>Awaitable[R]</code> as the return type in <code>log_fn</code> is key -- if <code>log_fn</code> is changed to be a totally transparent decorator:</p>
+<pre><code class="language-py">def log_fn[R, **P](fn: Callable[P, R]) -&gt; Callable[P, R]:
+    raise NotImplementedError
+</code></pre>
+<p>then on all Python versions we see <code>run</code> as returning <code>CoroutineType[int, None, None]</code> and we infer the type of <code>await run()</code> as <code>int</code>.</p>
+<p>With the <code>Awaitable</code>, even on 3.13 it's odd that we get the type <code>int | None</code>; not sure where the <code>None</code> is coming from.</p>
+<p>I suspect there is a connection to #1714 here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "M1" by @carljm on 2025-12-22 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 22:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect there is a connection to https://github.com/astral-sh/ty/issues/1714 here.</p>
+</blockquote>
+<p>Though <code>types.CoroutineType</code> explicitly inherits from <code>typing.Coroutine</code> (and therefore <code>typing.Awaitable</code>) in typeshed, so I'd expect our generics solver to be able to handle this even without #1714</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-12-23 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @dhruvmanila on 2025-12-23 05:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "@overload decorated function returns T | None on Python 3.13 but T on Python 3.12" to "Function returning `Awaitable[R]` returns `T | None` on Python 3.13 but `T` on Python 3.12" by @dhruvmanila on 2025-12-23 05:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yamaaaaaa31">@yamaaaaaa31</a> on 2025-12-24 06:25</div>
+            <div class="timeline-body"><p>Thanks @MeGaGiGaGon for the minimal repro and @carljm @AlexWaygood for investigating!</p>
+<p>Good to know it's been added to Pre-stable1. Looking forward to the fix 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yilei">@yilei</a> on 2026-01-06 04:38</div>
+            <div class="timeline-body"><p>We are running into (I believe) the same issue here, and I have another repro if it's helpful:</p>
+<pre><code class="language-python">from collections.abc import Awaitable, Callable
+from typing import TypeVar
+
+S = TypeVar(&quot;S&quot;)
+T = TypeVar(&quot;T&quot;)
+
+
+async def call(f: Callable[[S], Awaitable[T]], x: S) -&gt; T:
+    return await f(x)
+
+
+async def f(s: str) -&gt; str:
+    return s
+
+
+async def main() -&gt; str:
+    return await call(f, &quot;&quot;)
+</code></pre>
+<p>It passes when targeting 3.12, but 3.13+ fails with:</p>
+<pre><code>error[invalid-return-type]: Return type does not match returned value
+  --&gt; ty_bug.py:16:21
+   |
+16 | async def main() -&gt; str:
+   |                     --- Expected `str` because of return type
+17 |     return await call(f, &quot;&quot;)
+   |            ^^^^^^^^^^^^^^^^^ expected `str`, found `str | None`
+   |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-07 01:27</div>
+            <div class="timeline-body"><p>One interesting note here: <code>CoroutineType.__await__</code> returns <code>Generator[Any, None, _ReturnT_nd_co]</code> -- that <code>None</code> there seems reasonably likely to be the source of the spurious <code>None</code> we see in this bug. The root cause may be related to https://github.com/astral-sh/ty/issues/2371</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2026-01-09 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 21:15</div>
+            <div class="timeline-body"><p>The 3.12 vs 3.13 distinction here is probably related to the fact that the <code>Generator</code> type in typeshed only uses its <code>ReturnT_co</code> typevar on 3.13+. This causes us to wrongly think (on 3.12 and lower) that two different <code>Generator</code> types that differ only in their <code>ReturnT_co</code> are actually equivalent types.</p>
+<p>We will probably need to do some special-casing here to work around typeshed's limitations. In fact, for async functions (which return a <code>CoroutineType</code> which when awaited returns a <code>Generator</code> type), the <code>ReturnT_co</code> is crucial -- that's the ultimate return type of the async function. But the mechanism by which it's transmitted at runtime is via <code>StopIteration</code> exception (side note: internally the runtime usually optimizes this away, but in principle it's still true), which is not visible as part of the interface of <code>Generator</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 21:30</div>
+            <div class="timeline-body"><p>I filed https://github.com/astral-sh/ty/issues/2426 to more clearly track the issue with the <code>Generator</code> type on Python 3.12, which I'm sure is <em>related</em> to this issue, although there may be more to this issue in addition.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

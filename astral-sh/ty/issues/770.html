@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intersection between Protocol and almost overlapping class is simplified incorrectly - astral-sh/ty #770</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Intersection between Protocol and almost overlapping class is simplified incorrectly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/770">#770</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2025-07-06 23:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-07-06 23:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In the below example, ty incorrectly simplifies a Protocol out of an intersection when it almost (but not quite) is the same as a nominal class.</p>
+<p>https://play.ty.dev/9b0ac32c-9200-4558-8269-6e3f3bea1837</p>
+<pre><code class="language-python">from typing import Protocol
+from ty_extensions import Intersection, Not
+
+class Proto(Protocol):
+    def meth(self) -&gt; int: ...
+
+class X:
+    def meth(self) -&gt; int | str: return 42
+
+def f(x: Intersection[X, Proto]):
+    reveal_type(x)  # X (expect X &amp; Proto)
+    reveal_type(x.meth())  # int | str (expect int)
+</code></pre>
+<p>This can also lead to incorrect type inference without explicit Intersection types (https://play.ty.dev/6185eec9-9e29-49f6-b0ef-b817844fedb5):</p>
+<pre><code class="language-python">from typing import Protocol
+
+class Proto(Protocol):
+    def meth(self) -&gt; int: ...
+
+class X:
+    def meth(self) -&gt; int | str: return 42
+
+def f(x: Proto):
+    if isinstance(x, X):
+        reveal_type(x)  # X
+        reveal_type(x.meth())  # int | str
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @dhruvmanila on 2025-07-07 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @dhruvmanila on 2025-07-07 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-07-24 02:48</div>
+            <div class="timeline-body"><p>Another sample that might have the same root cause:</p>
+<pre><code class="language-python">from typing import Protocol
+from ty_extensions import Intersection
+
+class P1(Protocol):
+    a: int
+
+class P2(Protocol):
+    a: str
+
+def f(x: Intersection[P1, P2]):
+    reveal_type(x)  # Revealed type: `P1`
+</code></pre>
+<p>I'm open to argument about what the right behavior for <code>P1 &amp; P2</code> here should be, either <code>Never</code> or a Protocol with <code>a: Never</code>. But it's definitely not the same type as <code>P1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 16:46</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py">from typing import Protocol
+from ty_extensions import Intersection, Not
+
+class Proto(Protocol):
+    def meth(self) -&gt; int: ...
+
+class X:
+    def meth(self) -&gt; int | str: return 42
+
+def f(x: Intersection[X, Proto]):
+    reveal_type(x)  # X (expect X &amp; Proto)
+    reveal_type(x.meth())  # int | str (expect int)
+</code></pre>
+</blockquote>
+<p>The first <code>reveal_type</code> call here now reveals <code>X &amp; Proto</code>, as expected. The second one, however, now reveals <code>Never</code>, which seems even worse than before.</p>
+<p>I believe that this is because we're distributing across the intersection to infer the attribute access. The type of <code>.meth</code> on instances of <code>X</code> is one bound-method type, the type of <code>.meth</code> on instances of <code>Proto</code> is another bound-method type, and the intersection of those two bound-method types is <code>Never</code> (since bound-method types are nominal types in our model). We'll need to fix this by special-casing attribute access on <code>Protocol</code> instances for (at least) methods, so that we infer it as resolving to a <code>Callable</code> type rather than a bound-method type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-06 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 12:08</div>
+            <div class="timeline-body"><p>Oh, actually the <code>reveal_type(x.meth)</code> call isn't related to protocols -- it's a deeper bug than that. I can reproduce it with nominal types, too:</p>
+<pre><code class="language-py">class A:
+    def method(self, x: int) -&gt; None: ...
+
+class B:
+    def method(self, x: int) -&gt; None: ...
+
+def _(x: A):
+    if isinstance(x, B):
+        reveal_type(x.method)  # revealed: Never
+</code></pre>
+<p>This does seem like another bug that might be fixed if we represented bound methods internally as <code>types.MethodType &amp; &lt;some Callable type&gt;</code> rather than using a custom <code>Type::BoundMethod</code> variant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 14:58</div>
+            <div class="timeline-body"><blockquote>
+<p>This does seem like another bug that might be fixed if we represented bound methods internally as <code>types.MethodType &amp; &lt;some Callable type&gt;</code> rather than using a custom <code>Type::BoundMethod</code> variant</p>
+</blockquote>
+<p>Well, except that you can also reproduce the same bug using our <code>Type::Function</code> variant, not just using our <code>Type::BoundMethod</code> variant:</p>
+<pre><code class="language-py">class A:
+    def method(self, x: int) -&gt; None: ...
+
+class B:
+    def method(self, x: int) -&gt; None: ...
+
+def _(x: type[A]):
+    if issubclass(x, B):
+        reveal_type(x.method)  # revealed: Never
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-08 15:02</div>
+            <div class="timeline-body"><p>When we access members on intersections, we build the intersection of all members. Here, the members are individual function literals (singleton types), so their intersection is empty, which is why we get <code>Never</code> (I have not tested this, but I think that is what happens).</p>
+<p>If we want that intersection to be non-empty, we would probably have to upcast those function literals to callable types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 15:08</div>
+            <div class="timeline-body"><blockquote>
+<p>When we access members on intersections, we build the intersection of all members. Here, the members are individual function literals (singleton types), so their intersection is empty, which is why we get <code>Never</code> (I have not tested this, but I think that is what happens).</p>
+</blockquote>
+<p>Yes, that's correct, I believe (I said so in https://github.com/astral-sh/ty/issues/770#issuecomment-3372784796 ;)</p>
+<p>I think the intersection should definitely be non-empty, because I can think of lots of Liskov-compliant possible classes that could have both <code>A</code> and <code>B</code> in their MROs!</p>
+<blockquote>
+<p>If we want that intersection to be non-empty, we would probably have to upcast those function literals to callable types?</p>
+</blockquote>
+<p>I suppose so, but when should this upcasting happen? On any access of a method from an external scope? That would be quite a big change, and undo a lot of the benefit of having a <code>Type::Function</code> variant to begin with</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-08 15:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the intersection should definitely be non-empty, because I can think of lots of Liskov-compliant possible classes that could have both <code>A</code> and <code>B</code> in their MROs!</p>
+</blockquote>
+<p>Are there really? <code>A.method</code> and <code>B.method</code> could be completely unrelated functions (they have a return type of <code>None</code> in your example, but imagine that they have different side effects). How could a subclass of <code>A</code> and <code>B</code> possibly be a substitution for both of these behaviors? What is <code>(A &amp; B).method()</code> supposed to be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Are there really? <code>A.method</code> and <code>B.method</code> could be completely unrelated functions (they have a return type of <code>None</code> in your example, but imagine that they have different side effects). How could a subclass of <code>A</code> and <code>B</code> possibly be a substitution for both of these behaviors? What is <code>(A &amp; B).method()</code> supposed to be?</p>
+</blockquote>
+<p>But the same argument could be applied to say that any method being overridden on a subclass is possibly unsound. It's true that this <em>is</em> possibly unsound even if the subclass method's signature is a subtype of the superclass method's signature, of course, but allowing a subclass to override a method on the superclass is nonetheless usually permitted by Python type checkers (and type checkers for other, similar languages)!</p>
+<p>Anyway -- mypy, pyright and pyrefly all have no objections to this:</p>
+<pre><code class="language-py">class A:
+    def method(self, x: int) -&gt; None: ...
+
+class B:
+    def method(self, x: int) -&gt; None: ...
+
+class C(A, B): ...
+</code></pre>
+<p>For this:</p>
+<pre><code class="language-py">class A:
+    def method(self, x: int) -&gt; None: ...
+
+class B:
+    def method(self, x: int) -&gt; None: ...
+
+def f(x: type[A]):
+    if issubclass(x, B):
+        reveal_type(x.method)
+</code></pre>
+<p>Pyright says:</p>
+<pre><code>Type of &quot;x.method&quot; is &quot;(self: &lt;subclass of A and B&gt;, x: int) -&gt; None&quot;
+</code></pre>
+<p>Mypy says:</p>
+<pre><code>main.py:9: note: Revealed type is &quot;def (self: __main__.A, x: builtins.int)&quot;
+</code></pre>
+<p>And pyrefly says</p>
+<pre><code>INFO sandbox.py:9:20-30: revealed type: Unknown [reveal-type]
+ERROR sandbox.py:9:21-29: TODO: Expr::attr_infer_for_type attribute base undefined for type: type[Never] (trying to access method) [missing-attribute]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-08 16:23</div>
+            <div class="timeline-body"><p>I think the question of what side effects the function body has, is outside the type system. The type system cares only about the signature.</p>
+<p>I think our inference of singleton function or bound-method types when accessed off nominal-instance or subclass-of types is simply wrong and needs to be fixed. The nominal-instance type <code>A</code> includes instances of <code>A</code> and all subclasses of <code>A</code>. That means it is wrong to say that <code>instance_of_a.method</code> is a singleton bound-method type, unless either <code>A</code> or <code>A.method</code> is marked as final. Similarly, <code>type[A]</code> includes subclasses of <code>A</code>, so <code>subclass_of_A.method</code> cannot be a singleton function literal type.</p>
+<p>Accessing methods as attributes of class-literal types can still correctly return a function literal.</p>
+<p>One unfortunate side effect of making the above fix is that we will lose go-to-definition on most methods. To avoid this regression, we may need to allow callable types to optionally carry a &quot;most precise known&quot; source definition (or definitions?), which is not &quot;part of the type&quot; in terms of type relations but can be used for go-to-definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 18:53</div>
+            <div class="timeline-body"><blockquote>
+<p>One unfortunate side effect of making the above fix is that we will lose go-to-definition on most methods. To avoid this regression, we may need to allow callable types to optionally carry a &quot;most precise known&quot; source definition (or definitions?), which is not &quot;part of the type&quot; in terms of type relations but can be used for go-to-definition.</p>
+</blockquote>
+<p>which is possibly the opposite direction to what https://github.com/astral-sh/ty/issues/1086 was proposing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @AlexWaygood on 2025-10-17 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2026-01-08 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-08 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 22:16</div>
+            <div class="timeline-body"><p>I opened #2428 to specifically track the issue with wrongly inferring singleton bound-method and function literal types from attribute access.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

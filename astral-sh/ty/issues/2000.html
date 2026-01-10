@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't emit Liskov violations w.r.t. grandparent class if the violation cannot be fixed without breaking Liskov w.r.t. the parent class - astral-sh/ty #2000</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't emit Liskov violations w.r.t. grandparent class if the violation cannot be fixed without breaking Liskov w.r.t. the parent class</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2000">#2000</a>
+        opened by <a href="https://github.com/t-moe">@t-moe</a>
+        on 2025-12-17 11:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/t-moe">@t-moe</a> on 2025-12-17 11:50</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have the following code:</p>
+<pre><code class="language-python">from typing import Iterable
+from collections import UserList
+
+class Errors(UserList[str]):
+    def __init__(self, initlist=None):
+        super().__init__(initlist)
+
+    def append(self, item: str) -&gt; None:
+        super().append(item)
+
+    def extend(self, other: Iterable[str]) -&gt; None:
+        for item in other:
+            self.append(item)
+</code></pre>
+<p>This fails with an error similar to</p>
+<pre><code> uv run ty check
+error[invalid-method-override]: Invalid override of method `append`
+    --&gt; error.py:8:9
+     |
+   6 |         super().__init__(initlist)
+   7 |
+   8 |     def append(self, item: str) -&gt; None:
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Definition is incompatible with `MutableSequence.append`
+   9 |         super().append(item)
+     |
+    ::: stdlib/typing.pyi:1112:9
+     |
+1110 |     def __delitem__(self, index: slice) -&gt; None: ...
+1111 |     # Mixin methods
+1112 |     def append(self, value: _T) -&gt; None:
+     |         ------------------------------- `MutableSequence.append` defined here
+1113 |         &quot;&quot;&quot;S.append(value) -- append value to the end of the sequence&quot;&quot;&quot;
+     |
+info: This violates the Liskov Substitution Principle
+info: rule `invalid-method-override` is enabled by default
+
+error[invalid-method-override]: Invalid override of method `extend`
+    --&gt; error.py:11:9
+     |
+   9 |         super().append(item)
+  10 |
+  11 |     def extend(self, other: Iterable[str]) -&gt; None:
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Definition is incompatible with `MutableSequence.extend`
+  12 |         for item in other:
+  13 |             self.append(item)
+     |
+    ::: stdlib/typing.pyi:1118:9
+     |
+1116 |         &quot;&quot;&quot;S.clear() -&gt; None -- remove all items from S&quot;&quot;&quot;
+1117 |
+1118 |     def extend(self, values: Iterable[_T]) -&gt; None:
+     |         ------------------------------------------ `MutableSequence.extend` defined here
+1119 |         &quot;&quot;&quot;S.extend(iterable) -- extend sequence by appending elements from the iterable&quot;&quot;&quot;
+     |
+info: This violates the Liskov Substitution Principle
+info: rule `invalid-method-override` is enabled by default
+Found 2 diagnostics
+</code></pre>
+<p>What am I missing?
+Forgive me, if there is an obvious error hidden in plain sight. I havent written a lot of python lately..</p>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @t-moe on 2025-12-17 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 12:08</div>
+            <div class="timeline-body"><p>Hey @t-moe, thanks for the bug report!</p>
+<p>The issue here is with the parameter names. If I have a class hierarchy like this, then instances of <code>Bar</code> cannot be used as a drop-in substitute wherever instances of <code>Foo</code> are expected, because you can call <code>Foo.method()</code> with a <code>x=</code> keyword argument, but the same call fails on an instance of <code>Bar</code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     def method(self, x: int): ...
+...     
+&gt;&gt;&gt; class Bar(Foo):
+...     def method(self, y: int): ...
+...     
+&gt;&gt;&gt; Foo().method(x=42)
+&gt;&gt;&gt; Bar().method(x=42)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
+    Bar().method(x=42)
+    ~~~~~~~~~~~~^^^^^^
+TypeError: Bar.method() got an unexpected keyword argument 'x'
+</code></pre>
+<p>In your code here, your parameter name <code>item</code> you've given to <code>Errors.append</code> matches the parameter name for the method on <code>Errors</code>'s immediate parent class (<code>UserList</code>), but doesn't match the parameter name for the method on its <em>grandparent</em> class (<code>MutableSequence</code>). So it would be okay to use an instance of <code>Errors</code> wherever a <code>UserList[str]</code> is accepted, but it <em>wouldn't</em> be okay to use an instance of <code>Errors</code> wherever a <code>MutableSequence[str]</code> is accepted -- this violates the Liskov Substitution Principle.</p>
+<p>Unfortunately... there's not much you can do about it here, in this situation! If you change your parameter names so that they match the parameter names on <code>MutableSequence.append()</code>, <code>Errors</code> will no longer violate the Liskov Substitution Principle with respect to <code>MutableSequence</code>, but it will now violate the Liskov Substitution Principle with respect to <code>UserList</code>. So you're in a bit of a bind, because of the fact that <code>UserList</code> itself violates the Liskov Substitution Principle.</p>
+<p>I think there are several things we need to do here:</p>
+<ol>
+<li>We need to improve the error message to make clear that it's the parameter names that are the problem! This is tracked in https://github.com/astral-sh/ty/issues/1644</li>
+<li>Ideally I think we would split errors about bad parameter <em>names</em> into their own, more specific error code. Mypy doesn't emit these errors at all, and pyright doesn't emit them for dunder methods. This, like #1644, is also blocked by https://github.com/astral-sh/ty/issues/163 right now.</li>
+<li>If we detect that it would actually be impossible to fix the Liskov violation without introducing a new (worse) violation, then we should probably avoid emitting the diagnostic.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-12-17 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-17 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-12-17 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 00:26</div>
+            <div class="timeline-body"><p>@AlexWaygood is this issue left open in order to track item (3)? Should we re-title it to reflect that? Do we have an issue for (2)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`invalid-method-override` false positive when subclassing `UserList` ?" to "Don't emit Liskov violations w.r.t. grandparent class if the violation cannot be fixed without breaking Liskov w.r.t. the parent class" by @AlexWaygood on 2025-12-18 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 14:32</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/AlexWaygood">@AlexWaygood</a> is this issue left open in order to track item (3)? Should we re-title it to reflect that? Do we have an issue for (2)?</p>
+</blockquote>
+<p>Yes. I have retitled the issue to reflect that, and opened https://github.com/astral-sh/ty/issues/2073 for splitting the more pedantic Liskov checks into separate error codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/The-Red-Dragons">@The-Red-Dragons</a> on 2025-12-25 13:39</div>
+            <div class="timeline-body"><h3>Real-world use case: discord.py Modal overrides</h3>
+<p>I'm experiencing this with discord.py's <code>Modal</code> class:</p>
+<p><strong>Inheritance chain:</strong></p>
+<ul>
+<li><code>discord.ui.BaseView.on_error(self, interaction, error, item)</code> (grandparent)</li>
+<li><code>discord.ui.Modal.on_error(self, interaction, error, /)</code> (parent - already breaks Liskov)</li>
+<li><code>MyModal.on_error(self, interaction, error, /)</code> (child - correctly overrides Modal)</li>
+</ul>
+<pre><code class="language-python">class MyModal(discord.ui.Modal):
+    async def on_error(self, interaction: discord.Interaction, error: Exception, /) -&gt; None:
+        # ty warns: Invalid override of method 'on_error' - references BaseView.on_error
+        # But this correctly matches Modal.on_error signature
+        await interaction.response.send_message(&quot;Error occurred&quot;, ephemeral=True)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @AlexWaygood on 2025-12-25 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @AlexWaygood on 2025-12-25 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 19:09</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/2237 observes another real-world case in the standard library (<code>io.TextIOWrapper.write</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oakif">@oakif</a> on 2026-01-08 16:57</div>
+            <div class="timeline-body"><p>+1 on this. we have <code>WorksheetLine(UserList[Cell])</code> overriding <code>__setitem__</code> and <code>Worksheet(UserList[WorksheetLine])</code> overriding <code>extend</code>. both with signatures matching <code>UserList</code>, but ty reports violations against <code>MutableSequence</code>. Working around with <code># ty: ignore[invalid-method-override]</code> for now (ty 0.0.9)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-09 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2026-01-10 00:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

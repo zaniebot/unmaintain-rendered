@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrowing of constrained typevar discards constraint static type generic information - astral-sh/ty #1475</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Narrowing of constrained typevar discards constraint static type generic information</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1475">#1475</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-11-04 00:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-11-04 00:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>While reading https://github.com/astral-sh/ruff/pull/21172 , I wanted to try using the changes that PR made, but found a bug. With this code:</p>
+<p>https://play.ty.dev/a370a55d-5dc3-4da3-aa4b-62a0553b9c16</p>
+<pre><code class="language-py">from typing import reveal_type
+
+
+def foo[T: (list[int], None)](x: T) -&gt; T:
+    match x:
+        case list():
+            reveal_type(x)  # Revealed type: `Top[list[Unknown]]`
+    if isinstance(x, list):
+        reveal_type(x)  # Revealed type: `Top[list[Unknown]]`
+    return x
+</code></pre>
+<p>The two <code>x</code>s should be narrowed to <code>list[int]</code>, not <code>Top[list[Unknown]]</code>. From what I understand reading https://github.com/astral-sh/ruff/pull/21172 , the code now converts the constraint to the union of the top of it's members in the narrowing, so <code>T</code> becomes <code>Top[list[int]] | Top[None]</code>, but since <code>list[int]</code> is a fully static type, <code>Top[list[int]]</code> should just be <code>list[int]</code>. So it looks like the generic information is getting discarded somewhere along the way.</p>
+<p>Edit:</p>
+<p>I did some messing around with ty versions, and I found some interesting things:
+In &lt;=alpha.21 both reveal <code>T@foo &amp; list[Unknown]</code>
+In alpha.22 - alpha.25 only the <code>isinstance</code> gives <code>Top[list[Unknown]]</code>, the match is still <code>T@foo &amp; list[Unknown]</code>
+In the playground (and presumably in the future alpha.26) the above behavior happens.</p>
+<p>So it looks like this is not a new issue, at least for <code>isinstance</code> narrowing.</p>
+<h3>Version</h3>
+<p>playground (3c8fb6876)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-11-04 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-11-04 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-11-05 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 03:23</div>
+            <div class="timeline-body"><p>I think the issue here is really only with constrained typevars; at least I can't construct a problematic version with an upper-bound typevar. Retitling the issue accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TypeVar bound/constraint narrowing discards bound/constraint static type generic information" to "Narrowing of constrained typevar discards constraint static type generic information" by @carljm on 2026-01-09 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2026-01-09 07:28</div>
+            <div class="timeline-body"><p>The reason I included bound as well as constrained is that if you manually convert the constraint into a union bound, you still see the same issue where the list looses it's generic information:
+https://play.ty.dev/df5c452a-25ff-4587-8eb9-38d22e66ad7e</p>
+<pre><code class="language-py">from typing import reveal_type
+
+
+def foo[T: list[int] | None](x: T) -&gt; T:
+    match x:
+        case list():
+            reveal_type(x)  # Revealed type: `T@foo &amp; Top[list[Unknown]]`
+    if isinstance(x, list):
+        reveal_type(x)  # Revealed type: `T@foo &amp; Top[list[Unknown]]`
+    return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 20:50</div>
+            <div class="timeline-body"><p>@MeGaGiGaGon I don't see any loss of information in that last example. We still have the type <code>T@foo</code>, with its upper bound, and that is intersected with &quot;must be some kind of list&quot;. I don't think we want to simplify this intersection to <code>list[int]</code>, because then if you tried e.g. <code>return x</code> inside one of the narrowed blocks, you'd get an error. So I don't think this intersection can or should simplify further, and I don't see any bug there.</p>
+<p>The OP example with constrained typevar looks buggy to me, because it does simplify to just <code>Top[list[Unknown]]</code>, and we lose the typevar entirely. That's clearly wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 20:52</div>
+            <div class="timeline-body"><p>Maybe we should simplify <code>T@foo &amp; Top[list[Unknown]]</code> to <code>T@foo &amp; list[int]</code> in the upper-bound case? I think that would be safe -- but it seems like a separate issue to me from what is happening in the constrained typevar case.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

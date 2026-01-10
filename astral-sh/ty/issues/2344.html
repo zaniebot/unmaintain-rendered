@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect type inference for asynccontextmanager's yielding Self - astral-sh/ty #2344</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect type inference for asynccontextmanager's yielding Self</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2344">#2344</a>
+        opened by <a href="https://github.com/iyad-f">@iyad-f</a>
+        on 2026-01-05 15:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iyad-f">@iyad-f</a> on 2026-01-05 15:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>async context managers which yield Self are being inferred as yielding None</p>
+<p>mcve</p>
+<pre><code class="language-py">from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+from typing import Self
+
+
+class Foo:
+    @classmethod
+    @asynccontextmanager
+    async def new(cls) -&gt; AsyncIterator[Self]:
+        yield cls()
+
+
+async def test() -&gt; None:
+    async with Foo.new() as foo:  # type inferred by ty = None, expected type = Foo
+        ...
+</code></pre>
+<p>It inferes correctly if the type yielded by the asynccontextmanager is not self, so for example if the new asyncocntextmanger  would yield int or str it inferes that correctly</p>
+<h3>Version</h3>
+<p>0.0.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 00:17</div>
+            <div class="timeline-body"><p>Thanks for the report! This does look like a bug. It seems to be specific to <code>Self</code>, but not to classmethods, or to <code>@asynccontextmanager</code> or <code>AsyncIterator</code>. Here's an even more simplified repro:</p>
+<pre><code class="language-py">from typing import Self, TypeVar, Callable, Generic
+
+_T = TypeVar(&quot;_T&quot;)
+
+class Box(Generic[_T]):
+    def __init__(self, value: _T) -&gt; None:
+        self.value = value
+
+def boxify(func: Callable[..., _T]) -&gt; Callable[..., Box[_T]]:
+    def wrapper(*args, **kwargs) -&gt; Box[_T]:
+        return Box(func(*args, **kwargs))
+    return wrapper
+
+class Foo:
+    def no_decorator(self) -&gt; Self:
+        return self
+
+    @boxify
+    def with_decorator(self) -&gt; Self:
+        return self
+
+obj = Foo()
+reveal_type(obj.no_decorator())    # Foo
+reveal_type(obj.with_decorator())  # ty: Box[Unknown], pyright: Box[Foo]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iyad-f">@iyad-f</a> on 2026-01-06 12:41</div>
+            <div class="timeline-body"><p>yes it seems the issue is specific to Self and decorators in general, mb for not checking this properly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 16:58</div>
+            <div class="timeline-body"><p>Not at all, your report was excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pwuertz">@pwuertz</a> on 2026-01-09 16:42</div>
+            <div class="timeline-body"><p>Same as https://github.com/astral-sh/ty/issues/2030 ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

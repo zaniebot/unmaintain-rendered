@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No call signature checking for implicit calls to `__eq__` or `__ne__` methods - astral-sh/ty #921</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>No call signature checking for implicit calls to `__eq__` or `__ne__` methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/921">#921</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-07-31 18:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-31 18:28</div>
+            <div class="timeline-body"><p>Currently, we don't emit any diagnostics here.</p>
+<p>I believe these should be unsupported operator errors, that we don't emit</p>
+<pre><code class="language-py">class A:
+    __eq__ = None
+
+
+reveal_type(A() == A()) # revealed: bool
+
+
+class B:
+    def __eq__(self, other: int) -&gt; bool:
+        return True
+
+
+reveal_type(B() == &quot;a&quot;) # revealed: bool
+</code></pre>
+<p>https://github.com/astral-sh/ruff/pull/19666 mentions some of these issues.</p>
+<p>I believe the main issue is from https://github.com/astral-sh/ruff/blob/a3f28baab4fc085e1448484be23df7036d13191d/crates/ty_python_semantic/src/types/infer.rs#L8070-L8074</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-08-05 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:12</div>
+            <div class="timeline-body"><p>Hmm, looking at this again, I think there should be Liskov violations on <code>__eq__ = None</code> and <code>def __eq__(...</code> lines, and I'm not sure we should emit unsupported operator errors. <code>object</code> has <code>def __eq__(self, value: object, /) -&gt; bool: ...</code>, so we should assume all objects support that much, and error on any attempt to define a class that does not.</p>
+<p>(We do now emit a Liskov violation on the method override in <code>B</code>; we don't yet on <code>__eq__ = None</code> in <code>A</code>, but I think that's just a known limitation in our current Liskov checks?)</p>
+<p>Closing this, but also pinging @AlexWaygood to check if I'm off-base here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-09 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 13:43</div>
+            <div class="timeline-body"><p>I think there's still more to do here aside from the missing part of our Liskov implementation (which is tracked in https://github.com/astral-sh/ty/issues/2156). Consider this example: https://play.ty.dev/94ac813c-4047-4e9f-b559-e00bd31a4247. Even once we've fully implemented the Liskov Substitution Principle, the user won't get any diagnostics about the Liskov violation in the <code>Foo</code> class, because it's from a third-party package, and third-party packages aren't checked for typing violations. But we have more than enough information to warn the user nonetheless that the <code>==</code> operation will fail, and it behooves us in general to emulate the semantics at runtime, and the interpreter at runtime will actually try to call the <code>__eq__</code> attribute on the <code>Foo</code> class. So I think that ideally we would emit a diagnostic at the location of the <code>==</code> operation as well as at the location of the <code>__eq__</code> definition.</p>
+<p>And we don't seem to do call-signature checking of <code>__eq__</code> methods at all at the moment? We emit a Liskov diagnostic here, but no <code>unsupported-operator</code> diagnostic at the location of the <code>==</code> operation itself.</p>
+<pre><code class="language-py">from dataclasses import dataclass
+
+@dataclass
+class Foo:
+    x: int
+
+    def __eq__(self, other: Foo) -&gt; bool:
+        return self.x == other.x
+
+class Bar: ...
+
+Foo(42) == Bar()
+</code></pre>
+<p>That's inconsistent with how we treat all other implicit dunder calls, where we would generally check the call signature entirely independently to any concern about whether the Liskov principle had been violated:</p>
+<pre><code class="language-py">from typing import Sequence
+
+class Foo(Sequence[int]):
+    # invalid-method-override emitted here
+    def __getitem__(self, index: str) -&gt; int:
+        raise NotImplementedError
+
+# But `invalid-argument-type` still emitted here, independently!
+Foo()[42]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2026-01-09 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve unsupported operator diagnostics" to "No call signature checking for implicit calls to `__eq__` or `__ne__` methods" by @AlexWaygood on 2026-01-09 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 19:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

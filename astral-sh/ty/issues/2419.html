@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative on undefined attributes in `finally` block - astral-sh/ty #2419</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative on undefined attributes in `finally` block</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2419">#2419</a>
+        opened by <a href="https://github.com/lihu-zhong">@lihu-zhong</a>
+        on 2026-01-09 16:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lihu-zhong">@lihu-zhong</a> on 2026-01-09 16:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Observed behavior:</p>
+<pre><code class="language-python">def example() -&gt; None:
+    input_path = &quot;foo&quot;
+
+    try:
+        raise RuntimeError
+
+    except RuntimeError:
+        return
+
+    finally:
+        input_path.asdfasdf()
+</code></pre>
+<pre><code class="language-bash">$ uv run ty --version
+ty 0.0.10
+$ uv run ty check test.py 
+All checks passed!
+$ uv run mypy test.py 
+test.py:11: error: &quot;str&quot; has no attribute &quot;asdfasdf&quot;  [attr-defined]
+Found 1 error in 1 file (checked 1 source file)
+$ uv run pyright test.py 
+test.py
+  test.py:11:20 - error: Cannot access attribute &quot;asdfasdf&quot; for class &quot;Literal['foo']&quot;
+    Attribute &quot;asdfasdf&quot; is unknown (reportAttributeAccessIssue)
+1 error, 0 warnings, 0 informations
+</code></pre>
+<p>Expected behavior:
+<code>ty</code> should raise an <code>unresolved-attribute</code> error, similar to the behavior of other major type checkers</p>
+<p>Other notes:
+Interestingly, modifying the <code>except</code> block to <code>pass</code> instead of <code>return</code> causes <code>ty</code> to catch it correctly:</p>
+<pre><code class="language-python">def example() -&gt; None:
+    input_path = &quot;foo&quot;
+
+    try:
+        raise RuntimeError
+
+    except RuntimeError:
+        pass
+
+    finally:
+        input_path.asdfasdf()
+</code></pre>
+<pre><code class="language-bash">$ uv run ty check test.py 
+error[unresolved-attribute]: Object of type `Literal[&quot;foo&quot;]` has no attribute `asdfasdf`
+  --&gt; test.py:11:9
+   |
+10 |     finally:
+11 |         input_path.asdfasdf()
+   |         ^^^^^^^^^^^^^^^^^^^
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 17:08</div>
+            <div class="timeline-body"><p>I believe this may be a duplicate of https://github.com/astral-sh/ty/issues/233</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lihu-zhong">@lihu-zhong</a> on 2026-01-09 17:16</div>
+            <div class="timeline-body"><p>That seems likely! Sorry I missed that issue when searching the issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 17:22</div>
+            <div class="timeline-body"><p>no problem!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-09 17:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

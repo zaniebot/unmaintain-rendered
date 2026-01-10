@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site-packages not found in system environment - astral-sh/ty #2412</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Site-packages not found in system environment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2412">#2412</a>
+        opened by <a href="https://github.com/sillydan1">@sillydan1</a>
+        on 2026-01-09 10:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sillydan1">@sillydan1</a> on 2026-01-09 10:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Site-packages not found in system environment</h1>
+<p>I'm using <code>ty</code> on Ubuntu, where I want to use the system installation of python (<code>/usr/bin/python3</code>), but I get an
+error whenever I am explicitly using it.</p>
+<p>This error propogates all the way through to vscode - the server seems to function afterwards, but the error on
+startup is a bit annoying.</p>
+<p>Relevant Issues:</p>
+<ul>
+<li><a href="https://github.com/astral-sh/ty/issues/1323">https://github.com/astral-sh/ty/issues/1323</a> looks like might be a downstream symptom of this.</li>
+</ul>
+<h2>Reproduction Steps</h2>
+<p>In a clean ubuntu docker <code>docker run --rm -it ubuntu</code>:</p>
+<pre><code class="language-bash"># Install ty
+apt update ; apt install curl python3
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.local/bin/env
+
+# Create a test file
+echo &quot;&quot; &gt; test.py
+
+# Run ty using the system python3 install
+uvx ty check test.py --python /usr/bin/python3
+
+</code></pre>
+<p>This results in the following error:</p>
+<pre><code class="language-txt">ty failed
+  Cause: Failed to discover the site-packages directory
+  Cause: Invalid `--python` argument `/usr`: Could not find a `site-packages` directory for this Python installation/executable
+
+</code></pre>
+<p><strong>interestingly</strong> this error only occurs if <code>--python</code> is provided - I haven't been able to decern which interpreter is being used if not provided (<code>-vvv</code> does not reveal this information - <strong>perhaps it should?</strong>).</p>
+<p>Please note that this is <strong>NOT</strong> an issue in some other distros. I've tested using the following container  mages and the same reproduction steps:</p>
+<ul>
+<li><code>alpine:latest</code> (using <code>apk</code> instead of <code>apt</code> of course)</li>
+<li><code>archlinux:latest</code>  (using <code>pacman</code> instead of <code>apt</code> of course)</li>
+</ul>
+<p>It seems that this is a uniquely debian (and debian-derivative) issue. Those distros are also weird about their python3 installation methods, so that makes sense.</p>
+<p>It looks like <a href="https://github.com/astral-sh/ruff/blob/ba5dd5837cd7a1446c076f9032e13308d6317319/crates/ty_python_semantic/src/site_packages.rs#L1155">site_packages.rs</a> is only looking at <code>sys.prefix / lib</code> for <code>site-packages</code>, whereas on debian-derivative platforms it's located in <code>sys.prefix / local / lib</code> instead.</p>
+<p>I would suggest a patch where <code>local</code> is optionally traversed during the site packages search. I might give it a try myself, but my rust is very... rusty... So I'm not confident that I'll be able to get it done properly.</p>
+<h3>Version</h3>
+<p>0.0.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2026-01-09 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 10:56</div>
+            <div class="timeline-body"><p>This sounds very similar to https://github.com/astral-sh/ty/issues/1323</p>
+<p>You could give https://github.com/astral-sh/ruff/pull/22466 a try. Unfortunately, this requires building ty from source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sillydan1">@sillydan1</a> on 2026-01-09 12:43</div>
+            <div class="timeline-body"><blockquote>
+<p>This sounds very similar to <a href="https://github.com/astral-sh/ty/issues/1323">#1323</a></p>
+<p>You could give <a href="https://github.com/astral-sh/ruff/pull/22466">astral-sh/ruff#22466</a> a try. Unfortunately, this requires building ty from source.</p>
+</blockquote>
+<p>That does seem to fix the issue yes. I'll do a follow on that PR and keep an eye out 😄 Feel free to close this issue if you want 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 19:37</div>
+            <div class="timeline-body"><p>Yes, I think this is a duplicate of #1323. I believe the real issue here is <code>site-packages</code> vs <code>dist-packages</code>, and the discussion of <code>local/</code> is a red herring. For a system install in <code>/usr/local</code>, <code>sys.prefix</code> is <code>/usr/local</code>, not <code>/usr</code>; the layout within the prefix is not modified. I think this is confirmed by the fact that https://github.com/astral-sh/ruff/pull/22466 fixes the problem, since that PR only adds <code>dist-packages/</code> support, it doesn't do anything involving <code>local/</code> directories.</p>
+<p>Thanks for the report, and for trying out the PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-09 19:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deducing types in generic functions (example: SQLModel) - astral-sh/ty #1462</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deducing types in generic functions (example: SQLModel)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1462">#1462</a>
+        opened by <a href="https://github.com/graipher">@graipher</a>
+        on 2025-10-31 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/graipher">@graipher</a> on 2025-10-31 13:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This may just be another variant of https://github.com/astral-sh/ty/issues/623, but when using <a href="https://sqlmodel.tiangolo.com/">SQLModel</a> ty cannot properly deduce the type of <code>session.get(Item, item_id)</code>:</p>
+<p>models.py:</p>
+<pre><code class="language-python">from collections.abc import Iterator
+from contextlib import contextmanager
+
+from sqlmodel import Field, Session, SQLModel, create_engine
+
+
+DATABASE_URL = &quot;sqlite://&quot;
+
+engine = create_engine(
+    DATABASE_URL,
+    echo=False,
+    connect_args={&quot;check_same_thread&quot;: False},
+)
+
+
+class Item(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    name: str
+
+
+def init_db() -&gt; None:
+    &quot;&quot;&quot;Create all tables for the demo database.&quot;&quot;&quot;
+    SQLModel.metadata.create_all(engine)
+
+
+@contextmanager
+def get_session() -&gt; Iterator[Session]:
+    with Session(engine) as session:
+        yield session
+</code></pre>
+<p>main.py:</p>
+<pre><code class="language-python">from .models import Item, get_session, init_db
+from typing import reveal_type
+
+def demo_session_get(item_id: int) -&gt; Item | None:
+    with get_session() as session:
+        item = session.get(Item, item_id)
+        reveal_type(item)
+        return item
+</code></pre>
+<p>Other type checkers are able to deduce the type as <code>Item | None</code>, ty just says <code>Unknown</code>:</p>
+<pre><code>$ uv run pyright
+/tmp/foo/src/foo/__init__.py
+  /tmp/foo/src/foo/__init__.py:20:21 - information: Type of &quot;item&quot; is &quot;Item | None&quot;
+0 errors, 0 warnings, 1 information
+
+$ uv run mypy --strict .
+src/foo/__init__.py:20: note: Revealed type is &quot;foo.models.Item | None&quot;
+Success: no issues found in 2 source files
+
+$ uvx ty check .
+info[revealed-type]: Revealed type
+  --&gt; src/foo/__init__.py:20:21
+   |
+18 |     with get_session() as session:
+19 |         item = session.get(Item, item_id)
+20 |         reveal_type(item)
+   |                     ^^^^ `Unknown`
+21 |         return item
+   |
+
+Found 1 diagnostic
+</code></pre>
+<p>The relevant parts of the typing of <code>Session.get</code> are:</p>
+<pre><code>_O = TypeVar(&quot;_O&quot;, bound=object)
+
+class Session(_SessionClassMethods, EventTarget):
+    ...
+
+    def get(
+        self,
+        entity: _EntityBindKey[_O],
+        ident: _PKIdentityArgument,
+        *,
+        ...
+    ) -&gt; Optional[_O]:
+        ...
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.25</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2026-01-09 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 03:17</div>
+            <div class="timeline-body"><p>Thanks for the report! Sorry this seems to have fallen through the cracks. It does still seem to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 03:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/graipher">@graipher</a> on 2026-01-09 09:41</div>
+            <div class="timeline-body"><p>Actually, this no longer seems to reproduce for me...</p>
+<p>Slightly simplified example:</p>
+<pre><code class="language-python">from sqlmodel import Field, Session, SQLModel, create_engine
+from typing import reveal_type
+
+
+class Item(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+
+
+if __name__ == &quot;__main__&quot;:
+    engine = create_engine(&quot;sqlite://&quot;)
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as session:
+        item = session.get(Item, 1)
+        reveal_type(item)
+</code></pre>
+<p>Gives me the correct:</p>
+<pre><code>info[revealed-type]: Revealed type
+  --&gt; src/foo/__init__.py:14:21
+   |
+12 |     with Session(engine) as session:
+13 |         item = session.get(Item, 1)
+14 |         reveal_type(item)
+   |                     ^^^^ `Item | None`
+   |
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 20:15</div>
+            <div class="timeline-body"><p>Ah thanks! I actually did repro the original two-file version yesterday, but I failed to notice that the <code>from .models import ...</code> in <code>main.py</code> was failing (because I had made both main and models top-level modules), and that was the cause of the Unknown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-09 20:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>

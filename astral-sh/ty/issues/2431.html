@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passing a tuple of types to `**P` gets no error against error message - astral-sh/ty #2431</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Passing a tuple of types to `**P` gets no error against error message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2431">#2431</a>
+        opened by <a href="https://github.com/hyperkai">@hyperkai</a>
+        on 2026-01-10 00:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hyperkai">@hyperkai</a> on 2026-01-10 00:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>*Memo:</p>
+<ul>
+<li>ty check</li>
+<li>ty 0.0.7</li>
+<li>Python 3.14.0</li>
+<li>Windows 11</li>
+</ul>
+<p>Passing a set of types to <code>**P</code> gets the error message which doesn't say <strong>a tuple of types</strong> as shown below:</p>
+<pre><code class="language-python">from collections.abc import Callable
+
+type TA[**P] = Callable[P, None]
+
+    # ↓↓↓↓↓↓↓↓↓↓
+v: TA[{int, str}] # Error
+</code></pre>
+<blockquote>
+<p>error[invalid-type-arguments]: Type argument for <code>ParamSpec</code> must be either a list of types, <code>ParamSpec</code>, <code>Concatenate</code>, or <code>...</code></p>
+</blockquote>
+<p>But passing a tuple of types to <code>**P</code> gets no error against the error message as shown below:</p>
+<pre><code class="language-python">from collections.abc import Callable
+
+type TA[**P] = Callable[P, None]
+
+    # ↓↓↓↓↓↓↓↓↓↓
+v: TA[(int, str)] # No error
+</code></pre>
+<p>So, the error message should be like below:</p>
+<blockquote>
+<p>error[invalid-type-arguments]: Type argument for <code>ParamSpec</code> must be either a list or tuple of types, <code>ParamSpec</code>, <code>Concatenate</code>, or <code>...</code></p>
+</blockquote>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-10 00:23</div>
+            <div class="timeline-body"><p>Thanks for the report! We don't support TypeVarTuple yet. While we are still in beta, it will be useful to refer to #1889 when filing issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-10 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hyperkai">@hyperkai</a> on 2026-01-10 00:24</div>
+            <div class="timeline-body"><p>No, it's <code>ParamSpec</code> but not <code>TypeVarTuple</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-10 00:28</div>
+            <div class="timeline-body"><p>Oh! Sorry, reading too quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2026-01-10 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @carljm on 2026-01-10 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @carljm on 2026-01-10 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-10 00:40</div>
+            <div class="timeline-body"><p>This is a bit subtle. The <a href="https://typing.python.org/en/latest/spec/generics.html#user-defined-generic-classes">typing spec</a> says that for &quot;aesthetic purposes&quot;, as a special case, when a class is parametrized by just one ParamSpec, it is valid to specialize it without extra brackets, e.g. <code>TA[int, str]</code> instead of <code>TA[[int, str]]</code>. But in the Python grammar and AST, <code>TA[int, str]</code> is indistinguishable from <code>TA[(int, str)]</code>, since the tuple literal (other than empty tuple literal) is defined by the comma, parentheses are just for grouping clarity. So the fact that we support <code>TA[(int, str)]</code> is just an unavoidable side effect of supporting <code>TA[int, str]</code> as required by spec.</p>
+<p>But we do not support tuples to specialize ParamSpec in the general case (and neither do other type checkers):</p>
+<pre><code class="language-py">from collections.abc import Callable
+
+type TA[**P, T] = Callable[P, None]
+
+v: TA[(int, str), int] # this is an error!
+</code></pre>
+<p>So it would not be accurate to change the diagnostic message as suggested.</p>
+<p>I don't think we should attempt to fully explain the special case for single-paramspec-only in our diagnostic message here, so I'm not sure there's any action needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-10 00:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:47:12 UTC
+    </footer>
+</body>
+</html>
