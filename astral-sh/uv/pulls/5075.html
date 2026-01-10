@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rework reformatting in PyProjectTomlMut to respect original indentation - astral-sh/uv #5075</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rework reformatting in PyProjectTomlMut to respect original indentation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5075">#5075</a>
+        opened by <a href="https://github.com/flyaroundme">@flyaroundme</a>
+        on 2024-07-15 14:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/flyaroundme">@flyaroundme</a> on 2024-07-15 14:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>So this PR introduces change to how <code>Array</code> of dependencies representation is reformatted while <code>PyProjectTomlMut</code> is manipulated. These changes are here for it to respect the original indentation.
+Closes https://github.com/astral-sh/uv/issues/5009</p>
+<h2>Test Plan</h2>
+<p>Using <code>pyproject.toml</code> like</p>
+<pre><code>[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;requests&quot;
+]
+</code></pre>
+<p>Executed</p>
+<pre><code>$ uv add httpx
+</code></pre>
+<p>And expected in <code>pyproject.toml</code></p>
+<pre><code>[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;requests&quot;,
+  &quot;httpx&quot;,
+]
+</code></pre>
+<p>Preserving original indentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @zanieb on 2024-07-15 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-15 16:36</div>
+            <div class="timeline-body"><p>Thanks for doing this!</p>
+<p>Can we add a test to ensure this is working as expected? You can see https://github.com/astral-sh/uv/blob/main/crates/uv/tests/edit.rs#L14 for an example (you can probably omit the part checking <code>uv.lock</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flyaroundme">@flyaroundme</a> on 2024-07-15 16:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for doing this!</p>
+<p>Can we add a test to ensure this is working as expected? You can see https://github.com/astral-sh/uv/blob/main/crates/uv/tests/edit.rs#L14 for an example (you can probably omit the part checking <code>uv.lock</code>).</p>
+</blockquote>
+<p>Sure, will do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @zanieb on 2024-07-15 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @flyaroundme on 2024-07-15 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flyaroundme">@flyaroundme</a> on 2024-07-15 19:26</div>
+            <div class="timeline-body"><p>Updated, please re-review 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:437 on 2024-07-15 21:41</div>
+            <div class="timeline-body"><p>Hmm I'm a little unclear how this works if the line doesn't have a comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-15 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/flyaroundme">@flyaroundme</a> reviewed on 2024-07-15 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/flyaroundme">@flyaroundme</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:437 on 2024-07-15 22:46</div>
+            <div class="timeline-body"><p>If the <code>decor.prefix()</code> does not have a comment this whole expression will return the <code>String</code> that is in <code>decor.prefix()</code> trimmed by <code>&quot;\n&quot;</code> from the left</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/flyaroundme">@flyaroundme</a> reviewed on 2024-07-15 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/flyaroundme">@flyaroundme</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:437 on 2024-07-15 22:55</div>
+            <div class="timeline-body"><p>If you're asking about this particular line</p>
+<pre><code>.map(|s| s.split('#').next().unwrap_or(&quot;&quot;).to_string())
+</code></pre>
+<p>in case there is no '#' in the string it well return the whole string</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-15 23:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:437 on 2024-07-15 23:13</div>
+            <div class="timeline-body"><p>Ah that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-07-15 23:13</div>
+            <div class="timeline-body"><p>Nice work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-07-15 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-07-15 23:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:11 UTC
+    </footer>
+</body>
+</html>

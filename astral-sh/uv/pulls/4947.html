@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid reparsing wheel URLs - astral-sh/uv #4947</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid reparsing wheel URLs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4947">#4947</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-07-09 22:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-09 22:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We currently store wheel URLs in an unparsed state because we don't have a stable parsed representation to use with rykv. Unfortunately this means we end up reparsing unnecessarily in a lot of places, especially when constructing a <code>Lock</code>. This PR adds a <code>UrlString</code> type that lets us avoid reparsing without losing the validity of the <code>Url</code>.</p>
+<h2>Test Plan</h2>
+<p>Shaves off another ~10 ms from https://github.com/astral-sh/uv/issues/4860.</p>
+<pre><code>➜  transformers hyperfine &quot;../../uv/target/profiling/uv lock&quot; &quot;../../uv/target/profiling/baseline lock&quot; --warmup 3
+Benchmark 1: ../../uv/target/profiling/uv lock
+  Time (mean ± σ):     120.9 ms ±   2.5 ms    [User: 126.0 ms, System: 80.6 ms]
+  Range (min … max):   116.8 ms … 125.7 ms    23 runs
+ 
+Benchmark 2: ../../uv/target/profiling/baseline lock
+  Time (mean ± σ):     129.9 ms ±   4.2 ms    [User: 127.1 ms, System: 86.1 ms]
+  Range (min … max):   123.4 ms … 141.2 ms    23 runs
+
+Summary
+  ../../uv/target/profiling/uv lock ran
+    1.07 ± 0.04 times faster than ../../uv/target/profiling/baseline lock
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @ibraheemdev on 2024-07-09 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-07-09 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @ibraheemdev on 2024-07-09 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/file.rs</code>:59 on 2024-07-09 22:19</div>
+            <div class="timeline-body"><p>This looks like added parsing. Is it strictly necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-09 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/distribution-types/src/file.rs</code>:59 on 2024-07-09 22:24</div>
+            <div class="timeline-body"><p>I'm not 100% sure. I don't think <code>split_scheme</code> guarantees that the URLs is necessarily valid, but a <code>UrlString</code> should always be a valid <code>Url</code>, so I think we need to do this. We might just error a bit earlier than we would before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-09 22:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-10 00:59</div>
+            <div class="timeline-body"><p>This makes sense but what parse calls did we actually remove here, given that <code>to_url</code> still has to parse?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-10 03:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-10 04:40</div>
+            <div class="timeline-body"><p>The win is that <code>to_url_string</code> doesn't have to parse, which we can use in <code>Wheel::from_registry_wheel</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-10 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-07-10 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-07-10 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-10 09:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>

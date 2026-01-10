@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch to Current-Thread Tokio Runtime - astral-sh/uv #4934</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Switch to Current-Thread Tokio Runtime</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4934">#4934</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-07-09 18:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-09 18:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Move completely off tokio's multi-threaded runtime. We've slowly been making changes to be smarter about scheduling in various places instead of depending on tokio's general purpose work-stealing, notably https://github.com/astral-sh/uv/pull/3627 and https://github.com/astral-sh/uv/pull/4004. We now no longer benefit from the multi-threaded runtime, as we run on all I/O on the main thread. There's one remaining instance of <code>block_in_place</code> that can be swapped for <code>rayon::spawn</code>.</p>
+<p>This change is a small performance improvement due to removing some unnecessary overhead of the multi-threaded runtime (e.g. spawning threads), but nothing major. It also removes some noise from profiles.</p>
+<h2>Test Plan</h2>
+<pre><code>Benchmark 1: ./target/profiling/uv (resolve-warm)
+  Time (mean ± σ):      14.9 ms ±   0.3 ms    [User: 3.0 ms, System: 17.3 ms]
+  Range (min … max):    14.1 ms …  15.8 ms    169 runs
+ 
+Benchmark 2: ./target/profiling/baseline (resolve-warm)
+  Time (mean ± σ):      16.1 ms ±   0.3 ms    [User: 3.9 ms, System: 18.7 ms]
+  Range (min … max):    15.1 ms …  17.3 ms    162 runs
+ 
+Summary
+  ./target/profiling/uv (resolve-warm) ran
+    1.08 ± 0.03 times faster than ./target/profiling/baseline (resolve-warm)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @ibraheemdev on 2024-07-09 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-09 21:02</div>
+            <div class="timeline-body"><p>Trusting you on this one :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-07-09 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-07-09 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-09 22:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>

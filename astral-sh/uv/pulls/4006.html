@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add user warning for packages without lower bound with `--resolution=lowest` or `lowest-direct` - astral-sh/uv #4006</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add user warning for packages without lower bound with <code>--resolution=lowest</code> or <code>lowest-direct</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4006">#4006</a>
+        opened by <a href="https://github.com/ottaviohartman">@ottaviohartman</a>
+        on 2024-06-04 01:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-06-04 01:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #2797.</p>
+<p>Warns the user if a direct or transitive dependency is unpinned when using <code>--resolution=lowest</code> or <code>lowest-direct</code>.</p>
+<h2>TODO</h2>
+<ul>
+<li>[ ] Write unit tests</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li>[ ] Awaiting confirmation that this implementation looks relatively OK before writing unit tests.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-06-04 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-06-04 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-06-04 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>_typos.toml</code>:14 on 2024-06-04 21:26</div>
+            <div class="timeline-body"><p>Had to add this otherwise the pre-commit hook would think <code>Nd</code> should be <code>And</code> in <code>pip_install.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-05 10:44</div>
+            <div class="timeline-body"><p>Thanks for creating this PR!</p>
+<p>There's two parts to having warnings here: Warnings for direct dependencies, those that the user controls, and warnings for indirect dependencies, those that the user doesn't control.</p>
+<p>We can warn for direct dependencies, the user can add dependency constraints (as implemented).</p>
+<p>For indirect dependencies, the user can't add constraints on that other package. Whenever we encounter an unconstrained dependency in pubgrub, we should <code>debug!</code> it with the name and version package that contained the dependency (instead of <code>warn_user_once!</code>). This helps with debugging without warning about something that users can't change themselves.</p>
+<p>In the resolver, we may encounter unconstrained dependencies that are constrained elsewhere, either by another dependency or by the user passing a constraint files. After the resolver is done, we should note unconstrained dependencies in two case: There was a build failure of a dependency lacking a lower bound. In this case, we should add a note about the missing lower bound to the context of the build error. The other case is that after we're done, we have picked the lowest version of a dependency without any constraint (that is most likely to fail when running the code), we should warn about that and ask the user to add a constraint.</p>
+<p>For the tests, we should follow our own best practices and add lower bounds for the lowest(-direct) tests except for one or two tests that check for warnings.</p>
+<p>I would suggest splitting this into two PRs: One that only adds the warnings for the lowest-direct mode and debug logging for missing constraint on indirect dependencies, and another one that adds the context on failed builds and warns after the resolution finished.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-06-07 01:56</div>
+            <div class="timeline-body"><p>Thanks for the guidance @konstin , it's very helpful.</p>
+<p>I'll convert this PR into what you recommend as the first PR:</p>
+<blockquote>
+<p>only adds the warnings for the lowest-direct mode and debug logging for missing constraint on indirect dependencies</p>
+</blockquote>
+<p>What's the best place in the code to put the warning? The resolver, as implemented, misses constraints (I think?) but more importantly doesn't correctly notice that the following is pinned:</p>
+<pre><code class="language-sh">anyio @ https://files.pythonhosted.org/packages/2d/b8/7333d87d5f03247215d86a86362fd3e324111788c6cdd8d2e6196a6ba833/anyio-4.2.0.tar.gz
+</code></pre>
+<p>I'll be looking around the code in the meantime to find an appropriate spot to check if a version is unpinned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-07 07:26</div>
+            <div class="timeline-body"><p>You can check <code>PubGrubPackage</code> for <code>PubGrubPackageInner</code> -&gt; <code>Package</code> -&gt; <code>url: None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 14:34</div>
+            <div class="timeline-body"><p>Taken up in https://github.com/astral-sh/uv/pull/5142 now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-18 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download wheel to disk when streaming unzip failed with HTTP streaming error - astral-sh/uv #5094</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Download wheel to disk when streaming unzip failed with HTTP streaming error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5094">#5094</a>
+        opened by <a href="https://github.com/messense">@messense</a>
+        on 2024-07-16 03:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/messense">@messense</a> on 2024-07-16 03:11</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Workaround the <code>stream_wheel</code> not retry issue <a href="https://github.com/astral-sh/uv/issues/3514#issuecomment-2229820667">found</a> in #3514, it's not a perfect solution but I think it's acceptable because the error should not occur frequently.</p>
+<h2>Test Plan</h2>
+<p>Manually using <code>iptables -A OUTPUT -p tcp -dport 3128 -j REJECT --reject-with tcp-reset</code> to inject connection reset error to the HTTP proxy that proxies PyPI requests.</p>
+<pre><code>error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: piqp==0.4.1
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://files.pythonhosted.org/packages/94/4d/09ade94dfda5b57c1ca43564541871bd1a0d89dfd3c368ac505b6ca09831/piqp-0.4.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+  Caused by: client error (Connect)
+  Caused by: tcp connect error: Connection refused (os error 111)
+  Caused by: Connection refused (os error 111)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/messense">@messense</a> reviewed on 2024-07-16 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>crates/uv-extract/src/error.rs</code>:36 on 2024-07-16 03:14</div>
+            <div class="timeline-body"><p>The <code>Io</code> error case is for https://github.com/astral-sh/uv/blob/545bbf92863f4109070ebeb922c837b430441b76/crates/uv-extract/src/stream.rs#L53</p>
+<blockquote>
+<p>Io(Custom { kind: Other, error: reqwest::Error { kind: Decode, source: reqwest::Error { kind: Body, source: hyper::Error(Body, Os { code: 104, kind: ConnectionReset, message: &quot;Connection reset by peer&quot; }) } } })</p>
+</blockquote>
+<p>we can check for a <code>reqwest::Error</code> inside the io error to avoid retry on writer side error if deemed useful.</p>
+<p>Edit: done in d808e1c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-16 09:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-07-16 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2024-07-16 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-16 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @konstin on 2024-07-16 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-16 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-16 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-16 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-16 13:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:11 UTC
+    </footer>
+</body>
+</html>

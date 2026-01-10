@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle universal vs. fork markers with `ResolverMarkers` - astral-sh/uv #5099</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle universal vs. fork markers with <code>ResolverMarkers</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5099">#5099</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-16 09:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-16 09:57</div>
+            <div class="timeline-body"><ul>
+<li>Use a dedicated <code>ResolverMarkers</code> check in the fork state. This is better than the <code>MarkerTree::And(Vec::new())</code> check.</li>
+<li>Report the timing correct naming universal resolution instead of two spaces around an empty string when there are no markers.</li>
+<li>On resolution error, show the split that we're in. I'm not sure how to word this, since we're doing a universal resolution until we fork, so the trace may contain information from requirements that are not part of this fork.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2024-07-16 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-16 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-07-16 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1488 on 2024-07-16 12:37</div>
+            <div class="timeline-body"><p>Hmmm. So I very intentionally used <code>MarkerTree</code> instead of <code>Option&lt;MarkerTree&gt;</code>. For example, in this routine, I don't think there is any semantic difference between <code>None</code> and <code>Some(MarkerTree::And(vec![]))</code>. They are redundant with one another, which I find confusing, because it injects an extra state into the type system that you need to think about. Moreover, there <em>are</em> perhaps cases where &quot;a marker that is always true&quot; and a &quot;possibly absent marker&quot; are semantically distinct, and IMO that's when we should use <code>Option&lt;MarkerTree&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-07-16 12:48</div>
+            <div class="timeline-body"><p>The improvements here look good.</p>
+<p>With respect to <code>MarkerTree</code> and <code>Option&lt;MarkerTree&gt;</code>, my idea here was to collapse states that weren't semantically distinct. I now see that the <code>is_universal</code> check was added later as a way of determining whether the resolver was in &quot;universal&quot; mode or not. (And this is doubly confusing because the resolver is in universal mode when <code>MarkerTree::is_universal</code> is <em>false</em>.) The idea was that the canonical way of determining whether the resolver was in universal mode or not is whether the <a href="https://github.com/astral-sh/uv/blob/545bbf92863f4109070ebeb922c837b430441b76/crates/uv-resolver/src/resolver/mod.rs#L98-L99">resolver has a marker environment</a>, and <em>not</em> whether there's a marker expression that is trivially true or not. So for example, this code:</p>
+<p>https://github.com/astral-sh/uv/blob/545bbf92863f4109070ebeb922c837b430441b76/crates/uv-resolver/src/resolver/mod.rs#L309-L318</p>
+<p>Should I think be using <code>self.markers</code> (which, confusingly, is a <code>MarkerEnvironment</code>) to determine whether to emit log messages about a split.</p>
+<p>This one can too:</p>
+<p>https://github.com/astral-sh/uv/blob/545bbf92863f4109070ebeb922c837b430441b76/crates/uv-resolver/src/resolver/mod.rs#L585-L590</p>
+<p>But this one is trickier:</p>
+<p>https://github.com/astral-sh/uv/blob/545bbf92863f4109070ebeb922c837b430441b76/crates/uv-resolver/src/fork_urls.rs#L42-L47</p>
+<p>And I think it's that case that caused <code>MarkerTree::is_universal</code> to come into existence. And I agree that <code>is_universal</code> is Not Good, and that given the choice between &quot;checking for a single trivially true marker expression&quot; and &quot;using an option,&quot; the latter is better. But I'm worried about <code>Option&lt;MarkerTree&gt;</code> carrying subtly different semantics for the <code>None</code> case depending on where we are in the code. But maybe we don't yet have the right abstractions to deal with this nicely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-16 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1488 on 2024-07-16 13:23</div>
+            <div class="timeline-body"><p>Do we ever get a fork with <code>Some(MarkerTree::And(vec![]))</code>? It seems to me that we shouldn't fork in that case since we're still doing a universal resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-16 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1488 on 2024-07-16 13:45</div>
+            <div class="timeline-body"><p>I don't believe so, but that invariant isn't encoded into the type system. It's more like it's manifest in the concept of forking itself. It's not something you can easily employ local reasoning about when looking at just the types.</p>
+<p>I think this is a fine change for now. I think this change is probably better than the status quo. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Slightly better split marker reporting" to "Handle unviersal vs. fork markers with `ResolverMarkers`" by @konstin on 2024-07-16 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Handle unviersal vs. fork markers with `ResolverMarkers`" to "Handle universal vs. fork markers with `ResolverMarkers`" by @konstin on 2024-07-16 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-16 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1488 on 2024-07-16 21:30</div>
+            <div class="timeline-body"><p>I encoded it in the type system using <code>ResolverMarkers</code>. Probably needs a fresh read tomorrow morning, but the api feels a good bit better this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-07-17 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-17 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2891 on 2024-07-17 13:26</div>
+            <div class="timeline-body"><p>Hmmm. So I think the confusing thing about this name is that, if I'm understanding correctly, <code>ResolverMarkers::Universal</code> is used when the resolver is <em>not</em> in universal mode. It has the right semantics, but the name is I think confusable.</p>
+<p>I'm actually finding it quite difficult to come up with a good name here. I think the problem is in using the markers (and not the marker environment) to identify whether we're employing a possibly-forking strategy or not.</p>
+<p>Maybe... <code>ResolverMarkers::AlwaysTrue</code>? ¯\_(ツ)_/¯</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-17 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1532 on 2024-07-17 13:27</div>
+            <div class="timeline-body"><p>If we have a newtype for this, I think I'd rather see these case analyses collapsed. Perhaps a method like <code>ResolverMarkers::possible_to_satisfy</code> or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-17 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2891 on 2024-07-17 16:24</div>
+            <div class="timeline-body"><p>The markers represent a trinary state - specific environment, universal resolution, resolution in a fork - so i changed the type to express that too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-07-17 16:52</div>
+            <div class="timeline-body"><p>Yeah I think this is better. I think we can still collapse/encapsulate case analyses, but that can be a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-07-17 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-17 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-17 16:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:11 UTC
+    </footer>
+</body>
+</html>

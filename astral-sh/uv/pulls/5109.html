@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-resolver: add TRACE dump of resolver output - astral-sh/uv #5109</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-resolver: add TRACE dump of resolver output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5109">#5109</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-07-16 14:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-16 14:43</div>
+            <div class="timeline-body"><p>Specifically, this shows the resolution produced by the
+resolver <em>before</em> constructing a resolution graph.</p>
+<p>Unlike most trace messages, this is a multi-line message
+that needs to do some small amount of work to build
+itself. So we do an explicit gating on the log level here
+instead of just relying on the <code>trace!</code> macro itself.</p>
+<p>I added this as part of debugging #5086, and it seemed
+like a useful thing to keep around. It could be a little
+noisy, which is why I put it under the TRACE level, but
+its output should be about the same as, say, the output
+of <code>uv pip compile</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-07-16 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-07-16 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-16 14:44</div>
+            <div class="timeline-body"><p>Here's an example output (from #5086):</p>
+<pre><code>[andrew@duff uv]$ RUST_LOG=trace cargo run -p uv -- pip compile requirements.in -p3.12 --universal -v 2&gt;&amp;1 | rg 'Resolution:'
+TRACE Resolution: torchvision -&gt; numpy
+TRACE Resolution:     0.15.1+rocm5.4.2 -&gt; 2.0.0
+TRACE Resolution:     0.17.0+rocm5.7 -&gt; 2.0.0
+TRACE Resolution: requests -&gt; idna
+TRACE Resolution:     2.32.3 -&gt; 3.7
+TRACE Resolution: torch -&gt; typing-extensions
+TRACE Resolution:     2.0.0 -&gt; 4.12.2
+TRACE Resolution:     2.2.0 -&gt; 4.12.2
+TRACE Resolution: torchvision -&gt; torch
+TRACE Resolution:     0.17.0+rocm5.7 -&gt; 2.2.0
+TRACE Resolution:     0.15.1+rocm5.4.2 -&gt; 2.0.0
+TRACE Resolution: requests -&gt; charset-normalizer
+TRACE Resolution:     2.32.3 -&gt; 3.3.2
+TRACE Resolution: torchvision -&gt; pillow
+TRACE Resolution:     0.17.0+rocm5.7 -&gt; 10.4.0
+TRACE Resolution:     0.15.1+rocm5.4.2 -&gt; 10.4.0
+TRACE Resolution: torchvision -&gt; requests
+TRACE Resolution:     0.17.0+rocm5.7 -&gt; 2.32.3
+TRACE Resolution:     0.15.1+rocm5.4.2 -&gt; 2.32.3
+TRACE Resolution: sympy -&gt; mpmath
+TRACE Resolution:     1.13.0 -&gt; 1.3.0
+TRACE Resolution: ROOT -&gt; torch
+TRACE Resolution:     0a0.dev0 -&gt; 2.0.0 ; platform_machine == 'x86_64'
+TRACE Resolution:     0a0.dev0 -&gt; 2.2.0 ; platform_machine != 'x86_64'
+TRACE Resolution: requests -&gt; certifi
+TRACE Resolution:     2.32.3 -&gt; 2024.7.4
+TRACE Resolution: torch -&gt; filelock
+TRACE Resolution:     2.0.0 -&gt; 3.15.4
+TRACE Resolution:     2.2.0 -&gt; 3.15.4
+TRACE Resolution: torch -&gt; sympy
+TRACE Resolution:     2.2.0 -&gt; 1.13.0
+TRACE Resolution:     2.0.0 -&gt; 1.13.0
+TRACE Resolution: torch -&gt; jinja2
+TRACE Resolution:     2.2.0 -&gt; 3.1.4
+TRACE Resolution:     2.0.0 -&gt; 3.1.4
+TRACE Resolution: requests -&gt; urllib3
+TRACE Resolution:     2.32.3 -&gt; 2.2.2
+TRACE Resolution: ROOT -&gt; torchvision
+TRACE Resolution:     0a0.dev0 -&gt; 0.15.1+rocm5.4.2
+TRACE Resolution:     0a0.dev0 -&gt; 0.17.0+rocm5.7
+TRACE Resolution: torch -&gt; networkx
+TRACE Resolution:     2.0.0 -&gt; 3.3
+TRACE Resolution:     2.2.0 -&gt; 3.3
+TRACE Resolution: torch -&gt; fsspec
+TRACE Resolution:     2.2.0 -&gt; 2024.6.1
+TRACE Resolution: jinja2 -&gt; markupsafe
+TRACE Resolution:     3.1.4 -&gt; 2.1.5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-16 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:621 on 2024-07-16 14:48</div>
+            <div class="timeline-body"><p>I feel like <code>tracing::enabled!</code> would be appropriate here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-07-16 14:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:621 on 2024-07-16 14:51</div>
+            <div class="timeline-body"><p>Yesssss thank you! I missed that macro and apparently did it the hard way. Lol. And it was already being used in this same module. -_-</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-16 14:55</div>
+            <div class="timeline-body"><p>I'm down for this, but want to let someone more focused on the resolver approve :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-07-16 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-07-16 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-16 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-16 16:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter and flatten markers - astral-sh/uv #4639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter and flatten markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4639">#4639</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-06-28 22:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-28 22:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>More marker simplification:</p>
+<ul>
+<li>Filters out redundant subtrees based on outer expressions, e.g. <code>a and (a or b)</code> simplifies to <code>a</code>.</li>
+<li>Flattens nested trees internally, e.g. <code>(a and b) and c</code></li>
+</ul>
+<p>Resolves https://github.com/astral-sh/uv/issues/4536.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-06-28 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ibraheemdev on 2024-06-28 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-30 23:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/marker.rs</code>:97 on 2024-06-30 23:44</div>
+            <div class="timeline-body"><p>Are there redundant expressions that we'd only notice after normalizing (e.g., flattening)? In other words, is <code>filter_all(normalize_all(...))</code> idempotent? Or is there some risk that we don't normalize everything by way of this ordering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-30 23:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/marker.rs</code>:97 on 2024-06-30 23:50</div>
+            <div class="timeline-body"><p><code>filter_all</code> was written to handle non-flattened trees and can also leave the tree in a denormalized (not flattened) state.</p>
+<p>Thinking about it more though, I suppose it is possible that there are duplicates that only show up after combining version ranges, so maybe we have to normalize before <em>and</em> after? I was trying to avoid this by writing <code>filter_all</code> to handle non-flattened ranges, but maybe normalizing before is unavoidable. I can try to create a test case where this happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 00:02</div>
+            <div class="timeline-body"><p>Relatedly, after this change, if we have a marker that contains an <code>OR</code> with <code>MarkerTree::And(vec![])</code>, do we map that to <code>None</code> (or even <code>MarkerTree::And(vec![])</code>)? It's relevant for a separate PR I'm working on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-01 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/marker.rs</code>:291 on 2024-07-01 07:41</div>
+            <div class="timeline-body"><p>Scroll-by Nit: <code>//</code> -&gt; <code>///</code> so it's rustdoc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-01 16:50</div>
+            <div class="timeline-body"><p>@charliermarsh it does not, does that ever come up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-06 19:31</div>
+            <div class="timeline-body"><p>@ibraheemdev -- I was considering making some changes elsewhere that would benefit from it, but it's not critical. Although I do think <code>OR MarkerTree::And(vec![])</code> should be simplified to <code>MarkerTree::And(vec![])</code>.</p>
+<p>What's left to do here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-07 20:42</div>
+            <div class="timeline-body"><p>Another one we could do: #4852</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-07-08 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-08 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/marker.rs</code>:97 on 2024-07-08 17:01</div>
+            <div class="timeline-body"><p>Fixed and added a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/marker.rs</code>:291 on 2024-07-08 17:52</div>
+            <div class="timeline-body"><p>I might add a little more rustdoc for cases like these. As it is, I think the comment is effectively strictly redundant with the name and type signature. I think I'd write something like this:</p>
+<pre><code class="language-rust">/// For a given slice of marker trees, this collects
+/// all direct leaf expressions from each marker tree,
+/// and skips any marker trees that are themselves
+/// not leaves.
+</code></pre>
+<p>I might also add some context as to <em>why</em> this routine is useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/marker.rs</code>:324 on 2024-07-08 17:55</div>
+            <div class="timeline-body"><p>Is there a reason why this doesn't also filter them out for a direct leaf expression? I guess it would need to rewrite the marker expression as <code>MarkerTree::And(vec![])</code> in that case...</p>
+<p>Another perspective that I find helpful for routines like this is phrasing like, &quot;returns a marker tree in which the given expression is assumed to be true in all conjunctions.&quot; I think that captures better the essence of the contract here if I'm understanding correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/marker.rs</code>:1 on 2024-07-08 17:56</div>
+            <div class="timeline-body"><p>Oh Clippy. (I agree with your stylistic choice here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-07-08 17:57</div>
+            <div class="timeline-body"><p>I think this overall LGTM. This does seem like playing whack-a-mole, but I think we figured out it would require significant investment to do this fully correctly right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-08 18:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/marker.rs</code>:291 on 2024-07-08 18:41</div>
+            <div class="timeline-body"><p>Added some more documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-08 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/marker.rs</code>:324 on 2024-07-08 18:45</div>
+            <div class="timeline-body"><p>Yeah, that's covered by the <code>dedup</code> calls in <code>normalize_all</code>. It's a bit trickier to do that here because we want to filter recursively, but only deduplicate from the outer conjunction or disjunction, depending on the context (we don't just want to remove the expression everywhere).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-07-08 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-07-08 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-08 18:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv tool run` error messages references `uvx` when appropriate - astral-sh/uv #5014</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>uv tool run</code> error messages references <code>uvx</code> when appropriate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5014">#5014</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2024-07-12 15:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2024-07-12 15:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #5013.</p>
+<h2>Test Plan</h2>
+<pre><code class="language-console">❯ ./target/debug/uv tool run fastapi-cli
+warning: `uv tool run` is experimental and may change without warning.
+Resolved 9 packages in 28ms
+The executable fastapi-cli was not found.
+However, the following executables are available via uv tool run --from fastapi-cli &lt;EXECUTABLE&gt;:
+- fastapi
+</code></pre>
+<pre><code class="language-console">❯ ./target/debug/uvx fastapi-cli
+warning: `uvx` is experimental and may change without warning.
+Resolved 9 packages in 23ms
+The executable fastapi-cli was not found.
+However, the following executables are available via uvx --from fastapi-cli &lt;EXECUTABLE&gt;:
+- fastapi
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:57 on 2024-07-12 16:05</div>
+            <div class="timeline-body"><p>Maybe instead of a <code>invoked_via_uvx</code> bool we should have an enum that implements <code>Display</code>? Seems slightly better to have a type. Doesn't feel critical though, I'm not sure what else we'd do with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2093 on 2024-07-12 16:07</div>
+            <div class="timeline-body"><p>Instead of adding a flag, could you make use of the <code>Uvx</code> variant at https://github.com/astral-sh/uv/blob/c14de2a92a4a4797be56eca79bbe644c762aab7b/crates/uv/src/lib.rs#L599</p>
+<p>We should just be able to tell if <code>uvx</code> was invoked from there with <code>matches!</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-12 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-07-12 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-12 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-07-12 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv-cli/src/lib.rs</code>:2093 on 2024-07-12 16:37</div>
+            <div class="timeline-body"><p>Missed that before, done 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-12 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/run.rs</code>:57 on 2024-07-12 16:43</div>
+            <div class="timeline-body"><p>Yeah enum with type seems nice :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 16:43</div>
+            <div class="timeline-body"><p>Thanks so much, that was so fast!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-12 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2093 on 2024-07-12 16:45</div>
+            <div class="timeline-body"><p>I took this a bit further in https://github.com/astral-sh/uv/pull/5014/commits/3426d0ad4e4a68dc68753b38a798d4e4b7f9a856</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-12 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:57 on 2024-07-12 16:48</div>
+            <div class="timeline-body"><p>@blueraft interested in adding a <code>ToolRunCommand</code> enum and using that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-07-12 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/src/commands/tool/run.rs</code>:57 on 2024-07-12 16:48</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-07-12 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv-cli/src/lib.rs</code>:2093 on 2024-07-12 16:51</div>
+            <div class="timeline-body"><p>Thanks! very cool, didn't know about that syntax/feature before!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-12 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:57 on 2024-07-12 17:07</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-07-12 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-12 17:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>

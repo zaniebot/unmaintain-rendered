@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defer finding uv binary to shutil - astral-sh/uv #4576</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Defer finding uv binary to shutil</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4576">#4576</a>
+        opened by <a href="https://github.com/ulucs">@ulucs</a>
+        on 2024-06-27 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ulucs">@ulucs</a> on 2024-06-27 09:30</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Currently the <code>find_uv_binary</code> function searches some amount of pre-defined locations. Finding the binary itself can be achieved in a simpler way by deferring the logic to <code>shutil.which</code>, which does the following for us for free:</p>
+<ul>
+<li>handle <code>exe</code> extension logic in Windows</li>
+<li>search user/system-installed paths</li>
+<li>search virtualenv paths</li>
+</ul>
+<p>In addition, leaving the location logic to <code>PATH</code> and <code>shutil.which</code> has the additional advantage of being compatible with tools that expose binaries via <code>PATH</code> (ie Nix), and any other package managers that work in ways we don't expect</p>
+<h2>Test Plan</h2>
+<p>No new functions -- previously written tests should cover correctness. Marked as Draft until all tests pass</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ulucs on 2024-06-27 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-27 10:52</div>
+            <div class="timeline-body"><p>Hi! I don't think we want this behavior - it's only the intent of the script to find the uv binary associated with the Python module not another one on the system. If people want to find <em>any</em> uv binary, yeah <code>which</code> is a good option to call directly. See the discussion at https://github.com/astral-sh/uv/issues/4451 for more context.</p>
+<p>Perhaps we just need to clarify the documentation here instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulucs">@ulucs</a> on 2024-06-27 12:53</div>
+            <div class="timeline-body"><p>All good! Is there any interest in configuring <code>uv</code> to play well with Nix? One other option is to do something similar to</p>
+<pre><code>import os
+
+def up(file_path, times = 1):
+    for i in range(times):
+        file_path = os.path.dirname(file_path)
+    return file_path
+
+os.path.join(up(__file__, 5), &quot;bin&quot;, &quot;uv&quot;)
+</code></pre>
+<p>in order to target <code>$ROOT/bin/uv</code> from <code>$ROOT/lib/pythonXX/site-packages/uv/__init__.py</code>. The current approach is targeting <code>$ROOT/lib/pythonXX/site-packages/bin/uv</code> which is something I'm not sure exists</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-27 13:35</div>
+            <div class="timeline-body"><p>It'd be nice to support Nix but I don't think it makes sense for us to scan in arbitrary locations (i.e. up five levels) for the <code>bin</code>. Why doesn't Nix use one of the Python standard locations for the executable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulucs">@ulucs</a> on 2024-06-27 14:45</div>
+            <div class="timeline-body"><p>It does do that, by initializing the library root at <code>nix/store/$(derivation-hash)-$(python+ver)-$(package+ver)</code>, putting the binaries at <code>$ROOT/bin</code> and the library files at <code>$ROOT/lib/pythonXX/site-packages</code></p>
+<p>The problems for this case start when Python allows package location declarations via <code>site</code> and <code>PYTHONPATH</code> and disregards the binary paths. The previous version of this file had the same problem with <code>pip install --target</code> too, which was then solved by looking 2 directories up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulucs">@ulucs</a> on 2024-07-01 14:23</div>
+            <div class="timeline-body"><p>Hello! Following up.</p>
+<p>Is there any interest in supporting the python library being pulled in via <code>PYTHONPATH</code>? Or is that considered to be an unsupported use-case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 04:55</div>
+            <div class="timeline-body"><p>Hi! Sorry I'm not entirely understanding what you're proposing now. Can you clarify?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 19:25</div>
+            <div class="timeline-body"><p>We want to support Nix installs but I don't think the approach here is correct. We can talk about this in an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-19 19:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>

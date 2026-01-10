@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix(git): lock cache on resolve - astral-sh/uv #5051</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix(git): lock cache on resolve</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5051">#5051</a>
+        opened by <a href="https://github.com/shcheklein">@shcheklein</a>
+        on 2024-07-14 23:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/shcheklein">@shcheklein</a> on 2024-07-14 23:58</div>
+            <div class="timeline-body"><p>Fixes a concurrency issue when multiple processes are installing the same package in different virtual environments from Git ref (not a specific Git commit).</p>
+<h2>Symptoms</h2>
+<p>That's how some of symptoms looked like in our case:</p>
+<pre><code>DEBUG uv 0.2.21
+DEBUG Checking for Python interpreter at path `/tmp/pytest-of-runner/pytest-0/tmp_venv_dir/python3.12/37bf51bfba4699a940ce31349422b24a5bc55a2b179ed7aec74459a9ae8d57b7/bin/python`
+DEBUG Using Python 3.12.4 environment at /tmp/pytest-of-runner/pytest-0/tmp_venv_dir/python3.12/37bf51bfba4699a940ce31349422b24a5bc55a2b179ed7aec74459a9ae8d57b7/bin/python
+DEBUG Acquired lock for `/tmp/pytest-of-runner/pytest-0/tmp_venv_dir/python3.12/37bf51bfba4699a940ce31349422b24a5bc55a2b179ed7aec74459a9ae8d57b7`
+DEBUG At least one requirement is not satisfied: torch
+DEBUG Using request timeout of 300s
+DEBUG Found 37 packages in `--find-links` entry: /tmp/pytest-of-runner/pytest-0/tmp_venv_dir/python3.12/.cache/pip/wheels
+DEBUG Updating git source `Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;***&quot;, password: None, host: Some(Domain(&quot;github.com&quot;)), port: None, path: &quot;/iterative/datachain&quot;, query: None, fragment: None }`
+DEBUG Attempting GitHub fast path for: https://api.github.com/repos/iterative/datachain/commits/fix-distributed-test
+DEBUG failed to check github HTTP status client error (404 Not Found) for url (https://api.github.com/repos/iterative/datachain/commits/fix-distributed-test)
+DEBUG Performing a Git fetch for: https://***@github.com/iterative/datachain
+error: Failed to download and build: `datachain @ git+https://***@github.com/iterative/datachain@fix-distributed-test`
+Caused by: Git operation failed
+Caused by: process didn't exit successfully: `git clone --local /tmp/pytest-of-runner/pytest-0/tmp_venv_dir/python3.12/.cache/uv/git-v0/db/9d45a3e6f56b0a69 /tmp/pytest-of-runner/pytest-0/tmp_venv_dir/python3.12/.cache/uv/git-v0/checkouts/9d45a3e6f56b0a69/56b15b8` (exit status: 128)
+--- stderr
+fatal: destination path '/tmp/pytest-of-runner/pytest-0/tmp_venv_dir/python3.12/.cache/uv/git-v0/checkouts/9d45a3e6f56b0a69/56b15b8' already exists and is not an empty directory.
+</code></pre>
+<h2>Cause of the issue</h2>
+<p>It is the same command that is failing - <code>git clone</code>, and I think it's happening because it was trying to first get the repo to dereference the <code>fix-distributed-test</code> branch:</p>
+<p><code>Given a remote source distribution, return a precise variant, if possible.</code></p>
+<p>And it's happening w/i acquiring a lock around cache.</p>
+<h2>Fix</h2>
+<p>I thinks we can reuse the existing <code>fetch</code> method that has already lock around cache:</p>
+<p>https://github.com/astral-sh/uv/pull/5051/files#diff-f58bb99dee2c4922d156ace3e7de651f0d9a81fc8e9447a2ad865de5c53543fcR61-R68</p>
+<pre><code class="language-python">        // Avoid races between different processes, too.
+        let lock_dir = cache.join(&quot;locks&quot;);
+        ....
+</code></pre>
+<h2>Questions</h2>
+<ul>
+<li>Are there any tests that cover concurrency? I'm quite new to Rust and if someone can point me to some examples and I can create a similar test or a new one.</li>
+<li>Is error handling done correctly in this PR (again, I'm new to Rust - I'll review and read about it,  but it's better also for someone else to review this)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shcheklein">@shcheklein</a> on 2024-07-16 19:49</div>
+            <div class="timeline-body"><p>CI failure seems to be urelated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @shcheklein on 2024-07-16 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shcheklein">@shcheklein</a> on 2024-07-16 19:53</div>
+            <div class="timeline-body"><p>Should be ready for initial review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-07-16 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-16 19:59</div>
+            <div class="timeline-body"><p>This looks right to me, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 20:00</div>
+            <div class="timeline-body"><p>We do have a test for this (<code>compile_git_concurrent_access</code>). I suspect it's <em>not</em> failing because it already uses precise commits (and so the resolve phase is skipped entirely).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-16 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @zanieb on 2024-07-16 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 20:05</div>
+            <div class="timeline-body"><p>Ok I was able to reproduce on main:</p>
+<pre><code class="language-shell">rm -rf cache_dir
+echo &quot;example-pkg-a @ git+https://github.com/pypa/sample-namespace-packages.git#subdirectory=pkg_resources/pkg_a
+&quot; | ./target/debug/uv pip compile - --cache-dir cache_dir &amp;
+echo &quot;example-pkg-b @ git+https://github.com/pypa/sample-namespace-packages.git#subdirectory=pkg_resources/pkg_b
+&quot; | ./target/debug/uv pip compile - --cache-dir cache_dir &amp;
+</code></pre>
+<p>I think it's hard to reproduce in a test because we likely need to be accessing across processes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 20:06</div>
+            <div class="timeline-body"><p>Works as expected on your branch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-16 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-16 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shcheklein">@shcheklein</a> on 2024-07-16 20:07</div>
+            <div class="timeline-body"><p>thanks @charliermarsh for a quick turnaround! 👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:11 UTC
+    </footer>
+</body>
+</html>

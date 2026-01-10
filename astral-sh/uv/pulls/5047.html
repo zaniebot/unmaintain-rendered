@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `pypy` executables when calling `uv venv` - astral-sh/uv #5047</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>pypy</code> executables when calling <code>uv venv</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5047">#5047</a>
+        opened by <a href="https://github.com/silvanocerza">@silvanocerza</a>
+        on 2024-07-14 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-14 14:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Should fix #2092.</p>
+<p>This PR changes <code>uv venv</code> so it also creates symlinks to <code>pypy</code> on Unix and copies executables on Windows when creating a new environment using PyPy.</p>
+<p>I found a bit of discrepancy between creation of a venv using <code>python</code> and <code>uv</code>, as using <code>python</code> brings all the executables with it. While <code>uv</code> brings only those without any version number, at least on Windows. The behaviour is different on Unix as we take the versioned symlinks too.</p>
+<p>Some examples below.</p>
+<p><code>python -m venv</code> generates the following <code>Scripts</code> folder.</p>
+<pre><code>Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----         7/14/2024     15:41           2031 activate
+-a----         7/14/2024     15:41           1029 activate.bat
+-a----         7/14/2024     15:41           9033 Activate.ps1
+-a----         7/14/2024     15:41            393 deactivate.bat
+-a----         7/14/2024     15:40          27648 libffi-8.dll
+-a----         7/14/2024     15:41       44290560 libpypy3.10-c.dll
+-a----         7/14/2024     15:41         108424 pip.exe
+-a----         7/14/2024     15:41         108424 pip3.10.exe
+-a----         7/14/2024     15:41         108424 pip3.exe
+-a----         7/14/2024     15:41          79360 pypy.exe
+-a----         7/14/2024     15:41          79360 pypy3.10.exe
+-a----         7/14/2024     15:41          79360 pypy3.10w.exe
+-a----         7/14/2024     15:41          79360 pypy3.exe
+-a----         7/14/2024     15:41          79360 pypyw.exe
+-a----         7/14/2024     15:41          79360 python.exe
+-a----         7/14/2024     15:41          79360 python3.10.exe
+-a----         7/14/2024     15:41          79360 python3.exe
+-a----         7/14/2024     15:41          79360 pythonw.exe
+</code></pre>
+<p><code>uv venv</code> instead generates this.</p>
+<pre><code>-a----         7/14/2024     16:27           3360 activate
+-a----         7/14/2024     16:27           2251 activate.bat
+-a----         7/14/2024     16:27           2627 activate.csh
+-a----         7/14/2024     16:27           4191 activate.fish
+-a----         7/14/2024     16:27           3875 activate.nu
+-a----         7/14/2024     16:27           2766 activate.ps1
+-a----         7/14/2024     16:27           2378 activate_this.py
+-a----         7/14/2024     16:27           1728 deactivate.bat
+-a----         7/13/2024     19:19          27648 libffi-8.dll
+-a----         7/13/2024     19:19       44290560 libpypy3.10-c.dll
+-a----         7/14/2024     16:27           1215 pydoc.bat
+-a----         7/13/2024     19:19          79360 pypy.exe
+-a----         7/13/2024     19:19          79360 pypyw.exe
+-a----         7/13/2024     19:19          79360 python.exe
+-a----         7/13/2024     19:19          79360 pythonw.exe
+</code></pre>
+<h2>Test Plan</h2>
+<p>To verify the correct behaviour:</p>
+<ol>
+<li>Download and install PyPy from <a href="https://www.pypy.org/download.html">official website</a></li>
+<li>Call <code>uv venv -p &lt;path_to_pypy_&gt;</code></li>
+<li>Run <code>.\.venv\Scripts\activate</code> on Windows or <code>./.venv/Scripts/activate</code> on Unix</li>
+<li>Run <code>pypy</code></li>
+</ol>
+<p>I thought of writing some automated tests but I couldn't rely on <code>uv python install</code> command to install PyPy as it's not in the list of installable Python builds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/silvanocerza">@silvanocerza</a> reviewed on 2024-07-14 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:357 on 2024-07-14 14:48</div>
+            <div class="timeline-body"><p>I have no idea whether this is correct or not.</p>
+<p>Reading a comment below I seemed to understand that the shims changed name in Python 3.13 but after installing it doesn't seem like it.</p>
+<p>Also I think this shouldn't apply to PyPy for the time being since it supports up to Python 3.10 only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `pypy ` executables when calling `uv venv`" to "Add `pypy` executables when calling `uv venv`" by @silvanocerza on 2024-07-14 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-14 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-14 16:13</div>
+            <div class="timeline-body"><p>Here's a commit showing how we could add a CI test for this until we add support to the actual test suite https://github.com/astral-sh/uv/pull/5048/commits/908eeb9a60ad1014dcc46d2d5e2e2f1b0cb5a365</p>
+<p>I think on Windows we generally assume all Python executables don't contain version numbers cc @konstin, interesting that Python creates them in virtual environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-14 16:30</div>
+            <div class="timeline-body"><p>It looks like pypy always has <code>pythonx.y.exe</code> on windows, both in the archive and in the venv, and it's cpython-specific to omit the version number.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-15 16:12</div>
+            <div class="timeline-body"><p>@zanieb new job added. Should I maybe add one for Windows too? I could actually do it all in a single job if I'm clever with <code>matrix</code>.</p>
+<p>@konstin should I add the versioned binaries then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-15 16:12</div>
+            <div class="timeline-body"><p>I merged https://github.com/astral-sh/uv/pull/5048 so we can have most of the test changes separate from here — lmk if the conflicts are a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-15 16:13</div>
+            <div class="timeline-body"><p>We could add one for Windows but let's do it separately as a follow-up pull request, I suspect it'll be a little painful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-15 16:13</div>
+            <div class="timeline-body"><p>And yeah I'd add the versioned binaries to match the standard behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-15 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:357 on 2024-07-15 16:13</div>
+            <div class="timeline-body"><p>Can you add a comment explaining this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-07-15 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-15 16:16</div>
+            <div class="timeline-body"><p>@zanieb cool, will add the binaries then. I already handled the conflicts. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2024-07-15 16:56</div>
+            <div class="timeline-body"><p>PR ready. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-07-15 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-07-15 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-15 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-15 18:28</div>
+            <div class="timeline-body"><p>Nice :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-15 19:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:11 UTC
+    </footer>
+</body>
+</html>

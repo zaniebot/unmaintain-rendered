@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add split to cover marker universe when existing splits are incomplete - astral-sh/uv #5074</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add split to cover marker universe when existing splits are incomplete</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5074">#5074</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-07-15 14:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-15 14:48</div>
+            <div class="timeline-body"><p>In some cases, it's possible for the marker expressions on conflicting
+dependency specification to be disjoint but <em>incomplete</em>. That is, if
+one unions the disjoint markers, the result is not the complete set
+of marker environments possible. There may be some &quot;gap&quot; of marker
+environments not covered by the markers.</p>
+<p>This is a problem in practice because, before this commit, we only
+created forks in the resolver for specific marker expressions. So if a
+dependency happened to fall in a &quot;gap,&quot; our resolver would never see
+it.</p>
+<p>This commit fixes this by adding a new split covering the negation of
+the union of all marker expressions in a set of forks for a specific
+package.</p>
+<p>Originally, I had planned on only creating this split when it was
+known that the gap actually existed. That is, when the negation of the
+marker expressions did <em>not</em> correspond to the empty set. After a lot
+of thought, unfortunately, this (I believe) effectively boils down to
+3SAT, which is NP-complete.</p>
+<p>Instead, what we do here is <em>always</em> create an extra split unless we
+can definitively tell that it is empty. We look for a few cases, but
+otherwise throw our hands up and potentially do wasted work.</p>
+<p>This also updates the lock scenario tests to reflect the actual bug fix
+here.</p>
+<p>Ref #4732, Fixes #4687</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-15 14:51</div>
+            <div class="timeline-body"><p>One interesting consequence of this PR is that, even in very basic forks, this will create an additional fork covering the rest of the universe. For example:</p>
+<pre><code>requires = [
+  &quot;a&gt;=2 ; sys_platform == 'linux'&quot;,
+  &quot;a&lt;2 ; sys_platform == 'darwin'&quot;,
+]
+</code></pre>
+<p>While those marker expressions are disjoint, they do not cover everything. So this PR will result in an additional fork with <code>sys_platform != &quot;linux&quot; and sys_platform != &quot;darwin&quot;</code>.</p>
+<p>We do try to avoid creating forks if we know the marker expressions can never be true, but after some thought, I believe that's equivalent to solving 3SAT.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-07-15 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @BurntSushi on 2024-07-15 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-07-15 17:01</div>
+            <div class="timeline-body"><p>This makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-07-15 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-15 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-15 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-16 09:00</div>
+            <div class="timeline-body"><p>nice work!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:11 UTC
+    </footer>
+</body>
+</html>

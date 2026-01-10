@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use the strongest hash in the lockfile - astral-sh/uv #5167</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use the strongest hash in the lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5167">#5167</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-17 20:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 20:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We only need to store one hash -- it should be the &quot;strongest&quot; hash. In practice, most registries (like PyPI) only serve one, and we only compute a SHA256 hash for direct URLs.</p>
+<p>Part of: https://github.com/astral-sh/uv/issues/4924</p>
+<h2>Test Plan</h2>
+<p>I verified that changing:</p>
+<pre><code class="language-diff">diff --git a/crates/distribution-types/src/hash.rs b/crates/distribution-types/src/hash.rs
+index 553a74f55..d36c62286 100644
+--- a/crates/distribution-types/src/hash.rs
++++ b/crates/distribution-types/src/hash.rs
+@@ -31,7 +31,7 @@ impl&lt;'a&gt; HashPolicy&lt;'a&gt; {
+     pub fn algorithms(&amp;self) -&gt; Vec&lt;HashAlgorithm&gt; {
+         match self {
+             Self::None =&gt; vec![],
+-            Self::Generate =&gt; vec![HashAlgorithm::Sha256],
++            Self::Generate =&gt; vec![HashAlgorithm::Sha256, HashAlgorithm::Sha512],
+             Self::Validate(hashes) =&gt; {
+                 let mut algorithms = hashes.iter().map(HashDigest::algorithm).collect::&lt;Vec&lt;_&gt;&gt;();
+                 algorithms.sort();
+</code></pre>
+<p>Then running <code>uv lock</code> with a URL gave me:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;iniconfig&quot;
+version = &quot;2.0.0&quot;
+source = { url = &quot;https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl&quot; }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl&quot;, hash = &quot;sha512:44cc53a6c8dd7cf4d6d52bded308bcc4b4f85fff2ed081f60f7d4beaa86a7cde6d099e3976331232d4cbd472ad5d1781064725b0999c7cd3a2a4d42df687ee81&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-17 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-07-17 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-17 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-17 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-17 20:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:11 UTC
+    </footer>
+</body>
+</html>

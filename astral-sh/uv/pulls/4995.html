@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider overrides when checking if an environment satisfies requirements - astral-sh/uv #4995</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider overrides when checking if an environment satisfies requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4995">#4995</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-07-11 17:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-11 17:24</div>
+            <div class="timeline-body"><p>I noticed this while implementing #4973 — it seems like an oversight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-07-11 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-07-11 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-07-11 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @zanieb on 2024-07-11 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-11 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/pip/install.rs</code>:178 on 2024-07-11 20:48</div>
+            <div class="timeline-body"><p>Looks like <code>overrides</code> is empty here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/install.rs</code>:178 on 2024-07-11 21:15</div>
+            <div class="timeline-body"><p>Ah interesting, I just updated all the call-sites. Maybe this behavior isn't changed at all in <code>uv pip</code> at all then — it just always did a full resolution when any overrides were provided so they were respected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-11 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-12 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/install.rs</code>:178 on 2024-07-12 00:45</div>
+            <div class="timeline-body"><p>Yeah I think <code>satisfies</code> doesn't quite work with overrides as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-12 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/site_packages.rs</code>:323 on 2024-07-12 00:45</div>
+            <div class="timeline-body"><p>I think we'd need to change the code such that all <em>dependencies</em> also respect overrides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-12 03:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/site_packages.rs</code>:323 on 2024-07-12 03:35</div>
+            <div class="timeline-body"><p>Yeah I noticed this in my test at https://github.com/astral-sh/uv/pull/4973/files#diff-a7df5406f8301d2dd603b5355f282be5afa0198ff71f03144ab6d8aed56c07a3R713-R719. I'll explore fixing this before merging here. I'm not sure how I'll write a nice test case though without the <code>uv run</code> changes — I guess I could call <code>SitePackages::satisfies</code> directly in a test instead of going through the CLI. Or maybe I can drop the <code>overrides.is_empty()</code> shortcut on <code>pip install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2024-07-15 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 20:24</div>
+            <div class="timeline-body"><p>It turns out this is quite complicated because overrides can be unnamed which isn't compatible with the current design of <code>satisfies</code> — we cannot check that the override is respected without significant changes.</p>
+<p>It also looks like there's a bug in the constraint enforcement in this method, where it does not check that the constraint name matches the installed distribution name. Addressed in #5231</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-19 20:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>

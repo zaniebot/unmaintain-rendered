@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use lockfile to prefill resolver index - astral-sh/uv #4495</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use lockfile to prefill resolver index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4495">#4495</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-06-24 22:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-24 22:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Use the lockfile to prefill the <code>InMemoryIndex</code> used by the resolver. This enables us to resolve completely from the lockfile without making any network requests/builds if the requirements are unchanged. It also means that if new requirements are added we can still avoid most I/O during resolution, partially addressing https://github.com/astral-sh/uv/issues/3925.</p>
+<p>The main limitation of this PR is that resolution from the lockfile can fail if new versions are requested that are not present in the lockfile, in which case we have to perform a fresh resolution. Fixing this would likely require lazy version/metadata requests by <code>VersionMap</code> (this is different from the lazy parsing we do, the list of versions in a <code>VersionMap</code> is currently immutable).</p>
+<p>Resolves https://github.com/astral-sh/uv/issues/3892.</p>
+<h2>Test Plan</h2>
+<p>Added a <code>deterministic!</code> macro that ensures that a resolve from the lockfile and a clean resolve result in the same lockfile output for all our current tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-24 22:53</div>
+            <div class="timeline-body"><p>One thing I'm wondering if any of the metadata stored in the lockfile is potentially mutable, meaning resolution would fail in the presence of a lockfile. e.g. we probably can't rely on the locked metadata of path dependencies, and maybe also direct URLs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-25 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/lock.rs</code>:883 on 2024-06-25 17:50</div>
+            <div class="timeline-body"><p>A little concerned about reconstructing the <code>MarkerTree</code> like this without knowing the original order, but because we remove it when reconstructing the lockfile I think it's fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-25 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/lock.rs</code>:280 on 2024-06-25 18:01</div>
+            <div class="timeline-body"><p>Should stderr be suppressed here? Thinking there might be duplicate warnings that might be printed if resolution from a lockfile fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-25 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/lock.rs</code>:286 on 2024-06-25 18:01</div>
+            <div class="timeline-body"><p>Right now this assumes that <code>Lock::from_resolution_graph</code> won't fail on the resolution from a lockfile where it would otherwise succeed.. I think that makes sense but not 100% sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ibraheemdev on 2024-06-25 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-06-25 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ibraheemdev on 2024-06-25 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 22:45</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing I'm wondering if any of the metadata stored in the lockfile is potentially mutable, meaning resolution would fail in the presence of a lockfile. e.g. we probably can't rely on the locked metadata of path dependencies, and maybe also direct URLs?</p>
+</blockquote>
+<p>Yeah, this is the right instinct. We need to check if they're up-to-date... Take a look at <code>RequirementSatisfaction</code> which performs these checks when (e.g.) determining whether we can use a value from the cache.</p>
+<p>In general, we assume that HTTP direct URL requirements are immutable and thus require <code>--upgrade</code> or <code>--refresh</code> or similar. For file-based direct URL requirements, the rules are a little more nuanced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-25 23:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:280 on 2024-06-25 23:43</div>
+            <div class="timeline-body"><p>Yeah, we probably want to suppress everything here so that if resolution succeeds, we don't log anything about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-26 00:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/upgrade.rs</code>:70 on 2024-06-26 00:20</div>
+            <div class="timeline-body"><p>Maybe we split this into two functions, one that reads the lockfile, and one that takes <code>Lock</code> and returns <code>LockedRequirements</code>? Seems more flexible to compose that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-26 00:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:883 on 2024-06-26 00:21</div>
+            <div class="timeline-body"><p>Yeah I think the metadata we're constructing here is potentially incorrect... But perhaps not in a way that matters? It's hard to reason about. Like, we won't list all the extras here so <code>Provides-Extras</code> will be wrong -- we'll only include the extras that were activated when resolving...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:288 on 2024-06-26 13:10</div>
+            <div class="timeline-body"><p>For the same package name, yes, I think so?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:883 on 2024-06-26 13:24</div>
+            <div class="timeline-body"><p>Yeah it makes some sense to me that we're doing this. I think it's adding back what we do here?</p>
+<p>https://github.com/astral-sh/uv/blob/b677a06abad58868e226e19e722842f9bd8ec816/crates/pypi-types/src/metadata.rs#L254</p>
+<p>Which reminds me: is it possible to simplify this code a bit via <code>MarkerTree::with_extra_marker</code>?</p>
+<p>https://github.com/astral-sh/uv/blob/b677a06abad58868e226e19e722842f9bd8ec816/crates/pep508-rs/src/lib.rs#L412-L435</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/lock.rs</code>:286 on 2024-06-26 13:32</div>
+            <div class="timeline-body"><p>That's plausible I think, but definitely feels pretty difficult to guarantee. There are a lot of error cases.</p>
+<p>What happens if the assumption is wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/lock.rs</code>:247 on 2024-06-26 13:33</div>
+            <div class="timeline-body"><p>Nit: I like to have shorter cases like this toward the top. It helps with a linear reading of the code. Otherwise, if you're reading this, I find I have to scroll back up to see where that <code>None</code> is coming from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock.rs</code>:30 on 2024-06-26 13:34</div>
+            <div class="timeline-body"><p>Cute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock.rs</code>:30 on 2024-06-26 13:36</div>
+            <div class="timeline-body"><p>Looking at this commit, is the only change that <code>deterministic! { ... }</code> is added to each of the tests? It's not easy to tell if that's the case from the diff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-26 13:37</div>
+            <div class="timeline-body"><p>I think this LGTM with some tests!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-26 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/lock.rs</code>:30 on 2024-06-26 16:01</div>
+            <div class="timeline-body"><p>Yeah, the git diff is pretty confusing but that's the only change. https://app.semanticdiff.com/gh/astral-sh/uv/pull/4495/changes#crates/uv/tests/lock.rs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-26 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/lock.rs</code>:286 on 2024-06-26 16:04</div>
+            <div class="timeline-body"><p>If it's wrong we run into error cases because the metadata we construct from the lock file is invalid, and don't fallback to a clean resolve. However, silently falling back would mean potentially hiding bugs in <code>lock.to_index</code>, so I think this is better unless we run into concrete issues down the line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-26 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/lock.rs</code>:280 on 2024-06-26 16:05</div>
+            <div class="timeline-body"><p>I'm not sure we should supress everything because this resolve might still involve downloading/building new distributions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-26 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/lock.rs</code>:30 on 2024-06-26 16:06</div>
+            <div class="timeline-body"><p>Do you think it needs more tests than this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-26 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/lock.rs</code>:883 on 2024-06-26 16:27</div>
+            <div class="timeline-body"><p>Looks like that's <code>pep508_rs::Requirement::with_extra_marker</code> and we need <code>pypi_types::Requirement::with_extra_marker</code>. Ideally this could be on <code>MarkerTree</code> but the <code>Option</code> gets in the way..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-26 17:54</div>
+            <div class="timeline-body"><p>On the airflow benchmark, which is a very large lockfile, this speeds up <code>uv lock</code>  by 2x:</p>
+<pre><code>$ hyperfine &quot;../uv/target/profiling/baseline lock&quot; &quot;../uv/target/profiling/uv lock&quot;
+Benchmark 1: ../uv/target/profiling/baseline lock
+  Time (mean ± σ):     183.6 ms ±   4.6 ms    [User: 199.8 ms, System: 124.6 ms]
+  Range (min … max):   176.1 ms … 190.4 ms    15 runs
+ 
+Benchmark 2: ../uv/target/profiling/uv lock
+  Time (mean ± σ):      93.6 ms ±   2.0 ms    [User: 78.9 ms, System: 16.2 ms]
+  Range (min … max):    90.5 ms …  99.1 ms    31 runs
+ 
+Summary
+  ../uv/target/profiling/uv lock ran
+    1.96 ± 0.06 times faster than ../uv/target/profiling/baseline lock
+</code></pre>
+<p>From a user perspective, 100ms seems relatively instant while I can feel some lag at 200ms, so this is a noticeable improvement. There is probably still room for some improvement here.</p>
+<p>The big win here is that with a cold cache, <code>uv lock</code> can still run in 100ms due to the presence of a lockfile, where it would previously take over 30 seconds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-26 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/lock.rs</code>:288 on 2024-06-26 17:58</div>
+            <div class="timeline-body"><p>I think this is correct. The <code>Vec&lt;VersionMap&gt;</code> seems to be used when fetching from multiple indexes, but they are all merged eventually anyways. I think that distinction could be removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-26 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:280 on 2024-06-26 18:02</div>
+            <div class="timeline-body"><p>When would we need to download / build a new distribution? The only case in which we build a distribution during resolve is to create a wheel from a source dist, but don't we already have the metadata?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-06-26 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-26 19:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/lock.rs</code>:280 on 2024-06-26 19:28</div>
+            <div class="timeline-body"><p>We're still doing a regular resolve with the default provider, only existing immutable metadata is prefilled. New dependencies can still be fetched and built.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-27 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/lock.rs</code>:286 on 2024-06-27 12:14</div>
+            <div class="timeline-body"><p>I'm inclined to agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-27 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock.rs</code>:30 on 2024-06-27 12:17</div>
+            <div class="timeline-body"><p>Ah okay, I see. I think I just missed how this macro was testing this change. Perhaps a question here though is, do any of the tests fail without <code>deterministic!</code> wrapped around them?</p>
+<p>I suppose it is perhaps difficult to construct such a test, by design. I guess I'm just wondering if there's a specific way to test this change such that the result of the test would be different if you hadn't done this prefilling. But given that it's meant to be an optimization and not a change in semantics, I'd guess probably not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-06-27 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-28 01:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:280 on 2024-06-28 01:16</div>
+            <div class="timeline-body"><p>Yeah not sure how to solve this. I think I'd need to see the output in various cases to develop an opinion on it...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-28 01:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:270 on 2024-06-28 01:17</div>
+            <div class="timeline-body"><p>We probably need to do some rigorous thinking around how <code>reinstall</code> and <code>upgrade</code> work here, and whether they will be respected correctly, both for the registry distributions that are already locked and for the mutable distributions that we're omitting (like path dependencies).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-28 01:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:883 on 2024-06-28 01:18</div>
+            <div class="timeline-body"><p>I mentioned this on Discord, but there's at least one problem with the partial metadata here. If we have some package in the lockfile (like <code>flask</code>), but it wasn't requested with an extra initially, we won't write that non-requested extra to the lockfile. If someone then comes in and asks for <code>flask[dotenv]</code>, we won't have the list of dependencies that come with <code>flask[dotenv]</code> -- we just don't store that in the lockfile at all.</p>
+<p>So we need some solution for this. Note that non-existent extras are <em>not</em> an error in the resolver; we just warn, mostly because extras can vary over time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-28 01:20</div>
+            <div class="timeline-body"><p>I think this is an interesting idea and we should keep pushing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-28 01:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:270 on 2024-06-28 01:20</div>
+            <div class="timeline-body"><p>I think this is worth some dedicated tests or at least some exploration on the command-line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-28 01:20</div>
+            <div class="timeline-body"><p>The fact that you can resolve so quickly with a cold cache is crucial.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-28 01:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:280 on 2024-06-28 01:23</div>
+            <div class="timeline-body"><p>I guess the only output is like... anything related to building (which we want to keep, right?)... then the summary message (which means we succeeded, so that's fine)... then warnings? But we only print warnings (1) if the resolution fails, as hints to the user (so those wouldn't be shown), and then (2) via &quot;diagnostics&quot; on the resolution (look for <code>operations::diagnose_resolution</code> calls). So actually this is probably totally fine as-is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-07 19:03</div>
+            <div class="timeline-body"><p>What if we intentionally run the resolver in <code>Offline</code> mode for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:834 on 2024-07-08 14:00</div>
+            <div class="timeline-body"><p>Is that true even when requires-python changed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-08 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/lock.rs</code>:834 on 2024-07-11 18:55</div>
+            <div class="timeline-body"><p>From what I understand compatibility has to do with whether hashes matched and is used for wheel prioritization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-11 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-11 20:13</div>
+            <div class="timeline-body"><p>Okay, I think this is ready now.</p>
+<ul>
+<li>The upgrade strategy is respected. Any packages included in the upgrade strategy (all of them if <code>--upgrade</code>) are excluded from the prefilled index. See the passing <code>lock_preference</code> test.</li>
+<li>Missing extras/development groups are detected and require a fresh resolution. This unfortunately means that projects with extras that don't have optional dependencies, such as <code>requests[security]</code>, always require a fresh resolve. The solution to this is either to add extra information to the lockfile or eventually add per-dependency fallbacks in the resolver to fetch up-to-date metadata. See the passing <code>lock_new_extras</code> test.</li>
+<li>The duplicated <code>resolved in Xms</code> is now avoided. We still may print checkout/build progress in the initial resolve from the lockfile even if it fails, but the progress is seamless as the new progress bar overwrites the previous one in-place. You can see how this looks locally by adding a cold git dependency and running <code>uv lock</code> with a new extra added to an existing dependency.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-07-11 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ibraheemdev on 2024-07-11 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-11 20:19</div>
+            <div class="timeline-body"><p>One remaining issue is that we don't check for yanked releases (see https://github.com/astral-sh/uv/issues/3892#issuecomment-2212528949). I'm not sure how we should tackle this, does PyPI have a fast-path to check if a specific version was yanked? It will likely still result in significant overhead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @ibraheemdev on 2024-07-11 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ibraheemdev on 2024-07-11 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 01:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Missing extras/development groups are detected and require a fresh resolution. This unfortunately means that projects with extras that don't have optional dependencies, such as requests[security], always require a fresh resolve. The solution to this is either to add extra information to the lockfile or eventually add per-dependency fallbacks in the resolver to fetch up-to-date metadata. See the passing lock_new_extras test.</p>
+</blockquote>
+<p>Can you explain this piece in a little more detail? What are &quot;projects with extras that don't have optional dependencies&quot;? Does <code>security</code> not exist as a valid extra for <code>requests</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:498 on 2024-07-12 01:24</div>
+            <div class="timeline-body"><p>Nit: <code>matches!</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-12 01:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:101 on 2024-07-12 01:25</div>
+            <div class="timeline-body"><p>Could we just pass <code>Printer::Quiet</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-12 01:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-12 01:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:308 on 2024-07-12 01:26</div>
+            <div class="timeline-body"><p>Can we add some debug logging for the various paths here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 01:26</div>
+            <div class="timeline-body"><p>This is looking good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-12 01:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:101 on 2024-07-12 01:29</div>
+            <div class="timeline-body"><p>We still want to output the build/download progress to stderr, we just don't want to print the final &quot;Resolved in 20ms&quot; in case we end up needing to resolve again because of warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-07-12 01:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/lock.rs</code>:498 on 2024-07-12 01:29</div>
+            <div class="timeline-body"><p>I slightly prefer the exhaustive <code>match</code> here because it's clear about what we're ignoring and what we're prefilling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-12 01:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain this piece in a little more detail? What are &quot;projects with extras that don't have optional dependencies&quot;? Does security not exist as a valid extra for requests?</p>
+</blockquote>
+<p>Ah I think I was confused about this. <code>security</code> is an extra provided by <code>requests</code>, but <a href="https://github.com/psf/requests/blob/main/setup.py#L124">it doesn't enable any optional dependencies</a> so it doesn't show up in the lockfile. Turns out it is deprecated so I don't think this is a problem. I was thinking that some packages might provide extras that enable features dynamically without introducing optional dependencies (like cargo features) but I don't think that's expected (or even possible)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-12 01:41</div>
+            <div class="timeline-body"><p>Ohhh ok, I see. Yes, this makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-12 01:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:1 on 2024-07-12 01:42</div>
+            <div class="timeline-body"><p>What's more annoying, Clippy or me as reviewer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-12 07:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:834 on 2024-07-12 07:29</div>
+            <div class="timeline-body"><p>Say we locked for python <code>==3.11.*</code>, and now we're re-resolving for <code>==3.12.*</code>. The lockfile will only contains <code>cp311-cp311</code> wheels. Here we're declaring these compatible in prioritized dist, even though we don't know if for python 3.12, there exist compatible wheels.</p>
+<p>CC @charliermarsh can you check my <code>PrioritizedDist</code> claims, i sometimes get these mixed up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-12 12:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I was thinking that some packages might provide extras that enable features dynamically without introducing optional dependencies (like cargo features) but I don't think that's expected (or even possible)?</p>
+</blockquote>
+<p>Yeah I believe this is not possible. AIUI, extras in Python disappear after dependencies are resolved. They aren't themselves directly visible from the package that defines them, unlike Cargo features, which can be used in arbitrary ways.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-12 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:834 on 2024-07-12 12:41</div>
+            <div class="timeline-body"><p>Can we just abort the fast-path check if <code>requires-python</code> changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-07-12 14:01</div>
+            <div class="timeline-body"><p>Amazing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-12 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-12 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-12 22:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>

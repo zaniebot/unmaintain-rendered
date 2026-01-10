@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support workspace to workspace path dependencies - astral-sh/uv #4833</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support workspace to workspace path dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4833">#4833</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-05 11:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-05 11:52</div>
+            <div class="timeline-body"><p>Add support for path dependencies from a package in one workspace to a package in another workspace, which it self has workspace dependencies.</p>
+<p>Say we have a main workspace with packages <code>a</code> and <code>b</code>, and a second workspace with <code>c</code> and <code>d</code>. We have <code>a -&gt; b</code>, <code>b -&gt; c</code>, <code>c -&gt; d</code>. This would previously lead to a mangled path for <code>d</code>, which is now fixed.</p>
+<p>Like distribution paths, we split workspace paths into an absolute install path and a relative (or absolute, if the user provided an absolute path) lock path.</p>
+<p>Part of https://github.com/astral-sh/uv/issues/3943</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-07 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-07 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-07 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-fs/src/path.rs</code>:216 on 2024-07-07 20:19</div>
+            <div class="timeline-body"><p>This function is more lenient than the other path normalization function. Can/should we merge the two? I don't fully understand the constraints on the other normalization function, so i kept them apart for starters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-07 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/workspace.rs</code>:576 on 2024-07-07 20:21</div>
+            <div class="timeline-body"><p>I'll reuse this for the other workspace-to-workspace cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-07-07 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-07-16 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/workspace.rs</code>:964 on 2024-07-16 16:05</div>
+            <div class="timeline-body"><p>I would clarify here that the method <em>requires</em> that the <code>path</code> is absolute, or else it panics. I think the current phrasing could imply that the given path is turned <em>into</em> an absolute path by this function if it isn't already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/path.rs</code>:216 on 2024-07-16 16:08</div>
+            <div class="timeline-body"><p>I don't fully understand the constraints either.</p>
+<p>This function reminds me of <a href="https://doc.rust-lang.org/std/path/fn.absolute.html"><code>std::path::absolute</code></a>. Should we use that instead here, or are the critical differences in semantics? (The phrasing in your docs of not touching the file system and possibly returning a path that does not exist were what reminded me of <code>absolute</code>.)</p>
+<p>I typed all that up, but now I see that this routine is specifically handing relative paths and not making them absolute. So <code>absolute</code> is probably a no-go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/common/mod.rs</code>:878 on 2024-07-16 16:09</div>
+            <div class="timeline-body"><p>Random question, but how we specify a build system here? Should I be doing this in my own ad hoc experiments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-07-16 16:09</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-16 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/common/mod.rs</code>:878 on 2024-07-16 20:29</div>
+            <div class="timeline-body"><p>If you specify nothing, we default to setuptools. Setuptools works, but has some quirks like creating an <code>.egg-info</code> directory and not checking if there's actual code for your package, so i normally go with hatch for my experiments:</p>
+<pre><code>[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>Flit is another modern, more minimalistic build backend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-07-16 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-fs/src/path.rs</code>:216 on 2024-07-16 20:37</div>
+            <div class="timeline-body"><p>I found the difference:</p>
+<blockquote>
+<p>Note that no other normalization takes place; in particular, <code>a/c</code>
+and <code>a/b/../c</code> are distinct, to account for the possibility that <code>b</code>
+is a symbolic link (so its parent isn't <code>a</code>).</p>
+</blockquote>
+<p>We assume they are the same and normalize this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-07-16 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-16 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-16 20:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:43:10 UTC
+    </footer>
+</body>
+</html>
