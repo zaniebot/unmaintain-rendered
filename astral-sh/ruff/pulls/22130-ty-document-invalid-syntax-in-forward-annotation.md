@@ -1,0 +1,177 @@
+```yaml
+number: 22130
+title: "[ty] Document `invalid-syntax-in-forward-annotation` and `escape-character-in-forward-annotation`"
+type: pull_request
+state: merged
+author: WillDuke
+labels:
+  - documentation
+  - ty
+assignees: []
+merged: true
+base: main
+head: wld/add-lint-docs
+created_at: 2025-12-21T17:57:50Z
+updated_at: 2025-12-21T19:35:45Z
+url: https://github.com/astral-sh/ruff/pull/22130
+synced_at: 2026-01-10T16:36:18Z
+```
+
+# [ty] Document `invalid-syntax-in-forward-annotation` and `escape-character-in-forward-annotation`
+
+---
+
+_Pull request opened by @WillDuke on 2025-12-21 17:57_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+The docstrings for the lints [`invalid-syntax-in-forward-annotation`](https://docs.astral.sh/ty/reference/rules/#invalid-super-argument) and [`escape-character-in-forward-annotation`](https://docs.astral.sh/ty/reference/rules/#escape-character-in-forward-annotation) were missing, so I've attempted to fill them in.
+
+I chose to match the structure of other similar lints in ty, though I noticed that ruff has an identical lint for `invalid-syntax-forward-annotation` ([F722](https://docs.astral.sh/ruff/rules/forward-annotation-syntax-error/)) which is a bit more descriptive.
+
+I ran `cargo dev generate-all` to update `ty.schema.json` and `rules.md`.
+
+Fixes https://github.com/astral-sh/ty/issues/2115
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+None.
+
+---
+
+_Review requested from @carljm by @WillDuke on 2025-12-21 17:57_
+
+---
+
+_Review requested from @AlexWaygood by @WillDuke on 2025-12-21 17:57_
+
+---
+
+_Review requested from @sharkdp by @WillDuke on 2025-12-21 17:57_
+
+---
+
+_Review requested from @dcreager by @WillDuke on 2025-12-21 17:57_
+
+---
+
+_Review requested from @MichaReiser by @WillDuke on 2025-12-21 17:57_
+
+---
+
+_Label `documentation` added by @AlexWaygood on 2025-12-21 18:00_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-12-21 18:00_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-21 18:03_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+No changes detected when running ty on typing conformance tests ✅
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-21 18:04_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 42 diagnostics
++ Found 43 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/tree_util.py:302:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
+- jax/_src/tree_util.py:305:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
+- jax/_src/tree_util.py:308:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
+- Found 2805 diagnostics
++ Found 2802 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Index[Any]] | Top[Series[Any, Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Top[Series[Any, Any]] | Any, TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Top[Series[Any, Any]] | Unknown, Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | TypeBlocks | Batch | ... omitted 6 union elements, generic[object]]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Self@iloc | Series[Any, Any], generic[object]]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | TypeBlocks | Batch | ... omitted 7 union elements, generic[object]]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 7 union elements, generic[object]]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Top[Yarn[Any]] | TypeBlocks | Batch | ... omitted 6 union elements, generic[object]]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 6 union elements, generic[object]]`
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1223:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5086 diagnostics
++ Found 5087 diagnostics
+
+
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2025-12-21 19:28_
+
+---
+
+_@AlexWaygood approved on 2025-12-21 19:31_
+
+Thank you!
+
+---
+
+_Renamed from "[ty] Add docstrings for two undocumented lints" to "[ty] Document `invalid-syntax-in-forward-annotation` and `escape-character-in-forward-annotation`" by @AlexWaygood on 2025-12-21 19:33_
+
+---
+
+_Merged by @AlexWaygood on 2025-12-21 19:35_
+
+---
+
+_Closed by @AlexWaygood on 2025-12-21 19:35_
+
+---

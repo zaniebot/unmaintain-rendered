@@ -1,0 +1,546 @@
+```yaml
+number: 22215
+title: "[ty] Promote float and complex when promoting literals"
+type: pull_request
+state: merged
+author: MatthewMckee4
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: promote-float
+created_at: 2025-12-26T23:03:12Z
+updated_at: 2025-12-27T00:19:37Z
+url: https://github.com/astral-sh/ruff/pull/22215
+synced_at: 2026-01-10T16:36:18Z
+```
+
+# [ty] Promote float and complex when promoting literals
+
+---
+
+_Pull request opened by @MatthewMckee4 on 2025-12-26 23:03_
+
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+Resolve https://github.com/astral-sh/ty/issues/2226
+
+We need to add a special case in `apply_type_mapping` instead of directly in `promote_literals_impl` because we do not reach this with non generic non tuple nominal instances. We still ensure we apply the normal mapping if we do not see `float` or `complex` instances. 
+
+## Test Plan
+
+Update existing mdtest and add a new case to `literal_promotion.md`
+
+
+---
+
+_Review requested from @carljm by @MatthewMckee4 on 2025-12-26 23:03_
+
+---
+
+_Review requested from @AlexWaygood by @MatthewMckee4 on 2025-12-26 23:03_
+
+---
+
+_Review requested from @sharkdp by @MatthewMckee4 on 2025-12-26 23:03_
+
+---
+
+_Review requested from @dcreager by @MatthewMckee4 on 2025-12-26 23:03_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-26 23:05_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-12-26 23:12:22.495055849 +0000
++++ new-output.txt	2025-12-26 23:12:24.655067875 +0000
+@@ -204,9 +204,7 @@
+ classes_override.py:84:9: error[invalid-explicit-override] Method `class_method1` is decorated with `@override` but does not override anything
+ classes_override.py:89:9: error[invalid-explicit-override] Method `property1` is decorated with `@override` but does not override anything
+ constructors_call_init.py:21:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `float`
+-constructors_call_init.py:25:1: error[type-assertion-failure] Type `Class1[int | float]` does not match asserted type `Class1[float]`
+ constructors_call_init.py:56:1: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Class4[int]`, found `Class4[str]`
+-constructors_call_init.py:75:1: error[type-assertion-failure] Type `Class5[int | float]` does not match asserted type `Class5[float]`
+ constructors_call_init.py:91:1: error[type-assertion-failure] Type `Class6[int, str]` does not match asserted type `Class6[Unknown, Unknown]`
+ constructors_call_init.py:99:1: error[type-assertion-failure] Type `Class7[str, int]` does not match asserted type `Class7[Unknown, Unknown]`
+ constructors_call_init.py:130:9: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+@@ -216,7 +214,6 @@
+ constructors_call_metaclass.py:54:1: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
+ constructors_call_metaclass.py:68:1: error[missing-argument] No argument provided for required parameter `x` of function `__new__`
+ constructors_call_new.py:21:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `int`, found `float`
+-constructors_call_new.py:24:1: error[type-assertion-failure] Type `Class1[int | float]` does not match asserted type `Class1[float]`
+ constructors_call_new.py:49:1: error[type-assertion-failure] Type `int` does not match asserted type `Class3`
+ constructors_call_new.py:49:13: error[missing-argument] No argument provided for required parameter `x` of bound method `__init__`
+ constructors_call_new.py:64:1: error[type-assertion-failure] Type `Class4 | Any` does not match asserted type `Class4`
+@@ -748,9 +745,6 @@
+ namedtuples_define_class.py:69:20: error[too-many-positional-arguments] Too many positional arguments: expected 3, got 4
+ namedtuples_define_class.py:76:5: error[invalid-named-tuple] NamedTuple field `_y` cannot start with an underscore
+ namedtuples_define_class.py:86:5: error[invalid-named-tuple] NamedTuple field without default value cannot follow field(s) with default value(s): Field `latitude` defined here without a default value
+-namedtuples_define_class.py:121:1: error[type-assertion-failure] Type `Property[int | float]` does not match asserted type `Property[float]`
+-namedtuples_define_class.py:122:1: error[type-assertion-failure] Type `int | float` does not match asserted type `float`
+-namedtuples_define_class.py:123:1: error[type-assertion-failure] Type `int | float` does not match asserted type `float`
+ namedtuples_define_class.py:125:19: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `float`
+ namedtuples_define_class.py:132:24: error[invalid-named-tuple] NamedTuple class `Unit` cannot use multiple inheritance except with `Generic[]`
+ namedtuples_type_compat.py:22:23: error[invalid-assignment] Object of type `Point` is not assignable to `tuple[int, int]`
+@@ -1036,4 +1030,4 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
+-Found 1038 diagnostics
++Found 1032 diagnostics
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-26 23:06_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/pygments/lexers/__init__.py:340:12: error[call-non-callable] Object of type `int` is not callable
+- Found 610 diagnostics
++ Found 611 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- tests/test_downloadermiddleware_cookies.py:443:46: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str] | list[VerboseCookie] | None`, found `dict[Unknown | str, Unknown | float]`
++ tests/test_downloadermiddleware_cookies.py:443:46: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str] | list[VerboseCookie] | None`, found `dict[Unknown | str, Unknown | int | float]`
+
+sockeye (https://github.com/awslabs/sockeye)
+- test/unit/test_output_handler.py:46:43: error[invalid-argument-type] Argument is incorrect: Expected `list[list[int | float]] | None`, found `list[list[int | float] | float]`
++ test/unit/test_output_handler.py:46:43: error[invalid-argument-type] Argument is incorrect: Expected `list[list[int | float]] | None`, found `list[list[int | float] | int | float]`
+
+ignite (https://github.com/pytorch/ignite)
+- examples/notebooks/Cifar10_Ax_hyperparam_tuning.ipynb:cell 22:7:58: error[invalid-argument-type] Argument to bound method `plot_values` is incorrect: Expected `Mapping[Unknown, Unknown]`, found `list[Unknown | tuple[int, float]]`
++ examples/notebooks/Cifar10_Ax_hyperparam_tuning.ipynb:cell 22:7:58: error[invalid-argument-type] Argument to bound method `plot_values` is incorrect: Expected `Mapping[Unknown, Unknown]`, found `list[Unknown | tuple[int, int | float]]`
+- tests/ignite/handlers/test_fbresearch_logger.py:79:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | float]` is not assignable to attribute `output` on type `Unknown | State`
++ tests/ignite/handlers/test_fbresearch_logger.py:79:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | int | float]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_fbresearch_logger.py:83:5: error[invalid-assignment] Object of type `list[Unknown | float]` is not assignable to attribute `output` on type `Unknown | State`
++ tests/ignite/handlers/test_fbresearch_logger.py:83:5: error[invalid-assignment] Object of type `list[Unknown | int | float]` is not assignable to attribute `output` on type `Unknown | State`
+- tests/ignite/handlers/test_param_scheduler.py:768:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[float]]`
++ tests/ignite/handlers/test_param_scheduler.py:768:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[int | float]]`
+- tests/ignite/handlers/test_param_scheduler.py:771:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[float]]`
++ tests/ignite/handlers/test_param_scheduler.py:771:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[int | float]]`
+- tests/ignite/handlers/test_param_scheduler.py:777:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[float, int]]`
++ tests/ignite/handlers/test_param_scheduler.py:777:42: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[int | float, int]]`
+- tests/ignite/handlers/test_state_param_scheduler.py:151:76: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[float]]`
++ tests/ignite/handlers/test_state_param_scheduler.py:151:76: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[int | float]]`
+- tests/ignite/handlers/test_state_param_scheduler.py:154:76: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[float]]`
++ tests/ignite/handlers/test_state_param_scheduler.py:154:76: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[int | float]]`
+- tests/ignite/handlers/test_state_param_scheduler.py:160:76: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[float, int]]`
++ tests/ignite/handlers/test_state_param_scheduler.py:160:76: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, int | float] | tuple[int | float, int]]`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- test/mitmproxy/proxy/layers/test_modes.py:217:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `float | _Placeholder[float]`
++ test/mitmproxy/proxy/layers/test_modes.py:217:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `int | float | _Placeholder[int | float]`
+
+pandera (https://github.com/pandera-dev/pandera)
+- tests/mypy/pandas_modules/pandas_series.py:9:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `Series[str]`, found `Series[str | float]`
++ tests/mypy/pandas_modules/pandas_series.py:9:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `Series[str]`, found `Series[str | int | float]`
+- tests/mypy/pandas_modules/pandas_series.py:12:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `Series[str]`, found `Series[float]`
++ tests/mypy/pandas_modules/pandas_series.py:12:4: error[invalid-argument-type] Argument to function `fn` is incorrect: Expected `Series[str]`, found `Series[int | float]`
+- tests/pandas/test_model.py:1681:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
++ tests/pandas/test_model.py:1681:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | int | float]]`
+- tests/pandas/test_model.py:1725:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
++ tests/pandas/test_model.py:1725:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | int | float]]`
+- tests/pandas/test_model.py:1752:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | float]]`
++ tests/pandas/test_model.py:1752:59: error[invalid-argument-type] Argument to function `from_records` is incorrect: Expected `ndarray[tuple[Any, ...], dtype[Any]] | list[tuple[Any, ...]] | dict[Any, Any] | DataFrame`, found `list[Unknown | dict[Unknown | str, Unknown | str | int | float]]`
+
+artigraph (https://github.com/artigraph/artigraph)
+- tests/arti/types/test_types.py:100:51: error[invalid-argument-type] Argument is incorrect: Expected `frozenset[Any]`, found `frozenset[Unknown | float] | list[Unknown | float] | tuple[Unknown | float, ...]`
++ tests/arti/types/test_types.py:100:51: error[invalid-argument-type] Argument is incorrect: Expected `frozenset[Any]`, found `frozenset[Unknown | int | float] | list[Unknown | int | float] | tuple[Unknown | int | float, ...]`
+
+vision (https://github.com/pytorch/vision)
+- test/test_transforms_v2.py:3750:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | Sequence[int] | None`, found `list[Unknown | float]`
++ test/test_transforms_v2.py:3750:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | Sequence[int] | None`, found `list[Unknown | int | float]`
+- test/test_transforms_v2.py:4771:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | Sequence[int]`, found `list[Unknown | float]`
++ test/test_transforms_v2.py:4771:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | Sequence[int]`, found `list[Unknown | int | float]`
+- torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | list[Unknown | float] | list[Unknown | int | float]`
++ torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | list[Unknown | int | float]`
+- torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | list[Unknown | float] | list[Unknown | int | float]`
++ torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | list[Unknown | int | float]`
+- torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | list[Unknown | float] | list[Unknown | int | float]`
++ torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | list[Unknown | int | float]`
+- torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | list[Unknown | float] | list[Unknown | int | float]`
++ torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | list[Unknown | int | float]`
+- torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | list[Unknown | float] | list[Unknown | int | float]`
++ torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | list[Unknown | int | float]`
+- torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | list[Unknown | float] | list[Unknown | int | float]`
++ torchvision/models/detection/ssd.py:677:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | list[Unknown | int | float]`
+- torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[int | float] | None`, found `Unknown | float | int | list[Unknown | float]`
++ torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[int | float] | None`, found `Unknown | int | float | list[Unknown | int | float]`
+- torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[int | float] | None`, found `Unknown | float | int | list[Unknown | float]`
++ torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[int | float] | None`, found `Unknown | int | float | list[Unknown | int | float]`
+- torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | float | int | list[Unknown | float]`
++ torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | int | float | list[Unknown | int | float]`
+- torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | float | int | list[Unknown | float]`
++ torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | int | float | list[Unknown | int | float]`
+- torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | float | int | list[Unknown | float]`
++ torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | int | float | list[Unknown | int | float]`
+- torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | float | int | list[Unknown | float]`
++ torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | int | float | list[Unknown | int | float]`
+- torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | float | int | list[Unknown | float]`
++ torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Unknown | int | float | list[Unknown | int | float]`
+- torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | float | int | list[Unknown | float]`
++ torchvision/models/detection/ssdlite.py:325:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | int | float | list[Unknown | int | float]`
+
+apprise (https://github.com/caronc/apprise)
+- apprise/plugins/aprs.py:282:21: error[unsupported-operator] Operator `<` is not supported between objects of type `float` and `Unknown | str | float | dict[Unknown | str, Unknown | str]`
++ apprise/plugins/aprs.py:282:21: error[unsupported-operator] Operator `<` is not supported between objects of type `float` and `Unknown | str | int | float | dict[Unknown | str, Unknown | str]`
+- apprise/plugins/aprs.py:283:24: error[unsupported-operator] Operator `>=` is not supported between objects of type `float` and `Unknown | str | float | dict[Unknown | str, Unknown | str]`
++ apprise/plugins/aprs.py:283:24: error[unsupported-operator] Operator `>=` is not supported between objects of type `float` and `Unknown | str | int | float | dict[Unknown | str, Unknown | str]`
+- apprise/plugins/aprs.py:293:9: error[unsupported-operator] Operator `+=` is not supported between objects of type `float` and `Unknown | str | float | dict[Unknown | str, Unknown | str]`
++ apprise/plugins/aprs.py:293:9: error[unsupported-operator] Operator `+=` is not supported between objects of type `float` and `Unknown | str | int | float | dict[Unknown | str, Unknown | str]`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
+- src/prefect/workers/base.py:228:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/workers/base.py:228:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/workers/base.py:230:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
++ src/prefect/workers/base.py:230:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+
+xarray (https://github.com/pydata/xarray)
+- asv_bench/benchmarks/dataset_io.py:176:46: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:176:46: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:180:63: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:180:63: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:184:63: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:184:63: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:190:50: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:190:50: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:220:48: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:220:48: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:224:61: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:224:61: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:228:61: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:228:61: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:383:52: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:383:52: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:389:56: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:389:56: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:405:52: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:405:52: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:411:56: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:411:56: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:441:54: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:441:54: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- asv_bench/benchmarks/dataset_io.py:453:54: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | float]`
++ asv_bench/benchmarks/dataset_io.py:453:54: error[invalid-argument-type] Argument to function `open_mfdataset` is incorrect: Expected `str | int | tuple[int, ...] | None | Mapping[Any, str | int | tuple[int, ...] | None]`, found `Unknown | dict[Unknown | str, Unknown | int | float]`
+- xarray/core/dataarray.py:1477:29: error[invalid-assignment] Object of type `dict[Hashable, (Mapping[Any, Resampler | str | int | tuple[int, ...] | None] & float) | str | int]` is not assignable to `str | int | tuple[int, ...] | None | Mapping[Any, Resampler | str | int | tuple[int, ...] | None]`
++ xarray/core/dataarray.py:1477:29: error[invalid-assignment] Object of type `dict[Hashable, int | (Mapping[Any, Resampler | str | int | tuple[int, ...] | None] & float) | str]` is not assignable to `str | int | tuple[int, ...] | None | Mapping[Any, Resampler | str | int | tuple[int, ...] | None]`
+
+altair (https://github.com/vega/altair)
+- tests/test_jupyter_chart.py:125:9: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | list[Unknown | float | int] | list[Unknown | int]] | list[Unknown | dict[Unknown | str, Unknown | str | list[Unknown | dict[Unknown | str, Unknown | str]] | list[Unknown | list[Unknown | float | int] | list[Unknown | int]]]]]]` is not assignable to attribute `_vl_selections` on type `altair.jupyter.JupyterChart | altair.jupyter.jupyter_chart.JupyterChart`
++ tests/test_jupyter_chart.py:125:9: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | list[Unknown | int | float] | list[Unknown | int]] | list[Unknown | dict[Unknown | str, Unknown | str | list[Unknown | dict[Unknown | str, Unknown | str]] | list[Unknown | list[Unknown | int | float] | list[Unknown | int]]]]]]` is not assignable to attribute `_vl_selections` on type `altair.jupyter.JupyterChart | altair.jupyter.jupyter_chart.JupyterChart`
+
+ibis (https://github.com/ibis-project/ibis)
+- ibis/backends/tests/test_array.py:1601:63: error[invalid-argument-type] Argument to bound method `mutate` is incorrect: Expected `Value | Deferred`, found `dict[Unknown | str, Unknown | float]`
++ ibis/backends/tests/test_array.py:1601:63: error[invalid-argument-type] Argument to bound method `mutate` is incorrect: Expected `Value | Deferred`, found `dict[Unknown | str, Unknown | int | float]`
+- ibis/expr/operations/tests/test_core.py:178:15: error[invalid-argument-type] Argument is incorrect: Expected `Value[Array[Float64], Any]`, found `list[Unknown | float]`
++ ibis/expr/operations/tests/test_core.py:178:15: error[invalid-argument-type] Argument is incorrect: Expected `Value[Array[Float64], Any]`, found `list[Unknown | int | float]`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/appsec/_api_security/api_manager.py:135:29: error[unsupported-operator] Operator `-` is not supported between objects of type `int | float` and `Unknown | EnvVariable[float]`
++ ddtrace/appsec/_api_security/api_manager.py:135:29: error[unsupported-operator] Operator `-` is not supported between objects of type `int | float` and `Unknown | EnvVariable[int | float]`
+- ddtrace/appsec/_handlers.py:184:67: error[invalid-argument-type] Argument to function `wait_for` is incorrect: Expected `int | float | None`, found `Unknown | EnvVariable[float]`
++ ddtrace/appsec/_handlers.py:184:67: error[invalid-argument-type] Argument to function `wait_for` is incorrect: Expected `int | float | None`, found `Unknown | EnvVariable[int | float]`
+- ddtrace/appsec/_iast/_overhead_control_engine.py:20:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `Unknown | EnvVariable[float]`
++ ddtrace/appsec/_iast/_overhead_control_engine.py:20:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `Unknown | EnvVariable[int | float]`
+- ddtrace/appsec/_processor.py:306:67: error[invalid-argument-type] Argument to bound method `run` is incorrect: Expected `int | float`, found `Unknown | EnvVariable[float | Unknown]`
++ ddtrace/appsec/_processor.py:306:67: error[invalid-argument-type] Argument to bound method `run` is incorrect: Expected `int | float`, found `Unknown | EnvVariable[int | float | Unknown]`
+- ddtrace/debugging/_debugger.py:269:13: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Unknown | DerivedVariable[float | Unknown]`
++ ddtrace/debugging/_debugger.py:269:13: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Unknown | DerivedVariable[int | float | Unknown]`
+- ddtrace/debugging/_uploader.py:69:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `int | float | Unknown | EnvVariable[float]`
++ ddtrace/debugging/_uploader.py:69:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `int | float | Unknown | EnvVariable[int | float]`
+- ddtrace/internal/agent.py:29:39: error[invalid-argument-type] Argument to function `get_connection` is incorrect: Expected `int | float`, found `Unknown | EnvVariable[float]`
++ ddtrace/internal/agent.py:29:39: error[invalid-argument-type] Argument to function `get_connection` is incorrect: Expected `int | float`, found `Unknown | EnvVariable[int | float]`
+- ddtrace/internal/openfeature/writer.py:102:24: error[invalid-assignment] Object of type `Unknown | EnvVariable[float]` is not assignable to `int | float | None`
++ ddtrace/internal/openfeature/writer.py:102:24: error[invalid-assignment] Object of type `Unknown | EnvVariable[int | float]` is not assignable to `int | float | None`
+- ddtrace/internal/remoteconfig/client.py:306:57: error[invalid-argument-type] Argument to function `get_connection` is incorrect: Expected `int | float`, found `Unknown | EnvVariable[float]`
++ ddtrace/internal/remoteconfig/client.py:306:57: error[invalid-argument-type] Argument to function `get_connection` is incorrect: Expected `int | float`, found `Unknown | EnvVariable[int | float]`
+- ddtrace/internal/settings/asm.py:199:30: error[invalid-assignment] Object of type `EnvVariable[float]` is not assignable to `int | float`
++ ddtrace/internal/settings/asm.py:199:30: error[invalid-assignment] Object of type `EnvVariable[int | float]` is not assignable to `int | float`
+- ddtrace/internal/telemetry/writer.py:151:60: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `Unknown | EnvVariable[float]` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ ddtrace/internal/telemetry/writer.py:151:60: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `Unknown | EnvVariable[int | float]` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- ddtrace/internal/telemetry/writer.py:151:60: error[invalid-argument-type] Argument to function `min` is incorrect: Expected `Literal[10]`, found `Unknown | EnvVariable[float]`
++ ddtrace/internal/telemetry/writer.py:151:60: error[invalid-argument-type] Argument to function `min` is incorrect: Expected `Literal[10]`, found `Unknown | EnvVariable[int | float]`
+- ddtrace/internal/writer/writer.py:199:23: error[invalid-assignment] Object of type `Unknown | EnvVariable[float]` is not assignable to `int | float | None`
++ ddtrace/internal/writer/writer.py:199:23: error[invalid-assignment] Object of type `Unknown | EnvVariable[int | float]` is not assignable to `int | float | None`
+- ddtrace/internal/writer/writer.py:553:23: error[invalid-assignment] Object of type `Unknown | EnvVariable[float]` is not assignable to `int | float | None`
++ ddtrace/internal/writer/writer.py:553:23: error[invalid-assignment] Object of type `Unknown | EnvVariable[int | float]` is not assignable to `int | float | None`
+- tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ITR_SKIPPING_LEVEL`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `ITR_SKIPPING_LEVEL`, found `Unknown | str | int | None | float`
+- tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GitData`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `GitData`, found `Unknown | str | int | None | float`
+- tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str | dict[str, str]]`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str | dict[str, str]]`, found `Unknown | str | int | None | float`
+- tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | str | int | None | float`
+- tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Unknown | str | int | None | float`
+- tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Unknown | str | int | None | float`
+- tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `Unknown | str | int | None | float`
+- tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:666:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | str | int | None | float`
+- tests/tracer/test_span.py:177:29: error[invalid-argument-type] Argument to bound method `set_metric` is incorrect: Expected `int | float`, found `Unknown | None | dict[Unknown, Unknown] | ... omitted 5 union elements`
++ tests/tracer/test_span.py:177:29: error[invalid-argument-type] Argument to bound method `set_metric` is incorrect: Expected `int | float`, found `Unknown | None | dict[Unknown, Unknown] | ... omitted 6 union elements`
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 6 union elements, generic[object]]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Top[Yarn[Any]] | TypeBlocks | Batch | ... omitted 6 union elements, generic[object]]`
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- sklearn/metrics/_classification.py:2458:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `float | @Todo | None`
++ sklearn/metrics/_classification.py:2458:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `float | @Todo | int | None`
+- sklearn/metrics/_classification.py:2458:52: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `float | @Todo | None`
++ sklearn/metrics/_classification.py:2458:52: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | Buffer | SupportsFloat | SupportsIndex`, found `float | @Todo | int | None`
+- sklearn/metrics/tests/test_classification.py:175:42: warning[possibly-missing-attribute] Attribute `keys` may be missing on object of type `Unknown | dict[Unknown | str, Unknown | float | int] | float`
++ sklearn/metrics/tests/test_classification.py:175:42: warning[possibly-missing-attribute] Attribute `keys` may be missing on object of type `Unknown | dict[Unknown | str, Unknown | int | float] | int | float`
+- sklearn/metrics/tests/test_classification.py:176:27: error[not-iterable] Object of type `Unknown | dict[Unknown | str, Unknown | float | int] | float` may not be iterable
++ sklearn/metrics/tests/test_classification.py:176:27: error[not-iterable] Object of type `Unknown | dict[Unknown | str, Unknown | int | float] | int | float` may not be iterable
++ sklearn/metrics/tests/test_classification.py:177:37: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ sklearn/metrics/tests/test_classification.py:179:23: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ sklearn/metrics/tests/test_classification.py:180:23: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ sklearn/metrics/tests/test_classification.py:181:23: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ sklearn/metrics/tests/test_classification.py:182:23: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
+- sklearn/model_selection/tests/test_search.py:2613:14: warning[possibly-missing-attribute] Attribute `C` may be missing on object of type `Unknown | LinearSVC | float`
++ sklearn/model_selection/tests/test_search.py:2613:14: warning[possibly-missing-attribute] Attribute `C` may be missing on object of type `Unknown | LinearSVC | int | float`
+- sklearn/model_selection/tests/test_search.py:2623:12: warning[possibly-missing-attribute] Attribute `C` may be missing on object of type `Unknown | LinearSVC | float`
++ sklearn/model_selection/tests/test_search.py:2623:12: warning[possibly-missing-attribute] Attribute `C` may be missing on object of type `Unknown | LinearSVC | int | float`
+- sklearn/utils/tests/test_multiclass.py:399:27: warning[possibly-missing-attribute] Attribute `toarray` may be missing on object of type `(Unknown & SparseABC) | (list[Unknown | list[Unknown | int]] & SparseABC) | (ndarray[tuple[Any, ...], dtype[Any]] & SparseABC) | ... omitted 13 union elements`
++ sklearn/utils/tests/test_multiclass.py:399:27: warning[possibly-missing-attribute] Attribute `toarray` may be missing on object of type `(Unknown & SparseABC) | (list[Unknown | list[Unknown | int]] & SparseABC) | (ndarray[tuple[Any, ...], dtype[Any]] & SparseABC) | ... omitted 12 union elements`
+- Found 2428 diagnostics
++ Found 2433 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- analytics/lib/counts.py:559:52: error[invalid-assignment] Object of type `defaultdict[Unknown, float]` is not assignable to `dict[tuple[int, int], int | float]`
+- zerver/data_import/rocketchat.py:445:13: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | float`
++ zerver/data_import/rocketchat.py:445:13: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Unknown | int | float`
+- Found 3659 diagnostics
++ Found 3658 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- sympy/core/tests/test_basic.py:36:33: error[invalid-argument-type] Argument to function `is_same` is incorrect: Expected `Basic`, found `Unknown | Integer | float`
++ sympy/core/tests/test_basic.py:36:33: error[invalid-argument-type] Argument to function `is_same` is incorrect: Expected `Basic`, found `Unknown | Integer | int | float`
+
+jax (https://github.com/google/jax)
++ jax/_src/tree_util.py:302:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
++ jax/_src/tree_util.py:305:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
++ jax/_src/tree_util.py:308:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
+- jax/experimental/roofline/rooflines.py:710:62: error[invalid-assignment] Object of type `defaultdict[Unknown, float]` is not assignable to `dict[tuple[tuple[int, ...], ...], int | float]`
+- Found 2800 diagnostics
++ Found 2802 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/scalars/test_scalars.py:60:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Interval[float]`
+- tests/scalars/test_scalars.py:87:11: error[type-assertion-failure] Type `int | float` does not match asserted type `float`
+- tests/scalars/test_scalars.py:88:11: error[type-assertion-failure] Type `int | float` does not match asserted type `float`
+- tests/scalars/test_scalars.py:92:11: error[type-assertion-failure] Type `int | float` does not match asserted type `float`
+- tests/scalars/test_scalars.py:135:9: error[type-assertion-failure] Type `bool` does not match asserted type `Unknown`
+- tests/scalars/test_scalars.py:135:21: error[no-matching-overload] No overload of bound method `overlaps` matches arguments
+- tests/scalars/test_scalars.py:162:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Unknown`
+- tests/scalars/test_scalars.py:162:23: error[unsupported-operator] Operator `*` is not supported between objects of type `Interval[float]` and `Literal[3]`
+- tests/scalars/test_scalars.py:169:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Interval[float]`
+- tests/scalars/test_scalars.py:170:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Unknown`
+- tests/scalars/test_scalars.py:170:23: error[unsupported-operator] Operator `*` is not supported between objects of type `Interval[float]` and `float`
+- tests/scalars/test_scalars.py:178:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Unknown`
+- tests/scalars/test_scalars.py:178:23: error[unsupported-operator] Operator `*` is not supported between objects of type `Literal[3]` and `Interval[float]`
+- tests/scalars/test_scalars.py:185:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Interval[float]`
+- tests/scalars/test_scalars.py:186:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Unknown`
+- tests/scalars/test_scalars.py:186:23: error[unsupported-operator] Operator `*` is not supported between objects of type `float` and `Interval[float]`
+- tests/scalars/test_scalars.py:194:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Unknown`
+- tests/scalars/test_scalars.py:194:23: error[unsupported-operator] Operator `/` is not supported between objects of type `Interval[float]` and `Literal[3]`
+- tests/scalars/test_scalars.py:202:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Unknown`
+- tests/scalars/test_scalars.py:202:23: error[unsupported-operator] Operator `/` is not supported between objects of type `Interval[float]` and `float`
+- tests/scalars/test_scalars.py:210:11: error[type-assertion-failure] Type `Interval[int | float]` does not match asserted type `Unknown`
+- tests/scalars/test_scalars.py:210:23: error[unsupported-operator] Operator `//` is
+
+... (truncated 116 lines) ...
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Review requested from @MichaReiser by @MatthewMckee4 on 2025-12-26 23:10_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-12-26 23:23_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/MatthewMckee4%3Apromote-float?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #22215 will **degrade performance by 6%**
+
+<sub>Comparing <code>MatthewMckee4:promote-float</code> (fc72c12) with <code>main</code> (95a532f)</sub>
+
+
+
+### Summary
+
+`❌ 1 (👁 1)` regression  
+`✅ 21` untouched  
+`⏩ 30` skipped[^skipped]  
+
+
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| 👁 | WallTime | [`` colour_science ``](https://codspeed.io/astral-sh/ruff/branches/MatthewMckee4%3Apromote-float?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Acolour_science&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 90.4 s | 96.1 s | -6% |
+
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/MatthewMckee4%3Apromote-float?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-12-26 23:30_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-12-26 23:30_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2025-12-26 23:36_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 0 | 11 | 78 |
+| `type-assertion-failure` | 0 | 32 | 6 |
+| `unsupported-operator` | 0 | 17 | 6 |
+| `possibly-missing-attribute` | 0 | 0 | 13 |
+| `invalid-assignment` | 0 | 2 | 8 |
+| `non-subscriptable` | 5 | 0 | 0 |
+| `call-non-callable` | 3 | 0 | 0 |
+| `invalid-return-type` | 0 | 0 | 3 |
+| `no-matching-overload` | 0 | 1 | 0 |
+| `not-iterable` | 0 | 0 | 1 |
+| **Total** | **8** | **63** | **115** |
+
+
+**[Full report with detailed diff](https://4741768d.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://4741768d.ty-ecosystem-ext.pages.dev/timing))
+
+
+
+---
+
+_Comment by @MatthewMckee4 on 2025-12-26 23:43_
+
+I think the typing conformance changes look correct. 
+
+---
+
+_Comment by @carljm on 2025-12-27 00:10_
+
+Thanks! Overall ecosystem looks great. I think the added diagnostics are all cases where we previously emitted some error about the `float` component of a union, and now we have both `int` and `float` in that union so we emit an error about `int` as well.
+
+---
+
+_Comment by @MatthewMckee4 on 2025-12-27 00:14_
+
+Perfect!
+
+Question, is there any situation where we would not want to promote `float` to `int | float`?
+
+---
+
+_@carljm approved on 2025-12-27 00:14_
+
+This looks good to me!
+
+The regression is unfortunate, but it only appears to be significant on one project that's known to be an outlier in its use of types, so I think it's OK. I guess we can create more unions in place of simple types now.
+
+---
+
+_Comment by @carljm on 2025-12-27 00:16_
+
+> is there any situation where we would not want to promote `float` to `int | float`?
+
+Yes, all the same situations where we don't promote a literal type. So for example after `x = 1` we have the type of `x` as `Literal[1]`, not as `int` -- and for `x = 1.0` we should have `float`, not `float | int`.
+
+The common thread is we don't promote when we are in a context where a more precise type is "harmless", but we promote if a more precise type can be harmful -- usually this means "when we are inferring the type argument for an invariant generic".
+
+---
+
+_Merged by @carljm on 2025-12-27 00:19_
+
+---
+
+_Closed by @carljm on 2025-12-27 00:19_
+
+---
+
+_Branch deleted on 2025-12-27 00:19_
+
+---

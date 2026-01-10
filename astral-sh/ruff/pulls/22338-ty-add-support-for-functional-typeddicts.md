@@ -1,0 +1,392 @@
+```yaml
+number: 22338
+title: "[ty] Add support for functional TypedDicts"
+type: pull_request
+state: open
+author: charliermarsh
+labels:
+  - ty
+assignees: []
+draft: true
+base: charlie/functional-namedtuple
+head: charlie/functional-typeddict
+created_at: 2026-01-02T16:39:51Z
+updated_at: 2026-01-02T20:24:51Z
+url: https://github.com/astral-sh/ruff/pull/22338
+synced_at: 2026-01-10T16:36:19Z
+```
+
+# [ty] Add support for functional TypedDicts
+
+---
+
+_Pull request opened by @charliermarsh on 2026-01-02 16:39_
+
+## Summary
+
+Previously attempted in https://github.com/astral-sh/ruff/pull/20732.
+
+
+---
+
+_Label `ty` added by @charliermarsh on 2026-01-02 16:39_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-02 16:43_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2026-01-02 20:10:54.721005075 +0000
++++ new-output.txt	2026-01-02 20:10:55.042007037 +0000
+@@ -960,8 +960,13 @@
+ tuples_type_form.py:15:6: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[""]]` is not assignable to `tuple[int, int]`
+ tuples_type_form.py:25:7: error[invalid-assignment] Object of type `tuple[Literal[1]]` is not assignable to `tuple[()]`
+ tuples_type_form.py:36:7: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[""]]` is not assignable to `tuple[int, ...]`
++typeddicts_alt_syntax.py:23:44: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, type]`, found `dict[Unknown | str, Unknown | <class 'str'>]`
++typeddicts_alt_syntax.py:27:44: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, type]`, found `dict[Unknown | int, Unknown | <class 'str'>]`
++typeddicts_alt_syntax.py:43:9: error[invalid-type-form] Variable of type `type[TypedDictFallback]` is not allowed in a type expression
+ typeddicts_extra_items.py:14:37: error[invalid-key] Unknown key "novel_adaptation" for TypedDict `Movie`: Unknown key "novel_adaptation"
+ typeddicts_extra_items.py:15:37: error[invalid-key] Unknown key "year" for TypedDict `Movie`: Unknown key "year"
++typeddicts_extra_items.py:21:47: error[invalid-key] Unknown key "novel_adaptation" for TypedDict `MovieFunctional`: Unknown key "novel_adaptation"
++typeddicts_extra_items.py:22:47: error[invalid-key] Unknown key "year" for TypedDict `MovieFunctional`: Unknown key "year"
+ typeddicts_extra_items.py:29:5: error[type-assertion-failure] Type `bool` does not match asserted type `str`
+ typeddicts_extra_items.py:29:23: error[invalid-key] Unknown key "novel_adaptation" for TypedDict `Movie`: Unknown key "novel_adaptation"
+ typeddicts_extra_items.py:39:54: error[invalid-argument-type] Invalid argument to key "year" with declared type `int` on TypedDict `InheritedMovie`: value of type `None`
+@@ -1027,11 +1032,10 @@
+ typeddicts_type_consistency.py:77:25: error[invalid-assignment] Object of type `B3` is not assignable to `dict[str, object]`
+ typeddicts_type_consistency.py:78:22: error[invalid-assignment] Object of type `B3` is not assignable to `dict[Any, Any]`
+ typeddicts_type_consistency.py:82:25: error[invalid-assignment] Object of type `B3` is not assignable to `Mapping[str, int]`
+-typeddicts_type_consistency.py:101:14: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+ typeddicts_type_consistency.py:126:56: error[invalid-argument-type] Invalid argument to key "inner_key" with declared type `str` on TypedDict `Inner1`: value of type `Literal[1]`
+ typeddicts_usage.py:23:7: error[invalid-key] Unknown key "director" for TypedDict `Movie`: Unknown key "director"
+ typeddicts_usage.py:24:17: error[invalid-assignment] Invalid assignment to key "year" with declared type `int` on TypedDict `Movie`: value of type `Literal["1982"]`
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key "title" for TypedDict `Movie`: Unknown key "title"
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
+-Found 1036 diagnostics
++Found 1040 diagnostics
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-02 16:44_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+isort (https://github.com/pycqa/isort)
+- isort/output.py:534:25: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `@Todo | None | list[Unknown]`
++ isort/output.py:534:25: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Any | None | list[Unknown]`
+- isort/output.py:544:25: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `@Todo | None | list[Unknown]`
++ isort/output.py:544:25: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Any | None | list[Unknown]`
+- isort/output.py:552:29: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `@Todo | None | list[Unknown]`
++ isort/output.py:552:29: error[invalid-argument-type] Argument to function `import_statement` is incorrect: Expected `Sequence[str]`, found `Any | None | list[Unknown]`
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- tests/utilities/test_build_client_schema.py:90:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/utilities/test_build_client_schema.py:498:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/utilities/test_build_client_schema.py:673:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/utilities/test_build_client_schema.py:682:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/utilities/test_build_client_schema.py:987:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/utilities/test_build_client_schema.py:1002:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 423 diagnostics
++ Found 417 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ alerta/utils/logging.py:48:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:57:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:60:25: error[invalid-key] Unknown key "()" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "()"
++ alerta/utils/logging.py:61:25: error[invalid-key] Unknown key "facility" for TypedDict `_FormatterConfigurationTypedDict`: Unknown key "facility"
+- Found 620 diagnostics
++ Found 624 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
+- ppb_vector/__init__.py:468:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | Vector | Sequence[SupportsFloat]` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ ppb_vector/__init__.py:468:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | Vector | Sequence[SupportsFloat] | VectorLikeDict` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- ppb_vector/__init__.py:468:13: error[invalid-argument-type] Argument to function `max` is incorrect: Expected `int | float`, found `Unknown | Vector | Sequence[SupportsFloat]`
++ ppb_vector/__init__.py:468:13: error[invalid-argument-type] Argument to function `max` is incorrect: Expected `int | float`, found `Unknown | Vector | Sequence[SupportsFloat] | VectorLikeDict`
+- ppb_vector/__init__.py:567:16: error[invalid-return-type] Return type does not match returned value: expected `Vector`, found `int | float`
+- ppb_vector/__init__.py:588:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[Vector, Vector]`, found `tuple[int | float, Vector]`
+- tests/test_length.py:41:20: error[unresolved-attribute] Object of type `int | float` has no attribute `length`
+- tests/test_project.py:50:8: error[unresolved-attribute] Object of type `int | float` has no attribute `isclose`
+- tests/test_scalar_multiplication.py:10:28: error[unresolved-attribute] Object of type `int | float` has no attribute `x`
+- tests/test_scalar_multiplication.py:11:28: error[unresolved-attribute] Object of type `int | float` has no attribute `y`
+- tests/test_scalar_multiplication.py:19:12: error[unresolved-attribute] Object of type `int | float` has no attribute `isclose`
+- tests/test_scalar_multiplication.py:24:12: error[unresolved-attribute] Object of type `int | float` has no attribute `isclose`
+- tests/test_scalar_multiplication.py:32:20: error[unresolved-attribute] Object of type `int | float` has no attribute `length`
+- Found 23 diagnostics
++ Found 14 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
++ dragonchain/lib/database/redisearch_utest.py:71:55: error[invalid-argument-type] Argument to function `create_transaction_index` is incorrect: Expected `Iterable[custom_index] | None`, found `list[dict[Unknown | str, Unknown | str]]`
++ dragonchain/lib/database/redisearch_utest.py:71:56: error[missing-typed-dict-key] Missing required key 'options' in TypedDict `custom_index` constructor
+- dragonchain/lib/dto/api_key_model_utest.py:265:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: SupportsIndex | slice[Any, Any, Any], /) -> LiteralString, (key: SupportsIndex | slice[Any, Any, Any], /) -> str]` cannot be called with key of type `Literal["transactions"]` on object of type `str`
+- dragonchain/lib/dto/api_key_model_utest.py:265:9: error[not-subscriptable] Cannot subscript object of type `bool` with no `__getitem__` method
++ dragonchain/lib/dto/api_key_model.py:175:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `permissions_doc`, found `permissions_doc | dict[Unknown | str, Unknown | str | bool | dict[Unknown, Unknown]]`
++ dragonchain/lib/dto/api_key_model.py:209:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `permissions_doc`, found `permissions_doc | dict[Unknown | str, Unknown | str | bool | dict[Unknown, Unknown]]`
++ dragonchain/transaction_processor/level_3_actions_utest.py:247:86: error[invalid-argument-type] Argument to function `verify_blocks` is incorrect: Expected `L1Headers`, found `dict[Unknown | str, Unknown | str]`
++ dragonchain/transaction_processor/level_4_actions_utest.py:73:63: error[invalid-argument-type] Argument to function `verify_blocks` is incorrect: Expected `L1Headers`, found `dict[Unknown | str, Unknown | int | str]`
++ dragonchain/transaction_processor/level_4_actions_utest.py:73:73: error[invalid-argument-type] Invalid argument to key "dc_id" with declared type `str` on TypedDict `L1Headers`: value of type `Literal[123]`
++ dragonchain/transaction_processor/level_4_actions_utest.py:73:90: error[invalid-argument-type] Invalid argument to key "block_id" with declared type `str` on TypedDict `L1Headers`: value of type `Literal[124]`
++ dragonchain/webserver/helpers_utest.py:169:47: error[invalid-argument-type] Argument to function `verify_custom_indexes_options` is incorrect: Expected `Iterable[custom_index]`, found `list[dict[Unknown | str, Unknown | str]]`
++ dragonchain/webserver/helpers_utest.py:169:48: error[missing-typed-dict-key] Missing required key 'options' in TypedDict `custom_index` constructor
++ dragonchain/webserver/helpers_utest.py:172:47: error[invalid-argument-type] Argument to function `verify_custom_indexes_options` is incorrect: Expected `Iterable[custom_index]`, found `list[dict[Unknown | str, Unknown | str]]`
++ dragonchain/webserver/helpers_utest.py:172:48: error[missing-typed-dict-key] Missing required key 'options' in TypedDict `custom_index` constructor
++ dragonchain/webserver/helpers_utest.py:175:47: error[invalid-argument-type] Argument to function `verify_custom_indexes_options` is incorrect: Expected `Iterable[custom_index]`, found `list[dict[Unknown | str, Unknown | str]]`
++ dragonchain/webserver/helpers_utest.py:175:48: error[missing-typed-dict-key] Missing required key 'options' in TypedDict `custom_index` constructor
++ dragonchain/webserver/lib/api_keys_utest.py:48:66: error[invalid-argument-type] Argument to function `create_api_key_v1` is incorrect: Expected `permissions_doc | None`, found `dict[Unknown | str, Unknown | str]`
++ dragonchain/webserver/lib/api_keys_utest.py:48:87: error[missing-typed-dict-key] Missing required key 'default_allow' in TypedDict `permissions_doc` constructor
++ dragonchain/webserver/lib/api_keys_utest.py:48:87: error[missing-typed-dict-key] Missing required key 'permissions' in TypedDict `permissions_doc` constructor
++ dragonchain/webserver/lib/api_keys_utest.py:48:87: error[missing-typed-dict-key] Missing required key 'version' in TypedDict `permissions_doc` constructor
++ dragonchain/webserver/lib/api_keys_utest.py:48:88: error[invalid-key] Unknown key "wind" for TypedDict `permissions_doc`: Unknown key "wind"
++ dragonchain/webserver/lib/api_keys_utest.py:91:59: error[invalid-argument-type] Argument to function `update_api_key_v1` is incorrect: Expected `permissions_doc | None`, found `dict[Unknown | str, Unknown | str]`
++ dragonchain/webserver/lib/api_keys_utest.py:91:59: error[missing-typed-dict-key] Missing required key 'default_allow' in TypedDict `permissions_doc` constructor
++ dragonchain/webserver/lib/api_keys_utest.py:91:59: error[missing-typed-dict-key] Missing required key 'permissions' in TypedDict `permissions_doc` constructor
++ dragonchain/webserver/lib/api_keys_utest.py:91:59: error[missing-typed-dict-key] Missing required key 'version' in TypedDict `permissions_doc` constructor
++ dragonchain/webserver/lib/api_keys_utest.py:91:60: error[invalid-key] Unknown key "definitely" for TypedDict `permissions_doc`: Unknown key "definitely"
+- Found 436 diagnostics
++ Found 458 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
++ src/arti/types/python.py:258:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, type]`, found `dict[Unknown | str, Any]`
+- Found 143 diagnostics
++ Found 144 diagnostics
+
+operator (https://github.com/canonical/operator)
++ ops/_private/harness.py:980:9: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown` and value of type `dict[Unknown | str, Unknown | str | list[Unknown]]` on object of type `dict[int, _RelationEntities]`
++ ops/_private/harness.py:1640:9: error[invalid-assignment] Invalid subscript assignment with key of type `tuple[str | None, int | None]` and value of type `dict[Unknown | str, Unknown | list[Unknown | dict[Unknown | str, Unknown | str | list[Unknown | dict[Unknown | str, Unknown | str]]]] | list[str]]` on object of type `dict[tuple[str | None, int | None], _NetworkDict]`
++ ops/_private/harness.py:3351:38: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | LayerDict | None`, found `str | (LayerDict & Top[dict[Unknown, Unknown]]) | (Layer & Top[dict[Unknown, Unknown]])`
+- ops/model.py:3730:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/model.py:3729:16: error[invalid-return-type] Return type does not match returned value: expected `_StatusDict`, found `dict[Unknown | str, Unknown | str]`
++ ops/model.py:3843:16: error[invalid-return-type] Return type does not match returned value: expected `_NetworkDict`, found `dict[Unknown | str, Unknown | list[dict[Unknown | str, Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown]] | Unknown] | list[str]]`
++ ops/model.py:3844:31: error[invalid-argument-type] Invalid argument to key "bind-addresses" with declared type `list[BindAddressDict]` on TypedDict `_NetworkDict`: value of type `list[dict[Unknown | str, Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown]] | Unknown]`
+- ops/pebble.py:630:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ops/pebble.py:720:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ops/pebble.py:789:58: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/pebble.py:884:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
+- ops/pebble.py:1170:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ops/pebble.py:1188:40: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ ops/pebble.py:946:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
++ ops/pebble.py:963:28: error[invalid-assignment] Object of type `(ServiceDict & ~AlwaysFalsy) | dict[Unknown, Unknown]` is not assignable to `ServiceDict`
++ ops/pebble.py:1033:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
++ ops/pebble.py:1101:26: error[invalid-assignment] Object of type `(CheckDict & ~AlwaysFalsy) | dict[Unknown, Unknown]` is not assignable to `CheckDict`
++ ops/pebble.py:1148:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
++ ops/pebble.py:1171:27: error[invalid-key] TypedDict `ExecDict` can only be subscripted with a string literal key, got key of type `str`.
++ ops/pebble.py:1173:27: error[invalid-key] TypedDict `ExecDict` can only be subscripted with a string literal key, got key of type `str & ~Literal["environment"]`.
++ ops/pebble.py:1189:27: error[invalid-key] TypedDict `HttpDict` can only be subscripted with a string literal key, got key of type `str`.
++ ops/pebble.py:1191:27: error[invalid-key] TypedDict `HttpDict` can only be subscripted with a string literal key, got key of type `str & ~Literal["headers"]`.
++ ops/pebble.py:1204:22: error[invalid-key] TypedDict `TcpDict` can only be subscripted with a string literal key, got key of type `str`.
++ ops/pebble.py:1262:30: error[invalid-assignment] Object of type `(LogTargetDict & ~AlwaysFalsy) | dict[Unknown, Unknown]` is not assignable to `LogTargetDict`
++ ops/pebble.py:1286:9: error[invalid-method-override] Invalid override of method `__eq__`: Definition is incompatible with `object.__eq__`
++ ops/pebble.py:2102:32: error[missing-typed-dict-key] Missing required key 'basic' in TypedDict `IdentityDict` constructor
++ ops/pebble.py:2102:32: error[missing-typed-dict-key] Missing required key 'local' in TypedDict `IdentityDict` constructor
++ ops/pebble.py:2103:23: error[invalid-argument-type] Invalid argument to key "access" with declared type `Literal["untrusted", "metrics", "read", "admin"]` on TypedDict `IdentityDict`: value of type `str`
++ ops/pebble.py:2553:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | LayerDict | None`, found `(LayerDict & Top[dict[Unknown, Unknown]]) | (Layer & Top[dict[Unknown, Unknown]])`
+- Found 132 diagnostics
++ Found 149 diagnostics
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deployment.py:392:48: error[invalid-assignment] Invalid assignment to key "anchor_date" with declared type `str` on TypedDict `IntervalScheduleOptions`: value of type `datetime`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+- Found 5531 diagnostics
++ Found 5532 diagnostics
+
+pyproject-metadata (https://github.com/pypa/pyproject-metadata)
+- pyproject_metadata/__init__.py:397:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pyproject_metadata/pyproject.py:171:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 4 diagnostics
++ Found 2 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/cargo/manifest.py:304:16: error[missing-typed-dict-key] Missing required key 'workspace' in TypedDict `FromWorkspace` constructor
+- mesonbuild/cargo/manifest.py:304:17: error[invalid-key] Unknown key "version" for TypedDict `FromWorkspace`: Unknown key "version"
++ mesonbuild/cargo/manifest.py:304:16: error[invalid-return-type] Return type does not match returned value: expected `FromWorkspace | Dependency`, found `dict[Unknown | str, Unknown | str] | FromWorkspace | Dependency`
++ mesonbuild/cargo/manifest.py:310:22: error[no-matching-overload] No overload of function `_depv_to_dep` matches arguments
+- unittests/cargotests.py:377:68: error[invalid-key] Unknown key "optional" for TypedDict `FromWorkspace`: Unknown key "optional"
+- unittests/cargotests.py:385:62: error[invalid-key] Unknown key "features" for TypedDict `FromWorkspace`: Unknown key "features"
++ unittests/cargotests.py:330:40: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:331:33: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str] | FromWorkspace]`
++ unittests/cargotests.py:331:45: error[missing-typed-dict-key] Missing required key 'version' in TypedDict `Package` constructor
++ unittests/cargotests.py:338:33: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str]]`
++ unittests/cargotests.py:338:45: error[missing-typed-dict-key] Missing required key 'version' in TypedDict `Package` constructor
++ unittests/cargotests.py:348:40: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:362:40: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:363:43: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `FromWorkspace | Dependency | str`, found `dict[Unknown | str, Unknown | bool]`
++ unittests/cargotests.py:370:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `FromWorkspace | Dependency | str`, found `dict[Unknown | str, Unknown | bool]`
++ unittests/cargotests.py:377:48: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `FromWorkspace | Dependency | str`, found `dict[Unknown | str, Unknown | bool]`
++ unittests/cargotests.py:385:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `FromWorkspace | Dependency | str`, found `dict[Unknown | str, Unknown | bool | list[Unknown | str]]`
++ unittests/cargotests.py:398:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:415:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:439:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:455:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:495:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:502:38: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:513:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:547:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
++ unittests/cargotests.py:567:42: error[invalid-argument-type] Argument to bound method `from_raw` is incorrect: Expected `Manifest`, found `dict[str, object]`
+- Found 1943 diagnostics
++ Found 1961 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ src/hydra_zen/structured_configs/_utils.py:262:5: error[unsupported-operator] Operator `|` is not supported between objects of type `tuple[()]` and `tuple[Literal["bases"], Literal["cls_name"], Literal["eq"], Literal["frozen"], Literal["init"], Literal["kw_only"], Literal["match_args"], Literal["module"], Literal["namespace"], Literal["order"], Literal["repr"], Literal["slots"], Literal["target"], Literal["target_repr"], Literal["unsafe_hash"], Literal["weakref_slot"]]`
++ src/hydra_zen/structured_configs/_utils.py:266:5: error[unsupported-operator] Operator `|` is not supported between objects of type `tuple[Literal["cls_name"]]` and `tuple[Literal["bases"], Literal["eq"], Literal["frozen"], Literal["init"], Literal["namespace"], Literal["order"], Literal["repr"], Literal["unsafe_hash"]]`
++ src/hydra_zen/structured_configs/_utils.py:385:13: error[unsupported-operator] Operator `<=` is not supported between objects of type `tuple[Literal["cls_name"]]` and `KeysView[str]`
++ src/hydra_zen/wrapper/_implementations.py:999:5: error[unsupported-operator] Operator `-` is not supported between objects of type `tuple[Literal["__kw"], Literal["group"], Literal["name"], Literal["package"], Literal["provider"], Literal["to_config"]]` and `set[Unknown | str]`
+- src/hydra_zen/wrapper/_implementations.py:1572:89: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 521 diagnostics
++ Found 524 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_vendor/typing_extensions.py:3101:41: error[invalid-argument-type] Argument to function `namedtuple` is incorrect: Expected `<special-form 'ty_extensions._CollectionsNamedTupleDefaultsSchema'>`, found `Unknown | tuple[()]`
++ setuptools/_vendor/typing_extensions.py:3101:41: error[invalid-argument-type] Argument to function `namedtuple` is incorrect: Expected `Iterable[object]`, found `Unknown | tuple[()]`
+
+scipy-stubs (https://github.com/scipy/scipy-stubs)
++ scipy-stubs/integrate/_quadpack_py.pyi:68:36: error[invalid-type-form] Variable of type `type[TypedDictFallback]` is not allowed in a type expression
++ scipy-stubs/integrate/_quadpack_py.pyi:69:36: error[invalid-type-form] Variable of type `type[TypedDictFallback]` is not allowed in a type expression
++ scipy-stubs/integrate/_quadpack_py.pyi:76:42: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, type]`, found `dict[Unknown | int, Unknown | <class 'str'>]`
++ scipy-stubs/integrate/_quadpack_py.pyi:185:46: error[invalid-type-form] Variable of type `type[TypedDictFallback]` is not allowed in a type expression
++ scipy-stubs/integrate/_quadpack_py.pyi:208:46: error[invalid-type-form] Variable of type `type[TypedDictFallback]` is not allowed in a type expression
++ scipy-stubs/integrate/_quadpack_py.pyi:230:46: error[invalid-type-form] Variable of type `type[TypedDictFallback]` is not allowed in a type expression
++ tests/integrate/test_quad.pyi:41:46: error[invalid-type-form] Variable of type `type[TypedDictFallback]` is not allowed in a type expression
+- Found 1246 diagnostics
++ Found 1253 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/_vendor/pyproject_metadata/__init__.py:337:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/scikit_build_core/_vendor/pyproject_metadata/pyproject.py:169:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 48 diagnostics
++ Found 45 diagnostics
+
+altair (https://github.com/vega/altair)
++ tests/test_datasets.py:96:12: error[unresolved-attribute] Object of type `tuple[()]` has no attribute `union`
++ tests/vegalite/v6/test_theme.py:1071:12: error[unresolved-attribute] Object of type `tuple[()]` has no attribute `union`
+- Found 1061 diagnostics
++ Found 1063 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Index[Any]] | Top[Series[Any, Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Bus[Any]] | TypeBlocks | Batch | ... omitted 6 union elements, object_]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | TypeBlocks | Batch | ... omitted 6 union elements, generic[object]]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 6 union elements, generic[object]]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | TypeBlocks | Batch | ... omitted 7 union elements, generic[object]]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 7 union elements, generic[object]]`
++ static_frame/test/unit/test_type_clinic.py:198:39: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, type]`, found `dict[str, <class 'int'> | <class 'float'> | <class 'str'>]`
++ static_frame/test/unit/test_type_clinic.py:199:39: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, type]`, found `dict[str, <class 'int'> | <class 'float'> | <class 'bool'>]`
+- Found 1840 diagnostics
++ Found 1842 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `(A@BaseDecoderTools & BTCAddress) | (A@BaseDecoderTools & ChecksumAddress) | (A@BaseDecoderTools & SubstrateAddress) | (A@BaseDecoderTools & SolanaAddress)`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `(A@BaseDecoderTools & BTCAddress) | (A@BaseDecoderTools & ChecksumAddress) | (A@BaseDecoderTools & SubstrateAddress) | (A@BaseDecoderTools & SolanaAddress) | None`, found `A@BaseDecoderTools | None`
+- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[(A@BaseDecoderTools & BTCAddress) | (A@BaseDecoderTools & ChecksumAddress) | (A@BaseDecoderTools & SubstrateAddress) | (A@BaseDecoderTools & SolanaAddress)]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/tests/utils/mock.py:73:38: error[invalid-argument-type] Argument is incorrect: Expected `<special-form 'ty_extensions._TypingNamedTupleFieldsSchema'>`, found `list[Unknown | str]`
++ rotkehlchen/tests/utils/mock.py:73:38: error[invalid-argument-type] Argument is incorrect: Expected `Iterable[tuple[str, type]]`, found `list[Unknown | str]`
+- Found 2096 diagnostics
++ Found 2094 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5160 diagnostics
++ Found 5159 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/config_entries.py:3930:33: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["action"], /) -> Literal["create", "remove"], (key: Literal["entity_id"], /) -> str] | Overload[(key: Literal["action"], /) -> Literal["update"], (key: Literal["entity_id"], /) -> str, (key: Literal["changes"], /) -> dict[str, Any], (key: Literal["old_entity_id"], /) -> str]` cannot be called with key of type `Literal["changes"]` on object of type `EventEntityRegistryUpdatedData`
++ homeassistant/config_entries.py:3930:33: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["action"], /) -> Literal["create", "remove"], (key: Literal["entity_id"], /) -> str] | Overload[(key: Literal["action"], /) -> Literal["update"], (key: Literal["changes"], /) -> dict[str, Any], (key: Literal["entity_id"], /) -> str, (key: Literal["old_entity_id"], /) -> str]` cannot be called with key of type `Literal["changes"]` on object of type `EventEntityRegistryUpdatedData`
+- homeassistant/config_entries.py:3931:12: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["action"], /) -> Literal["create", "remove"], (key: Literal["entity_id"], /) -> str] | Overload[(key: Literal["action"], /) -> Literal["update"], (key: Literal["entity_id"], /) -> str, (key: Literal["changes"], /) -> dict[str, Any], (key: Literal["old_entity_id"], /) -> str]` cannot be called with key of type `Literal["changes"]` on object of type `EventEntityRegistryUpdatedData`
++ homeassistant/config_entries.py:3931:12: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["action"], /) -> Literal["create", "remove"], (key: Literal["entity_id"], /) -> str] | Overload[(key: Literal["action"], /) -> Literal["update"], (key: Literal["changes"], /) -> dict[str, Any], (key: Literal["entity_id"], /) -> str, (key: Literal["old_entity_id"], /) -> str]` cannot be called with key of type `Literal["changes"]` on object of type `EventEntityRegistryUpdatedData`
+- homeassistant/helpers/device_registry.py:1867:36: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["action"], /) -> Literal["create", "remove"], (key: Literal["entity_id"], /) -> str] | Overload[(key: Literal["action"], /) -> Literal["update"], (key: Literal["entity_id"], /) -> str, (key: Literal["changes"], /) -> dict[str, Any], (key: Literal["old_entity_id"], /) -> str]` cannot be called with key of type `Literal["changes"]` on object of type `EventEntityRegistryUpdatedData`
++ homeassistant/helpers/device_registry.py:1867:36: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: Literal["action"], /) -> Literal["create", "remove"], (key: Literal["entity_id"], /) -> str] | Overload[(key: Literal["action"], /) -> Literal["update"], (key: Literal["changes"], /) -> dict[str, Any], (key: Literal["entity_id"], /) -> str, (key: Literal["old_entity_id"], /) -> str]` cannot be called with key of type `Literal["changes"]` on object of type `EventEntityRegistryUpdatedData`
+
+
+```
+
+</details>
+
+
+No memory usage changes detected ✅
+
+
+
+---
+
+_Comment by @codspeed-hq[bot] on 2026-01-02 17:00_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/charlie%2Ffunctional-typeddict?utm_source=github&utm_medium=comment&utm_content=header)
+
+### Merging #22338 will **degrade performance by 7.28%**
+
+<sub>Comparing <code>charlie/functional-typeddict</code> (fdd9a97) with <code>charlie/functional-namedtuple</code> (5220cf7)</sub>
+
+
+
+### Summary
+
+`❌ 1` regression  
+`✅ 19` untouched  
+`⏩ 32` skipped[^skipped]  
+
+
+> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/charlie%2Ffunctional-typeddict?utm_source=github&utm_medium=comment&utm_content=acknowledge)._
+
+### Benchmarks breakdown
+
+|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
+| --- | ---- | --------- | ------ | ------ | ---------- |
+| ❌ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/charlie%2Ffunctional-typeddict?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment&utm_content=benchmark) | 10.7 s | 11.6 s | -7.28% |
+
+[^skipped]: 32 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/charlie%2Ffunctional-typeddict?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
+
+
+---
