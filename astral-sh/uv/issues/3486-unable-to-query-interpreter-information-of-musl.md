@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-09T15:04:40Z
 updated_at: 2024-05-09T17:59:21Z
 url: https://github.com/astral-sh/uv/issues/3486
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Unable to query interpreter information of MUSL standalone distribution
@@ -60,17 +60,9 @@ Interesting that the OS versions are "major": -1, "minor": -1, maybe we just nee
 
 ---
 
-_Referenced in [astral-sh/uv#3487](../../astral-sh/uv/pulls/3487.md) on 2024-05-09 15:15_
-
----
-
 _Comment by @charliermarsh on 2024-05-09 15:15_
 
 I think (-1, -1) is just a sign that we didn't detect glibc either. The error message is off: https://github.com/astral-sh/uv/pull/3487. But we should be detecting musl, not sure why we aren't? We just call methods in `packaging`.
-
----
-
-_Referenced in [astral-sh/python-build-standalone#260](../../astral-sh/python-build-standalone/issues/260.md) on 2024-05-09 15:16_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-06T14:21:11Z
 updated_at: 2024-06-07T19:57:03Z
 url: https://github.com/astral-sh/uv/issues/4099
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Enforce constraints eagerly when forking on markers
@@ -83,10 +83,6 @@ Added Python version thing here: https://github.com/astral-sh/uv/issues/4102
 ---
 
 _Renamed from "Unexpected dependency resolution with uv lock" to "Enforce constraints eagerly when forking on markers" by @charliermarsh on 2024-06-06 14:45_
-
----
-
-_Referenced in [astral-sh/uv#4123](../../astral-sh/uv/pulls/4123.md) on 2024-06-07 02:13_
 
 ---
 

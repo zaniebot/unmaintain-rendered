@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-03T13:30:06Z
 updated_at: 2024-06-04T13:56:09Z
 url: https://github.com/astral-sh/uv/issues/3982
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Universal lock should respect `Requires-Python`
@@ -28,10 +28,6 @@ _Label `preview` added by @charliermarsh on 2024-06-03 13:30_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-03 14:18_
-
----
-
-_Referenced in [astral-sh/uv#3998](../../astral-sh/uv/pulls/3998.md) on 2024-06-03 21:31_
 
 ---
 

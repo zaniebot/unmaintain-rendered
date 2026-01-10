@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T22:37:25Z
 updated_at: 2024-07-09T15:56:03Z
 url: https://github.com/astral-sh/uv/issues/1374
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Cannot `uv pip install` without virtualenv
@@ -33,10 +33,6 @@ _Renamed from "Cannot `uv pip install` in container without virtualenv" to "Cann
 
 ---
 
-_Referenced in [astral-sh/uv#1372](../../astral-sh/uv/issues/1372.md) on 2024-02-15 22:41_
-
----
-
 _Comment by @charliermarsh on 2024-02-15 22:46_
 
 👍 Agreed, we need some solution to this. I believe setting `VIRTUAL_ENV` would work, but it should be a first-class feature.
@@ -47,31 +43,11 @@ _Label `enhancement` added by @charliermarsh on 2024-02-15 22:47_
 
 ---
 
-_Referenced in [astral-sh/uv#1386](../../astral-sh/uv/issues/1386.md) on 2024-02-16 04:23_
-
----
-
-_Referenced in [mesa/mesa#2038](../../mesa/mesa/pulls/2038.md) on 2024-02-16 08:01_
-
----
-
-_Referenced in [astral-sh/uv#1480](../../astral-sh/uv/issues/1480.md) on 2024-02-16 12:02_
-
----
-
-_Referenced in [astral-sh/uv#1501](../../astral-sh/uv/issues/1501.md) on 2024-02-16 15:22_
-
----
-
 _Comment by @batazor on 2024-02-16 23:11_
 
 It would also be cool to do a couple of examples on how to create a Dockerfile
 
 especially with multi-stage builds, as I don't want to carry all the dependencies (c-library) that are needed when building, previously I used `--wheel-dir /app/wheels` to do this
-
----
-
-_Referenced in [astral-sh/uv#1526](../../astral-sh/uv/issues/1526.md) on 2024-02-17 00:40_
 
 ---
 
@@ -92,10 +68,6 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 
 ---
 
-_Referenced in [astral-sh/uv#1604](../../astral-sh/uv/issues/1604.md) on 2024-02-17 17:53_
-
----
-
 _Comment by @hauntsaninja on 2024-02-17 21:56_
 
 Since this issue is somewhat popular, just noting that I've been doing `VIRTUAL_ENV=$(python -c "import sys; print(sys.prefix)") uv pip ...`
@@ -105,10 +77,6 @@ Since this issue is somewhat popular, just noting that I've been doing `VIRTUAL_
 _Comment by @ofek on 2024-02-18 23:21_
 
 This probably would be the ultimate fix https://github.com/astral-sh/uv/issues/1396
-
----
-
-_Referenced in [astral-sh/uv#1396](../../astral-sh/uv/issues/1396.md) on 2024-02-19 00:55_
 
 ---
 
@@ -138,10 +106,6 @@ _Closed by @zanieb on 2024-02-19 15:46_
 
 ---
 
-_Referenced in [astral-sh/uv#1705](../../astral-sh/uv/issues/1705.md) on 2024-02-19 16:53_
-
----
-
 _Comment by @SzilvasiPeter on 2024-07-09 15:56_
 
 I will mention the simplest solution, the `--system` option since other comments do not mention it. Also, the [documentation ](https://github.com/astral-sh/uv/?tab=readme-ov-file#installing-into-arbitrary-python-environments) highlights this option for containerized environments:
@@ -151,17 +115,5 @@ uv pip install --system
 ```
 
 > WARNING: `--system` is intended for use in continuous integration (CI) environments and should be used with caution, as it can modify the system Python installation.
-
----
-
-_Referenced in [bentoml/BentoML#4936](../../bentoml/BentoML/issues/4936.md) on 2024-08-23 07:10_
-
----
-
-_Referenced in [MichaIng/DietPi#7231](../../MichaIng/DietPi/issues/7231.md) on 2024-10-03 17:55_
-
----
-
-_Referenced in [astral-sh/uv#7907](../../astral-sh/uv/issues/7907.md) on 2024-10-03 19:14_
 
 ---

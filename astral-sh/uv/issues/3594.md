@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-14T21:49:28Z
 updated_at: 2024-05-15T03:02:18Z
 url: https://github.com/astral-sh/uv/issues/3594
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # can't install flash attention pre-compiled wheels because of a version mismatch
@@ -300,10 +300,6 @@ I assume it works if you rename the file to, like, `flash_attn-2.5.8-cp310-cp310
 
 ---
 
-_Referenced in [astral-sh/uv#3596](../../astral-sh/uv/pulls/3596.md) on 2024-05-14 23:48_
-
----
-
 _Label `compatibility` added by @charliermarsh on 2024-05-14 23:48_
 
 ---
@@ -315,9 +311,5 @@ _Closed by @charliermarsh on 2024-05-15 00:02_
 _Comment by @isidentical on 2024-05-15 03:02_
 
 wow, you guys fixed it already 🔥 
-
----
-
-_Referenced in [bitsandbytes-foundation/bitsandbytes#1473](../../bitsandbytes-foundation/bitsandbytes/issues/1473.md) on 2025-01-23 13:13_
 
 ---

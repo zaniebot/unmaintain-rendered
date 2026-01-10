@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-16T10:43:12Z
 updated_at: 2024-04-25T15:12:02Z
 url: https://github.com/astral-sh/uv/issues/3060
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Allow the `--python` flag in `uv pip install` to take the location of a venv
@@ -86,18 +86,6 @@ Does this sound reasonable?
 _Comment by @charliermarsh on 2024-04-16 15:00_
 
 Yeah, it does sound reasonable to me.
-
----
-
-_Referenced in [astral-sh/uv#3062](../../astral-sh/uv/issues/3062.md) on 2024-04-16 15:05_
-
----
-
-_Referenced in [astral-sh/uv#2386](../../astral-sh/uv/issues/2386.md) on 2024-04-16 15:18_
-
----
-
-_Referenced in [astral-sh/uv#3064](../../astral-sh/uv/pulls/3064.md) on 2024-04-16 15:27_
 
 ---
 

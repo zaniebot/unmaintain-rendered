@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-01T11:17:56Z
 updated_at: 2024-07-15T17:09:02Z
 url: https://github.com/astral-sh/uv/issues/4687
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Markers of splits in universal bluejay resolution are wrong
@@ -159,10 +159,6 @@ Although in theory we filter out deps with `possible_to_satisfy_markers`...
 
 ---
 
-_Referenced in [astral-sh/uv#4732](../../astral-sh/uv/issues/4732.md) on 2024-07-02 16:58_
-
----
-
 _Unassigned @konstin by @konstin on 2024-07-08 11:49_
 
 ---
@@ -203,14 +199,6 @@ wheels = [
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-07-08 13:54_
-
----
-
-_Referenced in [astral-sh/uv#4996](../../astral-sh/uv/pulls/4996.md) on 2024-07-11 18:07_
-
----
-
-_Referenced in [astral-sh/uv#5074](../../astral-sh/uv/pulls/5074.md) on 2024-07-15 14:49_
 
 ---
 

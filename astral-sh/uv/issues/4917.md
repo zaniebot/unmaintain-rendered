@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T07:17:30Z
 updated_at: 2024-07-09T17:30:44Z
 url: https://github.com/astral-sh/uv/issues/4917
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install https://...zip` fails where `pip install` works
@@ -50,10 +50,6 @@ Thanks, that's a bug.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-09 16:28_
-
----
-
-_Referenced in [astral-sh/uv#4928](../../astral-sh/uv/pulls/4928.md) on 2024-07-09 17:22_
 
 ---
 

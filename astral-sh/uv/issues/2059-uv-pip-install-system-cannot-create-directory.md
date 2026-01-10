@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-28T22:03:08Z
 updated_at: 2024-07-14T16:20:49Z
 url: https://github.com/astral-sh/uv/issues/2059
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install --system` cannot create directory
@@ -144,10 +144,6 @@ _Comment by @charliermarsh on 2024-02-28 22:58_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-29 03:47_
-
----
-
-_Referenced in [astral-sh/uv#2387](../../astral-sh/uv/issues/2387.md) on 2024-03-12 17:40_
 
 ---
 
@@ -298,17 +294,5 @@ ENV UV_HTTP_TIMEOUT=100 \
 RUN uv pip install -r $REQFILE --prefix "/home/$USERNAME/.local/"
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#2077](../../astral-sh/uv/issues/2077.md) on 2024-08-09 23:22_
-
----
-
-_Referenced in [we3lab/valuing-flexibility-from-water#14](../../we3lab/valuing-flexibility-from-water/pulls/14.md) on 2024-10-14 23:07_
-
----
-
-_Referenced in [giaever-online-iot/home-assistant-snap#37](../../giaever-online-iot/home-assistant-snap/issues/37.md) on 2025-01-19 15:18_
 
 ---

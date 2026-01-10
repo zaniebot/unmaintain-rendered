@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-06T14:13:30Z
 updated_at: 2024-07-09T11:27:58Z
 url: https://github.com/astral-sh/uv/issues/3407
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Preserve url parsing throughout uv
@@ -32,23 +32,11 @@ _Label `enhancement` added by @konstin on 2024-05-06 14:13_
 
 ---
 
-_Referenced in [astral-sh/uv#3408](../../astral-sh/uv/issues/3408.md) on 2024-05-06 14:14_
-
----
-
 _Assigned to @konstin by @konstin on 2024-05-06 14:14_
 
 ---
 
-_Referenced in [astral-sh/uv#3409](../../astral-sh/uv/issues/3409.md) on 2024-05-06 14:16_
-
----
-
 _Renamed from "Preserve urls through uv" to "Preserve url parsing throughout uv" by @konstin on 2024-05-06 14:19_
-
----
-
-_Referenced in [astral-sh/uv#3410](../../astral-sh/uv/issues/3410.md) on 2024-05-06 14:20_
 
 ---
 
@@ -57,9 +45,5 @@ _Unassigned @konstin by @konstin on 2024-06-20 09:07_
 ---
 
 _Closed by @konstin on 2024-07-09 11:27_
-
----
-
-_Referenced in [prefix-dev/pixi#3696](../../prefix-dev/pixi/pulls/3696.md) on 2025-04-29 05:38_
 
 ---

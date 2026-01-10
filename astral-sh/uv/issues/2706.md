@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-28T05:58:46Z
 updated_at: 2024-05-21T06:31:26Z
 url: https://github.com/astral-sh/uv/issues/2706
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # slower than poetry on downloading wheels
@@ -376,9 +376,5 @@ Closing now that it only takes ~1m11s in my environment using uv 0.1.45.
 ---
 
 _Closed by @messense on 2024-05-21 06:31_
-
----
-
-_Referenced in [astral-sh/uv#3252](../../astral-sh/uv/pulls/3252.md) on 2024-05-23 15:28_
 
 ---

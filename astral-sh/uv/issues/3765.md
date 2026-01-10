@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-22T19:58:54Z
 updated_at: 2024-05-23T23:03:08Z
 url: https://github.com/astral-sh/uv/issues/3765
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # VIRTUAL_ENV no longer used, giving "No Python default installation found in virtual environments" error
@@ -67,10 +67,6 @@ Thanks for the report, this sounds like a regression from #3266.
 I think pointing to a system installation with `VIRTUAL_ENV` was a hack in the first place though and never officially supported. Why not use `--system` now that we support that?
 
 What's the value of the `${Python_ROOT_DIR}` variable?
-
----
-
-_Referenced in [astral-sh/uv#3767](../../astral-sh/uv/pulls/3767.md) on 2024-05-22 20:04_
 
 ---
 
@@ -181,22 +177,6 @@ _Closed by @zanieb on 2024-05-22 21:20_
 
 ---
 
-_Referenced in [astral-sh/uv#3771](../../astral-sh/uv/pulls/3771.md) on 2024-05-22 21:24_
-
----
-
-_Referenced in [astral-sh/uv#3782](../../astral-sh/uv/issues/3782.md) on 2024-05-23 01:47_
-
----
-
-_Referenced in [astral-sh/uv#3787](../../astral-sh/uv/issues/3787.md) on 2024-05-23 12:45_
-
----
-
-_Referenced in [inventree/InvenTree#7309](../../inventree/InvenTree/pulls/7309.md) on 2024-05-23 15:37_
-
----
-
 _Comment by @matmair on 2024-05-23 17:47_
 
 @zanieb `VIRTUAL_ENV` is still mentioned multiple time in the readme - should probably be removed if it is deprecated/was considered a hack
@@ -218,25 +198,5 @@ Neither VIRTUAL_ENV nor the --system flag seem to work on GitHub Actions anymore
 _Comment by @zanieb on 2024-05-23 23:03_
 
 Please share a reproduction if you can, I'm happy to help.
-
----
-
-_Referenced in [inventree/InvenTree#7317](../../inventree/InvenTree/pulls/7317.md) on 2024-05-23 23:43_
-
----
-
-_Referenced in [tox-dev/tox-uv#57](../../tox-dev/tox-uv/pulls/57.md) on 2024-05-24 15:06_
-
----
-
-_Referenced in [rotki/rotki#7978](../../rotki/rotki/pulls/7978.md) on 2024-05-24 15:11_
-
----
-
-_Referenced in [zenml-io/zenml#2727](../../zenml-io/zenml/pulls/2727.md) on 2024-05-29 07:10_
-
----
-
-_Referenced in [astral-sh/uv#7907](../../astral-sh/uv/issues/7907.md) on 2024-10-03 21:34_
 
 ---

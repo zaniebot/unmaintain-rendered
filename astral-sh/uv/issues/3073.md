@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-16T19:46:47Z
 updated_at: 2024-04-23T12:58:01Z
 url: https://github.com/astral-sh/uv/issues/3073
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `KeyringProvider::fetch_subprocess` should be async
@@ -63,10 +63,6 @@ Done @naosense thanks!
 _Comment by @zanieb on 2024-04-17 02:24_
 
 Sweet let me know if you have any questions. The `KeyringProvider::fetch` API will need to become async too.
-
----
-
-_Referenced in [astral-sh/uv#3089](../../astral-sh/uv/pulls/3089.md) on 2024-04-17 06:15_
 
 ---
 

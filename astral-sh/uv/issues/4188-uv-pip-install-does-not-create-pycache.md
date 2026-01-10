@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-10T07:27:54Z
 updated_at: 2024-06-10T12:58:10Z
 url: https://github.com/astral-sh/uv/issues/4188
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install` does not create `__pycache__`  directories in virtual enviroments
@@ -100,10 +100,6 @@ _Label `question` removed by @charliermarsh on 2024-06-10 12:44_
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-06-10 12:44_
-
----
-
-_Referenced in [astral-sh/uv#4195](../../astral-sh/uv/pulls/4195.md) on 2024-06-10 12:52_
 
 ---
 

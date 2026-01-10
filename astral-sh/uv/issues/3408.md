@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-06T14:14:50Z
 updated_at: 2024-05-14T01:23:29Z
 url: https://github.com/astral-sh/uv/issues/3408
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Preserve url parsing from `Requirement` parsing to `Dist`
@@ -35,18 +35,6 @@ _Assigned to @konstin by @konstin on 2024-05-06 14:14_
 ---
 
 _Renamed from "Preserve urls from `Requirement` parsing to `Dist`" to "Preserve url parsing from `Requirement` parsing to `Dist`" by @konstin on 2024-05-06 14:17_
-
----
-
-_Referenced in [astral-sh/uv#3407](../../astral-sh/uv/issues/3407.md) on 2024-05-06 14:21_
-
----
-
-_Referenced in [astral-sh/uv#3426](../../astral-sh/uv/pulls/3426.md) on 2024-05-07 15:32_
-
----
-
-_Referenced in [astral-sh/uv#3429](../../astral-sh/uv/pulls/3429.md) on 2024-05-08 13:07_
 
 ---
 

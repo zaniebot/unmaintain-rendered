@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-10T14:39:02Z
 updated_at: 2024-05-17T02:15:04Z
 url: https://github.com/astral-sh/uv/issues/3507
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Explore cargo-xwin for windows CI
@@ -33,14 +33,6 @@ _Label `internal` added by @charliermarsh on 2024-05-10 18:40_
 ---
 
 _Label `windows` added by @charliermarsh on 2024-05-10 18:40_
-
----
-
-_Referenced in [astral-sh/uv#3522](../../astral-sh/uv/pulls/3522.md) on 2024-05-11 15:21_
-
----
-
-_Referenced in [astral-sh/uv#3600](../../astral-sh/uv/pulls/3600.md) on 2024-05-15 03:19_
 
 ---
 

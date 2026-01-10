@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-13T19:21:14Z
 updated_at: 2024-06-14T01:43:19Z
 url: https://github.com/astral-sh/uv/issues/4316
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `--reinstall` and friends to new `uv` commands
@@ -33,10 +33,6 @@ _Label `configuration` added by @charliermarsh on 2024-06-13 19:21_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-06-13 19:21_
-
----
-
-_Referenced in [astral-sh/uv#4319](../../astral-sh/uv/pulls/4319.md) on 2024-06-13 23:44_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-08T02:56:19Z
 updated_at: 2024-05-10T14:10:14Z
 url: https://github.com/astral-sh/uv/issues/3449
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Project API commands should create a virtualenv when it doesn't exist
@@ -33,10 +33,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-09 17:12_
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-05-09 17:12_
-
----
-
-_Referenced in [astral-sh/uv#3499](../../astral-sh/uv/pulls/3499.md) on 2024-05-10 02:47_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-13T03:34:54Z
 updated_at: 2024-07-13T04:24:36Z
 url: https://github.com/astral-sh/uv/issues/5031
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip compile` should exclude `--upgrade-package` in the header
@@ -49,14 +49,6 @@ uv 0.2.24 (527b711bc 2024-07-10)
 
 ---
 
-_Referenced in [dependabot/dependabot-core#10040](../../dependabot/dependabot-core/pulls/10040.md) on 2024-07-13 03:35_
-
----
-
-_Referenced in [astral-sh/uv#5032](../../astral-sh/uv/pulls/5032.md) on 2024-07-13 03:44_
-
----
-
 _Label `bug` added by @zanieb on 2024-07-13 04:23_
 
 ---
@@ -70,13 +62,5 @@ _Closed by @zanieb on 2024-07-13 04:24_
 ---
 
 _Closed by @zanieb on 2024-07-13 04:24_
-
----
-
-_Referenced in [astral-sh/uv#5033](../../astral-sh/uv/pulls/5033.md) on 2024-07-13 05:27_
-
----
-
-_Referenced in [astral-sh/uv#2512](../../astral-sh/uv/issues/2512.md) on 2024-07-14 14:22_
 
 ---

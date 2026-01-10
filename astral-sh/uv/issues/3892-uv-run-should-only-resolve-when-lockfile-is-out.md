@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-28T23:07:29Z
 updated_at: 2024-07-12T22:49:29Z
 url: https://github.com/astral-sh/uv/issues/3892
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv run` should only resolve when lockfile is out-of-sync
@@ -87,10 +87,6 @@ There's something confusing in https://github.com/astral-sh/uv/issues/3925 thoug
 ---
 
 _Label `performance` added by @ibraheemdev on 2024-06-19 20:36_
-
----
-
-_Referenced in [astral-sh/uv#4495](../../astral-sh/uv/pulls/4495.md) on 2024-06-24 22:50_
 
 ---
 

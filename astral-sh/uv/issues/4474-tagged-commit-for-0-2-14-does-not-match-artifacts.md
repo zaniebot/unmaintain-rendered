@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-24T14:23:19Z
 updated_at: 2024-06-24T15:29:17Z
 url: https://github.com/astral-sh/uv/issues/4474
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Tagged commit for 0.2.14 does not match artifacts
@@ -32,10 +32,6 @@ See #4432 for details on the original problem.
 ---
 
 _Label `release` added by @zanieb on 2024-06-24 14:25_
-
----
-
-_Referenced in [astral-sh/uv#4475](../../astral-sh/uv/pulls/4475.md) on 2024-06-24 14:48_
 
 ---
 

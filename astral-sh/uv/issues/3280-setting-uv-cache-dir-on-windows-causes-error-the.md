@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-26T16:07:28Z
 updated_at: 2024-04-29T14:33:11Z
 url: https://github.com/astral-sh/uv/issues/3280
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Setting UV_CACHE_DIR on Windows causes "error: The system cannot find the path specified. (os error 3)"
@@ -48,10 +48,6 @@ error: The system cannot find the path specified. (os error 3)
 ---
 
 _Label `windows` added by @konstin on 2024-04-29 09:52_
-
----
-
-_Referenced in [astral-sh/uv#3304](../../astral-sh/uv/pulls/3304.md) on 2024-04-29 10:32_
 
 ---
 

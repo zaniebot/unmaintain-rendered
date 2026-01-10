@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-11T19:41:17Z
 updated_at: 2024-06-14T01:26:22Z
 url: https://github.com/astral-sh/uv/issues/4249
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Combine `uv` configuration from workspace root
@@ -34,10 +34,6 @@ _Label `configuration` added by @charliermarsh on 2024-06-11 19:41_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-06-11 19:41_
-
----
-
-_Referenced in [astral-sh/uv#4295](../../astral-sh/uv/pulls/4295.md) on 2024-06-13 02:01_
 
 ---
 

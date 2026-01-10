@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-09T04:37:52Z
 updated_at: 2024-05-09T13:30:42Z
 url: https://github.com/astral-sh/uv/issues/3480
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `# via` source messages for `setup.py` and `setup.cfg`
@@ -40,10 +40,6 @@ _Label `enhancement` added by @charliermarsh on 2024-05-09 04:37_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-09 04:49_
-
----
-
-_Referenced in [astral-sh/uv#3481](../../astral-sh/uv/pulls/3481.md) on 2024-05-09 05:05_
 
 ---
 

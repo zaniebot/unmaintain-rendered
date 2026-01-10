@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-01T11:43:13Z
 updated_at: 2024-07-01T16:22:46Z
 url: https://github.com/astral-sh/uv/issues/4688
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Incomplete message for `uv tool install azure-cli --prerelease=allow`
@@ -79,14 +79,6 @@ Installed 1 package in 7ms
  + ruff==0.5.0
 Installed:
 ```
-
----
-
-_Referenced in [astral-sh/uv#4691](../../astral-sh/uv/issues/4691.md) on 2024-07-01 12:49_
-
----
-
-_Referenced in [astral-sh/uv#4694](../../astral-sh/uv/pulls/4694.md) on 2024-07-01 13:43_
 
 ---
 

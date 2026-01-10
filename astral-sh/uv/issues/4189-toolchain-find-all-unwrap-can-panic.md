@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-10T08:04:09Z
 updated_at: 2024-06-10T14:22:01Z
 url: https://github.com/astral-sh/uv/issues/4189
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `Toolchain::find_all` unwrap can panic
@@ -82,10 +82,6 @@ I've fixed this already in one of the upcoming pull requests to productionize to
 
 ---
 
-_Referenced in [astral-sh/uv#4172](../../astral-sh/uv/pulls/4172.md) on 2024-06-10 13:46_
-
----
-
 _Comment by @charliermarsh on 2024-06-10 13:46_
 
 Is this panic user-accessible on `main`?
@@ -107,10 +103,6 @@ I think it's from the downloaded toolchains, so a preview feature
 _Comment by @zanieb on 2024-06-10 14:03_
 
 This has been accessible on main for a while now. It's only relevant if you are using managed toolchains and pollute the toolchain directory. I could fix it separately from my stack if you want though?
-
----
-
-_Referenced in [astral-sh/uv#4163](../../astral-sh/uv/pulls/4163.md) on 2024-06-10 14:09_
 
 ---
 

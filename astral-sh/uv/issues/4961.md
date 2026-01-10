@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-10T14:35:35Z
 updated_at: 2024-07-12T01:06:56Z
 url: https://github.com/astral-sh/uv/issues/4961
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `--reinstall` support to `uv python install`
@@ -84,10 +84,6 @@ Wow that's a great question — I forgot how my own CLI works. I honestly don't 
 _Comment by @caiquejjx on 2024-07-11 12:56_
 
 I'll go for renaming then, thanks!
-
----
-
-_Referenced in [astral-sh/uv#4999](../../astral-sh/uv/pulls/4999.md) on 2024-07-11 22:07_
 
 ---
 

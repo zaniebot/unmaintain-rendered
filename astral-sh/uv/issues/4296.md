@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-13T02:09:59Z
 updated_at: 2024-06-13T12:55:58Z
 url: https://github.com/astral-sh/uv/issues/4296
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv lock` does not respect `Requires-Python` in a virtual workspace
@@ -79,10 +79,6 @@ _Label `preview` added by @charliermarsh on 2024-06-13 02:10_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-13 02:32_
-
----
-
-_Referenced in [astral-sh/uv#4298](../../astral-sh/uv/pulls/4298.md) on 2024-06-13 02:38_
 
 ---
 

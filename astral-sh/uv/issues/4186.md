@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-10T03:27:10Z
 updated_at: 2024-06-11T01:53:13Z
 url: https://github.com/astral-sh/uv/issues/4186
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Socks5 proxy setting and subcommands tab completion.
@@ -73,10 +73,6 @@ Can you share more about the use case?
 _Comment by @hongyi-zhao on 2024-06-10 23:33_
 
 My native proxy is of type `SOCKS5`, and in my specific region, using such a proxy to download dependency packages is more efficient. On the other hand, using `SOCKS5H` can effectively fight DNS pollution.
-
----
-
-_Referenced in [astral-sh/uv#4227](../../astral-sh/uv/issues/4227.md) on 2024-06-11 01:52_
 
 ---
 

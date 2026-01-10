@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-21T18:51:29Z
 updated_at: 2024-05-21T18:52:17Z
 url: https://github.com/astral-sh/uv/issues/3716
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Avoid reference to root when pinned requirements are incompatible
@@ -39,9 +39,5 @@ We should say
 ---
 
 _Label `error messages` added by @zanieb on 2024-05-21 18:51_
-
----
-
-_Referenced in [astral-sh/uv#3711](../../astral-sh/uv/pulls/3711.md) on 2024-05-21 18:52_
 
 ---

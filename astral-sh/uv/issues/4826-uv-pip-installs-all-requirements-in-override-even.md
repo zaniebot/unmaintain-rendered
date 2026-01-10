@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-05T08:17:26Z
 updated_at: 2024-07-10T12:27:25Z
 url: https://github.com/astral-sh/uv/issues/4826
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv pip installs all requirements in --override even though nothing depends on them
@@ -250,10 +250,6 @@ The problem occurs with an override of `pysocks==1.7.1`. pysocks is an optional 
 
 ---
 
-_Referenced in [astral-sh/uv#4829](../../astral-sh/uv/pulls/4829.md) on 2024-07-05 09:34_
-
----
-
 _Closed by @konstin on 2024-07-09 18:37_
 
 ---
@@ -265,9 +261,5 @@ _Closed by @konstin on 2024-07-09 18:37_
 _Comment by @sbidoul on 2024-07-10 12:27_
 
 Thanks for the fix!
-
----
-
-_Referenced in [astral-sh/uv#4976](../../astral-sh/uv/issues/4976.md) on 2024-07-10 21:07_
 
 ---

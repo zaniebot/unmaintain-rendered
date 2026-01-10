@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-15T21:25:37Z
 updated_at: 2024-07-16T21:48:58Z
 url: https://github.com/astral-sh/uv/issues/5082
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Provide a flag to disable spinner during uv pip sync/install
@@ -65,10 +65,6 @@ _Comment by @silvanocerza on 2024-07-16 08:52_
 A global `--no-progress-bar` option is a good idea I think. 
 
 I can take care of this, though I don't know all the commands that print progress bars. 
-
----
-
-_Referenced in [astral-sh/uv#5098](../../astral-sh/uv/pulls/5098.md) on 2024-07-16 09:31_
 
 ---
 

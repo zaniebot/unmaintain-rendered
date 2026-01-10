@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-29T10:53:39Z
 updated_at: 2024-07-17T21:25:32Z
 url: https://github.com/astral-sh/uv/issues/3305
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Implied "--require-hashes"?
@@ -63,10 +63,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-04 01:09_
 
 ---
 
-_Referenced in [astral-sh/uv#4007](../../astral-sh/uv/pulls/4007.md) on 2024-06-04 01:51_
-
----
-
 _Comment by @charliermarsh on 2024-06-04 01:52_
 
 I added it in https://github.com/astral-sh/uv/pull/4007.
@@ -84,9 +80,5 @@ _Closed by @charliermarsh on 2024-07-17 21:25_
 ---
 
 _Closed by @charliermarsh on 2024-07-17 21:25_
-
----
-
-_Referenced in [astral-sh/uv#9164](../../astral-sh/uv/issues/9164.md) on 2024-11-16 09:40_
 
 ---

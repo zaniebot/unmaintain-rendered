@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-27T09:47:27Z
 updated_at: 2024-06-27T15:56:43Z
 url: https://github.com/astral-sh/uv/issues/4578
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `--extra-index-url` fails to look up on pypi when there are no wheels built for my machine
@@ -73,9 +73,5 @@ Thank you :)
 ---
 
 _Closed by @zanieb on 2024-06-27 15:56_
-
----
-
-_Referenced in [mivade/website#2](../../mivade/website/issues/2.md) on 2024-09-09 17:27_
 
 ---

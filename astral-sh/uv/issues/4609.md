@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-28T03:02:49Z
 updated_at: 2024-06-28T13:28:40Z
 url: https://github.com/astral-sh/uv/issues/4609
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # incorrect dependencies shown in `pip tree` for `pandas`
@@ -69,10 +69,6 @@ i'll look into this 😭
 ---
 
 _Renamed from "incorrect dependencies shown in `pip tree`" to "incorrect dependencies shown in `pip tree` for `pandas`" by @ChannyClaus on 2024-06-28 03:02_
-
----
-
-_Referenced in [astral-sh/uv#4611](../../astral-sh/uv/pulls/4611.md) on 2024-06-28 05:05_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-25T12:25:38Z
 updated_at: 2024-07-10T03:09:14Z
 url: https://github.com/astral-sh/uv/issues/1964
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # [Feature Request] Support `--upgrade-package` with a specific version
@@ -123,10 +123,6 @@ Right now, I use `uv pip compile -c requirements.txt requirements.in -P boto3 -o
 
 ---
 
-_Referenced in [astral-sh/uv#3990](../../astral-sh/uv/issues/3990.md) on 2024-06-03 16:43_
-
----
-
 _Comment by @charliermarsh on 2024-06-03 20:23_
 
 Conceptually, is this the same as `--upgrade-package boto3` with `boto3==x` as a constraint? I'm trying to understand the semantics of `--upgrade-package boto3==x`.
@@ -151,10 +147,6 @@ Yep, so expectation of -P foo==1.2.3 is:
 - apply an additional constraint of “foo==1.2.3”
 - allow only output requirements necessary to meet this constraint to upgrade
 - still meet all input constraints 
-
----
-
-_Referenced in [astral-sh/uv#2512](../../astral-sh/uv/issues/2512.md) on 2024-07-03 19:29_
 
 ---
 
@@ -202,10 +194,6 @@ My initial thinking is something like: change `Upgrade` in `package_options.rs` 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-10 02:33_
-
----
-
-_Referenced in [astral-sh/uv#4952](../../astral-sh/uv/pulls/4952.md) on 2024-07-10 02:44_
 
 ---
 

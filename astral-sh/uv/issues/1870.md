@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-22T14:25:13Z
 updated_at: 2024-06-19T00:39:20Z
 url: https://github.com/astral-sh/uv/issues/1870
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Can we use uv for dependency management like poetry
@@ -109,9 +109,5 @@ The lock file work is being tracked in https://github.com/astral-sh/uv/issues/33
 ---
 
 _Closed by @zanieb on 2024-06-19 00:39_
-
----
-
-_Referenced in [NADOOIT/NADOO-Wiki#133](../../NADOOIT/NADOO-Wiki/issues/133.md) on 2025-04-09 14:24_
 
 ---

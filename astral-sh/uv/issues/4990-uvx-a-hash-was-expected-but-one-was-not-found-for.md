@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-11T10:29:33Z
 updated_at: 2024-07-12T01:31:08Z
 url: https://github.com/astral-sh/uv/issues/4990
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uvx`: a hash was expected but one was not found for direct URL source distribution
@@ -94,10 +94,6 @@ _Label `great writeup` added by @zanieb on 2024-07-11 14:28_
 _Comment by @zanieb on 2024-07-11 14:28_
 
 Thanks for the clear report!
-
----
-
-_Referenced in [astral-sh/uv#5002](../../astral-sh/uv/pulls/5002.md) on 2024-07-12 01:20_
 
 ---
 

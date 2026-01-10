@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-08T01:13:26Z
 updated_at: 2024-06-10T12:40:52Z
 url: https://github.com/astral-sh/uv/issues/4157
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Lockfile omits base package when extra has a marker
@@ -50,10 +50,6 @@ Because right now, there's no way to represent "a package should be included, bu
 
 \cc @BurntSushi 
 
-
----
-
-_Referenced in [astral-sh/uv#4166](../../astral-sh/uv/pulls/4166.md) on 2024-06-08 18:08_
 
 ---
 

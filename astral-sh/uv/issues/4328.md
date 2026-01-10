@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-14T14:54:38Z
 updated_at: 2024-06-15T20:24:01Z
 url: https://github.com/astral-sh/uv/issues/4328
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Error when trying to install packages from multiple directories from monorepo
@@ -75,9 +75,5 @@ _Label `bug` added by @zanieb on 2024-06-15 19:44_
 _Comment by @fervand1 on 2024-06-15 20:24_
 
 @zanieb I used the latest version of uv for my tests today. So it should still be reproducible. Only way I was able to get it working was with the env variable set. If it can be addressed it will be nice. Thanks
-
----
-
-_Referenced in [pypa/pip#12816](../../pypa/pip/pulls/12816.md) on 2024-07-01 16:45_
 
 ---

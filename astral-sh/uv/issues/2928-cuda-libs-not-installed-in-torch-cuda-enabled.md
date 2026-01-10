@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-09T08:05:19Z
 updated_at: 2024-05-14T07:10:05Z
 url: https://github.com/astral-sh/uv/issues/2928
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # CUDA libs not installed in Torch CUDA-enabled Docker
@@ -339,10 +339,6 @@ zstandard @ file:///croot/zstandard_1677013143055/work
 I assume, it should be very straightforward to reproduce, given the base image, but would be more than happy to give you more info/logs, if needed!
 
 Thank you!
-
----
-
-_Referenced in [astral-sh/uv#2841](../../astral-sh/uv/issues/2841.md) on 2024-04-11 13:54_
 
 ---
 
@@ -968,18 +964,6 @@ _Comment by @samypr100 on 2024-04-13 23:35_
 
 Seems like the implementation for generating .egg-info directories is here https://github.com/pypa/setuptools/blob/main/setuptools/command/egg_info.py
 and general info is available here https://setuptools.pypa.io/en/latest/deprecated/python_eggs.html
-
----
-
-_Referenced in [pytorch/pytorch#124027](../../pytorch/pytorch/pulls/124027.md) on 2024-04-14 23:48_
-
----
-
-_Referenced in [astral-sh/uv#3341](../../astral-sh/uv/issues/3341.md) on 2024-05-03 22:06_
-
----
-
-_Referenced in [astral-sh/uv#3380](../../astral-sh/uv/pulls/3380.md) on 2024-05-05 23:07_
 
 ---
 

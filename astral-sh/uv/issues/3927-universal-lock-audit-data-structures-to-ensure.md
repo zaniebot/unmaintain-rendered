@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-30T18:27:11Z
 updated_at: 2024-06-27T09:53:43Z
 url: https://github.com/astral-sh/uv/issues/3927
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: audit data structures to ensure they can handle multiple versions of the same package
@@ -30,10 +30,6 @@ _Label `internal` added by @BurntSushi on 2024-05-30 18:27_
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-05-30 18:27_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-30 18:27_
 
 ---
 
@@ -60,10 +56,6 @@ license = {text = "MIT"}
 requires = ["flit_core>=3.4,<4"]
 build-backend = "flit_core.buildapi"
 ```
-
----
-
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-06-10 12:46_
 
 ---
 
@@ -141,10 +133,6 @@ _Unassigned @BurntSushi by @konstin on 2024-06-20 09:08_
 ---
 
 _Assigned to @konstin by @konstin on 2024-06-20 09:08_
-
----
-
-_Referenced in [astral-sh/uv#4435](../../astral-sh/uv/pulls/4435.md) on 2024-06-21 16:10_
 
 ---
 

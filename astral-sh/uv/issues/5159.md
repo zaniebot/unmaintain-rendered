@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-17T18:13:25Z
 updated_at: 2024-07-17T20:30:46Z
 url: https://github.com/astral-sh/uv/issues/5159
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool dir` should have a mechanism to display the executables directory
@@ -33,10 +33,6 @@ _Label `cli` added by @charliermarsh on 2024-07-17 18:13_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-17 18:13_
-
----
-
-_Referenced in [astral-sh/uv#5160](../../astral-sh/uv/pulls/5160.md) on 2024-07-17 18:13_
 
 ---
 

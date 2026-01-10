@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-08T14:26:57Z
 updated_at: 2024-07-08T16:32:10Z
 url: https://github.com/astral-sh/uv/issues/4898
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv versions 0.2.19 and 0.2.20 not respecting wheel dependecies
@@ -141,10 +141,6 @@ Because it was removed from the version map but not "re-added" there.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-08 14:59_
-
----
-
-_Referenced in [astral-sh/uv#4900](../../astral-sh/uv/pulls/4900.md) on 2024-07-08 14:59_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-03T03:29:40Z
 updated_at: 2024-07-03T04:50:36Z
 url: https://github.com/astral-sh/uv/issues/4755
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # no uvx.exe found on windows during installation
@@ -129,15 +129,7 @@ _Label `release` added by @zanieb on 2024-07-03 03:54_
 
 ---
 
-_Referenced in [astral-sh/uv#4756](../../astral-sh/uv/pulls/4756.md) on 2024-07-03 03:57_
-
----
-
 _Closed by @zanieb on 2024-07-03 04:16_
-
----
-
-_Referenced in [axodotdev/cargo-dist#1183](../../axodotdev/cargo-dist/issues/1183.md) on 2024-07-03 04:27_
 
 ---
 

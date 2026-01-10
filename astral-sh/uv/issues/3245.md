@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-24T15:42:51Z
 updated_at: 2024-04-24T15:54:39Z
 url: https://github.com/astral-sh/uv/issues/3245
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `sync_scenarios.sh` should update `BUILD_VENDOR_LINKS_URL`
@@ -24,10 +24,6 @@ Originally mentioned in https://github.com/astral-sh/uv/pull/3244#issuecomment-2
 ---
 
 _Label `internal` added by @ibraheemdev on 2024-04-24 15:43_
-
----
-
-_Referenced in [astral-sh/uv#3246](../../astral-sh/uv/pulls/3246.md) on 2024-04-24 15:48_
 
 ---
 

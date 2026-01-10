@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-01T21:19:56Z
 updated_at: 2024-07-18T15:00:02Z
 url: https://github.com/astral-sh/uv/issues/4709
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv sync` fails when interpreter is not named `python[3]`
@@ -34,17 +34,9 @@ _Label `help wanted` added by @zanieb on 2024-07-01 21:20_
 
 ---
 
-_Referenced in [astral-sh/uv#4277](../../astral-sh/uv/issues/4277.md) on 2024-07-01 21:20_
-
----
-
 _Comment by @zanieb on 2024-07-01 21:21_
 
 See `python_executables_from_search_path` for the current implementation.
-
----
-
-_Referenced in [astral-sh/uv#4958](../../astral-sh/uv/issues/4958.md) on 2024-07-10 14:23_
 
 ---
 
@@ -135,10 +127,6 @@ _Assigned to @konstin by @konstin on 2024-07-17 07:24_
 _Comment by @konstin on 2024-07-17 07:24_
 
 Will do
-
----
-
-_Referenced in [astral-sh/uv#5148](../../astral-sh/uv/pulls/5148.md) on 2024-07-17 15:51_
 
 ---
 

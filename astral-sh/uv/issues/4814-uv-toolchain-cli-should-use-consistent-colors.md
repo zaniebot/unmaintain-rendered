@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T17:53:53Z
 updated_at: 2024-07-08T14:03:39Z
 url: https://github.com/astral-sh/uv/issues/4814
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv toolchain` CLI should use consistent colors
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-07-04 17:54_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-08 01:00_
-
----
-
-_Referenced in [astral-sh/uv#4882](../../astral-sh/uv/pulls/4882.md) on 2024-07-08 01:19_
 
 ---
 

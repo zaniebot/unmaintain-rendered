@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-27T09:53:11Z
 updated_at: 2024-07-16T16:57:31Z
 url: https://github.com/astral-sh/uv/issues/4580
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 #  Allow different locals in forks
@@ -28,23 +28,11 @@ _Label `preview` added by @konstin on 2024-06-27 09:53_
 
 ---
 
-_Referenced in [astral-sh/uv#3927](../../astral-sh/uv/issues/3927.md) on 2024-06-27 09:53_
-
----
-
 _Label `lock` added by @zanieb on 2024-06-27 11:11_
 
 ---
 
-_Referenced in [astral-sh/uv#4899](../../astral-sh/uv/issues/4899.md) on 2024-07-08 20:52_
-
----
-
 _Assigned to @ibraheemdev by @ibraheemdev on 2024-07-12 21:14_
-
----
-
-_Referenced in [astral-sh/uv#5104](../../astral-sh/uv/pulls/5104.md) on 2024-07-16 14:18_
 
 ---
 

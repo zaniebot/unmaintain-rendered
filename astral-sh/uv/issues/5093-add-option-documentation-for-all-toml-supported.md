@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-16T02:39:57Z
 updated_at: 2024-07-16T23:49:10Z
 url: https://github.com/astral-sh/uv/issues/5093
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `#[option]` documentation for all TOML-supported settings
@@ -28,18 +28,6 @@ _Label `documentation` added by @charliermarsh on 2024-07-16 02:40_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-16 02:40_
-
----
-
-_Referenced in [astral-sh/uv#5122](../../astral-sh/uv/pulls/5122.md) on 2024-07-16 19:20_
-
----
-
-_Referenced in [astral-sh/uv#5123](../../astral-sh/uv/pulls/5123.md) on 2024-07-16 19:25_
-
----
-
-_Referenced in [astral-sh/uv#5125](../../astral-sh/uv/pulls/5125.md) on 2024-07-16 19:41_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-01T23:13:14Z
 updated_at: 2024-07-04T20:06:53Z
 url: https://github.com/astral-sh/uv/issues/4714
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv incorrectly excludes pre-release Python versions when `requires-python` is greater or equal to that version
@@ -66,10 +66,6 @@ Moreover, intuitively, if a developer splits up their package releases between `
 
 But let me know if you know some more specific part of the spec that says my interpretation is wrong, I will file a bug against pip. 
 
-
----
-
-_Referenced in [astral-sh/uv#4536](../../astral-sh/uv/issues/4536.md) on 2024-07-01 23:14_
 
 ---
 
@@ -151,10 +147,6 @@ _Label `bug` added by @charliermarsh on 2024-07-02 02:21_
 
 ---
 
-_Referenced in [astral-sh/uv#4719](../../astral-sh/uv/issues/4719.md) on 2024-07-02 02:29_
-
----
-
 _Comment by @charliermarsh on 2024-07-03 17:08_
 
 Still trying to figure out how pip actually allows this given:
@@ -209,14 +201,6 @@ Which links to: https://packaging.python.org/en/latest/specifications/core-metad
 
 It's all rather underspecified, and unfortunately uses the word *may*. Oh well.
 
-
----
-
-_Referenced in [pypa/pip#12821](../../pypa/pip/issues/12821.md) on 2024-07-03 20:21_
-
----
-
-_Referenced in [astral-sh/uv#4794](../../astral-sh/uv/pulls/4794.md) on 2024-07-03 23:50_
 
 ---
 

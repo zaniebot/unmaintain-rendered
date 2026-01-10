@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T15:47:00Z
 updated_at: 2024-05-09T13:24:38Z
 url: https://github.com/astral-sh/uv/issues/3353
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: add a "universal" toggle to our resolver
@@ -24,14 +24,6 @@ As part of #3350, I think we will probably want to be able to toggle the resolve
 ---
 
 _Label `preview` added by @BurntSushi on 2024-05-03 15:47_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 15:47_
-
----
-
-_Referenced in [astral-sh/uv#3466](../../astral-sh/uv/pulls/3466.md) on 2024-05-08 18:10_
 
 ---
 

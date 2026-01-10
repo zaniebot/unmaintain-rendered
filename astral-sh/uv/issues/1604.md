@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T17:53:03Z
 updated_at: 2024-06-27T11:34:09Z
 url: https://github.com/astral-sh/uv/issues/1604
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Document best practices for using in Dockerfile
@@ -37,10 +37,6 @@ _Comment by @AlexWaygood on 2024-02-17 17:55_
 _Comment by @zanieb on 2024-02-18 08:03_
 
 See https://github.com/astral-sh/uv/issues/1386 for discussion about that
-
----
-
-_Referenced in [astral-sh/uv#2000](../../astral-sh/uv/pulls/2000.md) on 2024-02-27 16:19_
 
 ---
 

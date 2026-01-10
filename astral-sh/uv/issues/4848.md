@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-06T19:11:15Z
 updated_at: 2024-07-09T05:29:56Z
 url: https://github.com/astral-sh/uv/issues/4848
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # "No download found" error should avoid debug representation
@@ -50,10 +50,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-08 14:31_
 _Comment by @charliermarsh on 2024-07-08 14:50_
 
 Okay got it, makes sense.
-
----
-
-_Referenced in [astral-sh/uv#4913](../../astral-sh/uv/pulls/4913.md) on 2024-07-09 05:22_
 
 ---
 

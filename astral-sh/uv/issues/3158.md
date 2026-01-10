@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-20T06:31:49Z
 updated_at: 2024-04-20T14:16:49Z
 url: https://github.com/astral-sh/uv/issues/3158
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Windows scripts always uses `venvwlauncher.exe`
@@ -44,10 +44,6 @@ Ah, it only affects Python 3.13.
 _Comment by @charliermarsh on 2024-04-20 13:33_
 
 PR welcome or I can fix!
-
----
-
-_Referenced in [astral-sh/uv#3160](../../astral-sh/uv/pulls/3160.md) on 2024-04-20 14:11_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-25T23:35:20Z
 updated_at: 2024-05-22T13:22:28Z
 url: https://github.com/astral-sh/uv/issues/2661
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install` should create a virtualenv if no `venv` is found
@@ -28,10 +28,6 @@ _Label `cli` added by @charliermarsh on 2024-03-25 23:35_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-26 02:13_
-
----
-
-_Referenced in [astral-sh/uv#2665](../../astral-sh/uv/pulls/2665.md) on 2024-03-26 02:58_
 
 ---
 

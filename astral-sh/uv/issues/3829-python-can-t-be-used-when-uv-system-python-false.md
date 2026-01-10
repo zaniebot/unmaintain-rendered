@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-24T18:36:49Z
 updated_at: 2024-05-24T19:15:18Z
 url: https://github.com/astral-sh/uv/issues/3829
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `--python` can't be used when `UV_SYSTEM_PYTHON=false`
@@ -86,10 +86,6 @@ Actually confused because I thought I fixed this in https://github.com/astral-sh
 _Comment by @charliermarsh on 2024-05-24 18:51_
 
 (But clearly I didn't.)
-
----
-
-_Referenced in [astral-sh/uv#3830](../../astral-sh/uv/pulls/3830.md) on 2024-05-24 18:53_
 
 ---
 

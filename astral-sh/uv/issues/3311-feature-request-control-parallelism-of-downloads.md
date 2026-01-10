@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-29T14:36:58Z
 updated_at: 2024-05-18T03:14:21Z
 url: https://github.com/astral-sh/uv/issues/3311
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Feature request: Control parallelism of downloads, sdist builds, and installs
@@ -53,10 +53,6 @@ _Comment by @notatallshaw on 2024-05-02 20:52_
 The pip PR adds the feature to use multiple threads, and the feature controls the number of threads.
 
 But for my use case at least I was wanting to set one download at a time, I wasn't too concerned with whether things are technically parallel or concurrent.
-
----
-
-_Referenced in [astral-sh/uv#3493](../../astral-sh/uv/pulls/3493.md) on 2024-05-09 18:37_
 
 ---
 

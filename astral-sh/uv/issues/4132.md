@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T15:23:44Z
 updated_at: 2024-06-08T01:22:58Z
 url: https://github.com/astral-sh/uv/issues/4132
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `==3.11.*` doesn't satisfy `Python>=3.11,<4`
@@ -84,10 +84,6 @@ We should of course fix this but like... it's... technically... correct? I think
 _Comment by @charliermarsh on 2024-06-07 19:15_
 
 The easy solution is to ignore pre, post, dev, and local segments when comparing `Requires-Python`.
-
----
-
-_Referenced in [astral-sh/uv#4150](../../astral-sh/uv/pulls/4150.md) on 2024-06-07 22:25_
 
 ---
 

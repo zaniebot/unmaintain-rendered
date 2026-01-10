@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-13T19:24:02Z
 updated_at: 2024-07-13T21:12:27Z
 url: https://github.com/astral-sh/uv/issues/5040
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv` fails to install `torch-scatter` with `ModuleNotFoundError`, `pip` works
@@ -118,18 +118,10 @@ I'll keep this open to track that!
 
 ---
 
-_Referenced in [astral-sh/uv#5041](../../astral-sh/uv/pulls/5041.md) on 2024-07-13 21:04_
-
----
-
 _Closed by @charliermarsh on 2024-07-13 21:12_
 
 ---
 
 _Closed by @charliermarsh on 2024-07-13 21:12_
-
----
-
-_Referenced in [rusty1s/pytorch_scatter#455](../../rusty1s/pytorch_scatter/issues/455.md) on 2024-08-05 14:29_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-17T22:34:13Z
 updated_at: 2024-06-18T14:19:31Z
 url: https://github.com/astral-sh/uv/issues/4372
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv installs really old version of web3 in the presence of numpy and streamlit on 3.10, unlike pip
@@ -721,10 +721,6 @@ My team is going to add lower bounds, and possibly upper bounds, going forward. 
 
 ---
 
-_Referenced in [astral-sh/uv#3149](../../astral-sh/uv/issues/3149.md) on 2024-06-18 13:19_
-
----
-
 _Comment by @notatallshaw on 2024-06-18 13:47_
 
 > * pip checks the latest version of all deps, then backtracks on listed order in case of a version mismatch (numpy in this case)
@@ -762,9 +758,5 @@ _Comment by @notatallshaw on 2024-06-18 14:19_
 Well there is a big different between direct and transitive dependencies for pip, you will get "nicer" behavior when they are direct dependencies, such as pulled from a requirements.txt. I'm looking at ways to improve this, so pip can understanding if there is only 1 candidate for a package,to treat its dependencies as direct dependencies when resolving.
 
 But also you're right, the ordering of transitive requirements is different, also resolvelib (the resolution library for pip) has less situations where it has to exhaust all candidates of a particular requirement compared pubgrub-rs (the resolution library for uv).
-
----
-
-_Referenced in [astral-sh/uv#7990](../../astral-sh/uv/issues/7990.md) on 2024-10-08 13:15_
 
 ---

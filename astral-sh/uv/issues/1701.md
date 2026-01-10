@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T15:54:28Z
 updated_at: 2024-06-07T02:57:41Z
 url: https://github.com/astral-sh/uv/issues/1701
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Failed to build HTTP client, could not load PEM file
@@ -101,10 +101,6 @@ I wonder if we can fallback to using bundled certificates if we fail to load the
 _Comment by @mattmess1221 on 2024-02-19 17:36_
 
 curl/openssl is able to load it fine, so I would assume so.
-
----
-
-_Referenced in [astral-sh/uv#1819](../../astral-sh/uv/issues/1819.md) on 2024-02-21 17:27_
 
 ---
 

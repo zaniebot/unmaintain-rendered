@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-06T13:40:58Z
 updated_at: 2024-06-06T14:18:14Z
 url: https://github.com/astral-sh/uv/issues/4094
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv lock requires python dev versions
@@ -77,10 +77,6 @@ _Reopened by @charliermarsh on 2024-06-06 13:51_
 ---
 
 _Closed by @charliermarsh on 2024-06-06 13:51_
-
----
-
-_Referenced in [astral-sh/uv#4096](../../astral-sh/uv/issues/4096.md) on 2024-06-06 13:51_
 
 ---
 

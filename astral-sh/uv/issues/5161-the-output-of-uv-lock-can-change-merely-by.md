@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-17T18:19:49Z
 updated_at: 2024-07-18T08:30:14Z
 url: https://github.com/astral-sh/uv/issues/5161
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # the output of `uv lock` can change merely by changing the order of requirements in `pyproject.toml`
@@ -164,14 +164,6 @@ But the output depending on the ordering of the requirements is, I believe, a di
 
 ---
 
-_Referenced in [astral-sh/uv#5162](../../astral-sh/uv/issues/5162.md) on 2024-07-17 18:19_
-
----
-
-_Referenced in [astral-sh/uv#5163](../../astral-sh/uv/pulls/5163.md) on 2024-07-17 18:24_
-
----
-
 _Comment by @charliermarsh on 2024-07-17 18:26_
 
 In theory, it seems ok if the resolution differs based on the order of requirements...
@@ -197,13 +189,5 @@ Our package prioritization is order dependent, so there are examples where this 
 
 `dependencies = ["a", "b"]` will resolve a 2, b 1, while 
 `dependencies = ["b", "a"]` will resolve b 2, a 1. Forks specifically we can improve the situation by prioritizing specific forks to increase the changes of getting a more minimal resolution (#4926).
-
----
-
-_Referenced in [astral-sh/uv#5796](../../astral-sh/uv/issues/5796.md) on 2024-08-05 17:22_
-
----
-
-_Referenced in [astral-sh/uv#7965](../../astral-sh/uv/issues/7965.md) on 2024-10-08 22:44_
 
 ---

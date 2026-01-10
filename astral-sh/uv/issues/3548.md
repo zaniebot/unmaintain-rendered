@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T14:44:08Z
 updated_at: 2024-05-13T17:06:28Z
 url: https://github.com/astral-sh/uv/issues/3548
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Constraints aren't enforced for editables
@@ -36,10 +36,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-13 14:44_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-05-13 14:44_
-
----
-
-_Referenced in [astral-sh/uv#3554](../../astral-sh/uv/pulls/3554.md) on 2024-05-13 16:52_
 
 ---
 

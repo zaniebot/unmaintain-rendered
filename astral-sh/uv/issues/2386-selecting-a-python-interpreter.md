@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-12T16:50:58Z
 updated_at: 2024-05-21T19:37:25Z
 url: https://github.com/astral-sh/uv/issues/2386
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Selecting a Python interpreter
@@ -174,10 +174,6 @@ _Assigned to @konstin by @konstin on 2024-03-12 17:24_
 
 ---
 
-_Referenced in [astral-sh/uv#2388](../../astral-sh/uv/pulls/2388.md) on 2024-03-12 17:49_
-
----
-
 _Comment by @konstin on 2024-03-12 17:51_
 
 Another question from #2388: With `-p 3.10`, would we pick pypy, or should we only do cpython by default and alternative implementations be an opt-in? Given how incompatible other implementations are, i'm in favor of cpython-by-default and leaving pypy/pyston for explicit opt-in.
@@ -230,10 +226,6 @@ We could also consider behavior specific to the implementation and the binaries 
 
 ---
 
-_Referenced in [astral-sh/uv#2338](../../astral-sh/uv/pulls/2338.md) on 2024-03-13 11:43_
-
----
-
 _Unassigned @konstin by @konstin on 2024-03-13 12:21_
 
 ---
@@ -253,22 +245,6 @@ Not hard to fix, but I would have expected the original command to install the d
 
 ---
 
-_Referenced in [astral-sh/uv#2488](../../astral-sh/uv/issues/2488.md) on 2024-03-16 15:57_
-
----
-
-_Referenced in [astral-sh/uv#2649](../../astral-sh/uv/issues/2649.md) on 2024-03-25 17:15_
-
----
-
-_Referenced in [astral-sh/uv#2675](../../astral-sh/uv/pulls/2675.md) on 2024-03-27 09:05_
-
----
-
-_Referenced in [astral-sh/uv#2813](../../astral-sh/uv/issues/2813.md) on 2024-04-03 16:24_
-
----
-
 _Comment by @haarisr on 2024-04-03 17:10_
 
 Might not be exactly related
@@ -285,14 +261,6 @@ _Label `enhancement` added by @charliermarsh on 2024-04-16 04:32_
 
 ---
 
-_Referenced in [astral-sh/uv#3060](../../astral-sh/uv/issues/3060.md) on 2024-04-16 13:13_
-
----
-
-_Referenced in [astral-sh/uv#3062](../../astral-sh/uv/issues/3062.md) on 2024-04-16 15:00_
-
----
-
 _Comment by @charliermarsh on 2024-04-16 15:18_
 
 A brief proposed addendum on top of the above logic, quoting https://github.com/astral-sh/uv/issues/3060. When looking at a `--python` value...
@@ -305,22 +273,6 @@ A brief proposed addendum on top of the above logic, quoting https://github.com/
 
 ---
 
-_Referenced in [astral-sh/uv#3265](../../astral-sh/uv/pulls/3265.md) on 2024-04-25 17:58_
-
----
-
-_Referenced in [astral-sh/uv#3266](../../astral-sh/uv/pulls/3266.md) on 2024-04-25 18:02_
-
----
-
 _Closed by @zanieb on 2024-05-21 19:37_
-
----
-
-_Referenced in [zed-industries/zed#7808](../../zed-industries/zed/issues/7808.md) on 2024-06-03 00:04_
-
----
-
-_Referenced in [zed-industries/zed#21743](../../zed-industries/zed/issues/21743.md) on 2025-05-29 18:43_
 
 ---

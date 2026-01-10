@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-21T17:49:43Z
 updated_at: 2024-05-21T19:28:24Z
 url: https://github.com/astral-sh/uv/issues/3710
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Confusing resolution error message
@@ -44,10 +44,6 @@ _Label `resolver` added by @ibraheemdev on 2024-05-21 17:50_
 _Comment by @zanieb on 2024-05-21 17:51_
 
 Fixing the bad error message
-
----
-
-_Referenced in [astral-sh/uv#3711](../../astral-sh/uv/pulls/3711.md) on 2024-05-21 17:55_
 
 ---
 

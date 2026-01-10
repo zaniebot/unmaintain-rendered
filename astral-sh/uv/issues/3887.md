@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-28T19:15:36Z
 updated_at: 2024-05-29T18:17:46Z
 url: https://github.com/astral-sh/uv/issues/3887
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Uv progress bars: long output in jupyterlab
@@ -279,10 +279,6 @@ Jupyter seems to set `JPY_SESSION_NAME` and `JPY_PARENT_PID`, we might be able t
 
 ---
 
-_Referenced in [astral-sh/uv#3890](../../astral-sh/uv/pulls/3890.md) on 2024-05-28 20:50_
-
----
-
 _Closed by @ibraheemdev on 2024-05-28 21:05_
 
 ---
@@ -296,9 +292,5 @@ Appreciate you @bluss! And thanks @ibraheemdev for resolving so quickly.
 _Comment by @bluss on 2024-05-29 18:17_
 
 That was quick fix, thank you! And I'm happy to help Uv
-
----
-
-_Referenced in [googlecolab/colabtools#5313](../../googlecolab/colabtools/issues/5313.md) on 2025-05-08 22:58_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-21T01:22:04Z
 updated_at: 2024-05-21T11:56:35Z
 url: https://github.com/astral-sh/uv/issues/3684
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Don't use the cache dir for build venvs?
@@ -61,13 +61,5 @@ _Label `configuration` added by @charliermarsh on 2024-05-21 11:56_
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2024-05-21 11:56_
-
----
-
-_Referenced in [astral-sh/uv#12036](../../astral-sh/uv/issues/12036.md) on 2025-03-07 09:35_
-
----
-
-_Referenced in [astral-sh/uv#13096](../../astral-sh/uv/issues/13096.md) on 2025-04-25 20:37_
 
 ---

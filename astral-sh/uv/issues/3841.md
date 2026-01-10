@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-26T15:03:29Z
 updated_at: 2024-05-26T15:03:33Z
 url: https://github.com/astral-sh/uv/issues/3841
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Improve error message when discovery fails due to system interpreter filtering
@@ -24,9 +24,5 @@ e.g. in https://github.com/astral-sh/uv/issues/3837 we say we can't find the int
 ---
 
 _Label `error messages` added by @zanieb on 2024-05-26 15:03_
-
----
-
-_Referenced in [astral-sh/uv#3861](../../astral-sh/uv/issues/3861.md) on 2024-05-27 09:51_
 
 ---

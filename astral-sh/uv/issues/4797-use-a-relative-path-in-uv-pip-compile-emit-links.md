@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-04T09:47:34Z
 updated_at: 2024-07-05T21:57:41Z
 url: https://github.com/astral-sh/uv/issues/4797
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Use a relative path in `uv pip compile --emit-links`
@@ -58,10 +58,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-04 17:27_
 _Comment by @charliermarsh on 2024-07-04 18:08_
 
 Ah ok yes, thanks.
-
----
-
-_Referenced in [astral-sh/uv#4838](../../astral-sh/uv/pulls/4838.md) on 2024-07-05 21:19_
 
 ---
 

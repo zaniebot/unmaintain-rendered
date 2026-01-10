@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T16:32:17Z
 updated_at: 2024-05-14T23:07:26Z
 url: https://github.com/astral-sh/uv/issues/3357
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: deal with hashes (or lack there of) for some types of distributions
@@ -37,15 +37,7 @@ _Label `preview` added by @BurntSushi on 2024-05-03 16:32_
 
 ---
 
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-05-03 16:32_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-14 17:08_
-
----
-
-_Referenced in [astral-sh/uv#3589](../../astral-sh/uv/pulls/3589.md) on 2024-05-14 19:26_
 
 ---
 

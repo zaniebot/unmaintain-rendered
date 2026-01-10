@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-05T14:02:22Z
 updated_at: 2024-04-19T21:24:12Z
 url: https://github.com/astral-sh/uv/issues/2833
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Unpack error when using uv to install a lot of big packages in Docker in WSL2
@@ -153,10 +153,6 @@ _Label `bug` added by @charliermarsh on 2024-04-07 00:29_
 
 ---
 
-_Referenced in [astral-sh/uv#3144](../../astral-sh/uv/pulls/3144.md) on 2024-04-19 21:14_
-
----
-
 _Comment by @zanieb on 2024-04-19 21:24_
 
 Should be resolved by #3144 let us know if not!
@@ -164,9 +160,5 @@ Should be resolved by #3144 let us know if not!
 ---
 
 _Closed by @zanieb on 2024-04-19 21:24_
-
----
-
-_Referenced in [astral-sh/uv#3182](../../astral-sh/uv/pulls/3182.md) on 2024-04-22 16:24_
 
 ---

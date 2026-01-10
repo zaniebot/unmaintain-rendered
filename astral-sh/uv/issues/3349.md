@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T14:40:39Z
 updated_at: 2024-05-03T23:21:25Z
 url: https://github.com/astral-sh/uv/issues/3349
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv pip install --target seems to fail when there is no wheel available on pypi.org
@@ -94,10 +94,6 @@ _Label `bug` added by @charliermarsh on 2024-05-03 15:15_
 _Comment by @charliermarsh on 2024-05-03 15:15_
 
 Thanks, I think this is a real bug in `--target`.
-
----
-
-_Referenced in [astral-sh/uv#3362](../../astral-sh/uv/pulls/3362.md) on 2024-05-03 23:08_
 
 ---
 

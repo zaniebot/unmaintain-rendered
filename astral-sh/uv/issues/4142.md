@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T19:16:04Z
 updated_at: 2024-06-10T14:26:39Z
 url: https://github.com/astral-sh/uv/issues/4142
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv lock` should not treat non-compliant `pyproject.toml` fields as dynamic
@@ -170,14 +170,6 @@ I suppose for now we do a few things to make the common cases better:
 _Comment by @charliermarsh on 2024-06-09 19:13_
 
 Actually, the last thing isn't right, because in future versions of Poetry they're going to encourage you to use both together (https://website-bj97773t2-python-poetry.vercel.app/docs/dependency-specification/).
-
----
-
-_Referenced in [astral-sh/uv#4176](../../astral-sh/uv/pulls/4176.md) on 2024-06-09 23:59_
-
----
-
-_Referenced in [astral-sh/uv#4182](../../astral-sh/uv/pulls/4182.md) on 2024-06-10 00:31_
 
 ---
 

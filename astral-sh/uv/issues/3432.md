@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-07T17:09:26Z
 updated_at: 2024-05-08T14:51:52Z
 url: https://github.com/astral-sh/uv/issues/3432
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add a basic `uv sync` command
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-05-07 17:09_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-07 20:19_
-
----
-
-_Referenced in [astral-sh/uv#3436](../../astral-sh/uv/pulls/3436.md) on 2024-05-07 20:19_
 
 ---
 

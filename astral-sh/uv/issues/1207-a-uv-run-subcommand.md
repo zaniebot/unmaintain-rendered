@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-31T15:57:19Z
 updated_at: 2024-05-13T18:13:36Z
 url: https://github.com/astral-sh/uv/issues/1207
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # A `uv run` subcommand
@@ -58,14 +58,6 @@ I believe the inline metadata should override the more general config. It’s th
 
 ---
 
-_Referenced in [astral-sh/uv#2027](../../astral-sh/uv/issues/2027.md) on 2024-02-28 02:56_
-
----
-
-_Referenced in [astral-sh/uv#1173](../../astral-sh/uv/issues/1173.md) on 2024-02-29 15:35_
-
----
-
 _Comment by @pfmoore on 2024-03-19 11:32_
 
 I agree that PEP 723 metadata should take precedence. An obvious use case I would have for a feature like this would be to write small "workflow support" scripts in my project directory. These would have their own dependencies, and could very easily not share any dependencies with the project itself (imagine, for example, a `make_docs.py` script that depended on Sphinx). Such scripts would be a lightweight alternative to a tool like nox.
@@ -85,9 +77,5 @@ See https://github.com/astral-sh/uv/pull/3074 for the initial implementation of 
 ---
 
 _Closed by @zanieb on 2024-05-13 18:13_
-
----
-
-_Referenced in [astral-sh/uv#3096](../../astral-sh/uv/issues/3096.md) on 2024-05-13 18:14_
 
 ---

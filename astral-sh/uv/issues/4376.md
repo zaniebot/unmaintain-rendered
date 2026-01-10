@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-18T06:32:24Z
 updated_at: 2024-06-25T05:29:37Z
 url: https://github.com/astral-sh/uv/issues/4376
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `crates/uv/tests/toolchain_find.rs` fails on Gentoo Linux
@@ -267,10 +267,6 @@ Yeah, I'm totally confused what assumptions are being made here. Thanks for look
 _Comment by @zanieb on 2024-06-19 15:31_
 
 Thank you!
-
----
-
-_Referenced in [astral-sh/uv#4443](../../astral-sh/uv/pulls/4443.md) on 2024-06-21 21:40_
 
 ---
 

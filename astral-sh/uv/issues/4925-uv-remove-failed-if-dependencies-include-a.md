@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T11:57:08Z
 updated_at: 2024-07-09T17:46:33Z
 url: https://github.com/astral-sh/uv/issues/4925
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv remove` failed if dependencies include a package from extra index
@@ -137,10 +137,6 @@ _Label `preview` added by @charliermarsh on 2024-07-09 16:17_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-09 16:19_
-
----
-
-_Referenced in [astral-sh/uv#4930](../../astral-sh/uv/pulls/4930.md) on 2024-07-09 17:38_
 
 ---
 

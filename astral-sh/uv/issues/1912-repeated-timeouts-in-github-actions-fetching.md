@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T13:11:04Z
 updated_at: 2024-05-01T16:33:32Z
 url: https://github.com/astral-sh/uv/issues/1912
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Repeated timeouts in GitHub Actions fetching wheel for large packages
@@ -72,24 +72,12 @@ _Label `question` added by @zanieb on 2024-02-23 17:05_
 
 ---
 
-_Referenced in [astral-sh/uv#1920](../../astral-sh/uv/issues/1920.md) on 2024-02-23 17:06_
-
----
-
-_Referenced in [astral-sh/uv#1921](../../astral-sh/uv/issues/1921.md) on 2024-02-23 17:07_
-
----
-
 _Comment by @zanieb on 2024-02-23 17:08_
 
 Thanks for the feedback, I've opened issues for your requests
 
 - https://github.com/astral-sh/uv/issues/1921
 - https://github.com/astral-sh/uv/issues/1922
-
----
-
-_Referenced in [astral-sh/uv#1922](../../astral-sh/uv/issues/1922.md) on 2024-02-23 17:09_
 
 ---
 
@@ -164,10 +152,6 @@ _Unassigned @konstin by @konstin on 2024-03-04 18:13_
 
 ---
 
-_Referenced in [astral-sh/uv#2099](../../astral-sh/uv/issues/2099.md) on 2024-03-05 03:17_
-
----
-
 _Comment by @hmc-cs-mdrissi on 2024-03-05 03:23_
 
 I'm seeing very similar error message for non pytorch package that's also pretty large. It's ~400 MB wheel and consistently gives me,
@@ -199,10 +183,6 @@ As another example, https://github.com/VWS-Python/vws-python-mock/actions/runs/8
 
 ---
 
-_Referenced in [kedro-org/kedro-plugins#618](../../kedro-org/kedro-plugins/issues/618.md) on 2024-03-18 15:44_
-
----
-
 _Comment by @astrojuanlu on 2024-03-18 20:13_
 
 It can happen on Read the Docs as well, not only GHA https://beta.readthedocs.org/projects/kedro-datasets/builds/23790543/
@@ -219,18 +199,6 @@ error: Failed to download distributions
   Caused by: Failed to extract archive
   Caused by: Failed to download distribution due to network timeout. Try increasing UV_HTTP_TIMEOUT (current value: 300s).
 ```
-
----
-
-_Referenced in [kedro-org/kedro-plugins#624](../../kedro-org/kedro-plugins/issues/624.md) on 2024-03-25 13:37_
-
----
-
-_Referenced in [kedro-org/kedro-plugins#645](../../kedro-org/kedro-plugins/issues/645.md) on 2024-04-11 06:09_
-
----
-
-_Referenced in [astral-sh/uv#3144](../../astral-sh/uv/pulls/3144.md) on 2024-04-19 20:06_
 
 ---
 
@@ -252,10 +220,6 @@ It seems likely that this is resolved by #3144
 
 ---
 
-_Referenced in [astral-sh/uv#3182](../../astral-sh/uv/pulls/3182.md) on 2024-04-22 16:24_
-
----
-
 _Comment by @OneCyrus on 2024-04-25 20:20_
 
 > I encountered the problem when I used either uv or pip to download large wheels (for pip, the issue is https://github.com/pypa/pip/issues/4796 and https://github.com/pypa/pip/issues/11153), so I think the root cause is the network. However, I am wondering if uv can be smarter to retry automatically, like something in https://github.com/pypa/pip/pull/11180.
@@ -273,9 +237,5 @@ Going to close for now, but we can re-open if this comes up again post-changing 
 ---
 
 _Closed by @charliermarsh on 2024-05-01 16:33_
-
----
-
-_Referenced in [TagStudioDev/TagStudio#293](../../TagStudioDev/TagStudio/pulls/293.md) on 2024-06-15 00:03_
 
 ---

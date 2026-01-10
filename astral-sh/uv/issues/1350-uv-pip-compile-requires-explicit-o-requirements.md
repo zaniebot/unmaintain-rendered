@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T21:18:23Z
 updated_at: 2024-06-26T01:04:15Z
 url: https://github.com/astral-sh/uv/issues/1350
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # `uv pip compile` requires explicit `-o requirements.txt` unlike `pip-compile`
@@ -56,14 +56,6 @@ _Comment by @ThiefMaster on 2024-02-15 21:30_
 How about an `uv pip compile --auto` that looks for `requirements*.{in,txt}`, checks if there are dependencies between them (e.g. `-c requirements.txt` in a `requirements.something.in`), and then compiles them in the proper order?
 
 This would also be REALLY amazing for upgrades. Imagine just being able to `uv compile --auto --upgrade-package somepackage` if you want to upgrade that package :)
-
----
-
-_Referenced in [astral-sh/uv#1457](../../astral-sh/uv/issues/1457.md) on 2024-02-16 09:01_
-
----
-
-_Referenced in [astral-sh/uv#1875](../../astral-sh/uv/issues/1875.md) on 2024-02-22 16:41_
 
 ---
 

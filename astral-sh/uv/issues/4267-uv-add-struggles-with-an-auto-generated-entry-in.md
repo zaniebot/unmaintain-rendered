@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-12T12:39:38Z
 updated_at: 2024-06-12T14:25:45Z
 url: https://github.com/astral-sh/uv/issues/4267
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv add` struggles with an auto-generated entry in `uv.lock`
@@ -96,10 +96,6 @@ _Label `preview` added by @charliermarsh on 2024-06-12 12:57_
 _Comment by @charliermarsh on 2024-06-12 13:00_
 
 You can reproduce this with: `dependencies = ["cftime==1.6.4"]`.
-
----
-
-_Referenced in [astral-sh/uv#4271](../../astral-sh/uv/pulls/4271.md) on 2024-06-12 14:08_
 
 ---
 

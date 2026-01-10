@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-05T23:10:37Z
 updated_at: 2024-05-05T23:33:28Z
 url: https://github.com/astral-sh/uv/issues/3381
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Document `UV_CUSTOM_COMPILE_COMMAND`
@@ -33,10 +33,6 @@ _Label `good first issue` added by @charliermarsh on 2024-05-05 23:10_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-05 23:21_
-
----
-
-_Referenced in [astral-sh/uv#3382](../../astral-sh/uv/pulls/3382.md) on 2024-05-05 23:23_
 
 ---
 

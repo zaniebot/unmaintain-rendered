@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-28T22:02:59Z
 updated_at: 2024-05-22T16:34:26Z
 url: https://github.com/astral-sh/uv/issues/2058
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # `--system` didn't fallback to running environment when `uv` installed as python package.
@@ -109,10 +109,6 @@ _Label `needs-decision` added by @charliermarsh on 2024-02-28 22:44_
 
 ---
 
-_Referenced in [astral-sh/uv#2222](../../astral-sh/uv/issues/2222.md) on 2024-03-06 00:03_
-
----
-
 _Comment by @konstin on 2024-03-07 15:27_
 
 What about we set `UV_DEFAULT_PYTHON` in the launcher and use that as precedence over `python` for the default python in uv? Many people are very used the `python -m` not only working, but being necessary to do the right thing, so i'd like to support that.
@@ -139,19 +135,7 @@ _Label `compatibility` added by @konstin on 2024-03-10 11:03_
 
 ---
 
-_Referenced in [astral-sh/uv#2334](../../astral-sh/uv/pulls/2334.md) on 2024-03-10 13:16_
-
----
-
-_Referenced in [astral-sh/uv#2338](../../astral-sh/uv/pulls/2338.md) on 2024-03-10 13:37_
-
----
-
 _Unassigned @konstin by @konstin on 2024-03-21 12:17_
-
----
-
-_Referenced in [astral-sh/uv#3736](../../astral-sh/uv/pulls/3736.md) on 2024-05-22 14:14_
 
 ---
 

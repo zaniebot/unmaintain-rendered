@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-07-05T08:04:16Z
 updated_at: 2024-07-07T20:01:36Z
 url: https://github.com/astral-sh/uv/issues/4825
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Python downloads should show a progress bar
@@ -60,10 +60,6 @@ _Label `help wanted` added by @charliermarsh on 2024-07-05 12:38_
 _Comment by @zanieb on 2024-07-05 15:32_
 
 Oh there were some tracing progress bars in the `uv-dev` implementation but I guess we lost that. Big 👍 to adding progress bars here.
-
----
-
-_Referenced in [astral-sh/uv#4840](../../astral-sh/uv/pulls/4840.md) on 2024-07-05 22:09_
 
 ---
 

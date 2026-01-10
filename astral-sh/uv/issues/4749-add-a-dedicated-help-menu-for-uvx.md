@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-02T23:03:34Z
 updated_at: 2024-07-03T16:38:55Z
 url: https://github.com/astral-sh/uv/issues/4749
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add a dedicated help menu for `uvx`
@@ -35,10 +35,6 @@ _Label `cli` added by @zanieb on 2024-07-02 23:03_
 _Comment by @zanieb on 2024-07-02 23:04_
 
 I'm not entirely sure how we'll go about this yet, but perhaps a hidden `uv tool x` or `uv x` command that we invoke from `uvx` instead of `uv tool run`?
-
----
-
-_Referenced in [astral-sh/uv#4770](../../astral-sh/uv/pulls/4770.md) on 2024-07-03 14:14_
 
 ---
 

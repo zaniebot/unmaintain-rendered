@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-23T12:16:35Z
 updated_at: 2024-04-24T19:27:38Z
 url: https://github.com/astral-sh/uv/issues/3205
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Huge slowdown when using keyring(google artifact registry) in 0.1.34/35 and auth problem in 0.1.36
@@ -78,10 +78,6 @@ _Label `bug` added by @zanieb on 2024-04-23 12:56_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-04-23 12:56_
-
----
-
-_Referenced in [astral-sh/uv#3206](../../astral-sh/uv/pulls/3206.md) on 2024-04-23 13:50_
 
 ---
 
@@ -166,10 +162,6 @@ Unfortunately the previous implementation had some correctness issues so we may 
 _Comment by @vlad-ivanov-name on 2024-04-24 13:46_
 
 One way to improve performance is to allow custom keyring command. Already now one could probably just substitute `keyring` on the PATH with something faster
-
----
-
-_Referenced in [astral-sh/uv#3237](../../astral-sh/uv/pulls/3237.md) on 2024-04-24 14:10_
 
 ---
 

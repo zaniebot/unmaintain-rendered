@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-10T17:21:44Z
 updated_at: 2024-05-13T20:42:36Z
 url: https://github.com/astral-sh/uv/issues/3513
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add support for setting all remote packages to --only-binary
@@ -71,27 +71,15 @@ I can work a bit on putting together a repro test case a bit later today
 
 ---
 
-_Referenced in [astral-sh/uv#3559](../../astral-sh/uv/pulls/3559.md) on 2024-05-13 18:51_
-
----
-
 _Comment by @yeswalrus on 2024-05-13 18:51_
 
 I've managed to reproduce the error in a unit test here: https://github.com/astral-sh/uv/pull/3559
 
 ---
 
-_Referenced in [astral-sh/uv#3561](../../astral-sh/uv/pulls/3561.md) on 2024-05-13 20:36_
-
----
-
 _Comment by @zanieb on 2024-05-13 20:36_
 
 Thanks! I've reproduced that in https://github.com/astral-sh/uv/pull/3561
-
----
-
-_Referenced in [astral-sh/uv#3562](../../astral-sh/uv/issues/3562.md) on 2024-05-13 20:37_
 
 ---
 

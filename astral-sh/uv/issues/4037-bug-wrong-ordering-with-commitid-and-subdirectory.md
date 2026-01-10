@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T03:17:49Z
 updated_at: 2024-06-05T03:53:24Z
 url: https://github.com/astral-sh/uv/issues/4037
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Bug: wrong ordering with `@commitID` and `#subdirectory` after `uv pip compile`
@@ -63,10 +63,6 @@ This looks like a bug in `apply_redirect`.
 _Comment by @charliermarsh on 2024-06-05 03:37_
 
 I will fix tomorrow, thanks.
-
----
-
-_Referenced in [astral-sh/uv#4038](../../astral-sh/uv/pulls/4038.md) on 2024-06-05 03:43_
 
 ---
 

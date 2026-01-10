@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-14T14:08:55Z
 updated_at: 2024-05-14T18:33:45Z
 url: https://github.com/astral-sh/uv/issues/3578
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv venv` does not create a lib64 directory
@@ -71,10 +71,6 @@ _Label `bug` added by @charliermarsh on 2024-05-14 16:40_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-05-14 16:40_
-
----
-
-_Referenced in [astral-sh/uv#3584](../../astral-sh/uv/pulls/3584.md) on 2024-05-14 17:47_
 
 ---
 

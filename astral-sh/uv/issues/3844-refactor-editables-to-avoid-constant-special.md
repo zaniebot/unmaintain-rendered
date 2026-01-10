@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-26T23:25:57Z
 updated_at: 2024-05-28T15:49:35Z
 url: https://github.com/astral-sh/uv/issues/3844
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Refactor editables to avoid constant special-casing
@@ -34,10 +34,6 @@ I would love to take a day to do this at some point.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-27 17:10_
-
----
-
-_Referenced in [astral-sh/uv#3869](../../astral-sh/uv/pulls/3869.md) on 2024-05-27 21:08_
 
 ---
 

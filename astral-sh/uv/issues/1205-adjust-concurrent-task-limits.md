@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-31T12:19:18Z
 updated_at: 2024-05-18T03:13:07Z
 url: https://github.com/astral-sh/uv/issues/1205
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Adjust concurrent task limits
@@ -48,10 +48,6 @@ _Label `performance` added by @konstin on 2024-01-31 12:19_
 ---
 
 _Label `configuration` added by @zanieb on 2024-02-17 05:39_
-
----
-
-_Referenced in [astral-sh/uv#3493](../../astral-sh/uv/pulls/3493.md) on 2024-05-09 18:37_
 
 ---
 

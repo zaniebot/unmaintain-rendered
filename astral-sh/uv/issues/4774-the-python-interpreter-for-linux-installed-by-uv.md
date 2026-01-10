@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-03T14:41:09Z
 updated_at: 2024-07-03T15:58:06Z
 url: https://github.com/astral-sh/uv/issues/4774
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # The python interpreter for linux installed by `uv toolchain` is debug built.
@@ -40,10 +40,6 @@ uv run python -c "import sysconfig;print(sysconfig.get_config_var('Py_DEBUG'))"
 
 ---
 
-_Referenced in [astral-sh/uv#4775](../../astral-sh/uv/pulls/4775.md) on 2024-07-03 14:48_
-
----
-
 _Comment by @zanieb on 2024-07-03 14:52_
 
 Hm we should be preferring the optimized one, let me check what's going on here.
@@ -67,13 +63,5 @@ _Closed by @zanieb on 2024-07-03 15:58_
 ---
 
 _Closed by @zanieb on 2024-07-03 15:58_
-
----
-
-_Referenced in [astral-sh/uv#4780](../../astral-sh/uv/pulls/4780.md) on 2024-07-03 16:00_
-
----
-
-_Referenced in [astral-sh/uv#4822](../../astral-sh/uv/issues/4822.md) on 2024-07-05 14:11_
 
 ---

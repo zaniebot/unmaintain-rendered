@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-14T18:06:58Z
 updated_at: 2024-06-26T01:09:21Z
 url: https://github.com/astral-sh/uv/issues/651
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Enable persistent configuration of authenticated index URL
@@ -40,10 +40,6 @@ _Label `enhancement` added by @charliermarsh on 2023-12-15 01:58_
 
 ---
 
-_Referenced in [astral-sh/uv#1388](../../astral-sh/uv/issues/1388.md) on 2024-02-15 23:45_
-
----
-
 _Assigned to @zanieb by @zanieb on 2024-02-16 21:00_
 
 ---
@@ -55,13 +51,5 @@ You can now put this in your user `uv.toml` which seems ok. It'd be nice to have
 ---
 
 _Closed by @charliermarsh on 2024-06-26 01:09_
-
----
-
-_Referenced in [tenzir/tenzir#4336](../../tenzir/tenzir/pulls/4336.md) on 2024-07-10 07:48_
-
----
-
-_Referenced in [astral-sh/uv#6410](../../astral-sh/uv/pulls/6410.md) on 2024-08-22 05:22_
 
 ---

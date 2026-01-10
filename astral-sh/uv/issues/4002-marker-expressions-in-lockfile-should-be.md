@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-03T23:28:17Z
 updated_at: 2024-06-07T20:14:25Z
 url: https://github.com/astral-sh/uv/issues/4002
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Marker expressions in lockfile should be simplified
@@ -87,10 +87,6 @@ _Comment by @BurntSushi on 2024-06-04 17:24_
 The downside of this is that it generally requires making it impossible to build a `MarkerTree` using standard enum variants. Instead, well, you have to use the smart constructors. You can still expose a read-only enum for easy case analysis.
 
 I've used this pattern in `regex-syntax::hir` and I've been very happy with it.
-
----
-
-_Referenced in [astral-sh/uv#4066](../../astral-sh/uv/pulls/4066.md) on 2024-06-05 19:43_
 
 ---
 

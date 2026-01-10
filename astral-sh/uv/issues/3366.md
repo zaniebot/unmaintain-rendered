@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-04T02:57:28Z
 updated_at: 2024-05-07T09:00:03Z
 url: https://github.com/astral-sh/uv/issues/3366
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `tool.uv.sources` needs to preserve verbatim representation
@@ -47,10 +47,6 @@ But we don't currently output relative paths when writing to `requirements.txt`.
 _Comment by @konstin on 2024-05-06 13:25_
 
 I see, that should indeed be fixed
-
----
-
-_Referenced in [astral-sh/uv#3412](../../astral-sh/uv/pulls/3412.md) on 2024-05-06 16:46_
 
 ---
 

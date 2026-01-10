@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-18T19:01:11Z
 updated_at: 2024-06-19T00:14:08Z
 url: https://github.com/astral-sh/uv/issues/4401
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Hint supported interpreter request formats on missing toolchain
@@ -27,14 +27,6 @@ We should hint the supported formats when we can't find a toolchain and the requ
 ---
 
 _Label `error messages` added by @zanieb on 2024-06-18 19:01_
-
----
-
-_Referenced in [astral-sh/uv#4400](../../astral-sh/uv/issues/4400.md) on 2024-06-18 19:01_
-
----
-
-_Referenced in [astral-sh/uv#4397](../../astral-sh/uv/issues/4397.md) on 2024-06-18 19:01_
 
 ---
 

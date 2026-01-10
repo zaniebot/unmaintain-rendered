@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-17T17:46:03Z
 updated_at: 2024-07-17T18:14:05Z
 url: https://github.com/astral-sh/uv/issues/5155
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Run `mkdocs --strict` in CI
@@ -33,10 +33,6 @@ _Label `testing` added by @charliermarsh on 2024-07-17 17:46_
 ---
 
 _Label `documentation` added by @zanieb on 2024-07-17 17:47_
-
----
-
-_Referenced in [astral-sh/uv#5158](../../astral-sh/uv/pulls/5158.md) on 2024-07-17 18:03_
 
 ---
 

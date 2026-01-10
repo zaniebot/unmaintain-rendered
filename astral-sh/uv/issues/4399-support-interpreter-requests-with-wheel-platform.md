@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-18T18:57:17Z
 updated_at: 2024-06-19T17:04:25Z
 url: https://github.com/astral-sh/uv/issues/4399
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support interpreter requests with wheel platform compatibility tags
@@ -25,15 +25,7 @@ Discussed in #4397
 
 ---
 
-_Referenced in [astral-sh/uv#4397](../../astral-sh/uv/issues/4397.md) on 2024-06-18 18:57_
-
----
-
 _Label `enhancement` added by @zanieb on 2024-06-18 18:59_
-
----
-
-_Referenced in [astral-sh/uv#4407](../../astral-sh/uv/pulls/4407.md) on 2024-06-18 23:54_
 
 ---
 

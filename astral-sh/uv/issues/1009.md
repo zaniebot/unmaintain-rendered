@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T17:15:07Z
 updated_at: 2024-06-27T11:25:24Z
 url: https://github.com/astral-sh/uv/issues/1009
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Combine dependency clauses with the same root
@@ -31,22 +31,6 @@ _Label `error messages` added by @zanieb on 2024-01-19 17:15_
 ---
 
 _Renamed from "Combine clauses with the same root" to "Combine dependency clauses with the same root" by @zanieb on 2024-01-19 17:15_
-
----
-
-_Referenced in [astral-sh/uv#1673](../../astral-sh/uv/pulls/1673.md) on 2024-02-19 01:23_
-
----
-
-_Referenced in [astral-sh/uv#1796](../../astral-sh/uv/pulls/1796.md) on 2024-02-21 20:20_
-
----
-
-_Referenced in [astral-sh/uv#2846](../../astral-sh/uv/issues/2846.md) on 2024-04-06 14:56_
-
----
-
-_Referenced in [astral-sh/uv#3225](../../astral-sh/uv/pulls/3225.md) on 2024-04-23 20:37_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-11T14:59:46Z
 updated_at: 2024-07-12T03:33:22Z
 url: https://github.com/astral-sh/uv/issues/4993
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv requires Content-Length Header on wheels, breaking compatibility with some package repositories
@@ -135,10 +135,6 @@ I think we already have a fallback path that avoids the async reader. This shoul
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-12 00:53_
-
----
-
-_Referenced in [astral-sh/uv#5000](../../astral-sh/uv/pulls/5000.md) on 2024-07-12 00:55_
 
 ---
 

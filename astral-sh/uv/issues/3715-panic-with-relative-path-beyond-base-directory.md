@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-21T18:39:28Z
 updated_at: 2024-05-21T19:59:01Z
 url: https://github.com/astral-sh/uv/issues/3715
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Panic with relative path beyond base directory
@@ -35,10 +35,6 @@ _Label `error messages` added by @zanieb on 2024-05-21 18:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-21 18:56_
-
----
-
-_Referenced in [astral-sh/uv#3720](../../astral-sh/uv/pulls/3720.md) on 2024-05-21 19:48_
 
 ---
 

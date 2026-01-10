@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-12T15:15:16Z
 updated_at: 2024-06-12T15:46:17Z
 url: https://github.com/astral-sh/uv/issues/4274
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv.lock` has superfluous changes after running `uv run`
@@ -65,10 +65,6 @@ _Label `bug` added by @BurntSushi on 2024-06-12 15:15_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-12 15:16_
-
----
-
-_Referenced in [astral-sh/uv#4275](../../astral-sh/uv/pulls/4275.md) on 2024-06-12 15:31_
 
 ---
 

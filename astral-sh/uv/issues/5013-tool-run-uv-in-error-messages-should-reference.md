@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-12T14:54:24Z
 updated_at: 2024-07-12T17:17:29Z
 url: https://github.com/astral-sh/uv/issues/5013
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `tool run uv` in error messages should reference `uvx` when appropriate
@@ -29,10 +29,6 @@ _Label `error messages` added by @charliermarsh on 2024-07-12 14:54_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-12 14:54_
-
----
-
-_Referenced in [astral-sh/uv#5014](../../astral-sh/uv/pulls/5014.md) on 2024-07-12 15:40_
 
 ---
 

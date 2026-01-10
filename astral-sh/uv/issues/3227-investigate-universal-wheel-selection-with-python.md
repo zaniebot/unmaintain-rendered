@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-23T22:21:20Z
 updated_at: 2024-04-23T23:28:15Z
 url: https://github.com/astral-sh/uv/issues/3227
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Investigate universal wheel selection with `--python-platform`
@@ -29,10 +29,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-23 22:21_
 ---
 
 _Renamed from "Investigate universal wheel seleciton with `--python-platform`" to "Investigate universal wheel selection with `--python-platform`" by @charliermarsh on 2024-04-23 22:21_
-
----
-
-_Referenced in [astral-sh/uv#3228](../../astral-sh/uv/pulls/3228.md) on 2024-04-23 23:18_
 
 ---
 

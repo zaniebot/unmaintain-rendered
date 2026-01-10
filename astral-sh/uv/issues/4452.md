@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-23T17:16:15Z
 updated_at: 2024-06-23T17:25:51Z
 url: https://github.com/astral-sh/uv/issues/4452
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `--no-compile` flag recommends `--no_compile`
@@ -43,10 +43,6 @@ _Label `cli` added by @charliermarsh on 2024-06-23 17:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-23 17:16_
-
----
-
-_Referenced in [astral-sh/uv#4453](../../astral-sh/uv/pulls/4453.md) on 2024-06-23 17:16_
 
 ---
 

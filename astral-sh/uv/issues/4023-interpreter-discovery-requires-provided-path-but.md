@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-04T21:10:22Z
 updated_at: 2024-06-05T14:52:36Z
 url: https://github.com/astral-sh/uv/issues/4023
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Interpreter discovery requires `provided path` but it is not selected when running unit tests
@@ -69,19 +69,11 @@ _Assigned to @zanieb by @zanieb on 2024-06-04 21:47_
 
 ---
 
-_Referenced in [astral-sh/uv#4026](../../astral-sh/uv/pulls/4026.md) on 2024-06-04 22:09_
-
----
-
 _Comment by @zanieb on 2024-06-04 22:10_
 
 @ottaviohartman if you could reproduce with https://github.com/astral-sh/uv/pull/4026/commits/f92b691c7d633f57ce3fe89c806fd58000b4d646 that'd be helpful for narrowing down the selected sources
 
 I think https://github.com/astral-sh/uv/pull/4027/commits/5475d1012e7674cfbc138b957648d2c196bc6ef4 might resolve it as well.
-
----
-
-_Referenced in [astral-sh/uv#4027](../../astral-sh/uv/pulls/4027.md) on 2024-06-04 22:12_
 
 ---
 

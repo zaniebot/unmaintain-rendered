@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-16T20:51:10Z
 updated_at: 2024-07-17T16:37:34Z
 url: https://github.com/astral-sh/uv/issues/5129
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Autogenerate "Possible values" in API reference
@@ -33,10 +33,6 @@ _Label `documentation` added by @charliermarsh on 2024-07-16 20:51_
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-07-16 20:51_
-
----
-
-_Referenced in [astral-sh/uv#5137](../../astral-sh/uv/pulls/5137.md) on 2024-07-16 23:28_
 
 ---
 

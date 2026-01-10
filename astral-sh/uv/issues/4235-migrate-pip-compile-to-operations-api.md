@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-11T15:45:12Z
 updated_at: 2024-06-24T22:20:04Z
 url: https://github.com/astral-sh/uv/issues/4235
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Migrate `pip compile` to `operations` API
@@ -29,10 +29,6 @@ _Label `internal` added by @charliermarsh on 2024-06-11 15:45_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-24 19:31_
-
----
-
-_Referenced in [astral-sh/uv#4493](../../astral-sh/uv/pulls/4493.md) on 2024-06-24 22:09_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-30T18:24:56Z
 updated_at: 2024-06-10T12:42:25Z
 url: https://github.com/astral-sh/uv/issues/3926
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: check that markers are disjoint before forking
@@ -28,14 +28,6 @@ _Label `internal` added by @BurntSushi on 2024-05-30 18:24_
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-05-30 18:24_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-30 18:25_
-
----
-
-_Referenced in [astral-sh/uv#4135](../../astral-sh/uv/pulls/4135.md) on 2024-06-10 12:42_
 
 ---
 

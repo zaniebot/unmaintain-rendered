@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-04-22T20:06:28Z
 updated_at: 2024-04-23T18:18:22Z
 url: https://github.com/astral-sh/uv/issues/3198
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Release pipeline does not stop if part fails
@@ -35,10 +35,6 @@ _Label `release` added by @zanieb on 2024-04-22 20:06_
 
 ---
 
-_Referenced in [astral-sh/uv#3196](../../astral-sh/uv/issues/3196.md) on 2024-04-22 20:10_
-
----
-
 _Assigned to @charliermarsh by @zanieb on 2024-04-22 20:56_
 
 ---
@@ -50,10 +46,6 @@ _Label `upstream` added by @zanieb on 2024-04-22 20:57_
 _Comment by @charliermarsh on 2024-04-23 18:11_
 
 I believe this is fixed by https://github.com/astral-sh/uv/pull/3217.
-
----
-
-_Referenced in [astral-sh/uv#3217](../../astral-sh/uv/pulls/3217.md) on 2024-04-23 18:11_
 
 ---
 

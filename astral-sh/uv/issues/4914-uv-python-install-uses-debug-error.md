@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T05:23:44Z
 updated_at: 2024-07-18T02:05:18Z
 url: https://github.com/astral-sh/uv/issues/4914
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv python install` uses debug error
@@ -43,10 +43,6 @@ How _should_ this be displayed?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-17 23:40_
-
----
-
-_Referenced in [astral-sh/uv#5173](../../astral-sh/uv/pulls/5173.md) on 2024-07-18 01:47_
 
 ---
 

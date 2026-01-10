@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-11T20:37:03Z
 updated_at: 2024-06-11T21:40:10Z
 url: https://github.com/astral-sh/uv/issues/4252
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # monailabel not installable after uv 0.2.3
@@ -129,18 +129,10 @@ Probably something to do with all of the versions having a build tag.
 
 ---
 
-_Referenced in [astral-sh/uv#4253](../../astral-sh/uv/pulls/4253.md) on 2024-06-11 21:28_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-06-11 21:30_
 
 ---
 
 _Closed by @charliermarsh on 2024-06-11 21:40_
-
----
-
-_Referenced in [astral-sh/uv#4303](../../astral-sh/uv/issues/4303.md) on 2024-06-13 05:22_
 
 ---

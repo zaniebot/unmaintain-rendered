@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-10T20:11:03Z
 updated_at: 2024-05-11T03:32:00Z
 url: https://github.com/astral-sh/uv/issues/3516
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Feature Request: Remove Unused Generated Hashes 
@@ -169,13 +169,5 @@ Only one requirement compilation needed for same environment across board, two r
 _Comment by @MarioIshac on 2024-05-10 21:48_
 
 Actually, my suggestion of having to separately generate a lock file for the production environment only would require #3347. At that point, I believe my suggested `--generate-hashes` could become arg-less, and it can simply generate hashes for only whatever environments `uv` is told to compile for to this cross platform file. However, I have not explored the linked ticket deeply. 
-
----
-
-_Referenced in [astral-sh/uv#3334](../../astral-sh/uv/issues/3334.md) on 2024-06-20 16:04_
-
----
-
-_Referenced in [astral-sh/uv#13413](../../astral-sh/uv/issues/13413.md) on 2025-05-12 16:49_
 
 ---

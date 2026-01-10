@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-10T15:49:17Z
 updated_at: 2024-05-10T18:53:15Z
 url: https://github.com/astral-sh/uv/issues/3510
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Persistent config section of README out of date
@@ -43,10 +43,6 @@ unknown field `pip`, expected `sources` or `workspace`
 ```
 
 I tried "sources" literally but that's not what it was looking for. Could you please update the doc?
-
----
-
-_Referenced in [astral-sh/uv#3511](../../astral-sh/uv/pulls/3511.md) on 2024-05-10 16:56_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-06T23:39:35Z
 updated_at: 2024-06-07T00:06:07Z
 url: https://github.com/astral-sh/uv/issues/4117
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Enable `--dev` by default in `uv sync` and `uv run`
@@ -28,10 +28,6 @@ _Label `preview` added by @charliermarsh on 2024-06-06 23:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-06 23:42_
-
----
-
-_Referenced in [astral-sh/uv#4118](../../astral-sh/uv/pulls/4118.md) on 2024-06-06 23:48_
 
 ---
 

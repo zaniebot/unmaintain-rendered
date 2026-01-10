@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-10T22:01:23Z
 updated_at: 2024-07-12T02:26:17Z
 url: https://github.com/astral-sh/uv/issues/4979
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uvx` should suggest valid commands when command is not found
@@ -48,10 +48,6 @@ _Label `cli` added by @zanieb on 2024-07-10 22:01_
 _Comment by @charliermarsh on 2024-07-11 04:55_
 
 Very nice idea.
-
----
-
-_Referenced in [astral-sh/uv#4997](../../astral-sh/uv/pulls/4997.md) on 2024-07-11 19:20_
 
 ---
 

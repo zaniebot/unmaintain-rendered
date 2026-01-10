@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-06T14:39:49Z
 updated_at: 2024-06-06T15:21:33Z
 url: https://github.com/astral-sh/uv/issues/4101
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv run: Duplicate dependency when using extra
@@ -64,10 +64,6 @@ I got this one.
 _Comment by @charliermarsh on 2024-06-06 15:10_
 
 I see the issue here, it's an issue in validation not the lockfile logic itself.
-
----
-
-_Referenced in [astral-sh/uv#4104](../../astral-sh/uv/pulls/4104.md) on 2024-06-06 15:15_
 
 ---
 

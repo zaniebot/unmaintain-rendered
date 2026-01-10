@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-25T07:28:35Z
 updated_at: 2024-06-26T07:38:17Z
 url: https://github.com/astral-sh/uv/issues/4510
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Panic on plugin installation from a local simple repository
@@ -120,10 +120,6 @@ elif is_url(location):
 
 ---
 
-_Referenced in [astral-sh/uv#4524](../../astral-sh/uv/pulls/4524.md) on 2024-06-25 17:23_
-
----
-
 _Closed by @charliermarsh on 2024-06-25 17:57_
 
 ---
@@ -135,10 +131,6 @@ _Closed by @charliermarsh on 2024-06-25 17:57_
 _Comment by @charliermarsh on 2024-06-25 18:15_
 
 Next release supports this.
-
----
-
-_Referenced in [astral-sh/uv#4527](../../astral-sh/uv/pulls/4527.md) on 2024-06-25 18:25_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-25T09:48:44Z
 updated_at: 2024-04-25T19:29:27Z
 url: https://github.com/astral-sh/uv/issues/3261
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Segmentation fault on MacOS 11.7.10 (BigSur)
@@ -61,14 +61,6 @@ We may want to roll back to `macos-12` to ensure that macOS 11 keeps working... 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-25 15:23_
-
----
-
-_Referenced in [astral-sh/ruff#11146](../../astral-sh/ruff/pulls/11146.md) on 2024-04-25 15:25_
-
----
-
-_Referenced in [astral-sh/uv#3264](../../astral-sh/uv/pulls/3264.md) on 2024-04-25 15:26_
 
 ---
 

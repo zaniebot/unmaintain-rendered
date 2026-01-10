@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T18:00:50Z
 updated_at: 2024-06-10T12:38:22Z
 url: https://github.com/astral-sh/uv/issues/4139
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Packages without source dists break universal resolver
@@ -89,10 +89,6 @@ I can give it a shot.
 _Comment by @charliermarsh on 2024-06-09 19:15_
 
 I think there's a possible improvement here, like... if we know we're in a branch that only supports macOS, ensure that there's _at least one_ macOS-compliant wheel. But I don't know how to formalize that.
-
----
-
-_Referenced in [astral-sh/uv#4174](../../astral-sh/uv/pulls/4174.md) on 2024-06-09 23:24_
 
 ---
 

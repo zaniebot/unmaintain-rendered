@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-12T18:51:26Z
 updated_at: 2024-06-29T16:33:26Z
 url: https://github.com/astral-sh/uv/issues/1286
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Installing Python versions in Windows is slow
@@ -30,10 +30,6 @@ _Label `internal` added by @zanieb on 2024-02-12 18:51_
 ---
 
 _Label `testing` added by @zanieb on 2024-02-12 19:25_
-
----
-
-_Referenced in [astral-sh/uv#1294](../../astral-sh/uv/pulls/1294.md) on 2024-02-13 04:11_
 
 ---
 

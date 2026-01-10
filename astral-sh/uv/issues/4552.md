@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-26T16:32:23Z
 updated_at: 2024-06-26T18:03:24Z
 url: https://github.com/astral-sh/uv/issues/4552
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv add` should default to `--workspace` if the package is a workspace member
@@ -39,15 +39,7 @@ _Label `preview` added by @charliermarsh on 2024-06-26 16:32_
 
 ---
 
-_Referenced in [astral-sh/uv#4541](../../astral-sh/uv/issues/4541.md) on 2024-06-26 16:39_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-26 17:04_
-
----
-
-_Referenced in [astral-sh/uv#4557](../../astral-sh/uv/pulls/4557.md) on 2024-06-26 17:32_
 
 ---
 

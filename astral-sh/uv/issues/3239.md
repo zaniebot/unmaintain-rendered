@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-24T14:33:09Z
 updated_at: 2024-04-24T15:19:03Z
 url: https://github.com/astral-sh/uv/issues/3239
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Sometimes uv cannot update itself inside a virtual env (Windows)
@@ -69,9 +69,5 @@ But yeah definitely a bug related to trying to replace the currently-running exe
 ---
 
 _Label `duplicate` added by @zanieb on 2024-04-24 15:19_
-
----
-
-_Referenced in [astral-sh/uv#1368](../../astral-sh/uv/issues/1368.md) on 2024-04-24 17:00_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-08T22:30:13Z
 updated_at: 2024-05-09T14:45:05Z
 url: https://github.com/astral-sh/uv/issues/3474
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Error running uv pip compile with `--python-version` specified when Python 2 is on the PATH
@@ -68,10 +68,6 @@ I have a couple of scripts that do something very similar to uv pip compile and 
 
 ---
 
-_Referenced in [astral-sh/uv#3476](../../astral-sh/uv/pulls/3476.md) on 2024-05-09 00:52_
-
----
-
 _Closed by @charliermarsh on 2024-05-09 03:25_
 
 ---
@@ -87,9 +83,5 @@ My aging work environment always seems to have a way to find interesting issues.
 _Comment by @charliermarsh on 2024-05-09 14:45_
 
 No prob, let me know if you continue to see Python 2 issues. It's tricky because we can't actually get a structured error here (we're passing `-I` to the interpreter which isn't supported prior to 3.4).
-
----
-
-_Referenced in [astral-sh/uv#3579](../../astral-sh/uv/issues/3579.md) on 2024-05-14 14:28_
 
 ---

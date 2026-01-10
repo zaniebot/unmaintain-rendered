@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-20T21:40:39Z
 updated_at: 2024-06-24T13:24:48Z
 url: https://github.com/astral-sh/uv/issues/4432
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Unable to release due to PyPI project size limits
@@ -43,14 +43,6 @@ I've made the decision to yank 0.2.14 from PyPI. I do not believe any other arti
 
 ---
 
-_Referenced in [astral-sh/uv-pre-commit#9](../../astral-sh/uv-pre-commit/issues/9.md) on 2024-06-20 22:12_
-
----
-
-_Referenced in [astral-sh/uv#4436](../../astral-sh/uv/pulls/4436.md) on 2024-06-21 16:18_
-
----
-
 _Comment by @zanieb on 2024-06-21 17:52_
 
 I've noticed the [Docker image](https://github.com/astral-sh/uv/pkgs/container/uv) is available at 0.2.14 but I do not intend to remove it.
@@ -64,9 +56,5 @@ Limit has been raised: https://github.com/pypi/support/issues/4260. Thanks @zani
 ---
 
 _Closed by @charliermarsh on 2024-06-24 13:24_
-
----
-
-_Referenced in [astral-sh/uv#4474](../../astral-sh/uv/issues/4474.md) on 2024-06-24 14:23_
 
 ---

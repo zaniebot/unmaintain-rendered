@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-29T03:50:07Z
 updated_at: 2024-05-29T13:23:41Z
 url: https://github.com/astral-sh/uv/issues/3896
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # "Resolving dependencies" message is repeated
@@ -31,10 +31,6 @@ _Label `bug` added by @charliermarsh on 2024-05-29 03:50_
 ---
 
 _Assigned to @ibraheemdev by @charliermarsh on 2024-05-29 03:50_
-
----
-
-_Referenced in [astral-sh/uv#3901](../../astral-sh/uv/pulls/3901.md) on 2024-05-29 10:56_
 
 ---
 

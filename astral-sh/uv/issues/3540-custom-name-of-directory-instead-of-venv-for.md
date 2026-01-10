@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T10:29:26Z
 updated_at: 2024-05-13T16:15:00Z
 url: https://github.com/astral-sh/uv/issues/3540
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Custom name of directory instead of ".venv" for multiple envs inside the same project
@@ -46,10 +46,6 @@ _Comment by @zanieb on 2024-05-13 13:23_
 We could, though I'm not sure where it'd fit right now.
 
 The CLI help menu is pretty useful e.g. `uv venv --help`.
-
----
-
-_Referenced in [astral-sh/uv#3544](../../astral-sh/uv/pulls/3544.md) on 2024-05-13 13:24_
 
 ---
 

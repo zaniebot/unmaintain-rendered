@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-27T09:49:21Z
 updated_at: 2024-04-27T12:52:08Z
 url: https://github.com/astral-sh/uv/issues/3288
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Defining index-url in pyproject.toml not working
@@ -96,10 +96,6 @@ _Comment by @charliermarsh on 2024-04-27 12:36_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-27 12:37_
-
----
-
-_Referenced in [astral-sh/uv#3289](../../astral-sh/uv/pulls/3289.md) on 2024-04-27 12:43_
 
 ---
 

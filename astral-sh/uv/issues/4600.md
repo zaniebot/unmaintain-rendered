@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-27T19:51:27Z
 updated_at: 2024-06-28T03:49:07Z
 url: https://github.com/astral-sh/uv/issues/4600
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Fails to install detectron2 package from git
@@ -108,9 +108,5 @@ It looks like it is an issue with detectron2 as mentioned in #2252 - closing.
 ---
 
 _Closed by @alfa07 on 2024-06-28 03:49_
-
----
-
-_Referenced in [astral-sh/uv#4685](../../astral-sh/uv/issues/4685.md) on 2024-07-01 09:59_
 
 ---

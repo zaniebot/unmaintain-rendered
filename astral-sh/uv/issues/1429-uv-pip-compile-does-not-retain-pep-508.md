@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T04:52:57Z
 updated_at: 2024-06-25T20:56:00Z
 url: https://github.com/astral-sh/uv/issues/1429
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # `uv pip compile` Does not retain PEP-508 environment markers in output
@@ -37,10 +37,6 @@ and running
 ```
 
 yields `black==24.2.0` instead of `black==24.2.0 ; implementation_name == "cpython"`
-
----
-
-_Referenced in [python-trio/trio#2958](../../python-trio/trio/pulls/2958.md) on 2024-02-16 04:53_
 
 ---
 
@@ -98,10 +94,6 @@ _Renamed from "`uv pip compile` Does Not Respect PEP-508 Environment Markers" to
 
 ---
 
-_Referenced in [astral-sh/uv#2349](../../astral-sh/uv/issues/2349.md) on 2024-03-11 02:02_
-
----
-
 _Comment by @sondr3 on 2024-03-20 09:33_
 
 Could markers like `platform_system` be included at the very least in the beginning? We keep running into issues where developers are updating dependencies on their Windows machines that crash in CI when using `uv` that works with `pip-compile`. We've need to add `pywin32==306 ; platform_system=='Windows'` to our `pyproject.toml`	(using `rye`) which works with `pip-compile` but not `uv`.
@@ -144,23 +136,11 @@ Thanks for the quick reply, that was indeed the solution, tried it and it works 
 
 ---
 
-_Referenced in [astral-sh/uv#2679](../../astral-sh/uv/issues/2679.md) on 2024-04-21 22:50_
-
----
-
 _Comment by @adminy on 2024-06-05 12:13_
 
 Also pip-compile does not support the `--trusted-host` argument or the `--config=pyproject.toml` argument.
 
 When you run pip compile it does not put `--index-url` or `--trusted-host` in its output, generating the requirements.txt without indication of the source. 
-
----
-
-_Referenced in [astral-sh/uv#4231](../../astral-sh/uv/issues/4231.md) on 2024-06-11 14:47_
-
----
-
-_Referenced in [astral-sh/uv#4503](../../astral-sh/uv/pulls/4503.md) on 2024-06-25 01:33_
 
 ---
 

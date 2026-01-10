@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-10T12:49:41Z
 updated_at: 2024-06-17T13:30:38Z
 url: https://github.com/astral-sh/uv/issues/4194
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: ignore dependencies that are disjoint with a forked resolver state's marker expressions
@@ -23,14 +23,6 @@ This is very similar to https://github.com/astral-sh/uv/issues/4102, but for gen
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-06-10 12:49_
-
----
-
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-06-10 12:49_
-
----
-
-_Referenced in [astral-sh/uv#4339](../../astral-sh/uv/pulls/4339.md) on 2024-06-15 14:08_
 
 ---
 

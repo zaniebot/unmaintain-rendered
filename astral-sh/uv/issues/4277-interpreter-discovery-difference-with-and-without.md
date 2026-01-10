@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-12T15:54:50Z
 updated_at: 2024-07-18T15:14:39Z
 url: https://github.com/astral-sh/uv/issues/4277
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Interpreter discovery difference with and without `--python` flag
@@ -307,10 +307,6 @@ _Unassigned @konstin by @konstin on 2024-07-01 09:37_
 _Comment by @zanieb on 2024-07-01 21:17_
 
 There's `which_re` though a regular expression sounds kind of heavy here it would be a good start.
-
----
-
-_Referenced in [astral-sh/uv#4709](../../astral-sh/uv/issues/4709.md) on 2024-07-01 21:19_
 
 ---
 

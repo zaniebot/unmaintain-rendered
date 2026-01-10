@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-16T10:05:28Z
 updated_at: 2024-05-24T06:53:14Z
 url: https://github.com/astral-sh/uv/issues/1469
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # No module named pip / No module named 'pybind11'
@@ -70,9 +70,5 @@ _Closed by @starenka on 2024-02-16 12:21_
 _Comment by @yxtay on 2024-05-24 06:53_
 
 Seems like it's fixed by installing from github. [#1446](https://github.com/astral-sh/uv/issues/1446#issuecomment-1956644900)
-
----
-
-_Referenced in [astral-sh/uv#12437](../../astral-sh/uv/issues/12437.md) on 2025-03-24 16:04_
 
 ---

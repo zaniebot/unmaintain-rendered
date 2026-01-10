@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T17:50:02Z
 updated_at: 2024-07-08T14:03:39Z
 url: https://github.com/astral-sh/uv/issues/4813
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv toolchain uninstall` repeats "No installations" message
@@ -65,10 +65,6 @@ It seems like we could adjust it when there's one or make some of the lines trac
 _Comment by @charliermarsh on 2024-07-04 19:31_
 
 Yeah agreed.
-
----
-
-_Referenced in [astral-sh/uv#4882](../../astral-sh/uv/pulls/4882.md) on 2024-07-08 01:20_
 
 ---
 

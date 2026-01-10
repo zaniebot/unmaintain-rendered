@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-03T03:40:12Z
 updated_at: 2024-05-06T13:47:29Z
 url: https://github.com/astral-sh/uv/issues/3341
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv pip list does not show all packages in conda environment
@@ -339,10 +339,6 @@ _Closed by @charliermarsh on 2024-05-03 22:34_
 _Comment by @zanieb on 2024-05-03 23:15_
 
 cc @konstin regarding the workspace editables.
-
----
-
-_Referenced in [astral-sh/uv#3380](../../astral-sh/uv/pulls/3380.md) on 2024-05-05 23:07_
 
 ---
 

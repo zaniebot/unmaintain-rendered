@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-14T22:02:14Z
 updated_at: 2024-06-17T22:43:36Z
 url: https://github.com/astral-sh/uv/issues/4333
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv fails to resolve 'jsonschema' and 'reana-client' environment only on Python 3.12 while pip succeeds
@@ -204,10 +204,6 @@ python -m pip --no-cache-dir install --verbose --upgrade 'recast-atlas[reana]>=0
 
 ---
 
-_Referenced in [recast-hep/recast-atlas#142](../../recast-hep/recast-atlas/pulls/142.md) on 2024-06-14 22:13_
-
----
-
 _Label `great writeup` added by @zanieb on 2024-06-15 01:41_
 
 ---
@@ -246,19 +242,11 @@ _Label `resolver` added by @zanieb on 2024-06-15 02:06_
 
 ---
 
-_Referenced in [recast-hep/recast-atlas#144](../../recast-hep/recast-atlas/pulls/144.md) on 2024-06-15 19:11_
-
----
-
 _Comment by @matthewfeickert on 2024-06-15 19:14_
 
 Thanks very much for being so responsive, @zanieb! Your suggestion indeed works for me in https://github.com/recast-hep/recast-atlas/pull/144. :+1: 
 
 The tools I write are usually supporting many backends, and so end up being difficult to solve for when the entire environment is solved at once in CI, so I'm personally happy to say that this is resolved. I will leave it open though for you to make the decision on if this should get closed out, or if this should be a https://github.com/astral-sh/uv/labels/resolver edge case test for the future.
-
----
-
-_Referenced in [astral-sh/uv#4356](../../astral-sh/uv/issues/4356.md) on 2024-06-17 12:06_
 
 ---
 
@@ -285,13 +273,5 @@ _Comment by @matthewfeickert on 2024-06-17 22:43_
 > With `uv pip install 'jsonschema>=3.0.0' 'reana-client>=0.8.0'`, we try to pick the highest version of jsonschema first, and when we encounter an incompatibility, we reduce reana-client instead until we reach reana-client 0.9.0 and fail soon after. Using `uv pip install 'reana-client>=0.8.0' 'jsonschema>=3.0.0'` for example works because now the priorities are inverted. You can watch this process in debug logs, e.g. with `uv pip install 'jsonschema>=3.0.0' 'reana-client>=0.8.0' -v 2>&1 | grep -E "Selecting: |Adding transitive dependency"`.
 
 Ah this is actually very interesting and helpful to know for debugging. I didn't understand that my choice of package name positioning was being used at solve time (I had assumed that it was arbitrary and `uv` created its own solve order)! Thanks very much for mentioning this.
-
----
-
-_Referenced in [astral-sh/uv#4372](../../astral-sh/uv/issues/4372.md) on 2024-06-18 00:34_
-
----
-
-_Referenced in [astral-sh/uv#6404](../../astral-sh/uv/issues/6404.md) on 2024-08-22 17:04_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-22T20:11:09Z
 updated_at: 2024-05-22T21:21:38Z
 url: https://github.com/astral-sh/uv/issues/3768
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Feature request: When using `uv pip compile` display yank message on selecting a yanked package
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-22 20:11_
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-05-22 20:11_
-
----
-
-_Referenced in [astral-sh/uv#3772](../../astral-sh/uv/pulls/3772.md) on 2024-05-22 20:34_
 
 ---
 

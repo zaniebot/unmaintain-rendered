@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T05:24:30Z
 updated_at: 2024-07-09T05:51:31Z
 url: https://github.com/astral-sh/uv/issues/4915
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Python discovery error should comma-separate
@@ -41,10 +41,6 @@ _Label `preview` added by @charliermarsh on 2024-07-09 05:24_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-09 05:37_
-
----
-
-_Referenced in [astral-sh/uv#4916](../../astral-sh/uv/pulls/4916.md) on 2024-07-09 05:37_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-02T21:48:43Z
 updated_at: 2024-07-03T16:35:12Z
 url: https://github.com/astral-sh/uv/issues/4742
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool run` should use already-installed tool (if possible)
@@ -45,10 +45,6 @@ I can take this too.
 _Comment by @charliermarsh on 2024-07-02 22:37_
 
 This kinda builds on some stuff I've done in `uv tool install` anyway.
-
----
-
-_Referenced in [astral-sh/uv#4750](../../astral-sh/uv/pulls/4750.md) on 2024-07-02 23:34_
 
 ---
 

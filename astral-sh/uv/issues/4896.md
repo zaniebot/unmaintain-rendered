@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-08T14:08:57Z
 updated_at: 2024-07-08T14:55:37Z
 url: https://github.com/astral-sh/uv/issues/4896
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Define a CLI style guide
@@ -44,13 +44,5 @@ _Label `documentation` added by @zanieb on 2024-07-08 14:09_
 ---
 
 _Label `internal` added by @zanieb on 2024-07-08 14:09_
-
----
-
-_Referenced in [astral-sh/uv#809](../../astral-sh/uv/issues/809.md) on 2024-07-09 14:26_
-
----
-
-_Referenced in [astral-sh/uv#4939](../../astral-sh/uv/pulls/4939.md) on 2024-07-09 20:06_
 
 ---

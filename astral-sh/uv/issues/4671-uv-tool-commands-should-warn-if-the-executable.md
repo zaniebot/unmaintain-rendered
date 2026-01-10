@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-30T22:03:44Z
 updated_at: 2024-07-10T15:24:18Z
 url: https://github.com/astral-sh/uv/issues/4671
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool` commands should warn if the executable directory isn't on the `PATH`
@@ -34,15 +34,7 @@ _Label `preview` added by @zanieb on 2024-06-30 22:03_
 
 ---
 
-_Referenced in [astral-sh/uv#4411](../../astral-sh/uv/issues/4411.md) on 2024-06-30 22:16_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-10 00:16_
-
----
-
-_Referenced in [astral-sh/uv#4951](../../astral-sh/uv/pulls/4951.md) on 2024-07-10 02:01_
 
 ---
 

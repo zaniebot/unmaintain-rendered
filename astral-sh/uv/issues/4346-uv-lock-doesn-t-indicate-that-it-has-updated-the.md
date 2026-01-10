@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-06-16T23:35:27Z
 updated_at: 2024-07-17T01:14:21Z
 url: https://github.com/astral-sh/uv/issues/4346
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv lock` doesn't indicate that it has updated the lock file
@@ -85,19 +85,11 @@ We have a tracking issue for that at https://github.com/astral-sh/uv/issues/1569
 
 ---
 
-_Referenced in [astral-sh/uv#4854](../../astral-sh/uv/issues/4854.md) on 2024-07-07 16:55_
-
----
-
 _Label `help wanted` added by @zanieb on 2024-07-07 16:55_
 
 ---
 
 _Label `cli` added by @zanieb on 2024-07-07 16:55_
-
----
-
-_Referenced in [astral-sh/uv#5110](../../astral-sh/uv/pulls/5110.md) on 2024-07-16 15:15_
 
 ---
 

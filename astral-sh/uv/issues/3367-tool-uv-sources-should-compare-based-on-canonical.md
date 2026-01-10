@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-04T02:57:53Z
 updated_at: 2024-05-04T12:44:27Z
 url: https://github.com/astral-sh/uv/issues/3367
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `tool.uv.sources` should compare based on canonical URLs
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-05-04 02:57_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-04 12:28_
-
----
-
-_Referenced in [astral-sh/uv#3373](../../astral-sh/uv/pulls/3373.md) on 2024-05-04 12:32_
 
 ---
 

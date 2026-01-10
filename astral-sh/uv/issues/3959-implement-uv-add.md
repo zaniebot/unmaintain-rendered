@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-01T18:19:01Z
 updated_at: 2024-06-19T18:28:22Z
 url: https://github.com/astral-sh/uv/issues/3959
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Implement `uv add`
@@ -24,10 +24,6 @@ As part of the Project API, we should have native `add` and `remove` commands.
 ---
 
 _Label `preview` added by @charliermarsh on 2024-06-01 18:19_
-
----
-
-_Referenced in [astral-sh/uv#4193](../../astral-sh/uv/pulls/4193.md) on 2024-06-10 11:37_
 
 ---
 
@@ -52,10 +48,6 @@ Also: adding dependencies that are extras.
 
 ---
 
-_Referenced in [astral-sh/uv#4237](../../astral-sh/uv/pulls/4237.md) on 2024-06-11 16:21_
-
----
-
 _Comment by @matterhorn103 on 2024-06-11 22:58_
 
 Excited for what's to come! Forgive my curiosity here. :) I almost asked this in #3560, where the differences and potential confusion between the planned commands `uv tool add` and `uv tool install` are discussed, but figured it's actually more relevant here.
@@ -67,22 +59,6 @@ Are you guys planning on a command that installs packages to the current venv (o
 But at the same time, if my impressions from your comments in various places are correct, a `uv install` command will be deliberately avoided?
 
 Or will `uv add` work anyway without either needing a `pyproject.toml` or creating one?
-
----
-
-_Referenced in [astral-sh/uv#4326](../../astral-sh/uv/pulls/4326.md) on 2024-06-14 13:56_
-
----
-
-_Referenced in [astral-sh/uv#4327](../../astral-sh/uv/pulls/4327.md) on 2024-06-14 14:00_
-
----
-
-_Referenced in [astral-sh/uv#4362](../../astral-sh/uv/pulls/4362.md) on 2024-06-17 17:00_
-
----
-
-_Referenced in [astral-sh/uv#4406](../../astral-sh/uv/pulls/4406.md) on 2024-06-18 22:56_
 
 ---
 
@@ -99,9 +75,5 @@ _Closed by @ibraheemdev on 2024-06-19 18:25_
 _Comment by @ibraheemdev on 2024-06-19 18:28_
 
 @matterhorn103 Yes, the new project APIs are structured specifically around `pyproject.toml` and `uv.lock`. The intention is you won't have to deal with lower level operations directly.
-
----
-
-_Referenced in [astral-sh/uv#2917](../../astral-sh/uv/issues/2917.md) on 2024-07-02 01:41_
 
 ---

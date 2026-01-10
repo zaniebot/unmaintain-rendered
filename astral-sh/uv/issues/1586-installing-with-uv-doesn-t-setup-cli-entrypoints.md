@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-17T13:05:10Z
 updated_at: 2024-06-08T14:16:01Z
 url: https://github.com/astral-sh/uv/issues/1586
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Installing with `uv` doesn't setup cli entrypoints with pyenv
@@ -358,14 +358,6 @@ Oh interesting, thanks for digging into it @ngnpope!
 
 ---
 
-_Referenced in [pyenv/pyenv#2979](../../pyenv/pyenv/issues/2979.md) on 2024-06-07 13:46_
-
----
-
-_Referenced in [astral-sh/uv#4130](../../astral-sh/uv/issues/4130.md) on 2024-06-07 13:47_
-
----
-
 _Comment by @zanieb on 2024-06-07 13:47_
 
 I've opened a couple issues at https://github.com/astral-sh/uv/issues/4130 and https://github.com/pyenv/pyenv/issues/2979 to track this. 
@@ -391,9 +383,5 @@ _Closed by @zanieb on 2024-06-08 14:15_
 ---
 
 _Renamed from "Installing with `uv` doesn't setup cli entrypoints" to "Installing with `uv` doesn't setup cli entrypoints with pyenv" by @zanieb on 2024-06-08 14:16_
-
----
-
-_Referenced in [astral-sh/uv#6675](../../astral-sh/uv/issues/6675.md) on 2024-08-27 23:08_
 
 ---

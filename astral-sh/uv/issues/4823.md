@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-05T07:55:45Z
 updated_at: 2024-07-17T23:11:14Z
 url: https://github.com/astral-sh/uv/issues/4823
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool list -v` should show paths
@@ -68,10 +68,6 @@ Seems kind of nice, but won't the paths be mostly redundant since they're all go
 _Comment by @konstin on 2024-07-05 15:45_
 
 If we just show the data and the bin directory that's fine too
-
----
-
-_Referenced in [astral-sh/uv#4867](../../astral-sh/uv/issues/4867.md) on 2024-07-07 21:04_
 
 ---
 
@@ -143,10 +139,6 @@ I can do them
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-17 17:32_
-
----
-
-_Referenced in [astral-sh/uv#5164](../../astral-sh/uv/pulls/5164.md) on 2024-07-17 18:27_
 
 ---
 

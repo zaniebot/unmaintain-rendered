@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-26T16:25:38Z
 updated_at: 2024-07-01T20:17:44Z
 url: https://github.com/astral-sh/uv/issues/4551
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `workspace = false` setting to explicitly opt-out of `uv` project and workspace APIs
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-06-26 16:25_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-26 17:20_
-
----
-
-_Referenced in [astral-sh/uv#4565](../../astral-sh/uv/pulls/4565.md) on 2024-06-26 20:08_
 
 ---
 

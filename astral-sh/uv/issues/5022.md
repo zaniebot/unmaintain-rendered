@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-12T19:44:35Z
 updated_at: 2024-07-12T21:50:05Z
 url: https://github.com/astral-sh/uv/issues/5022
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # "uv --preview lock" does not read uv.toml or pyproject.toml settings
@@ -170,10 +170,6 @@ I'll use this issue to track adding a warning.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-12 21:42_
-
----
-
-_Referenced in [astral-sh/uv#5025](../../astral-sh/uv/pulls/5025.md) on 2024-07-12 21:42_
 
 ---
 

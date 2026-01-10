@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-06T14:16:51Z
 updated_at: 2024-05-22T13:26:11Z
 url: https://github.com/astral-sh/uv/issues/3409
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Preserve url parsing in `Dist`
@@ -32,14 +32,6 @@ _Label `enhancement` added by @konstin on 2024-05-06 14:16_
 ---
 
 _Assigned to @konstin by @konstin on 2024-05-06 14:16_
-
----
-
-_Referenced in [astral-sh/uv#3407](../../astral-sh/uv/issues/3407.md) on 2024-05-06 14:21_
-
----
-
-_Referenced in [astral-sh/uv#3429](../../astral-sh/uv/pulls/3429.md) on 2024-05-08 13:42_
 
 ---
 

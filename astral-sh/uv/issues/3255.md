@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-24T21:00:07Z
 updated_at: 2024-05-08T14:54:10Z
 url: https://github.com/astral-sh/uv/issues/3255
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # 403 Forbidden Error when downloading dependencies from AWS/Gemfury with uv pip compile
@@ -277,10 +277,6 @@ _Label `duplicate` added by @zanieb on 2024-04-24 21:05_
 _Comment by @charliermarsh on 2024-05-08 14:45_
 
 Should be fixed by https://github.com/astral-sh/uv/pull/3460.
-
----
-
-_Referenced in [astral-sh/uv#3460](../../astral-sh/uv/pulls/3460.md) on 2024-05-08 14:45_
 
 ---
 

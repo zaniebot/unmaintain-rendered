@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-23T19:07:44Z
 updated_at: 2024-06-07T22:42:33Z
 url: https://github.com/astral-sh/uv/issues/1932
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Private dependency in pyproject.toml does not resolve
@@ -133,13 +133,5 @@ As an anecdote, I am having to track the latest commit for a repo that won't cut
 _Comment by @charliermarsh on 2024-06-07 22:42_
 
 Yeah, we support transitive URL dependencies now. Please feel free to file a new issue with a minimal reproduction if you're having trouble.
-
----
-
-_Referenced in [astral-sh/uv#4152](../../astral-sh/uv/issues/4152.md) on 2024-06-07 22:57_
-
----
-
-_Referenced in [astral-sh/uv#7996](../../astral-sh/uv/issues/7996.md) on 2024-10-08 07:57_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-14T00:14:31Z
 updated_at: 2024-06-14T12:04:52Z
 url: https://github.com/astral-sh/uv/issues/4321
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # With rye {root:uri}/../../packages/ seems to traverse more than 2 folders up
@@ -47,10 +47,6 @@ I don't know that uv has any control over how that URL gets resolved. I believe 
 ---
 
 _Label `needs-mre` added by @charliermarsh on 2024-06-14 04:02_
-
----
-
-_Referenced in [pypa/hatch#1570](../../pypa/hatch/issues/1570.md) on 2024-06-14 12:03_
 
 ---
 

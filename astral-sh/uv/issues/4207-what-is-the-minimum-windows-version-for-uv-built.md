@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-10T17:53:59Z
 updated_at: 2024-06-10T18:50:22Z
 url: https://github.com/astral-sh/uv/issues/4207
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # What is the minimum Windows version for UV built with Rust 1.78?
@@ -57,10 +57,6 @@ I will document it.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-10 18:18_
-
----
-
-_Referenced in [astral-sh/uv#4210](../../astral-sh/uv/pulls/4210.md) on 2024-06-10 18:43_
 
 ---
 

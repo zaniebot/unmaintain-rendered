@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-06T17:56:17Z
 updated_at: 2024-06-07T18:18:33Z
 url: https://github.com/astral-sh/uv/issues/4106
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add extra and dev validation to lockfile conversion
@@ -28,10 +28,6 @@ _Label `preview` added by @charliermarsh on 2024-06-06 17:56_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-06 17:56_
-
----
-
-_Referenced in [astral-sh/uv#4112](../../astral-sh/uv/pulls/4112.md) on 2024-06-06 20:09_
 
 ---
 

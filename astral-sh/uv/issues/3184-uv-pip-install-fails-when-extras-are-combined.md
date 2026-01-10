@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-22T13:07:25Z
 updated_at: 2024-04-22T21:17:02Z
 url: https://github.com/astral-sh/uv/issues/3184
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv pip install fails when extras are combined with `--no-deps` 
@@ -61,10 +61,6 @@ OS: Linux
 
 ---
 
-_Referenced in [aiidateam/aiida-core#6363](../../aiidateam/aiida-core/pulls/6363.md) on 2024-04-22 13:08_
-
----
-
 _Comment by @charliermarsh on 2024-04-22 14:24_
 
 Thanks, will take a look -- this happened once before and I thought I fixed it hah.
@@ -76,10 +72,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-22 14:24_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-04-22 14:24_
-
----
-
-_Referenced in [astral-sh/uv#3188](../../astral-sh/uv/pulls/3188.md) on 2024-04-22 16:19_
 
 ---
 

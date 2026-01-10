@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-28T09:57:49Z
 updated_at: 2024-04-28T14:06:44Z
 url: https://github.com/astral-sh/uv/issues/3291
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Unauthorized keyring from Azure DevOps
@@ -66,10 +66,6 @@ But I get the same result.
 
 ---
 
-_Referenced in [astral-sh/uv#3292](../../astral-sh/uv/pulls/3292.md) on 2024-04-28 12:54_
-
----
-
 _Comment by @charliermarsh on 2024-04-28 12:54_
 
 Hmm, strange. They return a 401 for a package that doesn't exist?
@@ -95,13 +91,5 @@ How can I test it from that branch? I install uv with `pip install uv`.
 ---
 
 _Closed by @charliermarsh on 2024-04-28 14:06_
-
----
-
-_Referenced in [astral-sh/uv#3542](../../astral-sh/uv/issues/3542.md) on 2024-05-13 11:25_
-
----
-
-_Referenced in [astral-sh/uv#8167](../../astral-sh/uv/issues/8167.md) on 2024-10-15 18:29_
 
 ---

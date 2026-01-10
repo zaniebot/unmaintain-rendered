@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-01T09:42:17Z
 updated_at: 2024-06-04T21:00:44Z
 url: https://github.com/astral-sh/uv/issues/3955
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support `FORCE_COLOR` and `NO_COLOR`
@@ -87,10 +87,6 @@ I forgot to mention it earlier, CPython 3.13 also supports `FORCE_COLOR`:
 
 ---
 
-_Referenced in [rust-cli/anstyle#192](../../rust-cli/anstyle/issues/192.md) on 2024-06-02 16:49_
-
----
-
 _Comment by @charliermarsh on 2024-06-03 01:50_
 
 Yeah we should support it -- we also support it in Ruff for this reason.
@@ -100,10 +96,6 @@ Yeah we should support it -- we also support it in Ruff for this reason.
 _Comment by @charliermarsh on 2024-06-03 01:58_
 
 Thanks for looking into it in anstream @samypr100, you rock.
-
----
-
-_Referenced in [astral-sh/uv#3979](../../astral-sh/uv/pulls/3979.md) on 2024-06-03 02:49_
 
 ---
 
@@ -145,10 +137,6 @@ So what approach is "right"?  https://force-color.org/ is just a website that so
 
 ---
 
-_Referenced in [donatj/force-color.org#30](../../donatj/force-color.org/issues/30.md) on 2024-06-04 02:17_
-
----
-
 _Comment by @epage on 2024-06-04 02:18_
 
 I've raised the discrepancies in donatj/force-color.org#30
@@ -156,17 +144,5 @@ I've raised the discrepancies in donatj/force-color.org#30
 ---
 
 _Closed by @charliermarsh on 2024-06-04 21:00_
-
----
-
-_Referenced in [astral-sh/uv#7352](../../astral-sh/uv/issues/7352.md) on 2024-09-13 08:21_
-
----
-
-_Referenced in [crate-ci/typos#1141](../../crate-ci/typos/issues/1141.md) on 2024-11-04 12:51_
-
----
-
-_Referenced in [Textualize/rich#2924](../../Textualize/rich/issues/2924.md) on 2025-03-22 20:47_
 
 ---

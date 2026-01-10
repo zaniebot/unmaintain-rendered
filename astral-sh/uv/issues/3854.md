@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-27T02:33:32Z
 updated_at: 2024-05-27T03:47:33Z
 url: https://github.com/astral-sh/uv/issues/3854
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Architecture not supported: arm
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2024-05-27 02:50_
 _Comment by @bulletmark on 2024-05-27 03:20_
 
 Yes, sorry Arch on ARM is poorly supported so uv 0.1.7 was the easiest version 1 available for me for me to easily restore from the standard packages.  I just hand installed uv 0.1.45 and that worked fine so clearly this is a version 2 issue.
-
----
-
-_Referenced in [astral-sh/uv#3855](../../astral-sh/uv/pulls/3855.md) on 2024-05-27 03:25_
 
 ---
 

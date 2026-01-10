@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-31T13:39:42Z
 updated_at: 2024-05-31T21:08:02Z
 url: https://github.com/astral-sh/uv/issues/3941
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support PEP 508-style editable requirements
@@ -29,10 +29,6 @@ _Label `enhancement` added by @charliermarsh on 2024-05-31 13:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-31 14:57_
-
----
-
-_Referenced in [astral-sh/uv#3946](../../astral-sh/uv/pulls/3946.md) on 2024-05-31 20:15_
 
 ---
 

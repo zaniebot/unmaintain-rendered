@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-05T19:14:28Z
 updated_at: 2024-06-12T20:47:47Z
 url: https://github.com/astral-sh/uv/issues/4063
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Feature Request: Allow `--no-binary <package>` to override `--only-binary :all:`
@@ -246,17 +246,9 @@ But let me know if there's a better solution for my use case.
 
 ---
 
-_Referenced in [astral-sh/uv#4064](../../astral-sh/uv/issues/4064.md) on 2024-06-05 19:24_
-
----
-
 _Comment by @zanieb on 2024-06-05 19:43_
 
 Looking into this...
-
----
-
-_Referenced in [astral-sh/uv#4067](../../astral-sh/uv/pulls/4067.md) on 2024-06-05 19:56_
 
 ---
 
@@ -291,9 +283,5 @@ Yeah we should definitely improve the error instead of attempting to resolve. I'
 ---
 
 _Closed by @zanieb on 2024-06-12 20:47_
-
----
-
-_Referenced in [astral-sh/uv#1794](../../astral-sh/uv/issues/1794.md) on 2024-06-12 20:54_
 
 ---

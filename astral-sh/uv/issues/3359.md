@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T18:15:29Z
 updated_at: 2024-05-20T23:56:25Z
 url: https://github.com/astral-sh/uv/issues/3359
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: add marker expressions to PubGrubPackage
@@ -36,14 +36,6 @@ This adds the necessary constraints to ensure pubgrub's resolution is itself pro
 ---
 
 _Label `preview` added by @BurntSushi on 2024-05-03 18:15_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 18:15_
-
----
-
-_Referenced in [astral-sh/uv#3673](../../astral-sh/uv/pulls/3673.md) on 2024-05-20 18:04_
 
 ---
 

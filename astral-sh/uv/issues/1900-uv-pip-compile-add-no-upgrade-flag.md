@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T04:11:43Z
 updated_at: 2024-05-01T18:13:34Z
 url: https://github.com/astral-sh/uv/issues/1900
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # `uv pip compile`: add `--no-upgrade` flag
@@ -62,10 +62,6 @@ For what it's worth, allowing to invert boolean CLI flags with a `--no-FLAG` opt
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-01 16:44_
-
----
-
-_Referenced in [astral-sh/uv#3328](../../astral-sh/uv/pulls/3328.md) on 2024-05-01 16:48_
 
 ---
 

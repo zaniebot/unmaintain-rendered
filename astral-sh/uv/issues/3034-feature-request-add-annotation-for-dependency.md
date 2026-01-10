@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-15T10:23:24Z
 updated_at: 2024-04-20T01:27:22Z
 url: https://github.com/astral-sh/uv/issues/3034
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Feature request: add annotation for dependency artifact URL
@@ -43,9 +43,5 @@ Maybe there are some package registries that don't have deterministic URLs? Not 
 ---
 
 _Label `wish` added by @charliermarsh on 2024-04-20 01:27_
-
----
-
-_Referenced in [astral-sh/uv#2679](../../astral-sh/uv/issues/2679.md) on 2024-04-22 04:23_
 
 ---

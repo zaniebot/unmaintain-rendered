@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-25T21:16:27Z
 updated_at: 2024-06-25T23:49:44Z
 url: https://github.com/astral-sh/uv/issues/4532
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install` fails to read metadata when running on Docker container due to failure to parse egg version
@@ -160,10 +160,6 @@ let Some((version, _)) = version_python.split_once('-') else {
 _Comment by @charliermarsh on 2024-06-25 22:53_
 
 I think it needs to flexibly handle either case? I'm gonna add a shared method and some tests.
-
----
-
-_Referenced in [astral-sh/uv#4533](../../astral-sh/uv/pulls/4533.md) on 2024-06-25 23:15_
 
 ---
 

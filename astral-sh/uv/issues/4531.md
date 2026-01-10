@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-25T21:08:30Z
 updated_at: 2024-06-25T23:45:37Z
 url: https://github.com/astral-sh/uv/issues/4531
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Remove `exclude_newer` special casing in tests 
@@ -27,15 +27,7 @@ _Label `internal` added by @konstin on 2024-06-25 21:08_
 
 ---
 
-_Referenced in [astral-sh/uv#4512](../../astral-sh/uv/pulls/4512.md) on 2024-06-25 21:08_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-25 23:20_
-
----
-
-_Referenced in [astral-sh/uv#4535](../../astral-sh/uv/pulls/4535.md) on 2024-06-25 23:28_
 
 ---
 

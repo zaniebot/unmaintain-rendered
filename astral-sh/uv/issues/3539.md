@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T08:32:44Z
 updated_at: 2024-05-15T16:29:40Z
 url: https://github.com/astral-sh/uv/issues/3539
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Cleaning an empty cache removes 4 files
@@ -39,10 +39,6 @@ Yeah I looked at this recently too. The problem is that we initialize the cache 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-15 16:14_
-
----
-
-_Referenced in [astral-sh/uv#3607](../../astral-sh/uv/pulls/3607.md) on 2024-05-15 16:14_
 
 ---
 

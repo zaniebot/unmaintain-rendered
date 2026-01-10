@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-03T14:32:16Z
 updated_at: 2024-05-04T01:39:31Z
 url: https://github.com/astral-sh/uv/issues/3348
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Why is a venv needed when doing uv pip install --target ?
@@ -61,9 +61,5 @@ It's consistent with our rules for Python discovery. You can run with `--system`
 ---
 
 _Closed by @charliermarsh on 2024-05-04 01:39_
-
----
-
-_Referenced in [astral-sh/uv#9356](../../astral-sh/uv/issues/9356.md) on 2024-11-22 20:33_
 
 ---

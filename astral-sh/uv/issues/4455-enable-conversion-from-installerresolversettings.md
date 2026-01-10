@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-23T22:28:20Z
 updated_at: 2024-06-24T20:08:13Z
 url: https://github.com/astral-sh/uv/issues/4455
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Enable conversion from `InstallerResolverSettings` to `InstallerSettings`
@@ -28,10 +28,6 @@ _Label `internal` added by @charliermarsh on 2024-06-23 22:28_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-24 14:57_
-
----
-
-_Referenced in [astral-sh/uv#4489](../../astral-sh/uv/pulls/4489.md) on 2024-06-24 19:56_
 
 ---
 

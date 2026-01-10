@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-07T02:42:11Z
 updated_at: 2024-07-09T17:58:02Z
 url: https://github.com/astral-sh/uv/issues/4852
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # pip compile --universal is adding tags for python versions lower than requires-python
@@ -72,10 +72,6 @@ Somewhat torn on whether we should be emitting these... not strongly opposed to 
 
 ---
 
-_Referenced in [astral-sh/uv#4639](../../astral-sh/uv/pulls/4639.md) on 2024-07-07 20:42_
-
----
-
 _Comment by @charliermarsh on 2024-07-08 21:17_
 
 I have a fix for this, will push when I land.
@@ -83,10 +79,6 @@ I have a fix for this, will push when I land.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-08 21:18_
-
----
-
-_Referenced in [astral-sh/uv#4912](../../astral-sh/uv/pulls/4912.md) on 2024-07-09 04:55_
 
 ---
 

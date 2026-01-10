@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-10T07:45:51Z
 updated_at: 2024-07-11T07:01:57Z
 url: https://github.com/astral-sh/uv/issues/4956
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support more platforms in --python-platforms
@@ -52,10 +52,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-10 15:18_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-07-10 15:19_
-
----
-
-_Referenced in [astral-sh/uv#4965](../../astral-sh/uv/pulls/4965.md) on 2024-07-10 16:23_
 
 ---
 

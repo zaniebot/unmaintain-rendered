@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-07T13:10:01Z
 updated_at: 2024-06-05T12:16:25Z
 url: https://github.com/astral-sh/uv/issues/3417
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # global pip (`--system` ...) doesn't work in GitHub Codespaces
@@ -171,9 +171,5 @@ In the case of devcontainers, you probably indeed would want to use the `--user`
 ---
 
 _Closed by @Malix-Labs on 2024-05-07 15:09_
-
----
-
-_Referenced in [astral-sh/uv#2333](../../astral-sh/uv/issues/2333.md) on 2024-06-05 12:15_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-07T14:15:00Z
 updated_at: 2024-05-07T17:30:03Z
 url: https://github.com/astral-sh/uv/issues/3421
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Reconcile `uv run --isolated` with `uv pip install --isolated`
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-05-07 14:15_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-07 15:14_
-
----
-
-_Referenced in [astral-sh/uv#3431](../../astral-sh/uv/pulls/3431.md) on 2024-05-07 17:08_
 
 ---
 

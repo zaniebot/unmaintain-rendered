@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-27T16:44:04Z
 updated_at: 2024-06-30T23:43:25Z
 url: https://github.com/astral-sh/uv/issues/4590
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support `--disable-pip-version-check` and other pip flags
@@ -40,10 +40,6 @@ _Label `question` added by @zanieb on 2024-06-27 17:00_
 _Comment by @charliermarsh on 2024-06-27 17:38_
 
 I guess we could add that to the compatibility args but it's obviously a weird one.
-
----
-
-_Referenced in [astral-sh/uv#4672](../../astral-sh/uv/pulls/4672.md) on 2024-06-30 22:53_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-27T22:13:49Z
 updated_at: 2024-05-08T14:54:10Z
 url: https://github.com/astral-sh/uv/issues/2025
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # `uv pip install` returning 403 from private pypi cloud instance backed by s3
@@ -133,10 +133,6 @@ _Comment by @philiplinden on 2024-02-28 00:51_
 > Can you say a bit more about how the auth is intended to work? The URL is publicly available, and redirects you to S3 URLs with credentials embedded?
 
 Yeah that's correct. It uses s3 one time preauthed urls. I am using [pypicloud](https://github.com/stevearc/pypicloud) with [redirect_urls](https://pypicloud.readthedocs.io/en/latest/topics/redirect_urls.html) enabled
-
----
-
-_Referenced in [prefix-dev/pixi#588](../../prefix-dev/pixi/issues/588.md) on 2024-03-08 10:53_
 
 ---
 
@@ -339,10 +335,6 @@ Other people have had this issue: https://stackoverflow.com/questions/15717230/p
 
 ---
 
-_Referenced in [astral-sh/uv#2843](../../astral-sh/uv/pulls/2843.md) on 2024-04-05 22:21_
-
----
-
 _Comment by @torarvid on 2024-04-05 22:23_
 
 I made a proof-of-concept PR to work around the issue. I do that by passing a modified `response` to the range reader so that it uses the "original" (gemfury) link and not the 302-redirected S3 link. Works for my local repro test case 😄 
@@ -386,10 +378,6 @@ Interesting, ok, we can add that. Do you want to submit a PR?
 
 ---
 
-_Referenced in [astral-sh/uv#3070](../../astral-sh/uv/pulls/3070.md) on 2024-04-16 18:02_
-
----
-
 _Closed by @charliermarsh on 2024-04-16 18:25_
 
 ---
@@ -410,14 +398,6 @@ Thanks, sorry, I didn't mean to close this.
 
 ---
 
-_Referenced in [astral-sh/uv#3255](../../astral-sh/uv/issues/3255.md) on 2024-04-24 21:05_
-
----
-
-_Referenced in [astral-sh/uv#3460](../../astral-sh/uv/pulls/3460.md) on 2024-05-08 14:43_
-
----
-
 _Comment by @charliermarsh on 2024-05-08 14:45_
 
 If anyone is willing to test https://github.com/astral-sh/uv/pull/3460 I would appreciate it.
@@ -425,9 +405,5 @@ If anyone is willing to test https://github.com/astral-sh/uv/pull/3460 I would a
 ---
 
 _Closed by @charliermarsh on 2024-05-08 14:54_
-
----
-
-_Referenced in [astral-sh/uv#13336](../../astral-sh/uv/issues/13336.md) on 2025-05-07 21:43_
 
 ---

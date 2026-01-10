@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-07T20:33:25Z
 updated_at: 2024-05-22T16:30:55Z
 url: https://github.com/astral-sh/uv/issues/3438
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Allow passing constraint file to `uv pip sync`?
@@ -33,17 +33,9 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-13 02:02_
 
 ---
 
-_Referenced in [astral-sh/uv#3546](../../astral-sh/uv/pulls/3546.md) on 2024-05-13 14:42_
-
----
-
 _Comment by @charliermarsh on 2024-05-16 16:49_
 
 I plan to support this but it's proving to be motivation to do some refactoring / cleanup work between `pip sync` and `pip install`, so want to knock that out first.
-
----
-
-_Referenced in [astral-sh/uv#3741](../../astral-sh/uv/pulls/3741.md) on 2024-05-22 16:24_
 
 ---
 

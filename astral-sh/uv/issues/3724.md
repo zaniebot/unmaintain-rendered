@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-21T22:02:51Z
 updated_at: 2024-06-03T16:27:12Z
 url: https://github.com/astral-sh/uv/issues/3724
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Deadlock during resolution
@@ -39,10 +39,6 @@ _Label `help wanted` added by @zanieb on 2024-05-21 22:03_
 _Comment by @ChannyClaus on 2024-05-27 14:02_
 
 is there a link to the deadlocked build?
-
----
-
-_Referenced in [astral-sh/uv#3987](../../astral-sh/uv/pulls/3987.md) on 2024-06-03 15:23_
 
 ---
 

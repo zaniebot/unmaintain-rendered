@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-16T13:39:23Z
 updated_at: 2024-07-09T11:25:35Z
 url: https://github.com/astral-sh/uv/issues/3625
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support `tool.uv.workspace.default-packages`
@@ -35,10 +35,6 @@ _Renamed from "Support `too.uv.workspace.default-package`" to "Support `tool.uv.
 
 ---
 
-_Referenced in [astral-sh/uv#3705](../../astral-sh/uv/pulls/3705.md) on 2024-05-22 12:36_
-
----
-
 _Renamed from "Support `tool.uv.workspace.default-package`" to "Support `tool.uv.workspace.default-packages`" by @konstin on 2024-06-27 08:25_
 
 ---
@@ -48,10 +44,6 @@ _Renamed from "Support `tool.uv.workspace.default-packages`" to "Support `tool.u
 ---
 
 _Renamed from "Support `tool.uv.workspace.default-package`" to "Support `tool.uv.workspace.default-packages`" by @konstin on 2024-06-27 08:25_
-
----
-
-_Referenced in [astral-sh/uv#4555](../../astral-sh/uv/pulls/4555.md) on 2024-06-27 08:26_
 
 ---
 

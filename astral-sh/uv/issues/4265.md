@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-12T09:01:54Z
 updated_at: 2024-06-12T13:36:28Z
 url: https://github.com/astral-sh/uv/issues/4265
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Absolute venv lib64 symlink on RHEL-like systems
@@ -60,10 +60,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-12 12:33_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-06-12 12:33_
-
----
-
-_Referenced in [astral-sh/uv#4268](../../astral-sh/uv/pulls/4268.md) on 2024-06-12 13:19_
 
 ---
 

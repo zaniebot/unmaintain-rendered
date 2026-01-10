@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-14T14:05:12Z
 updated_at: 2024-07-14T14:58:00Z
 url: https://github.com/astral-sh/uv/issues/5043
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Requires-python causality is only half-explained when an extra is involved
@@ -45,10 +45,6 @@ In the latter example, we can guess the correlation, but there's no reason to no
 ---
 
 _Label `error messages` added by @konstin on 2024-07-14 14:05_
-
----
-
-_Referenced in [astral-sh/uv#5045](../../astral-sh/uv/issues/5045.md) on 2024-07-14 14:23_
 
 ---
 

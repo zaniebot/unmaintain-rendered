@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-24T10:57:13Z
 updated_at: 2024-05-24T21:03:20Z
 url: https://github.com/astral-sh/uv/issues/3818
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip compile` causes "direct URL requirements without package names are not supported" error
@@ -78,10 +78,6 @@ Thanks, will fix.
 _Comment by @charliermarsh on 2024-05-24 13:16_
 
 I’ll try to get this out today, I think it’s a regression from a recent change.
-
----
-
-_Referenced in [astral-sh/uv#3821](../../astral-sh/uv/pulls/3821.md) on 2024-05-24 13:47_
 
 ---
 

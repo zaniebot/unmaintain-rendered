@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-05T19:52:04Z
 updated_at: 2024-05-05T22:53:26Z
 url: https://github.com/astral-sh/uv/issues/3378
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv`should not complain about a missing virtual env when called from a non activated virtual environment.
@@ -50,10 +50,6 @@ By always `cd`ing into the venv and prefixing my calls to the local executables 
 
 I use uv 0.1.39.
 
-
----
-
-_Referenced in [astral-sh/uv#3379](../../astral-sh/uv/pulls/3379.md) on 2024-05-05 20:02_
 
 ---
 

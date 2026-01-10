@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-05T19:24:35Z
 updated_at: 2024-06-13T13:59:09Z
 url: https://github.com/astral-sh/uv/issues/4064
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Feature Request: Allow `--no-binary` for `uv pip compile`
@@ -51,10 +51,6 @@ Should be a straight-forward change to copy it over.
 _Comment by @charliermarsh on 2024-06-12 21:03_
 
 Yeah we can add this.
-
----
-
-_Referenced in [astral-sh/uv#4301](../../astral-sh/uv/pulls/4301.md) on 2024-06-13 04:01_
 
 ---
 

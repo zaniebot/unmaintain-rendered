@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T21:05:31Z
 updated_at: 2024-05-09T22:12:13Z
 url: https://github.com/astral-sh/uv/issues/1343
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # `uv pip compile` does not annotate direct dependencies e.g. `via -r requirements.in`
@@ -92,45 +92,13 @@ _Label `compatibility` added by @charliermarsh on 2024-02-15 21:36_
 
 ---
 
-_Referenced in [astral-sh/ruff-pre-commit#68](../../astral-sh/ruff-pre-commit/pulls/68.md) on 2024-02-15 22:45_
-
----
-
-_Referenced in [inventree/InvenTree#6499](../../inventree/InvenTree/pulls/6499.md) on 2024-02-16 19:52_
-
----
-
-_Referenced in [python-trio/trio#2958](../../python-trio/trio/pulls/2958.md) on 2024-02-16 23:49_
-
----
-
-_Referenced in [astral-sh/uv#1665](../../astral-sh/uv/issues/1665.md) on 2024-02-18 20:00_
-
----
-
-_Referenced in [astral-sh/uv#1797](../../astral-sh/uv/issues/1797.md) on 2024-02-21 06:35_
-
----
-
 _Comment by @jzmiller1 on 2024-02-23 20:02_
 
 The lack of the -r requirements.in in the output has been a blocker on using uv to replace pip-compile in some projects I work on.  Glad to see this already on the radar.
 
 ---
 
-_Referenced in [astral-sh/uv#2160](../../astral-sh/uv/issues/2160.md) on 2024-03-04 16:01_
-
----
-
-_Referenced in [astral-sh/uv#2162](../../astral-sh/uv/issues/2162.md) on 2024-03-04 16:55_
-
----
-
 _Renamed from "`uv pip compile` removes `via -r requirements.in`" to "`uv pip compile` does not annotate direct dependencies e.g. `via -r requirements.in`" by @zanieb on 2024-03-04 16:59_
-
----
-
-_Referenced in [edgarrmondragon/citric#1115](../../edgarrmondragon/citric/pulls/1115.md) on 2024-03-08 00:11_
 
 ---
 
@@ -139,10 +107,6 @@ _Comment by @Djailla on 2024-03-25 15:17_
 Hello @charliermarsh do you have an update on this issue ?
 
 Thanks a lot !
-
----
-
-_Referenced in [astral-sh/uv#3066](../../astral-sh/uv/issues/3066.md) on 2024-04-16 16:32_
 
 ---
 
@@ -155,10 +119,6 @@ FYI, I'm (slowly) having a bit of of a poke at this one. @charliermarsh I'm assu
 _Comment by @charliermarsh on 2024-04-21 21:30_
 
 Yeah happily. Let me know if you run into issues or have questions.
-
----
-
-_Referenced in [astral-sh/uv#3269](../../astral-sh/uv/pulls/3269.md) on 2024-04-25 20:29_
 
 ---
 

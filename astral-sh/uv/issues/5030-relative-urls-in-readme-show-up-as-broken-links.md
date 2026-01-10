@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-13T02:26:28Z
 updated_at: 2024-07-13T17:29:22Z
 url: https://github.com/astral-sh/uv/issues/5030
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # relative URLs in README show up as broken links on https://pypi.org/project/uv/
@@ -44,10 +44,6 @@ _Label `bug` added by @charliermarsh on 2024-07-13 13:32_
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-07-13 13:32_
-
----
-
-_Referenced in [astral-sh/uv#5038](../../astral-sh/uv/pulls/5038.md) on 2024-07-13 17:12_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T10:50:17Z
 updated_at: 2024-05-21T17:30:33Z
 url: https://github.com/astral-sh/uv/issues/3541
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Extra index url when it is specified over command line and uv.toml
@@ -115,10 +115,6 @@ _Label `cli` added by @charliermarsh on 2024-05-15 18:16_
 
 ---
 
-_Referenced in [astral-sh/uv#3618](../../astral-sh/uv/pulls/3618.md) on 2024-05-15 18:59_
-
----
-
 _Closed by @charliermarsh on 2024-05-20 13:37_
 
 ---
@@ -132,9 +128,5 @@ Out now in [v0.1.45](https://github.com/astral-sh/uv/releases/tag/0.1.45). Let m
 _Comment by @jmspereira on 2024-05-21 17:30_
 
 Everything works as expected from my side, thank you!
-
----
-
-_Referenced in [astral-sh/uv#7924](../../astral-sh/uv/issues/7924.md) on 2025-06-24 20:19_
 
 ---

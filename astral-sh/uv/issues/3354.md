@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T15:51:12Z
 updated_at: 2024-05-09T18:16:45Z
 url: https://github.com/astral-sh/uv/issues/3354
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: refactor resolver state into explicit type
@@ -28,18 +28,6 @@ This state needs to get pushed out into its own type so that we can work with it
 ---
 
 _Label `preview` added by @BurntSushi on 2024-05-03 15:51_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 15:51_
-
----
-
-_Referenced in [astral-sh/uv#3358](../../astral-sh/uv/issues/3358.md) on 2024-05-03 18:09_
-
----
-
-_Referenced in [astral-sh/uv#3492](../../astral-sh/uv/pulls/3492.md) on 2024-05-09 18:06_
 
 ---
 

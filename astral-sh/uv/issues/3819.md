@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-24T12:41:16Z
 updated_at: 2024-05-24T13:31:47Z
 url: https://github.com/astral-sh/uv/issues/3819
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv.toml doesn't seem to respect/support this:
@@ -41,10 +41,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-24 12:41_
 ---
 
 _Label `configuration` added by @charliermarsh on 2024-05-24 12:41_
-
----
-
-_Referenced in [astral-sh/uv#3820](../../astral-sh/uv/pulls/3820.md) on 2024-05-24 13:26_
 
 ---
 

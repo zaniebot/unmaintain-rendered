@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T20:13:40Z
 updated_at: 2024-07-10T21:10:22Z
 url: https://github.com/astral-sh/uv/issues/4069
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # error: invalid command 'bdist_wheel'
@@ -312,25 +312,9 @@ ERROR: ERROR: Failed to build installable wheels for some pyproject.toml based p
 
 ---
 
-_Referenced in [astral-sh/uv#2252](../../astral-sh/uv/issues/2252.md) on 2024-06-24 14:48_
-
----
-
 _Comment by @charliermarsh on 2024-06-24 14:51_
 
 Thanks for the write-up! I think this is expected since we use PEP 517 by default, and (as you noted) the package doesn't seem to install with `--use-pep517`. In that case, the package itself would need to be fixed to enable installing without build isolation.
-
----
-
-_Referenced in [biopython/biopython#4755](../../biopython/biopython/pulls/4755.md) on 2024-06-24 16:19_
-
----
-
-_Referenced in [astral-sh/uv#4480](../../astral-sh/uv/pulls/4480.md) on 2024-06-24 17:54_
-
----
-
-_Referenced in [astral-sh/uv#4964](../../astral-sh/uv/pulls/4964.md) on 2024-07-10 16:15_
 
 ---
 

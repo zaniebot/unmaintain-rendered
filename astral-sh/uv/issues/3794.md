@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-23T14:11:18Z
 updated_at: 2024-05-23T14:50:00Z
 url: https://github.com/astral-sh/uv/issues/3794
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Plans for eventually using published pubgrub?
@@ -69,9 +69,5 @@ _Comment by @musicinmybrain on 2024-05-23 14:49_
 In Fedora, we handle `git` crate dependencies by adding an additional source archive, like https://github.com/astral-sh/pubgrub/archive/0e684a874c9fb8f74738cd8875524c80e3d4820b/pubgrub-0e684a874c9fb8f74738cd8875524c80e3d4820b.tar.gz, to the source RPM. Then we extract it and patch the `git` crate dependency into a `path` one.
 
 This is perhaps a little more effort than dealing with an “in-tree” vendored/bundled crate, but not much more, as long as the number of such crates is small. Plus, this method has the advantage that it’s explicit, with no chance of missing vendored/bundled code that we needed to document and justify to satisfy our packaging guidelines. So I can’t speak for other distributions, but I’m perfectly happy with the way these two forked crates are managed now.
-
----
-
-_Referenced in [astral-sh/uv#5588](../../astral-sh/uv/issues/5588.md) on 2024-07-30 05:05_
 
 ---

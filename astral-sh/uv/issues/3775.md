@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-22T22:20:12Z
 updated_at: 2024-05-22T22:59:37Z
 url: https://github.com/astral-sh/uv/issues/3775
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool run` failed with `No such file or directory` error when there is no cache directory
@@ -52,10 +52,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-22 22:49_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-05-22 22:49_
-
----
-
-_Referenced in [astral-sh/uv#3776](../../astral-sh/uv/pulls/3776.md) on 2024-05-22 22:50_
 
 ---
 

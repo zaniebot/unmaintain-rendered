@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-27T11:07:00Z
 updated_at: 2024-06-27T21:30:11Z
 url: https://github.com/astral-sh/uv/issues/4584
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # pip compile --universal does not retain environment markers for dependencies
@@ -79,10 +79,6 @@ Ahh ok, the problem is that the dependency graph has a cycle, because `poetry-pl
 
 ---
 
-_Referenced in [astral-sh/uv#4595](../../astral-sh/uv/pulls/4595.md) on 2024-06-27 18:19_
-
----
-
 _Comment by @charliermarsh on 2024-06-27 18:20_
 
 Fixed in #4595.
@@ -108,9 +104,5 @@ _Closed by @charliermarsh on 2024-06-27 21:30_
 ---
 
 _Closed by @charliermarsh on 2024-06-27 21:30_
-
----
-
-_Referenced in [pyprojectx/pyprojectx#95](../../pyprojectx/pyprojectx/issues/95.md) on 2024-06-28 11:38_
 
 ---

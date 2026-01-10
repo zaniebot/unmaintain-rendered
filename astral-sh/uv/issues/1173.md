@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-29T19:48:06Z
 updated_at: 2024-05-13T20:44:20Z
 url: https://github.com/astral-sh/uv/issues/1173
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # `uv pipx {run,install}`
@@ -30,10 +30,6 @@ _Label `enhancement` added by @konstin on 2024-01-29 19:48_
 ---
 
 _Renamed from "`puffin pipx {run,install}`" to "`uv pipx {run,install}`" by @zanieb on 2024-02-15 19:50_
-
----
-
-_Referenced in [astral-sh/uv#1207](../../astral-sh/uv/issues/1207.md) on 2024-02-15 19:51_
 
 ---
 
@@ -60,10 +56,6 @@ _Comment by @mqudsi on 2024-02-16 20:02_
 Just double-checked. I mistook the part about "imagine a tool that replaces" for the "this is a tool that replaces".
 
 _Mea culpa!_
-
----
-
-_Referenced in [astral-sh/uv#2059](../../astral-sh/uv/issues/2059.md) on 2024-02-28 22:58_
 
 ---
 
@@ -138,10 +130,6 @@ There's also the warts you've already chosen *not* to match pip over - `--resolu
 _Comment by @samypr100 on 2024-03-20 15:21_
 
 Thanks @pfmoore, this is a very useful list. Always good to know what alternative approaches would've been better in hindsight.
-
----
-
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2024-05-13 19:42_
 
 ---
 

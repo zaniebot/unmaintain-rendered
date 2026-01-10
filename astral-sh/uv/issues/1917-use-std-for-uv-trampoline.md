@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T15:29:18Z
 updated_at: 2024-07-06T20:38:47Z
 url: https://github.com/astral-sh/uv/issues/1917
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Use `std` for `uv-trampoline`
@@ -39,18 +39,6 @@ _Label `help wanted` added by @MichaReiser on 2024-02-23 15:29_
 ---
 
 _Label `windows` added by @MichaReiser on 2024-02-23 15:29_
-
----
-
-_Referenced in [astral-sh/uv#1864](../../astral-sh/uv/pulls/1864.md) on 2024-02-23 15:29_
-
----
-
-_Referenced in [astral-sh/uv#1126](../../astral-sh/uv/issues/1126.md) on 2024-02-23 22:34_
-
----
-
-_Referenced in [astral-sh/uv#4722](../../astral-sh/uv/pulls/4722.md) on 2024-07-02 04:44_
 
 ---
 

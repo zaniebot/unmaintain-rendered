@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-05T21:53:40Z
 updated_at: 2024-05-22T16:34:26Z
 url: https://github.com/astral-sh/uv/issues/2222
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv installed on 3.9 version, but make venv on 3.7 version
@@ -71,27 +71,11 @@ Perhaps, take a look at https://github.com/astral-sh/uv/issues/2058 too.
 
 ---
 
-_Referenced in [astral-sh/uv#2058](../../astral-sh/uv/issues/2058.md) on 2024-03-07 17:48_
-
----
-
 _Label `bug` removed by @charliermarsh on 2024-03-08 20:55_
 
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2024-03-08 20:55_
-
----
-
-_Referenced in [astral-sh/uv#2338](../../astral-sh/uv/pulls/2338.md) on 2024-03-10 13:37_
-
----
-
-_Referenced in [astral-sh/uv#2649](../../astral-sh/uv/issues/2649.md) on 2024-03-25 17:15_
-
----
-
-_Referenced in [astral-sh/uv#3440](../../astral-sh/uv/issues/3440.md) on 2024-05-07 21:53_
 
 ---
 
@@ -104,10 +88,6 @@ _Label `needs-decision` removed by @zanieb on 2024-05-22 13:32_
 ---
 
 _Label `enhancement` added by @zanieb on 2024-05-22 13:32_
-
----
-
-_Referenced in [astral-sh/uv#3736](../../astral-sh/uv/pulls/3736.md) on 2024-05-22 14:14_
 
 ---
 

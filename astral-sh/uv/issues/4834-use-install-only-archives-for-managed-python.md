@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-05T15:36:49Z
 updated_at: 2024-07-07T02:43:56Z
 url: https://github.com/astral-sh/uv/issues/4834
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Use `install_only` archives for managed Python installations
@@ -31,10 +31,6 @@ _Label `enhancement` added by @zanieb on 2024-07-05 15:37_
 ---
 
 _Label `needs-decision` added by @zanieb on 2024-07-05 15:37_
-
----
-
-_Referenced in [astral-sh/uv#4775](../../astral-sh/uv/pulls/4775.md) on 2024-07-05 15:37_
 
 ---
 
@@ -59,10 +55,6 @@ Although it seems like you can't get PGO and/or LTO with `install-only`.
 _Comment by @charliermarsh on 2024-07-05 20:42_
 
 Oh nevermind, I misunderstood. They're already optimized. Let's use them!
-
----
-
-_Referenced in [astral-sh/uv#4843](../../astral-sh/uv/pulls/4843.md) on 2024-07-06 08:29_
 
 ---
 

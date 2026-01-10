@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T16:58:54Z
 updated_at: 2024-06-19T09:44:25Z
 url: https://github.com/astral-sh/uv/issues/1708
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Imports don't resolve correctly when using `uv pip install -e`
@@ -312,10 +312,6 @@ _Label `upstream` added by @zanieb on 2024-06-17 21:39_
 
 ---
 
-_Referenced in [pypa/setuptools#3829](../../pypa/setuptools/pulls/3829.md) on 2024-06-17 21:43_
-
----
-
 _Closed by @zanieb on 2024-06-19 00:35_
 
 ---
@@ -323,25 +319,5 @@ _Closed by @zanieb on 2024-06-19 00:35_
 _Comment by @philipp-eisen on 2024-06-19 09:44_
 
 Thanks @Jorricks and sorry for being a bit too late to provide any useful info here.
-
----
-
-_Referenced in [astral-sh/uv#7179](../../astral-sh/uv/issues/7179.md) on 2024-09-07 19:55_
-
----
-
-_Referenced in [AgentOps-AI/agentops#474](../../AgentOps-AI/agentops/pulls/474.md) on 2024-11-05 22:58_
-
----
-
-_Referenced in [astral-sh/uv#9637](../../astral-sh/uv/issues/9637.md) on 2025-02-24 15:39_
-
----
-
-_Referenced in [microsoft/pyright#10888](../../microsoft/pyright/pulls/10888.md) on 2025-09-03 10:20_
-
----
-
-_Referenced in [astral-sh/uv#15652](../../astral-sh/uv/issues/15652.md) on 2025-09-03 10:20_
 
 ---

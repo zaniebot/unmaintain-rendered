@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T15:44:29Z
 updated_at: 2024-05-09T13:24:38Z
 url: https://github.com/astral-sh/uv/issues/3352
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: add marker evaluation for just extras
@@ -46,15 +46,7 @@ _Label `preview` added by @BurntSushi on 2024-05-03 15:44_
 
 ---
 
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 15:44_
-
----
-
 _Renamed from "universal-lock: add marker evaluation for just extras and `python_version`" to "universal-lock: add marker evaluation for just extras" by @BurntSushi on 2024-05-07 14:51_
-
----
-
-_Referenced in [astral-sh/uv#3466](../../astral-sh/uv/pulls/3466.md) on 2024-05-08 18:10_
 
 ---
 

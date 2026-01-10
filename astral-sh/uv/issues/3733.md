@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-22T10:43:33Z
 updated_at: 2024-06-01T18:21:12Z
 url: https://github.com/astral-sh/uv/issues/3733
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Editable- and workspace-aware lookahead resolver
@@ -28,10 +28,6 @@ Instead, we should stop special casing editables and make them a regular path de
 ---
 
 _Label `internal` added by @konstin on 2024-05-22 10:43_
-
----
-
-_Referenced in [astral-sh/uv#3404](../../astral-sh/uv/issues/3404.md) on 2024-05-26 18:55_
 
 ---
 

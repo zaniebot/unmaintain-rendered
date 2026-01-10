@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-19T23:50:20Z
 updated_at: 2024-05-28T16:07:40Z
 url: https://github.com/astral-sh/uv/issues/3660
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # 'Unable to create Windows launch for x86' while installing packages
@@ -135,10 +135,6 @@ yes i use uv venv
 2- can you explain what the uv venv --seed dose ?
 
 @charliermarsh 
-
----
-
-_Referenced in [astral-sh/uv#3873](../../astral-sh/uv/pulls/3873.md) on 2024-05-28 07:51_
 
 ---
 

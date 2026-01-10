@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-07-04T12:29:22Z
 updated_at: 2024-07-06T19:37:17Z
 url: https://github.com/astral-sh/uv/issues/4802
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv cache prune` should remove cached environments that refer to non-existent interpreters
@@ -63,10 +63,6 @@ It's technically not referenced by anything though.
 _Comment by @zanieb on 2024-07-06 03:08_
 
 Hm okay 👍 
-
----
-
-_Referenced in [astral-sh/uv#4845](../../astral-sh/uv/pulls/4845.md) on 2024-07-06 10:42_
 
 ---
 

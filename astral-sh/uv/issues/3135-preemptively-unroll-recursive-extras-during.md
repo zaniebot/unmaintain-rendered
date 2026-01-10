@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-19T04:16:06Z
 updated_at: 2024-04-24T11:51:57Z
 url: https://github.com/astral-sh/uv/issues/3135
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Preemptively unroll recursive extras during resolution
@@ -40,10 +40,6 @@ _Label `performance` added by @charliermarsh on 2024-04-19 04:16_
 _Comment by @charliermarsh on 2024-04-19 04:16_
 
 It's both bug and performance, since _not_ doing this sometimes leads to use attempting to build packages that we should be able to skip (which can lead to failed resolutions).
-
----
-
-_Referenced in [astral-sh/uv#3230](../../astral-sh/uv/pulls/3230.md) on 2024-04-24 01:22_
 
 ---
 

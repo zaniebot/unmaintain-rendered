@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T14:07:49Z
 updated_at: 2024-04-23T19:45:37Z
 url: https://github.com/astral-sh/uv/issues/1647
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # I expected `--resolution=lowest` to imply `--reinstall` for an existing package
@@ -55,9 +55,5 @@ I think our behavior here is ok, though I can understand why it might be confusi
 ---
 
 _Closed by @charliermarsh on 2024-04-23 19:45_
-
----
-
-_Referenced in [astral-sh/uv#5226](../../astral-sh/uv/issues/5226.md) on 2024-07-19 23:33_
 
 ---

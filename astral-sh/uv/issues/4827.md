@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-05T08:20:21Z
 updated_at: 2024-07-05T21:03:18Z
 url: https://github.com/astral-sh/uv/issues/4827
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # UV_OVERRIDE environment variable
@@ -32,10 +32,6 @@ Yeah, we can add this.
 ---
 
 _Label `configuration` added by @charliermarsh on 2024-07-05 20:30_
-
----
-
-_Referenced in [astral-sh/uv#4836](../../astral-sh/uv/pulls/4836.md) on 2024-07-05 20:34_
 
 ---
 

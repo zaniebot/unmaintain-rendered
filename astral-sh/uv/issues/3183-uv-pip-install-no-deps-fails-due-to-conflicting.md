@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-22T13:02:56Z
 updated_at: 2024-04-22T17:18:05Z
 url: https://github.com/astral-sh/uv/issues/3183
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install --no-deps` fails due to conflicting requirements even though the `--no-deps` flag is given
@@ -63,10 +63,6 @@ _Label `bug` added by @charliermarsh on 2024-04-22 14:27_
 _Comment by @charliermarsh on 2024-04-22 14:27_
 
 Thanks, I can guess what's going on here.
-
----
-
-_Referenced in [astral-sh/uv#3191](../../astral-sh/uv/pulls/3191.md) on 2024-04-22 17:07_
 
 ---
 

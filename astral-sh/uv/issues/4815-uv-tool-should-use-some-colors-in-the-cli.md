@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T17:57:10Z
 updated_at: 2024-07-08T13:21:06Z
 url: https://github.com/astral-sh/uv/issues/4815
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool` should use some colors in the CLI
@@ -40,10 +40,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-04 20:06_
 _Comment by @charliermarsh on 2024-07-04 20:08_
 
 I'll give this a try.
-
----
-
-_Referenced in [astral-sh/uv#4865](../../astral-sh/uv/pulls/4865.md) on 2024-07-07 20:16_
 
 ---
 

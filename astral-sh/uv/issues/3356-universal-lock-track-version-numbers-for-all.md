@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T16:01:24Z
 updated_at: 2024-05-14T23:07:26Z
 url: https://github.com/astral-sh/uv/issues/3356
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: track version numbers for all distributions
@@ -31,19 +31,11 @@ My understanding is that a version number exists for these distributions in thei
 
 ---
 
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-05-03 16:29_
-
----
-
 _Label `preview` added by @BurntSushi on 2024-05-06 12:44_
 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-14 19:25_
-
----
-
-_Referenced in [astral-sh/uv#3589](../../astral-sh/uv/pulls/3589.md) on 2024-05-14 19:26_
 
 ---
 

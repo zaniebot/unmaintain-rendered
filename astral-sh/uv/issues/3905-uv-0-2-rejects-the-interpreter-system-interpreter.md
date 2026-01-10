@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-29T14:54:14Z
 updated_at: 2024-06-12T13:56:34Z
 url: https://github.com/astral-sh/uv/issues/3905
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv 0.2 rejects the interpreter, system interpreter not allowed
@@ -149,10 +149,6 @@ _Assigned to @zanieb by @zanieb on 2024-06-04 13:37_
 
 ---
 
-_Referenced in [astral-sh/uv#4018](../../astral-sh/uv/pulls/4018.md) on 2024-06-04 17:51_
-
----
-
 _Comment by @zanieb on 2024-06-12 13:56_
 
 We're still considering #4018 but I think I'll close this there is a clear workaround and furthermore a simple way to properly declare that the environment should be treated as a virtual environment.
@@ -160,9 +156,5 @@ We're still considering #4018 but I think I'll close this there is a clear worka
 ---
 
 _Closed by @zanieb on 2024-06-12 13:56_
-
----
-
-_Referenced in [astral-sh/uv#7907](../../astral-sh/uv/issues/7907.md) on 2024-10-03 21:34_
 
 ---

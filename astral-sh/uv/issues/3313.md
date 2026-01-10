@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-29T16:03:08Z
 updated_at: 2024-04-29T17:29:38Z
 url: https://github.com/astral-sh/uv/issues/3313
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add environment variable for `--link-mode`
@@ -45,10 +45,6 @@ This seems reasonable to add.
 ---
 
 _Label `good first issue` added by @zanieb on 2024-04-29 16:07_
-
----
-
-_Referenced in [astral-sh/uv#3315](../../astral-sh/uv/pulls/3315.md) on 2024-04-29 17:20_
 
 ---
 

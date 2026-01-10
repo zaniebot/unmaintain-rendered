@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-15T04:13:27Z
 updated_at: 2024-05-15T15:48:33Z
 url: https://github.com/astral-sh/uv/issues/3601
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv run can install two versions of the same package (and forces upgrades)
@@ -108,10 +108,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-15 12:56_
 _Comment by @zanieb on 2024-05-15 13:13_
 
 @charliermarsh this looks like it might be because we use `EmptyInstalledPackages` in `resolve` instead of passing the `SitePackages` we grabbed earlier.
-
----
-
-_Referenced in [astral-sh/uv#3603](../../astral-sh/uv/pulls/3603.md) on 2024-05-15 14:34_
 
 ---
 

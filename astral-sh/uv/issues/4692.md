@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-01T13:30:57Z
 updated_at: 2024-07-01T14:25:13Z
 url: https://github.com/astral-sh/uv/issues/4692
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool install ruff --force --reinstall` is not idempotent
@@ -58,10 +58,6 @@ _Label `preview` added by @charliermarsh on 2024-07-01 13:31_
 _Comment by @charliermarsh on 2024-07-01 14:01_
 
 @zanieb - in theory could `--force` be dropped in favor of `--reinstall`?
-
----
-
-_Referenced in [astral-sh/uv#4697](../../astral-sh/uv/pulls/4697.md) on 2024-07-01 14:05_
 
 ---
 

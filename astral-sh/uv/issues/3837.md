@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-26T12:29:22Z
 updated_at: 2024-05-27T16:40:18Z
 url: https://github.com/astral-sh/uv/issues/3837
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv pip install --python 3.9 does not find correct Python
@@ -63,10 +63,6 @@ Thanks for the report. You can either provide the full path e.g. `--system /opt/
 ---
 
 _Label `question` added by @zanieb on 2024-05-26 14:58_
-
----
-
-_Referenced in [astral-sh/uv#3841](../../astral-sh/uv/issues/3841.md) on 2024-05-26 15:03_
 
 ---
 
@@ -174,10 +170,6 @@ But in practice PR does `uv pip install wheel --python 3.9  --system --verbose`.
 _Comment by @charliermarsh on 2024-05-27 14:55_
 
 Thanks, I'll take a look at your exact project! Unfortunately that command / flow works totally fine on my own Windows machine.
-
----
-
-_Referenced in [astral-sh/uv#3865](../../astral-sh/uv/issues/3865.md) on 2024-05-27 14:55_
 
 ---
 

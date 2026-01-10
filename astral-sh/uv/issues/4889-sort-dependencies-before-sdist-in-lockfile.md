@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-08T12:22:20Z
 updated_at: 2024-07-08T14:25:06Z
 url: https://github.com/astral-sh/uv/issues/4889
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Sort `dependencies` before `sdist` in lockfile
@@ -73,10 +73,6 @@ Yeah, I like this.
 
 ---
 
-_Referenced in [astral-sh/uv#4893](../../astral-sh/uv/issues/4893.md) on 2024-07-08 13:47_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-08 14:12_
 
 ---
@@ -84,10 +80,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-08 14:12_
 _Comment by @charliermarsh on 2024-07-08 14:13_
 
 I'll do this real quick.
-
----
-
-_Referenced in [astral-sh/uv#4897](../../astral-sh/uv/pulls/4897.md) on 2024-07-08 14:14_
 
 ---
 

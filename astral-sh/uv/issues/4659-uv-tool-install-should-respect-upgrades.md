@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-30T17:06:57Z
 updated_at: 2024-07-02T20:46:32Z
 url: https://github.com/astral-sh/uv/issues/4659
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool install` should respect upgrades
@@ -109,10 +109,6 @@ Another framing:
 // If the user specified `--reinstall` or `--upgrade`, we pass those flags to the resolver and
 // also allow replacement of any entrypoints.
 ```
-
----
-
-_Referenced in [astral-sh/uv#4736](../../astral-sh/uv/pulls/4736.md) on 2024-07-02 19:15_
 
 ---
 

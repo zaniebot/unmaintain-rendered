@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-30T20:14:08Z
 updated_at: 2024-06-30T23:42:07Z
 url: https://github.com/astral-sh/uv/issues/4665
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip tree` should omit `(*)` if package has no dependencies
@@ -28,10 +28,6 @@ _Label `enhancement` added by @charliermarsh on 2024-06-30 20:14_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-30 23:04_
-
----
-
-_Referenced in [astral-sh/uv#4673](../../astral-sh/uv/pulls/4673.md) on 2024-06-30 23:20_
 
 ---
 

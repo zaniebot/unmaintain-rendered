@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T13:51:20Z
 updated_at: 2024-05-04T23:30:01Z
 url: https://github.com/astral-sh/uv/issues/3346
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Bugs in the activate_this.py script created by uv venv
@@ -79,10 +79,6 @@ I think some parts were lost when copying the upstream (https://github.com/pypa/
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-04 21:48_
-
----
-
-_Referenced in [astral-sh/uv#3376](../../astral-sh/uv/pulls/3376.md) on 2024-05-04 21:48_
 
 ---
 

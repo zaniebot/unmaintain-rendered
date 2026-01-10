@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-18T13:28:18Z
 updated_at: 2024-05-19T02:25:34Z
 url: https://github.com/astral-sh/uv/issues/3648
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support UV_CONFIG env variable to provide path to global configuration file
@@ -36,10 +36,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-18 13:47_
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-05-18 13:47_
-
----
-
-_Referenced in [astral-sh/uv#3653](../../astral-sh/uv/pulls/3653.md) on 2024-05-18 17:21_
 
 ---
 

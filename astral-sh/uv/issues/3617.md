@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-15T18:49:48Z
 updated_at: 2024-05-15T19:11:08Z
 url: https://github.com/astral-sh/uv/issues/3617
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `find-links` TOML parse error: expected `Path` or `Url`
@@ -63,10 +63,6 @@ _Label `bug` added by @charliermarsh on 2024-05-15 18:52_
 _Comment by @charliermarsh on 2024-05-15 18:53_
 
 I suspect it's just a bug. Will take a look!
-
----
-
-_Referenced in [astral-sh/uv#3619](../../astral-sh/uv/pulls/3619.md) on 2024-05-15 19:06_
 
 ---
 

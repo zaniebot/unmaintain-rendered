@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T17:23:55Z
 updated_at: 2024-05-22T16:15:18Z
 url: https://github.com/astral-sh/uv/issues/3555
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Merge `pip_sync.rs` and `pip_install.rs`.
@@ -47,10 +47,6 @@ I don't think so, the idea here is that we should combine our internal implement
 _Comment by @charliermarsh on 2024-05-17 21:50_
 
 It will enable us to add constraints though.
-
----
-
-_Referenced in [astral-sh/uv#3737](../../astral-sh/uv/pulls/3737.md) on 2024-05-22 15:10_
 
 ---
 

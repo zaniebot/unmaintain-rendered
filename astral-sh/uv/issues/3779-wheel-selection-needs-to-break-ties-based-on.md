@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-23T00:09:47Z
 updated_at: 2024-05-23T21:12:54Z
 url: https://github.com/astral-sh/uv/issues/3779
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Wheel selection needs to break ties based on build tag
@@ -36,14 +36,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-23 00:09_
 
 ---
 
-_Referenced in [astral-sh/uv#3781](../../astral-sh/uv/pulls/3781.md) on 2024-05-23 00:52_
-
----
-
 _Closed by @charliermarsh on 2024-05-23 21:12_
-
----
-
-_Referenced in [astral-sh/uv#9673](../../astral-sh/uv/issues/9673.md) on 2024-12-06 10:54_
 
 ---

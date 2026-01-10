@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-07T16:11:25Z
 updated_at: 2024-06-08T12:46:16Z
 url: https://github.com/astral-sh/uv/issues/4136
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Starting with 0.2.6+ uv `lowest-direct` does not respect all limits that are specified conditionally
@@ -121,10 +121,6 @@ cc: @notatallshaw  you might be interested in that one.
 
 ---
 
-_Referenced in [apache/airflow#40110](../../apache/airflow/pulls/40110.md) on 2024-06-07 16:17_
-
----
-
 _Comment by @charliermarsh on 2024-06-07 16:22_
 
 Thanks, will take a look.
@@ -197,10 +193,6 @@ There are also easier things we can do in the interim, like: avoid pre-fetching 
 
 ---
 
-_Referenced in [astral-sh/uv#4149](../../astral-sh/uv/pulls/4149.md) on 2024-06-07 21:49_
-
----
-
 _Closed by @charliermarsh on 2024-06-07 22:05_
 
 ---
@@ -208,21 +200,5 @@ _Closed by @charliermarsh on 2024-06-07 22:05_
 _Comment by @potiuk on 2024-06-08 12:46_
 
 Confirmed: `uv` installed from main works! 
-
----
-
-_Referenced in [apache/airflow#40177](../../apache/airflow/pulls/40177.md) on 2024-06-11 14:22_
-
----
-
-_Referenced in [apache/airflow#42274](../../apache/airflow/pulls/42274.md) on 2024-09-24 20:47_
-
----
-
-_Referenced in [astral-sh/uv#7680](../../astral-sh/uv/issues/7680.md) on 2024-09-25 07:49_
-
----
-
-_Referenced in [apache/airflow#42574](../../apache/airflow/pulls/42574.md) on 2024-09-29 19:29_
 
 ---

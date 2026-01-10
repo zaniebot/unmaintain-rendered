@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-03T16:13:02Z
 updated_at: 2024-07-09T09:15:10Z
 url: https://github.com/astral-sh/uv/issues/2138
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # unexpected end of file when working with Azure Artifacts
@@ -62,10 +62,6 @@ _Label `compatibility` added by @konstin on 2024-03-03 19:12_
 _Comment by @charliermarsh on 2024-03-04 14:45_
 
 We may need to setup our own Azure Artifacts index in order to reproduce this (unless your index is public).
-
----
-
-_Referenced in [astral-sh/uv#1502](../../astral-sh/uv/issues/1502.md) on 2024-03-08 17:56_
 
 ---
 

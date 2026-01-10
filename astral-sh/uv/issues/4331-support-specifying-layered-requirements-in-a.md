@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-14T18:43:39Z
 updated_at: 2024-06-19T00:45:03Z
 url: https://github.com/astral-sh/uv/issues/4331
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support specifying layered requirements in a single file
@@ -53,9 +53,5 @@ I think https://github.com/astral-sh/uv/issues/3347 can be used to track this re
 ---
 
 _Closed by @zanieb on 2024-06-19 00:45_
-
----
-
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2024-07-30 18:06_
 
 ---

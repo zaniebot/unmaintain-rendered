@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-28T13:49:54Z
 updated_at: 2024-07-01T12:25:41Z
 url: https://github.com/astral-sh/uv/issues/4617
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: use resolution of a fork as input preferences to its child forks
@@ -30,10 +30,6 @@ I don't have a good sense of how common an issue this is in practice. I also don
 ---
 
 _Label `preview` added by @BurntSushi on 2024-06-28 13:49_
-
----
-
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-06-28 13:50_
 
 ---
 
@@ -66,10 +62,6 @@ Is it possible that once we do the first thing (preferences), the timing require
 _Comment by @konstin on 2024-06-28 15:22_
 
 Possibly! We'll have to implement it and benchmark, i agree we should start with preferences
-
----
-
-_Referenced in [astral-sh/uv#4662](../../astral-sh/uv/pulls/4662.md) on 2024-06-30 19:20_
 
 ---
 

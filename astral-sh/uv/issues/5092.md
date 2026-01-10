@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-16T02:39:33Z
 updated_at: 2024-07-16T14:00:04Z
 url: https://github.com/astral-sh/uv/issues/5092
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Fix style issues in `settings.md` rendering
@@ -34,10 +34,6 @@ _Label `documentation` added by @charliermarsh on 2024-07-16 02:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-16 02:39_
-
----
-
-_Referenced in [astral-sh/uv#5103](../../astral-sh/uv/pulls/5103.md) on 2024-07-16 13:52_
 
 ---
 

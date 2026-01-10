@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-10T03:24:01Z
 updated_at: 2024-07-12T22:09:35Z
 url: https://github.com/astral-sh/uv/issues/4953
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add command to ensure tool binary directory is on path
@@ -39,10 +39,6 @@ _Label `preview` added by @charliermarsh on 2024-07-10 03:24_
 _Comment by @charliermarsh on 2024-07-10 16:55_
 
 I will probably start with Unix-only support because I don't have my Windows machine with me to test.
-
----
-
-_Referenced in [astral-sh/uv#4975](../../astral-sh/uv/pulls/4975.md) on 2024-07-10 18:42_
 
 ---
 

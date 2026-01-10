@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-15T08:15:01Z
 updated_at: 2024-05-17T21:20:39Z
 url: https://github.com/astral-sh/uv/issues/3602
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip compile --upgrade` can fail when `uv pip compile` succeeds if `requirements.txt` contains pre-release
@@ -54,13 +54,5 @@ That's a little more dubious imo. If something is yanked you ought to be pushed 
 _Comment by @charliermarsh on 2024-05-17 13:59_
 
 Yeah that's fine.
-
----
-
-_Referenced in [astral-sh/uv#3644](../../astral-sh/uv/issues/3644.md) on 2024-05-17 18:39_
-
----
-
-_Referenced in [astral-sh/uv#5729](../../astral-sh/uv/issues/5729.md) on 2024-08-02 15:25_
 
 ---

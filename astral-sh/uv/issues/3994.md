@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-03T18:56:31Z
 updated_at: 2024-06-04T19:37:07Z
 url: https://github.com/astral-sh/uv/issues/3994
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv 0.2.6 broke editable installs in a local folder
@@ -78,10 +78,6 @@ I actually wonder if pip will disallow this in the future... Because `pip instal
 
 ---
 
-_Referenced in [astral-sh/uv#3995](../../astral-sh/uv/pulls/3995.md) on 2024-06-03 19:23_
-
----
-
 _Comment by @charliermarsh on 2024-06-03 19:23_
 
 Fixed in https://github.com/astral-sh/uv/pull/3995.
@@ -97,10 +93,6 @@ Thanks! We'll add the path separator either way, seems more explicit if nothing 
 _Comment by @charliermarsh on 2024-06-03 19:58_
 
 I think that's smart -- it's the most forwards-compatible.
-
----
-
-_Referenced in [streamlit/streamlit#8816](../../streamlit/streamlit/pulls/8816.md) on 2024-06-04 07:01_
 
 ---
 

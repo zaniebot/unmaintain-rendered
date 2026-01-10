@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-25T14:04:51Z
 updated_at: 2024-07-02T13:14:28Z
 url: https://github.com/astral-sh/uv/issues/4516
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip sync` fails to clear environment when given an empty requirements list
@@ -40,10 +40,6 @@ _Label `needs-design` added by @zanieb on 2024-06-25 14:17_
 _Comment by @ncoghlan on 2024-06-25 14:24_
 
 Yeah, an opt-in flag like `--allow-clear` would make sense (I assumed the UX benefit was the reason for the current behaviour)
-
----
-
-_Referenced in [astral-sh/uv#4517](../../astral-sh/uv/pulls/4517.md) on 2024-06-25 14:37_
 
 ---
 

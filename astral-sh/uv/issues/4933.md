@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T18:09:11Z
 updated_at: 2024-07-09T19:25:24Z
 url: https://github.com/astral-sh/uv/issues/4933
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv sync` should recreate venv when it's broken
@@ -61,10 +61,6 @@ Presumably this is because we're using `from_root`, I believe discovery would no
 _Comment by @charliermarsh on 2024-07-09 18:21_
 
 Yeah, I think we just need to expand the fallback cases.
-
----
-
-_Referenced in [astral-sh/uv#4935](../../astral-sh/uv/pulls/4935.md) on 2024-07-09 18:44_
 
 ---
 

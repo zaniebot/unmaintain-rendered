@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-08T12:42:28Z
 updated_at: 2024-07-09T17:45:54Z
 url: https://github.com/astral-sh/uv/issues/4890
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Bug with install Numpy
@@ -86,9 +86,5 @@ _Label `question` added by @charliermarsh on 2024-07-09 17:45_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-09 17:45_
-
----
-
-_Referenced in [astral-sh/uv#5681](../../astral-sh/uv/issues/5681.md) on 2024-08-01 07:27_
 
 ---

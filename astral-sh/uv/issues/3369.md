@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-04T04:12:54Z
 updated_at: 2024-05-07T05:05:18Z
 url: https://github.com/astral-sh/uv/issues/3369
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # FreeBSD iocage `uv pip install` in `uv venv` results in "invalid peer certificate"
@@ -142,10 +142,6 @@ _Closed by @cmpadden on 2024-05-04 17:49_
 _Comment by @charliermarsh on 2024-05-04 17:50_
 
 Right on, thanks for following up!
-
----
-
-_Referenced in [rust-lang/rustup#3810](../../rust-lang/rustup/pulls/3810.md) on 2024-05-07 02:37_
 
 ---
 

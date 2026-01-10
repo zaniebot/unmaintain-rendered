@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-27T18:06:41Z
 updated_at: 2024-06-27T18:51:46Z
 url: https://github.com/astral-sh/uv/issues/4593
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # For `uv pip compile` how does the flag `--universal` interact with flags `--python-version` and `--python-platform`?
@@ -48,10 +48,6 @@ The intent is that `--python-version` is treated as a lower-bound but it might b
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-27 18:08_
-
----
-
-_Referenced in [astral-sh/uv#4598](../../astral-sh/uv/pulls/4598.md) on 2024-06-27 18:31_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-20T15:48:22Z
 updated_at: 2024-05-20T21:09:49Z
 url: https://github.com/astral-sh/uv/issues/3670
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip list --format json` outputs _nothing_
@@ -84,10 +84,6 @@ Haha no worries. I can fix today.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-20 16:22_
-
----
-
-_Referenced in [astral-sh/uv#3671](../../astral-sh/uv/pulls/3671.md) on 2024-05-20 16:28_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-10T15:00:51Z
 updated_at: 2024-05-11T16:11:40Z
 url: https://github.com/astral-sh/uv/issues/3509
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Cannot install cryptacular==1.6.2 (or any recent version) with uv
@@ -132,14 +132,6 @@ Personally, I agree, but I would like to bring this to the attention of a wider 
 _Comment by @charliermarsh on 2024-05-10 19:02_
 
 Thanks.
-
----
-
-_Referenced in [dholth/enscons#42](../../dholth/enscons/issues/42.md) on 2024-05-10 19:19_
-
----
-
-_Referenced in [astral-sh/uv#3517](../../astral-sh/uv/pulls/3517.md) on 2024-05-10 21:01_
 
 ---
 

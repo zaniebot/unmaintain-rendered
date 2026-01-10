@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-27T18:02:07Z
 updated_at: 2024-06-28T12:09:27Z
 url: https://github.com/astral-sh/uv/issues/4592
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support Environment Variable Expansion in Version Specifiers
@@ -42,9 +42,5 @@ We could probably support this, but I don't think we would preserve the environm
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-06-28 12:09_
-
----
-
-_Referenced in [astral-sh/uv#5016](../../astral-sh/uv/issues/5016.md) on 2024-07-12 16:10_
 
 ---

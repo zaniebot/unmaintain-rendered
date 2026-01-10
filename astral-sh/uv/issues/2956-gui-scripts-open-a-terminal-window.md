@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-04-10T08:05:08Z
 updated_at: 2024-06-23T12:09:49Z
 url: https://github.com/astral-sh/uv/issues/2956
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # GUI scripts open a terminal window
@@ -79,10 +79,6 @@ EDIT: tested with `uv 0.2.10 (907727cb1 2024-06-10)` on win10
 ---
 
 _Label `help wanted` added by @zanieb on 2024-06-12 13:16_
-
----
-
-_Referenced in [astral-sh/uv#4409](../../astral-sh/uv/pulls/4409.md) on 2024-06-19 00:46_
 
 ---
 

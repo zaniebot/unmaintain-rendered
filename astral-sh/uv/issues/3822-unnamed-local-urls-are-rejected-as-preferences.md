@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-24T13:55:53Z
 updated_at: 2024-05-24T17:32:21Z
 url: https://github.com/astral-sh/uv/issues/3822
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Unnamed local URLs are rejected as preferences
@@ -52,10 +52,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-24 13:56_
 _Comment by @charliermarsh on 2024-05-24 13:57_
 
 I think we basically need to filter these out? I have to look at how pip-compile handles them.
-
----
-
-_Referenced in [astral-sh/uv#3826](../../astral-sh/uv/pulls/3826.md) on 2024-05-24 17:24_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-15T16:55:41Z
 updated_at: 2024-06-29T18:35:18Z
 url: https://github.com/astral-sh/uv/issues/3037
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # bug: uv with vs code terminal
@@ -143,9 +143,5 @@ _Closed by @TylerHillery on 2024-06-29 18:16_
 _Comment by @charliermarsh on 2024-06-29 18:35_
 
 Let's go!
-
----
-
-_Referenced in [astral-sh/uv#8006](../../astral-sh/uv/pulls/8006.md) on 2024-10-08 15:47_
 
 ---

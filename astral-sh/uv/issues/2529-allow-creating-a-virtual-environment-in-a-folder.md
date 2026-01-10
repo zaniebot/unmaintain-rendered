@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-18T23:23:58Z
 updated_at: 2024-05-01T16:34:53Z
 url: https://github.com/astral-sh/uv/issues/2529
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Allow creating a virtual environment in a folder with existing files
@@ -56,10 +56,6 @@ Works for me 😀
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-19 17:24_
-
----
-
-_Referenced in [astral-sh/uv#2548](../../astral-sh/uv/pulls/2548.md) on 2024-03-19 19:00_
 
 ---
 

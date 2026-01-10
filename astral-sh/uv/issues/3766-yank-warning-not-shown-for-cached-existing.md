@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-22T20:02:19Z
 updated_at: 2024-05-22T21:21:38Z
 url: https://github.com/astral-sh/uv/issues/3766
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Yank warning not shown for cached / existing packages
@@ -133,10 +133,6 @@ I can open a second issue for the latter.
 _Comment by @charliermarsh on 2024-05-22 20:09_
 
 I think I just missed it in #3703. Mind opening a separate issue for pip compile? It can just link here. I'll add the behavior now. Thanks.
-
----
-
-_Referenced in [astral-sh/uv#3772](../../astral-sh/uv/pulls/3772.md) on 2024-05-22 20:34_
 
 ---
 

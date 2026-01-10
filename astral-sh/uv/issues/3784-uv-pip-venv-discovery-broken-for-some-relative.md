@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-23T05:04:08Z
 updated_at: 2024-05-24T16:18:50Z
 url: https://github.com/astral-sh/uv/issues/3784
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv pip venv discovery broken for some relative paths
@@ -268,14 +268,6 @@ I reproduced this and have a fix up at https://github.com/astral-sh/uv/pull/3823
 
 ---
 
-_Referenced in [astral-sh/uv#3823](../../astral-sh/uv/pulls/3823.md) on 2024-05-24 14:42_
-
----
-
 _Closed by @zanieb on 2024-05-24 16:18_
-
----
-
-_Referenced in [huggingface/transformers#31055](../../huggingface/transformers/pulls/31055.md) on 2024-05-27 09:30_
 
 ---

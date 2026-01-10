@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-04T02:58:58Z
 updated_at: 2024-05-04T21:13:12Z
 url: https://github.com/astral-sh/uv/issues/3368
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add more precise variants to `GitReference`
@@ -57,10 +57,6 @@ _Label `help wanted` removed by @charliermarsh on 2024-05-04 18:26_
 ---
 
 _Label `internal` added by @charliermarsh on 2024-05-04 18:26_
-
----
-
-_Referenced in [astral-sh/uv#3374](../../astral-sh/uv/pulls/3374.md) on 2024-05-04 18:36_
 
 ---
 

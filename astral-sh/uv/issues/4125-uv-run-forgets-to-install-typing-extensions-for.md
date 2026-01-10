@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T07:08:10Z
 updated_at: 2024-06-10T12:40:53Z
 url: https://github.com/astral-sh/uv/issues/4125
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv run` forgets to install typing_extensions for pydantic
@@ -93,22 +93,6 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/b6/53/84a859aaddfe737
 ```
 
 Because `typing-extensions` is only required for `python_version < '3.9'` _when requested by `annotated-types`_. However, `pydantic` needs it unconditionally.
-
----
-
-_Referenced in [astral-sh/uv#4137](../../astral-sh/uv/issues/4137.md) on 2024-06-07 18:04_
-
----
-
-_Referenced in [astral-sh/uv#4136](../../astral-sh/uv/issues/4136.md) on 2024-06-07 21:21_
-
----
-
-_Referenced in [astral-sh/uv#4157](../../astral-sh/uv/issues/4157.md) on 2024-06-08 01:13_
-
----
-
-_Referenced in [astral-sh/uv#4166](../../astral-sh/uv/pulls/4166.md) on 2024-06-08 18:08_
 
 ---
 

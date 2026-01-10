@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-07T15:21:35Z
 updated_at: 2024-06-10T14:36:15Z
 url: https://github.com/astral-sh/uv/issues/4131
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv lock` fails if the default python version doesn't match project python version
@@ -37,10 +37,6 @@ The better behavior would be `uv lock` finding the python 3.11 that i have in pa
 _Comment by @charliermarsh on 2024-06-07 15:50_
 
 I thought you solved this by making `init_environment` respect `Requires-Python`?
-
----
-
-_Referenced in [astral-sh/uv#3945](../../astral-sh/uv/pulls/3945.md) on 2024-06-07 16:07_
 
 ---
 

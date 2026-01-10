@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-06-29T22:53:58Z
 updated_at: 2024-07-03T04:54:20Z
 url: https://github.com/astral-sh/uv/issues/4654
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Show tool entry points in `uv tool list`
@@ -68,14 +68,6 @@ _Label `preview` added by @zanieb on 2024-06-29 22:53_
 
 ---
 
-_Referenced in [astral-sh/uv#4486](../../astral-sh/uv/issues/4486.md) on 2024-06-29 22:54_
-
----
-
-_Referenced in [astral-sh/uv#4653](../../astral-sh/uv/issues/4653.md) on 2024-06-30 14:30_
-
----
-
 _Comment by @zanieb on 2024-06-30 14:44_
 
 The proposal to match `cargo install --list` in https://github.com/astral-sh/uv/issues/4653#issuecomment-2198488484 seems nice.
@@ -94,10 +86,6 @@ _Comment by @zanieb on 2024-06-30 15:20_
 Thanks @moreaupascal56! Appreciate it :) 
 
 It's likely someone will tackle this soon (or I will) but feel free to ask questions on the pull request. We'll be tagging more things as https://github.com/astral-sh/uv/labels/good%20first%20issue so keep an eye out.
-
----
-
-_Referenced in [astral-sh/uv#4661](../../astral-sh/uv/pulls/4661.md) on 2024-06-30 17:35_
 
 ---
 

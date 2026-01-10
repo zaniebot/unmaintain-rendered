@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T19:03:53Z
 updated_at: 2024-07-18T00:47:56Z
 url: https://github.com/astral-sh/uv/issues/4819
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv python uninstall` error message for invalid requests is confusing
@@ -59,10 +59,6 @@ I could either see... `python uninstall all` or `python uninstall --all` (mutual
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-17 02:36_
-
----
-
-_Referenced in [astral-sh/uv#5171](../../astral-sh/uv/pulls/5171.md) on 2024-07-17 23:40_
 
 ---
 

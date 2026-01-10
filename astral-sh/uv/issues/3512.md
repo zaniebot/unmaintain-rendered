@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-10T17:15:09Z
 updated_at: 2024-05-13T14:42:21Z
 url: https://github.com/astral-sh/uv/issues/3512
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Wheel Build failures when installing via multiple simultaneous UV instances
@@ -64,10 +64,6 @@ error: Failed to clear cache at:~/.cache/uv
 
 ---
 
-_Referenced in [astral-sh/uv#3514](../../astral-sh/uv/issues/3514.md) on 2024-05-10 17:59_
-
----
-
 _Comment by @charliermarsh on 2024-05-10 18:08_
 
 The first trace is an error in setuptools (not uv) which isn't safe to run across multiple processes. I can do some research, see if there's anything we can do there.
@@ -103,10 +99,6 @@ The cache error is very confusing because we already have handling for that (we 
 
 ---
 
-_Referenced in [astral-sh/uv#3515](../../astral-sh/uv/issues/3515.md) on 2024-05-10 18:30_
-
----
-
 _Comment by @yeswalrus on 2024-05-10 18:30_
 
 > The first trace is an error in setuptools (not uv) which isn't safe to run across multiple processes. I can do some research, see if there's anything we can do there.
@@ -132,10 +124,6 @@ FWIW I've been able to work around this problem by uploading prebuilt packages t
 _Comment by @charliermarsh on 2024-05-11 01:13_
 
 Yup agreed!
-
----
-
-_Referenced in [astral-sh/uv#3525](../../astral-sh/uv/pulls/3525.md) on 2024-05-11 17:18_
 
 ---
 

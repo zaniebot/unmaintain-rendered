@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-17T03:52:34Z
 updated_at: 2024-07-17T14:48:05Z
 url: https://github.com/astral-sh/uv/issues/5139
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool run` always picks up older python `3.8` over `3.12`
@@ -40,14 +40,6 @@ DEBUG Adding direct dependency: httpx*
 
 ---
 
-_Referenced in [astral-sh/uv#5140](../../astral-sh/uv/pulls/5140.md) on 2024-07-17 03:55_
-
----
-
 _Closed by @zanieb on 2024-07-17 14:48_
-
----
-
-_Referenced in [astral-sh/uv#5205](../../astral-sh/uv/pulls/5205.md) on 2024-07-19 01:14_
 
 ---

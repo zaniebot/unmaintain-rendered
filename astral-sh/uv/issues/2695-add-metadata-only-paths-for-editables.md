@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-27T16:40:59Z
 updated_at: 2024-05-28T15:49:35Z
 url: https://github.com/astral-sh/uv/issues/2695
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add metadata-only paths for editables
@@ -37,10 +37,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2024-03-29 15:58_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-27 23:36_
-
----
-
-_Referenced in [astral-sh/uv#3869](../../astral-sh/uv/pulls/3869.md) on 2024-05-27 23:37_
 
 ---
 

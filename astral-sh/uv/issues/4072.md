@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T20:31:37Z
 updated_at: 2024-06-05T21:35:17Z
 url: https://github.com/astral-sh/uv/issues/4072
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Issue with `uv@0.2.7` in Dockerfile + venv
@@ -110,10 +110,6 @@ Okay, thanks.
 ---
 
 _Label `bug` added by @charliermarsh on 2024-06-05 20:38_
-
----
-
-_Referenced in [astral-sh/uv#4073](../../astral-sh/uv/pulls/4073.md) on 2024-06-05 20:48_
 
 ---
 

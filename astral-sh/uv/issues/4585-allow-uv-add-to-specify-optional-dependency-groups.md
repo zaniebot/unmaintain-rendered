@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-27T11:45:21Z
 updated_at: 2024-06-28T01:24:23Z
 url: https://github.com/astral-sh/uv/issues/4585
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Allow `uv add` to specify optional dependency groups
@@ -99,10 +99,6 @@ All good, perhaps `--group/-G` is not the best name for this but I just went wit
 ---
 
 _Label `needs-design` added by @zanieb on 2024-06-27 19:55_
-
----
-
-_Referenced in [astral-sh/uv#4607](../../astral-sh/uv/pulls/4607.md) on 2024-06-28 00:01_
 
 ---
 

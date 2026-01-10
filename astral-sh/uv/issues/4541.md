@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-26T10:02:03Z
 updated_at: 2024-06-29T16:44:00Z
 url: https://github.com/astral-sh/uv/issues/4541
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # UV sync does not work from workspace root
@@ -163,24 +163,12 @@ It looks like Cargo infers that it's a workspace dep.
 
 ---
 
-_Referenced in [astral-sh/uv#4552](../../astral-sh/uv/issues/4552.md) on 2024-06-26 16:32_
-
----
-
 _Comment by @charliermarsh on 2024-06-26 16:39_
 
 We'll track `uv add` here: https://github.com/astral-sh/uv/issues/4552.
 
 I'll use this issue to track the `uv sync` behavior.
 
-
----
-
-_Referenced in [astral-sh/uv#4555](../../astral-sh/uv/pulls/4555.md) on 2024-06-26 17:01_
-
----
-
-_Referenced in [astral-sh/uv#4636](../../astral-sh/uv/pulls/4636.md) on 2024-06-28 20:54_
 
 ---
 

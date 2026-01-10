@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-01T18:19:09Z
 updated_at: 2024-06-19T18:20:55Z
 url: https://github.com/astral-sh/uv/issues/3960
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Implement `uv remove`
@@ -40,18 +40,10 @@ Most of our design discussions about this are internal right now, but we're publ
 
 ---
 
-_Referenced in [astral-sh/uv#4193](../../astral-sh/uv/pulls/4193.md) on 2024-06-10 11:37_
-
----
-
 _Assigned to @ibraheemdev by @charliermarsh on 2024-06-10 12:47_
 
 ---
 
 _Closed by @ibraheemdev on 2024-06-19 18:20_
-
----
-
-_Referenced in [astral-sh/uv#2917](../../astral-sh/uv/issues/2917.md) on 2024-07-02 01:41_
 
 ---

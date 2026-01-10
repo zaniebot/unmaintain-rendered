@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-21T12:57:45Z
 updated_at: 2024-04-24T17:51:59Z
 url: https://github.com/astral-sh/uv/issues/2587
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Warn when using `uv` with an incompatible Python version.
@@ -43,17 +43,9 @@ _Label `good first issue` added by @zanieb on 2024-03-21 14:08_
 
 ---
 
-_Referenced in [astral-sh/uv#2757](../../astral-sh/uv/pulls/2757.md) on 2024-04-01 13:54_
-
----
-
 _Comment by @henryiii on 2024-04-02 11:41_
 
 FYI, everything except Windows scripts seems to work fine with 3.7. I'm guessing I should be skipping 3.7 too then in https://github.com/pypa/manylinux/pull/1590. Edit: Oh, if it's only a warning, probably okay.
-
----
-
-_Referenced in [astral-sh/uv#3250](../../astral-sh/uv/pulls/3250.md) on 2024-04-24 16:27_
 
 ---
 

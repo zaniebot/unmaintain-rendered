@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-07T19:12:31Z
 updated_at: 2024-06-07T21:56:46Z
 url: https://github.com/astral-sh/uv/issues/4141
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv lock` should not create a virtual environment
@@ -46,10 +46,6 @@ Yes I’m not necessarily disagreeing.
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-06-07 20:54_
-
----
-
-_Referenced in [astral-sh/uv#4147](../../astral-sh/uv/pulls/4147.md) on 2024-06-07 21:03_
 
 ---
 

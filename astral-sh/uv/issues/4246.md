@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-11T18:43:46Z
 updated_at: 2024-06-12T08:54:31Z
 url: https://github.com/astral-sh/uv/issues/4246
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv compile tries to fetch unnecesary old version of a package (and fails)
@@ -98,10 +98,6 @@ Discarding https://artifactory.company.com/artifactory/api/pypi/pypi/packages/pa
 ERROR: Could not find a version that satisfies the requirement triton==0.4.1 (from versions: 0.4.1, 0.4.2, 1.0.0, 1.1.0, 1.1.1, 2.0.0.dev20221030, 2.0.0.dev20221031, 2.0.0.dev20221101, 2.0.0.dev20221103, 2.0.0.dev20221105, 2.0.0.dev20221117, 2.0.0.dev20221120, 2.0.0.dev20221202, 2.0.0.dev20230208, 2.0.0.dev20230217, 2.0.0a1, 2.0.0a2, 2.0.0, 2.0.0.post1, 2.1.0, 2.2.0, 2.3.0, 2.3.1)
 ERROR: No matching distribution found for triton==0.4.1
 ```
-
----
-
-_Referenced in [astral-sh/uv#4247](../../astral-sh/uv/pulls/4247.md) on 2024-06-11 19:21_
 
 ---
 

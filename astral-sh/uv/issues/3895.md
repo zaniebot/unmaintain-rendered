@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-29T02:26:33Z
 updated_at: 2024-06-10T14:36:16Z
 url: https://github.com/astral-sh/uv/issues/3895
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Project's virtualenv initialization needs to respect `Requires-Python`
@@ -36,10 +36,6 @@ _Label `bug` removed by @charliermarsh on 2024-05-29 02:26_
 ---
 
 _Assigned to @konstin by @konstin on 2024-05-29 15:46_
-
----
-
-_Referenced in [astral-sh/uv#3945](../../astral-sh/uv/pulls/3945.md) on 2024-05-31 17:34_
 
 ---
 

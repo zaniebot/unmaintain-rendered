@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-05-16T15:08:55Z
 updated_at: 2024-06-12T13:15:22Z
 url: https://github.com/astral-sh/uv/issues/3626
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # mTLS Support?
@@ -83,10 +83,6 @@ If anyone is interested in putting up a pull request I'm happy to review
 ---
 
 _Label `help wanted` added by @zanieb on 2024-06-04 18:22_
-
----
-
-_Referenced in [astral-sh/uv#4171](../../astral-sh/uv/pulls/4171.md) on 2024-06-09 16:14_
 
 ---
 

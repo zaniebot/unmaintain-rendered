@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-22T21:15:48Z
 updated_at: 2024-04-23T19:03:45Z
 url: https://github.com/astral-sh/uv/issues/3200
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv doesn't reinstall editable package when non-editable package is requested
@@ -90,10 +90,6 @@ I'll label it as a bug.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-23 18:21_
-
----
-
-_Referenced in [astral-sh/uv#3219](../../astral-sh/uv/pulls/3219.md) on 2024-04-23 18:53_
 
 ---
 

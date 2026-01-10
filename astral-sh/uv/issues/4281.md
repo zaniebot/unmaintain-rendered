@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-12T16:49:12Z
 updated_at: 2024-06-12T17:01:31Z
 url: https://github.com/astral-sh/uv/issues/4281
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Unable to install registry source distributions from lockfile
@@ -33,10 +33,6 @@ _Label `bug` added by @charliermarsh on 2024-06-12 16:49_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-06-12 16:49_
-
----
-
-_Referenced in [astral-sh/uv#4280](../../astral-sh/uv/pulls/4280.md) on 2024-06-12 16:49_
 
 ---
 

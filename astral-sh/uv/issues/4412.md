@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-19T14:47:33Z
 updated_at: 2024-06-19T21:13:56Z
 url: https://github.com/astral-sh/uv/issues/4412
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Do not reinstall if wheel name+versions match even if the filesystem path differs
@@ -35,10 +35,6 @@ I think it should not be silently ignored though, but rather show a message maki
 > one case where I think using the full path would be weird is when you have a cronjob or similar that downloads a "latest" wheel from some place (GH actions build or similar) to a temporary location, which might be a `/tmp/<randomname>/` folder, and then runs `uv pip install /tmp/<randomname>/*.whl`.
 >
 > In such a case I think the expected behavior would be to reinstall only if the version changed (or if the user uses a switch to force reinstalling)...
-
----
-
-_Referenced in [astral-sh/uv#4398](../../astral-sh/uv/pulls/4398.md) on 2024-06-19 14:47_
 
 ---
 

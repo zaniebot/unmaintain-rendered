@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-18T22:04:36Z
 updated_at: 2024-06-25T05:48:30Z
 url: https://github.com/astral-sh/uv/issues/4405
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv lock` fails when specified dependency's extra is effectively no-op (since 0.2.12)
@@ -63,10 +63,6 @@ dependencies = [
     "coverage[toml]",
 ]
 ```
-
----
-
-_Referenced in [community-of-python/stompman#27](../../community-of-python/stompman/pulls/27.md) on 2024-06-18 22:08_
 
 ---
 
@@ -378,10 +374,6 @@ _Unassigned @BurntSushi by @charliermarsh on 2024-06-23 14:53_
 _Comment by @charliermarsh on 2024-06-24 15:23_
 
 You get the same error if you include a reference to a non-existent extra.
-
----
-
-_Referenced in [astral-sh/uv#4479](../../astral-sh/uv/pulls/4479.md) on 2024-06-24 17:31_
 
 ---
 

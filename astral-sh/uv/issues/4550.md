@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-26T16:24:46Z
 updated_at: 2024-06-26T17:46:08Z
 url: https://github.com/astral-sh/uv/issues/4550
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `--package` argument to `uv add` and `uv remove`
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-06-26 16:24_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-26 17:15_
-
----
-
-_Referenced in [astral-sh/uv#4556](../../astral-sh/uv/pulls/4556.md) on 2024-06-26 17:27_
 
 ---
 

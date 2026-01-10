@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-22T16:37:34Z
 updated_at: 2024-05-24T01:40:31Z
 url: https://github.com/astral-sh/uv/issues/3743
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Replace `install_ujson` with stub package
@@ -29,10 +29,6 @@ _Label `help wanted` added by @charliermarsh on 2024-05-22 16:37_
 ---
 
 _Label `testing` added by @charliermarsh on 2024-05-22 16:37_
-
----
-
-_Referenced in [astral-sh/uv#3811](../../astral-sh/uv/pulls/3811.md) on 2024-05-24 01:31_
 
 ---
 

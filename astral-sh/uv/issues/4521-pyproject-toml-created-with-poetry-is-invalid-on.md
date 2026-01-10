@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-25T16:34:57Z
 updated_at: 2024-06-25T18:53:16Z
 url: https://github.com/astral-sh/uv/issues/4521
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # pyproject.toml created with poetry is invalid on versions after 0.2.11
@@ -133,10 +133,6 @@ _Comment by @charliermarsh on 2024-06-25 17:59_
 
 Oh, we stopped reading configuration from `pyproject.toml` files that aren't part of the workspace (and that file doesn't comprise a valid workspace because it's lacking a `project` table), instead requiring the use of `uv.toml`. We may want to reconsider though for this use-case.
 
-
----
-
-_Referenced in [astral-sh/uv#4526](../../astral-sh/uv/pulls/4526.md) on 2024-06-25 18:13_
 
 ---
 

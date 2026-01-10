@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-10T22:20:38Z
 updated_at: 2024-07-12T14:34:02Z
 url: https://github.com/astral-sh/uv/issues/4981
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `--isolated` should not be a hidden option
@@ -35,10 +35,6 @@ If someone wants to unhide this it should be trivial. We can improve the documen
 ---
 
 _Label `good first issue` added by @zanieb on 2024-07-11 16:07_
-
----
-
-_Referenced in [astral-sh/uv#5005](../../astral-sh/uv/pulls/5005.md) on 2024-07-12 09:49_
 
 ---
 

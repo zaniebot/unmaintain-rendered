@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-16T22:35:21Z
 updated_at: 2024-06-06T20:15:30Z
 url: https://github.com/astral-sh/uv/issues/3076
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `--prefix` flag for `uv pip install`
@@ -96,10 +96,6 @@ Do you want advice on your draft? My hope is that you can just change `Interpret
 
 ---
 
-_Referenced in [astral-sh/uv#4085](../../astral-sh/uv/pulls/4085.md) on 2024-06-06 02:26_
-
----
-
 _Comment by @charliermarsh on 2024-06-06 02:31_
 
 I put up a PR here with basic support: https://github.com/astral-sh/uv/pull/4085.
@@ -125,9 +121,5 @@ Haha no worries--thanks for the help!
 ---
 
 _Closed by @charliermarsh on 2024-06-06 20:15_
-
----
-
-_Referenced in [astral-sh/uv#9591](../../astral-sh/uv/issues/9591.md) on 2024-12-03 23:49_
 
 ---

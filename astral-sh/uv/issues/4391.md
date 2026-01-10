@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-18T17:40:53Z
 updated_at: 2024-06-19T14:50:14Z
 url: https://github.com/astral-sh/uv/issues/4391
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install something.whl` does not install the new version
@@ -201,10 +201,6 @@ cc @konstin / @charliermarsh looks like this was last touched in https://github.
 
 ---
 
-_Referenced in [astral-sh/uv#4393](../../astral-sh/uv/pulls/4393.md) on 2024-06-18 18:06_
-
----
-
 _Label `bug` added by @zanieb on 2024-06-18 18:07_
 
 ---
@@ -212,10 +208,6 @@ _Label `bug` added by @zanieb on 2024-06-18 18:07_
 _Comment by @zanieb on 2024-06-18 18:07_
 
 This looks wrong. I resolved your MRE with https://github.com/astral-sh/uv/pull/4393 — we'll see if there's something else that was relying on this weird behavior.
-
----
-
-_Referenced in [astral-sh/uv#4396](../../astral-sh/uv/pulls/4396.md) on 2024-06-18 18:36_
 
 ---
 

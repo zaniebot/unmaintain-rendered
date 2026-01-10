@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T17:38:32Z
 updated_at: 2024-05-13T17:51:34Z
 url: https://github.com/astral-sh/uv/issues/3557
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Global CLI flags cannot be passed to commands
@@ -61,10 +61,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-13 17:44_
 _Comment by @charliermarsh on 2024-05-13 17:45_
 
 It's only `isolated` that's affected by this. The others work.
-
----
-
-_Referenced in [astral-sh/uv#3558](../../astral-sh/uv/pulls/3558.md) on 2024-05-13 17:45_
 
 ---
 

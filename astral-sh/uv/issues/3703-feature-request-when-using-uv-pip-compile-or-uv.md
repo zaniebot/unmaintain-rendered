@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-21T16:41:09Z
 updated_at: 2024-05-22T16:37:12Z
 url: https://github.com/astral-sh/uv/issues/3703
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Feature request: When using `uv pip compile` or `uv pip install --dry-run` warn and display yank message on selecting a yanked package
@@ -96,18 +96,6 @@ _Label `error messages` added by @charliermarsh on 2024-05-21 16:49_
 
 ---
 
-_Referenced in [astral-sh/uv#3740](../../astral-sh/uv/pulls/3740.md) on 2024-05-22 16:07_
-
----
-
 _Closed by @charliermarsh on 2024-05-22 16:37_
-
----
-
-_Referenced in [astral-sh/uv#3766](../../astral-sh/uv/issues/3766.md) on 2024-05-22 20:02_
-
----
-
-_Referenced in [astral-sh/uv#3768](../../astral-sh/uv/issues/3768.md) on 2024-05-22 20:11_
 
 ---

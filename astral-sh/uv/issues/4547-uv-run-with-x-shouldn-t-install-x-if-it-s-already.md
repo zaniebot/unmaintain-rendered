@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-26T13:22:23Z
 updated_at: 2024-07-08T01:24:00Z
 url: https://github.com/astral-sh/uv/issues/4547
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv run --with=X` shouldn't install `X` if it's already available
@@ -54,10 +54,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-06 19:35_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-07 19:38_
-
----
-
-_Referenced in [astral-sh/uv#4879](../../astral-sh/uv/pulls/4879.md) on 2024-07-08 00:26_
 
 ---
 

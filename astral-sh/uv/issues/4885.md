@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-08T02:00:13Z
 updated_at: 2024-07-11T14:22:02Z
 url: https://github.com/astral-sh/uv/issues/4885
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Universal mode duplicates requirements lines
@@ -142,10 +142,6 @@ I'm running Debian Linux but I also reproduced on Windows.
 
 ---
 
-_Referenced in [python-trio/trio#3032](../../python-trio/trio/pulls/3032.md) on 2024-07-08 02:00_
-
----
-
 _Label `bug` added by @zanieb on 2024-07-08 02:03_
 
 ---
@@ -202,14 +198,6 @@ Yeah based on my investigation a very trivial fix is to comment out narrowing th
 
 ---
 
-_Referenced in [astral-sh/uv#4898](../../astral-sh/uv/issues/4898.md) on 2024-07-08 14:31_
-
----
-
-_Referenced in [astral-sh/uv#4902](../../astral-sh/uv/pulls/4902.md) on 2024-07-08 16:44_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-07-08 16:44_
 
 ---
@@ -219,10 +207,6 @@ _Closed by @BurntSushi on 2024-07-08 16:57_
 ---
 
 _Closed by @BurntSushi on 2024-07-08 16:57_
-
----
-
-_Referenced in [astral-sh/uv#4926](../../astral-sh/uv/issues/4926.md) on 2024-07-09 16:18_
 
 ---
 

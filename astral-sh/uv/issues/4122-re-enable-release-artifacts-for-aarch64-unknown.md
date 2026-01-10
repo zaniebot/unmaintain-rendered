@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-07T01:50:01Z
 updated_at: 2024-06-12T04:17:12Z
 url: https://github.com/astral-sh/uv/issues/4122
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Re-enable release artifacts for aarch64-unknown-linux-gnu
@@ -21,10 +21,6 @@ _Issue opened by @ofek on 2024-06-07 01:50_
 The binary release artifact `aarch64-unknown-linux-gnu` was unintentionally removed in [this PR](https://github.com/astral-sh/uv/pull/3685) or one of the associated revert/revert-revert commits.
 
 This [broke](https://github.com/ofek/pyapp/issues/139) at least PyApp and other scripts/tools that expect LLVM target names to exist as release artifacts (the provided installation scripts cannot be used or are undesirable in some circumstances).
-
----
-
-_Referenced in [ofek/pyapp#139](../../ofek/pyapp/issues/139.md) on 2024-06-07 01:51_
 
 ---
 
@@ -101,10 +97,6 @@ Is there a reason for you to not always use the musl builds in pyapp?
 
 ---
 
-_Referenced in [astral-sh/uv#4129](../../astral-sh/uv/pulls/4129.md) on 2024-06-07 12:26_
-
----
-
 _Comment by @ofek on 2024-06-07 13:30_
 
 Feel free to close this but just FYI this:
@@ -154,10 +146,6 @@ Copying sounds like a fine solution as all we care about is availability of an a
 
 ---
 
-_Referenced in [astral-sh/uv#4254](../../astral-sh/uv/pulls/4254.md) on 2024-06-11 23:27_
-
----
-
 _Closed by @charliermarsh on 2024-06-11 23:46_
 
 ---
@@ -165,13 +153,5 @@ _Closed by @charliermarsh on 2024-06-11 23:46_
 _Comment by @ofek on 2024-06-12 04:17_
 
 Thanks!
-
----
-
-_Referenced in [pypi/support#4260](../../pypi/support/issues/4260.md) on 2024-06-20 21:52_
-
----
-
-_Referenced in [pypi/support#6640](../../pypi/support/issues/6640.md) on 2025-06-12 22:37_
 
 ---

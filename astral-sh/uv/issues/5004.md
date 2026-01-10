@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-12T08:12:08Z
 updated_at: 2024-07-13T08:31:46Z
 url: https://github.com/astral-sh/uv/issues/5004
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv building of casadi fails
@@ -58,10 +58,6 @@ I tested all of this by:
 - downloading the latest casadi [source](https://github.com/casadi/casadi/releases/download/3.6.5/casadi-source-v3.6.5.zip) files, so that I can also be able to add logs
 - creating a venv - `uv venv`
 - running either `uv pip install --verbose .` or `pip install --verbose .`
-
----
-
-_Referenced in [casadi/casadi#3759](../../casadi/casadi/pulls/3759.md) on 2024-07-12 08:22_
 
 ---
 

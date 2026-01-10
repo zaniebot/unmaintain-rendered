@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-09T17:43:22Z
 updated_at: 2024-06-24T22:26:59Z
 url: https://github.com/astral-sh/uv/issues/4173
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # How to use different index url with `pyproject.toml` when using `uv pip compile`
@@ -118,9 +118,5 @@ _Closed by @charliermarsh on 2024-06-24 22:26_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-24 22:26_
-
----
-
-_Referenced in [astral-sh/uv#15132](../../astral-sh/uv/issues/15132.md) on 2025-08-09 13:48_
 
 ---

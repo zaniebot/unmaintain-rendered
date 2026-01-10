@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-06T09:38:48Z
 updated_at: 2024-05-15T00:15:55Z
 url: https://github.com/astral-sh/uv/issues/3400
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Question: Pass in `ClientWithMiddleware` to `RegistryClient` and `Builder`
@@ -27,14 +27,6 @@ How would you feel about this?
 
 ---
 
-_Referenced in [astral-sh/uv#3502](../../astral-sh/uv/pulls/3502.md) on 2024-05-10 08:49_
-
----
-
 _Label `rustlib` added by @charliermarsh on 2024-05-15 00:15_
-
----
-
-_Referenced in [astral-sh/uv#9346](../../astral-sh/uv/issues/9346.md) on 2024-11-23 03:07_
 
 ---

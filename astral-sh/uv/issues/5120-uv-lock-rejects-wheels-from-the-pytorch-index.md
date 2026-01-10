@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-16T18:19:46Z
 updated_at: 2024-07-17T20:29:50Z
 url: https://github.com/astral-sh/uv/issues/5120
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv lock` rejects wheels from the PyTorch index
@@ -48,10 +48,6 @@ Oh nice! (We do still need this in general since not all registries will have ha
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-17 02:36_
-
----
-
-_Referenced in [astral-sh/uv#5166](../../astral-sh/uv/pulls/5166.md) on 2024-07-17 20:24_
 
 ---
 

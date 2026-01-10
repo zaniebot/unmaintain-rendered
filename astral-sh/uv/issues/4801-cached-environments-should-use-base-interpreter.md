@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T12:28:40Z
 updated_at: 2024-07-04T17:38:54Z
 url: https://github.com/astral-sh/uv/issues/4801
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Cached environments should use base interpreter, if in a virtualenv
@@ -33,10 +33,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-04 12:28_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-04 12:28_
-
----
-
-_Referenced in [astral-sh/uv#4805](../../astral-sh/uv/pulls/4805.md) on 2024-07-04 13:58_
 
 ---
 

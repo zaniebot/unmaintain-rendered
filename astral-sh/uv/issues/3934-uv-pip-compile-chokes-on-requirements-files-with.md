@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-31T09:56:59Z
 updated_at: 2024-05-31T13:54:17Z
 url: https://github.com/astral-sh/uv/issues/3934
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip compile` chokes on requirements files with explicit `file:...` requirements
@@ -155,10 +155,6 @@ _Label `compatibility` added by @charliermarsh on 2024-05-31 13:20_
 
 ---
 
-_Referenced in [astral-sh/uv#3940](../../astral-sh/uv/pulls/3940.md) on 2024-05-31 13:20_
-
----
-
 _Comment by @Julian on 2024-05-31 13:24_
 
 That section *seems* to only be referring to VCS URLs, though I'm sure you're right to point it out as it seems unlikely that it should be any more needed for archive or path URLs -- but given https://github.com/pypa/pip/issues/1289 still being open and that more broadly as an end user it's been way easier over the years to find an incantation that works and never change rather than keep track of what's what, I'm quite glad that you're interested in the fix nonetheless.
@@ -175,9 +171,5 @@ Regardless, fixed in #3940, since it's a legitimate bug on our end!
 ---
 
 _Closed by @charliermarsh on 2024-05-31 13:54_
-
----
-
-_Referenced in [astral-sh/uv#3946](../../astral-sh/uv/pulls/3946.md) on 2024-05-31 20:15_
 
 ---

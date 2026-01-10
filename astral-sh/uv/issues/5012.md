@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-12T14:50:22Z
 updated_at: 2024-07-16T01:01:39Z
 url: https://github.com/astral-sh/uv/issues/5012
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Reject versions when there is no source dist and all wheels mismatch the python requirement
@@ -34,10 +34,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-12 14:51_
 _Comment by @charliermarsh on 2024-07-12 21:40_
 
 This actually seems pretty hard now that we do our `requires-python` checks outside of the version map... Not sure how to do it.
-
----
-
-_Referenced in [astral-sh/uv#5084](../../astral-sh/uv/pulls/5084.md) on 2024-07-16 00:48_
 
 ---
 

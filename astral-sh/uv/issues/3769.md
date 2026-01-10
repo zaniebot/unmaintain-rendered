@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-22T20:16:19Z
 updated_at: 2024-05-22T21:39:20Z
 url: https://github.com/astral-sh/uv/issues/3769
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv 0.2.0 no longer working inside conda environments
@@ -110,23 +110,11 @@ For any newish Linux distributions this is probably sufficient, older ones proba
 
 ---
 
-_Referenced in [astral-sh/uv#3771](../../astral-sh/uv/pulls/3771.md) on 2024-05-22 20:34_
-
----
-
 _Comment by @zanieb on 2024-05-22 20:35_
 
 Yeah we do check for that, but that's another level of opt-in (matching pip's interface).
 
 I've got a fix in progress at #3771 
-
----
-
-_Referenced in [astral-sh/uv#3765](../../astral-sh/uv/issues/3765.md) on 2024-05-22 20:48_
-
----
-
-_Referenced in [astral-sh/uv#3773](../../astral-sh/uv/pulls/3773.md) on 2024-05-22 20:51_
 
 ---
 

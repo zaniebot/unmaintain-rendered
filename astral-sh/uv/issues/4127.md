@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T08:57:46Z
 updated_at: 2024-06-07T18:43:51Z
 url: https://github.com/astral-sh/uv/issues/4127
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Don't warn about prerelease markers for the root package
@@ -90,10 +90,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-07 14:42_
 _Comment by @charliermarsh on 2024-06-07 14:47_
 
 Weird, ok, thanks.
-
----
-
-_Referenced in [astral-sh/uv#4140](../../astral-sh/uv/pulls/4140.md) on 2024-06-07 18:30_
 
 ---
 

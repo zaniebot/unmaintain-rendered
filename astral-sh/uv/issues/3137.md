@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-19T08:14:41Z
 updated_at: 2024-04-27T01:31:48Z
 url: https://github.com/astral-sh/uv/issues/3137
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Option to resolve to latest version from all indices
@@ -115,10 +115,6 @@ Resolved 1 package in 8ms
 #    uv pip compile - -p 3.10 --index-strategy unsafe-any-match
 certifi==2024.2.2
 ```
-
----
-
-_Referenced in [astral-sh/uv#3138](../../astral-sh/uv/pulls/3138.md) on 2024-04-19 10:24_
 
 ---
 

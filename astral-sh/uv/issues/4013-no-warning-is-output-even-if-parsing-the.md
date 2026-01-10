@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-04T12:45:35Z
 updated_at: 2024-06-04T13:21:47Z
 url: https://github.com/astral-sh/uv/issues/4013
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # No warning is output even if parsing the workspace settings fails.
@@ -73,10 +73,6 @@ error: Could not connect, are you offline?
   Caused by: failed to lookup address information: No address associated with hostname
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#4014](../../astral-sh/uv/pulls/4014.md) on 2024-06-04 12:45_
 
 ---
 

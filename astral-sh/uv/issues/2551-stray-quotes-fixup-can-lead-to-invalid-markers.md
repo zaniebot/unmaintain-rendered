@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-19T19:22:00Z
 updated_at: 2024-04-23T18:07:53Z
 url: https://github.com/astral-sh/uv/issues/2551
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # "Stray quotes" fixup can lead to invalid markers
@@ -53,14 +53,6 @@ i want to have a try
 _Comment by @zanieb on 2024-03-25 16:48_
 
 Just let us know here or in a draft pull request if you need any help!
-
----
-
-_Referenced in [astral-sh/uv#2778](../../astral-sh/uv/pulls/2778.md) on 2024-04-02 15:50_
-
----
-
-_Referenced in [astral-sh/uv#3214](../../astral-sh/uv/pulls/3214.md) on 2024-04-23 15:27_
 
 ---
 

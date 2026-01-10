@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T12:50:17Z
 updated_at: 2024-07-09T22:18:32Z
 url: https://github.com/astral-sh/uv/issues/4803
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv sync` should handle a missing `uv lock`.
@@ -58,10 +58,6 @@ _Label `preview` added by @charliermarsh on 2024-07-04 17:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-05 21:43_
-
----
-
-_Referenced in [astral-sh/uv#4839](../../astral-sh/uv/pulls/4839.md) on 2024-07-05 21:43_
 
 ---
 

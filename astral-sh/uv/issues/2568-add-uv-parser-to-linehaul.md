@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-20T17:06:53Z
 updated_at: 2024-04-24T01:06:28Z
 url: https://github.com/astral-sh/uv/issues/2568
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `uv` parser to linehaul 
@@ -40,10 +40,6 @@ _Assigned to @samypr100 by @konstin on 2024-03-20 19:53_
 ---
 
 _Label `enhancement` added by @konstin on 2024-03-20 19:54_
-
----
-
-_Referenced in [pypi/linehaul-cloud-function#162](../../pypi/linehaul-cloud-function/pulls/162.md) on 2024-03-25 12:55_
 
 ---
 

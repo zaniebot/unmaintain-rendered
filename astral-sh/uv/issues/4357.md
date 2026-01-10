@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-17T13:28:32Z
 updated_at: 2024-07-09T11:34:30Z
 url: https://github.com/astral-sh/uv/issues/4357
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: non-conflicting requirements with non-overlapping marker expressions provoke a fork
@@ -36,14 +36,6 @@ I think we could detect this case by looking at whether the version constraints 
 I'm overall not quite sure what the right behavior is here. My sense of things right now is that this shouldn't block shipping, but I'm happy to have my mind changed on that!
 
 Original discussion: https://github.com/astral-sh/uv/pull/4339#discussion_r1642814360
-
----
-
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-06-17 13:29_
-
----
-
-_Referenced in [astral-sh/uv#4339](../../astral-sh/uv/pulls/4339.md) on 2024-06-17 13:29_
 
 ---
 

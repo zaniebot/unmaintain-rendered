@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-12T16:29:34Z
 updated_at: 2024-07-15T16:54:41Z
 url: https://github.com/astral-sh/uv/issues/5018
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool install` should hint correct package when executable is provided by a dependency
@@ -52,10 +52,6 @@ _Label `help wanted` added by @charliermarsh on 2024-07-12 16:31_
 
 ---
 
-_Referenced in [astral-sh/uv#4994](../../astral-sh/uv/issues/4994.md) on 2024-07-12 16:32_
-
----
-
 _Comment by @zanieb on 2024-07-12 16:33_
 
 Yeah I don't love scanning the entire site packages for executables but since it's on-error 🤷‍♀️ we could limit to direct dependencies if we wanted to optimize later.
@@ -71,10 +67,6 @@ Should be cheap, it's just reading `RECORD` files.
 _Comment by @blueraft on 2024-07-12 17:10_
 
 I can pick this one up! 
-
----
-
-_Referenced in [astral-sh/uv#5019](../../astral-sh/uv/pulls/5019.md) on 2024-07-12 19:00_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-02T02:29:47Z
 updated_at: 2024-07-04T20:06:53Z
 url: https://github.com/astral-sh/uv/issues/4719
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `requires-python` normalization is unintuitive
@@ -35,10 +35,6 @@ If this were a Python package, it would actually be correct not to normalize the
 
 ---
 
-_Referenced in [astral-sh/uv#4536](../../astral-sh/uv/issues/4536.md) on 2024-07-02 02:31_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-02 02:31_
 
 ---
@@ -58,10 +54,6 @@ Is this a duplicate of https://github.com/astral-sh/uv/issues/4272?
 _Comment by @charliermarsh on 2024-07-02 20:15_
 
 @ibraheemdev - Yeah, thank you.
-
----
-
-_Referenced in [astral-sh/uv#4794](../../astral-sh/uv/pulls/4794.md) on 2024-07-03 23:50_
 
 ---
 

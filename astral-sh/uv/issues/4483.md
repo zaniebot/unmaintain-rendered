@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-24T19:16:24Z
 updated_at: 2024-07-01T14:52:01Z
 url: https://github.com/astral-sh/uv/issues/4483
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `uv toolchain dir`
@@ -34,10 +34,6 @@ _Label `preview` added by @zanieb on 2024-06-26 16:37_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-07-01 13:21_
-
----
-
-_Referenced in [astral-sh/uv#4695](../../astral-sh/uv/pulls/4695.md) on 2024-07-01 13:48_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-15T03:30:58Z
 updated_at: 2024-07-09T14:56:07Z
 url: https://github.com/astral-sh/uv/issues/3031
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Failure with source installations 
@@ -34,10 +34,6 @@ error: Failed to download and build: peft @ git+https://github.com/huggingface/p
 Didn't happen last week. 
 
 FWIW, `uv pip install -U transformers@git+https://github.com/huggingface/transformers.git` doesn't fail. 
-
----
-
-_Referenced in [huggingface/diffusers#7650](../../huggingface/diffusers/pulls/7650.md) on 2024-04-15 03:33_
 
 ---
 

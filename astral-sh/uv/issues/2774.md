@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-02T13:16:04Z
 updated_at: 2024-04-23T14:52:29Z
 url: https://github.com/astral-sh/uv/issues/2774
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Publish Docker image: ghcr.io/astral-sh/uv
@@ -93,10 +93,6 @@ You can use multi stage to copy uv into any image. That'll keep the uv image as 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-20 02:20_
-
----
-
-_Referenced in [astral-sh/uv#3155](../../astral-sh/uv/pulls/3155.md) on 2024-04-20 02:21_
 
 ---
 

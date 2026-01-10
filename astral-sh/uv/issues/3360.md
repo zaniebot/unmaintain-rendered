@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T18:18:24Z
 updated_at: 2024-05-30T18:23:16Z
 url: https://github.com/astral-sh/uv/issues/3360
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: implement merging of forked resolver states
@@ -32,14 +32,6 @@ https://github.com/astral-sh/uv/blob/7f2b401260e6231bebb867c034b27d2955210fe0/cr
 ---
 
 _Label `preview` added by @BurntSushi on 2024-05-03 18:18_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 18:18_
-
----
-
-_Referenced in [astral-sh/uv#3831](../../astral-sh/uv/pulls/3831.md) on 2024-05-24 19:04_
 
 ---
 

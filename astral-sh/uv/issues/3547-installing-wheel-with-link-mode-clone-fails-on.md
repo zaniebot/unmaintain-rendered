@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-13T14:43:13Z
 updated_at: 2024-05-13T16:03:41Z
 url: https://github.com/astral-sh/uv/issues/3547
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Installing wheel with link-mode=clone fails on windows
@@ -123,10 +123,6 @@ Sure. We already have fallback code in `clone_recursive` that does exactly this 
 ---
 
 _Label `windows` added by @charliermarsh on 2024-05-13 15:47_
-
----
-
-_Referenced in [astral-sh/uv#3551](../../astral-sh/uv/pulls/3551.md) on 2024-05-13 15:55_
 
 ---
 

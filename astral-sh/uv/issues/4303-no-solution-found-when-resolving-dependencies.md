@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-13T04:51:57Z
 updated_at: 2024-06-13T23:41:20Z
 url: https://github.com/astral-sh/uv/issues/4303
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # No solution found when resolving dependencies (torch==2.3.1)
@@ -66,9 +66,5 @@ Adding `+cpu` sounds reasonable, let me proceed with that. Thank you both!
 ---
 
 _Closed by @mariomeissner on 2024-06-13 23:41_
-
----
-
-_Referenced in [opendatahub-io/vllm#33](../../opendatahub-io/vllm/pulls/33.md) on 2024-07-31 19:43_
 
 ---

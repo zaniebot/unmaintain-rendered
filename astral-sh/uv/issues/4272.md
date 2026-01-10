@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-12T14:15:46Z
 updated_at: 2024-07-04T20:06:53Z
 url: https://github.com/astral-sh/uv/issues/4272
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Marker normalization doesn't collapse non-pre-release ranges
@@ -53,15 +53,7 @@ What if we had a rule like... if none of the versions contain pre-release or pos
 
 ---
 
-_Referenced in [astral-sh/uv#4719](../../astral-sh/uv/issues/4719.md) on 2024-07-02 14:51_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-02 21:45_
-
----
-
-_Referenced in [astral-sh/uv#4794](../../astral-sh/uv/pulls/4794.md) on 2024-07-03 23:50_
 
 ---
 

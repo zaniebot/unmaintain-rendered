@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-27T10:49:24Z
 updated_at: 2024-07-01T14:43:39Z
 url: https://github.com/astral-sh/uv/issues/2010
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Fails to install JAX TPU
@@ -93,10 +93,6 @@ I am on uv 0.1.11.
 
 ---
 
-_Referenced in [huggingface/diffusers#7115](../../huggingface/diffusers/pulls/7115.md) on 2024-02-27 10:51_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-02-27 16:13_
 
 ---
@@ -118,10 +114,6 @@ uv pip install --no-cache-dir         torch==2.1.2         torchvision==0.16.2  
 Passes if I omit `uv`. However, it passes with an older version of `uv` (0.1.11). But fails with 0.1.13. 
 
 I am on standard Ubuntu machine. 
-
----
-
-_Referenced in [huggingface/diffusers#7155](../../huggingface/diffusers/pulls/7155.md) on 2024-03-01 02:09_
 
 ---
 
@@ -205,9 +197,5 @@ Closing this since we've implemented and documented how to use uv with the local
 ---
 
 _Closed by @konstin on 2024-07-01 14:43_
-
----
-
-_Referenced in [astral-sh/uv#7616](../../astral-sh/uv/issues/7616.md) on 2024-09-21 20:47_
 
 ---

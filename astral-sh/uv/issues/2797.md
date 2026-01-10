@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-03T04:34:06Z
 updated_at: 2024-07-18T14:56:49Z
 url: https://github.com/astral-sh/uv/issues/2797
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add warning for packages without lower bound with `--resolution=lowest`
@@ -104,10 +104,6 @@ Here's a draft PR with debug logs where the warning might go: https://github.com
 
 ---
 
-_Referenced in [astral-sh/uv#4006](../../astral-sh/uv/pulls/4006.md) on 2024-06-04 01:46_
-
----
-
 _Comment by @ottaviohartman on 2024-06-04 01:47_
 
 Opened #4006 , let me know if this is the right track. If not I don't mind closing and handing this task to someone more knowledgeable!
@@ -124,10 +120,6 @@ _Closed by @zanieb on 2024-07-18 14:33_
 
 ---
 
-_Referenced in [astral-sh/uv#5178](../../astral-sh/uv/issues/5178.md) on 2024-07-18 14:34_
-
----
-
 _Comment by @ottaviohartman on 2024-07-18 14:54_
 
 Sorry for being AWOL on this!
@@ -137,9 +129,5 @@ Sorry for being AWOL on this!
 _Comment by @zanieb on 2024-07-18 14:56_
 
 No problem, it happens to all of us :)
-
----
-
-_Referenced in [astral-sh/uv#5953](../../astral-sh/uv/pulls/5953.md) on 2024-08-09 08:54_
 
 ---

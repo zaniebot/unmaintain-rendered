@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-11T14:28:14Z
 updated_at: 2024-06-11T15:30:36Z
 url: https://github.com/astral-sh/uv/issues/4230
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Urls are not allowed in dev dependencies
@@ -74,10 +74,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-11 14:37_
 _Comment by @charliermarsh on 2024-06-11 14:37_
 
 Thx.
-
----
-
-_Referenced in [astral-sh/uv#4233](../../astral-sh/uv/pulls/4233.md) on 2024-06-11 15:15_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-02T13:35:35Z
 updated_at: 2024-05-24T13:25:45Z
 url: https://github.com/astral-sh/uv/issues/2775
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # UV pip compile fails with extra-index-url
@@ -67,14 +67,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-02 18:25_
 
 ---
 
-_Referenced in [astral-sh/uv#2812](../../astral-sh/uv/issues/2812.md) on 2024-04-03 16:08_
-
----
-
-_Referenced in [astral-sh/uv#2815](../../astral-sh/uv/pulls/2815.md) on 2024-04-03 19:43_
-
----
-
 _Closed by @charliermarsh on 2024-04-03 23:23_
 
 ---
@@ -93,10 +85,6 @@ error: Failed to parse `uv.toml`
 unknown variant `unsafe-any-match`, expected one of `first-index`, `unsafe-first-match`, `unsafe-best-match`
 ```
 
-
----
-
-_Referenced in [astral-sh/uv#3819](../../astral-sh/uv/issues/3819.md) on 2024-05-24 12:41_
 
 ---
 

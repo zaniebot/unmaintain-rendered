@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-15T16:43:52Z
 updated_at: 2024-07-17T23:03:25Z
 url: https://github.com/astral-sh/uv/issues/3611
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: clean up lock file format
@@ -37,39 +37,11 @@ _Label `preview` added by @BurntSushi on 2024-05-15 16:43_
 
 ---
 
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-05-15 16:44_
-
----
-
 _Comment by @charliermarsh on 2024-05-18 13:48_
 
 Another piece here: we currently lose the file size (reported by the registry), which is used in downloading to facilitate prioritization (i.e., we start larger downloads earlier).
 
 (Done in #3652.)
-
----
-
-_Referenced in [astral-sh/uv#3652](../../astral-sh/uv/pulls/3652.md) on 2024-05-18 17:19_
-
----
-
-_Referenced in [astral-sh/uv#3909](../../astral-sh/uv/pulls/3909.md) on 2024-05-29 15:28_
-
----
-
-_Referenced in [astral-sh/uv#4205](../../astral-sh/uv/pulls/4205.md) on 2024-06-11 17:02_
-
----
-
-_Referenced in [astral-sh/uv#4513](../../astral-sh/uv/pulls/4513.md) on 2024-06-25 18:31_
-
----
-
-_Referenced in [astral-sh/uv#4528](../../astral-sh/uv/pulls/4528.md) on 2024-06-25 18:36_
-
----
-
-_Referenced in [astral-sh/uv#4581](../../astral-sh/uv/pulls/4581.md) on 2024-06-27 09:57_
 
 ---
 
@@ -175,9 +147,5 @@ All the issues above have been crossed off. Lets close this out for now and we c
 ---
 
 _Closed by @charliermarsh on 2024-07-17 23:03_
-
----
-
-_Referenced in [astral-sh/uv#5190](../../astral-sh/uv/issues/5190.md) on 2024-07-18 15:55_
 
 ---

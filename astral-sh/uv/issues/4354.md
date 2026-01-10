@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-17T02:42:12Z
 updated_at: 2024-06-18T07:29:23Z
 url: https://github.com/astral-sh/uv/issues/4354
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Unable to install `mamba-ssm` with uv
@@ -85,10 +85,6 @@ For packages like this one that doesn't declare its build dependencies, you need
 ---
 
 _Label `question` added by @konstin on 2024-06-17 09:01_
-
----
-
-_Referenced in [prefix-dev/pixi#1518](../../prefix-dev/pixi/issues/1518.md) on 2024-06-17 09:11_
 
 ---
 

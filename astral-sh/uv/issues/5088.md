@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-16T01:32:57Z
 updated_at: 2024-07-16T13:21:48Z
 url: https://github.com/astral-sh/uv/issues/5088
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Streaming metadata fallback should cache wheel
@@ -24,14 +24,6 @@ See: `wheel_metadata_no_pep658`. If we can't do a range request, we stream the w
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-07-16 01:33_
-
----
-
-_Referenced in [astral-sh/uv#5073](../../astral-sh/uv/issues/5073.md) on 2024-07-16 01:33_
-
----
-
-_Referenced in [astral-sh/uv#5089](../../astral-sh/uv/pulls/5089.md) on 2024-07-16 01:56_
 
 ---
 

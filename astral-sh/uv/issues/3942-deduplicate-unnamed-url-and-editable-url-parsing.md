@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-31T13:40:15Z
 updated_at: 2024-05-31T21:08:02Z
 url: https://github.com/astral-sh/uv/issues/3942
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Deduplicate unnamed URL and editable URL parsing
@@ -40,10 +40,6 @@ For example: `./scripts/packages/black_editable[colorama, uvloop]` doesn't work,
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-31 14:57_
-
----
-
-_Referenced in [astral-sh/uv#3946](../../astral-sh/uv/pulls/3946.md) on 2024-05-31 20:15_
 
 ---
 

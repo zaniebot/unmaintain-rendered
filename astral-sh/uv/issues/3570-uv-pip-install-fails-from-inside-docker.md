@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-14T06:38:17Z
 updated_at: 2024-05-14T16:53:32Z
 url: https://github.com/astral-sh/uv/issues/3570
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install` fails from inside docker.
@@ -204,10 +204,6 @@ For now
 _Comment by @rossmacarthur on 2024-05-14 13:03_
 
 @zanieb https://github.com/astral-sh/uv/pull/3444 looks like it could possibly affect SSL
-
----
-
-_Referenced in [astral-sh/uv#3576](../../astral-sh/uv/pulls/3576.md) on 2024-05-14 13:40_
 
 ---
 

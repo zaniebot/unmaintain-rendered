@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-22T19:07:30Z
 updated_at: 2024-05-22T14:46:29Z
 url: https://github.com/astral-sh/uv/issues/2620
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Document `--only-binary` behavior when using unnamed requirements
@@ -46,10 +46,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-12 19:59_
 _Comment by @charliermarsh on 2024-05-22 13:50_
 
 Doing now.
-
----
-
-_Referenced in [astral-sh/uv#3735](../../astral-sh/uv/pulls/3735.md) on 2024-05-22 13:58_
 
 ---
 

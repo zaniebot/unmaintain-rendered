@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-01T16:57:46Z
 updated_at: 2024-07-08T18:07:49Z
 url: https://github.com/astral-sh/uv/issues/4699
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Implement `uv tree`
@@ -28,10 +28,6 @@ _Label `preview` added by @ibraheemdev on 2024-07-01 16:57_
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2024-07-01 16:57_
-
----
-
-_Referenced in [astral-sh/uv#4708](../../astral-sh/uv/pulls/4708.md) on 2024-07-01 21:16_
 
 ---
 

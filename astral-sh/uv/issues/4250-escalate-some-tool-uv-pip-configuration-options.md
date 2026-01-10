@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-11T19:41:40Z
 updated_at: 2024-06-14T00:56:39Z
 url: https://github.com/astral-sh/uv/issues/4250
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Escalate some `tool.uv.pip` configuration options to the project API
@@ -191,10 +191,6 @@ Ah okay that's really helpful, so I guess I see that story going something like 
 _Comment by @charliermarsh on 2024-06-12 16:19_
 
 That... seems right.
-
----
-
-_Referenced in [astral-sh/uv#4294](../../astral-sh/uv/pulls/4294.md) on 2024-06-13 01:04_
 
 ---
 

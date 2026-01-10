@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-08T15:27:12Z
 updated_at: 2024-06-17T19:03:23Z
 url: https://github.com/astral-sh/uv/issues/4162
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Keyring stderr is not displayed
@@ -150,10 +150,6 @@ So maybe there are 3 levels of implementation:
 3. Last point plus allow the user to pass input to `keyring`'s `stdin`
 
 As far as I'm concerned, level 2 would be good enough for me (this is [what `pip` does](https://github.com/pypa/pip/blob/main/src/pip/_internal/network/auth.py#L137-L142)), and level 1 would be a good step forward. Of course you decide on what you want to support!
-
----
-
-_Referenced in [astral-sh/uv#4343](../../astral-sh/uv/pulls/4343.md) on 2024-06-16 18:02_
 
 ---
 

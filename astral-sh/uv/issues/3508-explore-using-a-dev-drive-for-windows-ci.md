@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-10T14:40:46Z
 updated_at: 2024-05-13T16:15:55Z
 url: https://github.com/astral-sh/uv/issues/3508
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Explore using a dev drive for windows CI
@@ -46,18 +46,6 @@ See also, this brief GitHub Actions thread requesting this feature: https://gith
 
 ---
 
-_Referenced in [astral-sh/uv#3522](../../astral-sh/uv/pulls/3522.md) on 2024-05-11 04:32_
-
----
-
 _Closed by @zanieb on 2024-05-13 16:15_
-
----
-
-_Referenced in [astral-sh/uv#5713](../../astral-sh/uv/issues/5713.md) on 2024-08-01 20:45_
-
----
-
-_Referenced in [conda/conda#15453](../../conda/conda/pulls/15453.md) on 2025-11-28 21:39_
 
 ---

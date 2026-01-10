@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-07T21:41:02Z
 updated_at: 2024-05-17T08:54:45Z
 url: https://github.com/astral-sh/uv/issues/3439
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # support uv on manylinux_2_17_aarch64
@@ -70,10 +70,6 @@ We can try reducing the glibc requirement. I think we had trouble compiling on a
 
 ---
 
-_Referenced in [astral-sh/uv#3444](../../astral-sh/uv/pulls/3444.md) on 2024-05-07 23:58_
-
----
-
 _Comment by @charliermarsh on 2024-05-08 00:01_
 
 Yeah not sure, some error compiling ring -- see here: https://github.com/astral-sh/uv/pull/3444
@@ -95,10 +91,6 @@ Got it. I found the root cause is https://github.com/briansmith/ring/issues/1728
 _Comment by @konstin on 2024-05-08 09:11_
 
 Note that in the meantime, using the standalone installer (`curl -LsSf https://astral.sh/uv/install.sh | sh`) should work; it will fallback to the statically compiled (musl) version, which works independent of glibc version.
-
----
-
-_Referenced in [pypa/manylinux#1607](../../pypa/manylinux/issues/1607.md) on 2024-05-09 07:54_
 
 ---
 
@@ -203,10 +195,6 @@ ADD ./scripts/requirements/compiled/black.txt /requirements.txt
 ENV RUST_LOG=trace
 RUN uv pip install --python python3.12 -r /requirements.txt -v
 ```
-
----
-
-_Referenced in [astral-sh/uv#3624](../../astral-sh/uv/pulls/3624.md) on 2024-05-16 06:51_
 
 ---
 

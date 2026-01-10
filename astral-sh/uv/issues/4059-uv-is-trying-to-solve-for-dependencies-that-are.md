@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T18:14:43Z
 updated_at: 2024-06-06T05:00:17Z
 url: https://github.com/astral-sh/uv/issues/4059
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv` is trying to solve for dependencies that are already installed, failing if they are not available from the package repository
@@ -136,10 +136,6 @@ Ok, it's because `vtk` is being installed as a legacy `.egg-info` file, which we
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-05 23:38_
-
----
-
-_Referenced in [astral-sh/uv#4082](../../astral-sh/uv/pulls/4082.md) on 2024-06-06 00:54_
 
 ---
 

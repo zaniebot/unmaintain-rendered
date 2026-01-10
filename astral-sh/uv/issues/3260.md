@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-25T08:14:31Z
 updated_at: 2024-06-18T13:54:50Z
 url: https://github.com/astral-sh/uv/issues/3260
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Azure artifacts auth fails on first attempt but works on second.
@@ -314,10 +314,6 @@ So I think the reason there is a difference goes like the following.
 
 ---
 
-_Referenced in [microsoft/artifacts-keyring#73](../../microsoft/artifacts-keyring/pulls/73.md) on 2024-04-26 07:44_
-
----
-
 _Comment by @jenshnielsen on 2024-04-26 07:46_
 
 To redeem the immediate problem, I have submitted https://github.com/microsoft/artifacts-keyring/pull/73 which does resolve the issue for me but of cause does nothing to fix the general problem. 
@@ -368,10 +364,6 @@ cat /tmp/out.txt
 
 ---
 
-_Referenced in [astral-sh/uv#4162](../../astral-sh/uv/issues/4162.md) on 2024-06-08 18:00_
-
----
-
 _Comment by @jenshnielsen on 2024-06-18 13:22_
 
 @charliermarsh @zanieb This fix to artifacts-keyring has been merged and included in version 0.3.6. Should we close this issue or do you prefer to keep it around to track more fundamental improvements. e.g. not reading from stdout  
@@ -385,13 +377,5 @@ Thanks for following up! We can track something like that in a more specific iss
 ---
 
 _Closed by @zanieb on 2024-06-18 13:54_
-
----
-
-_Referenced in [astral-sh/uv#3542](../../astral-sh/uv/issues/3542.md) on 2024-07-10 05:43_
-
----
-
-_Referenced in [astral-sh/uv#11130](../../astral-sh/uv/issues/11130.md) on 2025-01-31 13:46_
 
 ---

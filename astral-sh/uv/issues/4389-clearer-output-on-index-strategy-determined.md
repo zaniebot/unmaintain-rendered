@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-18T17:05:42Z
 updated_at: 2024-06-21T09:53:46Z
 url: https://github.com/astral-sh/uv/issues/4389
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Clearer output on index strategy, determined source index and indexes being queried for uv pip install <package>
@@ -85,9 +85,5 @@ _Comment by @danny-todd-oxb on 2024-06-21 09:53_
 
 That sounds good to me. As an out-of-scope idea, I could see functionality similar to the now-deprecated `pip search` being very useful for package search/query usecases - not sure if there's anything like that on your feature stack.
 
-
----
-
-_Referenced in [astral-sh/uv#5146](../../astral-sh/uv/issues/5146.md) on 2024-07-17 17:23_
 
 ---

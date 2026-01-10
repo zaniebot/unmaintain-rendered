@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-17T05:23:13Z
 updated_at: 2024-07-09T09:30:54Z
 url: https://github.com/astral-sh/uv/issues/1575
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Resolver backtracks to very old version unnecessarily 
@@ -360,9 +360,5 @@ I've tested with `uv pip install --reinstall --editable .[dev] --exclude-newer 2
 ---
 
 _Closed by @konstin on 2024-07-09 09:30_
-
----
-
-_Referenced in [astral-sh/uv#8157](../../astral-sh/uv/issues/8157.md) on 2024-10-13 13:03_
 
 ---

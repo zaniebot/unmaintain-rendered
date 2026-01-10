@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-07T13:50:49Z
 updated_at: 2024-05-07T14:59:55Z
 url: https://github.com/astral-sh/uv/issues/3419
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add compatibility `--user` error message to `pip install`
@@ -29,10 +29,6 @@ _Label `good first issue` added by @zanieb on 2024-05-07 13:50_
 ---
 
 _Label `error messages` added by @zanieb on 2024-05-07 13:50_
-
----
-
-_Referenced in [astral-sh/uv#3424](../../astral-sh/uv/pulls/3424.md) on 2024-05-07 14:50_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-22T00:34:00Z
 updated_at: 2024-05-28T00:46:29Z
 url: https://github.com/astral-sh/uv/issues/2602
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip install` fails when using #egg reference 
@@ -204,21 +204,5 @@ but I will have a good read of the spec and report back. Another option would be
 ---
 
 _Closed by @charliermarsh on 2024-05-28 00:46_
-
----
-
-_Referenced in [astariul/github-hosted-pypi#84](../../astariul/github-hosted-pypi/issues/84.md) on 2025-02-08 11:08_
-
----
-
-_Referenced in [astral-sh/uv#11339](../../astral-sh/uv/issues/11339.md) on 2025-02-08 11:09_
-
----
-
-_Referenced in [astariul/github-hosted-pypi#87](../../astariul/github-hosted-pypi/issues/87.md) on 2025-02-08 16:27_
-
----
-
-_Referenced in [symforce-org/symforce#425](../../symforce-org/symforce/issues/425.md) on 2025-02-24 19:03_
 
 ---

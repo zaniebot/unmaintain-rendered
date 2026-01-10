@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-13T15:26:26Z
 updated_at: 2024-06-14T13:09:18Z
 url: https://github.com/astral-sh/uv/issues/4307
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: if we write file paths to a lock file, we need to make them portable
@@ -27,10 +27,6 @@ It's not clear to me that the latter is strictly possible in all cases, but I th
 
 ---
 
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-06-13 15:26_
-
----
-
 _Comment by @zanieb on 2024-06-13 15:29_
 
 See also https://github.com/astral-sh/uv/pull/3804
@@ -44,10 +40,6 @@ In the interim, should we just call `to_slash` on the paths? That library exists
 ---
 
 _Label `preview` added by @charliermarsh on 2024-06-14 03:59_
-
----
-
-_Referenced in [astral-sh/uv#4324](../../astral-sh/uv/pulls/4324.md) on 2024-06-14 04:14_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-18T08:46:52Z
 updated_at: 2024-07-01T17:03:51Z
 url: https://github.com/astral-sh/uv/issues/4378
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Cache issue when installing from git urls with once missing refs
@@ -103,10 +103,6 @@ Just as a minor note, using `--no-cache` with `--refresh` doesn't make sense, I'
 
 ---
 
-_Referenced in [astral-sh/uv#4698](../../astral-sh/uv/pulls/4698.md) on 2024-07-01 16:39_
-
----
-
 _Closed by @ibraheemdev on 2024-07-01 17:01_
 
 ---
@@ -118,13 +114,5 @@ _Closed by @ibraheemdev on 2024-07-01 17:01_
 _Comment by @elupus on 2024-07-01 17:03_
 
 Beautiful! Thanks!
-
----
-
-_Referenced in [softboiler/boilercv#218](../../softboiler/boilercv/issues/218.md) on 2024-07-01 17:46_
-
----
-
-_Referenced in [commaai/openpilot#33297](../../commaai/openpilot/pulls/33297.md) on 2024-08-14 19:00_
 
 ---

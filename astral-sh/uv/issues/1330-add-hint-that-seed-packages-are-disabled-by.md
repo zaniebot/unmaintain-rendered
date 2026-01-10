@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-15T19:53:29Z
 updated_at: 2024-07-01T21:36:14Z
 url: https://github.com/astral-sh/uv/issues/1330
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Add hint that seed packages are disabled by default in `uv venv`
@@ -35,30 +35,10 @@ _Label `compatibility` added by @zanieb on 2024-02-15 19:53_
 
 ---
 
-_Referenced in [astral-sh/uv#1331](../../astral-sh/uv/issues/1331.md) on 2024-02-15 20:31_
-
----
-
-_Referenced in [astral-sh/uv#1420](../../astral-sh/uv/issues/1420.md) on 2024-02-16 05:03_
-
----
-
 _Label `virtualenv` added by @zanieb on 2024-02-18 20:39_
 
 ---
 
-_Referenced in [astral-sh/uv#2265](../../astral-sh/uv/issues/2265.md) on 2024-03-07 14:16_
-
----
-
 _Closed by @zanieb on 2024-07-01 21:36_
-
----
-
-_Referenced in [astral-sh/uv#12738](../../astral-sh/uv/issues/12738.md) on 2025-04-08 12:40_
-
----
-
-_Referenced in [astral-sh/uv#12604](../../astral-sh/uv/issues/12604.md) on 2025-04-08 17:25_
 
 ---

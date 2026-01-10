@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-12T14:29:08Z
 updated_at: 2024-07-15T23:13:24Z
 url: https://github.com/astral-sh/uv/issues/5009
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv add` changes pyproject.toml indentation
@@ -60,22 +60,10 @@ _Assigned to @flyaroundme by @charliermarsh on 2024-07-15 13:35_
 
 ---
 
-_Referenced in [astral-sh/uv#5075](../../astral-sh/uv/pulls/5075.md) on 2024-07-15 14:57_
-
----
-
 _Closed by @ibraheemdev on 2024-07-15 23:13_
 
 ---
 
 _Closed by @ibraheemdev on 2024-07-15 23:13_
-
----
-
-_Referenced in [astral-sh/uv#5852](../../astral-sh/uv/issues/5852.md) on 2024-08-07 12:28_
-
----
-
-_Referenced in [astral-sh/uv#16006](../../astral-sh/uv/pulls/16006.md) on 2025-09-23 19:04_
 
 ---

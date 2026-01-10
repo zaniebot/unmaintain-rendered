@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-01T13:50:39Z
 updated_at: 2024-07-09T10:02:29Z
 url: https://github.com/astral-sh/uv/issues/4696
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Drop wheels with incompatible tag incompatible to requires-python from lockfile
@@ -198,9 +198,5 @@ Fixed by https://github.com/astral-sh/uv/pull/4799
 ---
 
 _Closed by @konstin on 2024-07-09 10:02_
-
----
-
-_Referenced in [astral-sh/uv#6512](../../astral-sh/uv/issues/6512.md) on 2024-08-23 13:43_
 
 ---

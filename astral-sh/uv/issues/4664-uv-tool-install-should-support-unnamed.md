@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-30T19:29:06Z
 updated_at: 2024-07-02T01:37:15Z
 url: https://github.com/astral-sh/uv/issues/4664
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv tool install` should support unnamed requirements
@@ -35,14 +35,6 @@ _Label `preview` added by @charliermarsh on 2024-06-30 19:29_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-30 19:30_
-
----
-
-_Referenced in [astral-sh/uv#4715](../../astral-sh/uv/pulls/4715.md) on 2024-07-02 00:11_
-
----
-
-_Referenced in [astral-sh/uv#4716](../../astral-sh/uv/pulls/4716.md) on 2024-07-02 00:26_
 
 ---
 

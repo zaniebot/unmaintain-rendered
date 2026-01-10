@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-01T19:08:03Z
 updated_at: 2024-05-06T16:34:18Z
 url: https://github.com/astral-sh/uv/issues/3333
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Feature request: multiple --python-platform arguments
@@ -341,9 +341,5 @@ _Closed by @dimostenis on 2024-05-06 16:31_
 _Comment by @zanieb on 2024-05-06 16:34_
 
 cc @BurntSushi to note that request :)
-
----
-
-_Referenced in [aws/bedrock-agentcore-starter-toolkit#361](../../aws/bedrock-agentcore-starter-toolkit/pulls/361.md) on 2025-11-20 20:39_
 
 ---

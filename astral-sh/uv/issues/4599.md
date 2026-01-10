@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-27T18:33:04Z
 updated_at: 2024-07-04T00:05:45Z
 url: https://github.com/astral-sh/uv/issues/4599
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv add` and `uv lock` sometimes hang before exiting
@@ -60,19 +60,11 @@ _Comment by @ibraheemdev on 2024-06-28 16:43_
 
 ---
 
-_Referenced in [astral-sh/uv#4629](../../astral-sh/uv/issues/4629.md) on 2024-06-28 16:47_
-
----
-
 _Label `preview` added by @ibraheemdev on 2024-06-28 16:49_
 
 ---
 
 _Label `bug` added by @ibraheemdev on 2024-06-28 16:49_
-
----
-
-_Referenced in [astral-sh/uv#4793](../../astral-sh/uv/pulls/4793.md) on 2024-07-03 23:50_
 
 ---
 

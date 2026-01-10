@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-29T20:39:15Z
 updated_at: 2024-06-29T22:45:36Z
 url: https://github.com/astral-sh/uv/issues/4651
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `pip tree --prune` output looks incorrect when the pruned package is the last in the group
@@ -52,10 +52,6 @@ $ git rev-parse HEAD
 13b0beb56fdc607c1f38d820dbf8c95c8fd0ce84
 ```
 i'll look into this one as well... 😭 
-
----
-
-_Referenced in [astral-sh/uv#4652](../../astral-sh/uv/pulls/4652.md) on 2024-06-29 20:55_
 
 ---
 

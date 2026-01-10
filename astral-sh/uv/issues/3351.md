@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T15:29:29Z
 updated_at: 2024-05-15T19:07:30Z
 url: https://github.com/astral-sh/uv/issues/3351
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: propagate full set of artifacts for each distribution
@@ -32,18 +32,6 @@ I think the simplest change we can make here is to continue selecting the "best"
 ---
 
 _Label `preview` added by @BurntSushi on 2024-05-03 15:29_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 15:30_
-
----
-
-_Referenced in [astral-sh/uv#3595](../../astral-sh/uv/pulls/3595.md) on 2024-05-15 15:29_
-
----
-
-_Referenced in [astral-sh/uv#3610](../../astral-sh/uv/pulls/3610.md) on 2024-05-15 16:29_
 
 ---
 

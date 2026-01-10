@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-06T18:29:01Z
 updated_at: 2024-06-24T16:44:55Z
 url: https://github.com/astral-sh/uv/issues/4108
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # pyproject defined override dependencies  ignored by uv lock and uv sync
@@ -67,14 +67,6 @@ What different syntax do you have in mind?
 _Comment by @zanieb on 2024-06-06 23:05_
 
 I don't have a specific request, just voicing that we should consider if we want something else (as noted by @charliermarsh)
-
----
-
-_Referenced in [astral-sh/uv#4369](../../astral-sh/uv/pulls/4369.md) on 2024-06-17 20:16_
-
----
-
-_Referenced in [astral-sh/uv#4446](../../astral-sh/uv/pulls/4446.md) on 2024-06-21 23:18_
 
 ---
 

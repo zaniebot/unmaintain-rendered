@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-15T14:50:46Z
 updated_at: 2024-05-20T21:08:55Z
 url: https://github.com/astral-sh/uv/issues/3604
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # installation of editable package don't work when adding python markers
@@ -96,10 +96,6 @@ I think my preference would be to actually support and respect these. Second cho
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-15 19:12_
-
----
-
-_Referenced in [astral-sh/uv#3622](../../astral-sh/uv/pulls/3622.md) on 2024-05-15 19:48_
 
 ---
 

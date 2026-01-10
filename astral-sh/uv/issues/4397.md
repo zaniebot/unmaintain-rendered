@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-18T18:36:03Z
 updated_at: 2024-06-18T19:01:47Z
 url: https://github.com/astral-sh/uv/issues/4397
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv toolchain python not in interpreter search path
@@ -107,10 +107,6 @@ _Closed by @zanieb on 2024-06-18 18:57_
 
 ---
 
-_Referenced in [astral-sh/uv#4400](../../astral-sh/uv/issues/4400.md) on 2024-06-18 18:57_
-
----
-
 _Comment by @zanieb on 2024-06-18 18:58_
 
 And we'll track the documentation request at https://github.com/astral-sh/uv/issues/4400
@@ -129,9 +125,5 @@ _Comment by @zanieb on 2024-06-18 19:01_
 
 And https://github.com/astral-sh/uv/issues/4401 :)
 
-
----
-
-_Referenced in [astral-sh/uv#4399](../../astral-sh/uv/issues/4399.md) on 2024-06-18 23:56_
 
 ---

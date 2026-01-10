@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-31T21:59:26Z
 updated_at: 2024-06-10T16:19:42Z
 url: https://github.com/astral-sh/uv/issues/3951
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `--system` flag no longer working as documented
@@ -134,10 +134,6 @@ Thanks!
 
 ---
 
-_Referenced in [astral-sh/uv#4009](../../astral-sh/uv/issues/4009.md) on 2024-06-04 02:36_
-
----
-
 _Comment by @dpoznik on 2024-06-04 02:40_
 
 > I had been using `--system` to work around this, but if `uv` were to recognize a pyenv-virtualenv as a virtual environment, then no flag would be necessary. So that may be the best solution, if possible. I'd be happy to create a new issue if so.
@@ -150,17 +146,9 @@ _Assigned to @zanieb by @zanieb on 2024-06-04 14:47_
 
 ---
 
-_Referenced in [astral-sh/uv#4031](../../astral-sh/uv/pulls/4031.md) on 2024-06-04 23:54_
-
----
-
 _Comment by @zanieb on 2024-06-04 23:56_
 
 Does #4031 help?
-
----
-
-_Referenced in [astral-sh/uv#4034](../../astral-sh/uv/pulls/4034.md) on 2024-06-05 01:16_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-21T15:34:17Z
 updated_at: 2024-05-29T19:25:59Z
 url: https://github.com/astral-sh/uv/issues/3700
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: Lock with all extras, trim down on installation
@@ -71,10 +71,6 @@ I can take this if we want to start by "including all extras, then trimming at i
 
 ---
 
-_Referenced in [astral-sh/uv#3705](../../astral-sh/uv/pulls/3705.md) on 2024-05-22 12:29_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-22 13:18_
 
 ---
@@ -84,14 +80,6 @@ _Comment by @olivier-lacroix on 2024-05-24 15:22_
 You may want to take inspiration from pixi, which handles this via features (equivalent to a group of extra), that are included in environment(s).
 Environments are included in the lock-file, and sometimes solved together when requested.
 This avoids combinatorial explosion and is pretty flexible.
-
----
-
-_Referenced in [astral-sh/uv#3404](../../astral-sh/uv/issues/3404.md) on 2024-05-26 18:55_
-
----
-
-_Referenced in [astral-sh/uv#3913](../../astral-sh/uv/pulls/3913.md) on 2024-05-29 17:15_
 
 ---
 

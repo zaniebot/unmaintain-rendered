@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-10T06:34:18Z
 updated_at: 2024-06-10T12:54:00Z
 url: https://github.com/astral-sh/uv/issues/4187
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Stop accessing pubgrub's incompatibilities directly
@@ -34,9 +34,5 @@ _Label `internal` added by @konstin on 2024-06-10 06:34_
 _Comment by @charliermarsh on 2024-06-10 12:53_
 
 I'm mixed on this though I understand the motivation. It seems natural that we should get the resolution from PubGrub given that it solved the graph!
-
----
-
-_Referenced in [pubgrub-rs/pubgrub#233](../../pubgrub-rs/pubgrub/issues/233.md) on 2024-06-10 13:37_
 
 ---

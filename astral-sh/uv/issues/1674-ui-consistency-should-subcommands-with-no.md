@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-19T01:24:23Z
 updated_at: 2024-06-19T00:35:15Z
 url: https://github.com/astral-sh/uv/issues/1674
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # ui-consistency:  should subcommands  with no argument show help by default?
@@ -93,10 +93,6 @@ Also for ruff:  executing `ruff` is the same as `ruff --help`
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#1657](../../astral-sh/uv/issues/1657.md) on 2024-02-19 01:24_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-26T23:59:28Z
 updated_at: 2024-06-10T21:53:38Z
 url: https://github.com/astral-sh/uv/issues/3845
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv self update error on Windows: The system cannot move the file to a different disk drive
@@ -50,10 +50,6 @@ _Label `upstream` added by @charliermarsh on 2024-05-27 00:18_
 _Comment by @charliermarsh on 2024-05-27 00:18_
 
 This is likely an issue in https://github.com/axodotdev/axoupdater. Do you mind filing there? Otherwise I can.
-
----
-
-_Referenced in [axodotdev/axoupdater#120](../../axodotdev/axoupdater/issues/120.md) on 2024-05-27 19:34_
 
 ---
 
@@ -98,9 +94,5 @@ _Closed by @charliermarsh on 2024-06-10 21:53_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-10 21:53_
-
----
-
-_Referenced in [Breadcord/Breadcord#246](../../Breadcord/Breadcord/pulls/246.md) on 2024-06-10 22:03_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-06T12:27:40Z
 updated_at: 2024-07-06T19:22:20Z
 url: https://github.com/astral-sh/uv/issues/4846
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv run --isolated` does not respect `--python` flag
@@ -53,15 +53,7 @@ Thanks, confirmed!
 
 ---
 
-_Referenced in [astral-sh/uv#4776](../../astral-sh/uv/issues/4776.md) on 2024-07-06 19:06_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-06 19:06_
-
----
-
-_Referenced in [astral-sh/uv#4849](../../astral-sh/uv/pulls/4849.md) on 2024-07-06 19:13_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T15:19:14Z
 updated_at: 2024-06-05T20:45:52Z
 url: https://github.com/astral-sh/uv/issues/4050
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Locking depends on the current python version if `requires-python` isn't set
@@ -106,10 +106,6 @@ Adding the Python requirement to the lockfile seems important yeah.
 
 ---
 
-_Referenced in [astral-sh/uv#4052](../../astral-sh/uv/issues/4052.md) on 2024-06-05 16:31_
-
----
-
 _Comment by @zanieb on 2024-06-05 16:33_
 
 I created a separate issue for that problem at #4052 
@@ -133,10 +129,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-05 16:45_
 _Comment by @konstin on 2024-06-05 17:51_
 
 I'm not certain yet which options of those is the right one, you can take it
-
----
-
-_Referenced in [astral-sh/uv#4070](../../astral-sh/uv/pulls/4070.md) on 2024-06-05 20:18_
 
 ---
 

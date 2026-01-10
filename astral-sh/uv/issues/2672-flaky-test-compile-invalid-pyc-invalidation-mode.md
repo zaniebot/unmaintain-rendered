@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-26T17:30:44Z
 updated_at: 2024-07-07T20:21:07Z
 url: https://github.com/astral-sh/uv/issues/2672
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Flaky test `compile_invalid_pyc_invalidation_mode`
@@ -62,17 +62,9 @@ _Comment by @charliermarsh on 2024-03-26 21:03_
 
 ---
 
-_Referenced in [astral-sh/uv#3465](../../astral-sh/uv/pulls/3465.md) on 2024-05-08 18:17_
-
----
-
 _Comment by @zanieb on 2024-06-04 18:09_
 
 @BurntSushi is reporting this on Linux now
-
----
-
-_Referenced in [astral-sh/uv#4043](../../astral-sh/uv/pulls/4043.md) on 2024-06-05 11:17_
 
 ---
 

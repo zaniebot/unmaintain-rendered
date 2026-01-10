@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-18T17:16:10Z
 updated_at: 2024-06-19T14:55:22Z
 url: https://github.com/astral-sh/uv/issues/4390
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv run command --flag` is interpreted incorrectly
@@ -95,10 +95,6 @@ Useful tip, thanks :)
 > We could consider some sort of heuristic here, e.g. once we see a command we stop parsing uv flags
 
 This is what I understood to be implied by the help for `uv run`, which indicates that the syntax is `uv run [OPTIONS] [TARGET] [ARGS]`, whereas I feel like most command line programs that also support options after the arguments tend to write it twice, like `program [OPTIONS] [ARGS] [OPTIONS]`. Not to say anything by that, just noting how I interpreted it as a naive user!
-
----
-
-_Referenced in [astral-sh/uv#4404](../../astral-sh/uv/pulls/4404.md) on 2024-06-18 20:56_
 
 ---
 

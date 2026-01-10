@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-04T12:26:52Z
 updated_at: 2024-07-05T21:13:59Z
 url: https://github.com/astral-sh/uv/issues/4800
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv tool: Wrong toolchain platform, arch used
@@ -126,10 +126,6 @@ _Assigned to @zanieb by @zanieb on 2024-07-04 15:29_
 
 ---
 
-_Referenced in [astral-sh/uv#4810](../../astral-sh/uv/pulls/4810.md) on 2024-07-04 15:32_
-
----
-
 _Label `great writeup` added by @zanieb on 2024-07-04 15:33_
 
 ---
@@ -145,9 +141,5 @@ _Closed by @charliermarsh on 2024-07-05 21:13_
 ---
 
 _Closed by @charliermarsh on 2024-07-05 21:13_
-
----
-
-_Referenced in [astral-sh/uv#4855](../../astral-sh/uv/issues/4855.md) on 2024-07-07 16:50_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T16:21:33Z
 updated_at: 2024-06-10T12:40:52Z
 url: https://github.com/astral-sh/uv/issues/4137
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Setuptools is installed conditionally when it should be installed unconditionally
@@ -57,10 +57,6 @@ Ah ok. You need to use Python < 3.12.
 _Comment by @charliermarsh on 2024-06-07 18:04_
 
 It's the same as https://github.com/astral-sh/uv/issues/4125.
-
----
-
-_Referenced in [astral-sh/uv#4166](../../astral-sh/uv/pulls/4166.md) on 2024-06-08 18:08_
 
 ---
 

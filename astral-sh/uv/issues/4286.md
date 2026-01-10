@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-12T19:42:31Z
 updated_at: 2024-06-12T19:54:02Z
 url: https://github.com/astral-sh/uv/issues/4286
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add environment variable for `--excludes-newer`
@@ -28,10 +28,6 @@ _Label `cli` added by @charliermarsh on 2024-06-12 19:42_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-12 19:42_
-
----
-
-_Referenced in [astral-sh/uv#4287](../../astral-sh/uv/pulls/4287.md) on 2024-06-12 19:45_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-02T22:56:06Z
 updated_at: 2024-07-04T13:45:27Z
 url: https://github.com/astral-sh/uv/issues/4747
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Run resolution before nuking environment in `uv tool install`
@@ -29,14 +29,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-02 22:56_
 ---
 
 _Label `preview` added by @charliermarsh on 2024-07-02 22:56_
-
----
-
-_Referenced in [astral-sh/uv#4746](../../astral-sh/uv/pulls/4746.md) on 2024-07-02 22:56_
-
----
-
-_Referenced in [astral-sh/uv#4788](../../astral-sh/uv/pulls/4788.md) on 2024-07-03 19:01_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-02T10:42:00Z
 updated_at: 2024-06-02T18:02:28Z
 url: https://github.com/astral-sh/uv/issues/3964
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # ``uv pip sync`` removes pip when syncing dependencies from a ``requirements.txt`` without pip
@@ -156,9 +156,5 @@ When creating a virtual environment with UV, **seed packages** can be optionally
 
 
 
-
----
-
-_Referenced in [Kozea/MakeCitron#22](../../Kozea/MakeCitron/pulls/22.md) on 2025-10-15 09:17_
 
 ---

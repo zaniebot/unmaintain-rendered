@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-26T22:19:49Z
 updated_at: 2024-06-26T23:22:09Z
 url: https://github.com/astral-sh/uv/issues/4569
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Regression in uv 0.2.16 compile with unsatisfiable constraint in extra
@@ -90,10 +90,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-26 22:21_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-06-26 22:21_
-
----
-
-_Referenced in [astral-sh/uv#4570](../../astral-sh/uv/pulls/4570.md) on 2024-06-26 22:39_
 
 ---
 

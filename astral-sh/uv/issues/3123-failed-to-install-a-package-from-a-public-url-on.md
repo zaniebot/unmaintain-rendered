@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-18T15:09:00Z
 updated_at: 2024-04-22T18:06:58Z
 url: https://github.com/astral-sh/uv/issues/3123
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Failed to install a package from a public url on 0.1.33
@@ -185,14 +185,6 @@ I think there are two things going on here:
 1. We fixed our caching to actually apply per network location as intended in the original implementation, but this means we can apply credentials to requests that don't need it.
 2. We stopped pre-seeding the cache with the URLs passed via the CLI, I think this is causing some sort of race condition where we don't apply credentials to _some_ in flight requests because they're not cached yet.
 
-
----
-
-_Referenced in [astral-sh/uv#3124](../../astral-sh/uv/pulls/3124.md) on 2024-04-18 17:53_
-
----
-
-_Referenced in [astral-sh/uv#3130](../../astral-sh/uv/pulls/3130.md) on 2024-04-18 22:44_
 
 ---
 

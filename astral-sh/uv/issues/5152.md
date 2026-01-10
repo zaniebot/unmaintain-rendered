@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-17T17:31:42Z
 updated_at: 2024-07-17T19:44:27Z
 url: https://github.com/astral-sh/uv/issues/5152
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Uv script install into .venv overwrites python
@@ -111,10 +111,6 @@ Thank you.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-17 18:28_
-
----
-
-_Referenced in [astral-sh/uv#5165](../../astral-sh/uv/pulls/5165.md) on 2024-07-17 19:28_
 
 ---
 

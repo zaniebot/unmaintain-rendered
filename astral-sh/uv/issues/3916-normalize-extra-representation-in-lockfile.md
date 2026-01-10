@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-29T19:41:35Z
 updated_at: 2024-06-03T19:00:36Z
 url: https://github.com/astral-sh/uv/issues/3916
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Normalize extra representation in lockfile
@@ -28,10 +28,6 @@ _Label `preview` added by @charliermarsh on 2024-05-29 19:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-01 17:39_
-
----
-
-_Referenced in [astral-sh/uv#3958](../../astral-sh/uv/pulls/3958.md) on 2024-06-01 18:13_
 
 ---
 

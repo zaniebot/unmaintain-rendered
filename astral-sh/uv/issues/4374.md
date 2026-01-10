@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-18T04:25:57Z
 updated_at: 2024-06-18T07:15:41Z
 url: https://github.com/astral-sh/uv/issues/4374
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # cache_prune tests fail when run from unpacked sources
@@ -115,10 +115,6 @@ test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; 
 ```
 
 I'm going to submit a pull request shortly.
-
----
-
-_Referenced in [astral-sh/uv#4375](../../astral-sh/uv/pulls/4375.md) on 2024-06-18 04:54_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T17:04:46Z
 updated_at: 2024-06-10T19:02:18Z
 url: https://github.com/astral-sh/uv/issues/4053
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Non-deterministic? behavior if a requirements.txt contains a dependency which is also specified to be installed editable
@@ -585,10 +585,6 @@ Modifying...
 _Comment by @charliermarsh on 2024-06-10 18:15_
 
 I think I'm going to change this to prefer editables though.
-
----
-
-_Referenced in [astral-sh/uv#4208](../../astral-sh/uv/pulls/4208.md) on 2024-06-10 18:40_
 
 ---
 

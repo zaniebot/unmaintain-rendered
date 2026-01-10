@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-23T14:48:50Z
 updated_at: 2024-05-24T21:01:55Z
 url: https://github.com/astral-sh/uv/issues/3796
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv` is caching installs based on config, even if build-backend is in-tree
@@ -133,9 +133,5 @@ Yeah, we _could_ treat these as if they're dynamic.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-24 21:01_
-
----
-
-_Referenced in [astral-sh/uv#9187](../../astral-sh/uv/issues/9187.md) on 2024-11-18 03:36_
 
 ---

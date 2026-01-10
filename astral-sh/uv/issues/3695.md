@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-21T12:15:26Z
 updated_at: 2024-05-22T13:06:20Z
 url: https://github.com/astral-sh/uv/issues/3695
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Support editables in lockfile
@@ -46,10 +46,6 @@ I think I assumed that editables would be path dependencies, which are in the lo
 _Comment by @charliermarsh on 2024-05-21 15:00_
 
 Yeah, they're directory dependencies, but they're installed differently.
-
----
-
-_Referenced in [astral-sh/uv#3725](../../astral-sh/uv/pulls/3725.md) on 2024-05-21 22:40_
 
 ---
 

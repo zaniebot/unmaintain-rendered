@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-06T12:51:54Z
 updated_at: 2024-06-06T14:00:02Z
 url: https://github.com/astral-sh/uv/issues/4091
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # constraints not respected by `uv pip compile`
@@ -65,10 +65,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-06 13:06_
 _Comment by @charliermarsh on 2024-06-06 13:34_
 
 Thanks, not immediately obvious to me what changed but I'll fix and release it today.
-
----
-
-_Referenced in [astral-sh/uv#4095](../../astral-sh/uv/pulls/4095.md) on 2024-06-06 13:50_
 
 ---
 

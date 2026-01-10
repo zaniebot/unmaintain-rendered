@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-04T07:55:53Z
 updated_at: 2024-06-18T18:38:19Z
 url: https://github.com/astral-sh/uv/issues/4011
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # FR: re-enforce distinction between download time and build time
@@ -113,14 +113,6 @@ I'm thinking it could also be nice to report how long each package took to build
    Built yt==4.3.1 in xxx s 
 ```
 Although that might make it confusing since all other reported times are wall times, but this one would be CPU time (I think ?).
-
----
-
-_Referenced in [astral-sh/uv#4391](../../astral-sh/uv/issues/4391.md) on 2024-06-18 17:50_
-
----
-
-_Referenced in [astral-sh/uv#4394](../../astral-sh/uv/pulls/4394.md) on 2024-06-18 18:15_
 
 ---
 

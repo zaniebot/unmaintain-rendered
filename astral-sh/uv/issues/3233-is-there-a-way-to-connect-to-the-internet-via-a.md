@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-24T05:52:20Z
 updated_at: 2024-04-24T16:07:42Z
 url: https://github.com/astral-sh/uv/issues/3233
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Is there a way to connect to the Internet via a proxy server? 
@@ -42,14 +42,6 @@ _Label `good first issue` added by @zanieb on 2024-04-24 14:14_
 
 ---
 
-_Referenced in [astral-sh/uv#3247](../../astral-sh/uv/pulls/3247.md) on 2024-04-24 16:02_
-
----
-
 _Closed by @zanieb on 2024-04-24 16:07_
-
----
-
-_Referenced in [astral-sh/uv#14837](../../astral-sh/uv/issues/14837.md) on 2025-07-23 07:31_
 
 ---

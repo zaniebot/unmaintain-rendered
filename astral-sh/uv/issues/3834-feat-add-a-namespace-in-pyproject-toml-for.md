@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-25T08:37:30Z
 updated_at: 2024-06-03T23:27:43Z
 url: https://github.com/astral-sh/uv/issues/3834
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # feat: add a namespace in pyproject.toml for dependency override
@@ -72,10 +72,6 @@ I think so yes! cc @konstin
 ---
 
 _Renamed from "feat: add a hierarchy in pyproject.toml for dependency override" to "feat: add a namespace in pyproject.toml for dependency override" by @Di-Is on 2024-05-26 13:20_
-
----
-
-_Referenced in [astral-sh/uv#3839](../../astral-sh/uv/pulls/3839.md) on 2024-05-26 13:42_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T15:55:44Z
 updated_at: 2024-05-20T12:16:18Z
 url: https://github.com/astral-sh/uv/issues/3355
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: implement routine for computing intersection of two `MarkerTree`s
@@ -24,22 +24,6 @@ As part of #3350, the resolver ought to only fork when there are duplicative pac
 ---
 
 _Label `preview` added by @BurntSushi on 2024-05-03 15:55_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 15:55_
-
----
-
-_Referenced in [astral-sh/uv#3358](../../astral-sh/uv/issues/3358.md) on 2024-05-03 18:09_
-
----
-
-_Referenced in [astral-sh/uv#3520](../../astral-sh/uv/pulls/3520.md) on 2024-05-10 22:05_
-
----
-
-_Referenced in [astral-sh/uv#3583](../../astral-sh/uv/pulls/3583.md) on 2024-05-14 17:21_
 
 ---
 

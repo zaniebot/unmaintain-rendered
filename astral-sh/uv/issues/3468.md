@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-08T18:50:27Z
 updated_at: 2024-05-09T01:37:37Z
 url: https://github.com/astral-sh/uv/issues/3468
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Offline mode is not automatic fallback when offline
@@ -125,9 +125,5 @@ I think this issue can be closed.
 ---
 
 _Closed by @zanieb on 2024-05-09 01:37_
-
----
-
-_Referenced in [astral-sh/uv#4728](../../astral-sh/uv/issues/4728.md) on 2024-07-02 12:49_
 
 ---

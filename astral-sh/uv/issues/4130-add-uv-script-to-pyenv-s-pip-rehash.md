@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T13:47:06Z
 updated_at: 2024-06-08T14:16:43Z
 url: https://github.com/astral-sh/uv/issues/4130
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add uv script to pyenv's pip-rehash
@@ -30,10 +30,6 @@ Tracking in `pyenv` at https://github.com/pyenv/pyenv/issues/2979
 
 ---
 
-_Referenced in [astral-sh/uv#1586](../../astral-sh/uv/issues/1586.md) on 2024-06-07 13:47_
-
----
-
 _Label `compatibility` added by @zanieb on 2024-06-07 13:48_
 
 ---
@@ -45,9 +41,5 @@ They've suggested we should provide a pyenv plugin that adds this functionality.
 ---
 
 _Label `help wanted` added by @zanieb on 2024-06-08 14:16_
-
----
-
-_Referenced in [astral-sh/uv#6675](../../astral-sh/uv/issues/6675.md) on 2024-08-27 23:08_
 
 ---

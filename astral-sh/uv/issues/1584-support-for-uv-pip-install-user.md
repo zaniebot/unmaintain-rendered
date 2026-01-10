@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-17T12:03:06Z
 updated_at: 2024-05-17T13:44:40Z
 url: https://github.com/astral-sh/uv/issues/1584
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Support for `uv pip install --user`
@@ -44,15 +44,7 @@ _Label `compatibility` added by @zanieb on 2024-02-17 19:35_
 
 ---
 
-_Referenced in [astral-sh/uv#2059](../../astral-sh/uv/issues/2059.md) on 2024-02-28 22:49_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-28 22:50_
-
----
-
-_Referenced in [astral-sh/uv#2387](../../astral-sh/uv/issues/2387.md) on 2024-03-12 17:40_
 
 ---
 
@@ -70,14 +62,6 @@ In general implementing `uv pip install --user` will remove a lot of workarounds
 
 ---
 
-_Referenced in [open-webui/open-webui#1533](../../open-webui/open-webui/pulls/1533.md) on 2024-04-16 20:57_
-
----
-
-_Referenced in [astral-sh/uv#2352](../../astral-sh/uv/pulls/2352.md) on 2024-04-21 10:50_
-
----
-
 _Comment by @zanieb on 2024-05-17 13:44_
 
 I'm going to close this in favor of https://github.com/astral-sh/uv/issues/2077 which has a bunch more discussion in it.
@@ -89,9 +73,5 @@ _Closed by @zanieb on 2024-05-17 13:44_
 ---
 
 _Label `duplicate` added by @zanieb on 2024-05-17 13:44_
-
----
-
-_Referenced in [pwndbg/pwndbg#3124](../../pwndbg/pwndbg/issues/3124.md) on 2025-06-23 01:08_
 
 ---

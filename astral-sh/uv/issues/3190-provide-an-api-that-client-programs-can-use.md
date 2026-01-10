@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-22T17:04:47Z
 updated_at: 2024-04-22T21:09:48Z
 url: https://github.com/astral-sh/uv/issues/3190
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Provide an API that client programs can use
@@ -55,9 +55,5 @@ Cool, thanks. I will write up an issue requesting JSON output, and maybe some mo
 _Comment by @pfmoore on 2024-04-22 21:09_
 
 Issue for JSON output: https://github.com/astral-sh/uv/issues/3199
-
----
-
-_Referenced in [usethis-python/usethis-python#12](../../usethis-python/usethis-python/issues/12.md) on 2024-09-12 10:01_
 
 ---

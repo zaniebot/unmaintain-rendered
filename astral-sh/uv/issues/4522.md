@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-25T16:36:14Z
 updated_at: 2024-06-29T04:39:27Z
 url: https://github.com/astral-sh/uv/issues/4522
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Cryptic error for `python -m uv pip compile --python-version x.y.z` when using the Windows app store Python app
@@ -83,10 +83,6 @@ We're in the process of rewriting all that documentation. I'll improve that and 
 
 ---
 
-_Referenced in [astral-sh/uv#4620](../../astral-sh/uv/pulls/4620.md) on 2024-06-28 15:07_
-
----
-
 _Comment by @zanieb on 2024-06-28 15:08_
 
 I put up a fix at #4620, let me know if you get a chance to test it.
@@ -104,9 +100,5 @@ _Closed by @zanieb on 2024-06-29 04:39_
 ---
 
 _Closed by @zanieb on 2024-06-29 04:39_
-
----
-
-_Referenced in [astral-sh/uv#4918](../../astral-sh/uv/issues/4918.md) on 2024-07-09 16:22_
 
 ---

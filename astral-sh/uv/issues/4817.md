@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T17:59:54Z
 updated_at: 2024-07-05T21:58:34Z
 url: https://github.com/astral-sh/uv/issues/4817
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Color reports are missing dimming after bolding
@@ -29,10 +29,6 @@ _Label `bug` added by @charliermarsh on 2024-07-04 17:59_
 ---
 
 _Label `cli` added by @charliermarsh on 2024-07-04 17:59_
-
----
-
-_Referenced in [astral-sh/uv#4818](../../astral-sh/uv/pulls/4818.md) on 2024-07-04 18:07_
 
 ---
 

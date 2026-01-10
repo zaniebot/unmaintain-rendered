@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-09T05:37:25Z
 updated_at: 2024-05-23T16:17:42Z
 url: https://github.com/astral-sh/uv/issues/2316
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # UV finds PyPy when looking for Python
@@ -111,10 +111,6 @@ Sounds good, this is helpful, thanks Henry. I’ll change it.
 
 ---
 
-_Referenced in [astral-sh/uv#2092](../../astral-sh/uv/issues/2092.md) on 2024-03-09 20:05_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-10 00:50_
 
 ---
@@ -194,14 +190,6 @@ Yes.
 _Comment by @henryiii on 2024-03-10 05:52_
 
 Wow, thanks! Okay, so I think just matching virtualenv's CPython preference would be fine here. And I might start using "cpython". Need to check and see if that's supported everywhere in nox. :)
-
----
-
-_Referenced in [john-kurkowski/tldextract#324](../../john-kurkowski/tldextract/pulls/324.md) on 2024-03-11 02:36_
-
----
-
-_Referenced in [astral-sh/uv#2386](../../astral-sh/uv/issues/2386.md) on 2024-03-12 17:57_
 
 ---
 

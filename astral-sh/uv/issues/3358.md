@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-03T18:09:32Z
 updated_at: 2024-05-30T18:23:15Z
 url: https://github.com/astral-sh/uv/issues/3358
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # universal-lock: implement resolver forking
@@ -34,14 +34,6 @@ We should be careful to ensure that we only fork when the conflicting packages h
 ---
 
 _Label `preview` added by @BurntSushi on 2024-05-03 18:09_
-
----
-
-_Referenced in [astral-sh/uv#3350](../../astral-sh/uv/issues/3350.md) on 2024-05-03 18:09_
-
----
-
-_Referenced in [astral-sh/uv#3831](../../astral-sh/uv/pulls/3831.md) on 2024-05-24 19:04_
 
 ---
 

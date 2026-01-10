@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-10T19:17:34Z
 updated_at: 2024-06-10T23:20:10Z
 url: https://github.com/astral-sh/uv/issues/4212
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Project environment creation doesn't respect version specifiers in `requires-python`
@@ -34,14 +34,6 @@ _Label `preview` added by @charliermarsh on 2024-06-10 19:17_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-06-10 20:04_
-
----
-
-_Referenced in [astral-sh/uv#4216](../../astral-sh/uv/pulls/4216.md) on 2024-06-10 20:12_
-
----
-
-_Referenced in [astral-sh/uv#4214](../../astral-sh/uv/pulls/4214.md) on 2024-06-10 20:12_
 
 ---
 

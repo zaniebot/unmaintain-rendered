@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-06-29T22:50:09Z
 updated_at: 2024-07-03T18:24:39Z
 url: https://github.com/astral-sh/uv/issues/4653
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Show tool versions in `uv tool list`
@@ -49,10 +49,6 @@ _Label `preview` added by @zanieb on 2024-06-29 22:50_
 
 ---
 
-_Referenced in [astral-sh/uv#4486](../../astral-sh/uv/issues/4486.md) on 2024-06-29 22:54_
-
----
-
 _Label `good first issue` added by @zanieb on 2024-06-29 22:54_
 
 ---
@@ -76,17 +72,9 @@ Nice, I like the look of that
 
 ---
 
-_Referenced in [astral-sh/uv#4654](../../astral-sh/uv/issues/4654.md) on 2024-06-30 14:31_
-
----
-
 _Comment by @caiquejjx on 2024-06-30 16:55_
 
 I think the version should be showed by default because it doesn't add that much of information, the entrypoints maybe we should add a flag like `--entrypoints` because for cases where we have a lot of tools it might be too much
-
----
-
-_Referenced in [astral-sh/uv#4661](../../astral-sh/uv/pulls/4661.md) on 2024-06-30 17:35_
 
 ---
 
@@ -107,10 +95,6 @@ Only because `sqlx-cli==0.7.3` matches `pip freeze`. But I don't feel strongly.
 _Comment by @zanieb on 2024-06-30 22:01_
 
 I don't love the pinned requirement syntax for something that will _always_ be a specific version and isn't meant for consumption by another tool.
-
----
-
-_Referenced in [astral-sh/uv#4674](../../astral-sh/uv/pulls/4674.md) on 2024-07-01 00:12_
 
 ---
 

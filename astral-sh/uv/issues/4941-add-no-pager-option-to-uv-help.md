@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T20:00:19Z
 updated_at: 2024-07-12T16:11:52Z
 url: https://github.com/astral-sh/uv/issues/4941
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `--no-pager` option to `uv help`
@@ -57,10 +57,6 @@ _Comment by @silvanocerza on 2024-07-12 09:51_
 Nevermind, disregard my previous comment. I'm dumb and should search better. 🤦‍♀️ 
 
 I also tested using an outdated version of `uv` instead of `main`. 
-
----
-
-_Referenced in [astral-sh/uv#5007](../../astral-sh/uv/pulls/5007.md) on 2024-07-12 13:00_
 
 ---
 

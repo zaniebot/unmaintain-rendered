@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-20T22:08:02Z
 updated_at: 2024-05-21T01:01:12Z
 url: https://github.com/astral-sh/uv/issues/3675
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv adds dependency for newer version of python where pip does not
@@ -69,26 +69,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-20 22:54_
 
 ---
 
-_Referenced in [astral-sh/uv#3679](../../astral-sh/uv/pulls/3679.md) on 2024-05-20 23:20_
-
----
-
-_Referenced in [astral-sh/uv#3681](../../astral-sh/uv/pulls/3681.md) on 2024-05-20 23:38_
-
----
-
-_Referenced in [astral-sh/uv#3683](../../astral-sh/uv/issues/3683.md) on 2024-05-21 00:24_
-
----
-
 _Closed by @charliermarsh on 2024-05-21 01:01_
-
----
-
-_Referenced in [astral-sh/uv#6085](../../astral-sh/uv/issues/6085.md) on 2024-08-14 14:44_
-
----
-
-_Referenced in [astral-sh/uv#6279](../../astral-sh/uv/issues/6279.md) on 2024-08-22 00:14_
 
 ---

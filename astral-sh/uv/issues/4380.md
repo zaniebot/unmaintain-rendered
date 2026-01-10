@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-18T13:36:34Z
 updated_at: 2024-06-18T14:53:01Z
 url: https://github.com/astral-sh/uv/issues/4380
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv toolchain list` throws error and fails to display list because Python 2 is on the PATH
@@ -53,10 +53,6 @@ Thanks. We should be skipping those.
 ---
 
 _Label `bug` added by @zanieb on 2024-06-18 13:50_
-
----
-
-_Referenced in [astral-sh/uv#4382](../../astral-sh/uv/pulls/4382.md) on 2024-06-18 14:14_
 
 ---
 

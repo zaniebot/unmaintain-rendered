@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-18T18:17:50Z
 updated_at: 2024-05-20T21:09:43Z
 url: https://github.com/astral-sh/uv/issues/3654
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 #  Failed to run uv compile error: Received some unexpected HTML Caused by: Unexpected fragment (expected `#sha256=...` or similar)
@@ -55,10 +55,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-18 21:15_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-05-18 21:15_
-
----
-
-_Referenced in [astral-sh/uv#3655](../../astral-sh/uv/pulls/3655.md) on 2024-05-19 02:11_
 
 ---
 

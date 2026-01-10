@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-31T16:36:58Z
 updated_at: 2024-06-22T09:10:14Z
 url: https://github.com/astral-sh/uv/issues/1209
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # Show progress bar for slow downloads
@@ -28,31 +28,11 @@ _Label `enhancement` added by @konstin on 2024-01-31 16:36_
 
 ---
 
-_Referenced in [astral-sh/uv#1566](../../astral-sh/uv/issues/1566.md) on 2024-02-17 04:05_
-
----
-
 _Label `tracing` added by @zanieb on 2024-02-17 04:15_
 
 ---
 
-_Referenced in [astral-sh/uv#2667](../../astral-sh/uv/issues/2667.md) on 2024-03-26 14:45_
-
----
-
-_Referenced in [astral-sh/uv#2514](../../astral-sh/uv/issues/2514.md) on 2024-03-28 02:50_
-
----
-
-_Referenced in [astral-sh/uv#2721](../../astral-sh/uv/issues/2721.md) on 2024-03-28 22:15_
-
----
-
 _Assigned to @ibraheemdev by @ibraheemdev on 2024-04-24 15:59_
-
----
-
-_Referenced in [astral-sh/uv#3252](../../astral-sh/uv/pulls/3252.md) on 2024-04-24 20:11_
 
 ---
 

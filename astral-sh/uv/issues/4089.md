@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-06T08:19:36Z
 updated_at: 2024-06-11T18:50:06Z
 url: https://github.com/astral-sh/uv/issues/4089
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Warn when `requires-python` in workspace package is not a lower bound
@@ -34,10 +34,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-06 17:56_
 _Comment by @charliermarsh on 2024-06-11 15:28_
 
 Doing this now.
-
----
-
-_Referenced in [astral-sh/uv#4234](../../astral-sh/uv/pulls/4234.md) on 2024-06-11 15:41_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-25T15:02:04Z
 updated_at: 2024-06-26T21:33:59Z
 url: https://github.com/astral-sh/uv/issues/3836
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Virtual environment support for `uv run`
@@ -92,10 +92,6 @@ dependencies = {file = ["requirements.txt"]}
 _Comment by @charliermarsh on 2024-06-26 14:20_
 
 Yeah, we have to rebuild your project every time if you have dynamic metadata right now, since we have no way of knowing if it's up-to-date.
-
----
-
-_Referenced in [astral-sh/uv#4549](../../astral-sh/uv/pulls/4549.md) on 2024-06-26 14:26_
 
 ---
 
@@ -191,9 +187,5 @@ We now fallback to virtual environments if you're not in a project.
 ---
 
 _Closed by @charliermarsh on 2024-06-26 21:33_
-
----
-
-_Referenced in [astral-sh/uv#4565](../../astral-sh/uv/pulls/4565.md) on 2024-06-27 11:05_
 
 ---

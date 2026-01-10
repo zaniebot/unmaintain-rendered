@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-24T15:02:38Z
 updated_at: 2024-05-25T10:33:24Z
 url: https://github.com/astral-sh/uv/issues/3824
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv pip fails on BSD: Libc type could not be detected
@@ -46,10 +46,6 @@ In `crates/uv-interpreter/src/platform.rs` file, function `Libc::from_env`, ther
 
 I think this function sould return a new value `Libc::BSD` for BSD OS (specific libc version for this OS type, different from GNU libc).
 
-
----
-
-_Referenced in [astral-sh/uv#3825](../../astral-sh/uv/pulls/3825.md) on 2024-05-24 16:47_
 
 ---
 

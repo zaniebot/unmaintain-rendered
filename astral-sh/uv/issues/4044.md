@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T11:55:16Z
 updated_at: 2024-06-05T16:05:48Z
 url: https://github.com/astral-sh/uv/issues/4044
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip sync requirements.txt` does nothing on 0.2.6 with `python_full_version` specified
@@ -112,10 +112,6 @@ _Label `bug` added by @charliermarsh on 2024-06-05 14:58_
 _Comment by @charliermarsh on 2024-06-05 15:46_
 
 Ah ok, it's an issue that's specific to `pip sync`. `pip install` should work if you need a workaround. But I will fix it today.
-
----
-
-_Referenced in [astral-sh/uv#4051](../../astral-sh/uv/pulls/4051.md) on 2024-06-05 15:56_
 
 ---
 

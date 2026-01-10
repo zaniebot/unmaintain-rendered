@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-13T20:12:53Z
 updated_at: 2024-06-14T06:38:22Z
 url: https://github.com/astral-sh/uv/issues/4317
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv lock branch dependency doesn't update commit hash on new commits
@@ -137,9 +137,5 @@ Makes sense, `uv lock -P flask` works for me. Thanks!
 ---
 
 _Closed by @blueraft on 2024-06-14 06:38_
-
----
-
-_Referenced in [astral-sh/uv#14954](../../astral-sh/uv/issues/14954.md) on 2025-07-29 13:11_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-05-14T10:42:07Z
 updated_at: 2024-06-04T13:39:17Z
 url: https://github.com/astral-sh/uv/issues/3572
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add logging when retrying on transient request failures
@@ -34,10 +34,6 @@ _Label `tracing` added by @zanieb on 2024-05-14 12:17_
 ---
 
 _Label `help wanted` added by @zanieb on 2024-05-14 12:17_
-
----
-
-_Referenced in [astral-sh/uv#3933](../../astral-sh/uv/pulls/3933.md) on 2024-05-31 09:48_
 
 ---
 

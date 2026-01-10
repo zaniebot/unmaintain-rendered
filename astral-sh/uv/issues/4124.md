@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-07T03:44:08Z
 updated_at: 2024-06-07T22:03:09Z
 url: https://github.com/astral-sh/uv/issues/4124
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Can't specify URIs (for multiple paths) in UV_CONSTRAINT
@@ -33,10 +33,6 @@ PIP_CONSTRAINT="$a $b" pip install --python .venv cowsay packaging
 (This is exactly what cibuildwheel does, it has it's own constraint file which it is combining with a user specified file(s), and it doesn't know if there might be spaces in the paths)
 
 Trying this with uv just breaks on the URI with ``error: File not found: `file:///.../cibuildwheel/tmp/file%202.txt` ``. If I remove the spaces, it handles the space separated files just fine, but it doesn't seem to support URIs, which is the standard way to allow space separated paths in Pip.
-
----
-
-_Referenced in [pypa/cibuildwheel#1856](../../pypa/cibuildwheel/pulls/1856.md) on 2024-06-07 03:48_
 
 ---
 
@@ -65,10 +61,6 @@ Yes, pip works with one file.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-07 15:08_
-
----
-
-_Referenced in [astral-sh/uv#4145](../../astral-sh/uv/pulls/4145.md) on 2024-06-07 20:29_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-30T01:31:02Z
 updated_at: 2024-06-01T12:40:13Z
 url: https://github.com/astral-sh/uv/issues/3920
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Enable preferences to respect Git checkouts
@@ -33,10 +33,6 @@ _Label `preview` added by @charliermarsh on 2024-05-30 01:31_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-30 01:53_
-
----
-
-_Referenced in [astral-sh/uv#3956](../../astral-sh/uv/pulls/3956.md) on 2024-06-01 12:21_
 
 ---
 

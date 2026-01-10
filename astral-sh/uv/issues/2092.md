@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T18:05:37Z
 updated_at: 2024-07-15T18:28:33Z
 url: https://github.com/astral-sh/uv/issues/2092
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv venv` doesn't add PyPy executables
@@ -83,10 +83,6 @@ Filed some info in https://github.com/astral-sh/uv/issues/2095. (No obligation t
 
 ---
 
-_Referenced in [astral-sh/uv#2096](../../astral-sh/uv/issues/2096.md) on 2024-02-29 20:58_
-
----
-
 _Comment by @charliermarsh on 2024-03-09 20:05_
 
 @edgarrmondragon - when you’re in a PyPy virtualenv, do you typically invoke Python as “pypy” or “python”? I’m trying to make some decisions around this with respect to #2316.
@@ -98,14 +94,6 @@ _Comment by @edgarrmondragon on 2024-03-11 05:16_
 > @edgarrmondragon - when you’re in a PyPy virtualenv, do you typically invoke Python as “pypy” or “python”? I’m trying to make some decisions around this with respect to #2316.
  
 Actually, always as `python` or `python3.x`
-
----
-
-_Referenced in [astral-sh/uv#2386](../../astral-sh/uv/issues/2386.md) on 2024-03-12 17:57_
-
----
-
-_Referenced in [astral-sh/uv#5047](../../astral-sh/uv/pulls/5047.md) on 2024-07-14 14:46_
 
 ---
 

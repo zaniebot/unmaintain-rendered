@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-24T19:21:15Z
 updated_at: 2024-06-29T22:54:11Z
 url: https://github.com/astral-sh/uv/issues/4486
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add `uv tool list`
@@ -43,10 +43,6 @@ _Comment by @zanieb on 2024-06-29 16:34_
 Hey @caiquejjx — I've done this in #4630 but I appreciate the interest!
 
 How much Rust experience do you have? Are you looking for a very straight-forward task or something a bit more involved?
-
----
-
-_Referenced in [astral-sh/uv#4630](../../astral-sh/uv/pulls/4630.md) on 2024-06-29 16:35_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-14T14:11:14Z
 updated_at: 2024-07-14T23:53:59Z
 url: https://github.com/astral-sh/uv/issues/5044
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Simplify union of marker expression and negation
@@ -66,14 +66,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-07-14 23:40_
 
 ---
 
-_Referenced in [astral-sh/uv#5050](../../astral-sh/uv/pulls/5050.md) on 2024-07-14 23:43_
-
----
-
 _Closed by @charliermarsh on 2024-07-14 23:53_
-
----
-
-_Referenced in [astral-sh/uv#5078](../../astral-sh/uv/issues/5078.md) on 2024-07-15 17:56_
 
 ---

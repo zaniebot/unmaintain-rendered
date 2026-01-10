@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-06T13:48:29Z
 updated_at: 2024-05-28T07:41:55Z
 url: https://github.com/astral-sh/uv/issues/3404
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Workspace support
@@ -127,10 +127,6 @@ In our monorepo at work we have a fairly flexible layout, with more nesting / ca
 
 ---
 
-_Referenced in [astral-sh/uv#3585](../../astral-sh/uv/pulls/3585.md) on 2024-05-17 11:23_
-
----
-
 _Comment by @zanieb on 2024-05-17 17:47_
 
 cc @potiuk regarding if this would work in Airflow
@@ -192,18 +188,6 @@ It should import foo from provider b.
 
 ---
 
-_Referenced in [astral-sh/uv#3705](../../astral-sh/uv/pulls/3705.md) on 2024-05-22 12:36_
-
----
-
 _Closed by @konstin on 2024-05-28 07:41_
-
----
-
-_Referenced in [astral-sh/uv#3836](../../astral-sh/uv/issues/3836.md) on 2024-06-26 13:59_
-
----
-
-_Referenced in [pypa/pip#13003](../../pypa/pip/issues/13003.md) on 2024-10-13 19:44_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-24T10:11:37Z
 updated_at: 2024-06-24T12:03:40Z
 url: https://github.com/astral-sh/uv/issues/4465
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Index Strategy ignored for distributions packages
@@ -124,10 +124,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-24 10:58_
 
 ---
 
-_Referenced in [astral-sh/uv#4468](../../astral-sh/uv/pulls/4468.md) on 2024-06-24 11:53_
-
----
-
 _Comment by @charliermarsh on 2024-06-24 11:59_
 
 Thank you, fixed in the next release.
@@ -139,9 +135,5 @@ _Closed by @charliermarsh on 2024-06-24 12:03_
 ---
 
 _Closed by @charliermarsh on 2024-06-24 12:03_
-
----
-
-_Referenced in [pdoc3/pdoc#444](../../pdoc3/pdoc/issues/444.md) on 2024-06-24 12:10_
 
 ---

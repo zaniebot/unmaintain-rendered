@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-22T19:28:12Z
 updated_at: 2024-05-22T20:47:21Z
 url: https://github.com/astral-sh/uv/issues/3760
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `UV 2.0` installation fails on `aarch64-unknown-linux-gnu` (inside docker basically) 
@@ -110,10 +110,6 @@ _Comment by @ArshanKhanifar on 2024-05-22 19:31_
 Thank you for the pin suggestion, that was going to be my next question 😂 
 
 Not sure which is faster, `uv` itself or its creators responding to issues. 
-
----
-
-_Referenced in [astral-sh/uv#3761](../../astral-sh/uv/pulls/3761.md) on 2024-05-22 19:34_
 
 ---
 

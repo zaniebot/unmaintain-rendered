@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-23T15:02:10Z
 updated_at: 2024-06-23T20:26:00Z
 url: https://github.com/astral-sh/uv/issues/4451
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Should uv.find_uv_bin() be able to find /usr/bin/uv?
@@ -147,9 +147,5 @@ _Comment by @musicinmybrain on 2024-06-23 20:25_
 > Yeah, I think it's right for this to be a downstream-only patch. Sorry if it causes you any inconvenience but that's where I'm ending up too. (Thanks for walking me through it.)
 
 Thanks for talking through it with me. You helped me clarify my reasoning, and I’m now much more confident that the first proposed downstream patch from https://github.com/astral-sh/uv/issues/4451#issue-2368608161 is a good approach.
-
----
-
-_Referenced in [astral-sh/uv#4576](../../astral-sh/uv/pulls/4576.md) on 2024-06-27 10:52_
 
 ---

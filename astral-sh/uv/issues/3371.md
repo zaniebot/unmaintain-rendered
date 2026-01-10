@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-04T08:11:03Z
 updated_at: 2024-05-06T09:12:37Z
 url: https://github.com/astral-sh/uv/issues/3371
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv run` fails on centos 7
@@ -78,14 +78,6 @@ To install modern versions of python on it I've had resort to building from sour
 
 ---
 
-_Referenced in [astral-sh/uv#3398](../../astral-sh/uv/pulls/3398.md) on 2024-05-06 08:25_
-
----
-
 _Closed by @konstin on 2024-05-06 09:12_
-
----
-
-_Referenced in [astral-sh/uv#7418](../../astral-sh/uv/issues/7418.md) on 2024-09-16 02:05_
 
 ---

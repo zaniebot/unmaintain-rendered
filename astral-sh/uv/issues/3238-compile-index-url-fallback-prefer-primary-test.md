@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-24T14:09:52Z
 updated_at: 2024-04-25T23:30:45Z
 url: https://github.com/astral-sh/uv/issues/3238
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `compile_index_url_fallback_prefer_primary` test doesn't seem to test anything
@@ -48,10 +48,6 @@ My guess is that the index version was updated.
 _Comment by @zanieb on 2024-04-25 23:25_
 
 Are we not using exclude newer here?
-
----
-
-_Referenced in [astral-sh/uv#3273](../../astral-sh/uv/pulls/3273.md) on 2024-04-25 23:25_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-17T10:19:40Z
 updated_at: 2024-07-17T10:58:05Z
 url: https://github.com/astral-sh/uv/issues/5143
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # BUG: resolution failure in `uv pip` where `python -m pip` suceeds
@@ -74,10 +74,6 @@ matplotlib v3.10.0.dev401+g9b8a8c7246
     └── six v1.16.0
 ```
 
-
----
-
-_Referenced in [la-niche/lick#123](../../la-niche/lick/pulls/123.md) on 2024-07-17 10:21_
 
 ---
 

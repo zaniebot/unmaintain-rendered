@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-27T14:55:42Z
 updated_at: 2024-05-28T20:07:08Z
 url: https://github.com/astral-sh/uv/issues/3865
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv attempting to uninstall itself on Windows CI
@@ -79,10 +79,6 @@ _Comment by @charliermarsh on 2024-05-27 16:40_
 
 Can you try changing the version in `dev-requirements.txt`?
 
-
----
-
-_Referenced in [astral-sh/uv#3837](../../astral-sh/uv/issues/3837.md) on 2024-05-27 16:40_
 
 ---
 

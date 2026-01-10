@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-26T09:51:08Z
 updated_at: 2024-06-26T12:54:40Z
 url: https://github.com/astral-sh/uv/issues/4540
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # No fallback on index-url if dependency not found in local simple repository
@@ -66,10 +66,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-26 12:04_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-06-26 12:04_
-
----
-
-_Referenced in [astral-sh/uv#4545](../../astral-sh/uv/pulls/4545.md) on 2024-06-26 12:41_
 
 ---
 

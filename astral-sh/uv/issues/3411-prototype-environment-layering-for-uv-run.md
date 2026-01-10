@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-06T16:19:26Z
 updated_at: 2024-05-08T21:24:25Z
 url: https://github.com/astral-sh/uv/issues/3411
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Prototype environment layering for `uv run`
@@ -29,10 +29,6 @@ _Label `preview` added by @charliermarsh on 2024-05-06 16:19_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-06 16:19_
-
----
-
-_Referenced in [astral-sh/uv#3447](../../astral-sh/uv/pulls/3447.md) on 2024-05-08 02:03_
 
 ---
 

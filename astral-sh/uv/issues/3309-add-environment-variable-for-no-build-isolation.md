@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-29T14:25:54Z
 updated_at: 2024-04-30T04:18:34Z
 url: https://github.com/astral-sh/uv/issues/3309
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Add environment variable for `--no-build-isolation`
@@ -55,10 +55,6 @@ _Label `configuration` added by @zanieb on 2024-04-29 14:37_
 ---
 
 _Renamed from "UV_NO_BUILD_ISOLATION=true has no effect" to "Add environment variable for `--no-build-isolation`" by @zanieb on 2024-04-29 14:38_
-
----
-
-_Referenced in [astral-sh/uv#3318](../../astral-sh/uv/pulls/3318.md) on 2024-04-30 03:57_
 
 ---
 

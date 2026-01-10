@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-23T00:55:15Z
 updated_at: 2024-05-23T01:47:41Z
 url: https://github.com/astral-sh/uv/issues/3782
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # UV Fails to install with Docker
@@ -109,9 +109,5 @@ _Closed by @Nneji123 on 2024-05-23 01:07_
 _Comment by @zanieb on 2024-05-23 01:47_
 
 Thanks for reporting and checking back in! For additional reference, this is a duplicate of https://github.com/astral-sh/uv/issues/3765 which has a bit more discussion.
-
----
-
-_Referenced in [astral-sh/uv#3787](../../astral-sh/uv/issues/3787.md) on 2024-05-23 12:45_
 
 ---

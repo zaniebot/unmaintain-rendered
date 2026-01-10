@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-03T06:47:08Z
 updated_at: 2024-07-03T13:11:55Z
 url: https://github.com/astral-sh/uv/issues/4758
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # installing `colorspacious` with uv produces a broken env
@@ -49,10 +49,6 @@ python -c "from colorspacious import cspace_converter"
 So it seems to me that bytecode compilation is sufficient to get around the issue, but `python -m pip install` isn't supposed to perform it more than `uv pip install` if `--compile` is omitted, so I don't understand what the difference might be.
 
 system info: this seems to happen consistently on all platforms, as seen in [example logs](https://github.com/yt-project/cmyt/actions/runs/9772843597/job/26977924118?pr=174)
-
----
-
-_Referenced in [yt-project/cmyt#174](../../yt-project/cmyt/pulls/174.md) on 2024-07-03 06:47_
 
 ---
 

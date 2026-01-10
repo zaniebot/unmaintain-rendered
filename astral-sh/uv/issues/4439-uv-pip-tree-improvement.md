@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-21T19:55:47Z
 updated_at: 2024-07-01T21:24:42Z
 url: https://github.com/astral-sh/uv/issues/4439
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip tree` improvement
@@ -31,17 +31,9 @@ Some additional features that did not land as part of https://github.com/astral-
 
 ---
 
-_Referenced in [astral-sh/uv#3272](../../astral-sh/uv/issues/3272.md) on 2024-06-21 19:56_
-
----
-
 _Comment by @zanieb on 2024-06-21 20:08_
 
 Can you create specific issues for each of these so we can track contributions easier?
-
----
-
-_Referenced in [astral-sh/uv#4440](../../astral-sh/uv/pulls/4440.md) on 2024-06-21 20:52_
 
 ---
 
@@ -101,10 +93,6 @@ _Comment by @dsully on 2024-06-22 17:50_
     }
 ]
 ```
-
----
-
-_Referenced in [astral-sh/uv#4449](../../astral-sh/uv/pulls/4449.md) on 2024-06-22 19:26_
 
 ---
 
@@ -175,14 +163,6 @@ _Closed by @zanieb on 2024-06-27 00:34_
 ---
 
 _Reopened by @ibraheemdev on 2024-06-27 04:21_
-
----
-
-_Referenced in [astral-sh/uv#4621](../../astral-sh/uv/pulls/4621.md) on 2024-06-28 15:09_
-
----
-
-_Referenced in [astral-sh/uv#4655](../../astral-sh/uv/pulls/4655.md) on 2024-06-29 23:33_
 
 ---
 

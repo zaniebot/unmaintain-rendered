@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-27T17:49:53Z
 updated_at: 2024-06-27T18:41:46Z
 url: https://github.com/astral-sh/uv/issues/4591
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # pip compile --universal using python version markers
@@ -140,17 +140,9 @@ The _intent_ was for it to be a minimum version.
 
 ---
 
-_Referenced in [astral-sh/uv#4593](../../astral-sh/uv/issues/4593.md) on 2024-06-27 18:08_
-
----
-
 _Comment by @charliermarsh on 2024-06-27 18:25_
 
 Ok this is a one-line change but we need to decide what we want: minimum version or exact version?
-
----
-
-_Referenced in [astral-sh/uv#4597](../../astral-sh/uv/pulls/4597.md) on 2024-06-27 18:29_
 
 ---
 

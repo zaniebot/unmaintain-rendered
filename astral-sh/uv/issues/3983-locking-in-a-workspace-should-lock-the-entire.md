@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-03T13:34:41Z
 updated_at: 2024-06-06T19:09:46Z
 url: https://github.com/astral-sh/uv/issues/3983
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Locking in a workspace should lock the entire workspace
@@ -50,10 +50,6 @@ A dedicated `check-lock` command would also be nice.
 
 We do this currently with `rye` so people don't forget to run `lock` after modifying `pyproject.toml`.
 The implementation is bit hacky, but it's a good sanity check.
-
----
-
-_Referenced in [astral-sh/uv#4016](../../astral-sh/uv/pulls/4016.md) on 2024-06-04 17:19_
 
 ---
 

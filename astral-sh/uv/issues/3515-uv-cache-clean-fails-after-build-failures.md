@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-10T18:30:04Z
 updated_at: 2024-05-11T17:34:46Z
 url: https://github.com/astral-sh/uv/issues/3515
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # uv cache clean fails after build failures
@@ -41,10 +41,6 @@ done
 ```
 2) run `uv cache clean`
 
-
----
-
-_Referenced in [astral-sh/uv#3512](../../astral-sh/uv/issues/3512.md) on 2024-05-10 18:30_
 
 ---
 
@@ -102,10 +98,6 @@ _Label `bug` added by @charliermarsh on 2024-05-11 16:28_
 _Comment by @charliermarsh on 2024-05-11 16:30_
 
 Thanks, reproduced and think I have a fix.
-
----
-
-_Referenced in [astral-sh/uv#3524](../../astral-sh/uv/pulls/3524.md) on 2024-05-11 16:52_
 
 ---
 

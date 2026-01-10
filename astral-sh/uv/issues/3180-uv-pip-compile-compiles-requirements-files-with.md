@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-22T07:37:01Z
 updated_at: 2024-05-31T09:49:36Z
 url: https://github.com/astral-sh/uv/issues/3180
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv pip compile` compiles requirements files with explicit `file:...` requirements into something which `pip` can't install
@@ -151,19 +151,11 @@ When relative paths are in the inputs and outputs, not everyone agrees on which 
 
 ---
 
-_Referenced in [astral-sh/uv#3593](../../astral-sh/uv/issues/3593.md) on 2024-05-14 23:09_
-
----
-
 _Comment by @Nomelas on 2024-05-14 23:20_
 
 perhaps a flag to include/exclude the name for relative paths?
 
 my workaround right now is to remove the prefix after running compile, and re-add it when running it again.
-
----
-
-_Referenced in [astral-sh/rye#1096](../../astral-sh/rye/issues/1096.md) on 2024-05-20 15:45_
 
 ---
 
@@ -179,10 +171,6 @@ _Label `compatibility` added by @charliermarsh on 2024-05-20 15:46_
 
 ---
 
-_Referenced in [astral-sh/uv#3682](../../astral-sh/uv/pulls/3682.md) on 2024-05-21 00:09_
-
----
-
 _Closed by @charliermarsh on 2024-05-21 01:22_
 
 ---
@@ -190,9 +178,5 @@ _Closed by @charliermarsh on 2024-05-21 01:22_
 _Comment by @Julian on 2024-05-31 09:49_
 
 I believe this seems to have regressed (as of 0.2.2, but I see also in 0.2.5) -- but now it's `uv` generating something *`uv` itself* cannot deal with rather than `pip`. Will file a follow up with fuller details.
-
----
-
-_Referenced in [astral-sh/uv#3934](../../astral-sh/uv/issues/3934.md) on 2024-05-31 09:56_
 
 ---

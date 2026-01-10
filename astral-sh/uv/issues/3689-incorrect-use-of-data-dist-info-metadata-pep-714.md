@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-21T10:57:11Z
 updated_at: 2024-05-21T15:52:39Z
 url: https://github.com/astral-sh/uv/issues/3689
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # incorrect use of data-dist-info-metadata (PEP-714)
@@ -124,14 +124,6 @@ _Label `compatibility` added by @charliermarsh on 2024-05-21 11:45_
 
 ---
 
-_Referenced in [astral-sh/uv#3697](../../astral-sh/uv/pulls/3697.md) on 2024-05-21 14:06_
-
----
-
-_Referenced in [astral-sh/uv#3698](../../astral-sh/uv/pulls/3698.md) on 2024-05-21 14:13_
-
----
-
 _Comment by @charliermarsh on 2024-05-21 14:13_
 
 Do you know of any registry that actually implements `data-core-metadata`? Does Artifactory?
@@ -165,9 +157,5 @@ The lack of support for this stuff (among other features) in non-PyPI registries
 ---
 
 _Closed by @charliermarsh on 2024-05-21 15:52_
-
----
-
-_Referenced in [simple-repository/simple-repository-server#3](../../simple-repository/simple-repository-server/issues/3.md) on 2024-05-24 18:21_
 
 ---

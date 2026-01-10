@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-26T01:29:10Z
 updated_at: 2024-07-08T18:59:22Z
 url: https://github.com/astral-sh/uv/issues/4536
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Apply Absorption Law when normalizing markers
@@ -52,14 +52,6 @@ _Comment by @ibraheemdev on 2024-06-26 04:02_
 I'm not sure the smart constructor helps with the simplification. For example, the expression `((x and y) or z)` is fully simplified, but combining that with `or y` we get `((x and y) or z) or y`, which simplifies to `y or z`. Importantly, the complete simplification cannot be performed inductively, so a SAT solver ([such as this](https://docs.sympy.org/latest/modules/logic.html#sympy.logic.boolalg.to_dnf)) would need to be run after the entire marker tree has been constructed.
 
 I think it would be helpful to know what kind of expressions the lockfile generates to see how far we need to take this. We can solve this issue using our current recursive approach and see whether more complex cases come up. It's totally possible that an inductive approach that only looks one layer deep is enough for us, but I would hesitate to add smart constructors and them end up not being useful because we need to do a recursive solve anyways.
-
----
-
-_Referenced in [astral-sh/uv#4618](../../astral-sh/uv/pulls/4618.md) on 2024-06-28 14:37_
-
----
-
-_Referenced in [astral-sh/uv#4639](../../astral-sh/uv/pulls/4639.md) on 2024-06-28 22:10_
 
 ---
 
@@ -120,10 +112,6 @@ Got home and ran some tests and read some specs and I still think uv isn't corre
 _Comment by @charliermarsh on 2024-07-02 02:31_
 
 I filed a separate issue for that normalization here: https://github.com/astral-sh/uv/issues/4719. (It's different than what's described in this issue.)
-
----
-
-_Referenced in [python-trio/trio#2958](../../python-trio/trio/pulls/2958.md) on 2024-07-07 22:00_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-02T23:55:26Z
 updated_at: 2024-07-03T23:25:41Z
 url: https://github.com/astral-sh/uv/issues/4752
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Cache `tool run` environments
@@ -35,14 +35,6 @@ _Label `preview` added by @charliermarsh on 2024-07-02 23:55_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-03 13:05_
-
----
-
-_Referenced in [astral-sh/uv#4777](../../astral-sh/uv/pulls/4777.md) on 2024-07-03 15:24_
-
----
-
-_Referenced in [astral-sh/uv#4784](../../astral-sh/uv/pulls/4784.md) on 2024-07-03 17:46_
 
 ---
 

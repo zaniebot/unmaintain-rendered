@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-15T02:12:44Z
 updated_at: 2024-06-29T07:57:31Z
 url: https://github.com/astral-sh/uv/issues/2469
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # How to install uv on google colab
@@ -30,10 +30,6 @@ It writing this I just worked out how to do: https://colab.research.google.com/d
 PR incoming.
 
 You are more than welcome to create you own notebook and use the colab button to link it so you can own the notebook
-
----
-
-_Referenced in [astral-sh/uv#2470](../../astral-sh/uv/pulls/2470.md) on 2024-03-15 02:16_
 
 ---
 
@@ -58,9 +54,5 @@ I've made a notebook showing the two main options, using pip (as renxida showed)
 ---
 
 _Closed by @konstin on 2024-04-29 13:59_
-
----
-
-_Referenced in [astral-sh/uv#14936](../../astral-sh/uv/issues/14936.md) on 2025-07-28 12:21_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-19T18:25:20Z
 updated_at: 2024-06-26T22:36:08Z
 url: https://github.com/astral-sh/uv/issues/4419
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv add` should support extras
@@ -24,14 +24,6 @@ _Issue opened by @ibraheemdev on 2024-06-19 18:25_
 ---
 
 _Label `preview` added by @ibraheemdev on 2024-06-19 18:25_
-
----
-
-_Referenced in [astral-sh/uv#3959](../../astral-sh/uv/issues/3959.md) on 2024-06-19 18:25_
-
----
-
-_Referenced in [astral-sh/uv#4566](../../astral-sh/uv/pulls/4566.md) on 2024-06-26 21:24_
 
 ---
 

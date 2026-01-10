@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-09T12:20:26Z
 updated_at: 2024-05-13T02:15:00Z
 url: https://github.com/astral-sh/uv/issues/3483
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 #  Unsupported scheme `git+http` on URL (insecure Git protocol)
@@ -61,10 +61,6 @@ It does sound nice to hint to use https or ssh in our error message.
 ---
 
 _Label `error messages` added by @zanieb on 2024-05-11 02:12_
-
----
-
-_Referenced in [astral-sh/uv#3536](../../astral-sh/uv/pulls/3536.md) on 2024-05-13 01:57_
 
 ---
 

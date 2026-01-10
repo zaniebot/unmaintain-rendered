@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-27T08:46:21Z
 updated_at: 2024-06-29T16:51:05Z
 url: https://github.com/astral-sh/uv/issues/4575
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Using --constraint can remove markers from 'uv pip compile --universal'
@@ -86,10 +86,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-28 21:10_
 _Comment by @charliermarsh on 2024-06-28 21:10_
 
 Nice issue, thank you.
-
----
-
-_Referenced in [astral-sh/uv#4648](../../astral-sh/uv/pulls/4648.md) on 2024-06-29 16:39_
 
 ---
 

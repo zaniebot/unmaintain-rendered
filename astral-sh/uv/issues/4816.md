@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T17:59:26Z
 updated_at: 2024-07-04T22:31:41Z
 url: https://github.com/astral-sh/uv/issues/4816
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # `uv toolchain uninstall` should either error or remove all Pythons
@@ -60,10 +60,6 @@ Right now, how does the `::Any` request work, how does one "create" that?
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-04 20:03_
-
----
-
-_Referenced in [astral-sh/uv#4820](../../astral-sh/uv/pulls/4820.md) on 2024-07-04 20:03_
 
 ---
 

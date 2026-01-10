@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-14T10:19:05Z
 updated_at: 2024-05-20T00:43:32Z
 url: https://github.com/astral-sh/uv/issues/3571
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Track parsed url parts in `GitSourceUrl`
@@ -34,10 +34,6 @@ _Assigned to @konstin by @konstin on 2024-05-14 14:22_
 _Comment by @charliermarsh on 2024-05-19 03:52_
 
 I can do this.
-
----
-
-_Referenced in [astral-sh/uv#3656](../../astral-sh/uv/pulls/3656.md) on 2024-05-19 03:59_
 
 ---
 

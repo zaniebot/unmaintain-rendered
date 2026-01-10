@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-22T19:50:06Z
 updated_at: 2024-04-22T22:06:46Z
 url: https://github.com/astral-sh/uv/issues/3196
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # Install.sh Missing from Repo?
@@ -37,10 +37,6 @@ Please fix this!!!
 
 ---
 
-_Referenced in [astral-sh/uv#3197](../../astral-sh/uv/issues/3197.md) on 2024-04-22 19:53_
-
----
-
 _Comment by @zanieb on 2024-04-22 19:53_
 
 Investigating...
@@ -62,10 +58,6 @@ Thank you @zanieb !
 _Comment by @blakete on 2024-04-22 20:07_
 
 Thanks @zanieb and @rodolfolottin 
-
----
-
-_Referenced in [astral-sh/uv#3198](../../astral-sh/uv/issues/3198.md) on 2024-04-22 20:07_
 
 ---
 

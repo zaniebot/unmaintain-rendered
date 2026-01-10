@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-08T13:46:46Z
 updated_at: 2024-07-09T12:47:49Z
 url: https://github.com/astral-sh/uv/issues/832
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-10T05:31:36Z
 ```
 
 # venv and pip-compile subcommands should respect `requires-python`
@@ -147,9 +147,5 @@ _Comment by @konstin on 2024-07-09 12:47_
 ---
 
 _Closed by @konstin on 2024-07-09 12:47_
-
----
-
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2024-08-05 23:12_
 
 ---

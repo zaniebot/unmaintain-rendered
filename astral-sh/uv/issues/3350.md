@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-03T14:57:42Z
 updated_at: 2024-06-10T12:47:15Z
 url: https://github.com/astral-sh/uv/issues/3350
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T05:31:37Z
 ```
 
 # cross platform lock file generation
@@ -69,46 +69,6 @@ _Label `tracking` added by @BurntSushi on 2024-05-03 14:57_
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2024-05-03 14:57_
-
----
-
-_Referenced in [astral-sh/uv#3347](../../astral-sh/uv/issues/3347.md) on 2024-05-03 15:07_
-
----
-
-_Referenced in [astral-sh/uv#3353](../../astral-sh/uv/issues/3353.md) on 2024-05-03 15:47_
-
----
-
-_Referenced in [astral-sh/uv#3354](../../astral-sh/uv/issues/3354.md) on 2024-05-03 15:51_
-
----
-
-_Referenced in [astral-sh/uv#3355](../../astral-sh/uv/issues/3355.md) on 2024-05-03 15:55_
-
----
-
-_Referenced in [astral-sh/uv#3358](../../astral-sh/uv/issues/3358.md) on 2024-05-03 18:09_
-
----
-
-_Referenced in [astral-sh/uv#3359](../../astral-sh/uv/issues/3359.md) on 2024-05-03 18:15_
-
----
-
-_Referenced in [astral-sh/uv#3360](../../astral-sh/uv/issues/3360.md) on 2024-05-03 18:18_
-
----
-
-_Referenced in [astral-sh/uv#3333](../../astral-sh/uv/issues/3333.md) on 2024-05-06 16:04_
-
----
-
-_Referenced in [commaai/openpilot#32522](../../commaai/openpilot/issues/32522.md) on 2024-05-28 04:55_
-
----
-
-_Referenced in [oxidase/ofiuco#69](../../oxidase/ofiuco/issues/69.md) on 2024-06-06 18:32_
 
 ---
 
