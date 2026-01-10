@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] use declared types in inference/checking - astral-sh/ruff #13335</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] use declared types in inference/checking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13335">#13335</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-09-12 03:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-09-12 03:19</div>
+            <div class="timeline-body"><p>Use declared types in inference and checking. This means several things:</p>
+<ul>
+<li>Imports prefer declarations over inference, when declarations are available.</li>
+<li>When we encounter a binding, we check that the bound value's inferred type is assignable to the live declarations of the bound symbol, if any.</li>
+<li>When we encounter a declaration, we check that the declared type is assignable from the inferred type of the symbol from previous bindings, if any.</li>
+<li>When we encounter a binding+declaration, we check that the inferred type of the bound value is assignable to the declared type.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-09-12 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2024-09-12 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-09-12 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-09-12 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-12 03:27</div>
+            <div class="timeline-body"><p>Pretty happy that the inference side of this doesn't regress performance at all, per CodSpeed! That's definitely thanks to @MichaReiser's suggestion to use just a single tracked struct and a single query for inferring definition types (whether binding or declaration). So we don't add too much Salsa overhead here, in terms of new tracked structs or queries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-12 03:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4795 on 2024-09-12 10:04</div>
+            <div class="timeline-body"><p>I'm not sure this should be changing as part of this PR. It's a class definition, and it's still only defined in the <code>sys.version_info &gt;= (3, 11)</code> branch in typeshed: https://github.com/python/typeshed/blob/97ce20034352caff50d818e4b32cc28338a08d19/stdlib/builtins.pyi#L2025-L2032. Since we don't support <code>sys.version_info</code> branches yet, we should still be inferring that it could be <code>Unbound</code> if the implicit <code>else</code> branch is taken (i.e., <code>sys.version_info &lt; (3, 11)</code>). And the publicly visible type of the <code>Unbound</code> variable from the perspective of other modules is <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:26 on 2024-09-12 10:04</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-12 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_model.rs</code>:163 on 2024-09-12 18:06</div>
+            <div class="timeline-body"><p>This is interesting. What made you decide for using the inferred type over the declared type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:166 on 2024-09-12 18:08</div>
+            <div class="timeline-body"><p>Can we make this function private or is this a common operaiton when doing type inference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:178 on 2024-09-12 18:12</div>
+            <div class="timeline-body"><p>I'm surprised that adding an extra hash map doesn't lead to a more significant perf regeression. Lucky us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:496 on 2024-09-12 18:14</div>
+            <div class="timeline-body"><p>Nit: Maybe just use the term <code>Value</code> instead of <code>Object</code> because not all users know that all python values inherit from object.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:785 on 2024-09-12 18:20</div>
+            <div class="timeline-body"><p>Should both of these be <code>annotated_ty</code> or should one be <code>Type::Unknown</code> because it is the inferred default value type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-12 18:22</div>
+            <div class="timeline-body"><p>This is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-12 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:496 on 2024-09-12 18:25</div>
+            <div class="timeline-body"><p>I prefer &quot;object&quot;, because it's consistent with the terminology users see all the time in Python's tracebacks at runtime. I don't see it as referring to the fact that all Python values inherit from <code>builtins.object</code>; I think it's referring to the more fundamental semantic that all values in Python are, conceptually, objects</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 02:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_model.rs</code>:163 on 2024-09-13 02:47</div>
+            <div class="timeline-body"><p>Hmm, good question. It wasn't really a thought-through decision, I just didn't have any intent to make a change to this part of the code at all -- I was just updating the wording to clarify what it actually does.</p>
+<p>I think the main reason to use inferred type here is that all of the definitions we currently implement this for always have an inferred type, and for the ones that have a declared type (functions, classes, parameters), it's always identical to the inferred type anyway. So using declared type here would never give a different result, except in the cases where it would give no result at all.</p>
+<p>The only node which can have a different declared vs inferred type is AnnAssign, and we don't implement <code>HasTy</code> for it, partly for that very reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 02:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:166 on 2024-09-13 02:49</div>
+            <div class="timeline-body"><p>No, I doubt we'll need it anywhere else. I can probably just inline and eliminate it; it only has one callsite. I only kept it for parallel with <code>bindings_ty</code>, but I don't think that's necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 02:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:785 on 2024-09-13 02:56</div>
+            <div class="timeline-body"><p>The default value type doesn't have any influence on either the declared or the inferred type for a parameter. Consider this function:</p>
+<pre><code>def f(x: int = 1): ...
+</code></pre>
+<p>The declared type for <code>x</code> is <code>int</code>. The inferred type for the default parameter is <code>Literal[1]</code>. But that does not mean that the initial inferred type for <code>x</code> in the function's internal scope can be <code>Literal[1]</code>! The default value isn't the only possible bound value; callers are allowed to pass any value of type <code>int</code> for <code>x</code>. So both the declared and the inferred type for <code>x</code> is <code>int</code>. The only thing we will do with the default value (we don't do it yet) is verify that <code>Literal[1]</code> is assignable to <code>int</code>, and emit a diagnostic if not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4795 on 2024-09-13 03:05</div>
+            <div class="timeline-body"><p>When we import something which has type declarations (and remember, function and class definitions are also declarations), we don't do type inference or look at bindings at all, we just look at the declared type(s).</p>
+<p>If a declaration is present in one path and not in another, the current behavior is that we don't care about that; we just union the live declarations, and we never include Unbound. Unbound is a statement about runtime bindings, not a statement about declarations. I guess we could have an equivalent possibly-undeclared type (or piece of metadata in the use-def map), but I'm not sure what we would do with this, other than maybe emit some kind of diagnostic &quot;you are importing something that is not declared in all paths,&quot; or similar. I still think we'd want to infer the imported type the way we do now -- I'm not sure that it's an improvement to union the imported type with <code>Unknown</code> just because the name wasn't declared in all paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 03:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4795 on 2024-09-13 03:39</div>
+            <div class="timeline-body"><p>Open to considering proposed alternative behaviors; just making sure we're clear on what is currently implemented and why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4795 on 2024-09-13 19:46</div>
+            <div class="timeline-body"><p>We discussed, and settled on a few modifications to the semantics, which I've now implemented in this PR, and I describe in another comment below. Thanks for prompting a re-think here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-13 19:50</div>
+            <div class="timeline-body"><p>I pushed some updates to the semantics implemented here:</p>
+<ul>
+<li>We now infer <code>Unknown</code> as part of the declared type of a symbol that isn't declared in all branches.</li>
+<li>We emit a conflicting-declarations diagnostic (if you attempt to assign to a name that has conflicting live declarations) even if one of the &quot;conflicting declarations&quot; is Unknown; this highlights subtle cases where a conditional declaration leaves the variable effectively undeclared at top level (in that anything can be assigned to it.)</li>
+<li>Even if declarations conflict, we still validate the assignment against the union of the declared types.</li>
+</ul>
+<p>This gives declared types similar semantics to inferred types (multiple declarations in different paths are unioned), and means we always maintain the invariant <code>inferred_type &lt;: declared_type</code>. We also emit a diagnostic on conflicting declarations, to avoid confusion, but this diagnostic could be disabled (if some users prefer it) without impacting soundness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-09-13 23:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-13 23:29</div>
+            <div class="timeline-body"><p>Re-requesting review since this changed significantly; you can probably just review the changes in the last commit, or last two commits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:440 on 2024-09-16 10:04</div>
+            <div class="timeline-body"><p>Are these methods used outside this file? If not, can we make them private?</p>
+<p>I generally prefer standalone functions or newtype wrapper around adding test specific methods to a type. They polute the type's namespace (I e.g. don't know if rust analyzer filters the methods out when outside a test).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-16 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-16 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:348 on 2024-09-16 10:07</div>
+            <div class="timeline-body"><p>Can't this be</p>
+<pre><code class="language-suggestion">            may_be_undeclared: declarations.maybe_undeclared,
+</code></pre>
+<p>You may need to flip the order of <code>inner</code> and <code>may_be_undeclared</code> for the borrow checker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-16 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:271 on 2024-09-16 10:10</div>
+            <div class="timeline-body"><p>I'm not sure how many more times we should write this before introducing a helper similar to <code>f.debug_list</code>.</p>
+<ul>
+<li>Create a <code>FormatterJoinExtension</code> trait with a single method <code>join(&amp;mut self, separator: &amp;str) -&gt; Join</code></li>
+<li>Create a <code>Join</code> struct with:<ul>
+<li><code>entry(&amp;mut self, item: &amp;dyn std::fmt::Display)</code></li>
+<li><code>entries&lt;I, F&gt;(&amp;mut self, items: I) where I: IntoIterator&lt;Item = F&gt;, F: std::fmt::Display</code></li>
+<li><code>finish(self) -&gt; Result&lt;()&gt;</code></li>
+</ul>
+</li>
+</ul>
+<p>It can be then used like this</p>
+<pre><code class="language-rust">f.join(&quot;, &quot;) 
+    .entries(self.types.0.iter())
+    .finish()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:510 on 2024-09-16 10:11</div>
+            <div class="timeline-body"><p>Delete?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:128 on 2024-09-16 10:13</div>
+            <div class="timeline-body"><p>Can this function be private?</p>
+<pre><code class="language-suggestion">fn bindings_ty&lt;'db&gt;(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:177 on 2024-09-16 10:14</div>
+            <div class="timeline-body"><p>What now, may or must?</p>
+<pre><code class="language-suggestion">/// error, as any symbol with zero live declarations clearly must be undeclared.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:208 on 2024-09-16 10:17</div>
+            <div class="timeline-body"><p>I guess it's kind of difficult with the current builder API but isn't <code>!first.is_equivalent_to</code> the same as testing if the item was added to the builder?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:209 on 2024-09-16 10:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            TypeList([].into())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:209 on 2024-09-16 10:20</div>
+            <div class="timeline-body"><p>I would have to do some more research but I think an empty <code>Box&lt;[]&gt;</code> always allocates (unlike an empty Vec). We may want to use an <code>Option&lt;Box&lt;[]&gt;&gt;</code> for <code>conflicting</code> for that reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:223 on 2024-09-16 10:21</div>
+            <div class="timeline-body"><p>Nit: The declaration of these types is somewhat out of order considering that all other type declarations come after <code>Type</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:222 on 2024-09-16 10:23</div>
+            <div class="timeline-body"><p>We can implement <code>Display</code> for <code>Box&lt;[Type]&gt;</code> if the <code>Display</code> type is the only reason for defining <code>TypeList</code>.</p>
+<p>Should <code>TupleType</code> and <code>FunctionType::decorators</code> use <code>TypeList</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:209 on 2024-09-16 10:26</div>
+            <div class="timeline-body"><p>An other alternative is that this function returns a <code>Result&lt;Type, (Type, Box&lt;[Type])&gt;&gt;</code> which woudl also force callers to explicitly handle the error case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-16 10:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-16 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:128 on 2024-09-16 15:04</div>
+            <div class="timeline-body"><p>Yes, and it looks like the same is true for a number of other functions in here. I've made all the ones private that are only used in inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-16 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:208 on 2024-09-16 15:52</div>
+            <div class="timeline-body"><p>Right now the builder doesn't do any de-duplication. We could easily add de-duplication based on equivalence, but that would just be a temporary placeholder, as really it should be based on subtyping, e.g. if <code>class A(B): ...</code> then adding <code>A</code> to a union that has <code>B</code> in it already should not add anything to the union. But <code>A</code> and <code>B</code> are still conflicting type declarations. So ultimately this check should not be the same as union de-duplication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-16 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:348 on 2024-09-16 16:07</div>
+            <div class="timeline-body"><p>Good call! Nah, borrow checker has no issues here, this was just a result of rewriting the code too many times :) The original version didn't have <code>may_be_undeclared</code> stored on the <code>DeclarationsIterator</code> at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-16 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:208 on 2024-09-16 16:12</div>
+            <div class="timeline-body"><p>The other alternative is to use <code>itertools::join</code>. But that has the downside that it allocates a string (but that's probably fine here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-16 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:209 on 2024-09-16 16:21</div>
+            <div class="timeline-body"><p>Yeah, verified that <code>Box&lt;[]&gt;</code> still allocates, so I'll rework this to use <code>Option</code>.</p>
+<p>Not sure about using <code>Result</code> -- it feels odd to me to duplicate the actual return value in both variants, and it's also not clear that all callers <em>should</em> be forced to explicitly handle the error case. In the case of resolving an import (<code>symbol_ty_by_id</code>) we want to ignore conflicting declarations and just use the unioned result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 00:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:271 on 2024-09-17 00:43</div>
+            <div class="timeline-body"><p>I added this, and converted everywhere we had the &quot;join&quot; pattern in <code>types/display.rs</code> to use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:208 on 2024-09-17 00:44</div>
+            <div class="timeline-body"><blockquote>
+<p>The other alternative is to use <code>itertools::join</code>. But that has the downside that it allocates a string (but that's probably fine here)</p>
+</blockquote>
+<p>I think this comment was meant for a different thread? I went ahead and implemented <code>FormatterJoinExtension</code> trait rather than using <code>itertools::join</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:209 on 2024-09-17 00:44</div>
+            <div class="timeline-body"><p>In the end I went with a <code>Result</code> -- even where we want to ignore conflicting types, it's probably better to be explicit about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 00:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:223 on 2024-09-17 00:49</div>
+            <div class="timeline-body"><p>I wanted to put them near <code>declarations_ty</code>, which is the only place they are used. But in the latest version this is reduced to just a type alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 00:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:222 on 2024-09-17 00:51</div>
+            <div class="timeline-body"><p>We can't implement <code>Display</code> for <code>Box&lt;[Type]&gt;</code> directly, because we need a <code>db</code>. But I added a <code>DisplayTypeArray</code> intermediate struct and a <code>TypeArrayDisplay</code> trait with a <code>display(&amp;self, db) -&gt; DisplayTypeArray</code> method, and then we can implement that trait for <code>Box&lt;[Type]&gt;</code>. I think it works out pretty well, looking forward to your review :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-17 00:54</div>
+            <div class="timeline-body"><p>Updated again with a bunch of type-display cleanup, per comments.</p>
+<p>Since I've again made a lot of changes in these revisions, and I'm working in very Rusty territory that isn't super familiar, I'm again re-requesting review before I land, to catch anything silly I've done. (Just the last three commits.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-09-17 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:13 on 2024-09-17 08:16</div>
+            <div class="timeline-body"><p>I would keep it <code>pub</code> as it is also useful when using <code>HasTy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:103 on 2024-09-17 08:19</div>
+            <div class="timeline-body"><p>Is it necessary that we use two lifetimes here considering that all our types in fact do have a <code>'db</code> lifetime.</p>
+<p>My preference is only to use as many lifetimes as necessary. Sometimes, it's necessary to use two to make the borrow checker happy (because it is important that some values have different lifetimes), but often, it isn't, and we can use a single lifetime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:114 on 2024-09-17 08:19</div>
+            <div class="timeline-body"><p>The fact that we use <code>'_</code> makes me think that two lifetimes are indeed unnecessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:120 on 2024-09-17 08:20</div>
+            <div class="timeline-body"><p>I intentionally used an order map here to preserve the ordering. What's the reason for changing to an fx hash map (and rewriting the formatting here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:142 on 2024-09-17 08:22</div>
+            <div class="timeline-body"><p>Took me a while to understand why we need <code>DisplayUnionElement</code>. I would probably rewrite this to using a <code>for</code> loop and calling <code>f.entry(&amp;ty)</code> or <code>f.entry(&amp;DisplayLiteralGroup(literals, self.db))</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:235 on 2024-09-17 08:23</div>
+            <div class="timeline-body"><p>Nit: I would prefer to keep a for loop here and call <code>f.entry(&amp;ty)</code> in the for loop body. It avoids splitting the implementation across multiple types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:335 on 2024-09-17 08:24</div>
+            <div class="timeline-body"><p>I would move this into <code>ruff_db</code> and make it public. This seems generally useful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5394 on 2024-09-17 08:25</div>
+            <div class="timeline-body"><p>Is it intentional that the types are no longer quoted?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:168 on 2024-09-17 08:26</div>
+            <div class="timeline-body"><p>I thought you don't like <code>Result</code> :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-17 08:27</div>
+            <div class="timeline-body"><p>I should probably have been more explicit that refactoring <code>Display</code> wasn't something that we had to do as part of this PR. A separate PR for it would probably have been better (because I think there are other places where we now could use the new API).</p>
+<p>It overall looks good to me. I would have preferred a more imperative formatting in some places using <code>f.entry</code> because I think it leads to simpler code but I don't feel strongly about it.</p>
+<p>The one change that I don't understand is switching from <code>OrderMap</code> to an <code>FxHashMap</code> in the union display implementation. The use of an ordered map was intentional to preserve the source order when displaying a union (as much as possible). Preserving the source order in types is something that I understood is important. If not, then we should reconsider whether we want to use <code>OrderMap</code> in unions and intersection and instead replace it with another map/set that implements <code>Hash</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-17 13:56</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there are other places where we now could use the new API</p>
+</blockquote>
+<p>I updated all the ones I could find in red-knot (in <code>types/display.rs</code>). Do you mean other places outside of red-knot?</p>
+<p>Either way, if you point them out I'm happy to update them to use this, in a separate PR.</p>
+<blockquote>
+<p>The one change that I don't understand is switching from <code>OrderMap</code> to an <code>FxHashMap</code> in the union display implementation. The use of an ordered map was intentional to preserve the source order when displaying a union (as much as possible). Preserving the source order in types is something that I understood is important. If not, then we should reconsider whether we want to use <code>OrderMap</code> in unions and intersection and instead replace it with another map/set that implements <code>Hash</code>.</p>
+</blockquote>
+<p>I removed the use of <code>OrderMap</code> because it didn't serve any purpose; it didn't change the ordering of the output in any way (note that no tests changed in their ordering of unions). The algorithm is 1) collect all literal types into a map of vecs keyed by literal kind, and then 2) iterate again through each individual element of the union, and display each entire literal group (removing it from the map, by key) whenever we hit the first element of that kind. We never iterate over the map. The ordering of elements within a literal group is maintained by the vec, and the ordering of literal groups within the union is determined by iteration through the individual elements.</p>
+<p>So this change just simplifies the code (and I assume a <code>HashMap</code> is a bit more efficient than an <code>OrderMap</code>?) without changing the output of the algorithm at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:168 on 2024-09-17 13:57</div>
+            <div class="timeline-body"><p>I changed my mind -- I discussed this in a comment above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5394 on 2024-09-17 13:57</div>
+            <div class="timeline-body"><p>Yeah, the more I looked at it the more it just seemed like visual noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:120 on 2024-09-17 14:00</div>
+            <div class="timeline-body"><p>The ordered properties of the OrderMap were not used at all in the algorithm here. We don't ever iterate over the map; we pop specific keys out of it based on when we run into the first literal of that kind in the overall union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:103 on 2024-09-17 14:25</div>
+            <div class="timeline-body"><p>I think I ran into a different case where we were using <code>'db</code> lifetime for <code>self</code> where it was wrong and caused a problem, and then got over-aggressive about splitting up lifetimes 😆 I'll change this one back. I feel a bit mixed about it, because in principle the split feels more correct, but you're right that all of our type objects are always db lifetime anyway, so we really don't need to split here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:142 on 2024-09-17 14:57</div>
+            <div class="timeline-body"><p>That makes sense. I think I kind of forgot about the <code>.entry</code> option when working on this, and assumed I needed to get things into an &quot;iterator of items&quot; shape. Oops.</p>
+<p>I do like extracting the formatting of a literal group into its own type, so will probably keep that; it looks like that is your suggestion as well. Done and pushed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-17 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:235 on 2024-09-17 15:00</div>
+            <div class="timeline-body"><p>Looks like this doesn't work here; since the <code>Join</code> holds a mutable reference to the formatter, you can't <code>f.write_str(...)</code> while doing a join, so there's no way to add the <code>~</code> for negated types. So we still need <code>DisplayMaybeNegatedType</code>, which means it's nicer to just use the iterator and <code>.entries()</code>.</p>
+<p>I guess the conclusion between this and <code>DisplayUnionType</code> is that for loop and <code>.entry</code> is good when you're doing conditional stuff; that way you can avoid an extra enum. But it's still a requirement to use <code>Join</code> that all the actual writing is done within a per-entry <code>&amp;dyn Display</code>; you can't do extra writes to the formatter while joining.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-17 15:00</div>
+            <div class="timeline-body"><p>Thanks for the great review, again! Will land this once signal is green.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-09-17 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-09-17 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-17 15:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

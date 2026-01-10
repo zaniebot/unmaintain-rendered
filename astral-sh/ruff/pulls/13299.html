@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable jemalloc decay in benchmarks - astral-sh/ruff #13299</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disable jemalloc decay in benchmarks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13299">#13299</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-09-10 01:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 01:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Another try to make our linter benchmarks more stable.</p>
+<p>I honestly don't understand much of it. But jemalloc has a system to yield
+unused pages back to the OS. However, it doesn't do so immediately, instead, jemalloc
+waits 10s before running the decay function that then shows up in profiles.</p>
+<img width="870" alt="Screenshot 2024-09-09 at 21 43 32" src="https://github.com/user-attachments/assets/c55a2d66-f4b7-4128-8b7b-0c3ce919906c">
+
+<p>I don't understand why the decay very predictably happens in the same allocation in <code>flake8_annotations</code> and
+mainly when running the all-preview rules benchmarks. So maybe this is another fruitless attempt.</p>
+<p>We may want to port this to other benchmarks in the future, but I first want to see if it does help to make the benchmarks more predictable</p>
+<h2>Test Plan</h2>
+<p>The codspeed benchmark show improvements due to removing some <code>decay</code> stack frames in head (that exist in base)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-10 01:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @MichaReiser on 2024-09-10 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-09-10 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 18:32</div>
+            <div class="timeline-body"><p>I'll merge this. Happy to revert if it turns out to have no impact</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-09-10 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-10 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-10 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GaetanLepage">@GaetanLepage</a> on 2024-09-14 22:22</div>
+            <div class="timeline-body"><p>Interestingly, this seems to prevent us (nix package maintainers) to bump ruff to 0.6.5: https://github.com/NixOS/nixpkgs/pull/341674#issuecomment-2351172084</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-15 06:59</div>
+            <div class="timeline-body"><p>Hmm. Does the build succeed if you remove the added <code>extern</code>? Does the build succeed if you remove the <code>unprefixed_malloc_on_supported_platforms</code> in the <code>Cargo.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GaetanLepage">@GaetanLepage</a> on 2024-09-15 08:47</div>
+            <div class="timeline-body"><p>It builds fine when only reverting the change on the <code>Cargo.lock</code>.
+What do you mean by removing the &quot;added <code>extern</code>&quot; ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-15 13:18</div>
+            <div class="timeline-body"><blockquote>
+<p>It builds fine when only reverting the change on the Cargo.lock.</p>
+</blockquote>
+<p>Do you mean <code>Cargo.toml</code>?</p>
+<blockquote>
+<p>What do you mean by removing the &quot;added extern&quot; ?</p>
+</blockquote>
+<p>I'm referring to the code changes. But that's good to know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GaetanLepage">@GaetanLepage</a> on 2024-09-15 13:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you mean <code>Cargo.toml</code>?</p>
+</blockquote>
+<p>Yes indeed, sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-15 13:23</div>
+            <div class="timeline-body"><p>Okay. I think we can revert the added feature. We just need to rename the exported variable (I think it needs a leading underscore)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GaetanLepage">@GaetanLepage</a> on 2024-09-15 13:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm referring to the code changes.</p>
+</blockquote>
+<p>I have just done the test and I can confirm that reverting only the change in the source file but not the one in <code>Cargo.toml</code> doesn't fix the compilation issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-16 07:16</div>
+            <div class="timeline-body"><p>I created https://github.com/astral-sh/ruff/pull/13366</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

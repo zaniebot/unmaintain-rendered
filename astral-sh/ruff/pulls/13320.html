@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Fix type inference for `except*` definitions - astral-sh/ruff #13320</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Fix type inference for <code>except*</code> definitions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13320">#13320</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-09-10 22:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-10 22:09</div>
+            <div class="timeline-body"><p>Once again, async Python requires different inference rules to sync Python!</p>
+<p>A new <code>DefinitionNodeRef::ExceptStarHandler</code> variant is introduced, so that we can differentiate between except-handler definitions in <code>StmtTry { is_star: true }</code> nodes and those in <code>StmtTry { is_star: false }</code> nodes. The logic for adding these definitions is also moved in <code>builder.rs</code> so that we can know whether the <code>try</code> block is catching exceptions or exception groups. (We'll need to move the logic there anyway when adding control flow for these definitions.)</p>
+<p>Lots of TODOs here, but I <em>think</em> inferring <code>Instance(BaseExceptionGroup)</code> is better than just inferring <code>Unknown</code> for these definitions.</p>
+<p>The PR is stacked on top of #13319</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-09-10 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-09-10 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-09-10 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-10 22:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-10 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:704 on 2024-09-10 22:31</div>
+            <div class="timeline-body"><p>I don't mind having different nodes, but I am interested in understanding your motivation for two variants over a boolean flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-10 22:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:704 on 2024-09-10 22:34</div>
+            <div class="timeline-body"><p>There's not much in it. Carl and I thought it seemed marginally simpler to have two different variants rather than creating a dedicated struct with an <code>is_star: bool</code> flag inside the <code>ExceptHandler</code> variant. It also reinforces semantically that these are different kinds of definitions that create quite different types. But I'm very happy to do a dedicated struct if you prefer it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:433 on 2024-09-10 22:39</div>
+            <div class="timeline-body"><p>I think if we are going to just collapse back down to a boolean flag on the inference end, then we should just pass it through the definition as a boolean flag also.</p>
+<p>(I know this is opposite to what I was leaning toward before, but that was on the assumption that the inference end would be more separated. But it's all the same node, so I think that was wrong.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-10 22:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-10 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:433 on 2024-09-10 22:42</div>
+            <div class="timeline-body"><p>Yeah, it worked out differently to how I was expecting as well... I'll switch it to be just a boolean flag!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-10 22:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:704 on 2024-09-10 22:51</div>
+            <div class="timeline-body"><p>Nah that's fine. I was just interested in the reasoning and I'm sure if it's for the best if that was the conclusion you two came to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-09-11 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-11 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-11 19:05</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-11 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-11 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-11 19:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

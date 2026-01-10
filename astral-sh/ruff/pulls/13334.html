@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add Declarations support to semantic indexing - astral-sh/ruff #13334</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add Declarations support to semantic indexing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13334">#13334</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-09-12 03:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-09-12 03:05</div>
+            <div class="timeline-body"><p>Add support for declared types to the semantic index. This involves a lot of renaming to clarify the distinction between bindings and declarations. The Definition (or more specifically, the DefinitionKind) becomes responsible for determining which definitions are bindings, which are declarations, and which are both, and the symbol table building is refactored a bit so that the <code>IS_BOUND</code> (renamed from <code>IS_DEFINED</code> for consistent terminology) flag is always set when a binding is added, rather than being set separately (and requiring us to ensure it is set properly).</p>
+<p>The <code>SymbolState</code> is split into two parts, <code>SymbolBindings</code> and <code>SymbolDeclarations</code>, because we need to store live bindings for every declaration and live declarations for every binding; the split lets us do this without storing more than we need.</p>
+<p>The massive doc comment in <code>use_def.rs</code> is updated to reflect bindings vs declarations.</p>
+<p>The <code>UseDefMap</code> gains some new APIs which are allow-unused for now, since this PR doesn't yet update type inference to take declarations into account.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-09-12 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-09-12 03:11</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm/declared-types-index">CodSpeed Performance Report</a></h2>
+<h3>Merging #13334 will <strong>degrade performances by 4.98%</strong></h3>
+<p><sub>Comparing <code>cjm/declared-types-index</code> (366e609) with <code>main</code> (8558126)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>cjm/declared-types-index</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[cold]</code> | 60.4 ms | 63.6 ms | -4.98% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-12 03:19</div>
+            <div class="timeline-body"><p>As usual, it's hard to tell much from the CodSpeed graphs, since everything is hidden inside opaque Salsa frames. But I'm not surprised that this is a small regression, since we already know that semantic indexing is a bottleneck, specifically due to all the copying that happens in symbol-state snapshotting, and this PR adds more data (declarations) to the symbol-state snapshots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2024-09-12 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-09-12 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-09-12 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-12 03:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:196 on 2024-09-12 09:20</div>
+            <div class="timeline-body"><p>Could you add a comment saying why this <code>unsafe</code> block is safe? What invariants are we relying on here?</p>
+<p>Edit: ah, I see we were already using an unsafe block here. Still, it would be nice for it to be documented better :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:783 on 2024-09-12 09:29</div>
+            <div class="timeline-body"><p>the previous approach that used bitflags here seemed slightly more elegant to me :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:3 on 2024-09-12 09:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! * A &quot;binding&quot; gives a new value to a variable. This includes many different Python statements
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:11 on 2024-09-12 09:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! * A &quot;declaration&quot; establishes an upper bound type for the values that a variable may be
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:135 on 2024-09-12 09:43</div>
+            <div class="timeline-body"><p>to make sure I understand: this is an error?</p>
+<pre><code class="language-py">x = &quot;foo&quot;
+x: int
+</code></pre>
+<p>but this is not?</p>
+<pre><code class="language-py">x = &quot;foo&quot;
+x: int = 42
+</code></pre>
+<p>Is this an error?</p>
+<pre><code class="language-py">x = &quot;foo&quot;
+x: int
+x = 42
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:145 on 2024-09-12 09:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! shape of arbitrarily-sized call/import graphs. So we follow other Python type checkers in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:172 on 2024-09-12 09:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! number of [`Definition`]s that Salsa must track. Since &quot;unbound&quot; is special in that all symbols
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-12 09:58</div>
+            <div class="timeline-body"><p>Some minor nitpicks -- I'll take a deeper look later when I'm more awake ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:442 on 2024-09-12 12:56</div>
+            <div class="timeline-body"><p>Nit: It's a bit surprising that <code>binding.kind</code> returns a <code>DefinitionKind</code>. Should <code>DefinitionKind</code> be renamed to <code>BindingKind</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:456 on 2024-09-12 12:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;a symbol used but not bound in a scope should have only the used flag&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:979 on 2024-09-12 12:59</div>
+            <div class="timeline-body"><p>Nice. I do like the new name better. It better captures that it queries a definition at a specific &quot;point in time&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:195 on 2024-09-12 13:09</div>
+            <div class="timeline-body"><p>Nit: I would go with two separate assignments to keep the code simpler (we don't plan to print the code)</p>
+<pre><code class="language-suggestion">        let is_declaration = kind.is_declaration();
+        let is_binding = kind.is_binding();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:223 on 2024-09-12 13:11</div>
+            <div class="timeline-body"><p>The matching here breaks my brain haha. It might be worth to introduce a new enum with three variants:</p>
+<ul>
+<li><code>DeclarationAndBinding</code></li>
+<li><code>Declaration</code></li>
+<li><code>Binding</code></li>
+</ul>
+<p>It also reduces the need for an unreachable branch. The main challenge: How to name this enum.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:309 on 2024-09-12 13:12</div>
+            <div class="timeline-body"><p>Reading through this code it is unclear to me why we call <code>mark_symbol_bound</code> even when <code>bound</code> is <code>None</code>. I would have expected the call to be inside the <code>if let Some(bound)</code> block. Maybe consider renaming <code>bound</code> or adding a comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:729 on 2024-09-12 13:14</div>
+            <div class="timeline-body"><p>Can you tell me a bit about the motivation for renaming <code>add_or_update_symbol</code> to <code>add_symbol</code>. I don't have a strong preference either way. I'm just interesting in understanding the motivation because I suspect there's a reason that isn't obvious to me 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:421 on 2024-09-12 13:19</div>
+            <div class="timeline-body"><p>Unrelated to this PR: We should do another search for all allow comments and remove the outdated attributes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-12 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:135 on 2024-09-12 13:24</div>
+            <div class="timeline-body"><p>Correct. I don't like that this makes <code>x: int; x = 1</code> not equivalent to <code>x: int = 1</code>, but I don't know of a better option. In this case the problem with the split version is we don't know the matching assignment is immediately coming. And we don't want to allow an intermediate state where the variable has been declared with a type but the current value is not assignable to that type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-12 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:135 on 2024-09-12 13:28</div>
+            <div class="timeline-body"><p>I think this is OK, as long as we clearly document this edge case for our users</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:84 on 2024-09-12 13:33</div>
+            <div class="timeline-body"><p>Does the module level comment need updating or is it fine that it only talks about definitions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:88 on 2024-09-12 13:36</div>
+            <div class="timeline-body"><p>Yeah, that's quiet a lot of new data that needs tracking. It probably makes sense to re-think the use def map holistilcy at a later point in time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:154 on 2024-09-12 13:37</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">        self.constraints = Constraints::with_capacity(1);
+        constraints.push(BitSet::default());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:402 on 2024-09-12 13:39</div>
+            <div class="timeline-body"><p>Nit: Implemend <code>FuedIterator</code> or return an <code>impl Iterator&lt;Item=ScopedDefinitionId&gt;</code> in the method returning the iterator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:26 on 2024-09-12 13:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! type&quot;. These may be different, but the inferred type must always be assignable to the declared
+//! type in well-typed code; that is, the declared type is always wider, and the inferred type may be more precise.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:96 on 2024-09-12 15:27</div>
+            <div class="timeline-body"><p>Binding is a great choice and I like live binding</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-12 18:01</div>
+            <div class="timeline-body"><p>This is awesome and the comment is extremelly helpful to understand the different concepts. We might even want to make the comment more visible (by e.g. pulling it into a readme or similar).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-12 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index.rs</code>:442 on 2024-09-12 18:45</div>
+            <div class="timeline-body"><p>The name &quot;Definition&quot; isn't deprecated; it refers to &quot;either a Binding or a Declaration.&quot; Both Bindings and Declarations are Definitions, and both of them have a DefinitionKind. So I think that DefinitionKind remains the correct name here.</p>
+<p>We can't split <code>DefinitionKind</code> into <code>BindingKind</code> and <code>DeclarationKind</code> because many <code>DefinitionKind</code> are both binding and declaration!</p>
+<p>Perhaps the confusion here is that we use the variable name <code>binding</code> for a <code>Definition</code> when we know it is a binding. We could just use the variable name <code>definition</code> instead. But I think reflecting our knowledge that it is a binding in the code is useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-12 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:223 on 2024-09-12 20:20</div>
+            <div class="timeline-body"><p>Added a DefinitionCategory enum</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-12 20:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:309 on 2024-09-12 20:24</div>
+            <div class="timeline-body"><p>Totally different meaning of the same word :/ The &quot;bound&quot; here is the &quot;bounds&quot; (i.e. constraints) on the possible types of the TypeVar, which has nothing to do with whether or not a name is &quot;bound&quot;.</p>
+<p>I don't really want to totally rename from &quot;bound&quot; here, since the AST and everything uses that term. I'll add a comment to clarify. Also, when we fix the TODO here and create definitions for typevars, then this <code>mark_symbol_bound</code> call will go away (it will happen implicitly inside <code>add_definition</code> instead), which will reduce the double use of the term here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 01:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:729 on 2024-09-13 01:42</div>
+            <div class="timeline-body"><p>The initial motivation was that I didn't want the knowledge of which Definitions are a Binding to be spread across various places in the builder, which is error prone; I wanted it consolidated in one place, in the impl I added to <code>DefinitionKind</code>. But since we need a symbol in order to create a definition, if we make Definition responsible for knowing whether a symbol is a binding, that means we can't set <code>SymbolFlags::BOUND</code> when creating the symbol. But this actually made the API cleaner IMO; <code>add_symbol</code> is now responsible only for adding the symbol (it doesn't update anything if called a second time for the same symbol), and we have separate methods for marking the symbol as bound and/or used. And we can always mark a symbol as bound in just one place, in <code>add_definition</code>, using the Definition's own knowledge of whether it is a binding or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 01:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:421 on 2024-09-13 01:43</div>
+            <div class="timeline-body"><p>FWIW I tried to remove this one and it isn't ready to be removed yet; we don't yet use the <code>identifier</code> field (but I think we will need it when we implement inference for match patterns), so it gets flagged as unused if we remove this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 01:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:84 on 2024-09-13 01:54</div>
+            <div class="timeline-body"><p>Good call; the language there wasn't technically incorrect since bindings are definitions, but it should be more precise. Updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 02:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:88 on 2024-09-13 02:10</div>
+            <div class="timeline-body"><p>Yeah, I'm happy the regression is &quot;only&quot; &lt;5%, considering the amount of new behavior/functionality added here.</p>
+<p>I have ideas both for reducing the amount of copying needed in the current use-def map, and for modifying the entire map to be in SSA style, with much less copying needed (but more tracked structs, which may not pay off). Just need to decide when it is a priority to dive into this again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 02:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:402 on 2024-09-13 02:15</div>
+            <div class="timeline-body"><p>Implemented FusedIterator, but I feel like I'm missing something with the second suggestion. Why is that an &quot;or&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 02:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:26 on 2024-09-13 02:20</div>
+            <div class="timeline-body"><p>I actually aim to make this true without the added qualifier. When we hit an invalid assignment and emit a diagnostic, we infer the declared type as the inferred type for that binding, which keeps this true (and allows an explicit annotation plus type: ignore to override incorrect type inference).</p>
+<p>I think the one case in the next PR where this isn't true is when we see conflicting declarations. In that case in the next PR I currently just don't validate assignments at all, so the inferred type could be outside either of the conflicting declared types. I can mention that caveat here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 02:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:96 on 2024-09-13 02:20</div>
+            <div class="timeline-body"><p>Good! I'm happy with how it works out as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:783 on 2024-09-13 02:29</div>
+            <div class="timeline-body"><p>We could switch back to bitflags here, but there's more context, and a couple downsides in my mind:</p>
+<ol>
+<li><p>I think it's confusing to use the <code>SymbolFlags</code> bitflags here, since we don't actually use them to create the symbol with flags anymore (the bitflags aren't even directly exposed outside the symbol table anymore). Setting the &quot;bound&quot; flag is now handled automatically in <code>add_definition</code>, which I think is definitely an improvement, since it reduces duplication and the possibility of things getting out of sync due to a mistake in the builder. And defining a set of two bitflags just for use in this method feels not worth it.</p>
+</li>
+<li><p>Using a bitflag here is perhaps a bit clearer, but it makes checking the value later significantly more verbose; I'm not really convinced it's a net gain.</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-13 02:31</div>
+            <div class="timeline-body"><blockquote>
+<p>We might even want to make the comment more visible (by e.g. pulling it into a readme or similar).</p>
+</blockquote>
+<p>I agree, but I'll do that in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-13 02:40</div>
+            <div class="timeline-body"><p>Since I was modifying the relevant code anyway in this PR and the next, I did go ahead and use <code>#[expect(...)]</code>. Very nice feature! It does require bumping our MSRV to 1.81, I assume we are probably going to bump it sooner or later anyway so there's no harm in this? Seems worth it to unlock <code>expect</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-13 11:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Since I was modifying the relevant code anyway in this PR and the next, I did go ahead and use <code>#[expect(...)]</code>. Very nice feature! It does require bumping our MSRV to 1.81, I assume we are probably going to bump it sooner or later anyway so there's no harm in this? Seems worth it to unlock <code>expect</code>.</p>
+</blockquote>
+<p>The main downside is that some packagers may not yet support Rust 1.81. the result is that they can no longer package ruff or install ruff fails. Homebrew is one example. This is also the reason why we stopped bumping the msrv when we upgrade to a new Rust version. I would probably wait a bit longer just to be on the safe side</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-13 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:26 on 2024-09-13 16:22</div>
+            <div class="timeline-body"><p>After discussion today I plan to change the conflicting-declarations diagnostic so it still considers the union to be the declared type and validates assignments against that, while also issuing a conflicting-declarations diagnostic. So with that change I think it will again be fully true that inferred type is always assignable to declared type, even in ill-typed code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-13 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:26 on 2024-09-13 17:52</div>
+            <div class="timeline-body"><p>Feel free to merge the PR as is. Creating a new PR to change the behavior might also be easier to review and helps document the decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-09-13 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-09-13 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-13 17:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

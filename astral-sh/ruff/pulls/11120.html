@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for PEP 696 syntax - astral-sh/ruff #11120</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for PEP 696 syntax</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11120">#11120</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2024-04-24 01:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-04-24 01:16</div>
+            <div class="timeline-body"><p>Fixes #11099.</p>
+<p>My strategy here was:</p>
+<ul>
+<li>Add new fields to the AST nodes for TypeVar, ParamSpec, and TypeVarTuple</li>
+<li>Fix all the missing pattern matching cases that the compiler found</li>
+<li>Fix tests</li>
+<li>Add parser support for the new syntax and update tests</li>
+<li>Grep for existing code dealing with TypeVar bounds to find other places to edit</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @JelleZijlstra on 2024-04-24 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @JelleZijlstra on 2024-04-24 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-04-24 03:12</div>
+            <div class="timeline-body"><p>The CI failure looks like a random timeout. (Speculation: Maybe this change triggered too many recompilations and therefore it timed out?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-24 03:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3135 on 2024-04-24 05:53</div>
+            <div class="timeline-body"><p>I think we could keep it <code>default</code> for consistency</p>
+<p>https://github.com/astral-sh/ruff/blob/f5c7a62aa65decb9e286bd65ba17f1a3bd1f91e6/crates/ruff_python_ast/src/nodes.rs#L3246-L3250</p>
+<pre><code class="language-suggestion">    pub default: Option&lt;Box&lt;Expr&gt;&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:3185 on 2024-04-24 06:02</div>
+            <div class="timeline-body"><p>Can you clarify what the grammar is? I'm a bit confused between the two:</p>
+<ol>
+<li>The reference implementation uses <code>expression</code> https://github.com/Gobot1234/cpython/blob/a05c2f31f580bd001dcac34668bb3cbd8d3e0eb0/Grammar/python.gram#L664</li>
+<li>The PEP specifies two alternatives https://peps.python.org/pep-0696/#grammar-changes:<pre><code>type_param_default:
+    | '=' e=expression
+    | '=' e=starred_expression
+</code></pre>
+</li>
+</ol>
+<p>Although, looking at <a href="https://github.com/microsoft/pyright/blob/f4afe405cdf8d6a95abe67a459e8ea84af4162b5/packages/pyright-internal/src/parser/parser.ts#L574-L582">Pyright's implementation</a>, this does seem correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:3175 on 2024-04-24 06:04</div>
+            <div class="timeline-body"><p>Can you add one more test case to check the starred expression precedence (<code>bitwise_or</code>)? This could be:</p>
+<pre><code class="language-python">type X[*Ts = *int or str] = int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/type_param/type_param_type_var_tuple.rs</code>:19 on 2024-04-24 06:11</div>
+            <div class="timeline-body"><p>I think this will require a space before the <code>=</code> token as well.</p>
+<pre><code class="language-suggestion">        if let Some(default_value) = default_value {
+            write!(f, [space(), token(&quot;=&quot;), space(), default_value.format()])?;
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/type_param/type_param_type_var.rs</code>:23 on 2024-04-24 06:11</div>
+            <div class="timeline-body"><p>Similar to other suggestion.</p>
+<pre><code class="language-suggestion">        if let Some(default_value) = default_value {
+            write!(f, [space(), token(&quot;=&quot;), space(), default_value.format()])?;
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/type_param/type_param_param_spec.rs</code>:19 on 2024-04-24 06:11</div>
+            <div class="timeline-body"><p>And here,</p>
+<pre><code class="language-suggestion">        if let Some(default_value) = default_value {
+            write!(f, [space(), token(&quot;=&quot;), space(), default_value.format()])?;
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:679 on 2024-04-24 06:23</div>
+            <div class="timeline-body"><p>I might've missed this in the PEP if it's mentioned but I just want to confirm if this is the correct order for this visitor. This should be in the evaluation order. I'm asking because for parameters, defaults are evaluated before the annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:665 on 2024-04-24 06:24</div>
+            <div class="timeline-body"><p>Same question as for the <code>Visitor</code> trait w.r.t. the evaluation-order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:1207 on 2024-04-24 06:25</div>
+            <div class="timeline-body"><p>Same suggestion as in the AST node, we should rename this to <code>default</code> for consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-24 06:36</div>
+            <div class="timeline-body"><p>Wow, that was blazingly fast! Thank you for working on this. It is an impressive PR as it touches all of the major areas of the codebase (AST, parser, linter, and formatter).</p>
+<p>I've made some suggestions for consistency and have a few doubts regarding the grammar and the evaluation-order. But, otherwise I think this is pretty much good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-04-24 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python313</span> added by @dhruvmanila on 2024-04-24 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-24 07:19</div>
+            <div class="timeline-body"><p>Wow nice! This is excellent.</p>
+<p>Would you mind adding a few formatter snapshot tests? For example, you can add them to https://github.com/astral-sh/ruff/blob/0bf0aa28ac05eb4157c8e1932abc91301aaedce7/crates/ruff_python_formatter/resources/test/fixtures/ruff/statement/type_alias.py</p>
+<p>Ideally, with a few cases that involve comments and extra long lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-04-24 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3135 on 2024-04-24 13:21</div>
+            <div class="timeline-body"><p>My reasoning for this name was that it's the name being used in the CPython AST. I picked that name (well, Brandt Bucher suggested it) because <code>default</code> is a keyword in C, and AST field names get used as C identifiers in Python. I thought it'd be nice for consistency to reuse the name.</p>
+<p>However, <code>default</code> isn't a keyword in Rust, so we could also use the shorter name here. Do you think consistency with the Python AST is useful here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-04-24 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:3185 on 2024-04-24 13:24</div>
+            <div class="timeline-body"><p>In a sense there isn't a grammar yet, because my implementation hasn't been merged into CPython yet. I posted about it here: https://discuss.python.org/t/pep-696-type-defaults-for-typevarlikes/22569/36</p>
+<p>Based on the test cases I added, I think I picked the right flavor of expression here to match what I did in CPython.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-04-24 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:3175 on 2024-04-24 13:30</div>
+            <div class="timeline-body"><p>Sure. For reference here's what CPython does in my implementation:</p>
+<pre><code>&gt;&gt;&gt; type X[*Ts = *int or str] = int
+  File &quot;&lt;stdin&gt;&quot;, line 1
+    type X[*Ts = *int or str] = int
+                      ^^
+SyntaxError: invalid syntax
+</code></pre>
+<p>And Ruff produces:</p>
+<pre><code>+2 | type X[*Ts = *int or str] = int
++  |               ^^^^^^^^^^ Syntax Error: Boolean expression cannot be used here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-04-24 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_formatter/src/type_param/type_param_type_var_tuple.rs</code>:19 on 2024-04-24 13:32</div>
+            <div class="timeline-body"><p>Agree, done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-04-24 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:679 on 2024-04-24 13:35</div>
+            <div class="timeline-body"><p>They are evaluated lazily, similar to bounds, so there isn't really an evaluation order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-04-24 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:665 on 2024-04-24 13:35</div>
+            <div class="timeline-body"><p>As above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-04-24 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:1207 on 2024-04-24 13:36</div>
+            <div class="timeline-body"><p>Mentioned this above, will rename it everywhere if you confirm that you prefer this name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-04-24 13:52</div>
+            <div class="timeline-body"><p>@MichaReiser thanks, I added a number of tests in https://github.com/astral-sh/ruff/pull/11120/commits/7e053f6c9ce0ca252f34f41eecbd92400b8d101f. A few comments get moved to the other side of a punctuation mark but that seems fine.</p>
+<p>It looks like you don't have a similar test case file for type parameter definitions on functions, other than the one in <code>fixtures/black</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-25 09:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3135 on 2024-04-25 09:01</div>
+            <div class="timeline-body"><p>I don't think it's required for the AST structure to be consistent with the Python AST as we've already diverged from it as per the needs of a static analysis tool. So, <code>default</code> should be fine here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-25 09:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:3185 on 2024-04-25 09:03</div>
+            <div class="timeline-body"><p>I see, thanks for providing the context. The grammar then matches the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-25 09:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:3175 on 2024-04-25 09:03</div>
+            <div class="timeline-body"><p>Thank you! This is what I expected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-04-25 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3135 on 2024-04-25 13:42</div>
+            <div class="timeline-body"><p>Sure, moved to <code>default</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-04-25 15:19</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-25 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-26 07:47</div>
+            <div class="timeline-body"><p>Perfect! Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-04-26 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-26 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 13:23</div>
+            <div class="timeline-body"><p>Thank you @JelleZijlstra, this is awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-26 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch restored on 2024-09-10 23:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix issues with SIM101 (adjacent isinstance() calls) - astral-sh/ruff #7798</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix issues with SIM101 (adjacent isinstance() calls)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7798">#7798</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2023-10-04 03:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2023-10-04 03:50</div>
+            <div class="timeline-body"><ul>
+<li>Only trigger for immediately adjacent isinstance() calls with the same target</li>
+<li>Preserve order of or conditions</li>
+</ul>
+<p>Two existing tests changed:</p>
+<ul>
+<li>One was incorrectly reordering the or conditions, and is now correct.</li>
+<li>Another was combining two non-adjacent isinstance() calls. It's safe enough in that example,
+but this isn't safe to do in general, and it feels low-value to come up with a heuristic for
+when it is safe, so it seems better to not combine the calls in that case.</li>
+</ul>
+<p>Fixes https://github.com/astral-sh/ruff/issues/7797</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-04 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:365 on 2023-10-04 04:11</div>
+            <div class="timeline-body"><p>Perhaps instead:</p>
+<pre><code class="language-rust">if last_target_option
+    .as_ref()
+    .is_some_and(|last_target| *last_target == ComparableExpr::from(target))
+{
+    duplicates
+        .last_mut()
+        .expect(&quot;last_target should have a corresponding entry&quot;)
+        .push(index);
+} else {
+    last_target_option = Some(target.into());
+    duplicates.push(vec![index]);
+}
+</code></pre>
+<p>A few things, all minor:</p>
+<ol>
+<li>Chaining the option via <code>is_some_and</code> rather than nesting the <code>if</code> statements.</li>
+<li>Using <code>ComparableExpr::from</code> instead of <code>Into</code> with the filled-in generic.</li>
+<li>(1) allows us to use an <code>if</code>-<code>else</code> rather than a <code>continue</code>, which is nice.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-04 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:449 on 2023-10-04 04:11</div>
+            <div class="timeline-body"><p>(I know it was already written this way, but I think <code>.map(Clone::clone)</code> can be replaced with <code>.cloned()</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-04 04:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:448 on 2023-10-04 04:14</div>
+            <div class="timeline-body"><p>An alternative that would avoid some index math:</p>
+<pre><code class="language-rust">let [first, .., last] = indices.as_slice() else {
+    unreachable!(&quot;Indices should have at least two elements&quot;)
+};
+let before = values.iter().take(*first).cloned();
+let after = values.iter().skip(last + 1).cloned();
+</code></pre>
+<p>But don't feel strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2023-10-04 04:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:365 on 2023-10-04 04:15</div>
+            <div class="timeline-body"><p>Thanks, you can probably tell that this is the first serious Rust code I've ever written :) I went over the Rust book a few years ago but haven't had a chance to write any code.</p>
+<p>I applied both of your suggestions and they work, will push in a moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2023-10-04 04:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:448 on 2023-10-04 04:15</div>
+            <div class="timeline-body"><p>Thanks, that does feel cleaner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-04 04:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:349 on 2023-10-04 04:18</div>
+            <div class="timeline-body"><p>I'd love to avoid these but it's a bit tedious to do so...</p>
+<p>One option: add a method like:</p>
+<pre><code class="language-rust">fn isinstance_target(call: &amp;Expr, semantic: &amp;SemanticModel) -&gt; Option&lt;&amp;Expr&gt; {
+    // Verify that this is an `isinstance` call.
+    let Expr::Call(ast::ExprCall {
+        func,
+        arguments:
+            Arguments {
+                args,
+                keywords,
+                range: _,
+            },
+        range: _,
+    }) = &amp;call
+    else {
+        return None;
+    };
+    if args.len() != 2 {
+        return None;
+    }
+    if !keywords.is_empty() {
+        return None;
+    }
+    let Expr::Name(ast::ExprName { id: func_name, .. }) = func.as_ref() else {
+        return None;
+    };
+    if func_name != &quot;isinstance&quot; {
+        return None;
+    }
+    if !semantic.is_builtin(&quot;isinstance&quot;) {
+        return None;
+    }
+
+    // Collect the target (e.g., `obj` in `isinstance(obj, int)`).
+    Some(&amp;args[0])
+}
+</code></pre>
+<p>Then this becomes:</p>
+<pre><code class="language-rust">let Some(target) = isinstance_target(&amp;call, checker.semantic()) else {
+    last_target_option = None;
+    continue;
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-04 04:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-04 04:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:365 on 2023-10-04 04:19</div>
+            <div class="timeline-body"><p>Haha, if this is the first serious Rust code you've ever written, it's very impressive that you can make sense of this file!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2023-10-04 04:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:349 on 2023-10-04 04:22</div>
+            <div class="timeline-body"><p>Yes it's pretty repetitive, I will apply your change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-04 04:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs</code>:349 on 2023-10-04 04:24</div>
+            <div class="timeline-body"><p>Sounds good, will wait for that then merge. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-04 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 04:26</div>
+            <div class="timeline-body"><p>Looks great, thanks @JelleZijlstra!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-04 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-04 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-10-04 04:46</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/JelleZijlstra:sim101">CodSpeed Performance Report</a></h2>
+<h3>Merging #7798 will <strong>improve performances by 2.42%</strong></h3>
+<p><sub>Comparing <code>JelleZijlstra:sim101</code> (3cea5ec) with <code>main</code> (5d49d26)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>✅ 23</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>JelleZijlstra:sim101</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[pydantic/types.py]</code> | 38.9 ms | 38 ms | +2.42% |
+| ⚡ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 35.4 ms | 34.7 ms | +2.17% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-04 04:49</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-04 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch restored on 2024-09-10 23:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

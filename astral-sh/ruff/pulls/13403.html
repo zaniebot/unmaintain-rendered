@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] support reveal_type as pseudo-builtin - astral-sh/ruff #13403</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] support reveal_type as pseudo-builtin</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13403">#13403</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-09-19 00:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-09-19 00:07</div>
+            <div class="timeline-body"><p>Support using <code>reveal_type</code> without importing it, as implied by the type spec and supported by existing type checkers.</p>
+<p>We use <code>typing_extensions.reveal_type</code> for the implicit built-in; this way it exists on all Python versions. (It imports from <code>typing</code> on newer Python versions.)</p>
+<p>Emits an &quot;undefined name&quot; diagnostic whenever <code>reveal_type</code> is referenced in this way (in addition to the revealed-type diagnostic when it is called). This follows the mypy example (with <code>--enable-error-code unimported-reveal</code>) and I think provides a good (and easily understandable) balance for user experience. If you are using <code>reveal_type</code> for quick temporary debugging, the additional undefined-name diagnostic doesn't hinder that use case. If we make the revealed-type diagnostic a non-failing one, the undefined-name diagnostic can still be a failing diagnostic, helping prevent accidentally leaving it in place. For any use cases where you want to leave it in place, you can always import it to avoid the undefined-name diagnostic.</p>
+<p>In the future, we can easily provide configuration options to a) turn off builtin-reveal_type altogether, and/or b) silence the undefined-name diagnostic when using it, if we have users on either side (loving or hating pseudo-builtin <code>reveal_type</code>) who are dissatisfied with this compromise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-09-19 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-09-19 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-09-19 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-19 00:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-19 06:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Emits an &quot;undefined name&quot; diagnostic whenever reveal_type is referenced in this way (in addition to the revealed-type diagnostic when it is called).</p>
+</blockquote>
+<p>IMO, this is fairly confusing because it has obviously been picked up by the type checker. I think this should be its own diagnostic that provides additional context on why it is reported as an error.</p>
+<p>There's another downside to this approach that I'm not yet able to fully answer but it does impose restrictions on how we can sort diagnostics because you probably want that the <code>reveal_type</code> diagnostic comes before the <code>undefined</code> diagnostic.</p>
+<p>Let's say the file has a bunch of typing errors and the user uses <code>reveal_type</code> to debug what's going on. Knot sorts the diagnostics by file, severity (errors first), and location. That means that the reveal type comes at the very bottom and the user might only see the errors and be confused why <code>reveal_type</code> is undefined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-19 13:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this should be its own diagnostic that provides additional context on why it is reported as an error.</p>
+</blockquote>
+<p>I agree, I'll update the diagnostic to provide more context. Mypy does this too.</p>
+<blockquote>
+<p>you probably want that the <code>reveal_type</code> diagnostic comes before the <code>undefined</code> diagnostic.</p>
+</blockquote>
+<p>No, in general it will always be the other way around. They apply to different locations. The undefined diagnostic applies to the location where you reference the name <code>return_type</code>; the reveal diagnostic applies to where you call it (probably even more specifically to the first argument of the call.) So the location of the undefined diagnostic will always be before the location of the reveal diagnostic. In the extreme (though unlikely in practical usage) case, they could be arbitrarily far apart, if you do <code>rt = reveal_type</code> in one place and then <code>rt(some_val)</code> later. I think this is quite intuitive and as it should be.</p>
+<blockquote>
+<p>Knot sorts the diagnostics by file, severity (errors first), and location.</p>
+</blockquote>
+<p>I hope we don't ever do this, I would find it very confusing as a user. Error output on CLI should be sorted by location in file, so that related things are together. Sorting by severity is making unjustified assumptions about what is more visible, and what the user wants to see, and just makes it harder to find the relevant output.</p>
+<blockquote>
+<p>reveal type comes at the very bottom and the user might only see the errors</p>
+</blockquote>
+<p>There's an assumption here that earlier output is more likely to be seen. But this is not true for CLI usage, at least not for me. If there's a lot of output, the <em>last</em> output is what I'm most likely to see, not the first.</p>
+<blockquote>
+<p>and be confused why <code>reveal_type</code> is undefined</p>
+</blockquote>
+<p>I don't think this is an issue if the diagnostic clarifies the situation. More specifically, I don't think seeing the reveal diagnostic helps to clarify why <code>reveal_type</code> is undefined, so I don't think it matters; the undefined diagnostic needs to be responsible to clarify itself anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-19 14:40</div>
+            <div class="timeline-body"><p>Thanks for updating the diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-09-19 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-09-19 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-19 14:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

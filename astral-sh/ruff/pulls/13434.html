@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`vendored_typeshed_versions` should use `db.vendored` - astral-sh/ruff #13434</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>vendored_typeshed_versions</code> should use <code>db.vendored</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13434">#13434</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-09-21 09:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-21 09:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes a bug in the module resolver where it always defaulted to the versions file
+bundled with Red Knot rather than using the vendored file system instance returned by <code>db.vendored</code>.</p>
+<p>Not using <code>db.vendored</code> can lead to inconsistencies, as seen in the ruff module graph resolver where
+the module resolver loads the versions file from the static vendored file system but resolves the modules from the empty vendored file system set on the <code>ModuleGraphDb</code>.</p>
+<p>Now, this also shows that Ruff <strong>needs</strong> the vendored stubs. At least, the VERSIONS file because Red Knot verifies if the stub directory is valid when constructing the <code>ProgramSettings</code> to prevent the situation where a user runs <code>red_knot fix</code> with a broken custom typeshed dir.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-09-21 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-09-21 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-09-21 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-21 09:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-21 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:209 on 2024-09-21 09:40</div>
+            <div class="timeline-body"><p>I think it's fine to defer validating the vendored typeshed versions. They should be valid and whether we panic here or when trying to resolve the first module doesn't make a real difference. It results in a panic.</p>
+<p>The only downside is that getting the versions is now a salsa lookup rather than a static field access. Let's see if this hurts performance in a meaningful way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-21 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:286 on 2024-09-21 09:45</div>
+            <div class="timeline-body"><p>Not sure why I didn't use <code>Cow</code> for this... :face_with_diagonal_mouth:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:209 on 2024-09-21 09:53</div>
+            <div class="timeline-body"><p>Okay, there's a 1% performance drop. That doesn't seem worth it.</p>
+<p>I'm just gonna make <code>vendored_typeshed_versions</code> always parse the file without caching. This is an overall simplification and shouldn't hurt performance except in the case when we reconstruct the <code>SearchPathSettings</code> because the project configuration has changed.... but that's a very slow path anyway and parsing the VERSIONS file should be rather fast</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-21 09:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-21 09:55</div>
+            <div class="timeline-body"><p>I tried to make the typeshed versions usage as lazy as possible but there are some module graph tests that still access typeshed for imports that fail to resolve. We would have to add support for <strong>no typeshed</strong> to the module resolver to make the vendored stubs truly optional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-09-21 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-21 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-21 14:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

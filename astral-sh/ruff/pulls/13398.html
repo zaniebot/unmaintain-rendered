@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] consider imports to be declarations - astral-sh/ruff #13398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] consider imports to be declarations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13398">#13398</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-09-18 21:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-09-18 21:48</div>
+            <div class="timeline-body"><p>I noticed that this pattern sometimes occurs in typeshed:</p>
+<pre><code>if ...:
+    from foo import bar
+else:
+    def bar(): ...
+</code></pre>
+<p>If we have the rule that symbols with declarations only use declarations for the public type, then this ends up resolving as <code>Unknown | Literal[bar]</code>, because we didn't consider the import to be a declaration.</p>
+<p>I think the most straightforward thing here is to also consider imports as declarations. The same rationale applies as for function and class definitions: if you shadow an import, you should have to explicitly shadow with an annotation, rather than just doing it implicitly/accidentally.</p>
+<p>We may also ultimately need to re-evaluate the rule that public type considers only declarations, if there are declarations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-09-18 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-09-18 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-09-18 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5739 on 2024-09-18 22:14</div>
+            <div class="timeline-body"><p>Lol. Yeah, I think any type that's not a builtin (or that doesn't have <code>__main__</code> as its <code>__module__</code> at runtime? not sure) would probably benefit from having the qualified name printed in all cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-18 22:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-09-19 01:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-19 01:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5739 on 2024-09-19 01:20</div>
+            <div class="timeline-body"><p>I had a PR for this a while back, but it's actually pretty noisy to do that. It seems like pyright does something more clever where it only outputs the module name when it's actually relevant to disambiguate. I haven't looked into the details of how that's implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-19 01:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5739 on 2024-09-19 01:22</div>
+            <div class="timeline-body"><p>It might be ok to include the module name for any non-builtin function or class defined outside the current module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-09-19 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-09-19 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-19 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-19 06:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5739 on 2024-09-19 06:04</div>
+            <div class="timeline-body"><p>Feels very noisy unless there's another symbol with the same name in the scope.</p>
+<p>We may also decide that we don't want this to be part of <code>Display</code>. E.g. VS code and other editors show a type's import path as separate information from its name.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>

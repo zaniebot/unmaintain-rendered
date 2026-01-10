@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid parsing with Salsa - astral-sh/ruff #13437</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid parsing with Salsa</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13437">#13437</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-21 13:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-21 13:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>For reasons I haven't investigated, this speeds up the resolver about 2x (from 6.404s to 3.612s on an extremely large codebase).</p>
+<h2>Test Plan</h2>
+<p>\cc @BurntSushi</p>
+<pre><code>[andrew@duff rippling]$ time ruff analyze graph --preview &gt; /dev/null
+
+real    3.274
+user    16.039
+sys     7.609
+maxmem  11631 MB
+faults  0
+[andrew@duff rippling]$ time ruff-patch analyze graph --preview &gt; /dev/null
+
+real    1.841
+user    14.625
+sys     3.639
+maxmem  7173 MB
+faults  0
+[andrew@duff rippling]$ time ruff-patch2 analyze graph --preview &gt; /dev/null
+
+real    2.087
+user    15.333
+sys     4.869
+maxmem  8642 MB
+faults  0
+</code></pre>
+<p>Where that's <code>main</code>, then (<code>ruff-patch</code>) using the version with no <code>File</code>, no <code>SemanticModel</code>, then (<code>ruff-patch2</code>) using <code>File</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_graph/src/resolver.rs</code>:22 on 2024-09-21 13:16</div>
+            <div class="timeline-body"><p>@MichaReiser -- Would you prefer that I create a struct that exposes this? (I can't use <code>SemanticModel</code> because that requires a <code>File</code>, and I no longer have a <code>File</code> upfront.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-21 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-09-21 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-21 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-21 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-21 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-21 14:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:30:59 UTC
+    </footer>
+</body>
+</html>
