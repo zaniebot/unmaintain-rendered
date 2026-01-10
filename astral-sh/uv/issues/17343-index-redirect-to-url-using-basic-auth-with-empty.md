@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-07T04:29:10Z
-updated_at: 2026-01-07T15:43:27Z
+updated_at: 2026-01-07T21:18:53Z
 url: https://github.com/astral-sh/uv/issues/17343
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Index: Redirect to url using basic auth with empty username doesn't work
@@ -178,12 +178,16 @@ Oh, I see you're embedding the credentials in the proxy itself, nevermind my com
 
 ---
 
-_Referenced in [astral-sh/uv#17346](../../astral-sh/uv/pulls/17346.md) on 2026-01-07 15:42_
-
----
-
 _Comment by @woodruffw on 2026-01-07 15:43_
 
 #17346 will fix the redaction.
+
+---
+
+_Comment by @matthuisman on 2026-01-07 21:18_
+
+its not a huge deal for us to use the username (email), but would prefer not too as it means we have to extract it from the jwt token in case it changes.
+
+I was pretty much just trying to replicate your docs here: https://docs.astral.sh/uv/guides/integration/alternative-indexes/#authenticate-with-jwt-token but in the URL itself as jfrog doesn't like `__token__ `
 
 ---

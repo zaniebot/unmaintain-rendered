@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-04T13:18:49Z
 updated_at: 2025-12-07T19:11:05Z
 url: https://github.com/astral-sh/uv/issues/9637
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Selecting .venv/bin/python as an active interpreter in VSCode doesn't enable IDE features
@@ -663,14 +663,6 @@ I'm on latest Mac OS build.
 
 ---
 
-_Referenced in [astral-sh/uv#1156](../../astral-sh/uv/issues/1156.md) on 2025-02-12 15:05_
-
----
-
-_Referenced in [astral-sh/uv#11314](../../astral-sh/uv/issues/11314.md) on 2025-02-12 15:05_
-
----
-
 _Comment by @jzazo on 2025-02-12 15:18_
 
 Sorry, I haven't read the full thread, but I will add something in case it helps. I don't experience this issue with VSCode, but whenever my VSCode was misconfigured was because it was not using the workspace properly:
@@ -774,10 +766,6 @@ The doc mentions you don't need to do anything other than opening a folder with 
 
 ---
 
-_Referenced in [astral-sh/uv#12039](../../astral-sh/uv/issues/12039.md) on 2025-03-07 11:05_
-
----
-
 _Comment by @tomaszbk on 2025-03-08 19:45_
 
 I also had my venv in a custom path other than the project's root path, and solved this by running:
@@ -805,10 +793,6 @@ Then in Cursor:
  * Click to reuse the existing .venv
 
 Then all my dependencies resolved.
-
----
-
-_Referenced in [astral-sh/uv#12321](../../astral-sh/uv/issues/12321.md) on 2025-03-19 19:00_
 
 ---
 
@@ -1069,23 +1053,11 @@ Some update before posting this, I've checked project where I don't have UV inst
 
 ---
 
-_Referenced in [microsoft/vscode#248842](../../microsoft/vscode/issues/248842.md) on 2025-05-13 14:54_
-
----
-
-_Referenced in [microsoft/pylance-release#7209](../../microsoft/pylance-release/issues/7209.md) on 2025-05-13 17:27_
-
----
-
 _Comment by @BlackDark on 2025-05-14 12:33_
 
 I also did not have completions for my local projects but when I did a uv sync  --no-editable i got the completions back working because the folder gets copied to the .venv directory I think. But of course now also the stuff is fixed and not symlinked so changes get not reflected back to the .venv.
 
 Not sure if this is related.
-
----
-
-_Referenced in [microsoft/vscode-python#25068](../../microsoft/vscode-python/issues/25068.md) on 2025-05-14 12:57_
 
 ---
 
@@ -1179,10 +1151,6 @@ That said, it didn’t work immediately — possibly due to caching 🤷 or some
 _Comment by @bholagabbar on 2025-05-21 22:06_
 
 I spent like 3 days trying to fix this uv/autocomplete issue but in vain. This is a waste of time. Great library, terrible support for existing tooling. just CANNOT get it to work in a monorepo setup with pylance and the existing other tools. I've tried everything under the sun, nope
-
----
-
-_Referenced in [microsoft/pyright#10498](../../microsoft/pyright/issues/10498.md) on 2025-05-21 22:55_
 
 ---
 
@@ -1413,10 +1381,6 @@ _Comment by @konstin on 2025-06-02 09:15_
 
 ---
 
-_Referenced in [OHDSI/dbt-synthea#142](../../OHDSI/dbt-synthea/pulls/142.md) on 2025-06-03 09:20_
-
----
-
 _Comment by @pdpark-wex on 2025-06-03 16:36_
 
 > [@pdpark-wex](https://github.com/pdpark-wex) Does this mean you also tried https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-python-envs and that didn't work?
@@ -1607,10 +1571,6 @@ _Comment by @lmanc on 2025-06-30 18:46_
 @konstin, the locator fix suggested by @pdpark-wex worked for me, too.
 
 I tried everything else, the `.venv` absolute path and the new Python Environments extension, but the only thing that fixed it was switching back to the old locator.
-
----
-
-_Referenced in [pyca/cryptography#13158](../../pyca/cryptography/issues/13158.md) on 2025-07-09 21:16_
 
 ---
 
@@ -1805,10 +1765,6 @@ Is it `python.usePythonEnvironmentsExtension` or `python.useEnvironmentsExtensio
 <img width="870" height="421" alt="Image" src="https://github.com/user-attachments/assets/0cf45e70-0a27-4a40-92d8-1be5cbca5cc8" />
 
  
-
----
-
-_Referenced in [astral-sh/uv#16454](../../astral-sh/uv/issues/16454.md) on 2025-10-28 13:45_
 
 ---
 

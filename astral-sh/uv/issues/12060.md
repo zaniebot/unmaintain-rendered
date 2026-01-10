@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-07T23:25:51Z
 updated_at: 2026-01-06T18:28:58Z
 url: https://github.com/astral-sh/uv/issues/12060
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # `uv pip install` resolution fails whereas `pip install` has no issues
@@ -276,14 +276,6 @@ python 3.11.11
 
 ---
 
-_Referenced in [interpretml/interpret#601](../../interpretml/interpret/issues/601.md) on 2025-03-08 12:10_
-
----
-
-_Referenced in [astral-sh/uv#12091](../../astral-sh/uv/pulls/12091.md) on 2025-03-10 10:05_
-
----
-
 _Comment by @konstin on 2025-03-10 10:07_
 
 fwiw `uv pip {compile,install} --no-build` also works in this case, by forcing uv to only select packages with versions that have wheels.
@@ -300,15 +292,7 @@ We could change this order, for mixed effect on other conflict scenarios. I'm no
 
 ---
 
-_Referenced in [astral-sh/uv#12126](../../astral-sh/uv/issues/12126.md) on 2025-03-12 01:49_
-
----
-
 _Unassigned @konstin by @konstin on 2025-03-14 14:04_
-
----
-
-_Referenced in [astral-sh/packse#239](../../astral-sh/packse/pulls/239.md) on 2025-03-14 14:09_
 
 ---
 
@@ -390,14 +374,6 @@ In general you want binary packages, especially for datascience packages, I pers
 _Comment by @konstin on 2025-03-24 03:25_
 
 I'm confident we could handle this class of problem with better prioritization, similar to #12091, e.g. by re-prioritizing transitively. There's a number of options, I'm mainly concerned that changing the current heuristics will regress other, currently working resolutions since we don't have ecosystem coverage.
-
----
-
-_Referenced in [astral-sh/uv#12443](../../astral-sh/uv/issues/12443.md) on 2025-03-24 17:15_
-
----
-
-_Referenced in [astral-sh/uv#12482](../../astral-sh/uv/issues/12482.md) on 2025-03-26 12:53_
 
 ---
 
@@ -507,19 +483,11 @@ Will
 
 ---
 
-_Referenced in [rstudio/reticulate#1806](../../rstudio/reticulate/issues/1806.md) on 2025-06-12 09:15_
-
----
-
 _Comment by @notatallshaw on 2025-06-12 13:12_
 
 @wmacnair no that is not relevant. This issue is about uv pip vs. pip, not uv add. 
 
 Likely add, which does a universal resolution, can not solve for some platform or Python version for your dependencies, you should read the docs or open a separate issue. 
-
----
-
-_Referenced in [numba/numba#10155](../../numba/numba/issues/10155.md) on 2025-07-30 02:11_
 
 ---
 
@@ -1581,10 +1549,6 @@ With the wheel tag workaround we added for numpy, and the backtracking changes w
 
 ---
 
-_Referenced in [astral-sh/uv#4022](../../astral-sh/uv/issues/4022.md) on 2025-09-18 09:11_
-
----
-
 _Comment by @flying-sheep on 2025-09-18 09:38_
 
 > I think numba/numpy is the one big package
@@ -1603,10 +1567,6 @@ _Comment by @konstin on 2025-09-18 10:09_
 I was referring to the case where we pick the wrong numba version due to the interaction with the numpy version selection, as in the original `numpy` `umap-learn` example.
 
 The problem I was referring only occurs when using numba (which depends on numpy), but not with numpy alone. numpy does not use upper bounds (numpy 2.3.3 has `requires-python = ">=3.11"`), we instead look at the ABI tags of numpy releases and fork on the Python version to include different numpy versions in a universal resolution to cover the largest possible range of Python versions. See https://github.com/astral-sh/uv/issues/8492 for the evolution of the numpy handling. If you have problems with installing numpy or with universal resolution of numpy, please open an issue for that.
-
----
-
-_Referenced in [astral-sh/uv#15969](../../astral-sh/uv/pulls/15969.md) on 2025-09-21 10:32_
 
 ---
 
@@ -1684,10 +1644,6 @@ Installed 10 packages in 21ms
 + tqdm==4.67.1
 + umap-learn==0.5.7
 ```
-
----
-
-_Referenced in [astral-sh/uv#17338](../../astral-sh/uv/issues/17338.md) on 2026-01-06 18:28_
 
 ---
 

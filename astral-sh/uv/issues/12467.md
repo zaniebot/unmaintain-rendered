@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-25T15:23:37Z
 updated_at: 2025-12-25T09:40:39Z
 url: https://github.com/astral-sh/uv/issues/12467
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # egg-info directory keep being created
@@ -141,14 +141,6 @@ I will set a fixed version then :-)
 ---
 
 _Closed by @clement-escolano on 2025-03-26 08:15_
-
----
-
-_Referenced in [opensafely-core/job-server#5472](../../opensafely-core/job-server/pulls/5472.md) on 2025-12-17 15:55_
-
----
-
-_Referenced in [opensafely-core/job-server#5498](../../opensafely-core/job-server/issues/5498.md) on 2025-12-22 12:21_
 
 ---
 

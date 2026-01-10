@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-30T14:24:16Z
 updated_at: 2026-01-05T20:06:40Z
 url: https://github.com/astral-sh/uv/issues/17266
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # 0.9.20: DNS failures take ~4x longer due to nested retries
@@ -131,10 +131,6 @@ I believe @konstin's intent with that refactor was to avoid nested retries, he'l
 
 ---
 
-_Referenced in [astral-sh/uv#17267](../../astral-sh/uv/pulls/17267.md) on 2025-12-30 14:50_
-
----
-
 _Comment by @shayonj on 2025-12-30 14:51_
 
 sounds good, thank you for the quick response. I was experimenting with something like this - https://github.com/astral-sh/uv/pull/17267 and the replication script above and seems to have fixed. Happy to iterate on the PR with feedback or also close it in favor of a different change. Thanks!
@@ -151,10 +147,6 @@ cd test
 uv venv
 uv pip install --index-url http://domain.invalid package
 ```
-
----
-
-_Referenced in [astral-sh/uv#17274](../../astral-sh/uv/pulls/17274.md) on 2025-12-30 17:58_
 
 ---
 

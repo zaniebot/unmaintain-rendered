@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T19:40:39Z
 updated_at: 2025-12-19T20:08:40Z
 url: https://github.com/astral-sh/uv/issues/6830
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Feature: add --lockfile flag to allow users to customize lock file name
@@ -63,22 +63,6 @@ I agree that the feature would be very useful in different situations. In additi
 _Comment by @nikhilweee on 2024-09-11 19:50_
 
 Another use case is to support conflicting dependencies if/when #6981 is implemented.
-
----
-
-_Referenced in [astral-sh/uv#8976](../../astral-sh/uv/pulls/8976.md) on 2024-11-09 18:11_
-
----
-
-_Referenced in [astral-sh/uv#9546](../../astral-sh/uv/issues/9546.md) on 2024-12-02 00:56_
-
----
-
-_Referenced in [astral-sh/uv#10678](../../astral-sh/uv/issues/10678.md) on 2025-01-16 17:57_
-
----
-
-_Referenced in [astral-sh/uv#11645](../../astral-sh/uv/issues/11645.md) on 2025-02-21 02:19_
 
 ---
 
@@ -233,9 +217,5 @@ _Comment by @zanieb on 2025-12-19 20:08_
 @jiridanek that makes sense. we would love to solve that problem within a single lockfile because lots of people have to deploy against different accelerators.
 
 @Kludex I'm sorry, I don't follow? If you weren't testing `lowest-direct` correctly I don't see how a separately lockfile would have saved you? It'd just also have drifted from your main `uv.lock` file. Also, you wouldn't be able to assert that your `lowest-directly` file actually represents the same content as your main `uv.lock` file which makes it sort of useless?
-
----
-
-_Referenced in [pouvoirdasha/rutabaga#12](../../pouvoirdasha/rutabaga/issues/12.md) on 2025-12-28 14:41_
 
 ---

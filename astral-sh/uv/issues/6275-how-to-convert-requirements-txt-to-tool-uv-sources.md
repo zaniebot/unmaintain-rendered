@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T21:02:04Z
 updated_at: 2025-12-18T22:22:41Z
 url: https://github.com/astral-sh/uv/issues/6275
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # How to convert requirements.txt to  `tool.uv.sources` ?
@@ -56,15 +56,7 @@ _Label `documentation` added by @zanieb on 2024-08-20 21:20_
 
 ---
 
-_Referenced in [astral-sh/uv#6276](../../astral-sh/uv/issues/6276.md) on 2024-08-20 21:20_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-20 23:21_
-
----
-
-_Referenced in [astral-sh/uv#6287](../../astral-sh/uv/pulls/6287.md) on 2024-08-21 00:10_
 
 ---
 
@@ -120,10 +112,6 @@ _Comment by @yehoshuadimarsky on 2024-08-23 14:04_
 
 ---
 
-_Referenced in [astral-sh/uv#6518](../../astral-sh/uv/issues/6518.md) on 2024-08-23 14:05_
-
----
-
 _Comment by @helderco on 2024-09-11 13:13_
 
 The problem with `uv add -r requirements.txt` is it adds all of those dependencies to `project.dependencies`. 
@@ -157,10 +145,6 @@ uv will then avoid upgrading past the pinned versions in the future by default.
 _Comment by @helderco on 2024-09-11 13:26_
 
 Thanks for the tip, but do you plan on handling this automatically? Just considering what to put in our docs.
-
----
-
-_Referenced in [dagger/dagger#8311](../../dagger/dagger/pulls/8311.md) on 2024-09-13 16:11_
 
 ---
 
@@ -204,10 +188,6 @@ You also need to initialize the uv project by running the command `uv init` firs
 
 ---
 
-_Referenced in [astral-sh/uv#10924](../../astral-sh/uv/issues/10924.md) on 2025-01-24 01:27_
-
----
-
 _Comment by @Burnaviour on 2025-02-11 07:46_
 
 how i can generate requirement.txt file  when i generate my requirement file is empty using uv pip freeze > requiment.txt  
@@ -239,9 +219,5 @@ Can this be closed now that #12382 is merged? I just stumbled on this while tryi
 ---
 
 _Closed by @zanieb on 2025-12-18 22:22_
-
----
-
-_Referenced in [astral-sh/uv#17183](../../astral-sh/uv/pulls/17183.md) on 2025-12-18 22:42_
 
 ---

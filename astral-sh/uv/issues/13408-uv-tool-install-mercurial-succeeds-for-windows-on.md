@@ -10,9 +10,9 @@ labels:
   - external
 assignees: []
 created_at: 2025-05-12T11:38:32Z
-updated_at: 2025-09-26T13:05:13Z
+updated_at: 2025-12-12T14:08:30Z
 url: https://github.com/astral-sh/uv/issues/13408
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # uv tool install mercurial succeeds for Windows on GitHub Actions but fails to run
@@ -143,10 +143,6 @@ _Unassigned @Gankra by @konstin on 2025-09-26 12:55_
 
 ---
 
-_Referenced in [astral-sh/uv#16034](../../astral-sh/uv/issues/16034.md) on 2025-09-26 13:04_
-
----
-
 _Comment by @konstin on 2025-09-26 13:04_
 
 This seems to be an upstream bug: https://foss.heptapod.net/mercurial/mercurial-devel/-/issues/6635.
@@ -156,5 +152,23 @@ As a workaround, `python -m mercurial` works.
 ---
 
 _Label `external` added by @konstin on 2025-09-26 13:05_
+
+---
+
+_Comment by @SmallLars on 2025-12-12 14:08_
+
+For us this is working in a Gitlab pipline:
+```
+    ....
+variables:
+  VIRTUAL_ENV: $CI_PROJECT_DIR/venv
+    ....
+
+    - uv venv $env:VIRTUAL_ENV --python 3.12
+    - '& "$env:VIRTUAL_ENV/Scripts/activate.ps1"'
+    - uv pip install mercurial==7.1.2
+    - $env:PATH = "$env:PATH;$env:VIRTUAL_ENV/Lib/site-packages"
+    - hg clone -U $REPOSITORY source
+```
 
 ---

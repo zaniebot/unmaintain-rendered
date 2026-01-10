@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-12-03T13:33:45Z
 updated_at: 2025-12-08T19:24:26Z
 url: https://github.com/astral-sh/uv/issues/16963
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Add a hint when free-threaded selector is used in `requires-python`
@@ -77,10 +77,6 @@ _Comment by @zanieb on 2025-12-04 03:02_
 _Comment by @kxzk on 2025-12-04 15:25_
 
 @zanieb Got it, will give it a shot!
-
----
-
-_Referenced in [astral-sh/uv#17021](../../astral-sh/uv/pulls/17021.md) on 2025-12-08 04:12_
 
 ---
 

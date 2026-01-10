@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-30T05:30:00Z
 updated_at: 2025-12-11T14:40:41Z
 url: https://github.com/astral-sh/uv/issues/7803
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Debug uv applications with Visual Studio Code
@@ -119,10 +119,6 @@ _Comment by @zanieb on 2024-10-21 21:59_
 ---
 
 _Closed by @zanieb on 2024-10-21 21:59_
-
----
-
-_Referenced in [astral-sh/uv#8558](../../astral-sh/uv/issues/8558.md) on 2024-10-25 13:21_
 
 ---
 
@@ -236,10 +232,6 @@ I was able to debug a Streamlit app with an environment managed by UV using the 
 ```
 
 The "secret" is the setting `"python": ".venv/bin/python"` which points the debugger to use the python for the UV managed venv (UV by default creates a venv in `{projectDir}/.venv`) and which picks up any packages etc available in the venv. As far as I can tell, the path `.venv/bin/python` should be constant across os/platforms when using UV, and you can always [customize the venv path for UV](https://docs.astral.sh/uv/pip/environments/#using-arbitrary-python-environments) if necessary.
-
----
-
-_Referenced in [microsoft/vscode#270323](../../microsoft/vscode/issues/270323.md) on 2025-11-20 08:43_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-10T00:55:18Z
 updated_at: 2025-12-12T23:26:50Z
 url: https://github.com/astral-sh/uv/issues/17060
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # UV took the wrong torch nightly for the Linux and Windows Platform
@@ -235,9 +235,5 @@ required-environments = ["sys_platform == 'linux'", "sys_platform == 'windows'"]
 # Ignore other platforms
 environments = ["sys_platform == 'linux'", "sys_platform == 'windows'"]
 ```
-
----
-
-_Referenced in [astral-sh/uv#17118](../../astral-sh/uv/pulls/17118.md) on 2025-12-13 02:58_
 
 ---

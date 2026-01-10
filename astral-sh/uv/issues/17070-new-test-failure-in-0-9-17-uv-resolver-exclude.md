@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-10T13:27:53Z
 updated_at: 2025-12-10T14:04:06Z
 url: https://github.com/astral-sh/uv/issues/17070
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # New test failure in 0.9.17: uv-resolver exclude_newer::tests::test_exclude_newer_timestamp_absolute
@@ -76,10 +76,6 @@ _Label `bug` added by @musicinmybrain on 2025-12-10 13:27_
 _Comment by @zanieb on 2025-12-10 13:31_
 
 Thanks! I'll look into this
-
----
-
-_Referenced in [astral-sh/uv#17071](../../astral-sh/uv/pulls/17071.md) on 2025-12-10 13:50_
 
 ---
 

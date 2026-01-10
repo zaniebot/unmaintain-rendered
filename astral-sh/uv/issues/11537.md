@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-15T15:55:47Z
 updated_at: 2025-12-04T19:56:38Z
 url: https://github.com/astral-sh/uv/issues/11537
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Better sync API for groups with workspaces
@@ -102,10 +102,6 @@ According to other current behaviors you mentioned above, IMO the expected behav
 _Comment by @zanieb on 2025-03-20 22:49_
 
 @Gankra this may be interesting to you. Maybe we should add some syntactic sugar for this?
-
----
-
-_Referenced in [astral-sh/uv#12130](../../astral-sh/uv/issues/12130.md) on 2025-03-20 22:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T18:44:36Z
 updated_at: 2025-12-28T09:11:55Z
 url: https://github.com/astral-sh/uv/issues/6265
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Allow creating a `python` shim on `python install`
@@ -27,10 +27,6 @@ _Label `enhancement` added by @zanieb on 2024-08-20 18:44_
 
 ---
 
-_Referenced in [astral-sh/uv#5229](../../astral-sh/uv/issues/5229.md) on 2024-08-21 03:15_
-
----
-
 _Comment by @ophiry on 2024-08-23 09:22_
 
 not sure this was the original intention, but if the shim will work the same as uv run (in terms of environment resolution) it would be very useful 
@@ -44,10 +40,6 @@ this will allow simpler integration with IDEs
 _Comment by @tux-type on 2024-08-25 09:35_
 
 This would be very useful, and is also what is missing in uv compared to pyenv.
-
----
-
-_Referenced in [astral-sh/uv#6598](../../astral-sh/uv/issues/6598.md) on 2024-08-25 11:45_
 
 ---
 
@@ -69,10 +61,6 @@ This would be a great improvement for the entire Python ecosystem user-friendlin
 3. Use Poetry which automatically detects the correct Python version from the constraint in `pyproject.toml`.
 
 Having `uv` install _binary_ version of Python with pyenv-style shims would allow us to entirely drop pyenv and remove the burden of compiling Python from the users... even if we don't switch to uv for package management. 😄 
-
----
-
-_Referenced in [astral-sh/uv#7377](../../astral-sh/uv/issues/7377.md) on 2024-09-14 00:30_
 
 ---
 
@@ -131,14 +119,6 @@ It's not great, but it works.
 
 ---
 
-_Referenced in [astral-sh/uv#7710](../../astral-sh/uv/issues/7710.md) on 2024-09-26 14:49_
-
----
-
-_Referenced in [astral-sh/uv#8534](../../astral-sh/uv/issues/8534.md) on 2024-10-24 17:39_
-
----
-
 _Comment by @chaush-server on 2024-10-31 11:02_
 
 My like was 101, so this feature is in high demand. How can we communicate this to developers?
@@ -176,22 +156,6 @@ _Comment by @zanieb on 2024-11-07 03:14_
 
 ---
 
-_Referenced in [astral-sh/uv#9090](../../astral-sh/uv/issues/9090.md) on 2024-11-13 16:54_
-
----
-
-_Referenced in [astral-sh/uv#9380](../../astral-sh/uv/issues/9380.md) on 2024-11-23 17:15_
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 16:04_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
 _Comment by @feoh on 2024-12-16 19:38_
 
 This is so great!
@@ -201,10 +165,6 @@ I have use cases that make needing to type uv run every time I want something to
 Putting a 'python' executable in $HOME/.local/bin works perfectly for my use cases. Super appreciate the hard work!
 
 (In particular we use poetry for managing our python runtime environments and I couldn't get that working with uv run but it works great with the python installed using --preview --default).
-
----
-
-_Referenced in [astral-sh/uv#10015](../../astral-sh/uv/issues/10015.md) on 2024-12-19 00:35_
 
 ---
 
@@ -310,10 +270,6 @@ But typing all this out... I might consider adding a shell alias that expands to
 
 ---
 
-_Referenced in [astral-sh/uv#12147](../../astral-sh/uv/issues/12147.md) on 2025-03-14 01:05_
-
----
-
 _Comment by @xM8WVqaG on 2025-03-24 21:41_
 
 Is the intention to also install a `pip` shim as well? The current preview only creates a symlink for `python`.
@@ -337,10 +293,6 @@ I appreciate the intended workflow for projects is to use `venvs` where possible
 _Comment by @mbeijen on 2025-03-24 21:47_
 
 Therefore you can use `uv tool install yt-dlp`
-
----
-
-_Referenced in [astral-sh/uv#12263](../../astral-sh/uv/issues/12263.md) on 2025-03-28 19:32_
 
 ---
 
@@ -394,10 +346,6 @@ That's similar to the use case I describe in my previous comments, I believe. Wh
 _Comment by @Andrej730 on 2025-05-23 18:18_
 
 Is there a way to undo `--preview` or `--default` without completely reinstalling Python or just removing them from `.local/bin` should do and `uv` doesn't use preview and default python instances anywhere else?
-
----
-
-_Referenced in [astral-sh/uv#15867](../../astral-sh/uv/issues/15867.md) on 2025-09-15 13:04_
 
 ---
 

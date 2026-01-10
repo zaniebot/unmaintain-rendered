@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-12T15:11:42Z
 updated_at: 2025-12-13T19:42:02Z
 url: https://github.com/astral-sh/uv/issues/17103
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Invalid `exclude-newer` type in JSON Schema
@@ -66,10 +66,6 @@ _Comment by @BurntSushi on 2025-12-12 17:46_
 I'm not terribly familiar with what having precise types in a JSON Schema gives you. The "friendly" format isn't a widely recognized standard and representing it with a _succinct_ regex is probably not possible, so you'll likely need `string` _somewhere_.
 
 I do believe the friendly format can be represented as a single regex, but it would be quite large. (About as big as [the friendly format grammar](https://docs.rs/jiff/latest/jiff/fmt/friendly/index.html#grammar).)
-
----
-
-_Referenced in [astral-sh/uv#17121](../../astral-sh/uv/pulls/17121.md) on 2025-12-13 09:04_
 
 ---
 

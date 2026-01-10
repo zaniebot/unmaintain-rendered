@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T22:26:52Z
 updated_at: 2025-12-18T15:03:25Z
 url: https://github.com/astral-sh/uv/issues/10878
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Add option to save pypi token with cli command
@@ -42,10 +42,6 @@ _Label `enhancement` added by @thewh1teagle on 2025-01-22 22:26_
 _Comment by @MithicSpirit on 2025-01-22 22:49_
 
 There are precedents for this kind of behavior. For example, github-cli has a similar feature with `gh auth login`.
-
----
-
-_Referenced in [davep/hike#125](../../davep/hike/pulls/125.md) on 2025-08-18 10:41_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-30T02:28:26Z
 updated_at: 2026-01-05T12:40:58Z
 url: https://github.com/astral-sh/uv/issues/17259
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Unfriendly error message when `uv lock` or `uv sync` with `UV_FROZEN=1` env variable
@@ -69,10 +69,6 @@ _Label `enhancement` added by @kkew3 on 2025-12-30 02:28_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-04 18:58_
-
----
-
-_Referenced in [astral-sh/uv#17318](../../astral-sh/uv/pulls/17318.md) on 2026-01-04 19:27_
 
 ---
 

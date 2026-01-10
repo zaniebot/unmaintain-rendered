@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-30T05:07:55Z
 updated_at: 2025-12-30T16:23:25Z
 url: https://github.com/astral-sh/uv/issues/17260
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Hash mismatch for zstd-compressed wheels (regression in 0.9.20)
@@ -171,17 +171,9 @@ Hi @coltonevansid, thanks for opening this! Your RCA looks right to me on first 
 
 ---
 
-_Referenced in [astral-sh/uv#17263](../../astral-sh/uv/pulls/17263.md) on 2025-12-30 14:02_
-
----
-
 _Comment by @cgravill on 2025-12-30 14:08_
 
 Thanks for workaround @coltonevansid we have the same with a private pyx package and that fixed it.
-
----
-
-_Referenced in [astral-sh/uv#17265](../../astral-sh/uv/pulls/17265.md) on 2025-12-30 14:28_
 
 ---
 

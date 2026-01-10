@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-29T00:08:45Z
 updated_at: 2026-01-05T16:10:45Z
 url: https://github.com/astral-sh/uv/issues/6782
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Support copy or hardlink python interpreter when creating venv
@@ -110,14 +110,6 @@ any updates here? Would really like to have this functionality!
 
 ---
 
-_Referenced in [B-S-F/yaku#73](../../B-S-F/yaku/pulls/73.md) on 2024-11-20 12:10_
-
----
-
-_Referenced in [astral-sh/uv-docker-example#38](../../astral-sh/uv-docker-example/issues/38.md) on 2025-01-03 06:16_
-
----
-
 _Comment by @MarijkeStein on 2025-01-07 09:45_
 
 Me as well, please 💟 
@@ -144,10 +136,6 @@ Same in vscode, at least for me.
 
 ---
 
-_Referenced in [astral-sh/python-build-standalone#381](../../astral-sh/python-build-standalone/issues/381.md) on 2025-01-29 23:31_
-
----
-
 _Comment by @Vigilans on 2025-02-14 12:55_
 
 Now with `uv venv --relocatable`, the last obstacle to a copiable virtual environment is base python's installation dir: `python` executable symlink's path and `home` field in `pyvenv.cfg`.
@@ -159,10 +147,6 @@ I attempted to address it in commit https://github.com/astral-sh/uv/commit/b79ab
 The `python` executable does not bring issue, however `home` in `pyvenv.cfg` does: when `home` path is relative, it is relative to `python` process's working directory, instead of the location of `pyvenv.cfg`, see https://github.com/python/cpython/issues/83650. 
 
 This is essentially a deal breaker. One workaround proposed in [Stack Overflow](https://stackoverflow.com/questions/51989490/venv-home-key-in-pyvenv-cfg) suggests to modify `bin/activate` script to update `home` field when activating the environment. This may work in most circumstances, but cannot be proposed as a general solution for `uv`.  I wonder whether `home` field here will still be an issue when implementing the feature in this issue.
-
----
-
-_Referenced in [astral-sh/uv#11996](../../astral-sh/uv/issues/11996.md) on 2025-03-06 15:20_
 
 ---
 

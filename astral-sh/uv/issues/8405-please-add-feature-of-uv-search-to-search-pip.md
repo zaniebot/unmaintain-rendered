@@ -7,9 +7,9 @@ author: Super1Windcloud
 labels: []
 assignees: []
 created_at: 2024-10-21T04:18:15Z
-updated_at: 2024-12-18T10:16:34Z
+updated_at: 2026-01-08T15:00:21Z
 url: https://github.com/astral-sh/uv/issues/8405
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # please add  feature of  `uv search `  to search  pip  source package 
@@ -41,5 +41,15 @@ yes , and  it's  already exits    pip_search
 ---
 
 _Closed by @Super1Windcloud on 2024-12-18 10:16_
+
+---
+
+_Comment by @dcunited001 on 2026-01-08 15:00_
+
+> yes , and it's already exits pip_search
+
+that's news to me, but i live on tom hanks island ... so yeh
+
+https://x.com/aionfork/status/2009278046319017996
 
 ---

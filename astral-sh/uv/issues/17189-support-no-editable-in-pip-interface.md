@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-19T13:02:41Z
 updated_at: 2025-12-30T14:56:39Z
 url: https://github.com/astral-sh/uv/issues/17189
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Support `--no-editable` in pip interface
@@ -30,10 +30,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @pstrzelczak on 2025-12-19 13:02_
-
----
-
-_Referenced in [astral-sh/uv#17155](../../astral-sh/uv/issues/17155.md) on 2025-12-19 13:03_
 
 ---
 

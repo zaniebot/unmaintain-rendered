@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T17:16:47Z
 updated_at: 2025-12-10T04:21:55Z
 url: https://github.com/astral-sh/uv/issues/5611
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Document strategies for sharing the cache
@@ -29,10 +29,6 @@ _Label `documentation` added by @zanieb on 2024-07-30 17:16_
 ---
 
 _Label `cache` added by @zanieb on 2024-07-30 17:16_
-
----
-
-_Referenced in [astral-sh/uv#5581](../../astral-sh/uv/issues/5581.md) on 2024-07-30 17:18_
 
 ---
 
@@ -216,10 +212,6 @@ _Comment by @chrispy-snps on 2025-02-06 11:38_
 
 ---
 
-_Referenced in [astral-sh/uv#13323](../../astral-sh/uv/issues/13323.md) on 2025-05-07 22:13_
-
----
-
 _Comment by @woutervh on 2025-05-07 22:43_
 
 > Doesn't this defy the purpose of having a shared cache? 
@@ -238,10 +230,6 @@ The first priority of a venv is to provide isolation from other venvs.
 
 ---
 
-_Referenced in [astral-sh/uv#12875](../../astral-sh/uv/issues/12875.md) on 2025-06-03 03:08_
-
----
-
 _Comment by @oraluben on 2025-06-03 03:32_
 
 @observerw Amazing instructions, this is exactly what I'm looking for.
@@ -254,10 +242,6 @@ One small nit:
 
 
 Adding user to group should be: `usermod -a -G share <user>`
-
----
-
-_Referenced in [ecmwf/WeatherGenerator#344](../../ecmwf/WeatherGenerator/issues/344.md) on 2025-06-25 10:16_
 
 ---
 

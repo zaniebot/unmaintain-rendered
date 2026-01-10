@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-10-20T09:04:09Z
 updated_at: 2025-12-14T21:22:27Z
 url: https://github.com/astral-sh/uv/issues/16368
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Switching torch extra between pypi & torch backend
@@ -198,10 +198,6 @@ _Assigned to @konstin by @konstin on 2025-10-24 12:54_
 _Comment by @konstin on 2025-10-24 12:55_
 
 This is a bug about how we handle switching from local version to non-local version, we have to fix the invalidation.
-
----
-
-_Referenced in [astral-sh/uv#16480](../../astral-sh/uv/pulls/16480.md) on 2025-10-28 11:42_
 
 ---
 

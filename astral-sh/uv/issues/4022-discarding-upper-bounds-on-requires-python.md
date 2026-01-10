@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-04T20:46:26Z
 updated_at: 2026-01-05T13:44:53Z
 url: https://github.com/astral-sh/uv/issues/4022
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Discarding upper-bounds on `Requires-Python`
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:57:09Z
 _Issue opened by @charliermarsh on 2024-06-04 20:46_
 
 See: https://github.com/astral-sh/uv/pull/4021#discussion_r1626581939
-
----
-
-_Referenced in [astral-sh/uv#4021](../../astral-sh/uv/pulls/4021.md) on 2024-06-04 20:46_
 
 ---
 
@@ -270,115 +266,7 @@ _Comment by @charliermarsh on 2024-06-06 00:11_
 
 ---
 
-_Referenced in [astral-sh/uv#4071](../../astral-sh/uv/issues/4071.md) on 2024-06-06 01:40_
-
----
-
-_Referenced in [astral-sh/uv#4086](../../astral-sh/uv/pulls/4086.md) on 2024-06-06 03:50_
-
----
-
-_Referenced in [astral-sh/uv#4087](../../astral-sh/uv/issues/4087.md) on 2024-06-06 04:06_
-
----
-
 _Closed by @charliermarsh on 2024-06-06 17:52_
-
----
-
-_Referenced in [astral-sh/uv#5045](../../astral-sh/uv/issues/5045.md) on 2024-07-14 15:55_
-
----
-
-_Referenced in [astral-sh/uv#5046](../../astral-sh/uv/issues/5046.md) on 2024-08-23 13:35_
-
----
-
-_Referenced in [astral-sh/uv#6150](../../astral-sh/uv/issues/6150.md) on 2024-08-29 16:02_
-
----
-
-_Referenced in [astral-sh/uv#7462](../../astral-sh/uv/issues/7462.md) on 2024-09-17 14:30_
-
----
-
-_Referenced in [astral-sh/uv#7915](../../astral-sh/uv/issues/7915.md) on 2024-10-04 13:07_
-
----
-
-_Referenced in [astral-sh/uv#8374](../../astral-sh/uv/issues/8374.md) on 2024-10-19 22:21_
-
----
-
-_Referenced in [astral-sh/uv#8492](../../astral-sh/uv/issues/8492.md) on 2024-10-23 12:27_
-
----
-
-_Referenced in [astral-sh/uv#8863](../../astral-sh/uv/issues/8863.md) on 2024-11-06 16:52_
-
----
-
-_Referenced in [astral-sh/uv#9020](../../astral-sh/uv/issues/9020.md) on 2024-11-11 16:13_
-
----
-
-_Referenced in [astral-sh/uv#9217](../../astral-sh/uv/issues/9217.md) on 2024-11-19 18:43_
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
-_Referenced in [astral-sh/uv#10373](../../astral-sh/uv/issues/10373.md) on 2025-01-07 18:18_
-
----
-
-_Referenced in [astral-sh/uv#10376](../../astral-sh/uv/issues/10376.md) on 2025-01-07 18:48_
-
----
-
-_Referenced in [astral-sh/uv#10440](../../astral-sh/uv/issues/10440.md) on 2025-01-10 03:38_
-
----
-
-_Referenced in [astral-sh/uv#10916](../../astral-sh/uv/issues/10916.md) on 2025-01-23 22:17_
-
----
-
-_Referenced in [python-poetry/poetry#10136](../../python-poetry/poetry/issues/10136.md) on 2025-02-01 23:23_
-
----
-
-_Referenced in [astral-sh/uv#7869](../../astral-sh/uv/issues/7869.md) on 2025-02-01 23:30_
-
----
-
-_Referenced in [openwisp/django-rest-framework-gis#332](../../openwisp/django-rest-framework-gis/pulls/332.md) on 2025-03-12 21:32_
-
----
-
-_Referenced in [astral-sh/uv#14422](../../astral-sh/uv/issues/14422.md) on 2025-07-07 13:23_
-
----
-
-_Referenced in [astral-sh/uv#14484](../../astral-sh/uv/issues/14484.md) on 2025-07-17 09:27_
-
----
-
-_Referenced in [astral-sh/uv#14711](../../astral-sh/uv/issues/14711.md) on 2025-07-18 12:03_
-
----
-
-_Referenced in [astral-sh/uv#15064](../../astral-sh/uv/issues/15064.md) on 2025-08-04 18:53_
-
----
-
-_Referenced in [astral-sh/uv#12060](../../astral-sh/uv/issues/12060.md) on 2025-09-18 08:46_
 
 ---
 
@@ -541,10 +429,6 @@ Right so in this case, if we ask users to explicitly use a specific version of N
 
 Thanks, I'll bear that in mind for future.
 
-
----
-
-_Referenced in [numba/llvmlite#1385](../../numba/llvmlite/issues/1385.md) on 2026-01-01 20:25_
 
 ---
 
@@ -912,9 +796,5 @@ CMAKE_ARGS="-DLLVM_DIR=/usr/lib/llvm-20/lib/cmake/llvm" uv pip install numba==0.
 In both of the above cases, we conform to the `requires-python` upper bound.
 
 There have also been cases where patch versions were specified in requires-python to exclude a buggy `3.x.0` release, and there has been confusion about how prerelease specifiers in requires-python should be handled. Those too are CPython-specific details, which should not be encoded in the implementation-independent Core Metadata (https://discuss.python.org/t/requires-python-and-pre-release-python-versions/62959).
-
----
-
-_Referenced in [astral-sh/uv#17340](../../astral-sh/uv/issues/17340.md) on 2026-01-06 22:04_
 
 ---

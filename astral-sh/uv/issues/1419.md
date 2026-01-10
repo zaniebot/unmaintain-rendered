@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-16T03:48:14Z
 updated_at: 2025-12-17T21:02:10Z
 url: https://github.com/astral-sh/uv/issues/1419
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Add option to upgrade all packages in the environment, e.g., `upgrade --all`
@@ -49,10 +49,6 @@ Thanks! We should also clarify how `pip install --upgrade` is _different_ than t
 
 ---
 
-_Referenced in [astral-sh/uv#1550](../../astral-sh/uv/issues/1550.md) on 2024-02-17 00:31_
-
----
-
 _Comment by @sh-shahrokhi on 2024-03-09 20:27_
 
 Hi, just wanted to add my voice for this one.  Thanks.
@@ -82,10 +78,6 @@ For this to move forward two things need to happen:
 ---
 
 _Label `needs-design` added by @zanieb on 2024-03-22 03:28_
-
----
-
-_Referenced in [PrefectHQ/prefect#12420](../../PrefectHQ/prefect/issues/12420.md) on 2024-03-25 21:54_
 
 ---
 
@@ -140,10 +132,6 @@ I'm not sure if it's just the work I do, but I'm often seeing new functionality 
 Apologies if any of that is unclear.  Just let me know if I can further clarify anything. 
 
 Thanks!!
-
----
-
-_Referenced in [astral-sh/uv#6692](../../astral-sh/uv/issues/6692.md) on 2024-08-27 15:14_
 
 ---
 
@@ -236,14 +224,6 @@ manually type
 
 ---
 
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
 _Renamed from "Enhancement: add `upgrade --all` option" to "Add option to upgrade all packages in the environment, e.g., `upgrade --all`" by @zanieb on 2024-11-26 23:49_
 
 ---
@@ -333,10 +313,6 @@ And to check if there are updates, I use `uv lock --upgrade --locked`, which doe
 
 ---
 
-_Referenced in [astral-sh/uv#10965](../../astral-sh/uv/issues/10965.md) on 2025-01-26 16:27_
-
----
-
 _Comment by @heliocastro on 2025-01-29 09:48_
 
 And how about on sync pyproject with uv.lock after `uv lock --upgrade` ?
@@ -371,10 +347,6 @@ See https://github.com/astral-sh/uv/issues/10273 for the motivation behind makin
 
 ---
 
-_Referenced in [astral-sh/uv#10836](../../astral-sh/uv/pulls/10836.md) on 2025-01-29 14:22_
-
----
-
 _Comment by @yrro on 2025-01-29 18:22_
 
 Thanks. `--upgrade --check` would make sense to me, but there is overlap with `--upgrade --dry-run`; if `--dry-run` and `--check` were mutually exclusive then that would resolve and it would be clear that `--check` is expected to fail of there are pending updates, whereas `--dry-run` is expected to succeed.
@@ -394,10 +366,6 @@ This [this pyproject_yeeter.py gist](https://gist.github.com/aaronmaxcarver/9a2d
 
 ---
 
-_Referenced in [achillesrasquinha/pipupgrade#158](../../achillesrasquinha/pipupgrade/issues/158.md) on 2025-02-26 03:22_
-
----
-
 _Comment by @rosmur on 2025-03-15 11:52_
 
 would like to request a method to also upgrade all items in a uv venv (that is not a project)
@@ -407,10 +375,6 @@ I was able to do it by this single line shell command:
 `for pkg in $(uv pip freeze | grep -v '^-e'); do uv pip install -U $pkg; done`
 
 although it didnt seem to miss items
-
----
-
-_Referenced in [astral-sh/uv#12322](../../astral-sh/uv/issues/12322.md) on 2025-03-20 11:29_
 
 ---
 
@@ -601,10 +565,6 @@ Sorry, I don't actually use the project CLI very much, I guess it's `uv sync --u
 
 ---
 
-_Referenced in [astral-sh/uv#13278](../../astral-sh/uv/issues/13278.md) on 2025-05-03 18:48_
-
----
-
 _Comment by @konstin on 2025-05-04 21:14_
 
 Through this thread, different features were discussed so I want to enumerate some of them and their solutions, workarounds or tracking issues:
@@ -751,10 +711,6 @@ _Comment by @notatallshaw on 2025-05-16 13:45_
 @qiuxiaomu you're talking about the project CLI, so I think you want https://github.com/astral-sh/uv/issues/6794 or a new issue. 
 
 This issue was created prior to the project CLI existing, and is therefore about `uv pip`. 
-
----
-
-_Referenced in [PrefectHQ/prefect#17850](../../PrefectHQ/prefect/issues/17850.md) on 2025-05-22 13:55_
 
 ---
 
@@ -930,10 +886,6 @@ with no additional info it's not intuitive at all why there's no update and the 
 
 ---
 
-_Referenced in [astral-sh/uv#13968](../../astral-sh/uv/issues/13968.md) on 2025-06-11 15:17_
-
----
-
 _Comment by @zanieb on 2025-06-11 15:28_
 
 These comments aren't really on topic for this issue, I've opened a couple new issues for discussion
@@ -951,18 +903,6 @@ _Comment by @Danipulok on 2025-06-11 18:16_
 > - https://github.com/astral-sh/uv/issues/13970
 
 @zanieb thank you very much! Really appreciate it!
-
----
-
-_Referenced in [aws/aws-codebuild-docker-images#779](../../aws/aws-codebuild-docker-images/issues/779.md) on 2025-06-13 21:43_
-
----
-
-_Referenced in [saritasa-nest/saritasa-invocations#165](../../saritasa-nest/saritasa-invocations/pulls/165.md) on 2025-09-25 13:34_
-
----
-
-_Referenced in [astral-sh/uv#16060](../../astral-sh/uv/issues/16060.md) on 2025-09-29 10:39_
 
 ---
 

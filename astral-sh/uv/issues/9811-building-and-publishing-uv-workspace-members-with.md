@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-11T14:49:10Z
 updated_at: 2025-12-17T17:24:42Z
 url: https://github.com/astral-sh/uv/issues/9811
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Building and publishing uv workspace members with pinned version constraints
@@ -197,10 +197,6 @@ _Reopened by @mtnmbr on 2024-12-12 13:37_
 
 ---
 
-_Referenced in [astral-sh/uv#11250](../../astral-sh/uv/issues/11250.md) on 2025-03-04 08:32_
-
----
-
 _Comment by @Gr1N on 2025-05-16 10:03_
 
 Hey!
@@ -268,10 +264,6 @@ if __name__ == "__main__":
 ```
 
 It would be great to have such an interface out of the box; we believe it can massively improve the experience with workspaces and be a good point of departure for extending the `uv version` command.
-
----
-
-_Referenced in [equinor/dataorc#28](../../equinor/dataorc/issues/28.md) on 2025-11-07 10:17_
 
 ---
 

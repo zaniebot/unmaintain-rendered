@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-18T10:19:06Z
 updated_at: 2025-12-18T14:14:28Z
 url: https://github.com/astral-sh/uv/issues/17169
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Please rebase astral-reqwest-retry on upstream version 0.8.0
@@ -50,10 +50,6 @@ _Label `enhancement` added by @musicinmybrain on 2025-12-18 10:19_
 ---
 
 _Renamed from "Please astral-reqwest-retry on upstream version 0.8.0" to "Please rebase astral-reqwest-retry on upstream version 0.8.0" by @musicinmybrain on 2025-12-18 10:19_
-
----
-
-_Referenced in [astral-sh/uv#17170](../../astral-sh/uv/pulls/17170.md) on 2025-12-18 10:44_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-04T06:07:27Z
 updated_at: 2025-12-09T05:52:03Z
 url: https://github.com/astral-sh/uv/issues/3370
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Publish binaries for FreeBSD
@@ -29,10 +29,6 @@ ERROR: there isn't a package for x86_64-unknown-freebsd
 I'm not sure how feasible this is, but here's a tracking issue.
 
 Related #2442 
-
----
-
-_Referenced in [astral-sh/uv#3369](../../astral-sh/uv/issues/3369.md) on 2024-05-04 06:08_
 
 ---
 
@@ -101,10 +97,6 @@ error: failed to run custom build command for `tikv-jemalloc-sys v0.6.0+5.3.0-1-
 
 ---
 
-_Referenced in [astral-sh/uv#7780](../../astral-sh/uv/pulls/7780.md) on 2024-09-29 13:28_
-
----
-
 _Comment by @konstin on 2024-09-29 13:28_
 
 Could you try https://github.com/astral-sh/uv/pull/7780?
@@ -119,9 +111,5 @@ _Comment by @donnex on 2024-09-29 14:51_
 target/release/uv version
 uv 0.4.17 (c2f19dfd6 2024-09-29)
 ```
-
----
-
-_Referenced in [astral-sh/uv#8269](../../astral-sh/uv/pulls/8269.md) on 2024-10-16 19:35_
 
 ---

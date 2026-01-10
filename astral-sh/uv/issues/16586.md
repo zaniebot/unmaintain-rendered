@@ -13,7 +13,7 @@ assignees: []
 created_at: 2025-11-04T07:45:54Z
 updated_at: 2025-12-18T16:19:21Z
 url: https://github.com/astral-sh/uv/issues/16586
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv cache clean` fails on Windows when sdist contains special filenames
@@ -93,9 +93,5 @@ _Label `great writeup` added by @konstin on 2025-11-04 16:08_
 ---
 
 _Label `help wanted` added by @konstin on 2025-12-18 16:19_
-
----
-
-_Referenced in [astral-sh/uv#17241](../../astral-sh/uv/pulls/17241.md) on 2025-12-26 18:49_
 
 ---

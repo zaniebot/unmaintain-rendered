@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-27T20:36:27Z
 updated_at: 2026-01-05T14:36:39Z
 url: https://github.com/astral-sh/uv/issues/17243
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # UV_FROZEN=1 uvx should not ignore lockfile check
@@ -125,10 +125,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2026-01-04 19:33_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-04 20:52_
-
----
-
-_Referenced in [astral-sh/uv#17322](../../astral-sh/uv/pulls/17322.md) on 2026-01-05 00:26_
 
 ---
 

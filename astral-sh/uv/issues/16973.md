@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-03T19:51:40Z
 updated_at: 2025-12-09T14:39:57Z
 url: https://github.com/astral-sh/uv/issues/16973
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Make a genuinely relocatable variant of --relocatable (i.e. fix or remove activate.csh/nu)
@@ -53,10 +53,6 @@ _Label `help wanted` added by @zanieb on 2025-12-04 15:21_
 _Comment by @zanieb on 2025-12-04 15:22_
 
 It seems reasonable to make them relocatable unless there are firm blockers to that in which case... I guess I'd omit them? That's a breaking change though.
-
----
-
-_Referenced in [astral-sh/uv#17036](../../astral-sh/uv/pulls/17036.md) on 2025-12-08 17:47_
 
 ---
 

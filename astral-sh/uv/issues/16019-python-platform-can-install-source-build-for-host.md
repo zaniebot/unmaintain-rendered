@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-09-24T18:43:02Z
 updated_at: 2025-12-05T15:04:54Z
 url: https://github.com/astral-sh/uv/issues/16019
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `--python-platform` can install source build for host instead of target
@@ -103,10 +103,6 @@ _Label `error messages` added by @konstin on 2025-09-26 14:05_
 ---
 
 _Renamed from "Uv builds source package on host when resolution for alternate platform cannot find a binary" to "`--python-platform` can install source build for host instead of target" by @konstin on 2025-09-26 14:07_
-
----
-
-_Referenced in [astral-sh/uv#16074](../../astral-sh/uv/pulls/16074.md) on 2025-09-30 12:44_
 
 ---
 

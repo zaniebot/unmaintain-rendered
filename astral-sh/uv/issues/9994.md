@@ -8,9 +8,9 @@ labels:
   - configuration
 assignees: []
 created_at: 2024-12-18T11:36:40Z
-updated_at: 2025-02-24T19:22:07Z
+updated_at: 2025-12-11T21:22:33Z
 url: https://github.com/astral-sh/uv/issues/9994
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Opt into .env files via settings
@@ -50,10 +50,13 @@ env-file = "soundradix/.env"
 
 ---
 
-_Referenced in [astral-sh/uv#16926](../../astral-sh/uv/issues/16926.md) on 2025-12-02 10:42_
+_Comment by @chrisrodrigue on 2025-12-11 21:22_
 
----
+I would suggest this setting being a list that uv evaluates in order of appearance to enable overriding or extending variables (similar to other strategies such as index resolution).
 
-_Referenced in [astral-sh/uv#1384](../../astral-sh/uv/issues/1384.md) on 2025-12-02 10:42_
+```toml
+[tool.uv]
+env-file = [".env/app1.env", ".env/app2.env", "..."]
+```
 
 ---

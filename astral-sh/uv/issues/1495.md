@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-16T14:49:37Z
 updated_at: 2025-12-26T02:27:56Z
 url: https://github.com/astral-sh/uv/issues/1495
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Add an option to store virtual environments in a centralized location outside projects
@@ -88,10 +88,6 @@ I'm using [this plugin](https://github.com/DonJayamanne/vscode-python-manager) t
 
 ---
 
-_Referenced in [astral-sh/uv#1578](../../astral-sh/uv/issues/1578.md) on 2024-02-17 19:34_
-
----
-
 _Comment by @hauntsaninja on 2024-02-17 22:20_
 
 Note uv currently appears to work if you make `.venv` file a symlink to your actual venv
@@ -134,10 +130,6 @@ And this would be a nice solution for managing venvs centrally outside the proje
 .venv-mac  --> /some/mac/path
 .venv-windows  --> /some/windows/path
 ```
-
----
-
-_Referenced in [astral-sh/uv#1422](../../astral-sh/uv/issues/1422.md) on 2024-02-18 02:23_
 
 ---
 
@@ -197,54 +189,6 @@ So in addition to the "not wanting the venv to be stored in a folder that is bac
 
 ---
 
-_Referenced in [astral-sh/uv#6204](../../astral-sh/uv/issues/6204.md) on 2024-08-19 13:21_
-
----
-
-_Referenced in [astral-sh/uv#6413](../../astral-sh/uv/issues/6413.md) on 2024-08-22 14:16_
-
----
-
-_Referenced in [astral-sh/uv#6501](../../astral-sh/uv/issues/6501.md) on 2024-08-23 13:18_
-
----
-
-_Referenced in [astral-sh/uv#6504](../../astral-sh/uv/issues/6504.md) on 2024-08-23 14:43_
-
----
-
-_Referenced in [astral-sh/uv#6511](../../astral-sh/uv/issues/6511.md) on 2024-08-23 14:56_
-
----
-
-_Referenced in [astral-sh/uv#6597](../../astral-sh/uv/pulls/6597.md) on 2024-08-25 08:19_
-
----
-
-_Referenced in [astral-sh/uv#5229](../../astral-sh/uv/issues/5229.md) on 2024-08-25 08:27_
-
----
-
-_Referenced in [astral-sh/uv#6612](../../astral-sh/uv/issues/6612.md) on 2024-08-25 16:40_
-
----
-
-_Referenced in [astral-sh/uv#6669](../../astral-sh/uv/issues/6669.md) on 2024-08-28 02:18_
-
----
-
-_Referenced in [astral-sh/uv#6746](../../astral-sh/uv/issues/6746.md) on 2024-08-28 13:11_
-
----
-
-_Referenced in [astral-sh/uv#6834](../../astral-sh/uv/pulls/6834.md) on 2024-08-29 22:37_
-
----
-
-_Referenced in [astral-sh/uv#6584](../../astral-sh/uv/issues/6584.md) on 2024-09-04 14:34_
-
----
-
 _Comment by @callegar on 2024-09-18 22:34_
 
 > When uv does go in the higher level workflow direction, I'd advocate leaving a .venv symlink or file pointing to the central location.
@@ -259,10 +203,6 @@ Even this makes things more complex than needed if you sync to the cloud across 
 If only for compatibility and ease of migration from one tool to another, I would offer the possibility to do what pdm does. That tool offers either the option to have a local `.venv` or the option to have venvs stored all together in a centralized place.
 
 Note that having the venvs all stored in a single place also makes it easier to apply deduplication tools on suitable filesystems.
-
----
-
-_Referenced in [astral-sh/uv#7642](../../astral-sh/uv/issues/7642.md) on 2024-09-23 16:03_
 
 ---
 
@@ -304,10 +244,6 @@ Often you can "exclude files by pattern" on sync clients, to relieve these probl
 
 ---
 
-_Referenced in [astral-sh/uv#7898](../../astral-sh/uv/issues/7898.md) on 2024-10-03 14:55_
-
----
-
 _Comment by @fabienval on 2024-10-04 04:59_
 
 I too would be keen to have venv centrally stored due to onedrive not playing nice when trying to sync .venv....
@@ -323,29 +259,9 @@ Does the `UV_PROJECT_ENVIRONMENT` trick work for your use case? If not, you coul
 
 ---
 
-_Referenced in [astral-sh/uv#7357](../../astral-sh/uv/pulls/7357.md) on 2024-10-09 12:26_
-
----
-
-_Referenced in [astral-sh/uv#8037](../../astral-sh/uv/issues/8037.md) on 2024-10-09 13:41_
-
----
-
-_Referenced in [UCL-ARC/python-tooling#419](../../UCL-ARC/python-tooling/issues/419.md) on 2024-10-22 09:50_
-
----
-
-_Referenced in [astral-sh/uv#8514](../../astral-sh/uv/issues/8514.md) on 2024-10-24 06:38_
-
----
-
 _Comment by @krstp on 2024-10-26 03:59_
 
 See my solution with `.bashrc/.zshrc` function `uvactivate <named_venv>` from a central local where I keep all my venvs: https://github.com/astral-sh/uv/issues/7898
-
----
-
-_Referenced in [astral-sh/uv#8830](../../astral-sh/uv/issues/8830.md) on 2024-11-05 15:39_
 
 ---
 
@@ -355,27 +271,11 @@ Possibly, having venvs in a central location would also allow making `--link-mod
 
 ---
 
-_Referenced in [astral-sh/uv#9254](../../astral-sh/uv/issues/9254.md) on 2024-11-19 22:17_
-
----
-
 _Comment by @YodaEmbedding on 2024-11-22 04:04_
 
 @callegar Poetry puts its virtualenvs in `$XDG_CACHE_HOME/pypoetry/virtualenvs`. Theoretically, poetry virtualenvs should be reproducible, so this is logical. However, cache clearing should be a safe operation that should not have adverse effects on startup performance.
 
 Thus, [a better location](https://github.com/python-poetry/poetry/issues/3346#issuecomment-1667394472) might be `$XDG_STATE_HOME/pypoetry/virtualenvs`, i.e. `~/.local/state/pypoetry/virtualenvs`.
-
----
-
-_Referenced in [nat-n/poethepoet#257](../../nat-n/poethepoet/issues/257.md) on 2024-11-24 16:27_
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
 
 ---
 
@@ -447,10 +347,6 @@ I would potentially keep conda for managing Python versions (via corporate inter
 
 ---
 
-_Referenced in [astral-sh/uv#9805](../../astral-sh/uv/issues/9805.md) on 2024-12-11 12:06_
-
----
-
 _Comment by @dest1n1s on 2024-12-12 17:08_
 
 > Keep in mind tooling and/or editors still universally react to a VIRTUAL_ENV env var. So I think it'd be a shame if uv leaned too far in that direction. Certainly it's already clearly the case that uv itself and/or project tooling you write which uses uv can stop caring about virtualenvs and activation, but i dont think eschewing them entirely is a good idea.
@@ -483,14 +379,6 @@ Just to weight in, I sometimes edit projects (mainly for college) off a SMB shar
 _Comment by @zanieb on 2024-12-17 20:53_
 
 @Cornelius-Figgle Does a symlink work for you, e.g., `.venv -> <somewhere else>`?
-
----
-
-_Referenced in [astral-sh/uv#7778](../../astral-sh/uv/issues/7778.md) on 2024-12-28 16:53_
-
----
-
-_Referenced in [astral-sh/uv#11056](../../astral-sh/uv/issues/11056.md) on 2025-01-29 14:12_
 
 ---
 
@@ -535,14 +423,6 @@ If uv would gain this functionality, I would like the option to easily create a 
 
 ---
 
-_Referenced in [python/typeshed#13482](../../python/typeshed/pulls/13482.md) on 2025-02-09 21:16_
-
----
-
-_Referenced in [astral-sh/uv#11420](../../astral-sh/uv/issues/11420.md) on 2025-02-11 13:47_
-
----
-
 _Comment by @Nick-Hemenway on 2025-02-11 19:49_
 
 Are there any updates on plans to support this feature? A natively supported interface similar to virtualenvwrapper would be incredible. I think it's a pretty common desire to not want a .venv folder to be included in OneDrive/iCloud file syncing. The ability to re-use environments across different folders would be a huge plus as well.
@@ -561,18 +441,6 @@ I can manually create an environment once. Then as long as that env is activated
 _Comment by @Nick-Hemenway on 2025-02-12 18:21_
 
 Using the `--active` flag works and allows a user to add and remove packages to a centralized virtual environment using, e.g. `uv add --active numpy` or `uv remove --active`. It would be nice if there was a way (perhaps through an environment variable?) to turn the `--active` flag on by default so that one doesn't have to remember to type the `--active` flag on every time they invoke `uv` to update their package/environment dependencies. 
-
----
-
-_Referenced in [astral-sh/uv#11458](../../astral-sh/uv/issues/11458.md) on 2025-02-12 18:40_
-
----
-
-_Referenced in [astral-sh/uv#1910](../../astral-sh/uv/issues/1910.md) on 2025-02-13 10:45_
-
----
-
-_Referenced in [astral-sh/uv#11476](../../astral-sh/uv/issues/11476.md) on 2025-02-13 15:41_
 
 ---
 
@@ -911,10 +779,6 @@ then you can run `uv_venv` in the folder you want, then run any uv command you w
 
 ---
 
-_Referenced in [astral-sh/uv#11773](../../astral-sh/uv/issues/11773.md) on 2025-02-26 10:08_
-
----
-
 _Comment by @eabase on 2025-02-26 13:31_
 
 This looks like a promising discussion, TL;DR all yet. 
@@ -1062,10 +926,6 @@ Yeah, I tend to fall back to multiple venv with pyenv-venv, then whatever is nee
 
 ---
 
-_Referenced in [astral-sh/uv#12146](../../astral-sh/uv/issues/12146.md) on 2025-03-13 12:59_
-
----
-
 _Comment by @lukeemhigh on 2025-03-15 03:25_
 
 I stumbled upon this discussion while looking for a way to emulate my `pyenv`+`poetry` workflow.
@@ -1092,10 +952,6 @@ This also shows the inner-works of core uv for python env instantiation.. such a
 
 <strike>Atm, I am not even opening the issue.</strike> (https://github.com/astral-sh/uv/issues/12185)
 This just shows uv runs better natively. And yes I did reinstall uv under WSL, it would still find win11 references. I just wanted to give context why combination of pyenv with uv might be better in such scenario, where pyenv-venv yields some more env stability. Also this is not the first time pyenv-venv comes to the rescue, I am mostly mac and *nix user, and whatever hurdles I was dealing with in those systems in local development, the virtual env layer with pyenv-venv came each time to the rescue. o7
-
----
-
-_Referenced in [astral-sh/uv#12185](../../astral-sh/uv/issues/12185.md) on 2025-03-15 12:28_
 
 ---
 
@@ -1131,14 +987,6 @@ Still, if you just want to use uv outside tox on different platforms, we need th
 
 ---
 
-_Referenced in [astral-sh/uv#12358](../../astral-sh/uv/issues/12358.md) on 2025-03-21 08:33_
-
----
-
-_Referenced in [astral-sh/uv#12363](../../astral-sh/uv/issues/12363.md) on 2025-03-21 12:35_
-
----
-
 _Comment by @jnakanojp on 2025-03-29 03:16_
 
 My workaround is to create a set_env.sh file and source it before using uv.
@@ -1157,39 +1005,11 @@ It might be possible to automate this process by using a tool like direnv.
 
 ---
 
-_Referenced in [astral-sh/uv#12587](../../astral-sh/uv/issues/12587.md) on 2025-04-01 20:45_
-
----
-
-_Referenced in [astral-sh/uv#12740](../../astral-sh/uv/issues/12740.md) on 2025-04-08 15:37_
-
----
-
-_Referenced in [astral-sh/uv#12821](../../astral-sh/uv/issues/12821.md) on 2025-04-11 15:00_
-
----
-
-_Referenced in [astral-sh/uv#1703](../../astral-sh/uv/issues/1703.md) on 2025-04-21 03:00_
-
----
-
 _Comment by @Hawk777 on 2025-05-10 20:49_
 
 Adding my own use case for this feature, since it hasn’t been mentioned yet—similar, but not identical, to some mentioned. My home directory is btrfs and I use [snapper](http://snapper.io/) to take periodic snapshots. I don’t want to waste disk space saving snapshots of cache, so I exclude that. Snapshots in btrfs operate at subvolume granularity, so while `CACHEDIR.TAG` is a nice thing to have for backup programs, it doesn’t (and can’t!) affect subvolume snapshotting. So, `~/.cache` is a separate subvolume and I would like my venvs in there. `UV_PROJECT_ENVIRONMENT` isn’t a great solution because I still want a separate venv for each project, not just one venv for everything, and there’s no mode of that variable for “absolute path, but append the project {name,path,hash,something} to get the actual venv dir”. Currently I symlink `.venv` to per-project directores in `~/.cache`, but that’s not ideal because (1) it would be nice if I could tell UV that’s where I want my venvs *once* and have it remember that, rather than doing it once for each project; and (2) every time I change Python interpreter version, UV deletes and recreates the venv, which in this case means it deletes the symlink and then creates a regular directory.
 
 Given how fast UV is, using `UV_PROJECT_ENVIRONMENT`, pointing it at one directory, and just letting UV destroy and recreate the entire venv every time I switch projects might actually be not the worst option, but it still seems a bit silly (and obviously doesn’t work if I want to run two projects at the same time).
-
----
-
-_Referenced in [astral-sh/uv#13457](../../astral-sh/uv/issues/13457.md) on 2025-05-14 21:47_
-
----
-
-_Referenced in [astral-sh/uv#11315](../../astral-sh/uv/issues/11315.md) on 2025-05-18 18:25_
-
----
-
-_Referenced in [astral-sh/uv#13594](../../astral-sh/uv/issues/13594.md) on 2025-05-22 18:33_
 
 ---
 
@@ -1268,10 +1088,6 @@ _Comment by @Hawk777 on 2025-05-31 15:27_
 
 ---
 
-_Referenced in [dagster-io/dagster#30517](../../dagster-io/dagster/pulls/30517.md) on 2025-06-06 23:08_
-
----
-
 _Comment by @sascharo on 2025-06-18 07:28_
 
 > I use Windows/Linux/Mac every day and synchronise my projects using OneDrive, having `.venv` in my project folder is such a nightmare
@@ -1334,10 +1150,6 @@ I mean information not captured in the thread already, e.g., use-cases or motiva
 
 This feature is still on our roadmap; we're a small team managing thousands of questions, bug reports, and feature requests.
 
-
----
-
-_Referenced in [nf-core/tools#3420](../../nf-core/tools/issues/3420.md) on 2025-06-30 03:12_
 
 ---
 
@@ -1459,10 +1271,6 @@ It's probably best to move it out of this thread to avoid notifying people. We d
 
 ---
 
-_Referenced in [astral-sh/uv#14628](../../astral-sh/uv/pulls/14628.md) on 2025-07-15 14:55_
-
----
-
 _Comment by @rsyring on 2025-07-15 14:56_
 
 Design doc PR is up at: https://github.com/astral-sh/uv/pull/14628
@@ -1498,22 +1306,6 @@ For example, I have the following powershell command to list all envs and their 
 
 To remove a venv, I just `cd C:\venv\` and remove the correspondingly named sub-directory.
 
-
----
-
-_Referenced in [getpelican/pelican#3492](../../getpelican/pelican/issues/3492.md) on 2025-07-22 06:09_
-
----
-
-_Referenced in [astral-sh/uv#15163](../../astral-sh/uv/issues/15163.md) on 2025-08-08 09:56_
-
----
-
-_Referenced in [astral-sh/uv#14515](../../astral-sh/uv/issues/14515.md) on 2025-08-19 15:38_
-
----
-
-_Referenced in [astral-sh/uv#14937](../../astral-sh/uv/pulls/14937.md) on 2025-08-26 13:02_
 
 ---
 
@@ -1733,10 +1525,6 @@ Yes. And if the user understand the basics of venvs, they will also be able to u
 I see you want some kind of automation here, and that's fine, but then the uv venv *"manager"* need to inform the user what will happen to any other dependencies. So the answer is probably **no**.
 
  
-
----
-
-_Referenced in [fohrloop/venvlink#11](../../fohrloop/venvlink/issues/11.md) on 2025-08-30 15:57_
 
 ---
 
@@ -2001,34 +1789,6 @@ I don’t actually understand what this means. Can you clarify? What is a “loc
 
 ---
 
-_Referenced in [astral-sh/uv#15885](../../astral-sh/uv/issues/15885.md) on 2025-09-16 16:05_
-
----
-
-_Referenced in [level12/coppy#56](../../level12/coppy/issues/56.md) on 2025-09-19 22:26_
-
----
-
-_Referenced in [astral-sh/uv#15960](../../astral-sh/uv/issues/15960.md) on 2025-09-20 16:16_
-
----
-
-_Referenced in [astral-sh/uv#16202](../../astral-sh/uv/issues/16202.md) on 2025-10-09 10:00_
-
----
-
-_Referenced in [astral-sh/uv#16218](../../astral-sh/uv/issues/16218.md) on 2025-10-21 15:55_
-
----
-
-_Referenced in [astral-sh/uv#16424](../../astral-sh/uv/issues/16424.md) on 2025-10-24 13:21_
-
----
-
-_Referenced in [c0rychu/uvlink#3](../../c0rychu/uvlink/issues/3.md) on 2025-11-17 08:42_
-
----
-
 _Comment by @c0rychu on 2025-11-17 13:11_
 
 I made a little tool - [`uvlink`](https://github.com/c0rychu/uvlink) as a "solution."
@@ -2044,10 +1804,6 @@ $ uv tool install uvlink
 Edit: it now should support macOS, Linux, and Windows. We have run the tests against all three platforms in CI.
 
 Any feedback/issues/PR are welcome. But I still hope that someday `uv` can support this natively, and I just created this as a temporary solution to avoid putting .venv into my Dropbox 💀.
-
----
-
-_Referenced in [c0rychu/uvlink#5](../../c0rychu/uvlink/issues/5.md) on 2025-11-17 14:28_
 
 ---
 
@@ -2179,10 +1935,6 @@ _Comment by @zanieb on 2025-11-23 15:18_
 _Comment by @MDSvensson on 2025-11-24 23:34_
 
 I love uv but for my personal studying projects which i don't use git for but instead use a synchronized folder in dropbox, i will have to use poetry for now. Centralizing virtual environments has a special utility for me - it saves me cloud space in my hybrid use where i sync more than just code - pdf files, code and more. 
-
----
-
-_Referenced in [astral-sh/uv#1384](../../astral-sh/uv/issues/1384.md) on 2025-11-25 12:09_
 
 ---
 

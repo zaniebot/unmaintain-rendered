@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-18T23:55:29Z
 updated_at: 2026-01-07T05:00:12Z
 url: https://github.com/astral-sh/uv/issues/7525
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # installing 'datrie' fails during compile (but pip succeeds)
@@ -170,10 +170,6 @@ Thanks! I wonder if we can/should reset some of these at build time.
 
 ---
 
-_Referenced in [omnibenchmark/omnibenchmark#20](../../omnibenchmark/omnibenchmark/pulls/20.md) on 2024-09-24 09:53_
-
----
-
 _Comment by @harryeslick on 2024-09-25 06:18_
 
 I've run into the same problem installing `datrie` using rye. 
@@ -195,17 +191,9 @@ _Comment by @samimia-swks on 2024-09-25 16:59_
 
 ---
 
-_Referenced in [snakemake/snakemake#3105](../../snakemake/snakemake/issues/3105.md) on 2024-09-25 17:07_
-
----
-
 _Comment by @bluss on 2024-09-25 17:13_
 
 @samimia-swks sysconfigpatcher is experimental for sure, glad it helps, and I hope its experiments can be adopted if they are deemed safe, see my hopeful thoughts at https://github.com/bluss/sysconfigpatcher/issues/1 and #7369. I wonder if the uv team could say what kind of solution they would prefer and in that way open for the community to maybe offer help (pull requests).
-
----
-
-_Referenced in [astral-sh/python-build-standalone#337](../../astral-sh/python-build-standalone/issues/337.md) on 2024-10-06 14:26_
 
 ---
 
@@ -223,10 +211,6 @@ I'm not sure what the ideal solution is for us. We have the opportunity to make 
 
 ---
 
-_Referenced in [astral-sh/uv#7992](../../astral-sh/uv/issues/7992.md) on 2024-10-08 02:09_
-
----
-
 _Comment by @zanieb on 2024-10-21 22:11_
 
 Let's track this in https://github.com/astral-sh/uv/issues/8429
@@ -234,22 +218,6 @@ Let's track this in https://github.com/astral-sh/uv/issues/8429
 ---
 
 _Closed by @zanieb on 2024-10-21 22:11_
-
----
-
-_Referenced in [astral-sh/uv#8429](../../astral-sh/uv/issues/8429.md) on 2024-10-21 22:17_
-
----
-
-_Referenced in [snakemake/snakemake-executor-plugin-slurm#157](../../snakemake/snakemake-executor-plugin-slurm/issues/157.md) on 2024-10-31 21:17_
-
----
-
-_Referenced in [PyPSA/pypsa-usa#483](../../PyPSA/pypsa-usa/issues/483.md) on 2024-11-27 18:09_
-
----
-
-_Referenced in [PrincetonUniversity/SPECFEMPP#568](../../PrincetonUniversity/SPECFEMPP/issues/568.md) on 2025-03-09 01:23_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-16T14:59:49Z
 updated_at: 2026-01-07T10:00:00Z
 url: https://github.com/astral-sh/uv/issues/15325
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Dynamic shell completions
@@ -54,14 +54,6 @@ poe pre-commit pytest ruff
 ---
 
 _Label `enhancement` added by @andrewaylett on 2025-08-16 14:59_
-
----
-
-_Referenced in [astral-sh/uv#8432](../../astral-sh/uv/issues/8432.md) on 2025-12-28 10:24_
-
----
-
-_Referenced in [astral-sh/uv#17246](../../astral-sh/uv/issues/17246.md) on 2025-12-31 09:07_
 
 ---
 

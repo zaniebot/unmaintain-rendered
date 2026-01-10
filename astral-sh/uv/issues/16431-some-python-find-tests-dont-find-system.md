@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-10-24T06:11:15Z
 updated_at: 2026-01-04T23:17:44Z
 url: https://github.com/astral-sh/uv/issues/16431
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Some python_find:: tests don’t find system interpreters, require network
@@ -206,10 +206,6 @@ I would be curious to look into this, but should I wait for the gates?
 _Comment by @zanieb on 2025-12-03 18:15_
 
 We already have the `python-managed` feature, you can use that
-
----
-
-_Referenced in [astral-sh/uv#17312](../../astral-sh/uv/pulls/17312.md) on 2026-01-03 21:19_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-16T07:34:49Z
 updated_at: 2025-12-08T12:17:53Z
 url: https://github.com/astral-sh/uv/issues/13485
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Make UV_GIT_LFS active by default on some url
@@ -97,14 +97,6 @@ _Comment by @zanieb on 2025-08-27 20:14_
 Sure, the update is that I tried to prototype it but couldn't get LFS to work in the test case so I set it aside to revisit https://github.com/astral-sh/uv/pull/15563 
 
 If anyone wants to work on it, feel free.
-
----
-
-_Referenced in [astral-sh/uv#15563](../../astral-sh/uv/pulls/15563.md) on 2025-08-27 20:15_
-
----
-
-_Referenced in [astral-sh/uv#16143](../../astral-sh/uv/pulls/16143.md) on 2025-10-06 21:13_
 
 ---
 

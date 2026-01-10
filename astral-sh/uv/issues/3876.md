@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-28T12:20:13Z
 updated_at: 2025-12-07T07:16:15Z
 url: https://github.com/astral-sh/uv/issues/3876
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # uv and/or pip python package not installed by default in new venv created by uv
@@ -138,14 +138,6 @@ I was just commenting here for the sake of anyone who comes across the problem a
 
 ---
 
-_Referenced in [astral-sh/uv#9157](../../astral-sh/uv/issues/9157.md) on 2024-11-16 22:25_
-
----
-
-_Referenced in [astral-sh/uv#9689](../../astral-sh/uv/pulls/9689.md) on 2024-12-06 16:32_
-
----
-
 _Comment by @antazoey on 2025-02-19 15:37_
 
 OK I am commented my less-than-good experience here in hopes of helping others and hopefully leading to some improvements!
@@ -211,14 +203,6 @@ _Comment by @antazoey on 2025-02-22 21:02_
 > Can you share some more about what you need a global environment for? It's helpful context as we improve our support for that use-case.
 
 I need scratchy envs for each python for experimenting and frequently changing packages, it is for adhoc development of a vast series of annoying python libraries
-
----
-
-_Referenced in [astral-sh/uv#12738](../../astral-sh/uv/issues/12738.md) on 2025-04-08 12:40_
-
----
-
-_Referenced in [astral-sh/uv#14873](../../astral-sh/uv/issues/14873.md) on 2025-07-24 15:58_
 
 ---
 

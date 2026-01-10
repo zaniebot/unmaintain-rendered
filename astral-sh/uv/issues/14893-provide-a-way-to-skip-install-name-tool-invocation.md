@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T12:43:19Z
 updated_at: 2025-12-19T07:44:26Z
 url: https://github.com/astral-sh/uv/issues/14893
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Provide a way to skip install_name_tool invocation?
@@ -69,14 +69,6 @@ This seems like further motivation to replace use of this tool with a manual pat
 _Comment by @geofft on 2025-07-25 13:08_
 
 Yup, lemme put something together!
-
----
-
-_Referenced in [ankitects/anki#4227](../../ankitects/anki/issues/4227.md) on 2025-07-25 16:35_
-
----
-
-_Referenced in [astral-sh/python-build-standalone#749](../../astral-sh/python-build-standalone/issues/749.md) on 2025-09-02 15:48_
 
 ---
 

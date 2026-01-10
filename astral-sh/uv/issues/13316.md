@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-06T16:25:13Z
 updated_at: 2026-01-06T20:43:06Z
 url: https://github.com/astral-sh/uv/issues/13316
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # UV_OFFLINE and --refresh odd behaviour
@@ -127,15 +127,7 @@ I'm using uv in a test script (justfile). I install local dependencies (the one 
 
 ---
 
-_Referenced in [astral-sh/uv#13385](../../astral-sh/uv/issues/13385.md) on 2025-05-12 23:00_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-04 21:00_
-
----
-
-_Referenced in [astral-sh/uv#17321](../../astral-sh/uv/pulls/17321.md) on 2026-01-05 00:22_
 
 ---
 

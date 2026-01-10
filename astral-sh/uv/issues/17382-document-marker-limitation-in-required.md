@@ -1,0 +1,32 @@
+```yaml
+number: 17382
+title: Document marker limitation in required-environments
+type: issue
+state: open
+author: michael-o
+labels: []
+assignees: []
+created_at: 2026-01-09T16:46:32Z
+updated_at: 2026-01-09T16:46:32Z
+url: https://github.com/astral-sh/uv/issues/17382
+synced_at: 2026-01-10T03:11:36Z
+```
+
+# Document marker limitation in required-environments
+
+---
+
+_Issue opened by @michael-o on 2026-01-09 16:46_
+
+Based one https://github.com/astral-sh/uv/issues/17109#issuecomment-3671308485 the documentation shall say that markers are limited to those in the Rust code and cannot be freely used, e.g.,
+```
+[tool.uv]
+required-environments = [
+    "sys_platform == 'freebsd13'",
+    "sys_platform != 'freebsd13'"
+]
+```
+
+That could have saved parts of #17109.
+
+---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-04T11:11:01Z
 updated_at: 2026-01-07T10:40:53Z
 url: https://github.com/astral-sh/uv/issues/15055
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Relative indexes are stored as absolute in the lockfile
@@ -217,10 +217,6 @@ _Assigned to @jtfmumm by @jtfmumm on 2025-08-08 12:28_
 ---
 
 _Unassigned @jtfmumm by @konstin on 2025-09-12 13:38_
-
----
-
-_Referenced in [astral-sh/uv#15870](../../astral-sh/uv/pulls/15870.md) on 2025-09-15 14:08_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-11T14:32:54Z
 updated_at: 2025-12-06T00:11:47Z
 url: https://github.com/astral-sh/uv/issues/6007
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Feature request: Generate `requirements.txt` from `uv.lock`
@@ -162,10 +162,6 @@ I have documented one such use case for `requirements.txt` here: #6422
 
 ---
 
-_Referenced in [astral-sh/uv#6429](../../astral-sh/uv/issues/6429.md) on 2024-08-22 13:16_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-25 17:27_
 
 ---
@@ -197,10 +193,6 @@ Respect!
 
 ---
 
-_Referenced in [astral-sh/uv#6778](../../astral-sh/uv/pulls/6778.md) on 2024-08-28 21:49_
-
----
-
 _Comment by @SamEdwardes on 2024-08-28 22:29_
 
 I like the idea of `uv export`!
@@ -224,10 +216,6 @@ Yeah, the `uv pip` interface never touches the lockfile. You _can_ use the `uv p
 ---
 
 _Closed by @charliermarsh on 2024-08-29 17:46_
-
----
-
-_Referenced in [astral-sh/uv#6989](../../astral-sh/uv/issues/6989.md) on 2024-09-04 01:04_
 
 ---
 
@@ -313,14 +301,6 @@ _Comment by @leorochael on 2025-01-21 11:01_
 > ```
 
 Shouldn't you also validate on changes to `uv.lock`? It's possible to do a dependency package update without touching `pyproject.toml`, after all.
-
----
-
-_Referenced in [juliancoffee/django-blog#46](../../juliancoffee/django-blog/pulls/46.md) on 2025-01-31 14:19_
-
----
-
-_Referenced in [juliancoffee/django-blog#50](../../juliancoffee/django-blog/issues/50.md) on 2025-02-09 19:17_
 
 ---
 

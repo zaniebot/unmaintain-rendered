@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-21T14:12:54Z
 updated_at: 2025-12-27T09:02:43Z
 url: https://github.com/astral-sh/uv/issues/17208
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # To Be Closed
@@ -47,10 +47,6 @@ It is not a spam, there Extension is already published and installed by more tha
 https://marketplace.visualstudio.com/items?itemName=MouradGHAFIRI.uv-vscode-extension
 
 And yes I use LLMs!
-
----
-
-_Referenced in [astral-sh/uv#17224](../../astral-sh/uv/issues/17224.md) on 2025-12-26 19:50_
 
 ---
 

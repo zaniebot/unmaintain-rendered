@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-25T09:04:48Z
 updated_at: 2025-12-15T21:19:11Z
 url: https://github.com/astral-sh/uv/issues/8558
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Running uv scripts in debug mode
@@ -238,10 +238,6 @@ For VS code, I added `uv sync` as a preLaunchtask to make sure my environment is
     ]
 }
 ```
-
----
-
-_Referenced in [astral-sh/uv#10932](../../astral-sh/uv/issues/10932.md) on 2025-01-24 15:32_
 
 ---
 
@@ -759,10 +755,6 @@ $pp314 = Get-CimInstance Win32_Process -Filter "ParentProcessId = $pp" | Select-
 python -m pdb -p $pp314
 ```
 This works well for me — pdb in Python 3.14 has all the features I need.
-
----
-
-_Referenced in [astral-sh/uv#17046](../../astral-sh/uv/issues/17046.md) on 2025-12-10 14:30_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-30T18:55:36Z
 updated_at: 2025-12-04T23:06:18Z
 url: https://github.com/astral-sh/uv/issues/8706
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # vscode trying but failing to use my uv venv
@@ -279,10 +279,6 @@ _Comment by @mustiem on 2025-07-14 19:21_
 3. Enter Interpreter path
 4. Paste path and hit enter
 
-
----
-
-_Referenced in [astral-sh/uv#9637](../../astral-sh/uv/issues/9637.md) on 2025-12-04 21:46_
 
 ---
 

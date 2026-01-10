@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-12T13:33:57Z
 updated_at: 2025-12-08T12:22:28Z
 url: https://github.com/astral-sh/uv/issues/13992
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Improve error message on "failed to spawn" where the Python interpreter is missing
@@ -55,10 +55,6 @@ _Label `error messages` added by @zanieb on 2025-06-12 13:38_
 ---
 
 _Label `help wanted` added by @zanieb on 2025-06-12 13:38_
-
----
-
-_Referenced in [astral-sh/uv#13196](../../astral-sh/uv/issues/13196.md) on 2025-06-12 15:13_
 
 ---
 

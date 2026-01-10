@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-14T19:01:50Z
 updated_at: 2025-12-15T18:00:25Z
 url: https://github.com/astral-sh/uv/issues/16301
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Feature request: Add option to ignore missing/unavailable indexes
@@ -89,9 +89,5 @@ _Label `enhancement` added by @rabyj on 2025-10-14 19:01_
 ---
 
 _Renamed from "Add option to ignore missing/unavailable indexes" to "Feature request: Add option to ignore missing/unavailable indexes" by @rabyj on 2025-12-15 18:00_
-
----
-
-_Referenced in [astral-sh/uv#16242](../../astral-sh/uv/issues/16242.md) on 2025-12-15 18:10_
 
 ---

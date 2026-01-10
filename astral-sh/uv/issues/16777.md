@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-11-19T16:53:10Z
 updated_at: 2025-12-09T16:15:08Z
 url: https://github.com/astral-sh/uv/issues/16777
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # On error in `uvx`, hint on proper `--verbose` usage if it was provided to the subcommand
@@ -64,10 +64,6 @@ I am new here, but I'd like to give it a try :). Can I work on it?
 _Comment by @zanieb on 2025-11-19 20:58_
 
 Feel free! It might be a little tricky to capture the error... maybe you'll want to write a function that wraps https://github.com/astral-sh/uv/blob/5c71b5c124a1ed98fb21502693b63069f97bec6c/crates/uv/src/commands/tool/run.rs#L85
-
----
-
-_Referenced in [astral-sh/uv#17020](../../astral-sh/uv/pulls/17020.md) on 2025-12-07 23:37_
 
 ---
 

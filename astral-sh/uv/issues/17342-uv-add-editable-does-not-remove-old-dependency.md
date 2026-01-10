@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-07T00:39:59Z
-updated_at: 2026-01-07T15:32:00Z
+updated_at: 2026-01-07T19:11:53Z
 url: https://github.com/astral-sh/uv/issues/17342
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # `uv add --editable` does not remove old dependency
@@ -36,7 +36,7 @@ _Issue opened by @rzuckerm on 2026-01-07 00:39_
   ```
   cd ..
   uv init --package ansicolors
-  cd test-pkg
+  cd my-pkg
   ```
 - Add local `ansicolors` package as an editable dependency:
   ```
@@ -127,5 +127,33 @@ _Comment by @zanieb on 2026-01-07 15:32_
 > I think the justification is consistency; it all works the same whether you are adding a new editable dependency, changing existing dependency to editable, or changing an editable dependency back to a regular dependency.
 
 I'm not feeling convinced that "changing a dependency to editable" should have behavior consistent with "adding a new editable dependency". I think the operation is inherently different if the dependency already exists in the `pyproject.toml`.
+
+---
+
+_Comment by @rzuckerm on 2026-01-07 16:13_
+
+> I'm not feeling convinced that "changing a dependency to editable" should have behavior consistent with "adding a new editable dependency". I think the operation is inherently different if the dependency already exists in the `pyproject.toml`.
+
+So what you're saying is that if a user wants to change out a dependency (editable or otherwise), they need to remove the existing one first? If that's the case, I'll need to document this in our tooling. However, I'd be interested to see if anyone else has an opinion on this.
+
+---
+
+_Comment by @zanieb on 2026-01-07 16:20_
+
+If you want to remove the constraints on the dependency or remove sources for the dependency, I think it's reasonable to need to remove it first. I don't think an "add" operation clearly indicates that configuration will be _removed_ from the `pyproject.toml`.
+
+---
+
+_Comment by @rzuckerm on 2026-01-07 16:29_
+
+> If you want to remove the constraints on the dependency or remove sources for the dependency, I think it's reasonable to need to remove it first. I don't think an "add" operation clearly indicates that configuration will be _removed_ from the `pyproject.toml`.
+
+I guess it's a matter of perspective and my familiarity with how poetry does things. I guess I view this more as "replace" as opposed to "remove" (maybe I should have said "replace" in the issue title?). Anyway, I appreciate your help on this and will wait to see what happens next.
+
+---
+
+_Comment by @rzuckerm on 2026-01-07 19:07_
+
+I thought of a possible compromise. What if a `--replace` option where added to the `add` command? The behavior would be to remove (if present) and re-add the dependency.
 
 ---

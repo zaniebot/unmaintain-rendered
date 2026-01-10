@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-23T13:49:30Z
 updated_at: 2025-12-06T00:15:36Z
 url: https://github.com/astral-sh/uv/issues/7639
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Support checking `uv.lock` aligns with latest changes to `pyproject.toml`
@@ -140,27 +140,11 @@ _Comment by @danyeaw on 2024-10-06 22:51_
 
 ---
 
-_Referenced in [astral-sh/uv#9653](../../astral-sh/uv/issues/9653.md) on 2024-12-05 08:56_
-
----
-
-_Referenced in [astral-sh/uv#9662](../../astral-sh/uv/pulls/9662.md) on 2024-12-05 15:30_
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-12-06 14:13_
-
----
-
 _Closed by @zanieb on 2024-12-08 16:02_
 
 ---
 
 _Closed by @zanieb on 2024-12-08 16:02_
-
----
-
-_Referenced in [astral-sh/uv#10176](../../astral-sh/uv/issues/10176.md) on 2024-12-26 17:56_
 
 ---
 

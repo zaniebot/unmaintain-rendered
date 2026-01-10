@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-08T10:10:34Z
 updated_at: 2025-12-09T18:12:09Z
 url: https://github.com/astral-sh/uv/issues/17027
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Document how to disable dev dependency installation in Docker builds
@@ -40,10 +40,6 @@ Thanks, and great work with uv! 🚀
 ---
 
 _Label `enhancement` added by @aeroyorch on 2025-12-08 10:10_
-
----
-
-_Referenced in [astral-sh/uv#17030](../../astral-sh/uv/pulls/17030.md) on 2025-12-08 13:06_
 
 ---
 

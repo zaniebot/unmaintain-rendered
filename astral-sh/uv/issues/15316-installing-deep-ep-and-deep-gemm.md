@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-15T20:28:24Z
 updated_at: 2025-12-13T17:00:23Z
 url: https://github.com/astral-sh/uv/issues/15316
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Installing deep_ep and deep_gemm
@@ -94,10 +94,6 @@ And then you can `uv sync` to install.
 The only hitch is that you need the CUDA development toolkit (`apt-get -y install cuda-toolkit-12-8` or similar) in order to build these.
 
 I'll be including these in the updated build docs.
-
----
-
-_Referenced in [astral-sh/uv#15326](../../astral-sh/uv/pulls/15326.md) on 2025-08-16 16:43_
 
 ---
 

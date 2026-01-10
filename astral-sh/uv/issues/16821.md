@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-23T09:46:52Z
 updated_at: 2025-12-10T04:56:53Z
 url: https://github.com/astral-sh/uv/issues/16821
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Documentation for the behavior of `source-exclude`
@@ -54,10 +54,6 @@ _Label `question` removed by @konstin on 2025-11-24 13:28_
 ---
 
 _Label `documentation` added by @konstin on 2025-11-24 13:28_
-
----
-
-_Referenced in [astral-sh/uv#16832](../../astral-sh/uv/pulls/16832.md) on 2025-11-24 13:33_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-21T10:18:19Z
 updated_at: 2025-12-21T14:21:24Z
 url: https://github.com/astral-sh/uv/issues/17205
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Please add support for single-file packages
@@ -128,13 +128,5 @@ _Comment by @zanieb on 2025-12-21 14:21_
 Related
 
 - https://github.com/astral-sh/uv/pull/11325
-
----
-
-_Referenced in [mkniewallner/migrate-to-uv#553](../../mkniewallner/migrate-to-uv/pulls/553.md) on 2025-12-23 22:16_
-
----
-
-_Referenced in [asyncgui/asyncgui#140](../../asyncgui/asyncgui/pulls/140.md) on 2025-12-25 02:44_
 
 ---

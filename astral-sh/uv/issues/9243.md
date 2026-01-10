@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-19T20:12:59Z
 updated_at: 2025-12-31T18:24:32Z
 url: https://github.com/astral-sh/uv/issues/9243
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Again problems with the --native-tls flag or SSL_CERT_FILE
@@ -212,10 +212,6 @@ _Comment by @andreamoro on 2024-12-01 19:06_
 
 So far I can't get coexisting UV environment with pyenv, so it's not an option for me :(
 But thanks
-
----
-
-_Referenced in [astral-sh/uv#11595](../../astral-sh/uv/issues/11595.md) on 2025-02-18 12:02_
 
 ---
 
@@ -431,10 +427,6 @@ _Comment by @124C41p on 2025-10-13 14:54_
 I think [this](https://github.com/seanmonstar/reqwest/pull/2286) is the PR the uv team is waiting for to solve this issue. It is open since May 2024, and there doesn't seem to be much progress. I would also like to see an interim solution, and I would be happy to create a PR if the uv team agrees.
 
 @zanieb, @konstin  what do you think?
-
----
-
-_Referenced in [seanmonstar/reqwest#2286](../../seanmonstar/reqwest/pulls/2286.md) on 2025-10-16 19:57_
 
 ---
 

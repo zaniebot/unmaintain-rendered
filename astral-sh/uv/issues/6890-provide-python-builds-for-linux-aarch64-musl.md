@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T23:30:48Z
 updated_at: 2025-12-21T21:47:32Z
 url: https://github.com/astral-sh/uv/issues/6890
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # provide Python builds for linux-aarch64-musl
@@ -55,18 +55,6 @@ Yeah more context in
 
 ---
 
-_Referenced in [astral-sh/uv#6392](../../astral-sh/uv/issues/6392.md) on 2024-09-03 14:21_
-
----
-
-_Referenced in [astral-sh/uv#9428](../../astral-sh/uv/issues/9428.md) on 2024-11-25 21:39_
-
----
-
-_Referenced in [astral-sh/uv#9430](../../astral-sh/uv/pulls/9430.md) on 2024-11-25 22:39_
-
----
-
 _Comment by @SamuelMarks on 2025-01-01 16:48_
 
 What's the current progress here? - Need a hand?
@@ -97,14 +85,6 @@ Happy New Year!
 
 ---
 
-_Referenced in [astral-sh/uv#7529](../../astral-sh/uv/issues/7529.md) on 2025-01-06 20:07_
-
----
-
-_Referenced in [tonybaloney/CSnakes#324](../../tonybaloney/CSnakes/issues/324.md) on 2025-01-09 09:23_
-
----
-
 _Comment by @mwarkentin on 2025-02-06 14:51_
 
 I ran into this when attempting to use `uv` inside of an Alpine docker container (which is the first "derived image" mentioned on https://docs.astral.sh/uv/guides/integration/docker/#available-images. 
@@ -115,18 +95,6 @@ Will switch over to a Debian image for now instead.
 
 ---
 
-_Referenced in [astral-sh/uv#11307](../../astral-sh/uv/issues/11307.md) on 2025-02-07 08:15_
-
----
-
-_Referenced in [astral-sh/setup-uv#278](../../astral-sh/setup-uv/issues/278.md) on 2025-02-13 19:50_
-
----
-
-_Referenced in [rstudio/reticulate#1751](../../rstudio/reticulate/issues/1751.md) on 2025-02-27 13:41_
-
----
-
 _Comment by @zanieb on 2025-03-12 02:09_
 
 We support these as of 0.6.6 — https://github.com/astral-sh/uv/pull/12121 
@@ -134,10 +102,6 @@ We support these as of 0.6.6 — https://github.com/astral-sh/uv/pull/12121
 ---
 
 _Closed by @zanieb on 2025-03-12 02:10_
-
----
-
-_Referenced in [astral-sh/uv#12286](../../astral-sh/uv/issues/12286.md) on 2025-03-18 15:08_
 
 ---
 
@@ -163,14 +127,6 @@ Yeah, it is. See https://github.com/astral-sh/python-build-standalone/pull/569#i
 
 ---
 
-_Referenced in [danny-avila/LibreChat#7063](../../danny-avila/LibreChat/issues/7063.md) on 2025-05-01 23:35_
-
----
-
-_Referenced in [danny-avila/LibreChat#7270](../../danny-avila/LibreChat/pulls/7270.md) on 2025-05-07 20:47_
-
----
-
 _Comment by @matt-dies-tenet3 on 2025-09-02 13:23_
 
 Looks like the [latest release in `astral-sh/python-build-standalone`](https://github.com/astral-sh/python-build-standalone/releases/tag/20250828) includes "dynamically linked aarch64 musl builds"! 🥳 
@@ -184,10 +140,6 @@ Yep, thanks!
 ---
 
 _Closed by @zanieb on 2025-09-02 14:01_
-
----
-
-_Referenced in [kquinsland/sb820_prometheus_exporter#14](../../kquinsland/sb820_prometheus_exporter/issues/14.md) on 2025-09-02 16:25_
 
 ---
 
@@ -252,10 +204,6 @@ _Comment by @kopf on 2025-12-21 21:44_
 > Not that I'm aware of. Where are you running that?
 
 OK, understandable. I'm running it on my router, a linksys wrt3200acm that I've installed openwrt on. The exotic setup is also a big part of the reason I'm writing here - I'd love to have `uv` managing my python installation(s) instead of leaving it to the system package manager which honestly isn't up to the task.
-
----
-
-_Referenced in [astral-sh/uv#17210](../../astral-sh/uv/issues/17210.md) on 2025-12-21 21:46_
 
 ---
 

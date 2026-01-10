@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-22T18:11:26Z
 updated_at: 2025-12-22T11:55:44Z
 url: https://github.com/astral-sh/uv/issues/3750
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Transitive PROJECT_ROOT is expanded in requirements.txt
@@ -105,9 +105,5 @@ unrelated to this, but is it possible to find out what the value of PROJECT_ROOT
 _Comment by @jiridanek on 2025-12-22 11:55_
 
 I've observed this with `pylock.toml` as well as with requirements.txt.
-
----
-
-_Referenced in [opendatahub-io/notebooks#2795](../../opendatahub-io/notebooks/pulls/2795.md) on 2025-12-22 12:05_
 
 ---

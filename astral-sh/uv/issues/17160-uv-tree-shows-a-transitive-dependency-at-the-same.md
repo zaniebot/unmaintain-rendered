@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-17T08:13:55Z
 updated_at: 2025-12-17T11:24:09Z
 url: https://github.com/astral-sh/uv/issues/17160
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv tree` shows a transitive dependency at the same depth (root) than the current package
@@ -134,9 +134,5 @@ CC @charliermarsh re https://github.com/astral-sh/uv/pull/8564, it looks like we
 _Comment by @AlexandreDecan on 2025-12-17 11:24_
 
 I'm glad I found something useful :-) 
-
----
-
-_Referenced in [astral-sh/uv#17212](../../astral-sh/uv/pulls/17212.md) on 2025-12-21 22:53_
 
 ---

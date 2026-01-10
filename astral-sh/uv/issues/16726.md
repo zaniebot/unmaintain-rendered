@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-13T17:28:28Z
 updated_at: 2025-12-25T01:52:11Z
 url: https://github.com/astral-sh/uv/issues/16726
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # UV Python SIGKILL Issue on macOS
@@ -337,10 +337,6 @@ The workaround does work though! Very much appreciate that
 _Comment by @robertmuil on 2025-11-27 17:50_
 
 Hit me also, and workaround fixed it, after a lot of hair-tearing. Thanks so much @mgrbyte for the comprehensive write-up and workaround.
-
----
-
-_Referenced in [astral-sh/uv#17123](../../astral-sh/uv/pulls/17123.md) on 2025-12-13 10:22_
 
 ---
 

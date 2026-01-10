@@ -2,16 +2,16 @@
 number: 14446
 title: "Name of entity from `importlib.metadata.files` inconsistent between win and linux platforms"
 type: issue
-state: open
+state: closed
 author: anmyachev
 labels:
   - compatibility
   - external
 assignees: []
 created_at: 2025-07-03T17:09:46Z
-updated_at: 2025-11-17T17:02:06Z
+updated_at: 2026-01-07T19:40:20Z
 url: https://github.com/astral-sh/uv/issues/14446
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Name of entity from `importlib.metadata.files` inconsistent between win and linux platforms
@@ -95,10 +95,6 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 ---
 
-_Referenced in [intel/intel-xpu-backend-for-triton#4465](../../intel/intel-xpu-backend-for-triton/issues/4465.md) on 2025-07-03 17:10_
-
----
-
 _Comment by @zanieb on 2025-07-03 17:14_
 
 This bit from the linked issue seems critical
@@ -113,17 +109,9 @@ _Label `compatibility` added by @zanieb on 2025-07-03 17:15_
 
 ---
 
-_Referenced in [pytorch/pytorch#156303](../../pytorch/pytorch/issues/156303.md) on 2025-07-21 13:40_
-
----
-
 _Comment by @anmyachev on 2025-11-17 11:53_
 
 Hi @zanieb, are there any plans to fix this in the next sprints?
-
----
-
-_Referenced in [python/importlib_metadata#528](../../python/importlib_metadata/issues/528.md) on 2025-11-17 16:12_
 
 ---
 
@@ -142,5 +130,9 @@ _Comment by @anmyachev on 2025-11-17 17:02_
 > This is not a uv bug, but in `importlib.metadata`: [python/importlib_metadata#528](https://github.com/python/importlib_metadata/issues/528)
 
 @konstin thanks for further research!
+
+---
+
+_Closed by @konstin on 2026-01-07 19:40_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-26T12:10:59Z
 updated_at: 2025-12-15T14:05:07Z
 url: https://github.com/astral-sh/uv/issues/16859
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # No information about "operation not supported" in `uv init` on macos with `--cache-dir`
@@ -182,10 +182,6 @@ DEBUG Using Python version `>=3.14` from request `Python 3.14`
 Initialized project `exfat` at `/home/ubuntu/Downloads/example/exfat/`
 DEBUG Released lock at `exfat/build/uv/cache/.lock`
 ```
-
----
-
-_Referenced in [astral-sh/uv#17115](../../astral-sh/uv/pulls/17115.md) on 2025-12-12 23:04_
 
 ---
 

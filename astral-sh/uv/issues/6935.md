@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-02T12:09:42Z
 updated_at: 2025-12-17T09:57:41Z
 url: https://github.com/astral-sh/uv/issues/6935
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Workspaces and monorepo support (add sync --all-packages)
@@ -132,10 +132,6 @@ I can't do that because:
 
 ---
 
-_Referenced in [astral-sh/uv#6867](../../astral-sh/uv/issues/6867.md) on 2024-09-02 13:42_
-
----
-
 _Comment by @charliermarsh on 2024-09-02 15:53_
 
 (1) is easy to resolve, would that help?
@@ -154,10 +150,6 @@ For (2), I suspect the only generally useful solution would be to encode the pac
 _Comment by @charliermarsh on 2024-09-02 17:21_
 
 For (2), we're thinking of perhaps a dedicated command like `uv bundle` that would handle a lot of the defaults that you want for this kind of workflow. But otherwise a `--no-editable` or similar seems reasonable to me.
-
----
-
-_Referenced in [astral-sh/uv#6943](../../astral-sh/uv/pulls/6943.md) on 2024-09-02 20:37_
 
 ---
 
@@ -439,10 +431,6 @@ I'm not sure how one would create a project in a workspace and specify that it s
 
 ---
 
-_Referenced in [astral-sh/uv#7202](../../astral-sh/uv/issues/7202.md) on 2024-09-08 23:14_
-
----
-
 _Comment by @rokos-angus on 2024-09-13 08:50_
 
 One thing preventing us from switching over our monorepo to uv is that its really hard to tell in CI which projects in a workspace actually changed when uv lock changes.
@@ -509,14 +497,6 @@ Yes, if I have understood the things talked about in this issue correctly I thin
 
 ---
 
-_Referenced in [carderne/una#7](../../carderne/una/issues/7.md) on 2024-09-16 18:12_
-
----
-
-_Referenced in [NVIDIA/bionemo-framework#135](../../NVIDIA/bionemo-framework/pulls/135.md) on 2024-09-18 19:42_
-
----
-
 _Comment by @JuanoD on 2024-09-19 05:38_
 
 I made https://github.com/JuanoD/uv-mono as an example repo. Feel free to correct me if something is wrong
@@ -562,14 +542,6 @@ _Comment by @gwdekker on 2024-09-26 04:42_
 disclaimer: I talk about the uv with polylith setup not the uv workspaces setup. 
 
 it depends on what you want the solution to look like. If you want to have a separate venv for this app I am not sure how you would do that. If you are ok with having one global lock and venv and use pandas==2.0.0 for development but not for deploying your app: in polylith you have one pyproject file on root level and a separate one for each project. So for the project you can add your lower bound version of pandas, so you can still deploy your app while working on supporting pandas 2. 
-
----
-
-_Referenced in [astral-sh/uv#8002](../../astral-sh/uv/issues/8002.md) on 2024-10-08 22:41_
-
----
-
-_Referenced in [astral-sh/uv#7541](../../astral-sh/uv/issues/7541.md) on 2024-10-21 22:43_
 
 ---
 
@@ -729,10 +701,6 @@ _Comment by @charliermarsh on 2024-11-02 02:38_
 
 ---
 
-_Referenced in [modern-python/modern-di#4](../../modern-python/modern-di/pulls/4.md) on 2024-11-02 10:59_
-
----
-
 _Comment by @carderne on 2024-11-04 13:28_
 
 Exciting stuff, thank you!
@@ -746,10 +714,6 @@ _Comment by @ydennisy on 2024-11-06 10:18_
 Would there perhaps be any best practice guides added to the documentation at the same time? I am not sure about everyone else on this thread, but although I can "get it to work" I am not clear on the correct way of handling monorepo with services and packages and a docker build.
 
 Thanks!
-
----
-
-_Referenced in [tattle-made/feluda#430](../../tattle-made/feluda/issues/430.md) on 2024-11-07 05:51_
 
 ---
 
@@ -805,10 +769,6 @@ Just wanted to say thank you. This was hugely helpful in figuring out how to set
 
 ---
 
-_Referenced in [astral-sh/uv#9571](../../astral-sh/uv/issues/9571.md) on 2024-12-02 09:06_
-
----
-
 _Comment by @charliermarsh on 2024-12-11 03:07_
 
 I'm going to close this out as we now have `--all-packages` and similar settings. Folks are welcome to open separate issues for any follow-ups that I've missed here.
@@ -857,10 +817,6 @@ Yeah all of the optimizations that uv [recommend in their docs](https://docs.ast
 
 ---
 
-_Referenced in [vessl-ai/hyperpocket#27](../../vessl-ai/hyperpocket/pulls/27.md) on 2025-01-20 04:01_
-
----
-
 _Comment by @EdAyers on 2025-02-25 17:28_
 
 Just in case anyone else is struggling to get their `uv sync` command to run in docker when some of the child packages in the workspace are not present due to not being copied in to the build environment: you have to do `uv sync --package <my-package-name>` _not_ `uv sync --project <my-package-name>`
@@ -888,10 +844,6 @@ sync:
     @uv sync --all-extras --dev --all-packages
 ```
 
-
----
-
-_Referenced in [thromer/uv-monorepo-example#1](../../thromer/uv-monorepo-example/pulls/1.md) on 2025-06-29 21:52_
 
 ---
 

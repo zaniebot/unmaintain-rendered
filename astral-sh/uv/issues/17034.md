@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-08T17:23:33Z
 updated_at: 2025-12-08T19:50:14Z
 url: https://github.com/astral-sh/uv/issues/17034
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Show a progress bar for hashing large files `uv publish`
@@ -55,9 +55,5 @@ Uploading git_mcp_server-0.2.7-py3-none-any.whl ------------------------------ 1
 _Comment by @zanieb on 2025-12-08 19:50_
 
 A pull request sounds good!
-
----
-
-_Referenced in [astral-sh/uv#17037](../../astral-sh/uv/pulls/17037.md) on 2025-12-08 19:50_
 
 ---

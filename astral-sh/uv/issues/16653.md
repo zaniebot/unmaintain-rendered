@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-09T15:05:21Z
 updated_at: 2025-12-18T19:38:34Z
 url: https://github.com/astral-sh/uv/issues/16653
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Add install summary to `uv sync` JSON output
@@ -67,10 +67,6 @@ _Label `enhancement` added by @zanieb on 2025-11-09 15:05_
 
 ---
 
-_Referenced in [astral-sh/uv#16660](../../astral-sh/uv/pulls/16660.md) on 2025-11-10 04:50_
-
----
-
 _Assigned to @EliteTK by @EliteTK on 2025-12-03 14:48_
 
 ---
@@ -86,14 +82,6 @@ Not quite related ...
 _Comment by @zanieb on 2025-12-03 18:19_
 
 It definitely should go to stdout. I'm not sure about the retention of the normal text output on stdr. I recently noticed that and was thinking we should revisit it. Long-term, we'll want an `--output-format json-lines` or `--output-format ndjson` where we emit JSON messages as we go (i.e., for progress updates and logs).
-
----
-
-_Referenced in [astral-sh/uv#16981](../../astral-sh/uv/pulls/16981.md) on 2025-12-04 15:39_
-
----
-
-_Referenced in [astral-sh/uv#17039](../../astral-sh/uv/pulls/17039.md) on 2025-12-08 22:11_
 
 ---
 

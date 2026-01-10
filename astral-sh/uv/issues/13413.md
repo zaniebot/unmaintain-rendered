@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-12T16:49:11Z
 updated_at: 2025-12-04T16:07:36Z
 url: https://github.com/astral-sh/uv/issues/13413
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # `uv pip compile --format pylock.toml` includes a lot of wheels/sdits not allowed by compile command
@@ -113,14 +113,6 @@ _Comment by @gary-wall-hpe on 2025-05-18 21:22_
 
 ---
 
-_Referenced in [astral-sh/uv#14004](../../astral-sh/uv/issues/14004.md) on 2025-07-01 23:34_
-
----
-
-_Referenced in [astral-sh/uv#15429](../../astral-sh/uv/issues/15429.md) on 2025-08-21 19:52_
-
----
-
 _Comment by @ZzEeKkAa on 2025-08-21 21:29_
 
 How does the `pylock.toml` is resolved if different platform versions have different dependencies?
@@ -130,10 +122,6 @@ for example `foo-manylinux_2_28_x86_64` depends on package `bar-linux` that is o
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-03 06:05_
-
----
-
-_Referenced in [astral-sh/uv#16956](../../astral-sh/uv/pulls/16956.md) on 2025-12-03 06:15_
 
 ---
 

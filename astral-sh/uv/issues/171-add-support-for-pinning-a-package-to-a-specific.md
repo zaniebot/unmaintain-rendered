@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-23T15:59:07Z
 updated_at: 2025-12-15T03:55:17Z
 url: https://github.com/astral-sh/uv/issues/171
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-10T03:11:30Z
 ```
 
 # Add support for pinning a package to a specific index
@@ -57,10 +57,6 @@ I don't quite understand why this is so hard (as per the pip issue), I can't tel
 _Comment by @charliermarsh on 2023-10-26 05:35_
 
 Poetry's design is interesting: https://python-poetry.org/docs/repositories/. It feels a bit more complex than is necessary though.
-
----
-
-_Referenced in [astral-sh/uv#1377](../../astral-sh/uv/issues/1377.md) on 2024-02-16 10:57_
 
 ---
 
@@ -230,10 +226,6 @@ Getting into this much detail may be more than the `uv` maintainers want, though
 
 ---
 
-_Referenced in [astral-sh/uv#1688](../../astral-sh/uv/issues/1688.md) on 2024-02-19 13:52_
-
----
-
 _Assigned to @BurntSushi by @BurntSushi on 2024-02-26 15:51_
 
 ---
@@ -274,10 +266,6 @@ Ah yes! I meant to call that out, but yes indeed.
 
 ---
 
-_Referenced in [astral-sh/uv#2083](../../astral-sh/uv/pulls/2083.md) on 2024-02-29 15:16_
-
----
-
 _Comment by @vlad-ivanov-name on 2024-03-01 16:04_
 
 While setting priority is good, in many cases it's only a bandaid while a proper solution would be enforcing association between specific packages and registries. This is not something that can be fixed server side; this has to be on the client, without any fallbacks or flexible behaviours. So if a package is not found in the registry, install (or any other operation) has to fail. This is to prevent supply chain attacks -- any other behaviour creates scenarios where due to intermittent problems (e. g. network) a malicous package can be installed.
@@ -297,10 +285,6 @@ I think this is roughly what I meant above with:
 _Comment by @vlad-ivanov-name on 2024-03-01 16:23_
 
 Thank you for the reply. Do you think this feature could be implemented in API sooner than implementing the UX for it in the command line? `pixi` recently switched to `uv` as a Python backend, and as they don't implement `pip` UX/UI, just an API that would be more detailed than the current "flat" package source from multiple URLs would already enable it there.
-
----
-
-_Referenced in [astral-sh/uv#2205](../../astral-sh/uv/issues/2205.md) on 2024-03-05 18:08_
 
 ---
 
@@ -420,34 +404,6 @@ gonna comment on this, as that seems the most relevant issue: https://github.com
 
 ---
 
-_Referenced in [prefix-dev/pixi#588](../../prefix-dev/pixi/issues/588.md) on 2024-03-08 10:53_
-
----
-
-_Referenced in [astral-sh/uv#2310](../../astral-sh/uv/issues/2310.md) on 2024-03-08 22:43_
-
----
-
-_Referenced in [astral-sh/uv#2377](../../astral-sh/uv/issues/2377.md) on 2024-03-13 14:32_
-
----
-
-_Referenced in [astral-sh/uv#2478](../../astral-sh/uv/issues/2478.md) on 2024-03-15 19:26_
-
----
-
-_Referenced in [astral-sh/uv#2542](../../astral-sh/uv/issues/2542.md) on 2024-03-19 17:20_
-
----
-
-_Referenced in [astral-sh/uv#2683](../../astral-sh/uv/issues/2683.md) on 2024-03-27 03:01_
-
----
-
-_Referenced in [astral-sh/uv#2718](../../astral-sh/uv/issues/2718.md) on 2024-03-28 19:19_
-
----
-
 _Comment by @charliermarsh on 2024-04-03 23:29_
 
 The next version of uv will include an opt-in flag to allow users to search for packages across multiple indexes. This is less secure, but closer to pip's behavior.
@@ -462,39 +418,7 @@ Since there's a flag and the logic behind it already, perhaps it could accept so
 
 ---
 
-_Referenced in [astral-sh/uv#2840](../../astral-sh/uv/issues/2840.md) on 2024-04-05 19:21_
-
----
-
-_Referenced in [astral-sh/uv#2852](../../astral-sh/uv/issues/2852.md) on 2024-04-06 13:31_
-
----
-
-_Referenced in [prefix-dev/pixi#1373](../../prefix-dev/pixi/issues/1373.md) on 2024-05-13 11:20_
-
----
-
-_Referenced in [astral-sh/rye#1082](../../astral-sh/rye/issues/1082.md) on 2024-05-13 23:40_
-
----
-
-_Referenced in [astral-sh/uv#3931](../../astral-sh/uv/issues/3931.md) on 2024-05-31 16:36_
-
----
-
-_Referenced in [astral-sh/uv#4173](../../astral-sh/uv/issues/4173.md) on 2024-06-09 17:45_
-
----
-
-_Referenced in [astral-sh/uv#4578](../../astral-sh/uv/issues/4578.md) on 2024-06-27 15:56_
-
----
-
 _Unassigned @BurntSushi by @konstin on 2024-07-09 12:38_
-
----
-
-_Referenced in [astral-sh/rye#1210](../../astral-sh/rye/issues/1210.md) on 2024-08-10 12:00_
 
 ---
 
@@ -507,10 +431,6 @@ FWIW I quite like the feature in PDM that allows one to pin all packages with a 
 _Comment by @corleyma on 2024-08-22 19:44_
 
 @smphhh me too, and I've used poetry plugin to accomplish something similar.  I know it's funky but it's a big 80/20 for corporate usecases.  It solves the problem of "if I pin a dependency to an index, from which index do I get the transitive dependencies?" for a narrow but useful set of cases.
-
----
-
-_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-08-23 18:02_
 
 ---
 
@@ -532,26 +452,6 @@ _Removed from milestone `Feature complete` by @zanieb on 2024-08-23 18:03_
 
 ---
 
-_Referenced in [astral-sh/uv#6544](../../astral-sh/uv/issues/6544.md) on 2024-08-23 21:10_
-
----
-
-_Referenced in [astral-sh/uv#6582](../../astral-sh/uv/issues/6582.md) on 2024-08-24 13:40_
-
----
-
-_Referenced in [astral-sh/uv#6421](../../astral-sh/uv/issues/6421.md) on 2024-08-26 17:42_
-
----
-
-_Referenced in [astral-sh/uv#6389](../../astral-sh/uv/pulls/6389.md) on 2024-09-03 19:11_
-
----
-
-_Referenced in [renovatebot/renovate#31186](../../renovatebot/renovate/pulls/31186.md) on 2024-09-03 20:33_
-
----
-
 _Comment by @colinjc on 2024-09-05 19:07_
 
 Current uv docs for dependencies make it sound like this feature is already available. Let to a bit of churn trying to figure out how to use it 😅 
@@ -561,18 +461,6 @@ https://docs.astral.sh/uv/concepts/dependencies/
 
 > tool.uv.sources enriches the dependency metadata with additional sources, incorporated during development. A dependency source can be a Git repository, a URL, a local path, or an **alternative registry**.
 
-
----
-
-_Referenced in [astral-sh/uv#7149](../../astral-sh/uv/issues/7149.md) on 2024-09-07 15:43_
-
----
-
-_Referenced in [astral-sh/uv#7153](../../astral-sh/uv/issues/7153.md) on 2024-09-09 01:04_
-
----
-
-_Referenced in [astral-sh/uv#7245](../../astral-sh/uv/issues/7245.md) on 2024-09-10 13:42_
 
 ---
 
@@ -615,21 +503,9 @@ Please comment on https://github.com/astral-sh/uv/issues/5734 instead for enviro
 
 ---
 
-_Referenced in [astral-sh/uv#7390](../../astral-sh/uv/issues/7390.md) on 2024-09-14 14:28_
-
----
-
-_Referenced in [astral-sh/uv#7481](../../astral-sh/uv/pulls/7481.md) on 2024-09-18 01:57_
-
----
-
 _Comment by @charliermarsh on 2024-09-18 04:06_
 
 This is starting to come together in https://github.com/astral-sh/uv/pull/7481.
-
----
-
-_Referenced in [astral-sh/uv#7496](../../astral-sh/uv/issues/7496.md) on 2024-09-18 13:49_
 
 ---
 
@@ -662,19 +538,11 @@ Good news! 🎉
 
 ---
 
-_Referenced in [Comfy-Org/comfy-cli#189](../../Comfy-Org/comfy-cli/issues/189.md) on 2024-09-21 09:25_
-
----
-
 _Closed by @charliermarsh on 2024-10-15 22:24_
 
 ---
 
 _Closed by @charliermarsh on 2024-10-15 22:24_
-
----
-
-_Referenced in [astral-sh/uv#8253](../../astral-sh/uv/issues/8253.md) on 2024-10-16 21:26_
 
 ---
 
@@ -694,18 +562,6 @@ _Comment by @gazpachoking on 2024-10-21 13:54_
 > What about CLI? Will uv support adding dependencies with custom registries via `uv add`?
 
 It looks like #7747 sorta does that. It doesn't allow just giving the index name though, you have to give the name and url. `uv add --index internal=https://internalindex.url somepackage` Allowing just using an existing index name would be a nice improvement.
-
----
-
-_Referenced in [astral-sh/uv#10140](../../astral-sh/uv/issues/10140.md) on 2024-12-24 12:50_
-
----
-
-_Referenced in [pypiserver/pypiserver#643](../../pypiserver/pypiserver/issues/643.md) on 2025-03-18 16:28_
-
----
-
-_Referenced in [Comfy-Org/comfy-cli#333](../../Comfy-Org/comfy-cli/pulls/333.md) on 2025-10-20 18:15_
 
 ---
 

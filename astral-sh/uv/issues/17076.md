@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-10T17:11:49Z
 updated_at: 2025-12-10T17:11:49Z
 url: https://github.com/astral-sh/uv/issues/17076
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Shell completions could be improved with better use of `clap` value hints
@@ -58,9 +58,5 @@ _Label `enhancement` added by @EliteTK on 2025-12-10 17:11_
 ---
 
 _Label `cli` added by @EliteTK on 2025-12-10 17:11_
-
----
-
-_Referenced in [astral-sh/uv#17080](../../astral-sh/uv/pulls/17080.md) on 2025-12-10 23:11_
 
 ---

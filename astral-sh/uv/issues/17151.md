@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-12-16T15:55:44Z
 updated_at: 2026-01-06T16:40:28Z
 url: https://github.com/astral-sh/uv/issues/17151
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Consider which dist related metadata should be included in `--output-format=json` when a dist is included in the output
@@ -94,10 +94,6 @@ Alternative 2:
     "action": "installed"
   }
 ]
-
----
-
-_Referenced in [astral-sh/uv#16653](../../astral-sh/uv/issues/16653.md) on 2025-12-18 19:38_
 
 ---
 

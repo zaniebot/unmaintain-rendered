@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-27T03:02:22Z
 updated_at: 2025-12-31T08:37:19Z
 url: https://github.com/astral-sh/uv/issues/13123
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Extend uv config Command to Support Viewing/Modifying/Resetting Configurations
@@ -90,10 +90,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @willow-yang on 2025-04-27 03:02_
-
----
-
-_Referenced in [astral-sh/uv#14509](../../astral-sh/uv/pulls/14509.md) on 2025-07-08 20:04_
 
 ---
 

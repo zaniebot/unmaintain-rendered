@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-12-10T11:16:51Z
 updated_at: 2025-12-10T11:16:51Z
 url: https://github.com/astral-sh/uv/issues/17068
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Index strategies are ignored with [required-]environments
@@ -64,9 +64,5 @@ pushd platform-mismatch/
 curl -O https://files.pythonhosted.org/packages/af/8f/3ed4bfa0c0c72a7ca17f0380cd9e4dd842b09f664e780c13cff1dcf2ef1b/charset_normalizer-3.4.4-cp313-cp313-win_arm64.whl
 popd
 ```
-
----
-
-_Referenced in [astral-sh/uv#12721](../../astral-sh/uv/issues/12721.md) on 2025-12-10 11:18_
 
 ---

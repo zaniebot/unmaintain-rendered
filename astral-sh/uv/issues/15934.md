@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-18T16:47:44Z
 updated_at: 2025-12-11T18:29:25Z
 url: https://github.com/astral-sh/uv/issues/15934
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Support read-only cache directories
@@ -30,10 +30,6 @@ $ uv venv -c
 $ UV_CACHE_DIR=a uv pip install tqdm
 error: failed to open file `a/sdists-v9/.git`: Permission denied (os error 13)
 ```
-
----
-
-_Referenced in [astral-sh/uv#15888](../../astral-sh/uv/pulls/15888.md) on 2025-09-18 16:48_
 
 ---
 

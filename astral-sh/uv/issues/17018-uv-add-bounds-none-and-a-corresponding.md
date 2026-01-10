@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-12-07T14:42:24Z
-updated_at: 2025-12-11T11:36:21Z
+updated_at: 2025-12-12T14:19:47Z
 url: https://github.com/astral-sh/uv/issues/17018
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv add --bounds none` and a corresponding environment variable
@@ -74,5 +74,15 @@ _Comment by @konstin on 2025-12-11 11:36_
 We regularly get bug reports that eventually turn out to be cases where a user got a bad resolution due to missing lower bounds. Even if there is no explicit lower bound in the requirements file, there is already an implicit lower bound in the code through the symbols that are used. Not stating a bound means that choosing any version of the package is valid, even an ancient one that breaks the code that's using it; Notably there's no guarantee that the current working resolution will keep working in the future when more versions are published, due to potentially changed backtracking behavior, or even a change in the resolver's behavior. Adding lower bounds to the requirements file makes the implicit requirement explicit and prevents the packaging tool from violating that assumption.
 
 The Python Packaging User Guide recommends using lower bounds as best practice (e.g., https://packaging.python.org/en/latest/discussions/install-requires-vs-requirements/#install-requires). Where it uses examples without lower bounds, we should add those missing bounds. Some of the examples may predate proper backtracking resolvers, which are mainly affected by this problem (https://pip.pypa.io/en/latest/user_guide/#changes-to-the-pip-dependency-resolver-in-20-3-2020).
+
+---
+
+_Comment by @jklaiho on 2025-12-12 14:19_
+
+Yeah, I'm not going to argue _too_ too much for what is admittedly a niche preference. Upper and exact bounds are supported and can also be footguns, and not having bounds is not always one. My assumption is that anyone actively opting to use `--bounds none`/`UV_BOUNDS=none` would know what they are doing and why, and would accept the (possibly real, possibly theoretical, depending on their situation) risk involved.
+
+In a dream world that conformed to my particular aesthetic preferences I'd have two environment variables: `UV_BOUNDS=none`and `UV_NO_DOWNGRADES=true`, then just use `uv add` to get unbounded dependencies in `pyproject.toml`. If that command were ever to cause a downgrade of a dependency, the process would stop and tell me to determine how I want to resolve the situation by specifying version boundaries manually, or by opting not to use the incoming dependency at all if the version conflict was irreconcilable.
+
+I think I've said all I have to say on the topic; I'll accept whatever the verdict is.
 
 ---

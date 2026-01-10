@@ -8,9 +8,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2025-10-22T16:37:27Z
-updated_at: 2025-11-19T02:04:03Z
+updated_at: 2026-01-09T17:08:07Z
 url: https://github.com/astral-sh/uv/issues/16412
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # uv pip install doesn't work with :  ⁠UV_NATIVE_TLS and ⁠--native-tls -  No detection system certificates, requiring ⁠--allow-insecure-host
@@ -107,14 +107,6 @@ _Label `bug` removed by @samypr100 on 2025-10-23 03:23_
 
 ---
 
-_Referenced in [astral-sh/uv#16414](../../astral-sh/uv/issues/16414.md) on 2025-10-23 03:28_
-
----
-
-_Referenced in [astral-sh/uv#16473](../../astral-sh/uv/pulls/16473.md) on 2025-10-27 16:40_
-
----
-
 _Comment by @michael-o on 2025-11-18 17:19_
 
 @errajibadr Your problem is 99% related to openssl-probe.
@@ -129,5 +121,17 @@ _Comment by @samypr100 on 2025-11-19 02:02_
 
 `uv` delgates to `rustls-native-certs` which is then delegated to `openssl-probe` on unix build configurations but only when `--native-tls` is used and `SSL_CERT_DIR` or `SSL_CERT_FILE` are not set.
 When `SSL_CERT_DIR` or `SSL_CERT_FILE` are set, native certs are not loaded due to `rustls-native-certs` [behavior](https://github.com/rustls/rustls-native-certs/blob/3ec7d86977f04fba8d369571595b47d16c8a60f2/src/lib.rs#L118-L125) on this, not `openssl-probe` as a far as I can see.
+
+---
+
+_Comment by @michael-o on 2026-01-09 17:08_
+
+> > [@errajibadr](https://github.com/errajibadr) Your problem is 99% related to openssl-probe.
+> 
+> [@michael-o](https://github.com/michael-o) Thanks for digging, could you provide more details as to what led you to that conclusion?
+> 
+> `uv` delgates to `rustls-native-certs` which is then delegated to `openssl-probe` on unix build configurations but only when `--native-tls` is used and `SSL_CERT_DIR` or `SSL_CERT_FILE` are not set. When `SSL_CERT_DIR` or `SSL_CERT_FILE` are set, native certs are not loaded due to `rustls-native-certs` [behavior](https://github.com/rustls/rustls-native-certs/blob/3ec7d86977f04fba8d369571595b47d16c8a60f2/src/lib.rs#L118-L125) on this, not `openssl-probe` as a far as I can see.
+
+openssl-probe applies heuristics to find a truststore, see https://github.com/rustls/openssl-probe/blob/4221247cfad3e77b758bf9b6e4c3d91a557c429e/src/lib.rs
 
 ---

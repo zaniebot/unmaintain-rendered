@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-12-18T20:40:13Z
 updated_at: 2025-12-19T09:21:40Z
 url: https://github.com/astral-sh/uv/issues/17182
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Make usage of `--config-file`/`UV_CONFIG_FILE` visible in verbose output
@@ -70,9 +70,5 @@ _Comment by @valkrypton on 2025-12-19 09:21_
 
 Is this available? I'd like to give this a try
 
-
----
-
-_Referenced in [astral-sh/uv#17201](../../astral-sh/uv/pulls/17201.md) on 2025-12-21 00:20_
 
 ---

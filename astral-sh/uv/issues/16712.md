@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-12T20:42:52Z
 updated_at: 2025-12-16T21:35:26Z
 url: https://github.com/astral-sh/uv/issues/16712
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # SSL_CERT_FILE ignores empty value
@@ -27,10 +27,6 @@ Goal is to use the same filter as https://github.com/astral-sh/uv/blob/63ab24776
 
 ---
 
-_Referenced in [astral-sh/uv#16473](../../astral-sh/uv/pulls/16473.md) on 2025-11-12 20:45_
-
----
-
 _Label `good first issue` added by @zanieb on 2025-11-13 13:41_
 
 ---
@@ -44,10 +40,6 @@ If no one is actively working on this, I'd be happy to give it a try!
 _Comment by @samypr100 on 2025-11-16 18:18_
 
 @taearls feel free 👍 
-
----
-
-_Referenced in [astral-sh/uv#16772](../../astral-sh/uv/pulls/16772.md) on 2025-11-18 18:19_
 
 ---
 

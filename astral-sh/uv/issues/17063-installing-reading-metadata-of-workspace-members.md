@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-10T09:11:32Z
 updated_at: 2025-12-16T11:07:00Z
 url: https://github.com/astral-sh/uv/issues/17063
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Installing / reading metadata of workspace members from wheels
@@ -48,10 +48,6 @@ _Label `enhancement` added by @ktns on 2025-12-10 09:11_
 _Comment by @konstin on 2025-12-10 09:53_
 
 Do your workspace members use the `[project]` table with static metadata, and what tooling do they use for building Rust bindings? `uv lock` can skip the build backend altogether when there is static metadata. Even if there isn't, normally the build backend shouldn't need to actually compile native code for the metadata that `uv lock` needs.
-
----
-
-_Referenced in [astral-sh/uv#17064](../../astral-sh/uv/pulls/17064.md) on 2025-12-10 10:06_
 
 ---
 

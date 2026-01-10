@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-24T11:22:31Z
 updated_at: 2025-12-13T17:44:52Z
 url: https://github.com/astral-sh/uv/issues/4466
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # UV upgrades packages inherited with --system-site-packages
@@ -129,10 +129,6 @@ Just tried that -- it does not, but IMO it should.
 
 ---
 
-_Referenced in [astral-sh/uv#2500](../../astral-sh/uv/issues/2500.md) on 2024-08-16 16:54_
-
----
-
 _Comment by @chrisrodrigue on 2024-08-16 20:56_
 
 I have a similar use case to @J3ronimo
@@ -153,17 +149,9 @@ A cop-out way to get a list of already-satisfied requirements would be to just s
 
 ---
 
-_Referenced in [astral-sh/uv#7358](../../astral-sh/uv/issues/7358.md) on 2024-09-13 12:55_
-
----
-
 _Comment by @BubuOT on 2024-09-13 13:17_
 
 https://github.com/astral-sh/uv/issues/7358#issuecomment-2348896632 recommended using `uv pip install --system` as a workaround, but that is not an option for us, because the system python environment is on a read-only partition.
-
----
-
-_Referenced in [home-assistant/core#128214](../../home-assistant/core/issues/128214.md) on 2024-10-14 02:54_
 
 ---
 
@@ -197,22 +185,6 @@ Based on taking a quick look at things, these aren't particularly complex and I'
 _Comment by @charliermarsh on 2024-12-12 16:16_
 
 Definitely welcome. I’m happy to answer questions too.
-
----
-
-_Referenced in [astral-sh/uv#9849](../../astral-sh/uv/pulls/9849.md) on 2024-12-12 19:14_
-
----
-
-_Referenced in [astral-sh/uv#6880](../../astral-sh/uv/issues/6880.md) on 2025-01-07 20:13_
-
----
-
-_Referenced in [astral-sh/uv#11670](../../astral-sh/uv/pulls/11670.md) on 2025-03-05 17:04_
-
----
-
-_Referenced in [ecmwf/WeatherGenerator#1352](../../ecmwf/WeatherGenerator/issues/1352.md) on 2025-11-25 14:20_
 
 ---
 

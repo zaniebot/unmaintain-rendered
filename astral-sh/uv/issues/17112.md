@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-12T20:24:59Z
 updated_at: 2025-12-17T00:16:24Z
 url: https://github.com/astral-sh/uv/issues/17112
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Cannot use pylock.toml https link
@@ -93,10 +93,6 @@ Yeah, given that `requirements.txt * (file, URL)` works and `pylock.toml * (file
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-13 03:23_
-
----
-
-_Referenced in [astral-sh/uv#17119](../../astral-sh/uv/pulls/17119.md) on 2025-12-13 03:23_
 
 ---
 

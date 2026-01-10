@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-18T15:56:58Z
 updated_at: 2025-12-24T14:28:08Z
 url: https://github.com/astral-sh/uv/issues/2512
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Add dependabot support
@@ -40,10 +40,6 @@ Given they explicitly support poetry (including generating a lock file), there's
 
 ---
 
-_Referenced in [astral-sh/uv#2583](../../astral-sh/uv/issues/2583.md) on 2024-03-21 14:26_
-
----
-
 _Label `wish` added by @zanieb on 2024-03-21 14:28_
 
 ---
@@ -59,10 +55,6 @@ _Comment by @notatallshaw on 2024-03-21 14:35_
 Do you have a concrete example?
 
 Not uv related, but I have a significant improvement to Pip's resolution for complex backtracking cases (https://github.com/notatallshaw/pip/tree/prefer-conflicting-causes), and it would be good to know as many real world cases it solves or not.
-
----
-
-_Referenced in [astral-sh/uv#1468](../../astral-sh/uv/issues/1468.md) on 2024-06-13 13:48_
 
 ---
 
@@ -127,23 +119,11 @@ See #6236 — basically it's not supported yet. I think they're working on it st
 
 ---
 
-_Referenced in [epicserve/django-base-site#951](../../epicserve/django-base-site/pulls/951.md) on 2024-09-01 20:36_
-
----
-
-_Referenced in [dependabot/dependabot-core#10040](../../dependabot/dependabot-core/pulls/10040.md) on 2024-09-04 07:31_
-
----
-
 _Comment by @jonjanego on 2024-09-04 15:59_
 
 👋 from the GitHub Dependabot team. There's a [PR in dependabot-core](https://github.com/dependabot/dependabot-core/pull/10040) that aims to help support uv. @zanieb in case you didn't notice the tag there, i'm pinging you here to see if you could take a look :)
 
 Thanks!
-
----
-
-_Referenced in [climatepolicyradar/knowledge-graph#60](../../climatepolicyradar/knowledge-graph/pulls/60.md) on 2024-10-17 23:54_
 
 ---
 
@@ -230,10 +210,6 @@ For the Python version, we use `project.requires-python` to determine which vers
 
 ---
 
-_Referenced in [dependabot/dependabot-core#11852](../../dependabot/dependabot-core/pulls/11852.md) on 2025-03-19 15:39_
-
----
-
 _Comment by @markhallen on 2025-03-19 15:39_
 
 > It seems like this occurs at https://github.com/dependabot/dependabot-core/blob/59943c098d9a28736a2f3ac2945faf3048e662ed/uv/lib/dependabot/uv/file_updater/lock_file_updater.rb#L166-L170
@@ -263,10 +239,6 @@ Technically, you can use `--no-build` to not build any packages. But this means 
 Usually, we also don't download the entire wheels, given [PEP 658](https://peps.python.org/pep-0658/) or Range Request support for metadata, but for the (rare) indexes that don't support either, we have no option but to download an entire wheel and read the METADATA from it.
 
 Both of those caveats should be generally the same for pip/pip-tools and poetry (pip for example has `--only-binary :all:`). We expose those options more prominently, we're the only tool not written in Python, so for us, running Python code is an explicit extra step and not just a `subprocess.check_call([sys.executable, ...])`.
-
----
-
-_Referenced in [epicserve/django-base-site#1107](../../epicserve/django-base-site/pulls/1107.md) on 2025-04-26 15:50_
 
 ---
 
@@ -302,21 +274,9 @@ _Label `external` added by @konstin on 2025-05-22 17:22_
 
 ---
 
-_Referenced in [astral-sh/uv#13690](../../astral-sh/uv/pulls/13690.md) on 2025-05-27 21:26_
-
----
-
 _Comment by @konstin on 2025-05-28 12:46_
 
 We updated the section in the documentation about dependabot and added an example how to use it. We still see a number of issue blocking adoption in https://github.com/dependabot/dependabot-core/issues?q=is%3Aissue%20state%3Aopen%20uv, so we'll keep this open a bit longer.
-
----
-
-_Referenced in [apache/superset#33162](../../apache/superset/issues/33162.md) on 2025-06-17 16:14_
-
----
-
-_Referenced in [NHSDigital/manage-vaccinations-in-schools-testing#381](../../NHSDigital/manage-vaccinations-in-schools-testing/issues/381.md) on 2025-06-19 07:58_
 
 ---
 
@@ -325,18 +285,6 @@ _Comment by @kaihendry on 2025-06-23 09:33_
 I just tried uv dependabot and it doesn't seem to generate a PR. Am I missing something? https://github.com/kaihendry/pycallfoo/blob/main/.github/dependabot.yml
 
 [pycallfoo](https://github.com/kaihendry/pycallfoo/) depends on [pyunderstand](https://github.com/kaihendry/pyunderstand) 0.1.2, but pyunderstand has been updated to [v0.1.3](https://github.com/kaihendry/pyunderstand/releases/tag/v0.1.3)
-
----
-
-_Referenced in [dagger/dagger#10627](../../dagger/dagger/pulls/10627.md) on 2025-06-23 11:41_
-
----
-
-_Referenced in [jond01/xil#264](../../jond01/xil/issues/264.md) on 2025-06-23 20:30_
-
----
-
-_Referenced in [data-apis/array-api-typing#36](../../data-apis/array-api-typing/pulls/36.md) on 2025-07-02 21:05_
 
 ---
 
@@ -381,10 +329,6 @@ Perhaps the dependabot is also waiting for official support to update the pyproj
 
 ---
 
-_Referenced in [langgenius/dify#25677](../../langgenius/dify/pulls/25677.md) on 2025-09-14 16:39_
-
----
-
 _Comment by @jonathanblade on 2025-11-29 17:07_
 
 Hello, everyone!
@@ -420,10 +364,6 @@ https://github.com/dependabot/dependabot-core/issues/12072
 
 ---
 
-_Referenced in [dependabot/dependabot-core#11913](../../dependabot/dependabot-core/issues/11913.md) on 2025-12-12 12:51_
-
----
-
 _Comment by @eleweek on 2025-12-22 18:49_
 
 How can I explicitly pin Python's version to a certain one with `uv`? 
@@ -439,9 +379,5 @@ _Comment by @eleweek on 2025-12-24 14:27_
 > How can I explicitly pin Python's version to a certain one with uv?
 
 Re: this. I filed a [bug](https://github.com/dependabot/dependabot-core/issues/13858) in the `dependabot-core` repo.
-
----
-
-_Referenced in [PowerGridModel/power-grid-model-workshop#42](../../PowerGridModel/power-grid-model-workshop/pulls/42.md) on 2026-01-05 15:26_
 
 ---

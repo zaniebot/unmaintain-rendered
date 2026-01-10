@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-30T14:28:03Z
 updated_at: 2026-01-02T11:43:19Z
 url: https://github.com/astral-sh/uv/issues/12558
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Even with `uv sync --no-dev`, development dependencies are still installed when workflow executes.
@@ -189,10 +189,6 @@ _Closed by @WitherZuo on 2025-04-07 08:38_
 
 ---
 
-_Referenced in [microbiomedata/nmdc-runtime#1251](../../microbiomedata/nmdc-runtime/issues/1251.md) on 2025-10-03 01:45_
-
----
-
 _Comment by @DimasInchidi on 2025-12-01 22:38_
 
 > Remove `dev` from `default-groups`, so `dev` dependencies always need to be enabled explicitly (`uv run --group dev`).
@@ -212,10 +208,6 @@ You can use `UV_NO_SYNC`
 _Comment by @zanieb on 2025-12-01 23:06_
 
 You can also use `UV_NO_DEV` instead of `--no-dev`.
-
----
-
-_Referenced in [astral-sh/uv#16994](../../astral-sh/uv/issues/16994.md) on 2025-12-05 05:18_
 
 ---
 

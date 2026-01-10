@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-10T17:21:30Z
 updated_at: 2025-12-18T17:29:49Z
 url: https://github.com/astral-sh/uv/issues/16671
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv python list` does not respect `UV_PYTHON_INSTALL_MIRROR`
@@ -60,10 +60,6 @@ https://github.com/astral-sh/uv/blob/82aa0d0ef5e7fe3d0172274ea06632af527c3cd2/cr
 vs
 
 https://github.com/astral-sh/uv/blob/82aa0d0ef5e7fe3d0172274ea06632af527c3cd2/crates/uv-python/src/downloads.rs#L919-L921
-
----
-
-_Referenced in [astral-sh/uv#16673](../../astral-sh/uv/pulls/16673.md) on 2025-11-10 18:23_
 
 ---
 

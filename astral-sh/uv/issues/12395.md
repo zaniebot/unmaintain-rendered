@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2025-03-22T18:48:12Z
-updated_at: 2025-08-16T12:36:41Z
+updated_at: 2025-12-12T17:04:24Z
 url: https://github.com/astral-sh/uv/issues/12395
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # `uv init` Add a .gitignore file?
@@ -99,10 +99,6 @@ _Comment by @jordan-carson on 2025-03-23 15:15_
 > It's worth noting that the `.venv` directory itself contains a `.gitignore` file which prevents it being pushed to git.
 
 aye yes it does! the good ole exclude everything `*`. 
-
----
-
-_Referenced in [astral-sh/uv#12542](../../astral-sh/uv/issues/12542.md) on 2025-03-29 07:33_
 
 ---
 
@@ -219,5 +215,29 @@ I think we should close this?
 ---
 
 _Closed by @zanieb on 2025-08-16 12:36_
+
+---
+
+_Comment by @AsiehH on 2025-12-12 02:43_
+
+I'm on macOS and when i create a project using `uv init template`, I do not see a `.gitignore` file created. I also saw [#12886](https://github.com/astral-sh/uv/issues/12886)
+Has this feature been removed? 
+
+Here are my versions: 
+
+uv 0.9.17 (2b5d65e61 2025-12-09)
+Python 3.14.2
+
+---
+
+_Comment by @zanieb on 2025-12-12 02:51_
+
+No it hasn't been removed. Are you already in a `.git` repository? We won't create it then. Want to open a new issue with reproduction details? `uv init -vv template` might help.
+
+---
+
+_Comment by @AsiehH on 2025-12-12 17:04_
+
+Thanks @zanieb . Yes, I was at a git repo 2 levels up. I thought it only checks for one level. 
 
 ---

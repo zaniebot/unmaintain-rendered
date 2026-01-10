@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-07T08:18:14Z
 updated_at: 2025-12-18T20:41:41Z
 url: https://github.com/astral-sh/uv/issues/15125
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # `--resolution=lowest` does not fork on requires-python
@@ -134,10 +134,6 @@ _Closed by @ego-thales on 2025-08-08 08:01_
 ---
 
 _Reopened by @ego-thales on 2025-08-08 08:34_
-
----
-
-_Referenced in [ThalesGroup/scio#9](../../ThalesGroup/scio/issues/9.md) on 2025-08-08 09:51_
 
 ---
 

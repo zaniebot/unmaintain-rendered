@@ -9,9 +9,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2025-08-05T13:49:40Z
-updated_at: 2025-09-15T13:52:37Z
+updated_at: 2026-01-08T09:28:11Z
 url: https://github.com/astral-sh/uv/issues/15082
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Gemfury private registry with UV
@@ -217,5 +217,34 @@ _Comment by @mortenboldt on 2025-09-15 13:50_
 
 Yeah, probably `UV_INDEX_FURY_USERNAME=$GEMFURY_TOKEN` and `UV_INDEX_FURY_PASSWORD=NOPASS`
 Setting those 2 env vars should authenticate you to a Gemfury repo, that you have named "fury" in your `pyproject.toml` file. That of course also requires you to have a `GEMFURY_TOKEN` env var set with the access token.
+
+---
+
+_Comment by @Houet on 2026-01-08 09:27_
+
+If still relevant, I faced the same issue and @mortenboldt solution worked for me :
+
+```pyproject.toml
+# pyproject.toml
+[tool.uv.sources]
+yourprivatelib = { index = "gemfury" }
+
+[[tool.uv.index]]
+name = "gemfury"   # -> index_name (you can put whatever name u want)
+url = "https://pypi.fury.io/yourprivatelib/"
+explicit = true
+```
+
+```bash
+# env var
+export UV_INDEX_{index_name}_USERNAME=$FURY_AUTH
+export UV_INDEX_{index_name}_PASSWORD=NOPASS
+```
+
+considering $FURY_AUTH is your fury token
+
+You can see something similar in the doc : https://docs.astral.sh/uv/concepts/indexes/#providing-credentials-directly
+
+Hope this help !
 
 ---

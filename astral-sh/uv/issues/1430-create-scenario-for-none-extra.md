@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T04:57:31Z
 updated_at: 2025-12-08T12:49:05Z
 url: https://github.com/astral-sh/uv/issues/1430
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Create scenario for `.none` extra
@@ -39,10 +39,6 @@ At https://github.com/zanieb/packse/blob/main/scenarios/extras.json
 ---
 
 _Label `good first issue` added by @zanieb on 2024-02-16 05:01_
-
----
-
-_Referenced in [astral-sh/packse#148](../../astral-sh/packse/pulls/148.md) on 2024-03-12 22:46_
 
 ---
 

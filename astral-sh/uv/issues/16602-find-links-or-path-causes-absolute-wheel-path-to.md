@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-05T17:17:24Z
 updated_at: 2025-12-18T17:05:21Z
 url: https://github.com/astral-sh/uv/issues/16602
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `find-links` or `path =` causes absolute wheel path to become relative path when creating lock file
@@ -113,10 +113,6 @@ Note that I tried to set
 source = { path = "/shared_drive/some/folders/wheels/<wheels_file>.whl" }
 ```
 manually in `uv.lock`, but subsequent `uv sync` reverted that change to a relative path.
-
----
-
-_Referenced in [astral-sh/uv#17122](../../astral-sh/uv/pulls/17122.md) on 2025-12-13 10:21_
 
 ---
 

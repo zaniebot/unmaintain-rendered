@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-28T20:10:03Z
 updated_at: 2026-01-06T19:20:26Z
 url: https://github.com/astral-sh/uv/issues/17247
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Custom command hook for uv sync/lock/run/... calls
@@ -61,14 +61,6 @@ We could then use uv natively and with low maintenance burden.
 ---
 
 _Label `enhancement` added by @danijar on 2025-12-28 20:10_
-
----
-
-_Referenced in [astral-sh/uv#17209](../../astral-sh/uv/issues/17209.md) on 2025-12-28 20:42_
-
----
-
-_Referenced in [astral-sh/uv#17283](../../astral-sh/uv/issues/17283.md) on 2026-01-02 16:32_
 
 ---
 

@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-12-23T07:34:56Z
-updated_at: 2025-12-27T11:52:51Z
+updated_at: 2026-01-10T01:40:57Z
 url: https://github.com/astral-sh/uv/issues/17224
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # To Be Closed
@@ -76,5 +76,13 @@ _Closed by @mourad-ghafiri on 2025-12-27 09:01_
 ---
 
 _Renamed from "Proposal: UV - Python Package Manager VsCode Extension" to "To Be Closed" by @mourad-ghafiri on 2025-12-27 11:52_
+
+---
+
+_Comment by @zanieb on 2026-01-10 01:40_
+
+Thanks @FishAlchemist 
+
+@mourad-ghafiri please stop opening duplicate issues or we will have to block you from the project.
 
 ---

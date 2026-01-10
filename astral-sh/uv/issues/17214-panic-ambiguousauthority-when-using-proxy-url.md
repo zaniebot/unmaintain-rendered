@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-22T08:47:08Z
 updated_at: 2025-12-25T11:42:22Z
 url: https://github.com/astral-sh/uv/issues/17214
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # panic: AmbiguousAuthority when using proxy url with git source + branch
@@ -81,10 +81,6 @@ _Label `bug` added by @b1ankcat on 2025-12-22 08:47_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-24 14:02_
-
----
-
-_Referenced in [astral-sh/uv#17234](../../astral-sh/uv/pulls/17234.md) on 2025-12-24 14:07_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-04T14:23:13Z
 updated_at: 2025-12-04T20:24:11Z
 url: https://github.com/astral-sh/uv/issues/16978
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # BUG(?): uv fails to resolve astropy's dependency graph in CI (circular dependency), but succeeds locally.
@@ -78,10 +78,6 @@ _Label `bug` added by @neutrinoceros on 2025-12-04 14:23_
 
 ---
 
-_Referenced in [astropy/astropy#19022](../../astropy/astropy/pulls/19022.md) on 2025-12-04 14:23_
-
----
-
 _Comment by @neutrinoceros on 2025-12-04 17:36_
 
 nevermind, I figured it out using `RUST_LOG=uv=debug`; the issue was that I only used a shallow clone in CI, but astropy's version is dynamically computed at build time from the most recent git tag, and defaults to a `0.0.0+...` scheme, which is really what broke the resolver. To some extent, I think the error message could be improved to hint at it, but I'm not even sure that's a reasonable expectation. Anyway, feel free to close this as my immediate problem was both fixed *and* never was a bug in uv in the first place.
@@ -109,13 +105,5 @@ I'll see if I can manage an MRE in the next couple days. Is it okay if I ping yo
 _Comment by @zanieb on 2025-12-04 20:24_
 
 Yep!
-
----
-
-_Referenced in [astropy/astropy#19027](../../astropy/astropy/pulls/19027.md) on 2025-12-05 10:21_
-
----
-
-_Referenced in [astral-sh/uv#16997](../../astral-sh/uv/issues/16997.md) on 2025-12-05 10:50_
 
 ---

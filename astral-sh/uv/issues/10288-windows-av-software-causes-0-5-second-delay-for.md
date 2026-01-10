@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-03T14:30:37Z
 updated_at: 2025-12-15T17:05:26Z
 url: https://github.com/astral-sh/uv/issues/10288
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Windows AV software causes 0.5 second delay for unsigned binaries
@@ -128,10 +128,6 @@ Fair, python build standalone binaries would benefit from signing
 
 Which .exe files? Executable scripts launchers are generated on the fly, they're not pre-existing.
 
-
----
-
-_Referenced in [astral-sh/python-build-standalone#89](../../astral-sh/python-build-standalone/issues/89.md) on 2025-01-05 16:07_
 
 ---
 

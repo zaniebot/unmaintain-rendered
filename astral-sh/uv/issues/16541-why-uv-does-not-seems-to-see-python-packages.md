@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-31T19:07:05Z
 updated_at: 2025-12-18T15:20:30Z
 url: https://github.com/astral-sh/uv/issues/16541
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Why uv does not seems to see python packages installed in a different site-packages
@@ -121,14 +121,6 @@ The packages are available from a different site-package as mentioned, which is 
 To be precise, the packages are available from ` $EBROOTARROW/lib/python3.13/site-packages/` while the virtual env. has `$VIRTUAL_ENV/lib/python3.13/site-packages/`.
 
 Any quick fix? Thanks
-
----
-
-_Referenced in [astral-sh/uv#16540](../../astral-sh/uv/issues/16540.md) on 2025-11-03 13:24_
-
----
-
-_Referenced in [ComputeCanada/software-stack#165](../../ComputeCanada/software-stack/issues/165.md) on 2025-11-04 16:54_
 
 ---
 

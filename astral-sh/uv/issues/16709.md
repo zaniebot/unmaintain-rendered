@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-12T17:40:03Z
 updated_at: 2025-12-23T00:34:45Z
 url: https://github.com/astral-sh/uv/issues/16709
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv pip compile` does not install a python interpreter if a suitable one isn't found
@@ -92,10 +92,6 @@ It's acceptable, but not ideal, we should continue instead of failing if Python 
 
 ---
 
-_Referenced in [astral-sh/uv#17216](../../astral-sh/uv/pulls/17216.md) on 2025-12-22 15:39_
-
----
-
 _Comment by @EliteTK on 2025-12-22 15:46_
 
 For the case that an explicit `--python` is set and didn't get converted into `--python-version` I have pushed #17216 which uses `find_or_download` for that.
@@ -154,14 +150,6 @@ Is this behaviour correct? If not, I can think of two good alternatives:
 2. Passing only `--python-version` uses `find_or_download`[^1] instead of `find_best`.
 
 [^1]: With the PR for handling "download is disabled" and "download does not exist" then the behaviour would instead be: `find_or_download` and if downloads are disabled or downloading fails then warn and fall back to `find_best`.
-
----
-
-_Referenced in [astral-sh/uv#17218](../../astral-sh/uv/pulls/17218.md) on 2025-12-22 19:16_
-
----
-
-_Referenced in [astral-sh/uv#17219](../../astral-sh/uv/pulls/17219.md) on 2025-12-22 19:44_
 
 ---
 
@@ -271,9 +259,5 @@ But to explain why it might make sense _not_ to download the `--python-version` 
 But that kind of design change should probably be applied globally (e.g., we could also apply this logic to `uv sync` etc).
 
 (Edited for clarity)
-
----
-
-_Referenced in [astral-sh/uv#17249](../../astral-sh/uv/pulls/17249.md) on 2025-12-29 12:59_
 
 ---

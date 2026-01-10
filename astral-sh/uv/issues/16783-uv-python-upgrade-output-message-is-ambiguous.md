@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-19T23:39:20Z
 updated_at: 2025-12-16T10:23:01Z
 url: https://github.com/astral-sh/uv/issues/16783
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv python upgrade` output message is ambiguous
@@ -78,10 +78,6 @@ If no one is working on this, I'd be happy to work on this.
 _Comment by @zanieb on 2025-11-20 17:32_
 
 Feel free.
-
----
-
-_Referenced in [astral-sh/uv#16815](../../astral-sh/uv/pulls/16815.md) on 2025-11-21 22:25_
 
 ---
 

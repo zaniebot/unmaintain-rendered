@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-07T09:22:18Z
 updated_at: 2025-12-16T07:54:10Z
 url: https://github.com/astral-sh/uv/issues/14483
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Support `--all-groups` for `uv pip install`
@@ -55,10 +55,6 @@ This seems reasonable to me.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-20 22:47_
-
----
-
-_Referenced in [astral-sh/uv#14789](../../astral-sh/uv/pulls/14789.md) on 2025-07-21 14:32_
 
 ---
 

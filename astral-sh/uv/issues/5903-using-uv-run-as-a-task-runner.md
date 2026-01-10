@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T11:00:55Z
 updated_at: 2026-01-05T02:08:40Z
 url: https://github.com/astral-sh/uv/issues/5903
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Using `uv run` as a task runner
@@ -123,15 +123,7 @@ I'm not a big fan of `[tool.uv.scripts]` since it conflicts with `[project.scrip
 
 ---
 
-_Referenced in [astral-sh/uv#6000](../../astral-sh/uv/issues/6000.md) on 2024-08-11 02:42_
-
----
-
 _Label `preview` removed by @zanieb on 2024-08-20 18:21_
-
----
-
-_Referenced in [astral-sh/uv#6499](../../astral-sh/uv/issues/6499.md) on 2024-08-23 08:24_
 
 ---
 
@@ -173,10 +165,6 @@ I would be curious to hear the use cases of nesting dependency groups and comman
 
 ---
 
-_Referenced in [astral-sh/uv#6302](../../astral-sh/uv/issues/6302.md) on 2024-08-27 10:35_
-
----
-
 _Comment by @pietroppeter on 2024-08-28 10:29_
 
 since it has not been mentioned yet, adding as  a possible inspiration for design of tasks also pixi: https://pixi.sh/latest/features/advanced_tasks/
@@ -192,14 +180,6 @@ I happen to be writing a cross-project task runner that supports a bunch of form
 For what it's worth, almost all python runners use `tool.<name>.scripts` for task config (presumably inspired by npm's `package.json` format), so it's somewhat of an easier upgrade path for people coming from other tools.
 
 https://github.com/metaist/ds
-
----
-
-_Referenced in [astral-sh/uv#7165](../../astral-sh/uv/issues/7165.md) on 2024-09-07 16:04_
-
----
-
-_Referenced in [astral-sh/uv#7180](../../astral-sh/uv/issues/7180.md) on 2024-09-07 23:26_
 
 ---
 
@@ -219,21 +199,9 @@ I would appreciate a dedicated command like `uvr`
 
 ---
 
-_Referenced in [astral-sh/uv#7186](../../astral-sh/uv/issues/7186.md) on 2024-09-08 13:22_
-
----
-
 _Comment by @zanieb on 2024-09-08 13:22_
 
 @inoa-jboliveira I opened a dedicated issue for that https://github.com/astral-sh/uv/issues/7186
-
----
-
-_Referenced in [astral-sh/uv#7203](../../astral-sh/uv/issues/7203.md) on 2024-09-09 01:17_
-
----
-
-_Referenced in [astral-sh/uv#7242](../../astral-sh/uv/issues/7242.md) on 2024-09-10 15:00_
 
 ---
 
@@ -319,10 +287,6 @@ _Comment by @patrick91 on 2024-09-11 09:52_
 > Furthermore, [project.scripts] has already been established in [PEP-0621](https://peps.python.org/pep-0621/#entry-points), as the official spec. So what about other terms?
 
 I wonder if would be a good time to maybe standardise this? I don't know if a pep is required, but since we have some many package managers for python it would be nice if we can have one way to define these instructions
-
----
-
-_Referenced in [astral-sh/uv#7386](../../astral-sh/uv/issues/7386.md) on 2024-09-14 12:29_
 
 ---
 
@@ -457,14 +421,6 @@ _build_library = "..."
 
 ---
 
-_Referenced in [twpayne/chezmoi#3955](../../twpayne/chezmoi/pulls/3955.md) on 2024-09-24 17:47_
-
----
-
-_Referenced in [astral-sh/uv#6638](../../astral-sh/uv/issues/6638.md) on 2024-09-27 15:32_
-
----
-
 _Comment by @datnguye on 2024-09-28 03:36_
 
 This is a blocker when I tried to move from `poetry`&`poe` to `uv` today. 
@@ -526,10 +482,6 @@ Ah very good point! Totally agreed, thanks for dust 🙏
 
 ---
 
-_Referenced in [astral-sh/uv#7803](../../astral-sh/uv/issues/7803.md) on 2024-09-30 05:35_
-
----
-
 _Comment by @harkabeeparolus on 2024-10-03 12:02_
 
 Regarding Poe the Poet... I really like how their Poetry plugin allows it to [hook into the builtin poetry commands](https://poethepoet.natn.io/poetry_plugin.html#hooking-into-poetry-commands).
@@ -584,18 +536,6 @@ If Node is installed in your environment, you can use `npx concurrently "uv run 
 
 ---
 
-_Referenced in [vortex-data/vortex#977](../../vortex-data/vortex/issues/977.md) on 2024-10-10 14:57_
-
----
-
-_Referenced in [astral-sh/uv#8122](../../astral-sh/uv/issues/8122.md) on 2024-10-11 05:46_
-
----
-
-_Referenced in [astral-sh/uv#8123](../../astral-sh/uv/issues/8123.md) on 2024-10-11 09:34_
-
----
-
 _Comment by @elyxlz on 2024-10-16 19:21_
 
 i would love this
@@ -613,14 +553,6 @@ For example, running `uv run migrate` in any subdirectory of workspace `A` runs 
 NPM allows users to [issue a command in the context of a workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces#running-commands-in-the-context-of-workspaces). For example running `npm run test --workspace=a`. I'm not sure how cargo handles this.
 
 I'm not sure what the best way is, but I'm super glad the astral team has plans to add this feature. My team uses pdm's script section heavily and i don't want to give them whiplash going from pdm -> uv + poe -> uv. 
-
----
-
-_Referenced in [dunossauro/fastapi-do-zero#260](../../dunossauro/fastapi-do-zero/issues/260.md) on 2024-10-19 08:38_
-
----
-
-_Referenced in [PyVRP/PyVRP#659](../../PyVRP/PyVRP/issues/659.md) on 2024-10-22 12:43_
 
 ---
 
@@ -685,22 +617,6 @@ _Comment by @harkabeeparolus on 2024-10-23 18:13_
 First of all, I have to say that I appreciate the effort, and the terse config style. 👍🏻  The syntax is perhaps a little _too_ magical for my tastes, but it does look nice.
 
 That said, I admire what I find to be a slightly terrifying YOLO implementation of `_find_doc()` and `is_pyfunc()`. 👀  Heuristics at their finest! Well done. 😁
-
----
-
-_Referenced in [astral-sh/uv#8519](../../astral-sh/uv/issues/8519.md) on 2024-10-24 09:09_
-
----
-
-_Referenced in [scverse/cookiecutter-scverse#331](../../scverse/cookiecutter-scverse/issues/331.md) on 2024-10-25 11:35_
-
----
-
-_Referenced in [langrenn-sprint/user-service#10](../../langrenn-sprint/user-service/pulls/10.md) on 2024-10-28 10:22_
-
----
-
-_Referenced in [hongbo-miao/hongbomiao.com#20199](../../hongbo-miao/hongbomiao.com/issues/20199.md) on 2024-11-07 06:45_
 
 ---
 
@@ -994,10 +910,6 @@ Hi everyone, this discussion is veering off course. If you’re not interested i
 
 ---
 
-_Referenced in [hongbo-miao/hongbomiao.com#20526](../../hongbo-miao/hongbomiao.com/pulls/20526.md) on 2024-11-17 03:19_
-
----
-
 _Comment by @dbohdan on 2024-11-20 07:07_
 
 I have suggestions conditional on uv implementing a task runner.
@@ -1021,26 +933,6 @@ If uv implements a task runner, I would like it to have a similar feature to Poe
 
 ---
 
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
-_Referenced in [astral-sh/uv#8134](../../astral-sh/uv/issues/8134.md) on 2024-12-03 12:39_
-
----
-
-_Referenced in [astral-sh/uv#9645](../../astral-sh/uv/issues/9645.md) on 2024-12-04 18:31_
-
----
-
-_Referenced in [DetachHead/basedpyright#942](../../DetachHead/basedpyright/pulls/942.md) on 2024-12-09 13:41_
-
----
-
 _Comment by @lucabello on 2024-12-10 17:14_
 
 I have my two cents on the task runner implementation.
@@ -1056,10 +948,6 @@ Would it be a crazy idea to have `uv` use `just` behind the scenes to run tasks?
 _Comment by @DimitarVanguelov on 2024-12-10 20:59_
 
 I like `just`, very clean and easy to use. One might ask, why not just use `just`, but I suppose the benefit here would be specifying the task commands in the pyproject.toml file and having a unified interface in a project where all commands begin with `uv...`?
-
----
-
-_Referenced in [casey/just#2519](../../casey/just/issues/2519.md) on 2024-12-11 04:34_
 
 ---
 
@@ -1679,10 +1567,6 @@ It would be cool to investigate dynamically discovering and exposing user-specif
 
 ---
 
-_Referenced in [vega/altair#3577](../../vega/altair/issues/3577.md) on 2024-12-17 12:05_
-
----
-
 _Comment by @chrisrodrigue on 2024-12-18 15:33_
 
 > Or maybe `[tool.uv.run]` to be consistent with the command `uv run`.
@@ -1884,10 +1768,6 @@ Might as well shorten it to `uvt` (or `uvk` or whatever, since `uvt` might confu
 
 ---
 
-_Referenced in [casey/just#2531](../../casey/just/pulls/2531.md) on 2024-12-19 01:19_
-
----
-
 _Comment by @casey on 2024-12-19 01:27_
 
 @inoa-jboliveira 
@@ -1911,10 +1791,6 @@ _Comment by @smallstepman on 2024-12-19 03:25_
 > Might as well shorten it to uvt (or uvk or whatever, since uvt might confuse some as standing short for uv tool ...). This combined with @lucabello's comment just above makes the most sense (to me) in terms of having an ergonomic command line interface.
 
 im not a contributor to uv so I can't make an argument related to how good of an idea would be to deliver another binary on `uv` installation, but personally, I think I'd be ok with `alias ut='uv task'` (or `uvt`) in my .zshrc. I've been running `alias c=cargo` for years and I'm quite happy with it. I find the shorten CLI notation `uv t` (as is in `cargo b`) to be the sweet spot between simplicity and discoverability, at no additional cost of having to modify shell config files or shipping multiple binaries
-
----
-
-_Referenced in [Fraunhofer-AISEC/gallia#657](../../Fraunhofer-AISEC/gallia/pulls/657.md) on 2024-12-19 14:38_
 
 ---
 
@@ -2071,14 +1947,6 @@ Regardless, I also think @lucabello distilled the essence of what most of the co
 
 ---
 
-_Referenced in [astral-sh/uv#10211](../../astral-sh/uv/issues/10211.md) on 2024-12-28 09:40_
-
----
-
-_Referenced in [vega/altair#3723](../../vega/altair/pulls/3723.md) on 2024-12-29 17:42_
-
----
-
 _Comment by @rmorshea on 2025-01-02 00:48_
 
 ### A plugin system for task runners
@@ -2211,10 +2079,6 @@ test = "uvx --with pytest pytest"
 _Comment by @ksamuel on 2025-01-02 16:20_
 
 Not to mention arg proxying is necessary to allow those aliases to be flexible. 
-
----
-
-_Referenced in [astral-sh/uv#10294](../../astral-sh/uv/issues/10294.md) on 2025-01-03 21:51_
 
 ---
 
@@ -2495,14 +2359,6 @@ Sorry for the extra noise!
 
 ---
 
-_Referenced in [cvpaperchallenge/Ascender#106](../../cvpaperchallenge/Ascender/issues/106.md) on 2025-01-17 09:01_
-
----
-
-_Referenced in [cvpaperchallenge-alumni/Ascender#1](../../cvpaperchallenge-alumni/Ascender/pulls/1.md) on 2025-01-18 06:50_
-
----
-
 _Comment by @gesslerpd on 2025-01-20 22:49_
 
 @zanieb Great that design for this is being scheduled!
@@ -2582,14 +2438,6 @@ Some other things that might be nice:
 
 ---
 
-_Referenced in [astral-sh/uv#10928](../../astral-sh/uv/issues/10928.md) on 2025-01-24 08:41_
-
----
-
-_Referenced in [shapiromatron/hawc#1161](../../shapiromatron/hawc/pulls/1161.md) on 2025-01-25 19:03_
-
----
-
 _Comment by @brandon-avantus on 2025-01-27 23:44_
 
 I started with *Rye*, and was really enjoying its built-in task runner.  But it was missing some features, so I started a Python version to experiment with. Then I made the switch to *uv* and was missing that built-in task runner, so I continued working on, and just published, my Python task runner, [pyproject-runner](/avantus-tech/pyproject-runner), and the related [pyproject-runner-shim](/avantus-tech/pyproject-runner/tree/main/shim).
@@ -2621,26 +2469,6 @@ def world():
 ```
 
 Being able to run this as `uv run --module tests.runner:hello` and `uv run --module tests.runner:world` would be nice
-
----
-
-_Referenced in [opossum-tool/opossum-file#232](../../opossum-tool/opossum-file/pulls/232.md) on 2025-02-13 13:28_
-
----
-
-_Referenced in [temporalio/sdk-python#768](../../temporalio/sdk-python/pulls/768.md) on 2025-02-18 13:59_
-
----
-
-_Referenced in [astropy/astropy#17760](../../astropy/astropy/issues/17760.md) on 2025-02-19 16:14_
-
----
-
-_Referenced in [vega/vega-datasets#686](../../vega/vega-datasets/pulls/686.md) on 2025-02-22 18:55_
-
----
-
-_Referenced in [vega/vega-datasets#687](../../vega/vega-datasets/pulls/687.md) on 2025-02-22 19:14_
 
 ---
 
@@ -2783,10 +2611,6 @@ test = [
 
 ---
 
-_Referenced in [astral-sh/uv#9935](../../astral-sh/uv/pulls/9935.md) on 2025-02-26 22:36_
-
----
-
 _Comment by @OCopping on 2025-02-27 09:10_
 
 Not sure if this has been suggested before, but it would nice if it could also support chaining scripts such as:
@@ -2842,22 +2666,6 @@ This is great.  I prefer to persist per-group environments, similar to Hatch.  T
 ```bash
 #!/usr/bin/env -S UV_PROJECT_ENVIRONMENT=.venv-test uv run --group=test bash
 ```
-
----
-
-_Referenced in [astral-sh/uv#11955](../../astral-sh/uv/issues/11955.md) on 2025-03-04 22:20_
-
----
-
-_Referenced in [astral-sh/uv#11978](../../astral-sh/uv/issues/11978.md) on 2025-03-05 15:24_
-
----
-
-_Referenced in [astral-sh/uv#10292](../../astral-sh/uv/pulls/10292.md) on 2025-03-10 17:12_
-
----
-
-_Referenced in [astral-sh/uv#11645](../../astral-sh/uv/issues/11645.md) on 2025-03-10 22:20_
 
 ---
 
@@ -2988,26 +2796,6 @@ I'd like to add shell completion to this design discussion. There was a quite a 
 I'm not sure how it should work, but if it were possible to do something like `eval "$(uv generate-shell-completion --include-uv-run-commands)"` I think that could be very beneficial. Perhaps it would involve having a way for `uv run` command definitions to explicitly declare their own shell completions, or perhaps the contract would be that if a `uv run` command itself supports `generate-shell-completion` then those get incorporated into the tree of completions rooted at `uv run`?
 
 In general I agree that having a task runner built into `uv ` (like `poe` etc, and like `make` when used as a simple task runner via `.PHONY`, but with cross-platform support) seems very attractive.
-
----
-
-_Referenced in [agile-lab-dev/Agent-Specification#4](../../agile-lab-dev/Agent-Specification/pulls/4.md) on 2025-03-24 12:56_
-
----
-
-_Referenced in [astral-sh/uv#12519](../../astral-sh/uv/issues/12519.md) on 2025-03-27 23:39_
-
----
-
-_Referenced in [DiamondLightSource/python-copier-template#244](../../DiamondLightSource/python-copier-template/issues/244.md) on 2025-03-28 10:47_
-
----
-
-_Referenced in [DiamondLightSource/python-copier-template#246](../../DiamondLightSource/python-copier-template/issues/246.md) on 2025-03-28 10:54_
-
----
-
-_Referenced in [DiamondLightSource/python-copier-template#247](../../DiamondLightSource/python-copier-template/issues/247.md) on 2025-04-01 08:24_
 
 ---
 
@@ -3160,10 +2948,6 @@ _Comment by @JBloss1517 on 2025-04-14 18:46_
 
 ---
 
-_Referenced in [zellular-xyz/zsequencer#125](../../zellular-xyz/zsequencer/pulls/125.md) on 2025-04-15 19:38_
-
----
-
 _Comment by @AKuederle on 2025-04-16 09:06_
 
 Just as a note, recent versions of poe have [first class support for uv](https://github.com/nat-n/poethepoet/pulls?q=is%3Apr+uv). This means poe will run `uv run` under the hood for any command. With that you don't need to activate the venv and you will get automatic `uv sync` when running the command 
@@ -3275,37 +3059,9 @@ This is exactly what I was looking for as a ML Platform engineer trying to make 
 
 ---
 
-_Referenced in [nat-n/poethepoet#55](../../nat-n/poethepoet/issues/55.md) on 2025-04-18 01:13_
-
----
-
-_Referenced in [ESGF/esgf-vocab#17](../../ESGF/esgf-vocab/pulls/17.md) on 2025-04-22 11:00_
-
----
-
-_Referenced in [astral-sh/uv#13177](../../astral-sh/uv/issues/13177.md) on 2025-04-28 16:11_
-
----
-
-_Referenced in [espanso/espanso#2325](../../espanso/espanso/pulls/2325.md) on 2025-05-01 16:22_
-
----
-
-_Referenced in [astral-sh/uv#13245](../../astral-sh/uv/issues/13245.md) on 2025-05-02 10:13_
-
----
-
 _Comment by @davidpoblador on 2025-05-05 16:01_
 
 While waiting for native task support in uv, I've been using a [justfile](https://github.com/alltuner/uv-version-bumper/blob/main/justfile) with `uvx --from just-bin just` to handle project automation like version bumping, tagging, and syncing dependencies. It works well as a temporary solution and keeps everything uv-centric. You can see it in action in my [uv-version-bumper project](https://github.com/alltuner/uv-version-bumper), which was built specifically with this limitation in mind. Looking forward to replacing the justfile with native uv tasks once they're ready!
-
----
-
-_Referenced in [canonical/operator#1666](../../canonical/operator/issues/1666.md) on 2025-05-12 12:39_
-
----
-
-_Referenced in [astral-sh/uv#13403](../../astral-sh/uv/issues/13403.md) on 2025-05-12 14:42_
 
 ---
 
@@ -3342,34 +3098,6 @@ env = {} # set environment variables ?
 
 ---
 
-_Referenced in [MrTango/rispy#69](../../MrTango/rispy/pulls/69.md) on 2025-05-22 15:38_
-
----
-
-_Referenced in [astral-sh/uv#13657](../../astral-sh/uv/issues/13657.md) on 2025-05-26 12:21_
-
----
-
-_Referenced in [astral-sh/uv#13716](../../astral-sh/uv/issues/13716.md) on 2025-05-29 12:29_
-
----
-
-_Referenced in [astral-sh/uv#14118](../../astral-sh/uv/issues/14118.md) on 2025-06-17 19:52_
-
----
-
-_Referenced in [astral-sh/uv#14039](../../astral-sh/uv/issues/14039.md) on 2025-06-18 16:18_
-
----
-
-_Referenced in [open-feature/python-sdk#512](../../open-feature/python-sdk/pulls/512.md) on 2025-06-23 13:54_
-
----
-
-_Referenced in [Azure/azure-kusto-python#499](../../Azure/azure-kusto-python/issues/499.md) on 2025-07-02 06:08_
-
----
-
 _Comment by @markusschlenker on 2025-07-04 14:30_
 
 Hello guys,
@@ -3382,14 +3110,6 @@ since I did not see it mentioned anywhere: Sth. like this is also available in [
 _Comment by @pierrepo on 2025-07-07 10:42_
 
 Maybe an integration of [`just`](https://github.com/casey/just) could be a solution. `just` is a command runner also developed in Rust and available through [PyPI](https://pypi.org/project/rust-just/)
-
----
-
-_Referenced in [strands-agents/sdk-python#77](../../strands-agents/sdk-python/pulls/77.md) on 2025-07-07 11:39_
-
----
-
-_Referenced in [strands-agents/sdk-python#58](../../strands-agents/sdk-python/issues/58.md) on 2025-07-08 13:27_
 
 ---
 
@@ -3493,18 +3213,6 @@ Just want to show my support for this. It would be a great feature for uv.
 
 ---
 
-_Referenced in [python-attrs/attrs#1445](../../python-attrs/attrs/pulls/1445.md) on 2025-07-22 07:00_
-
----
-
-_Referenced in [getpelican/pelican#3492](../../getpelican/pelican/issues/3492.md) on 2025-07-23 06:00_
-
----
-
-_Referenced in [astral-sh/uv#14892](../../astral-sh/uv/issues/14892.md) on 2025-07-25 17:39_
-
----
-
 _Comment by @aleyan on 2025-07-26 16:14_
 
 Hey all, I have [done an analysis](https://aleyan.com/blog/2025-task-runners-census/) of various task runners used by top 100,000 github repos. 
@@ -3540,10 +3248,6 @@ With uv alias support, trivial commands could be directly implemented as aliases
 _Comment by @hasansezertasan on 2025-07-30 12:14_
 
 Even though I already use mise as my task runner and tool manager, I’m still super excited about this! 🚀 Always love seeing new tools and improvements in the ecosystem. 🙌
-
----
-
-_Referenced in [astral-sh/uv#15042](../../astral-sh/uv/issues/15042.md) on 2025-08-03 17:37_
 
 ---
 
@@ -3624,25 +3328,9 @@ _Comment by @Master-Y0da on 2025-08-13 23:33_
 
 ---
 
-_Referenced in [tshur/py-alg#18](../../tshur/py-alg/pulls/18.md) on 2025-08-18 17:37_
-
----
-
-_Referenced in [astral-sh/uv#15384](../../astral-sh/uv/issues/15384.md) on 2025-08-20 13:47_
-
----
-
-_Referenced in [astral-sh/uv#15447](../../astral-sh/uv/issues/15447.md) on 2025-08-22 08:13_
-
----
-
 _Comment by @julian-hecker on 2025-08-27 15:10_
 
 this is pretty exciting
-
----
-
-_Referenced in [awslabs/mcp#1207](../../awslabs/mcp/issues/1207.md) on 2025-08-28 21:13_
 
 ---
 
@@ -3736,10 +3424,6 @@ Best you could do that allows it and is sort of potentially useful in general is
 
 ---
 
-_Referenced in [tshur/py-alg#33](../../tshur/py-alg/issues/33.md) on 2025-09-03 15:18_
-
----
-
 _Comment by @peacefulotter on 2025-09-04 14:10_
 
 This feature would be a great addition to uv imo! 
@@ -3801,10 +3485,6 @@ pipenv run tests
 _Comment by @KotlinIsland on 2025-09-10 07:45_
 
 uv should also provide git hook configuration for it's tasks, then we will finally be able to move past pre-commit
-
----
-
-_Referenced in [taxdown/.github#48](../../taxdown/.github/pulls/48.md) on 2025-09-18 15:23_
 
 ---
 
@@ -3922,10 +3602,6 @@ I happens. You're welcome.
 
 The issue opening description https://github.com/astral-sh/uv/issues/5903#issue-2455504094 also provides information about those tools (rye, Poe, and Taskipy).
 
-
----
-
-_Referenced in [aiidateam/aiida-project#34](../../aiidateam/aiida-project/pulls/34.md) on 2025-09-25 10:45_
 
 ---
 
@@ -4098,14 +3774,6 @@ hello-uv = { cmd = "echo 'hello uv'" }
 
 and run `tk hello-uv` 
 
-
----
-
-_Referenced in [astral-sh/uv#16121](../../astral-sh/uv/issues/16121.md) on 2025-10-27 18:01_
-
----
-
-_Referenced in [NSPC911/rovr#140](../../NSPC911/rovr/pulls/140.md) on 2025-11-04 10:54_
 
 ---
 
@@ -4467,10 +4135,6 @@ $ just test [args]
 
 
 [^just]: Just https://just.systems/
-
----
-
-_Referenced in [astral-sh/uv#17246](../../astral-sh/uv/issues/17246.md) on 2025-12-28 08:47_
 
 ---
 

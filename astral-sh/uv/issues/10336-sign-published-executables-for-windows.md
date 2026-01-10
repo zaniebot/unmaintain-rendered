@@ -9,9 +9,9 @@ labels:
   - releases
 assignees: []
 created_at: 2025-01-06T23:03:52Z
-updated_at: 2025-11-24T13:48:52Z
+updated_at: 2026-01-08T21:54:18Z
 url: https://github.com/astral-sh/uv/issues/10336
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Sign published executables for Windows
@@ -54,10 +54,6 @@ Related https://github.com/astral-sh/python-build-standalone/issues/89
 
 ---
 
-_Referenced in [astral-sh/uv#10428](../../astral-sh/uv/issues/10428.md) on 2025-01-09 17:15_
-
----
-
 _Comment by @Gankra on 2025-01-13 15:06_
 
 I researched this a bunch a couple years ago, which is an important period because in June 2023 Windows codesigning became significantly more challenging: an agreement between all code signing cert providers went into affect and the minimum security level of (useful for Windows) code signing certs went up.
@@ -71,14 +67,6 @@ Useful links:
 * [Incredible summary of Windows code signing infra/practicalities](https://about.signpath.io/code-signing/windows-platform)
 
 * [Microsoft's first-party solution: Trusted Signing](https://azure.microsoft.com/en-us/products/trusted-signing)
-
----
-
-_Referenced in [astral-sh/uv#14486](../../astral-sh/uv/issues/14486.md) on 2025-07-07 15:29_
-
----
-
-_Referenced in [astral-sh/uv#14870](../../astral-sh/uv/issues/14870.md) on 2025-07-24 17:51_
 
 ---
 
@@ -144,10 +132,6 @@ _Comment by @woodruffw on 2025-10-01 19:02_
 
 ---
 
-_Referenced in [astral-sh/uv#14401](../../astral-sh/uv/issues/14401.md) on 2025-10-30 12:50_
-
----
-
 _Comment by @ffyring on 2025-11-19 09:27_
 
 I just want to bump this issue / feature request. Currently I cannot fully use uv in my restrictive corporate environment (see #14401).
@@ -157,5 +141,18 @@ I just want to bump this issue / feature request. Currently I cannot fully use u
 _Comment by @mattculler on 2025-11-24 13:48_
 
 I too cannot fully integrate uv into my team's workflow until it distributes signed Windows executables.
+
+---
+
+_Comment by @EliteTK on 2026-01-08 21:54_
+
+So, after a lot of confusion and a bit more investigation, it looks like we have two options:
+
+* [Azure Artifact Signing](https://azure.microsoft.com/en-us/products/artifact-signing/) (formerly "Trusted Signing") which offers [non-EV](https://learn.microsoft.com/en-us/azure/artifact-signing/faq#does-artifact-signing-issue-ev-certificates) certificates but which are rooted at Microsoft. For this we can use the [trusted-signing-action](https://github.com/Azure/trusted-signing-action) or [SignTool.exe](https://learn.microsoft.com/en-us/dotnet/framework/tools/signtool-exe).
+* [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/) (or some other compatible hosted HSM solution) with an EV certificate from one of the many providers (although it seems there's [some integration with DigiCert and GlobalSign](https://learn.microsoft.com/en-us/azure/key-vault/certificates/how-to-integrate-certificate-authority)). As far as I am aware there is no off the shelf github action, but there is [AzureSignTool](https://github.com/vcsjones/AzureSignTool/) and there's even a [guide](https://github.com/vcsjones/AzureSignTool/blob/main/WALKTHROUGH.md)[^1] for using it in Github CI.
+
+So I guess the question is, are these Microsoft rooted non-EV certificates sufficient or would it be a waste of effort to not go down the EV path?
+
+[^1]: Microsoft also have a guide: https://learn.microsoft.com/en-us/windows/msix/desktop/cicd-keyvault
 
 ---

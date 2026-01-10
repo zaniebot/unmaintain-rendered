@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-23T11:06:18Z
 updated_at: 2025-12-24T13:47:54Z
 url: https://github.com/astral-sh/uv/issues/17227
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Regression: `uv pip install` no longer accepts `-` as file for constraints, overrides, exclusions
@@ -56,10 +56,6 @@ _Label `bug` added by @Jesse-Bakker on 2025-12-23 11:06_
 ---
 
 _Renamed from "Regression: `uv pip install` no longer accepts stdin as file for constraints, overrides, exclusions" to "Regression: `uv pip install` no longer accepts `-` as file for constraints, overrides, exclusions" by @Jesse-Bakker on 2025-12-23 11:14_
-
----
-
-_Referenced in [astral-sh/uv#17188](../../astral-sh/uv/pulls/17188.md) on 2025-12-23 16:55_
 
 ---
 

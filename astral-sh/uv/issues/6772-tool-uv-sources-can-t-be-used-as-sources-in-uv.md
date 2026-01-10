@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-28T19:02:44Z
 updated_at: 2025-12-20T17:25:00Z
 url: https://github.com/astral-sh/uv/issues/6772
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # `[tool.uv.sources]` can't be used as `[sources]` in `uv.toml`
@@ -166,10 +166,6 @@ Thank you @charliermarsh
 
 ---
 
-_Referenced in [astral-sh/uv#11860](../../astral-sh/uv/issues/11860.md) on 2025-02-28 16:38_
-
----
-
 _Comment by @orishamir on 2025-03-05 17:35_
 
 > I believe we intentionally don't support this and it will now error (instead of silently ignoring).
@@ -179,10 +175,6 @@ So the `[sources]` inside system-level configuration silently gets ignored.
 A warning in that case would be helpful since it caused significant headaches 
 
 _By the way - you are doing an incredible job with UV, I can't thank you enough!_
-
----
-
-_Referenced in [astral-sh/uv#12013](../../astral-sh/uv/issues/12013.md) on 2025-03-06 19:14_
 
 ---
 
@@ -222,21 +214,9 @@ _Comment by @johnpyp on 2025-03-24 02:16_
 
 ---
 
-_Referenced in [astral-sh/uv#12290](../../astral-sh/uv/issues/12290.md) on 2025-03-24 02:47_
-
----
-
 _Comment by @charliermarsh on 2025-03-24 13:03_
 
 (If you use `uv run` in lieu of `uv sync`, it will never remove any installed extras.)
-
----
-
-_Referenced in [astral-sh/uv#12753](../../astral-sh/uv/issues/12753.md) on 2025-04-08 17:23_
-
----
-
-_Referenced in [astral-sh/uv#13493](../../astral-sh/uv/issues/13493.md) on 2025-05-20 13:35_
 
 ---
 
@@ -283,23 +263,11 @@ Independently of that question, I'll see if I can rework `venvstacks` to use pse
 
 ---
 
-_Referenced in [lmstudio-ai/venvstacks#253](../../lmstudio-ai/venvstacks/pulls/253.md) on 2025-09-15 06:29_
-
----
-
 _Comment by @ncoghlan on 2025-09-15 07:01_
 
 @charliermarsh In relation to https://github.com/astral-sh/uv/issues/6772#issuecomment-2487042845, does "it will now error" refer to attempting to specify `[sources]` in `uv.toml` at all, or more specifically to attempting to install a package that has an override specified in `uv.toml`?
 
 Or is it only when `pyproject.toml` exists (and has a `tools.uv.sources` field?), so `uv pip compile` will never trigger it?
-
----
-
-_Referenced in [lmstudio-ai/venvstacks#256](../../lmstudio-ai/venvstacks/issues/256.md) on 2025-09-16 05:00_
-
----
-
-_Referenced in [astral-sh/uv#16117](../../astral-sh/uv/issues/16117.md) on 2025-10-03 17:41_
 
 ---
 
@@ -324,10 +292,6 @@ _Comment by @patrontheo on 2025-10-27 16:01_
 > uv is the best package manager I've ever met and I appreciate your work so much, and I can't be too grateful if this feature is accepted😊.
 
 I have exactly the same use-case as @cylixlee and was hoping for the same solution (put the sources in `uv.toml` so that it applies locally only). If not possible in `uv.toml`, could it be in something like `pyproject.dev.toml`, that would get merged with the main pyproject when running `uv sync` ? Or do you see any other solution for that issue ? @zanieb 
-
----
-
-_Referenced in [astral-sh/uv#16471](../../astral-sh/uv/issues/16471.md) on 2025-10-27 16:02_
 
 ---
 

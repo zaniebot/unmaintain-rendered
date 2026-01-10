@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-28T19:43:28Z
 updated_at: 2025-12-19T19:20:08Z
 url: https://github.com/astral-sh/uv/issues/13705
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Upgrading only one group packages, i.e., `--upgrade-group`
@@ -50,10 +50,6 @@ cc @konstin for upgrade design work.
 _Comment by @hovnatan on 2025-05-28 19:51_
 
 The environment is divided into groups since sometimes only part of environment is needed. But regularly I am working in the full multi-group environment and I want to sync and upgrade one group only, e.g., test if new linters are available from group lint.
-
----
-
-_Referenced in [opendatahub-io/notebooks#1204](../../opendatahub-io/notebooks/pulls/1204.md) on 2025-06-26 17:52_
 
 ---
 
@@ -107,10 +103,6 @@ Imagine a team wants to update their locked runtime and dev dependencies at diff
 
 ---
 
-_Referenced in [astral-sh/uv#12848](../../astral-sh/uv/issues/12848.md) on 2025-12-19 18:57_
-
----
-
 _Comment by @zanieb on 2025-12-19 18:57_
 
 I'm not sure we can do this effectively since there can be shared transitive dependencies?
@@ -138,9 +130,5 @@ _Comment by @zanieb on 2025-12-19 19:17_
 _Comment by @charliermarsh on 2025-12-19 19:20_
 
 I was thinking the former, sugar over `--upgrade-package` for everything in the group.
-
----
-
-_Referenced in [astral-sh/uv#17192](../../astral-sh/uv/pulls/17192.md) on 2025-12-19 21:22_
 
 ---

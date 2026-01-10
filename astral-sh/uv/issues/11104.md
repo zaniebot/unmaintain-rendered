@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-30T17:26:59Z
 updated_at: 2025-12-19T02:29:38Z
 url: https://github.com/astral-sh/uv/issues/11104
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Ignore group completely when resolving depencencies.
@@ -135,18 +135,6 @@ Well image that you have private machines and public machines, you dont want to 
 _Comment by @zanieb on 2025-01-31 18:33_
 
 I don't understand why you'd need multiple lockfiles. You'd lock on the private machine and it'd be usable everywhere? 
-
----
-
-_Referenced in [astral-sh/uv#9654](../../astral-sh/uv/issues/9654.md) on 2025-02-09 18:34_
-
----
-
-_Referenced in [astral-sh/uv#11675](../../astral-sh/uv/issues/11675.md) on 2025-02-20 19:45_
-
----
-
-_Referenced in [astral-sh/uv#12309](../../astral-sh/uv/issues/12309.md) on 2025-03-19 08:07_
 
 ---
 

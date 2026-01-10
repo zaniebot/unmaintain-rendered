@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-11T12:25:43Z
 updated_at: 2025-12-15T14:26:16Z
 url: https://github.com/astral-sh/uv/issues/17083
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv add` fails if UV_GIT_LFS=1
@@ -114,10 +114,6 @@ We have our own `parse_boolish_environment_variable` and `EnvironmentOptions` st
 ---
 
 _Assigned to @samypr100 by @samypr100 on 2025-12-12 01:19_
-
----
-
-_Referenced in [astral-sh/uv#17127](../../astral-sh/uv/pulls/17127.md) on 2025-12-13 19:01_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-12T01:15:48Z
 updated_at: 2025-12-19T18:57:02Z
 url: https://github.com/astral-sh/uv/issues/12848
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Add uv lock --upgrade --only-group a_specific_group
@@ -30,14 +30,6 @@ We would be able to update all packages from a dependency group with `uv lock --
 ---
 
 _Label `enhancement` added by @Tom-Boscher on 2025-04-12 01:15_
-
----
-
-_Referenced in [opendatahub-io/notebooks#1204](../../opendatahub-io/notebooks/pulls/1204.md) on 2025-06-26 17:52_
-
----
-
-_Referenced in [astral-sh/uv#13705](../../astral-sh/uv/issues/13705.md) on 2025-07-08 12:01_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-30T07:30:35Z
 updated_at: 2026-01-06T21:57:33Z
 url: https://github.com/astral-sh/uv/issues/16508
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Suggesting `uv add --sync-constraints [URL or file path]` to simply update pyproject.toml constraints
@@ -158,14 +158,6 @@ _Comment by @agosmou on 2025-11-26 09:46_
 > Feel free to put up a pull request.
 
 Will do!
-
----
-
-_Referenced in [gcavanunez/uv#1](../../gcavanunez/uv/pulls/1.md) on 2025-12-06 21:51_
-
----
-
-_Referenced in [astral-sh/uv#12490](../../astral-sh/uv/issues/12490.md) on 2025-12-08 15:06_
 
 ---
 

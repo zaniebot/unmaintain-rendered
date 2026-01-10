@@ -9,9 +9,9 @@ labels:
   - compatibility
 assignees: []
 created_at: 2024-06-19T21:51:44Z
-updated_at: 2024-06-24T12:25:02Z
+updated_at: 2025-12-12T17:58:21Z
 url: https://github.com/astral-sh/uv/issues/4420
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # uv pip compile of in file containing `--no-binary {pkg}` does not include that directive in requirements.txt
@@ -173,10 +173,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-23 17:20_
 
 ---
 
-_Referenced in [astral-sh/uv#4463](../../astral-sh/uv/pulls/4463.md) on 2024-06-24 00:33_
-
----
-
 _Closed by @charliermarsh on 2024-06-24 12:25_
 
 ---
@@ -185,10 +181,8 @@ _Closed by @charliermarsh on 2024-06-24 12:25_
 
 ---
 
-_Referenced in [techmatters/terraso-backend#1616](../../techmatters/terraso-backend/pulls/1616.md) on 2025-02-27 05:32_
+_Comment by @RyanTranAVB on 2025-12-12 17:58_
 
----
-
-_Referenced in [home-operations/containers#361](../../home-operations/containers/pulls/361.md) on 2025-04-18 15:34_
+just curious, @zanieb why does it need to be on a separate line and won't work for inline? 
 
 ---

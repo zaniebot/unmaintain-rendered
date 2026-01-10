@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-11T03:14:48Z
 updated_at: 2026-01-06T20:43:06Z
 url: https://github.com/astral-sh/uv/issues/13385
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # `UV_FROZEN=0 uv lock --check` fails
@@ -92,21 +92,9 @@ If either is desired, let me know, I'm happy to suggest a PR.
 
 ---
 
-_Referenced in [clap-rs/clap#5591](../../clap-rs/clap/issues/5591.md) on 2025-05-13 07:12_
-
----
-
 _Comment by @konstin on 2025-05-13 07:13_
 
 Upstream bug: https://github.com/clap-rs/clap/issues/5591
-
----
-
-_Referenced in [avallbona/uv#1](../../avallbona/uv/pulls/1.md) on 2025-06-08 07:42_
-
----
-
-_Referenced in [astral-sh/uv#13898](../../astral-sh/uv/pulls/13898.md) on 2025-06-08 07:53_
 
 ---
 
@@ -115,14 +103,6 @@ _Unassigned @jtfmumm by @konstin on 2025-09-12 13:37_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-04 21:00_
-
----
-
-_Referenced in [astral-sh/uv#17321](../../astral-sh/uv/pulls/17321.md) on 2026-01-05 00:22_
-
----
-
-_Referenced in [clap-rs/clap#6211](../../clap-rs/clap/pulls/6211.md) on 2026-01-05 15:00_
 
 ---
 

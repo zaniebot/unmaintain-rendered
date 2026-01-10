@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-02T18:39:48Z
 updated_at: 2025-12-06T01:51:45Z
 url: https://github.com/astral-sh/uv/issues/16937
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv sync` hangs on 0.9.14 with PyPI proxy
@@ -63,10 +63,6 @@ Only #16887 looks suspicious but even that's a stretch.
 
 ---
 
-_Referenced in [astral-sh/uv#16938](../../astral-sh/uv/pulls/16938.md) on 2025-12-02 18:52_
-
----
-
 _Comment by @georgeflug on 2025-12-02 23:47_
 
 The branch fixes it!
@@ -107,10 +103,6 @@ When possible, can you please follow-up with a response that we can use to repro
 
 ---
 
-_Referenced in [astral-sh/astral-tl#16](../../astral-sh/astral-tl/pulls/16.md) on 2025-12-05 04:01_
-
----
-
 _Comment by @georgeflug on 2025-12-06 00:56_
 
 Sorry for the delay. See the attached request/response pulled from mitmproxy while uv sync ran. I was able to reproduce this with other packages besides hatchling, in this case, pyt.
@@ -124,10 +116,6 @@ The `<script>` tag at the bottom seems like a likely culprit since that's not pr
 _Comment by @charliermarsh on 2025-12-06 00:59_
 
 Amazing, thank you.
-
----
-
-_Referenced in [astral-sh/uv#17010](../../astral-sh/uv/pulls/17010.md) on 2025-12-06 01:51_
 
 ---
 

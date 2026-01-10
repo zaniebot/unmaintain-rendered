@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-12-21T21:46:34Z
 updated_at: 2025-12-22T00:49:06Z
 url: https://github.com/astral-sh/uv/issues/17210
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Incorrect error message when installing Python on armv7l
@@ -35,10 +35,6 @@ _Issue opened by @zanieb on 2025-12-21 21:46_
 > Or is there another blocker to what I'm trying to do? (Install python via uv on openwrt running on a linksys wrt3200acm) 
 
  _Originally posted by @kopf in [#6890](https://github.com/astral-sh/uv/issues/6890#issuecomment-3678691975)_
-
----
-
-_Referenced in [astral-sh/uv#17213](../../astral-sh/uv/pulls/17213.md) on 2025-12-22 00:42_
 
 ---
 

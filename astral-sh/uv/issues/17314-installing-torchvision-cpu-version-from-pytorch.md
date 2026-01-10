@@ -9,9 +9,9 @@ labels:
   - external
 assignees: []
 created_at: 2026-01-04T11:19:36Z
-updated_at: 2026-01-07T14:00:50Z
+updated_at: 2026-01-08T21:56:50Z
 url: https://github.com/astral-sh/uv/issues/17314
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Installing torchvision CPU version from Pytorch PyPi registry is failing as it's targeting the wrong distribution
@@ -89,5 +89,11 @@ _Label `external` added by @charliermarsh on 2026-01-04 18:49_
 _Comment by @udjuraev-ipa on 2026-01-07 14:00_
 
 In my case I was trying to install all CUDA versions, however the torchvision kept being installed using the CPU-version that did work well with `transformers`. What I ended up doing is `UV_TORCH_BACKEND=cu130 uv add torch torchvision`. 
+
+---
+
+_Comment by @appleparan on 2026-01-08 21:56_
+
+Try [this](https://github.com/astral-sh/uv/issues/16386#issuecomment-3726000085)
 
 ---

@@ -9,9 +9,9 @@ labels:
   - build-backend
 assignees: []
 created_at: 2025-10-18T16:39:13Z
-updated_at: 2025-12-18T15:38:03Z
+updated_at: 2026-01-09T14:26:14Z
 url: https://github.com/astral-sh/uv/issues/16354
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # [`uv_build`] Emit warning when both license (`PEP639`) and legacy license classifiers are present in pyproject.toml
@@ -77,5 +77,13 @@ _Renamed from "Emit warning when both license (`PEP 639`) and legacy license cla
 ---
 
 _Label `build-backend` added by @konstin on 2025-12-18 15:38_
+
+---
+
+_Comment by @chirizxc on 2026-01-09 14:26_
+
+@konstin сan I take this?
+
+Also, questions: should we throw a warning if the user has `# license = { file = “LICENSE” } # <== Legacy specification` instead of `license` + `license-files`, and should we fail with an error like `setuptools` if we see a deprecated classifier (i.e., any starting with `License ::`)?
 
 ---

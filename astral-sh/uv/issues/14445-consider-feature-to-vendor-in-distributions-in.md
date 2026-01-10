@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-03T16:53:38Z
 updated_at: 2025-12-20T20:54:30Z
 url: https://github.com/astral-sh/uv/issues/14445
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Consider feature to vendor-in distributions in workspace
@@ -104,10 +104,6 @@ But it would have been quite a bit more "proper" if we could say "this shared di
 I hope it can shed some light and maybe @ashb might add more - because he is working on a hatchling plugin to do essentially something like this in his quest to avoid symlinking and relative imports and to have somethihing more "explicit" than symbolic links in a monorepo.
 
 
-
----
-
-_Referenced in [apache/airflow#53506](../../apache/airflow/pulls/53506.md) on 2025-07-21 11:09_
 
 ---
 

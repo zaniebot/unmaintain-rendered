@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-01T09:47:58Z
 updated_at: 2025-12-04T09:58:35Z
 url: https://github.com/astral-sh/uv/issues/16906
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `invalid Zip archive: Duplicate filename` on duplicated `module-name`
@@ -67,10 +67,6 @@ _Label `good first issue` removed by @konstin on 2025-12-01 09:51_
 
 ---
 
-_Referenced in [astral-sh/uv#16907](../../astral-sh/uv/pulls/16907.md) on 2025-12-01 10:05_
-
----
-
 _Comment by @konstin on 2025-12-01 10:26_
 
 We should probably just deduplicate the module name list
@@ -80,10 +76,6 @@ We should probably just deduplicate the module name list
 _Comment by @konstin on 2025-12-01 15:59_
 
 If we do this, we should also handle `foo` and `foo.bar` being in the same list.
-
----
-
-_Referenced in [astral-sh/uv#16928](../../astral-sh/uv/pulls/16928.md) on 2025-12-02 12:08_
 
 ---
 

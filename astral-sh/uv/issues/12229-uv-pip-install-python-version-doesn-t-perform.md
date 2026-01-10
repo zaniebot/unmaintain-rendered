@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-17T04:01:56Z
 updated_at: 2025-12-22T14:50:58Z
 url: https://github.com/astral-sh/uv/issues/12229
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # `uv pip install --python <version>` doesn't perform automatic Python downloads with `--target`
@@ -96,10 +96,6 @@ _Label `bug` added by @kyluca on 2025-03-17 04:01_
 ---
 
 _Renamed from "`uv pip install --python <version>` doesn't perform automatic Python downloads" to "`uv pip install --python <version>` doesn't perform automatic Python downloads with `--target`" by @konstin on 2025-03-28 19:50_
-
----
-
-_Referenced in [astral-sh/uv#16694](../../astral-sh/uv/pulls/16694.md) on 2025-11-11 23:26_
 
 ---
 

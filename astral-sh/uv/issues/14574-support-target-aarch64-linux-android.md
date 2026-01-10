@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-12T07:28:11Z
 updated_at: 2025-12-08T10:34:58Z
 url: https://github.com/astral-sh/uv/issues/14574
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Support target aarch64-linux-android
@@ -104,10 +104,6 @@ rm $PREFIX/lib/rustlib/aarch64-linux-android/lib/libgcc.a
 
 ---
 
-_Referenced in [astral-sh/uv#16413](../../astral-sh/uv/issues/16413.md) on 2025-10-22 22:53_
-
----
-
 _Comment by @Jobians on 2025-11-24 21:00_
 
 No updates?
@@ -144,10 +140,6 @@ _Comment by @o-murphy on 2025-11-27 08:02_
 Yes it works but since python>=3.13 supports android as a 3-tier platform it could be great to have possibility to install uv as [described in uv docs](https://docs.astral.sh/uv/getting-started/installation/) and have precompiled python builds in [python-build-standalone](https://github.com/astral-sh/python-build-standalone)
 
 It also can be usefull not only for termux, also for the chroots running over [Userland](https://github.com/CypherpunkArmory/UserLAnd)
-
----
-
-_Referenced in [astral-sh/python-build-standalone#895](../../astral-sh/python-build-standalone/issues/895.md) on 2025-11-27 08:11_
 
 ---
 

@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-03-28T15:18:46Z
-updated_at: 2025-07-09T14:49:35Z
+updated_at: 2026-01-08T15:05:07Z
 url: https://github.com/astral-sh/uv/issues/12533
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Add support for declarative tool installations (e.g., like Brewfile)
@@ -42,10 +42,6 @@ _Renamed from "Add a uv tool equivalent of a Brewfile" to "Add support for decla
 _Comment by @zanieb on 2025-04-01 19:45_
 
 Yeah; this is on the roadmap, though it's not a high priority right now.
-
----
-
-_Referenced in [astral-sh/uv#13268](../../astral-sh/uv/issues/13268.md) on 2025-05-02 15:34_
 
 ---
 
@@ -98,10 +94,6 @@ _Comment by @codethief on 2025-05-22 22:28_
 
 ---
 
-_Referenced in [astral-sh/uv#3560](../../astral-sh/uv/issues/3560.md) on 2025-05-22 22:32_
-
----
-
 _Comment by @itcarroll on 2025-05-23 13:42_
 
 @codethief The `[dependency-groups]` table doesn't have any requirement that all packages listed in a group be installed in one environment, does it? Using a shared location for the list of tools seems better to me than putting it somewhere under `[tools.uv]`. Eventually `pipx` might pick up the behavior of installing tools from a given dependency group, for instance.
@@ -115,10 +107,6 @@ If I could chime in, it'd be great if we could also specify if it is implied tha
 `uv tool install keyring --with keyrings.google-artifactregistry-auth`
 
 Even if those packages are defined as dependencies, "uv sync" fails unless I first have those tools installed in a separate command. It'd be nice to be able to define that in the pyproject.toml file. Unless there's already a way to do that and I just missed it.
-
----
-
-_Referenced in [astral-sh/uv#14039](../../astral-sh/uv/issues/14039.md) on 2025-06-18 16:27_
 
 ---
 
@@ -154,10 +142,24 @@ Thank you for the mise recommendation @codethief. It does look like it might sup
 
 ---
 
-_Referenced in [astral-sh/uv#5903](../../astral-sh/uv/issues/5903.md) on 2025-07-14 07:38_
+_Comment by @zacker150 on 2026-01-07 22:52_
+
+Instead of `[dependency-groups]` why not `[tool.uv.tools]`? 
 
 ---
 
-_Referenced in [astral-sh/uv#14746](../../astral-sh/uv/issues/14746.md) on 2025-07-22 22:17_
+_Comment by @itcarroll on 2026-01-08 14:33_
+
+> Instead of `[dependency-groups]` why not `[tool.uv.tools]`?
+
+I [commented](https://github.com/astral-sh/uv/issues/12533#issuecomment-2904470469) in favor of `[dependency-groups]`, which already exists and serves the purpose fine: PyPA [says](https://packaging.python.org/en/latest/specifications/dependency-groups/#installing-dependency-groups-extras) "There is no syntax or specification-defined interface for installing or referring to dependency groups."
+
+Do you have an argument for creating a new table at `[tool.uv.tools]` that would justify it being private to `uv`?
+
+---
+
+_Comment by @konstin on 2026-01-08 15:05_
+
+The problem we need to address is that same tools need to be installed in the same venv (such as mypy), while other should be in an isolated environment with separate resolution that doesn't influence the production dependencies (such as black).
 
 ---

@@ -5,12 +5,12 @@ type: issue
 state: open
 author: ggoggam
 labels:
-  - bug
+  - question
 assignees: []
 created_at: 2026-01-07T14:06:25Z
-updated_at: 2026-01-07T14:46:14Z
+updated_at: 2026-01-09T18:59:58Z
 url: https://github.com/astral-sh/uv/issues/17345
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Resolving `tensorrt` in macOS fails -- even with `dependency-metadata` declaration.
@@ -119,5 +119,19 @@ uv 0.9.22 (82a6a66b8 2026-01-06)
 ---
 
 _Label `bug` added by @ggoggam on 2026-01-07 14:06_
+
+---
+
+_Comment by @charliermarsh on 2026-01-09 18:59_
+
+We only respect dependency metadata in the _workspace root_. Is this defined in some other workspace member?
+
+---
+
+_Label `bug` removed by @charliermarsh on 2026-01-09 18:59_
+
+---
+
+_Label `question` added by @charliermarsh on 2026-01-09 18:59_
 
 ---

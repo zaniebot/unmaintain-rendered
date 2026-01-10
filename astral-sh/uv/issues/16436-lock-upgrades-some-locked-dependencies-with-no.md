@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-24T13:08:59Z
 updated_at: 2025-12-16T10:47:52Z
 url: https://github.com/astral-sh/uv/issues/16436
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # lock upgrades some locked dependencies with no --upgrade flag
@@ -114,10 +114,6 @@ I used the package `12factor-vault` here because that meets the "only py3-none-a
 ---
 
 _Unassigned @konstin by @konstin on 2025-11-30 19:09_
-
----
-
-_Referenced in [astral-sh/uv#16995](../../astral-sh/uv/pulls/16995.md) on 2025-12-05 07:43_
 
 ---
 

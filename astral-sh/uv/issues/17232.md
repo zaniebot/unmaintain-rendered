@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-23T23:13:09Z
 updated_at: 2026-01-06T14:27:06Z
 url: https://github.com/astral-sh/uv/issues/17232
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Failing `uv build` still creates sdist/wheel
@@ -138,10 +138,6 @@ If this approach looks good, I'd be happy to submit a PR.
 _Comment by @EliteTK on 2025-12-29 15:46_
 
 @bybrooks I believe the more robust approach here would be to use a [named temporary file](https://docs.rs/tempfile/latest/tempfile/struct.NamedTempFile.html) and persist it once we're certain we have succeeded in writing it. You will need to use `new_in` to put it in the right directory (you don't want it in the normal temp location because then you can't atomically rename it (or rename it at all really) if it happens to be on a different filesystem).
-
----
-
-_Referenced in [astral-sh/uv#17276](../../astral-sh/uv/pulls/17276.md) on 2025-12-31 09:05_
 
 ---
 

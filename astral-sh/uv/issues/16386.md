@@ -5,12 +5,12 @@ type: issue
 state: open
 author: nathanpainchaud
 labels:
-  - bug
+  - question
 assignees: []
 created_at: 2025-10-21T13:37:48Z
-updated_at: 2025-11-18T11:48:01Z
+updated_at: 2026-01-09T23:52:07Z
 url: https://github.com/astral-sh/uv/issues/16386
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Fail to install torchvision 0.24 for CPU using accelerator extras (because no wheels for manylinux x86_64 can be found)
@@ -134,10 +134,6 @@ _Label `bug` added by @nathanpainchaud on 2025-10-21 13:37_
 
 ---
 
-_Referenced in [pytorch/vision#9249](../../pytorch/vision/issues/9249.md) on 2025-10-22 17:04_
-
----
-
 _Comment by @konstin on 2025-10-22 17:07_
 
 Raised this upstream, we'll figure out if it's on the torch or uv side: https://github.com/pytorch/vision/issues/9249
@@ -164,5 +160,47 @@ There are now +cpu versions for torchvision 0.24.0 , but also +e437e35 versions 
 _Comment by @YoniChechik on 2025-11-18 11:48_
 
 this hack fixed it for me: https://github.com/pilipolio/chess-sandbox/commit/67a773aa9fba945290e54fce062ca052d268e5d7
+
+---
+
+_Comment by @appleparan on 2026-01-08 21:56_
+
+This is a `torchvision` wheel issue, not a `uv` issue.
+
+Here is my fix by adding local version specifier `+cpu`. [It works!](https://github.com/appleparan/copier-modern-ml/blob/main/project/pyproject.toml.jinja)
+
+
+```
+[project.optional-dependencies]
+cu130 = [
+  "torch==2.9.1",
+  "torchvision==0.24.1",
+]
+cu128 = [
+  "torch==2.9.1",
+  "torchvision==0.24.1",
+]
+cu126 = [
+  "torch==2.9.1",
+  "torchvision==0.24.1",
+]
+cpu = [
+  "torch==2.9.1",
+  # Linux x86_64
+  "torchvision==0.24.1+cpu; sys_platform == 'linux' and platform_machine == 'x86_64'",
+  # Windows x86_64 (AMD64)
+  "torchvision==0.24.1+cpu; sys_platform == 'win32' and platform_machine == 'AMD64'",
+  # Linux aarch64, macOS arm64: PyPI default wheel
+  "torchvision==0.24.1; (sys_platform == 'linux' and platform_machine == 'aarch64') or (sys_platform == 'darwin' and platform_machine == 'arm64')",
+]
+```
+
+---
+
+_Label `bug` removed by @konstin on 2026-01-09 10:43_
+
+---
+
+_Label `question` added by @konstin on 2026-01-09 10:43_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-07-21T17:45:26Z
-updated_at: 2025-07-23T18:25:55Z
+updated_at: 2025-12-12T10:20:28Z
 url: https://github.com/astral-sh/uv/issues/14796
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # UV_DEFAULT_INDEX overwrites pyproject tool.uv.index.url
@@ -135,5 +135,30 @@ If the original value cannot be preserved as an additional index, I think it sho
 _Comment by @tonnico on 2025-07-23 18:25_
 
 I also got confused by this. Shouldn't the `uv.lock` not be in sync with the `pyproject.toml`? ENV over FILE may work for something less persistent things.
+
+---
+
+_Comment by @serverhorror on 2025-12-12 10:20_
+
+> The precedence in uv is FILE -> ENV -> CLI
+
+Can we please keep it like that?
+
+> [@zanieb](https://github.com/zanieb) I still find this behavior of the envvar _overwriting_ the file config to be unusual/confusing. It's common in other CLI tools that FILE overwrites ENV. Is this hierarchy difference documented somewhere?
+
+I think that is common. The precedence is, in my experience, the most common.
+
+Consider this:
+
+* I put the settings in the file and it has the highest precedence, to change it I have to:
+  1. open the file
+  2. change the url
+  3. save the file
+  4. run commands (say `uv pip install -e .`)
+  5. decide whether or not to commit this  
+     (I've seen enough build failures because people commited things erroneously where it should have never been in `pyproject.toml` in the first place)
+* In the case of an environment variable taking precedence over file, all I have to do is:
+  1. `UV_DEFAULT_INDEX=https://index.example.com" uv pip install -e .`
+  2. there is no step (2)
 
 ---

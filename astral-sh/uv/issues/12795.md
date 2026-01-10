@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-10T00:05:49Z
 updated_at: 2025-12-18T15:40:16Z
 url: https://github.com/astral-sh/uv/issues/12795
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Does UV provide any tooling to make packaging easier in a monorepo?
@@ -155,10 +155,6 @@ _Comment by @krishmas on 2025-10-15 01:21_
 Got it... hm yeah I'm coming from a Go/Bazel and Rust/Cargo world where making binaries is part of the workspace manager so maybe my expectations are misaligned, but since we're explicitly defining dependencies in pyproject.toml files **and** since `uv tool install project_a` already creates a snapshot/copy of `project_a`, why can't that snapshot/copy also include the workspace dependencies (`shared_lib_a`) defined in the `pyproject.toml` instead of just including a `.pth` file that links back to the `shared_lib_a` source code?
 
 Like if I accidentally break or delete `shared_lib_a` source code after `uv tool install`ing `project_a` when the library was working, why should my installed `project_a` tool break? 😅 Shouldn't the working `shared_lib_a` have been packaged into the tool?
-
----
-
-_Referenced in [astral-sh/uv#16306](../../astral-sh/uv/issues/16306.md) on 2025-10-15 01:53_
 
 ---
 

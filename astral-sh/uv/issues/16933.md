@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-02T17:09:51Z
 updated_at: 2025-12-04T00:12:50Z
 url: https://github.com/astral-sh/uv/issues/16933
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv pip install` ignores explicit package when it's in `override-dependencies`
@@ -236,9 +236,5 @@ Unlike Example 2, there's no (simple) workaround here. You can't inline an index
 ---
 
 **tl;dr**: `uv pip install` reads `override-dependencies` but ignores `tool.uv.sources`. If applying `override-dependencies` is intended, it should apply both.
-
----
-
-_Referenced in [astral-sh/uv#16990](../../astral-sh/uv/issues/16990.md) on 2025-12-04 22:32_
 
 ---

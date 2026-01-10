@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-24T16:39:10Z
 updated_at: 2025-12-31T22:09:49Z
 url: https://github.com/astral-sh/uv/issues/11746
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Add `uv layout` to create portable offline Python distributions
@@ -96,33 +96,13 @@ _Renamed from "Add `uv layout` to create an offline Python distribution" to "Add
 
 ---
 
-_Referenced in [astral-sh/uv#5802](../../astral-sh/uv/issues/5802.md) on 2025-02-25 14:11_
-
----
-
 _Renamed from "Add `uv layout` to create offline Python distributions" to "Add `uv layout` to create portable offline Python distributions" by @chrisrodrigue on 2025-02-25 21:01_
-
----
-
-_Referenced in [astral-sh/uv#11856](../../astral-sh/uv/issues/11856.md) on 2025-02-28 14:49_
 
 ---
 
 _Comment by @detrin on 2025-03-05 13:26_
 
 Not gonna lie, this would be wholesome.
-
----
-
-_Referenced in [astral-sh/uv#2103](../../astral-sh/uv/issues/2103.md) on 2025-03-06 15:10_
-
----
-
-_Referenced in [astral-sh/uv#11996](../../astral-sh/uv/issues/11996.md) on 2025-03-06 15:12_
-
----
-
-_Referenced in [astral-sh/uv#12008](../../astral-sh/uv/issues/12008.md) on 2025-03-06 15:16_
 
 ---
 
@@ -184,14 +164,6 @@ _Comment by @chrisrodrigue on 2025-03-07 14:49_
 > python = { git = "https://local.gitlab.com/python/python-build-standalone", tag = "v3.12" }
 
 See https://github.com/astral-sh/uv/issues/8015
-
----
-
-_Referenced in [astral-sh/uv#8015](../../astral-sh/uv/issues/8015.md) on 2025-03-14 18:07_
-
----
-
-_Referenced in [astral-sh/uv#12403](../../astral-sh/uv/issues/12403.md) on 2025-03-24 13:16_
 
 ---
 

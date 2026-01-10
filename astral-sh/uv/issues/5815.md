@@ -9,9 +9,9 @@ labels:
   - needs-design
 assignees: []
 created_at: 2024-08-06T14:50:55Z
-updated_at: 2025-12-09T19:00:07Z
+updated_at: 2026-01-09T15:48:50Z
 url: https://github.com/astral-sh/uv/issues/5815
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Add option to force use of `uv.lock` file when adding dependency or installing a tool
@@ -145,27 +145,11 @@ _Label `preview` removed by @zanieb on 2024-08-20 18:21_
 
 ---
 
-_Referenced in [astral-sh/uv#7768](../../astral-sh/uv/issues/7768.md) on 2024-09-29 22:24_
-
----
-
-_Referenced in [astral-sh/uv#15945](../../astral-sh/uv/issues/15945.md) on 2025-09-19 13:19_
-
----
-
-_Referenced in [astral-sh/uv#15947](../../astral-sh/uv/issues/15947.md) on 2025-09-19 13:29_
-
----
-
 _Comment by @eddie-dunn on 2025-10-07 11:04_
 
 Forcing an installation _exactly_ as the lockfile specifies will protect against supply chain attacks, so there are security implications for wanting to add this functionality.
 
 What kind of design requirements remain?
-
----
-
-_Referenced in [astral-sh/uv#13414](../../astral-sh/uv/issues/13414.md) on 2025-10-13 18:00_
 
 ---
 
@@ -182,10 +166,8 @@ Should this not so obvious security gap be mentioned on this page? https://docs.
 
 ---
 
-_Referenced in [awslabs/nx-plugin-for-aws#378](../../awslabs/nx-plugin-for-aws/issues/378.md) on 2025-12-11 02:21_
+_Comment by @MattiasDC on 2026-01-09 15:30_
 
----
-
-_Referenced in [awslabs/nx-plugin-for-aws#379](../../awslabs/nx-plugin-for-aws/issues/379.md) on 2025-12-11 02:41_
+Just want to hop in here, mentioning that I'd like `uvx` to use the lockfile of the tool as I need my workflow to be reproducible. I tried a workaround with a requirement.txt and use it with `--with-requirements`
 
 ---

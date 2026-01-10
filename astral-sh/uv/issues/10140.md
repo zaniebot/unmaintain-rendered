@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-24T12:50:10Z
 updated_at: 2026-01-06T18:56:19Z
 url: https://github.com/astral-sh/uv/issues/10140
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Adding a package and pinning to a specific index by name only with `uv add`
@@ -102,10 +102,6 @@ _Assigned to @Gankra by @Gankra on 2025-01-15 15:28_
 
 ---
 
-_Referenced in [astral-sh/uv#12796](../../astral-sh/uv/issues/12796.md) on 2025-04-10 14:03_
-
----
-
 _Assigned to @jtfmumm by @jtfmumm on 2025-04-10 14:11_
 
 ---
@@ -141,10 +137,6 @@ So adding support for this special "lazily resolved by name" index mode forces t
 `uv publish` *does* take an index by name but it doesn't used `IndexArgs` so it doesn't have this extra splash-work to do.
 
 I started implementing this, but backed off once the combinatoric explosion of things that needed to be updated started to reveal itself to me.
-
----
-
-_Referenced in [astral-sh/uv#13445](../../astral-sh/uv/issues/13445.md) on 2025-05-14 15:57_
 
 ---
 

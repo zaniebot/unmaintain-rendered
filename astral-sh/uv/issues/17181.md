@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-12-18T19:16:49Z
 updated_at: 2025-12-19T13:58:36Z
 url: https://github.com/astral-sh/uv/issues/17181
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # `uv pip install --no-binary` does not accept `,` as delimiter
@@ -74,10 +74,6 @@ Seems reasonable to support this. We already have various `CommaSeparated...` ty
 ---
 
 _Label `help wanted` added by @zanieb on 2025-12-18 19:47_
-
----
-
-_Referenced in [astral-sh/uv#17185](../../astral-sh/uv/pulls/17185.md) on 2025-12-19 00:14_
 
 ---
 

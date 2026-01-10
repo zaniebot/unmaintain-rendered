@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-10T12:15:26Z
 updated_at: 2025-12-10T15:37:39Z
 url: https://github.com/astral-sh/uv/issues/17069
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Am I using `--with-executables-from` correctly?
@@ -132,10 +132,6 @@ Yes, `uv tool install localstack-core --with localstack` does the trick. But I f
 _Comment by @zanieb on 2025-12-10 14:22_
 
 Why do you need `--with localstack` there?
-
----
-
-_Referenced in [astral-sh/uv#17072](../../astral-sh/uv/pulls/17072.md) on 2025-12-10 14:44_
 
 ---
 

@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-08-13T16:56:06Z
-updated_at: 2026-01-05T16:40:58Z
+updated_at: 2026-01-07T23:54:02Z
 url: https://github.com/astral-sh/uv/issues/15254
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Support for PEP 792
@@ -48,20 +48,13 @@ In terms of _where_ this should happen: I _think_ it probably makes the most sen
 
 Subtasks:
 
-- [ ] Data modeling + extract status markers from the detail responses (#17311)
+- [x] Data modeling + extract status markers from the detail responses (#17311)
 - [ ] Plumb status markers into the internal representation
+    - [ ] https://github.com/rkyv/rkyv/pull/646
 - [ ] Propagate relevant statuses as warnings (e.g. warn users when they request a quarantined / archived / deprecated project)
 
 ---
 
 _Label `enhancement` added by @woodruffw on 2025-08-13 16:56_
-
----
-
-_Referenced in [pypa/pip#13543](../../pypa/pip/issues/13543.md) on 2025-08-13 17:16_
-
----
-
-_Referenced in [astral-sh/uv#17311](../../astral-sh/uv/pulls/17311.md) on 2026-01-02 22:36_
 
 ---

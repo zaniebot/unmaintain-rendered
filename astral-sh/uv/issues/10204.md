@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-27T17:56:22Z
 updated_at: 2026-01-05T19:05:58Z
 url: https://github.com/astral-sh/uv/issues/10204
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Add a non-package-mode
@@ -93,10 +93,6 @@ error: Failed to parse: `pyproject.toml`
   | ^^^^^^^^^
 `pyproject.toml` is using the `[project]` table, but the required `project.name` field is not set
 ```
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-12-27 17:57_
 
 ---
 
@@ -351,26 +347,6 @@ For reference, Poetry 2.0.1 also took the same stance as `uv` and (unlike Rye) r
 
 ---
 
-_Referenced in [python-poetry/poetry-core#813](../../python-poetry/poetry-core/pulls/813.md) on 2025-01-14 13:26_
-
----
-
-_Referenced in [astral-sh/uv#8666](../../astral-sh/uv/issues/8666.md) on 2025-01-23 00:36_
-
----
-
-_Referenced in [astral-sh/uv#11424](../../astral-sh/uv/issues/11424.md) on 2025-02-11 17:25_
-
----
-
-_Referenced in [astral-sh/uv#12352](../../astral-sh/uv/issues/12352.md) on 2025-03-20 22:36_
-
----
-
-_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2025-03-21 18:23_
-
----
-
 _Comment by @johnthagen on 2025-03-25 20:31_
 
 Related existing feature
@@ -380,10 +356,6 @@ Related existing feature
 >  Projects may declare and configure a build system in the `[build-system]` table of the pyproject.toml.
 > 
 > uv uses the presence of a build system to determine if a project contains a package that should be installed in the project virtual environment. If a build system is not defined, uv will not attempt to build or install the project itself, just its dependencies. If a build system is defined, uv will build and install the project into the project environment.
-
----
-
-_Referenced in [johnthagen/python-blueprint#277](../../johnthagen/python-blueprint/pulls/277.md) on 2025-04-22 15:03_
 
 ---
 
@@ -401,10 +373,6 @@ dev = [
 ```
 
 UPD: with #13742 we can also avoid writing`[tool.uv.workspace]`.
-
----
-
-_Referenced in [astral-sh/uv#10208](../../astral-sh/uv/issues/10208.md) on 2025-06-17 00:05_
 
 ---
 
@@ -594,10 +562,6 @@ docs = [
 
 For anyone else who is doing something similar, is this still the recommended way to manage dependencies for projects that aren't python packages?
 
-
----
-
-_Referenced in [astral-sh/uv#16136](../../astral-sh/uv/issues/16136.md) on 2025-10-06 09:32_
 
 ---
 

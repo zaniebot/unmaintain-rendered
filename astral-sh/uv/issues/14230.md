@@ -2,15 +2,15 @@
 number: 14230
 title: uv run does not remove extraneous packages
 type: issue
-state: open
+state: closed
 author: stewit
 labels:
   - question
 assignees: []
 created_at: 2025-06-24T07:28:32Z
-updated_at: 2025-08-25T07:39:38Z
+updated_at: 2026-01-09T13:20:44Z
 url: https://github.com/astral-sh/uv/issues/14230
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # uv run does not remove extraneous packages
@@ -105,5 +105,25 @@ I think in a world where we have a top-level `uv test` command I'd imagine it ru
 _Comment by @stewit on 2025-08-25 07:39_
 
 Yes, I understand that, thank you all. I would still kindly suggest being more precise about the term “consistent” in the linked documentation — but maybe I'm the only one who finds this confusing.
+
+---
+
+_Comment by @a9tavako on 2026-01-08 20:54_
+
+I ran into the exact same issue as the original poster. 
+
+I agree with @stewit; the documentation here (https://docs.astral.sh/uv/concepts/projects/sync/) is very **misleading**. To be precise, the documentation is actually wrong. 
+
+It says 
+- "when uv run is used, the project is locked and synced before invoking the requested command."
+- "Syncing is "exact" by default, which means it will remove any packages that are not present in the lockfile."
+
+The above two statements together means, `uv run` is an exact sync. The documentation needs to **explicitly** say that `uv run` uses the "--inexact" version of sync. 
+
+As it is currently a user will trust `uv run` to sync, remove a dependency, and then still see it show up in their environment.
+
+---
+
+_Closed by @zanieb on 2026-01-09 13:20_
 
 ---

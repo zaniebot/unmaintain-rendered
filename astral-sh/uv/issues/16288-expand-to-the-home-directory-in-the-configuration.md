@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-13T20:41:43Z
 updated_at: 2025-12-09T01:06:04Z
 url: https://github.com/astral-sh/uv/issues/16288
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Expand `~` to the home directory in the configuration files
@@ -80,10 +80,6 @@ I think `cache_dir` needs to be expanded for tildes, maybe in a similar way to [
 _Comment by @Mobocop on 2025-12-07 21:25_
 
 Having tested this on windows it looks like it's forcing the cache-dir to be in a folder called `~`, whereas on linux it makes a folder called `~` but then uses the cache-dir specified. I'll open a PR for my fix.
-
----
-
-_Referenced in [astral-sh/uv#17019](../../astral-sh/uv/pulls/17019.md) on 2025-12-07 21:56_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-05T02:13:06Z
 updated_at: 2025-12-16T14:52:37Z
 url: https://github.com/astral-sh/uv/issues/8821
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # uv-managed python installed into .local/bin can't be used with venv module
@@ -93,10 +93,6 @@ This is known and reported upstream: https://github.com/indygreg/python-build-st
 ---
 
 _Label `upstream` added by @charliermarsh on 2024-11-05 13:27_
-
----
-
-_Referenced in [astral-sh/uv#8879](../../astral-sh/uv/issues/8879.md) on 2024-11-07 13:51_
 
 ---
 
@@ -194,18 +190,6 @@ this works for me
 
 ---
 
-_Referenced in [astral-sh/uv#12743](../../astral-sh/uv/issues/12743.md) on 2025-04-08 17:33_
-
----
-
-_Referenced in [scikit-image/scikit-image#7783](../../scikit-image/scikit-image/issues/7783.md) on 2025-05-02 10:01_
-
----
-
-_Referenced in [moonrepo/plugins#51](../../moonrepo/plugins/issues/51.md) on 2025-05-17 21:40_
-
----
-
 _Assigned to @jtfmumm by @jtfmumm on 2025-06-10 20:56_
 
 ---
@@ -250,10 +234,6 @@ _Unassigned @jtfmumm by @zanieb on 2025-09-18 20:41_
 _Comment by @zanieb on 2025-09-18 20:41_
 
 We're looking at fixing this.
-
----
-
-_Referenced in [astral-sh/uv#16411](../../astral-sh/uv/issues/16411.md) on 2025-10-22 17:53_
 
 ---
 

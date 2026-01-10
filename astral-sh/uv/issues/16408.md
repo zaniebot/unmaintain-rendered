@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-22T11:22:01Z
 updated_at: 2025-12-11T16:32:54Z
 url: https://github.com/astral-sh/uv/issues/16408
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Support `--compile-bytecode` in `uv python install`
@@ -94,14 +94,6 @@ _Label `enhancement` added by @konstin on 2025-10-22 11:22_
 
 ---
 
-_Referenced in [astral-sh/uv#16378](../../astral-sh/uv/issues/16378.md) on 2025-10-22 11:29_
-
----
-
 _Assigned to @EliteTK by @EliteTK on 2025-12-11 16:32_
-
----
-
-_Referenced in [astral-sh/uv#17088](../../astral-sh/uv/pulls/17088.md) on 2025-12-11 16:37_
 
 ---

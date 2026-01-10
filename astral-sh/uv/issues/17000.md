@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-05T14:54:22Z
 updated_at: 2025-12-17T17:23:10Z
 url: https://github.com/astral-sh/uv/issues/17000
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Add a mode for isolated lock without isolated sync
@@ -36,14 +36,6 @@ uv sync --isolated-lock
 ---
 
 _Label `enhancement` added by @zanieb on 2025-12-05 14:54_
-
----
-
-_Referenced in [dantebben/nox-uv#73](../../dantebben/nox-uv/issues/73.md) on 2025-12-05 14:54_
-
----
-
-_Referenced in [astral-sh/uv#17006](../../astral-sh/uv/pulls/17006.md) on 2025-12-05 22:36_
 
 ---
 

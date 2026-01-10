@@ -7,9 +7,9 @@ author: timendum
 labels: []
 assignees: []
 created_at: 2024-10-15T12:56:24Z
-updated_at: 2026-01-06T08:00:07Z
+updated_at: 2026-01-08T11:11:01Z
 url: https://github.com/astral-sh/uv/issues/8213
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Support cpython 3.7.9 on linux
@@ -26,10 +26,6 @@ This issue blocks my tests on 3.7 via Github Actions, it returns:
 
     Searching for Python versions matching: Python 3.7
     error: No download found for request: cpython-3.7
-
----
-
-_Referenced in [astral-sh/uv#8216](../../astral-sh/uv/pulls/8216.md) on 2024-10-15 13:29_
 
 ---
 
@@ -58,5 +54,25 @@ Python 3.7 has been end-of-life for 2.5 years now with no bugfix and no security
 _Comment by @bergentroll on 2026-01-06 08:00_
 
 @konstin, nevertheless it us EoL, some people have to support code for it.
+
+---
+
+_Comment by @bergentroll on 2026-01-08 11:11_
+
+OK, [pyenv](https://github.com/pyenv/pyenv) is still in charge.
+
+```bash
+pyenv install 3.7  # Or whatever version
+pyenv local 3.7  # Creates .python-version file
+pyenv exec python -m venv .venv  # Wokrs without modifying ~/.bashrc
+source .venv/bin/activate
+python -V  # Now we have a fair Python 3.7 environment
+uv init
+# And go on...
+uv add ipython
+ipython  # Should display chosen Python version at header
+```
+
+`pyenv install --list` to know available versions.
 
 ---

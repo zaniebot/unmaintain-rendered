@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-21T16:10:46Z
 updated_at: 2025-12-18T15:46:49Z
 url: https://github.com/astral-sh/uv/issues/6349
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Request for `uv.lock` to support different index urls across different developer machines and CI environments
@@ -293,19 +293,11 @@ I think it’s ok to track it here.
 
 ---
 
-_Referenced in [astral-sh/uv#8262](../../astral-sh/uv/issues/8262.md) on 2024-10-25 22:19_
-
----
-
 _Renamed from "Request to enable `uv.lock` to not include the index url" to "Request to support `uv.lock` to not include the index url" by @humanzz on 2024-10-28 11:46_
 
 ---
 
 _Renamed from "Request to support `uv.lock` to not include the index url" to "Request for `uv.lock` to support different index urls across different developer machines and CI environments" by @humanzz on 2024-10-28 11:48_
-
----
-
-_Referenced in [astral-sh/uv#9056](../../astral-sh/uv/issues/9056.md) on 2024-11-12 14:55_
 
 ---
 
@@ -332,10 +324,6 @@ Any updates on this? This is critical for us to ship `uv` in our pipelines
 _Comment by @humanzz on 2025-02-10 14:38_
 
 I know it's already February, but it would still make a great New Year's present! 😄
-
----
-
-_Referenced in [astral-sh/uv#11782](../../astral-sh/uv/pulls/11782.md) on 2025-02-25 20:38_
 
 ---
 
@@ -456,10 +444,6 @@ According to the description, if I understand this correctly, what is now set in
 
 ---
 
-_Referenced in [astral-sh/uv#12477](../../astral-sh/uv/issues/12477.md) on 2025-04-01 19:00_
-
----
-
 _Comment by @xbeastx on 2025-05-14 07:43_
 
 @charliermarsh @zanieb 
@@ -520,10 +504,6 @@ In today’s world — where almost every company uses local mirrors of PyPI enr
 _P.S. And let’s just imagine for a moment that every developer starts committing `uv.lock` files into their repos with entries like:
 `https://files.pythonhosted.org/packages/4d/f9/9a7ce600ebe7804daf90d4d48b1c0510a4561ddce43a596be46676f82343/...`
 What happens if PyPI ever decides to change their domain name or URL format? Does that mean all existing lock files will break? Or at least we must have some fall-back logic to reacquire this URL and still "make some queries"?_
-
----
-
-_Referenced in [astral-sh/uv#14071](../../astral-sh/uv/issues/14071.md) on 2025-06-16 10:22_
 
 ---
 
@@ -710,10 +690,6 @@ Perhaps we could do an informal poll using emoji reactions on this comment:
 
 ---
 
-_Referenced in [python-poetry/poetry#1632](../../python-poetry/poetry/issues/1632.md) on 2025-07-05 14:52_
-
----
-
 _Comment by @liblaf on 2025-07-16 05:01_
 
 For anyone who need to use PyPI mirrors and don't want to pollute `uv.lock` with mirror URLs, here's a not-so-elegant workaround. Before each `uv` command, we replace the URLs in `uv.lock` with mirror URLs. After `uv` command is finished, the mirror links are replaced with the default `pypi.org` and `files.pythonhosted.org`.
@@ -756,14 +732,6 @@ end
 ```
 
 To use mirrors in [Pixi](https://pixi.sh/)-managed projects (which uses `uv` to handle PyPI packages), [a similar workaround](https://github.com/prefix-dev/pixi/issues/4147) can also be used.
-
----
-
-_Referenced in [prefix-dev/pixi#4147](../../prefix-dev/pixi/issues/4147.md) on 2025-07-16 13:24_
-
----
-
-_Referenced in [astral-sh/uv#14796](../../astral-sh/uv/issues/14796.md) on 2025-07-21 19:54_
 
 ---
 
@@ -851,10 +819,6 @@ if __name__ == "__main__":
 _Comment by @dariocurr on 2025-07-23 14:57_
 
 this is still the reason why we cannot use `uv` in our CI
-
----
-
-_Referenced in [astral-sh/uv#15015](../../astral-sh/uv/issues/15015.md) on 2025-08-01 18:42_
 
 ---
 
@@ -976,10 +940,6 @@ _Comment by @jamesharris-garmin on 2025-09-03 13:31_
 I was not aware of this and this basically covers my workaround case. Thanks @notatallshaw!
 
  But again. This needs to be configurable or the hermesticity vs. reproducibility problem will break the ability to share lockfiles and properly mirror pypi with all available public solutions.
-
----
-
-_Referenced in [astral-sh/uv#15741](../../astral-sh/uv/issues/15741.md) on 2025-09-09 17:55_
 
 ---
 

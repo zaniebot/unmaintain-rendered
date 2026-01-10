@@ -9,9 +9,9 @@ labels:
   - windows
 assignees: []
 created_at: 2025-12-18T12:23:04Z
-updated_at: 2026-01-06T19:09:22Z
+updated_at: 2026-01-09T12:14:09Z
 url: https://github.com/astral-sh/uv/issues/17174
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # uv run pytest breaks history in pdb on windows
@@ -76,10 +76,6 @@ _Label `bug` added by @RmStorm on 2025-12-18 12:23_
 
 ---
 
-_Referenced in [pytest-dev/pytest#14052](../../pytest-dev/pytest/issues/14052.md) on 2025-12-18 12:31_
-
----
-
 _Label `windows` added by @konstin on 2025-12-18 12:32_
 
 ---
@@ -131,14 +127,6 @@ which still won't make pytest see the history for some reason. And yes, directly
 
 ---
 
-_Referenced in [python/cpython#143082](../../python/cpython/issues/143082.md) on 2025-12-22 20:52_
-
----
-
-_Referenced in [python/cpython#143083](../../python/cpython/pulls/143083.md) on 2025-12-22 20:56_
-
----
-
 _Comment by @zelosleone on 2025-12-22 20:58_
 
 I basically traced it back to pdb itself. https://github.com/python/cpython/pull/143083 this fixes it.
@@ -156,5 +144,27 @@ _Comment by @konstin on 2026-01-06 19:09_
 > uv currently makes invalid handlers on windows due to `close_handles` closing DUPed handles that share the same underlying kernel object as STDIN/STDOUT as it was not checking the handler correctly, changing these things and making sure we get the standard handlers from OS will fix that and we won't have invalid handles on trampoline after `close_handles` function performs. However, this won't fix the issue of pytest.
 
 Can you share that fix?
+
+---
+
+_Comment by @zelosleone on 2026-01-09 12:09_
+
+> > uv currently makes invalid handlers on windows due to `close_handles` closing DUPed handles that share the same underlying kernel object as STDIN/STDOUT as it was not checking the handler correctly, changing these things and making sure we get the standard handlers from OS will fix that and we won't have invalid handles on trampoline after `close_handles` function performs. However, this won't fix the issue of pytest.
+> 
+> Can you share that fix?
+
+sure, here is it https://github.com/astral-sh/uv/pull/17374
+
+---
+
+_Comment by @konstin on 2026-01-09 12:10_
+
+Thank you!
+
+---
+
+_Comment by @zelosleone on 2026-01-09 12:14_
+
+Also if you guys can connect with pyreadline3 guys, their window build is gonna be completely broken in the future (its already broken in newer python versions) https://github.com/pyreadline3/pyreadline3/pull/44 (just to let you guys know since you guys might know one of them)
 
 ---

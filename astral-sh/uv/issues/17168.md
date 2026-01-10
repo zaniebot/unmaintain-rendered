@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-18T07:33:36Z
 updated_at: 2025-12-27T09:01:59Z
 url: https://github.com/astral-sh/uv/issues/17168
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # To be Closed
@@ -24,10 +24,6 @@ _No description provided._
 ---
 
 _Label `enhancement` added by @mourad-ghafiri on 2025-12-18 07:33_
-
----
-
-_Referenced in [astral-sh/uv#17224](../../astral-sh/uv/issues/17224.md) on 2025-12-26 19:20_
 
 ---
 

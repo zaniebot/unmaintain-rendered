@@ -10,7 +10,7 @@ assignees: []
 created_at: 2026-01-01T04:27:38Z
 updated_at: 2026-01-02T03:42:15Z
 url: https://github.com/astral-sh/uv/issues/17280
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Failed to install `llvmlite`
@@ -68,10 +68,6 @@ Ubuntu 25.10
 ---
 
 _Label `bug` added by @khteh on 2026-01-01 04:27_
-
----
-
-_Referenced in [astral-sh/uv#4022](../../astral-sh/uv/issues/4022.md) on 2026-01-01 14:05_
 
 ---
 

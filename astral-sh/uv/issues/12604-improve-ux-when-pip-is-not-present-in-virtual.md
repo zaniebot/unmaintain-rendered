@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-01T17:54:11Z
 updated_at: 2025-12-10T21:24:16Z
 url: https://github.com/astral-sh/uv/issues/12604
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Improve ux when `pip` is not present in virtual environments
@@ -63,18 +63,6 @@ Or, going in a different direction:
 And, going further (controversially!):
 
 5. Add warnings to `pip` if a mutable operation is used in the system environment.
-
----
-
-_Referenced in [astral-sh/uv#12247](../../astral-sh/uv/issues/12247.md) on 2025-04-01 17:54_
-
----
-
-_Referenced in [astral-sh/uv#1331](../../astral-sh/uv/issues/1331.md) on 2025-04-01 17:55_
-
----
-
-_Referenced in [astral-sh/uv#12199](../../astral-sh/uv/issues/12199.md) on 2025-04-01 17:56_
 
 ---
 
@@ -237,19 +225,7 @@ Regardless of whether we like it, PEP 453 has left us with a legacy where users 
 
 ---
 
-_Referenced in [astral-sh/uv#12738](../../astral-sh/uv/issues/12738.md) on 2025-04-08 17:25_
-
----
-
 _Assigned to @zanieb by @zanieb on 2025-04-11 14:52_
-
----
-
-_Referenced in [astral-sh/uv#13098](../../astral-sh/uv/issues/13098.md) on 2025-04-25 16:33_
-
----
-
-_Referenced in [astral-sh/uv#14873](../../astral-sh/uv/issues/14873.md) on 2025-07-24 15:58_
 
 ---
 
@@ -302,10 +278,6 @@ Regarding `EXTERNALLY-MANAGED` -- in my specific situation this appears to be im
 However, it looks like Ubuntu did start using this mechanism with Ubuntu 23, so this problem will tend to solve itself as people update. This honestly makes me a lot less fussed about the whole thing, so thanks for teaching me that this mechanism exists -- I was not aware of it.
 
 (In fact, I think `EXTERNALLY-MANAGED` is the correct mechanism to address the specific problem that this issue caused me, which was an Ubuntu distro package that was broken by the existence of a python package at the wrong version, accidentally installed with `pip` into the user site-packages directory.)
-
----
-
-_Referenced in [astral-sh/uv#17066](../../astral-sh/uv/issues/17066.md) on 2025-12-10 13:16_
 
 ---
 

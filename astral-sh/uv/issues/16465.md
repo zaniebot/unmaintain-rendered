@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-27T06:17:58Z
 updated_at: 2025-12-18T16:15:32Z
 url: https://github.com/astral-sh/uv/issues/16465
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Linking project extras to maturin features
@@ -51,17 +51,9 @@ _Label `enhancement` added by @chitralverma on 2025-10-27 06:18_
 
 ---
 
-_Referenced in [apache/opendal#6729](../../apache/opendal/pulls/6729.md) on 2025-10-27 09:02_
-
----
-
 _Comment by @konstin on 2025-10-27 19:05_
 
 Unfortunately, this is not supported by extras. All wheels have the same extras, so we can't make compilation or wheel selection dependent on the activated extras. Extras are purely additive (you can select dependencies when a specific extra is active, but not really depend on another extra being inactive), so you couldn't have `mypackage[fast, something]` deselect something you'd use with `mypackage[fast]` either.
-
----
-
-_Referenced in [apache/opendal#6748](../../apache/opendal/issues/6748.md) on 2025-11-04 03:26_
 
 ---
 

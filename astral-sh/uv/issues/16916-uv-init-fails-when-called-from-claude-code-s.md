@@ -9,9 +9,9 @@ labels:
   - external
 assignees: []
 created_at: 2025-12-01T21:43:14Z
-updated_at: 2025-12-01T22:06:37Z
+updated_at: 2026-01-09T13:09:27Z
 url: https://github.com/astral-sh/uv/issues/16916
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv init` fails when called from Claude Code's sandbox on macOS
@@ -96,5 +96,11 @@ See also
 ---
 
 _Label `external` added by @zanieb on 2025-12-01 22:06_
+
+---
+
+_Comment by @zanieb on 2026-01-09 13:09_
+
+Now we're blocked on https://github.com/hyperium/hyper-util/pull/256
 
 ---

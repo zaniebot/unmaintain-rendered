@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-05T23:26:31Z
 updated_at: 2025-12-26T18:33:31Z
 url: https://github.com/astral-sh/uv/issues/5802
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Suggestion: `uv bundle`, `uv build --release` or similar to create a contained executable a la pyinstaller, py2exe
@@ -97,10 +97,6 @@ _Comment by @matterhorn103 on 2024-08-21 07:17_
 
 ---
 
-_Referenced in [astral-sh/uv#6533](../../astral-sh/uv/issues/6533.md) on 2024-08-23 16:59_
-
----
-
 _Comment by @my1e5 on 2024-08-27 09:39_
 
 @matterhorn103, I guess what I mean is that Nuitka is perhaps quite an opinionated way of packaging your Python code into an executable - as it is essentially an alternate Python interpreter which compiles Python to C. Whereas tools like Pyinstaller are more like a bundler - taking the Python interpreter, Python files and dependencies and packaging them into an executable. This is definitely more straightforward than the Nuitka approach, but it does make the Pyinstaller executable very easy to un-package and see the underlying source code (see https://github.com/extremecoders-re/pyinstxtractor). Which might be a caveat needed when including certain 'executable creators' within uv - you need to make users aware that their exe can easily be un-packaged.
@@ -112,10 +108,6 @@ In terms of licensing, Nuitka is MIT licensed. But it does also have a commercia
 _Comment by @zanieb on 2024-09-03 23:23_
 
 I think this is a duplicate of https://github.com/astral-sh/uv/issues/2799, though there's more discussion here.
-
----
-
-_Referenced in [pex-tool/pex#2371](../../pex-tool/pex/issues/2371.md) on 2024-09-04 00:49_
 
 ---
 
@@ -168,10 +160,6 @@ _In a 2nd iteration_, it would be nice to be have installers such as to create .
 
 ---
 
-_Referenced in [astral-sh/uv#7419](../../astral-sh/uv/issues/7419.md) on 2024-10-08 01:47_
-
----
-
 _Comment by @dbrtly on 2024-10-18 23:43_
 
 what if the command was `uv run ruff --output-file ruff.uvx`
@@ -187,10 +175,6 @@ I love this idea and @jbvsmo proposal for CLI usage.
 I am a bit confused on the best choice for the bundling "backend" though, I see different options on the table and I'm not sure, how would you choose one over the other? Should maybe `uv` propose some protocol for each library to support bundling via `uv`?
 
 This feature would be great also for bundling pyspark apps (thinking about pex support mentioned by @martimlobao here)
-
----
-
-_Referenced in [Tobi-De/fujin#16](../../Tobi-De/fujin/issues/16.md) on 2024-11-02 22:35_
 
 ---
 
@@ -241,14 +225,6 @@ With this solution I could distribute on Windows the files with "Inno Setup", ad
 _Comment by @johnthagen on 2024-12-05 03:05_
 
 As much as I like Pyinstaller (to me it's best of current options), one other thing that it suffers from is that anti-virus vendors are _always_ flagging generic Pyinstaller binaries as malware. This is (at least in part, I think) because Pyinstaller uses the same bootloader binary for all built applications, thus if someone bundles malware with Pyinstaller version X, all other users who bundle legitimate applications using Pyinstaller X can get flagged as malware too. I've seen this hit AV software across both Windows and Linux over the years. Not sure I have any ideas on how Astral could improve _that_ issue, but wanted to bring it up as a current (very annoying) real world challenge.
-
----
-
-_Referenced in [astral-sh/uv#10019](../../astral-sh/uv/issues/10019.md) on 2024-12-19 04:01_
-
----
-
-_Referenced in [astral-sh/uv#10452](../../astral-sh/uv/issues/10452.md) on 2025-01-10 04:40_
 
 ---
 
@@ -437,10 +413,6 @@ This should get you what want I think.
 
 ---
 
-_Referenced in [astral-sh/uv#11540](../../astral-sh/uv/issues/11540.md) on 2025-02-16 00:19_
-
----
-
 _Comment by @jdegenstein on 2025-02-16 02:51_
 
 @dbrtly Yes, that is correct -- in my experience with developing apps for new python users or python beginners as soon as the phrase "virtual environment" is uttered about half of the potential users will just give up (again my stated goal for my users is "download (my app), unzip and run"). Single executables are nice, as are installation wizards, but that introduces another layer of OS specific considerations that are not worth it for me (yet).
@@ -460,18 +432,6 @@ uv tool install my_app \
 ```
 
 Am curious about what specific features you can see potential for uv to improve on for this user experience. 
-
----
-
-_Referenced in [cbrnr/mnelab#294](../../cbrnr/mnelab/issues/294.md) on 2025-02-19 15:26_
-
----
-
-_Referenced in [astral-sh/uv#11746](../../astral-sh/uv/issues/11746.md) on 2025-02-25 02:05_
-
----
-
-_Referenced in [astral-sh/uv#11777](../../astral-sh/uv/issues/11777.md) on 2025-02-25 12:38_
 
 ---
 
@@ -509,10 +469,6 @@ _Comment by @paveldikov on 2025-02-26 11:24_
 @chrisrodrigue `uv layout` can be approximated by stitching together `uv venv --relocatable` with `uv python download` + a launcher script that rewrites `pyvenv.cfg` (because the base interpreter definition is not portable -- you can specify relative paths but those are implicitly relative to the current working directory)
 
 I have done this for a proof-of-concept and, whilst clunky, it definitely does work. In fact, by repackaging its output into something like an RPM/DEB/Choco/pick-your-favourite-OS-package-manager -- or a self-extracting executable -- you end up with a passable (though non-optimised) `uv bundle` too.
-
----
-
-_Referenced in [mathesar-foundation/mathesar#4303](../../mathesar-foundation/mathesar/issues/4303.md) on 2025-03-05 13:37_
 
 ---
 
@@ -570,10 +526,6 @@ p.s. and on posix, re-point the venv's `bin/python*` symlinks accordingly, e.g. 
 
 ---
 
-_Referenced in [astral-sh/uv#12033](../../astral-sh/uv/issues/12033.md) on 2025-03-07 07:59_
-
----
-
 _Comment by @chrismatix on 2025-03-07 13:13_
 
 >  @martimlobao Also want to call out pex, a tool for generating .pex files (Python EXecutable) which are self-contained zipped executable Python environments containing sources, requirements, and dependencies.
@@ -598,23 +550,11 @@ Nice. I'm using something similar in production. Hopefully pex would support uv.
 
 ---
 
-_Referenced in [flexcompute/tidy3d#2322](../../flexcompute/tidy3d/issues/2322.md) on 2025-03-18 09:08_
-
----
-
-_Referenced in [denwii/Area_Calculator_Osu#7](../../denwii/Area_Calculator_Osu/pulls/7.md) on 2025-03-21 18:02_
-
----
-
 _Comment by @luigi311 on 2025-03-25 20:01_
 
 Great ideas guys. I went with something similar on my project. `uv build` which generates a whl file i then used pex on that whl and then finally used fpm to generate a deb for me to distribute. Hopefully something built into uv comes that makes this more simple but for now this works without complicating my source files with duplicate files that need to be manged. Can find my initial implementation here https://github.com/luigi311/immich_upload_daemon/blob/d1ec12c369ab4192e0ba88653010e4a0968e6e26/.github/workflows/build.yml
 
 
-
----
-
-_Referenced in [astral-sh/uv#13503](../../astral-sh/uv/issues/13503.md) on 2025-05-17 10:42_
 
 ---
 
@@ -666,14 +606,6 @@ These are two separate sets of problems. "Bundling" is the former.
 
 ---
 
-_Referenced in [astral-sh/uv#14727](../../astral-sh/uv/issues/14727.md) on 2025-07-18 16:21_
-
----
-
-_Referenced in [astral-sh/uv#14838](../../astral-sh/uv/issues/14838.md) on 2025-07-23 08:02_
-
----
-
 _Comment by @kskarthik on 2025-07-23 09:16_
 
 This feature would be a great addition to the python ecosystem! 
@@ -708,21 +640,9 @@ will definitely try this out!
 
 ---
 
-_Referenced in [astral-sh/uv#15836](../../astral-sh/uv/issues/15836.md) on 2025-09-14 14:53_
-
----
-
-_Referenced in [elastic/rally#1981](../../elastic/rally/pulls/1981.md) on 2025-10-09 08:12_
-
----
-
 _Comment by @alekssamos on 2025-10-16 19:42_
 
 I made an sfx file using winrar. Set the options to show nothing, hide everything, and accept the defaults. Execute after installation `uv run app.py`. And it worked.
-
----
-
-_Referenced in [astral-sh/uv#16905](../../astral-sh/uv/issues/16905.md) on 2025-12-16 14:29_
 
 ---
 

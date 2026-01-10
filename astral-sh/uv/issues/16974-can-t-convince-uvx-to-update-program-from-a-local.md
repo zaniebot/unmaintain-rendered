@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-03T19:52:04Z
 updated_at: 2025-12-17T09:22:15Z
 url: https://github.com/astral-sh/uv/issues/16974
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Can't convince uvx to update program from a local project
@@ -78,10 +78,6 @@ This does look like a bug, `--refresh` should invalidate the cached wheel for th
 _Comment by @rafalkrupinski on 2025-12-04 08:39_
 
 Is uvx assuming that the project hasn't change because it's the same version?
-
----
-
-_Referenced in [astral-sh/uv#16991](../../astral-sh/uv/pulls/16991.md) on 2025-12-04 21:00_
 
 ---
 

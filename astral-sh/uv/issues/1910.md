@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T12:26:49Z
 updated_at: 2026-01-01T22:54:31Z
 url: https://github.com/astral-sh/uv/issues/1910
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Add a command to activate the virtual environment, e.g., `uv shell`
@@ -157,10 +157,6 @@ exit
 
 ---
 
-_Referenced in [astral-sh/uv#2887](../../astral-sh/uv/issues/2887.md) on 2024-04-08 03:46_
-
----
-
 _Comment by @tiagofassoni on 2024-04-08 04:11_
 
 What about if, instead of hooking up pty's, we just do the bare minimum? We detect the shell (whether zsh, bash, nushell or powershell), the OS, and just call the source file.
@@ -203,14 +199,6 @@ _Comment by @patrick-kidger on 2024-04-17 08:40_
 FWIW I've always considered `poetry shell` a misfeature from a UX perspective. It's too easy to drop into a shell, then change directory, and lose track of which venv you're actually working in.
 
 So for my team I prefer to recommend always using `poetry run` (often plus some shell aliases to minimise typing). I think that would make better sense as a first-class citizen for `uv`. And then if someone still really *really* wants a shell then this is still accomplishable via `uv run [bash|fish|etc.]`.
-
----
-
-_Referenced in [astral-sh/uv#3118](../../astral-sh/uv/issues/3118.md) on 2024-04-19 00:23_
-
----
-
-_Referenced in [astral-sh/uv#3097](../../astral-sh/uv/issues/3097.md) on 2024-04-24 01:25_
 
 ---
 
@@ -422,10 +410,6 @@ Although I like very much using `uv run`, `uv pip`, ... I think that `uv shell` 
 
 ---
 
-_Referenced in [astral-sh/uv#7898](../../astral-sh/uv/issues/7898.md) on 2024-10-03 14:55_
-
----
-
 _Comment by @MrHamel on 2024-10-05 03:08_
 
 What I do to get around this for now, is use the `python` plugin in `oh-my-zsh` to load/unload the environment based on the directory I'm in, by setting this in my `.zshrc` file:
@@ -483,10 +467,6 @@ fi
 
 ---
 
-_Referenced in [astral-sh/uv#8118](../../astral-sh/uv/issues/8118.md) on 2024-10-11 15:22_
-
----
-
 _Comment by @ultrabear on 2024-10-21 23:35_
 
 Just wanted to leave my two cents, as I see this is a more complicated issue than I first thought (started learning uv, missed `poetry shell`, yknow the deal)
@@ -497,14 +477,6 @@ function uvenv
     fish -C "source .venv/bin/activate.fish"
 end
 ```
-
----
-
-_Referenced in [astral-sh/uv#8106](../../astral-sh/uv/issues/8106.md) on 2024-10-24 12:23_
-
----
-
-_Referenced in [astral-sh/uv#8782](../../astral-sh/uv/issues/8782.md) on 2024-11-03 21:23_
 
 ---
 
@@ -537,18 +509,10 @@ https://github.com/python-poetry/poetry-plugin-shell/issues/18
 
 ---
 
-_Referenced in [direnv/direnv#1250](../../direnv/direnv/issues/1250.md) on 2024-11-11 14:51_
-
----
-
 _Comment by @dpprdan on 2024-11-13 21:03_
 
 It's been [mentioned before](https://github.com/astral-sh/uv/issues/1910#issuecomment-2276729062), but seriously, wouldn't an implementation [similar to pdm's ](https://pdm-project.org/en/latest/usage/venv/#activate-a-virtualenv) be a good compromise here? 
 It generates a platform independent activation command, allows for a custom `uv shell` command if one prefers, and a `uv venv activate` would fit nicely in the uv pip/venv interface.
-
----
-
-_Referenced in [astral-sh/uv#9166](../../astral-sh/uv/issues/9166.md) on 2024-11-16 16:03_
 
 ---
 
@@ -640,10 +604,6 @@ I really believe the best one can achieve here is that someone runs `uv shell` a
 
 ---
 
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
 _Comment by @chrisrodrigue on 2024-11-26 19:33_
 
 Opinions ahead…
@@ -653,10 +613,6 @@ I kind of agree with @mitsuhiko.
 virtualenv activation adds even more state to an already stateful shell, in the name of saving a few keystrokes. An activated virtual environment makes things available on the PATH that otherwise shouldn’t be there. The fact that a different activation script is needed for each platform is yet another code smell.
 
 Maybe `uvr` could be the final answer to the virtual environment activation problem?
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
 
 ---
 
@@ -740,14 +696,6 @@ Agreed -- I don't think there's really _any_ shell that requires such problemati
 
 ---
 
-_Referenced in [astral-sh/uv#9918](../../astral-sh/uv/issues/9918.md) on 2024-12-15 19:04_
-
----
-
-_Referenced in [scipy/scipy.org#595](../../scipy/scipy.org/pulls/595.md) on 2024-12-19 17:04_
-
----
-
 _Comment by @krystofbe on 2024-12-22 19:39_
 
 The lack of a uv shell command is currently the only reason preventing me from switching away from Poetry. Having a built-in way to activate the virtual environment is such a convenience in my workflow.
@@ -776,10 +724,6 @@ As a previous user of pipenv, I thought I would miss `pipenv shell`... But I've 
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#10294](../../astral-sh/uv/issues/10294.md) on 2025-01-03 21:51_
 
 ---
 
@@ -837,10 +781,6 @@ Turns out I’ve been overreacting about the lack of uv shell. Poetry removed th
 
 ---
 
-_Referenced in [astral-sh/uv#11014](../../astral-sh/uv/issues/11014.md) on 2025-01-28 08:26_
-
----
-
 _Comment by @Noobzik on 2025-02-13 10:01_
 
 I came from conda and I am transitionning to uv.
@@ -880,18 +820,6 @@ _Comment by @anddam on 2025-02-14 13:49_
 > I have a project that I needed to share with someone. So I zipped my project, and then I noticed that I forgot the .venv is here. This is something I didn't need to worry when I was in miniconda
 
 Or if you use `git-archive` or equivalent, with the additional bonus that you don't carry build products along.
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-02-16 11:56_
-
----
-
-_Referenced in [astral-sh/uv#11835](../../astral-sh/uv/issues/11835.md) on 2025-02-27 16:07_
-
----
-
-_Referenced in [astral-sh/uv#12147](../../astral-sh/uv/issues/12147.md) on 2025-03-14 01:05_
 
 ---
 
@@ -1022,10 +950,6 @@ Solving this unlocks a whole new class of python users.
 
 ---
 
-_Referenced in [usethis-python/usethis-python#404](../../usethis-python/usethis-python/issues/404.md) on 2025-03-29 04:38_
-
----
-
 _Comment by @benbenbang on 2025-03-29 11:43_
 
 > Because activation is OS-specific
@@ -1105,10 +1029,6 @@ I'm not sure, but I _think_ the vague idea of the direction I've picked up from 
 
 ---
 
-_Referenced in [astral-sh/uv#13250](../../astral-sh/uv/issues/13250.md) on 2025-05-01 11:11_
-
----
-
 _Comment by @JalinWang on 2025-05-15 07:14_
 
 - `uv shell` will spawn a shell with the virtualenv activated and use `exit` to exit the env, e.g., `poetry shell` and `pipenv shell`.
@@ -1158,10 +1078,6 @@ activate_venv() {
 
 alias venvup=’activate_venv’
 ```
-
----
-
-_Referenced in [astral-sh/uv#13682](../../astral-sh/uv/issues/13682.md) on 2025-05-27 14:54_
 
 ---
 
@@ -1264,10 +1180,6 @@ Type "help", "copyright", "credits" or "license" for more information.
 working within virtualenv
 >>> exit()
 ```
-
----
-
-_Referenced in [astral-sh/uv#14635](../../astral-sh/uv/issues/14635.md) on 2025-07-15 19:23_
 
 ---
 
@@ -1462,10 +1374,6 @@ $ uv run sh -c “. .venv/Scripts/activate; sh”
 
 ---
 
-_Referenced in [astral-sh/uv#14856](../../astral-sh/uv/issues/14856.md) on 2025-07-23 20:17_
-
----
-
 _Comment by @turbotimon on 2025-07-24 14:02_
 
 After thinking about it, the `uv run <shell>` from @CHC383 is actually a really neat solution! Anybody seeing a problem with this (as an alternative for `. .venv/bin/activate` and the windows equivalent)?
@@ -1543,10 +1451,6 @@ VIRTUAL_ENV=".venv"
 layout python
 ```
 to automatically enable the python venv, this is basically the auto enable `pyenv` uses.
-
----
-
-_Referenced in [astral-sh/uv#15083](../../astral-sh/uv/issues/15083.md) on 2025-08-05 16:25_
 
 ---
 
@@ -1775,22 +1679,6 @@ Nice documentation effort @turbotimon . Without good docs tools become more diff
 Anyway, my idea was very focused page, which would only describe how to activate python environment. The concept is to keep it as short as possible to prevent distraction and overwhelming with details, which are not essential during reading project README.md.
 
 I think, I will try to draft some gist for this purpose and note it here.
-
----
-
-_Referenced in [Coacher/vim-virtualenv#7](../../Coacher/vim-virtualenv/issues/7.md) on 2025-10-02 14:37_
-
----
-
-_Referenced in [astral-sh/uv#16842](../../astral-sh/uv/issues/16842.md) on 2025-11-26 15:59_
-
----
-
-_Referenced in [astral-sh/uv#17107](../../astral-sh/uv/issues/17107.md) on 2025-12-12 19:02_
-
----
-
-_Referenced in [NatLibFi/Annif#923](../../NatLibFi/Annif/pulls/923.md) on 2025-12-17 15:12_
 
 ---
 

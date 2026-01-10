@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-09-19T07:02:10Z
-updated_at: 2025-09-26T07:33:06Z
+updated_at: 2025-12-12T16:00:10Z
 url: https://github.com/astral-sh/uv/issues/15942
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Add the option to use custom seed packages when creating a `venv`
@@ -78,5 +78,24 @@ _Comment by @JMuff22 on 2025-09-26 07:33_
 > There's a separate (unfortunately very complex) bug that uv currently can't read the inherited site packages.
 
 Creating a shell alias/function seems unnecessarily complicated. But thanks for the feedback!
+
+---
+
+_Comment by @pfmoore on 2025-12-12 16:00_
+
+Would adding a `--requirements` option to `uv venv` to automatically install the given requirements be a possibility? In effect, replacing
+
+```
+uv venv
+uv pip install -r requirements.txt
+```
+
+with 
+
+```
+uv venv -r requirements.txt
+```
+
+? See https://discuss.python.org/t/new-project-cli-install-locked-env-what-about-security/105270/5 for a related discussion.
 
 ---

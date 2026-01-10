@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-23T02:27:27Z
 updated_at: 2025-12-10T18:21:56Z
 url: https://github.com/astral-sh/uv/issues/3783
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # SSH authentication skips password check, hangs
@@ -52,14 +52,6 @@ _Label `bug` added by @zanieb on 2024-05-23 02:30_
 
 ---
 
-_Referenced in [astral-sh/uv#7774](../../astral-sh/uv/issues/7774.md) on 2024-09-29 02:10_
-
----
-
-_Referenced in [astral-sh/uv#10811](../../astral-sh/uv/issues/10811.md) on 2025-01-21 12:40_
-
----
-
 _Comment by @seb-kro on 2025-01-29 14:09_
 
 I just ran into the same issue on a completely new work setup and it took me a while to figure out the problem. Using the `--no-progress` flag seems to be another workaround besides increasing verbosity. But this should probably work without having to specify any flags.
@@ -78,17 +70,9 @@ For the record, it wasn't the case last week when setting up the same repo.
 
 ---
 
-_Referenced in [astral-sh/uv#5107](../../astral-sh/uv/issues/5107.md) on 2025-02-16 23:47_
-
----
-
 _Comment by @zanieb on 2025-02-16 23:47_
 
 Same as https://github.com/astral-sh/uv/issues/5107
-
----
-
-_Referenced in [astral-sh/uv#11342](../../astral-sh/uv/issues/11342.md) on 2025-03-07 10:53_
 
 ---
 
@@ -102,10 +86,6 @@ _Closed by @jtfmumm on 2025-04-04 08:42_
 
 ---
 
-_Referenced in [astral-sh/uv#12685](../../astral-sh/uv/issues/12685.md) on 2025-04-05 14:40_
-
----
-
 _Comment by @geofft on 2025-06-03 15:19_
 
 #11744 seems to address HTTP auth, not SSH auth, which this issue was originally reported about. I can reproduce this with latest uv (0.7.9).
@@ -115,10 +95,6 @@ _Comment by @geofft on 2025-06-03 15:19_
 ---
 
 _Reopened by @geofft on 2025-06-03 15:19_
-
----
-
-_Referenced in [astral-sh/uv#14648](../../astral-sh/uv/issues/14648.md) on 2025-07-16 12:36_
 
 ---
 

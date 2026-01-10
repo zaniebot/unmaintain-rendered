@@ -10,7 +10,7 @@ assignees: []
 created_at: 2026-01-03T21:56:42Z
 updated_at: 2026-01-05T15:37:08Z
 url: https://github.com/astral-sh/uv/issues/17313
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Unexpected behavior with `sys_platform == 'linux' and platform_machine == 'x86_64'"`
@@ -119,10 +119,6 @@ I errored on the side of opening a new issue, but looking at  #15060 more closel
 
 ---
 
-_Referenced in [astral-sh/uv#15060](../../astral-sh/uv/issues/15060.md) on 2026-01-03 22:10_
-
----
-
 _Comment by @charliermarsh on 2026-01-04 18:50_
 
 I think we just don't narrow on those other platforms.
@@ -130,10 +126,6 @@ I think we just don't narrow on those other platforms.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-04 18:51_
-
----
-
-_Referenced in [astral-sh/uv#17317](../../astral-sh/uv/pulls/17317.md) on 2026-01-04 19:01_
 
 ---
 

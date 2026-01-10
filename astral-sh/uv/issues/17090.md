@@ -2,15 +2,15 @@
 number: 17090
 title: "`uv publish` can panic after a network failure"
 type: issue
-state: open
+state: closed
 author: konstin
 labels:
   - bug
 assignees: []
 created_at: 2025-12-11T19:19:24Z
-updated_at: 2025-12-11T19:19:24Z
+updated_at: 2025-12-12T17:02:50Z
 url: https://github.com/astral-sh/uv/issues/17090
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv publish` can panic after a network failure
@@ -45,5 +45,15 @@ _Assigned to @konstin by @konstin on 2025-12-11 19:19_
 ---
 
 _Label `bug` added by @konstin on 2025-12-11 19:19_
+
+---
+
+_Comment by @konstin on 2025-12-12 10:06_
+
+This is an upstream bug with reqwest+rustls: https://github.com/seanmonstar/reqwest/issues/2884
+
+---
+
+_Closed by @konstin on 2025-12-12 17:02_
 
 ---

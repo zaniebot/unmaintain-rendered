@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-12-10T22:00:08Z
 updated_at: 2025-12-05T00:53:52Z
 url: https://github.com/astral-sh/uv/issues/9790
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # uv cache management strategies for always-growing caches?
@@ -37,10 +37,6 @@ Thanks for reading!
 
 ---
 
-_Referenced in [astral-sh/uv#5731](../../astral-sh/uv/issues/5731.md) on 2024-12-29 20:33_
-
----
-
 _Label `enhancement` added by @zanieb on 2025-01-07 19:12_
 
 ---
@@ -54,10 +50,6 @@ _Label `help wanted` added by @zanieb on 2025-01-07 19:12_
 ---
 
 _Label `cache` added by @zanieb on 2025-01-07 19:13_
-
----
-
-_Referenced in [astral-sh/uv#16761](../../astral-sh/uv/issues/16761.md) on 2025-11-17 15:29_
 
 ---
 

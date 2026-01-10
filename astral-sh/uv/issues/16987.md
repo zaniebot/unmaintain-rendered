@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-04T19:19:18Z
 updated_at: 2025-12-09T21:20:22Z
 url: https://github.com/astral-sh/uv/issues/16987
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Enforce publish ordering
@@ -55,10 +55,6 @@ _Assigned to @woodruffw by @woodruffw on 2025-12-04 19:19_
 ---
 
 _Label `internal` added by @woodruffw on 2025-12-04 19:19_
-
----
-
-_Referenced in [astral-sh/uv#16989](../../astral-sh/uv/pulls/16989.md) on 2025-12-04 19:30_
 
 ---
 

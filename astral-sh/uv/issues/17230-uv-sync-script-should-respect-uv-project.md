@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-23T17:56:01Z
 updated_at: 2026-01-05T21:21:18Z
 url: https://github.com/astral-sh/uv/issues/17230
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # `uv sync --script` should respect `UV_PROJECT_ENVIRONMENT` (or some other env var)
@@ -84,10 +84,6 @@ We could also expose a `UV_SCRIPT_ENVIRONMENT` variable? Though I'm a little hes
 
 ---
 
-_Referenced in [astral-sh/uv#17329](../../astral-sh/uv/pulls/17329.md) on 2026-01-05 21:05_
-
----
-
 _Comment by @charliermarsh on 2026-01-05 21:05_
 
 If we decide we want to do it: https://github.com/astral-sh/uv/pull/17329
@@ -107,9 +103,5 @@ I agree that there's not really a reason for `UV_SCRIPT_ENVIRONMENT` right now. 
 ---
 
 _Closed by @metaist on 2026-01-05 21:21_
-
----
-
-_Referenced in [metaist/cosmofy#113](../../metaist/cosmofy/issues/113.md) on 2026-01-06 17:02_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-12T03:57:00Z
 updated_at: 2025-12-15T14:52:02Z
 url: https://github.com/astral-sh/uv/issues/12129
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # uv pip install doesn't work in TF memory card
@@ -107,10 +107,6 @@ It's a huge work for me to change it to NTFS, is there any other solutions? than
 _Comment by @Word2VecT on 2025-03-12 10:43_
 
 And I tried change the `--link-mode` but didn't work.
-
----
-
-_Referenced in [servo/ci-runners#30](../../servo/ci-runners/issues/30.md) on 2025-03-25 03:55_
 
 ---
 

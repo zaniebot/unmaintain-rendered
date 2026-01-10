@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-02T16:53:19Z
 updated_at: 2025-12-21T23:47:10Z
 url: https://github.com/astral-sh/uv/issues/5731
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # uv cache size limit
@@ -70,10 +70,6 @@ I think it makes sense if we want to include details for self hosted github runn
 
 ---
 
-_Referenced in [astral-sh/uv#5757](../../astral-sh/uv/pulls/5757.md) on 2024-08-04 04:53_
-
----
-
 _Comment by @FrancescElies on 2024-08-06 16:45_
 
 > Interesting, I've been using `UV_CACHE_DIR` instead to be relative to the github workspace and cleaning the workspace at the end of a run using a `ACTIONS_RUNNER_HOOK_JOB_COMPLETED` (for self hosted runners).
@@ -107,18 +103,6 @@ _Label `help wanted` added by @zanieb on 2025-01-07 19:13_
 ---
 
 _Label `needs-design` added by @zanieb on 2025-01-07 19:13_
-
----
-
-_Referenced in [astral-sh/uv#11432](../../astral-sh/uv/issues/11432.md) on 2025-02-12 04:47_
-
----
-
-_Referenced in [astral-sh/uv#8908](../../astral-sh/uv/issues/8908.md) on 2025-05-13 14:14_
-
----
-
-_Referenced in [astral-sh/uv#13431](../../astral-sh/uv/issues/13431.md) on 2025-05-13 14:15_
 
 ---
 
@@ -198,17 +182,9 @@ I filed https://github.com/astral-sh/uv/issues/15821 requesting that uv provides
 
 ---
 
-_Referenced in [astral-sh/uv#16761](../../astral-sh/uv/issues/16761.md) on 2025-11-17 15:29_
-
----
-
 _Comment by @lucharo on 2025-12-16 12:41_
 
 Hi, I'd be keen to see this implemented as I've ended up with a 99GB cache which crashed my laptop, auto clean up based on the last time a cached object was used/downloaded would be handy. I can of course set  cron jobs locally but `uv` handling this itself would be extra useful! 
-
----
-
-_Referenced in [astral-sh/uv#17211](../../astral-sh/uv/pulls/17211.md) on 2025-12-21 22:31_
 
 ---
 

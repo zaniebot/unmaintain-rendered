@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-11T11:59:51Z
 updated_at: 2025-12-18T14:38:30Z
 url: https://github.com/astral-sh/uv/issues/16252
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # If I remove the base Python interpreter, `uv tool list` doesn't work
@@ -57,10 +57,6 @@ _Label `bug` added by @pfmoore on 2025-10-11 11:59_
 ---
 
 _Label `windows` added by @konstin on 2025-12-18 14:19_
-
----
-
-_Referenced in [astral-sh/uv#17176](../../astral-sh/uv/pulls/17176.md) on 2025-12-18 14:31_
 
 ---
 

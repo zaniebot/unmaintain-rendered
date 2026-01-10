@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-01T23:43:34Z
 updated_at: 2025-12-16T06:15:57Z
 url: https://github.com/astral-sh/uv/issues/9559
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # uv rebuilds cached packages on Termux
@@ -1576,10 +1576,6 @@ DEBUG Identified uncached distribution: lxml==6.0.1
 ```
 
 The package uv just built mismatches for the package that uv is gonna build and once uv finish building the package, it will mismatch again hence uv will never use cache. Maybe something happened in UV's matching logic for package that doesn't provide a wheel and needs building locally
-
----
-
-_Referenced in [astral-sh/uv#15663](../../astral-sh/uv/pulls/15663.md) on 2025-09-03 13:47_
 
 ---
 

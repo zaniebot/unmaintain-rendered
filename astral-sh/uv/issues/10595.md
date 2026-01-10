@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-14T13:43:35Z
 updated_at: 2025-12-08T18:37:19Z
 url: https://github.com/astral-sh/uv/issues/10595
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # One cache per disk
@@ -19,10 +19,6 @@ synced_at: 2026-01-10T01:57:24Z
 _Issue opened by @EtienneT on 2025-01-14 13:43_
 
 Like pnpm, uv should have one cache folder per disk.  This way, uv could always use simlinks to link packages.
-
----
-
-_Referenced in [astral-sh/uv#11721](../../astral-sh/uv/issues/11721.md) on 2025-02-23 09:21_
 
 ---
 

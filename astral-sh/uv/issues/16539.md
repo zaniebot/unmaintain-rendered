@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-31T17:25:13Z
 updated_at: 2025-12-16T13:34:38Z
 url: https://github.com/astral-sh/uv/issues/16539
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Git LFS Smudge Errors When Installing Dependencies from Git Sources with LFS Files
@@ -88,10 +88,6 @@ _Label `bug` added by @ekzhu on 2025-10-31 17:25_
 
 ---
 
-_Referenced in [microsoft/agent-framework#1832](../../microsoft/agent-framework/issues/1832.md) on 2025-10-31 17:27_
-
----
-
 _Comment by @samypr100 on 2025-11-01 03:17_
 
 https://github.com/astral-sh/uv/pull/16143 should resolve this (confirmed) as it behaves well regardless of filters.
@@ -109,10 +105,6 @@ You may also want to double check your system Git LFS config (in case it has con
         process = git-lfs filter-process
 ...
 ```
-
----
-
-_Referenced in [astral-sh/uv#16143](../../astral-sh/uv/pulls/16143.md) on 2025-11-04 03:05_
 
 ---
 

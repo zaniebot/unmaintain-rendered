@@ -9,9 +9,9 @@ labels:
   - error messages
 assignees: []
 created_at: 2025-12-02T19:43:18Z
-updated_at: 2025-12-15T02:24:27Z
+updated_at: 2026-01-07T21:25:15Z
 url: https://github.com/astral-sh/uv/issues/16940
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Clarify UV_HTTP_TIMEOUT format in error message
@@ -121,14 +121,6 @@ _Comment by @samypr100 on 2025-12-03 03:37_
 
 ---
 
-_Referenced in [astral-sh/uv#16952](../../astral-sh/uv/pulls/16952.md) on 2025-12-03 03:53_
-
----
-
-_Referenced in [astral-sh/uv#16953](../../astral-sh/uv/pulls/16953.md) on 2025-12-03 04:03_
-
----
-
 _Comment by @anoop-rehman on 2025-12-03 04:31_
 
 @samypr100 Good point! I've opened a pr #16953 for just item 1 by itself for now. It passed all the checks, please let me know if it looks ok.
@@ -140,5 +132,17 @@ Should I open a separate issue to discuss how to best do item 2? I have a draft 
 _Comment by @tysoncung on 2025-12-15 02:24_
 
 I noticed this issue. Have you tried checking the error logs or console output? That might help narrow down the root cause. I'd be happy to help investigate if you can share more details about your environment (OS, version, etc.).
+
+---
+
+_Comment by @LoukasPap on 2026-01-07 20:35_
+
+Is this still on for work? @anoop-rehman Are you still working on it, or could I give it a try?
+
+---
+
+_Comment by @anoop-rehman on 2026-01-07 21:25_
+
+@LoukasPap Yes pls go ahead! My apologies, got busy with some other work recently
 
 ---

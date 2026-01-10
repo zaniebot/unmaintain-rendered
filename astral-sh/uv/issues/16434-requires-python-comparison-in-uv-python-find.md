@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-24T09:02:14Z
 updated_at: 2025-12-17T11:55:44Z
 url: https://github.com/astral-sh/uv/issues/16434
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `requires-python` comparison in `uv python find` rejects 3.13t
@@ -313,10 +313,6 @@ _Label `bug` added by @lmmx on 2025-10-24 09:02_
 
 ---
 
-_Referenced in [astral-sh/uv#16428](../../astral-sh/uv/issues/16428.md) on 2025-10-24 09:02_
-
----
-
 _Renamed from "`requires-python` comparison in `uv python find` rejects free-threaded CPython versions" to "`requires-python` comparison in `uv python find` rejects 3.13t" by @lmmx on 2025-10-24 09:27_
 
 ---
@@ -325,10 +321,6 @@ _Comment by @thqq479 on 2025-10-30 03:05_
 
 same as me 
 Skipping interpreter at `/usr/local/bin/python3.13t` from search path: does not satisfy request `>=3.11`
-
----
-
-_Referenced in [astral-sh/uv#16507](../../astral-sh/uv/issues/16507.md) on 2025-10-30 13:47_
 
 ---
 

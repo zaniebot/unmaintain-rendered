@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-19T20:49:19Z
 updated_at: 2026-01-06T18:47:43Z
 url: https://github.com/astral-sh/uv/issues/17191
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # `uv self update` fails when /tmp is mounted noexec
@@ -73,10 +73,6 @@ Thx! Should I open ticket here? https://github.com/axodotdev/axoupdater
 _Comment by @konstin on 2026-01-05 18:55_
 
 yes!
-
----
-
-_Referenced in [axodotdev/axoupdater#324](../../axodotdev/axoupdater/issues/324.md) on 2026-01-05 20:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-09T14:01:58Z
 updated_at: 2025-12-31T18:47:00Z
 url: https://github.com/astral-sh/uv/issues/16652
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Add Docker images for the latest Python and Debian versions
@@ -69,10 +69,6 @@ _Comment by @zanieb on 2025-12-30 14:47_
 ---
 
 _Closed by @zanieb on 2025-12-30 14:47_
-
----
-
-_Referenced in [astral-sh/uv#17268](../../astral-sh/uv/issues/17268.md) on 2025-12-30 15:15_
 
 ---
 

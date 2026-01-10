@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-21T22:46:33Z
 updated_at: 2025-12-28T10:24:22Z
 url: https://github.com/astral-sh/uv/issues/8432
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Python file autocomplete with `uv run` on zsh with ohmyzsh
@@ -134,10 +134,6 @@ im use to `py` either way when im running py files.
 
 ---
 
-_Referenced in [astral-sh/uv#7401](../../astral-sh/uv/issues/7401.md) on 2024-11-03 15:07_
-
----
-
 _Comment by @shirayu on 2024-11-03 16:54_
 
 I'm using this workaround in vanilla zsh. (I'm not a user of ohmyzsh)
@@ -157,10 +153,6 @@ _uv_run_mod() {
 compdef _uv_run_mod uv
 
 ```
-
----
-
-_Referenced in [astral-sh/uv#9116](../../astral-sh/uv/issues/9116.md) on 2024-11-14 11:55_
 
 ---
 
@@ -464,23 +456,11 @@ Even if it will require the `uv sync` and `uv run` will not get it out-of-the-bo
 
 ---
 
-_Referenced in [clap-rs/clap#3166](../../clap-rs/clap/issues/3166.md) on 2025-03-26 04:07_
-
----
-
-_Referenced in [astral-sh/uv#12509](../../astral-sh/uv/issues/12509.md) on 2025-03-27 13:58_
-
----
-
 _Comment by @mattrossman on 2025-03-28 16:02_
 
 Was just bit by this as a new `uv` user, though I don't use ohmyzsh, just zsh.
 
 Weirdly in VSCode (which auto-activates the `.venv`), the completions work after I `deactivate` the virtual environment, and they continue to work if I `source .venv/bin/activate`. They just don't work with the default auto-activated venv, nor in a fresh iTerm 2 session which doesn't auto activate `.venv`.
-
----
-
-_Referenced in [astral-sh/uv#12630](../../astral-sh/uv/issues/12630.md) on 2025-04-02 16:52_
 
 ---
 
@@ -752,10 +732,6 @@ We'd love dynamic completions, but I'd recommend opening a new issue instead of 
 
 ---
 
-_Referenced in [astral-sh/uv#15325](../../astral-sh/uv/issues/15325.md) on 2025-08-16 14:59_
-
----
-
 _Unassigned @Gankra by @konstin on 2025-08-21 07:55_
 
 ---
@@ -771,10 +747,6 @@ eval "$(patch -i /path/uv-run-cmd-py-file.patch -o - =(uv --generate-shell-compl
 
 [uv-run-cmd-py-file.patch](https://github.com/user-attachments/files/22166265/uv-run-cmd-py-file.patch)
 
-
----
-
-_Referenced in [astral-sh/uv#17042](../../astral-sh/uv/issues/17042.md) on 2025-12-09 13:28_
 
 ---
 
@@ -893,10 +865,6 @@ Note that this work-around is not ideal, since it will not auto-complete when th
 
 I will put this in a new issue post instead, as this thread is a bit all-over-the-place (and closed).
 
-
----
-
-_Referenced in [astral-sh/uv#17246](../../astral-sh/uv/issues/17246.md) on 2025-12-28 08:37_
 
 ---
 

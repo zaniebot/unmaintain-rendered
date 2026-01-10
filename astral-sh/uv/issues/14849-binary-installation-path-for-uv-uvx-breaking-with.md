@@ -6,13 +6,12 @@ state: open
 author: gorbinphilip
 labels:
   - bug
-  - needs-design
-  - needs-decision
+  - external
 assignees: []
 created_at: 2025-07-23T16:12:21Z
-updated_at: 2025-08-22T22:21:09Z
+updated_at: 2026-01-09T10:58:16Z
 url: https://github.com/astral-sh/uv/issues/14849
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Binary installation Path for uv / uvx breaking with snap updates for vs code on Ubuntu 24
@@ -123,10 +122,28 @@ Maybe its still worth warning people about this tho since I know vscode is very 
 
 ---
 
-_Referenced in [astral-sh/uv#15466](../../astral-sh/uv/issues/15466.md) on 2025-08-23 00:11_
+_Comment by @abulygin on 2026-01-08 22:30_
+
+I have got the same issue and the solution, proposed by the author worked for me. This happened after the recent snap and vscode update
 
 ---
 
-_Referenced in [microsoft/vscode#237608](../../microsoft/vscode/issues/237608.md) on 2025-08-25 11:07_
+_Comment by @konstin on 2026-01-09 10:57_
+
+A simple improvement is to show a warning when we see `$HOME/snap/code/[version]/` in the path, telling users that this will break with the next version update and that they should use a non-snap installer.
+
+The proper fix would be on the VS Code or snap side.
+
+---
+
+_Label `needs-design` removed by @konstin on 2026-01-09 10:57_
+
+---
+
+_Label `needs-decision` removed by @konstin on 2026-01-09 10:57_
+
+---
+
+_Label `external` added by @konstin on 2026-01-09 10:57_
 
 ---

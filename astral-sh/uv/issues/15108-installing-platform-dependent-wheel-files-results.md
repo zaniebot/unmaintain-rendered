@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-06T13:33:06Z
 updated_at: 2025-12-16T12:17:03Z
 url: https://github.com/astral-sh/uv/issues/15108
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Installing platform dependent wheel files results in distribution cache error
@@ -616,10 +616,6 @@ On Tue, 26 Aug 2025, 7:58 am Vivek Srivastava, ***@***.***> wrote:
 >>
 >
 
-
----
-
-_Referenced in [python/mypy#20200](../../python/mypy/issues/20200.md) on 2025-11-07 11:26_
 
 ---
 

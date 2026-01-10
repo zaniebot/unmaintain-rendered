@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T12:32:20Z
 updated_at: 2025-12-11T10:04:35Z
 url: https://github.com/astral-sh/uv/issues/8935
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # AWS Lambda Docker example
@@ -253,10 +253,6 @@ isn't the best way to achieve this.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-02 14:52_
-
----
-
-_Referenced in [astral-sh/uv#10278](../../astral-sh/uv/pulls/10278.md) on 2025-01-02 18:07_
 
 ---
 

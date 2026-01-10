@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-09T11:01:23Z
 updated_at: 2026-01-03T07:05:34Z
 url: https://github.com/astral-sh/uv/issues/7214
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Add excluded dependencies
@@ -150,10 +150,6 @@ I think I got it sorted. PEBKAC.
 
 ---
 
-_Referenced in [astral-sh/uv#9389](../../astral-sh/uv/pulls/9389.md) on 2024-11-23 21:49_
-
----
-
 _Comment by @andreaimprovised on 2025-01-22 03:51_
 
 This would be really useful when there are transitive dependencies that are not copyright compatible and not necessary for your project to run.
@@ -195,17 +191,9 @@ _Comment by @ion-elgreco on 2025-01-31 13:23_
 
 ---
 
-_Referenced in [astral-sh/uv#12616](../../astral-sh/uv/issues/12616.md) on 2025-05-15 17:32_
-
----
-
 _Comment by @charliermarsh on 2025-10-31 14:18_
 
 We just added support for excluding dependencies entirely by name: https://github.com/astral-sh/uv/pull/16528 (available in the next release)
-
----
-
-_Referenced in [datarobot-oss/datarobot-genai#27](../../datarobot-oss/datarobot-genai/pulls/27.md) on 2025-11-03 16:10_
 
 ---
 

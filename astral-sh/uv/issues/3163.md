@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-20T16:09:23Z
 updated_at: 2025-12-16T23:49:27Z
 url: https://github.com/astral-sh/uv/issues/3163
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Support `pip download`
@@ -158,23 +158,11 @@ _Comment by @pickfire on 2024-06-14 03:53_
 
 ---
 
-_Referenced in [astral-sh/uv#4809](../../astral-sh/uv/issues/4809.md) on 2024-07-04 15:26_
-
----
-
-_Referenced in [astral-sh/uv#2078](../../astral-sh/uv/issues/2078.md) on 2024-07-04 15:27_
-
----
-
 _Comment by @jbw-vtl on 2024-07-15 18:57_
 
 Also quite interested in this as `pip download` is a slower part in our CI environment.
 
 In our case our security scanning tool requires to run on a folder of wheel / source distributions, we currently use pip download to gather these.
-
----
-
-_Referenced in [astral-sh/uv#5100](../../astral-sh/uv/issues/5100.md) on 2024-07-16 12:17_
 
 ---
 
@@ -188,10 +176,6 @@ _Renamed from "Support pip download" to "Support `pip download`" by @zanieb on 2
 
 ---
 
-_Referenced in [astral-sh/uv#6006](../../astral-sh/uv/issues/6006.md) on 2024-08-11 14:49_
-
----
-
 _Comment by @ei-grad on 2024-08-13 09:03_
 
 Although `pip download` is very handy for multi-stage Docker builds to efficiently cache dependencies,
@@ -199,10 +183,6 @@ Although `pip download` is very handy for multi-stage Docker builds to efficient
 > `uv` doesn’t store the .whl files; instead, it unzips them directly into the cache.
 
 It would be even better if the `uv` cache could be used to install requirements directly into the target stage instead of installing from the wheels. I'm curious whether there's a straightforward method to populate the `uv` cache for a list of packages.
-
----
-
-_Referenced in [astral-sh/uv#6323](../../astral-sh/uv/issues/6323.md) on 2024-08-21 23:50_
 
 ---
 
@@ -235,10 +215,6 @@ It is necessary for 2 reasons:
 By using cache it would indeed be faster than pip for same platform downloads. Although, for my use case, I need to download cross platform, so the packages won't be there (e.g. numpy or pandas which are large plataform specific packages).
 
 
-
----
-
-_Referenced in [astral-sh/uv#7296](../../astral-sh/uv/issues/7296.md) on 2024-09-12 09:22_
 
 ---
 
@@ -324,14 +300,6 @@ In this use case, the biggest problem is data usage (for some devices, you pay p
 
 ---
 
-_Referenced in [pex-tool/pex#2512](../../pex-tool/pex/pulls/2512.md) on 2024-09-13 19:25_
-
----
-
-_Referenced in [pex-tool/pex#2371](../../pex-tool/pex/issues/2371.md) on 2024-09-13 19:31_
-
----
-
 _Comment by @notatallshaw on 2024-09-13 23:20_
 
 > In this use case, the biggest problem is data usage (for some devices, you pay per MB of usage), and the UV's cache contains the unzipped versions of wheels. For example, TensorFlow, which is ~400MB, expands into GB of data
@@ -374,22 +342,6 @@ I hope it help to this issue and #1681 to going forward.
 
 ---
 
-_Referenced in [astral-sh/uv#1681](../../astral-sh/uv/issues/1681.md) on 2024-11-17 20:55_
-
----
-
-_Referenced in [astral-sh/uv#9345](../../astral-sh/uv/issues/9345.md) on 2024-11-22 05:11_
-
----
-
-_Referenced in [astral-sh/uv#9346](../../astral-sh/uv/issues/9346.md) on 2024-11-23 03:07_
-
----
-
-_Referenced in [astral-sh/uv#10460](../../astral-sh/uv/issues/10460.md) on 2025-01-10 13:33_
-
----
-
 _Comment by @astafan8 on 2025-02-17 14:24_
 
 I am happy to take a stab at implementing `pip download` as a way for me to learn Rust. My hope is that the functionality of download is to a large extent already implemented as part of `uv pip install`, so it seems to be a great case of figuring out how to compose a feature from existing implementations, add new CLI command, write tests. However, for that to happen, I would need guidance of where to start and how to proceed in steps, e.g. start in file foo.rs, use function Bar from it, and also use function Baz from bleh.rs as a reference to steps that need to be done to implement the feature. All other blanks I can fill in from your contributors guide, and with some questions on github.
@@ -403,10 +355,6 @@ _Comment by @zanieb on 2025-02-17 15:26_
 A problem with this it the overlap with `pip wheel`, e.g., see https://github.com/astral-sh/uv/issues/1681#issuecomment-1952952263
 
 It's sort of an open design question how we want to build a better unified interface here. Additionally, our cache is pretty complicated. For those reasons, I'm not sure if it's a great candidate for a first-time contribution.
-
----
-
-_Referenced in [astral-sh/uv#12009](../../astral-sh/uv/issues/12009.md) on 2025-03-06 15:37_
 
 ---
 
@@ -453,10 +401,6 @@ I'm in the same boat here. Developer machines are on a network that does not all
 
 ---
 
-_Referenced in [astral-sh/uv#13263](../../astral-sh/uv/issues/13263.md) on 2025-05-02 10:44_
-
----
-
 _Comment by @gsemet on 2025-05-02 11:00_
 
 The command that i would need for creating zipapp using shiv is to replace:
@@ -469,21 +413,9 @@ shiv actually packages a "site-packages" folder
 
 ---
 
-_Referenced in [astral-sh/uv#13304](../../astral-sh/uv/issues/13304.md) on 2025-05-05 16:24_
-
----
-
-_Referenced in [pex-tool/pex#2790](../../pex-tool/pex/issues/2790.md) on 2025-06-25 22:53_
-
----
-
 _Comment by @matthias-busch on 2025-06-30 11:04_
 
 Any progress/news on this or https://github.com/astral-sh/uv/issues/1681?
-
----
-
-_Referenced in [astral-sh/uv#14994](../../astral-sh/uv/issues/14994.md) on 2025-07-31 13:42_
 
 ---
 
@@ -508,14 +440,6 @@ What will be the point of using uv then?
 
 ---
 
-_Referenced in [aspect-build/rules_py#544](../../aspect-build/rules_py/pulls/544.md) on 2025-09-22 03:31_
-
----
-
-_Referenced in [astral-sh/uv#16016](../../astral-sh/uv/issues/16016.md) on 2025-09-24 14:27_
-
----
-
 _Comment by @sterliakov on 2025-10-19 01:49_
 
 I found myself looking for `uv pip download` (and even assuming it exists, crashing first CI run attempt) for a weird reason: I need to download sdist of a package to unpack and `uv build` it into a wheel afterwards. Now I just `uv pip install pip && pip download...`, but that hurts aesthetically! This won't be solved by only allowing wheels downloads.
@@ -535,10 +459,6 @@ PackageIndex(dist.locator.base_url).download_file(dist.source_url, fn, dist.dige
 print(f'SDIST_FILENAME={fn}')
 EOF
 ```
-
----
-
-_Referenced in [astral-sh/uv#16410](../../astral-sh/uv/issues/16410.md) on 2025-10-22 14:55_
 
 ---
 
@@ -600,9 +520,5 @@ uv run pip freeze > requirements.txt
 uv run pip download -r requirements.txt --dest wheelhouse/
 uv publish --index myprivateindex wheelhouse/*
 ```
-
----
-
-_Referenced in [openbraininstitute/neuroagent#645](../../openbraininstitute/neuroagent/pulls/645.md) on 2025-12-26 11:36_
 
 ---

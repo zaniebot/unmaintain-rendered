@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-25T12:54:44Z
 updated_at: 2025-12-06T14:06:47Z
 url: https://github.com/astral-sh/uv/issues/16843
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # UV Index with inline credentials breaks lock files
@@ -166,15 +166,7 @@ We should either handle this correctly or make repeated `default = true` in the 
 
 ---
 
-_Referenced in [astral-sh/uv#17011](../../astral-sh/uv/pulls/17011.md) on 2025-12-06 02:04_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-06 03:05_
-
----
-
-_Referenced in [astral-sh/uv#17012](../../astral-sh/uv/pulls/17012.md) on 2025-12-06 03:05_
 
 ---
 

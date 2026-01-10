@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-12-26T13:46:01Z
 updated_at: 2025-12-29T18:41:41Z
 url: https://github.com/astral-sh/uv/issues/17240
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # 3.15.0a3 is not picked even though it's available
@@ -75,10 +75,6 @@ _Comment by @woodruffw on 2025-12-29 18:19_
 > It would be great to do a release when possible, the current 3.15 build can't build Numpy due to [python/cpython#142163](https://github.com/python/cpython/issues/142163).
 
 We're doing one shortly: #17254 
-
----
-
-_Referenced in [astral-sh/uv#17254](../../astral-sh/uv/pulls/17254.md) on 2025-12-29 18:23_
 
 ---
 

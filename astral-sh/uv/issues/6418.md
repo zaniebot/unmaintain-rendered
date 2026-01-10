@@ -9,9 +9,9 @@ labels:
   - performance
 assignees: []
 created_at: 2024-08-22T09:45:52Z
-updated_at: 2024-08-22T09:45:53Z
+updated_at: 2026-01-09T10:48:19Z
 url: https://github.com/astral-sh/uv/issues/6418
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Add incremental resolution benchmark to codspeed
@@ -36,5 +36,17 @@ _Label `help wanted` added by @konstin on 2024-08-22 09:45_
 ---
 
 _Label `performance` added by @konstin on 2024-08-22 09:45_
+
+---
+
+_Comment by @LoukasPap on 2026-01-08 21:59_
+
+@konstin Is this issue still open to work on? Probably, I am going to need to ask some questions on the way to understand it fully right.
+
+---
+
+_Comment by @konstin on 2026-01-09 10:48_
+
+Yes this is still open, though I can only give limited guidance to implementing it.
 
 ---

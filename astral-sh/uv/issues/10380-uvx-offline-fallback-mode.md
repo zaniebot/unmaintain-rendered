@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-07T23:35:13Z
 updated_at: 2025-12-11T13:43:32Z
 url: https://github.com/astral-sh/uv/issues/10380
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # uvx offline fallback mode?
@@ -67,17 +67,9 @@ _Label `cache` added by @zanieb on 2025-01-08 00:09_
 
 ---
 
-_Referenced in [astral-sh/uv#10444](../../astral-sh/uv/issues/10444.md) on 2025-01-09 21:42_
-
----
-
 _Comment by @ksamuel on 2025-02-20 00:26_
 
 Doesn't `UV_OFFLINE` help with this use case ?
-
----
-
-_Referenced in [astral-sh/uv#13316](../../astral-sh/uv/issues/13316.md) on 2025-05-06 17:01_
 
 ---
 
@@ -89,17 +81,9 @@ On a related note: when looking into this further, I also noticed some oddities 
 
 ---
 
-_Referenced in [astral-sh/uv#14754](../../astral-sh/uv/issues/14754.md) on 2025-07-20 17:10_
-
----
-
 _Comment by @ajfriend on 2025-07-21 03:34_
 
 +1. An "online, but best effort when offline" option would also be helpful to me. 
-
----
-
-_Referenced in [astral-sh/uv#15454](../../astral-sh/uv/issues/15454.md) on 2025-08-22 16:23_
 
 ---
 
@@ -108,14 +92,6 @@ _Comment by @konstin on 2025-08-25 11:11_
 I could see a `--never-refresh` [^1] option that skips over doing HTTP if there's something in the cache. A trickier but even more effective implementation would prioritize versions in the resolver that are cached, falling back to uncached versions.
 
 [^1]: `--no-refresh` would give the default behavior.
-
----
-
-_Referenced in [astral-sh/uv#15899](../../astral-sh/uv/issues/15899.md) on 2025-09-16 20:45_
-
----
-
-_Referenced in [astral-sh/uv#16108](../../astral-sh/uv/issues/16108.md) on 2025-10-02 21:59_
 
 ---
 

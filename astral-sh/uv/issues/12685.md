@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-04-05T10:43:45Z
-updated_at: 2025-10-22T18:45:24Z
+updated_at: 2026-01-09T05:17:10Z
 url: https://github.com/astral-sh/uv/issues/12685
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # uv hides the password prompt when updating protected git dependencies
@@ -108,14 +108,6 @@ _Reopened by @jtfmumm on 2025-04-23 05:49_
 
 ---
 
-_Referenced in [prefix-dev/pixi#3761](../../prefix-dev/pixi/pulls/3761.md) on 2025-05-13 15:42_
-
----
-
-_Referenced in [astral-sh/uv#3783](../../astral-sh/uv/issues/3783.md) on 2025-06-03 15:19_
-
----
-
 _Comment by @darmstrong8008 on 2025-06-17 23:04_
 
 Just chiming in to confirm this behavior is present on 0.7.13 
@@ -167,5 +159,12 @@ I still see this happening.
 Using either `-v` or `--no-progress` shows the password _prompt_ - but still doesn't read the password itself correctly, so I can't update any of my dependencies.
 
 If it matters, my dependencies are on specific branches of private repositories.
+
+---
+
+_Comment by @pohlarized on 2026-01-09 05:17_
+
+I see this still happening as well, although for me just entering the password, even if the prompt is hidden by the spinner, still works and i can update the dependencies.
+If you don't have an ssh-agent, and multiple dependencies defined that are pulled via ssh, you may have to enter your password once per such dependency.
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T17:20:51Z
 updated_at: 2025-12-18T01:27:00Z
 url: https://github.com/astral-sh/uv/issues/5921
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Prioritize platform-compatible distributions during universal resolve
@@ -49,14 +49,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-09-13 17:28_
 _Comment by @charliermarsh on 2024-09-13 22:56_
 
 The (major) downside here is that the lockfile resolution will now vary from machine to machine in the event that a package has inconsistent metadata across wheels...
-
----
-
-_Referenced in [astral-sh/uv#7381](../../astral-sh/uv/pulls/7381.md) on 2024-09-14 00:17_
-
----
-
-_Referenced in [google-ai-edge/mediapipe#6112](../../google-ai-edge/mediapipe/issues/6112.md) on 2025-10-15 18:41_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-10T11:00:46Z
 updated_at: 2025-12-13T19:41:37Z
 url: https://github.com/astral-sh/uv/issues/17065
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # bug: `uv` is missing optional conditional dependencies(Almost got fired)
@@ -144,10 +144,6 @@ Perhaps I'm missing something?
 _Comment by @zanieb on 2025-12-10 18:25_
 
 I'm guessing `web3` is being included by a transitive dependency that uv excludes? It looks like `safe-eth-py` would do so.
-
----
-
-_Referenced in [astral-sh/uv#17078](../../astral-sh/uv/pulls/17078.md) on 2025-12-10 18:48_
 
 ---
 

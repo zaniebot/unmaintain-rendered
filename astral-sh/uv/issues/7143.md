@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-06T22:17:08Z
 updated_at: 2025-12-20T01:31:03Z
 url: https://github.com/astral-sh/uv/issues/7143
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Remove `{ workspace = true }` requirement for sources
@@ -110,18 +110,6 @@ point is, listing a package in a rye workspace implies all of that, I had to lur
 ---
 
 _Renamed from "Remove `{ workspace = true}` requirement for sources" to "Remove `{ workspace = true }` requirement for sources" by @charliermarsh on 2024-10-30 20:22_
-
----
-
-_Referenced in [open-telemetry/opentelemetry-python-contrib#3124](../../open-telemetry/opentelemetry-python-contrib/pulls/3124.md) on 2025-01-10 17:48_
-
----
-
-_Referenced in [open-telemetry/opentelemetry-python-contrib#3189](../../open-telemetry/opentelemetry-python-contrib/issues/3189.md) on 2025-01-15 17:16_
-
----
-
-_Referenced in [astral-sh/uv#12107](../../astral-sh/uv/issues/12107.md) on 2025-03-11 00:09_
 
 ---
 

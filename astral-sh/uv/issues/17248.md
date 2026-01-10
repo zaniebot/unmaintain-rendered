@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-28T20:19:36Z
 updated_at: 2025-12-28T20:19:36Z
 url: https://github.com/astral-sh/uv/issues/17248
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Build a dependency tree and get all wheels
@@ -36,9 +36,5 @@ _No response_
 ---
 
 _Label `enhancement` added by @danijar on 2025-12-28 20:19_
-
----
-
-_Referenced in [astral-sh/uv#17209](../../astral-sh/uv/issues/17209.md) on 2025-12-28 20:42_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-21T21:27:02Z
 updated_at: 2025-12-16T20:09:52Z
 url: https://github.com/astral-sh/uv/issues/16813
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # exclude-newer: overrides for private registries
@@ -93,14 +93,6 @@ _Comment by @acdha on 2025-11-21 22:23_
 > I'd also encourage you to let these private registries know you want this basic, standardized functionality :D
 
 For completeness, I opened this ticket for GitLab for that exact reason and will be escalating with our sales rep: https://gitlab.com/gitlab-org/gitlab/-/issues/581770
-
----
-
-_Referenced in [astral-sh/uv#16846](../../astral-sh/uv/issues/16846.md) on 2025-11-25 19:55_
-
----
-
-_Referenced in [astral-sh/uv#16854](../../astral-sh/uv/pulls/16854.md) on 2025-11-26 00:19_
 
 ---
 

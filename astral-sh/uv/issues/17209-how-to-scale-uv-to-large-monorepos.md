@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-21T21:09:49Z
 updated_at: 2025-12-28T22:09:02Z
 url: https://github.com/astral-sh/uv/issues/17209
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # How to scale uv to large monorepos?
@@ -90,14 +90,6 @@ _Label `question` added by @danijar on 2025-12-21 21:09_
 
 ---
 
-_Referenced in [astral-sh/uv#17154](../../astral-sh/uv/issues/17154.md) on 2025-12-21 21:18_
-
----
-
 _Renamed from "Does uv allow a shared namespace structure for separate projects (with separate lock files)?" to "How to scale uv to large monorepos?" by @danijar on 2025-12-28 20:45_
-
----
-
-_Referenced in [astral-sh/uv#17283](../../astral-sh/uv/issues/17283.md) on 2026-01-02 16:32_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-16T22:34:50Z
 updated_at: 2025-12-21T21:43:09Z
 url: https://github.com/astral-sh/uv/issues/17155
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Add option to install all dependencies in editable mode
@@ -34,10 +34,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @danijar on 2025-12-16 22:34_
-
----
-
-_Referenced in [astral-sh/uv#17154](../../astral-sh/uv/issues/17154.md) on 2025-12-16 23:37_
 
 ---
 
@@ -100,9 +96,5 @@ Nice, thanks!
 ---
 
 _Closed by @danijar on 2025-12-21 21:43_
-
----
-
-_Referenced in [astral-sh/uv#17189](../../astral-sh/uv/issues/17189.md) on 2025-12-23 16:01_
 
 ---

@@ -2,15 +2,15 @@
 number: 12152
 title: Help assumes a less -P is valid on w64devkit installation
 type: issue
-state: open
+state: closed
 author: m-z-b
 labels:
   - bug
 assignees: []
 created_at: 2025-03-13T18:46:35Z
-updated_at: 2025-06-13T17:24:24Z
+updated_at: 2026-01-09T15:00:05Z
 url: https://github.com/astral-sh/uv/issues/12152
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Help assumes a less -P is valid on w64devkit installation
@@ -64,5 +64,15 @@ Thanks for the reports!
 I wonder if there's an easy way for us to detect this before invoking `less`? Or we could capture the failure and retry with no errors?
 
 If you set `PAGER` to a value with arguments, we'll exclude the defaults, e.g. `PAGER="less -R" uv help python` will drop the `-P`.
+
+---
+
+_Comment by @EliteTK on 2026-01-09 15:00_
+
+Fixed for now as a side-effect of #16908.
+
+---
+
+_Closed by @EliteTK on 2026-01-09 15:00_
 
 ---

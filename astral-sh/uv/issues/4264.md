@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-12T03:28:38Z
 updated_at: 2025-12-06T00:17:51Z
 url: https://github.com/astral-sh/uv/issues/4264
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Add command to check if the lock file is up to date with the project metadata
@@ -62,10 +62,6 @@ So, this usage of the command is a good solution to check that there is no "brea
 _Comment by @charliermarsh on 2024-09-17 12:34_
 
 Yeah the locked flag is the intended solution here.
-
----
-
-_Referenced in [CSSUoB/TeX-Bot-Py-V2#329](../../CSSUoB/TeX-Bot-Py-V2/issues/329.md) on 2024-09-20 22:48_
 
 ---
 

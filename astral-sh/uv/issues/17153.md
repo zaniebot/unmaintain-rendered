@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-16T21:23:52Z
 updated_at: 2026-01-06T08:20:03Z
 url: https://github.com/astral-sh/uv/issues/17153
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Is there a clean way to achieve incremental builds?
@@ -84,10 +84,6 @@ _Label `question` added by @konstin on 2025-12-17 09:32_
 _Comment by @dograt on 2025-12-17 17:38_
 
 Unfortunately, it seems that turning off build isolation is [the only way to achieve this.](https://github.com/scikit-build/scikit-build-core/issues/1115)
-
----
-
-_Referenced in [scikit-build/scikit-build-core#1115](../../scikit-build/scikit-build-core/issues/1115.md) on 2025-12-17 17:39_
 
 ---
 

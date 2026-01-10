@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-26T01:37:01Z
 updated_at: 2025-12-16T11:16:59Z
 url: https://github.com/astral-sh/uv/issues/13112
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # SHA mismatch if wheel has no sha in the index, but sdist has
@@ -240,10 +240,6 @@ https://packaging.python.org/en/latest/specifications/simple-repository-api/#pro
     URL SHOULD include a hash in the form of a URL fragment with the following syntax: #<hashname>=<hashvalue>,
     where <hashname> is the lowercase name of the hash function (such as sha256) and <hashvalue> is the hex encoded digest.
 
-
----
-
-_Referenced in [michael-o/poudriere-python-wheels#2](../../michael-o/poudriere-python-wheels/pulls/2.md) on 2025-12-13 20:25_
 
 ---
 

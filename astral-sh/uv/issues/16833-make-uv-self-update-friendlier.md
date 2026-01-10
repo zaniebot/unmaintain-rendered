@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-24T14:00:30Z
 updated_at: 2025-12-04T18:44:08Z
 url: https://github.com/astral-sh/uv/issues/16833
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Make "uv self update" friendlier
@@ -68,10 +68,6 @@ I'm not opposed but it won't be a high priority.
 ---
 
 _Label `help wanted` added by @zanieb on 2025-11-24 14:21_
-
----
-
-_Referenced in [astral-sh/uv#16838](../../astral-sh/uv/pulls/16838.md) on 2025-11-24 17:38_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-16T22:14:18Z
 updated_at: 2025-12-28T20:23:11Z
 url: https://github.com/astral-sh/uv/issues/17154
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Add support for local venvs in workspace repositories
@@ -52,9 +52,5 @@ Thanks! I realized that we actually need not just separate venvs but also separa
 ---
 
 _Closed by @danijar on 2025-12-28 20:23_
-
----
-
-_Referenced in [astral-sh/uv#17283](../../astral-sh/uv/issues/17283.md) on 2026-01-02 16:32_
 
 ---

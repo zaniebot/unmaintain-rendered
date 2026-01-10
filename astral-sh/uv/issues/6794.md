@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-29T06:28:27Z
 updated_at: 2025-12-21T23:09:15Z
 url: https://github.com/astral-sh/uv/issues/6794
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Upgrade dependencies in `pyproject.toml` (`uv upgrade`)
@@ -109,18 +109,6 @@ That's tracked in #2150.
 
 ---
 
-_Referenced in [astral-sh/uv#7019](../../astral-sh/uv/issues/7019.md) on 2024-09-04 13:49_
-
----
-
-_Referenced in [astral-sh/uv#8585](../../astral-sh/uv/issues/8585.md) on 2024-10-26 16:22_
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-10-28 18:18_
-
----
-
 _Comment by @johnthagen on 2024-10-28 18:32_
 
 Like @KotlinIsland said, especially for _applications_ it's really nice to be able to browse narrow ranges of your _top_ level dependencies within `pyproject.toml` and have a tool automatically bump them for you so you don't have to go to PyPI and look at each top level dependency to see what the latest version is.
@@ -157,19 +145,7 @@ I'm also a big fan of yarn's `yarn upgrade-interactive` for interactively updati
 
 ---
 
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
 _Renamed from "(🎁) add an `upgrade` command" to "Add a command to "upgrade" dependency constraints in the `pyproject.toml`" by @zanieb on 2024-11-26 23:57_
-
----
-
-_Referenced in [astral-sh/uv#1419](../../astral-sh/uv/issues/1419.md) on 2024-12-05 03:01_
 
 ---
 
@@ -179,15 +155,7 @@ I use [this tiny script](https://gist.github.com/yhoiseth/c80c1e44a7036307e424fc
 
 ---
 
-_Referenced in [astral-sh/uv#6781](../../astral-sh/uv/issues/6781.md) on 2024-12-09 20:03_
-
----
-
 _Renamed from "Add a command to "upgrade" dependency constraints in the `pyproject.toml`" to "(🎁) Add a command to "upgrade" dependency constraints in the `pyproject.toml`" by @KotlinIsland on 2024-12-11 00:18_
-
----
-
-_Referenced in [astral-sh/uv#6692](../../astral-sh/uv/issues/6692.md) on 2024-12-23 17:07_
 
 ---
 
@@ -268,14 +236,6 @@ _Comment by @lucebert on 2025-01-23 19:14_
 
 ---
 
-_Referenced in [astral-sh/uv#11027](../../astral-sh/uv/issues/11027.md) on 2025-01-28 19:02_
-
----
-
-_Referenced in [astral-sh/uv#11300](../../astral-sh/uv/issues/11300.md) on 2025-02-06 23:52_
-
----
-
 _Comment by @kedvall on 2025-02-13 11:24_
 
 Any update on this feature request? We also used to rely on the poetry up plugin which worked well.
@@ -308,10 +268,6 @@ _Comment by @wikiped on 2025-02-17 00:17_
 `pdm update -h` for `--unconstrained`:
 
 > -u, --unconstrained   Ignore the version constraints in pyproject.toml and overwrite with new ones from the resolution result
-
----
-
-_Referenced in [astral-sh/uv#11679](../../astral-sh/uv/issues/11679.md) on 2025-02-23 23:59_
 
 ---
 
@@ -358,18 +314,6 @@ For poetry, I've used a combination of `poetry show --outdated` with `-T` to fil
 
 ---
 
-_Referenced in [astral-sh/uv#11973](../../astral-sh/uv/issues/11973.md) on 2025-03-05 19:03_
-
----
-
-_Referenced in [astral-sh/uv#11509](../../astral-sh/uv/issues/11509.md) on 2025-03-10 16:37_
-
----
-
-_Referenced in [astral-sh/uv#12190](../../astral-sh/uv/issues/12190.md) on 2025-03-17 13:25_
-
----
-
 _Comment by @kedvall on 2025-03-17 22:05_
 
 Hi guys, as a temporary solution I've wrote a small program to sync the minimum versions of top-level dependencies.
@@ -407,29 +351,9 @@ The question is, is there interest and willingness from the uv maintainers? If t
 
 ---
 
-_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2025-03-21 18:23_
-
----
-
-_Referenced in [astral-sh/uv#12349](../../astral-sh/uv/pulls/12349.md) on 2025-03-22 02:07_
-
----
-
 _Comment by @aretrace on 2025-03-25 02:47_
 
 Interested in this as well.
-
----
-
-_Referenced in [astral-sh/uv#6783](../../astral-sh/uv/issues/6783.md) on 2025-04-09 15:32_
-
----
-
-_Referenced in [astral-sh/uv#12789](../../astral-sh/uv/issues/12789.md) on 2025-04-09 23:00_
-
----
-
-_Referenced in [vrslev/cmp-pypi#5](../../vrslev/cmp-pypi/issues/5.md) on 2025-04-13 18:36_
 
 ---
 
@@ -468,10 +392,6 @@ _Label `enhancement` added by @konstin on 2025-04-30 13:39_
 ---
 
 _Assigned to @konstin by @konstin on 2025-04-30 13:39_
-
----
-
-_Referenced in [astral-sh/uv#9084](../../astral-sh/uv/issues/9084.md) on 2025-05-03 17:56_
 
 ---
 
@@ -664,18 +584,6 @@ it will only update `uv.lock`, not the constraints in `pyproject.toml`
 
 ---
 
-_Referenced in [PrefectHQ/prefect#17850](../../PrefectHQ/prefect/issues/17850.md) on 2025-05-22 13:55_
-
----
-
-_Referenced in [astral-sh/uv#13613](../../astral-sh/uv/issues/13613.md) on 2025-05-23 08:30_
-
----
-
-_Referenced in [astral-sh/uv#13632](../../astral-sh/uv/issues/13632.md) on 2025-05-26 10:39_
-
----
-
 _Comment by @richardkmichael on 2025-06-09 19:05_
 
 I would find it convenient if:
@@ -717,10 +625,6 @@ Audited 42 packages in 0.22ms
 
 ---
 
-_Referenced in [astral-sh/uv#13934](../../astral-sh/uv/pulls/13934.md) on 2025-06-09 20:35_
-
----
-
 _Comment by @reneleonhardt on 2025-06-09 20:40_
 
 If someone wants to test my example implementation: #13934
@@ -749,35 +653,7 @@ If you want to try upgrading you could checkout my example implementation #13934
 
 ---
 
-_Referenced in [aws/aws-codebuild-docker-images#779](../../aws/aws-codebuild-docker-images/issues/779.md) on 2025-06-13 21:43_
-
----
-
-_Referenced in [jbsinger-jpg/issue_tracker#2](../../jbsinger-jpg/issue_tracker/issues/2.md) on 2025-07-12 14:30_
-
----
-
-_Referenced in [dependabot/dependabot-core#12788](../../dependabot/dependabot-core/issues/12788.md) on 2025-08-07 17:39_
-
----
-
 _Unassigned @konstin by @konstin on 2025-08-08 13:28_
-
----
-
-_Referenced in [astral-sh/uv#15383](../../astral-sh/uv/issues/15383.md) on 2025-08-19 17:19_
-
----
-
-_Referenced in [astral-sh/uv#15632](../../astral-sh/uv/issues/15632.md) on 2025-09-05 12:22_
-
----
-
-_Referenced in [astral-sh/uv#7515](../../astral-sh/uv/issues/7515.md) on 2025-10-17 00:48_
-
----
-
-_Referenced in [equinor/dataorc#30](../../equinor/dataorc/pulls/30.md) on 2025-11-04 08:12_
 
 ---
 
@@ -812,10 +688,6 @@ It is really useful to be able to upgrade the base dependency list. Otherwise it
     pur -r requirements.txt --patch=Django
 
 That does upgrade Django, but only to new patch versions (e.g. 5.0.9 -> 5.0.14 instead of upgrading to 5.1 / 6.0)
-
----
-
-_Referenced in [janusheide/uppd#33](../../janusheide/uppd/issues/33.md) on 2025-11-11 09:20_
 
 ---
 
@@ -912,10 +784,6 @@ If you have any suggestions or issues, please create them in the GitHub reposito
 
 ---
 
-_Referenced in [zundertj/uv-bump#7](../../zundertj/uv-bump/issues/7.md) on 2025-12-10 12:29_
-
----
-
 _Comment by @Alirex on 2025-12-10 12:33_
 
 I added some extra features.
@@ -929,14 +797,6 @@ I made a comparison with other solutions.
 My implementation now supports workspaces (1 `uv.lock`, many `pyproject.toml`) (in some way).
 Also, it automatically fixes "no version" dependencies.
 And have some extra features.
-
----
-
-_Referenced in [astral-sh/uv#17113](../../astral-sh/uv/issues/17113.md) on 2025-12-13 03:03_
-
----
-
-_Referenced in [astral-sh/uv#17029](../../astral-sh/uv/issues/17029.md) on 2025-12-13 03:04_
 
 ---
 

@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-03-31T09:18:22Z
-updated_at: 2025-04-02T20:00:58Z
+updated_at: 2026-01-09T14:27:05Z
 url: https://github.com/astral-sh/uv/issues/12580
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Missing deploy token authentication when running export requirements.txt command
@@ -76,10 +76,6 @@ _Label `bug` added by @sipa-echo-zaoa on 2025-03-31 09:18_
 
 ---
 
-_Referenced in [astral-sh/uv#12581](../../astral-sh/uv/issues/12581.md) on 2025-03-31 09:42_
-
----
-
 _Comment by @charliermarsh on 2025-03-31 13:30_
 
 I don't know if we should be writing out credentials in a plaintext file. We generally don't do that.
@@ -134,5 +130,24 @@ _Comment by @zanieb on 2025-04-02 14:19_
 _Comment by @liiight on 2025-04-02 19:38_
 
 @zanieb my apologies, too many tabs open 🙏
+
+---
+
+_Comment by @sipa-echo-zaoa on 2026-01-09 14:27_
+
+For anyone else running into this (especially on AWS Elastic Beanstalk or similar CI/CD environments), I found a workaround that solves the issue without needing to expose credentials in requirements.txt.
+
+Since uv keeps the generated URLs "clean" (stripping the secrets), we can use Git's url.<base>.insteadOf configuration in the deployment environment to re-inject the credentials at runtime. This allows pip install -r requirements.txt to succeed using the clean URLs.
+```
+# Configure Git to substitute the clean URL with the authenticated URL automatically
+git config --global url."https://${GIT_USER}:${GIT_TOKEN}@gitlab.example.com/group/repo.git".insteadOf "https://gitlab.example.com/group/repo.git"
+```
+### Why this works:
+
+1. uv export generates a secure requirements.txt with: package @ git+https://gitlab.example.com/group/repo.git@hash
+2. When pip passes that URL to Git, the configuration above intercepts it.
+3. Git transparently swaps the URL to include the username/token defined in your environment variables.
+
+@zanieb Regarding the ```--unsafe-emit-credentials``` flag discussed above: while the workaround effectively solves my specific deployment blocker on Elastic Beanstalk, I still believe there is value in having an option to explicitely emit credentials for simpler use cases or environments where configuring global git hooks is not feasible. It would be great to know if this is still on the roadmap, but for now, I am unblocked
 
 ---

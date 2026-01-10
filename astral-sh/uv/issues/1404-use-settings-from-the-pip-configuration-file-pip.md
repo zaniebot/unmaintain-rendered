@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T00:54:00Z
 updated_at: 2025-12-20T03:50:58Z
 url: https://github.com/astral-sh/uv/issues/1404
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Use settings from the pip configuration file (`pip.conf`)
@@ -48,19 +48,11 @@ _Label `enhancement` removed by @zanieb on 2024-02-16 01:04_
 
 ---
 
-_Referenced in [astral-sh/uv#1393](../../astral-sh/uv/issues/1393.md) on 2024-02-16 01:59_
-
----
-
 _Comment by @owenlamont on 2024-02-16 07:02_
 
 I was just about to raise an issue for this exact use case. We also use codeartifact for a few in house packages but mostly pull public PyPi packages via AWS codeartifact.
 
 Anyway +1 to this. Would love to use uv if this can be supported.
-
----
-
-_Referenced in [astral-sh/uv#1503](../../astral-sh/uv/issues/1503.md) on 2024-02-16 15:52_
 
 ---
 
@@ -70,20 +62,12 @@ We also set `index-url` in our venv by `pip config --site set install.index-url 
 
 ---
 
-_Referenced in [astral-sh/uv#1859](../../astral-sh/uv/issues/1859.md) on 2024-02-22 09:01_
-
----
-
 _Comment by @schlamar on 2024-02-22 09:22_
 
 BTW, for Windows this is `%APPDATA%\pip\pip.ini`, see https://pip.pypa.io/en/stable/topics/configuration/#location
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#1907](../../astral-sh/uv/issues/1907.md) on 2024-02-23 16:12_
 
 ---
 
@@ -106,17 +90,9 @@ Hi @mcrumiller you can use `UV_INDEX_URL` instead. We may want to add all of our
 
 ---
 
-_Referenced in [astral-sh/uv#2043](../../astral-sh/uv/issues/2043.md) on 2024-02-29 02:37_
-
----
-
 _Comment by @PetterS on 2024-03-01 12:21_
 
 The environment variables are nice, but reading the pip config file would be very good for enterprises. It would allow a seamless transition to uv without installing additional configuration on the machines.
-
----
-
-_Referenced in [astral-sh/uv#2148](../../astral-sh/uv/issues/2148.md) on 2024-03-04 14:23_
 
 ---
 
@@ -224,10 +200,6 @@ By auto-picking up the `pip.conf` in the virtual environment, all the jobs in th
 
 ---
 
-_Referenced in [astral-sh/uv#2640](../../astral-sh/uv/issues/2640.md) on 2024-03-24 20:36_
-
----
-
 _Comment by @zanieb on 2024-03-29 16:50_
 
 > Maybe UV can auto discovery pip.conf in a virtual environment?
@@ -321,10 +293,6 @@ _Comment by @d-miketa on 2024-04-03 21:37_
 _Comment by @zanieb on 2024-04-03 23:59_
 
 Hey @d-miketa — we don't have a timeline yet. I think it will be relatively straight-forward to implement but I'm giving time for feedback on my proposal which only has four upvotes compared to the ~50 on the original post.
-
----
-
-_Referenced in [astral-sh/uv#2929](../../astral-sh/uv/issues/2929.md) on 2024-04-09 10:54_
 
 ---
 
@@ -434,10 +402,6 @@ It's not a dealbreaker of course since we are talking about developers here.
 
 ---
 
-_Referenced in [astral-sh/uv#3321](../../astral-sh/uv/issues/3321.md) on 2024-05-02 15:30_
-
----
-
 _Comment by @eswolinsky3241 on 2024-05-25 12:27_
 
 > I think what I don't understand yet is: if you're going through the effort to migrate from pip to uv, why is it any harder to ask that you use (for sake of argument) `uv.conf` rather than `pip.conf`? Why is that not possible? Like, if I told you that it was the exact same file, but it had to be named `uv.conf`, why would _that_ be a problem?
@@ -462,18 +426,6 @@ uv import-pip-conf --overwrite --ignore-unsupported --pip-conf-file=~/.pip.conf
 
 ---
 
-_Referenced in [pypa/pip#12827](../../pypa/pip/issues/12827.md) on 2024-07-05 18:58_
-
----
-
-_Referenced in [astral-sh/uv#6537](../../astral-sh/uv/issues/6537.md) on 2024-08-23 18:41_
-
----
-
-_Referenced in [astral-sh/uv#7676](../../astral-sh/uv/issues/7676.md) on 2024-09-24 22:03_
-
----
-
 _Comment by @quartox on 2024-10-18 17:06_
 
 I also have the short-lived credentials problem in an corporate environment. My `pip.conf` file is updated every 8 hours with new credentials. The tools to update these credentials are owned by other teams at my company. It would be more challenging for me to convince them to adopt `uv` before I am able to test it out and demonstrate some improvements with existing workflows.
@@ -489,10 +441,6 @@ Don't care much about specific syntax (which I took from [here](https://docs.pyt
 _Comment by @T-256 on 2024-10-22 21:31_
 
 FYI, https://github.com/astral-sh/uv/pull/7851 landed, which now allows you to set global configuration for `uv.toml`.
-
----
-
-_Referenced in [astral-sh/uv#8486](../../astral-sh/uv/issues/8486.md) on 2024-10-23 10:50_
 
 ---
 
@@ -541,14 +489,6 @@ _Comment by @gaby on 2024-10-25 22:46_
 @schlamar Yes, that works. But sometimes the Proxy CA is not installed in the system.
 
 Regardless, you can't set http/https proxy via `toml` only via ENV.
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
 
 ---
 
@@ -641,10 +581,6 @@ Ah perfect, thanks!
 
 ---
 
-_Referenced in [astral-sh/uv#13106](../../astral-sh/uv/issues/13106.md) on 2025-04-25 12:38_
-
----
-
 _Comment by @gioxc88 on 2025-04-29 14:39_
 
 > You should be able to put them in the top-level of your user- or system-level `uv.toml`, like:
@@ -716,22 +652,6 @@ url = "SECOND-URL"
 
 ---
 
-_Referenced in [astral-sh/uv#1384](../../astral-sh/uv/issues/1384.md) on 2025-06-23 17:54_
-
----
-
-_Referenced in [apache/airflow#52287](../../apache/airflow/pulls/52287.md) on 2025-06-26 12:18_
-
----
-
-_Referenced in [astral-sh/uv#15942](../../astral-sh/uv/issues/15942.md) on 2025-09-19 07:02_
-
----
-
-_Referenced in [astral-sh/uv#16060](../../astral-sh/uv/issues/16060.md) on 2025-09-29 10:39_
-
----
-
 _Comment by @lemming622 on 2025-10-22 16:08_
 
 > You should be able to put them in the top-level of your user- or system-level `uv.toml`, like:
@@ -740,10 +660,6 @@ _Comment by @lemming622 on 2025-10-22 16:08_
 > extra-index-url = ["..."]
 
 This looks great.  How can this functionality be added to a project toml so that it's done automatically?
-
----
-
-_Referenced in [piwheels/piwheels#221](../../piwheels/piwheels/issues/221.md) on 2025-11-19 19:28_
 
 ---
 

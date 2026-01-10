@@ -9,9 +9,9 @@ labels:
   - configuration
 assignees: []
 created_at: 2025-08-12T15:44:13Z
-updated_at: 2025-08-12T17:24:27Z
+updated_at: 2025-12-11T22:09:29Z
 url: https://github.com/astral-sh/uv/issues/15241
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Specify Python platform via environment variable
@@ -83,10 +83,8 @@ We do support it via a flag https://docs.astral.sh/uv/reference/cli/#uv-pip-inst
 
 ---
 
-_Referenced in [pulumi/pulumi#20277](../../pulumi/pulumi/issues/20277.md) on 2025-08-12 17:30_
+_Comment by @gmg48 on 2025-12-11 22:09_
 
----
-
-_Referenced in [astral-sh/uv#15308](../../astral-sh/uv/pulls/15308.md) on 2025-08-15 13:26_
+I have a similar use case with [Guix system](https://guix.gnu.org/), which uses a non-FHS layout (/gnu/store/ instead of /usr/lib). Pre-built wheels fail because they can't find system libraries in standard paths. uv doesn't auto-detect that Guix needs the musl/static platform, so UV_PYTHON_PLATFORM would be essential for this use case.
 
 ---

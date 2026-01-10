@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2025-03-26T15:19:45Z
-updated_at: 2025-12-08T15:06:55Z
+updated_at: 2025-12-11T23:09:34Z
 url: https://github.com/astral-sh/uv/issues/12490
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # Allow `--constraints` in `uv sync`
@@ -130,10 +130,6 @@ Edit: I just found the [constraint-dependencies](https://docs.astral.sh/uv/refer
 
 ---
 
-_Referenced in [astral-sh/uv#14900](../../astral-sh/uv/issues/14900.md) on 2025-07-31 11:55_
-
----
-
 _Comment by @Logan-Pageler on 2025-09-10 18:03_
 
 I'm also in favor of @emiliadecaudin idea of supporting constraint urls with `tool.uv.constraint-dependencies` .
@@ -154,5 +150,16 @@ Supporting a file based constraints would be ideal. Currently there is a way to 
 _Comment by @zanieb on 2025-12-08 15:06_
 
 @prakharcode sounds like you could use https://github.com/astral-sh/uv/issues/16508
+
+---
+
+_Comment by @hvanvoorhis on 2025-12-11 23:05_
+
+or maybe 
+```
+[tool.uv]
+constraint-dependency-urls = ['http://airflow...','http://databricks']
+``` 
+then we can specify the external constraint URL like Databricks, airflow etc use. 
 
 ---

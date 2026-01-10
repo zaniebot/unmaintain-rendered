@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-04T14:28:52Z
 updated_at: 2026-01-03T22:11:17Z
 url: https://github.com/astral-sh/uv/issues/15060
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # `platform_machine` environment marker not handled correctly
@@ -139,14 +139,6 @@ Linux manjaro 6.16.0-5-MANJARO #1 SMP PREEMPT_DYNAMIC Thu, 07 Aug 2025 04:47:37 
 _Comment by @konstin on 2025-08-25 08:41_
 
 @NiuBlibing You're issue sounds different and it looks like it's due to universal resolution (you can set `tool.uv.environments`), please open a new issue if the problem persists.
-
----
-
-_Referenced in [astral-sh/uv#16576](../../astral-sh/uv/issues/16576.md) on 2025-11-04 23:13_
-
----
-
-_Referenced in [astral-sh/uv#17313](../../astral-sh/uv/issues/17313.md) on 2026-01-03 21:56_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-12T09:41:02Z
 updated_at: 2026-01-06T20:38:21Z
 url: https://github.com/astral-sh/uv/issues/6031
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # `--universal` output incompatible with `requires-python`
@@ -142,10 +142,6 @@ Happy to make a PR for this if you decide to support it!
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2024-08-22 01:03_
-
----
-
-_Referenced in [astral-sh/uv#11417](../../astral-sh/uv/issues/11417.md) on 2025-02-11 13:31_
 
 ---
 

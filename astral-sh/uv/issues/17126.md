@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-13T15:35:00Z
 updated_at: 2025-12-15T15:46:18Z
 url: https://github.com/astral-sh/uv/issues/17126
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv publish` fails on 308 Permanent Redirect
@@ -73,10 +73,6 @@ This is notably specified for 301, 302 and 303, while 307 and 308 may be retried
 https://github.com/seanmonstar/reqwest/blob/9edbd2e00b9b752e851cac0374f7aa1034beca85/tests/redirect.rs#L8-L128
 
 @woodruffw may know more about the security implications of those retry behaviors.
-
----
-
-_Referenced in [astral-sh/uv#17130](../../astral-sh/uv/pulls/17130.md) on 2025-12-14 23:38_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-03T20:49:35Z
 updated_at: 2026-01-01T18:22:40Z
 url: https://github.com/astral-sh/uv/issues/15668
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # tkinter fonts look weird with shipped libtk
@@ -108,10 +108,6 @@ uv venv --python /usr/bin/python3.13 .venv
 ```
 
 Not ideal because it by-passes the uv python version management system
-
----
-
-_Referenced in [Ev2geny/Sberbank2Excel#75](../../Ev2geny/Sberbank2Excel/issues/75.md) on 2025-10-29 19:27_
 
 ---
 

@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-10-30T15:26:50Z
-updated_at: 2025-11-28T16:49:43Z
+updated_at: 2025-12-12T13:53:55Z
 url: https://github.com/astral-sh/uv/issues/16514
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Allow cross-platform consistency in local file paths for `pylock.toml` exports
@@ -172,5 +172,11 @@ The case that absolute paths support but relative paths don't is one where the l
 _Comment by @charliermarsh on 2025-11-28 16:49_
 
 I think it makes sense to emit relative paths here, though not sure what we should do about `index`. Should we just omit it? I think that _has_ to be a URL and so can't be relative.
+
+---
+
+_Comment by @ncoghlan on 2025-12-12 13:53_
+
+`index` has to be a URL, but local file URLs could potentially be exported as relative paths instead.
 
 ---

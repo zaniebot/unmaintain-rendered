@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-30T10:46:50Z
 updated_at: 2026-01-03T20:37:27Z
 url: https://github.com/astral-sh/uv/issues/16072
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Multiple OpenMP versions cause segfault
@@ -61,9 +61,5 @@ Some background on this over at the excellent pypackaging-native site:
 I think at this point there's community consensus that this is a real problem but not yet consensus on how to solve it. It's not something that can be _solved_ in uv itself, in that even if it did inspect the wheels, the most uv could do you "Sorry, this combination isn't going to work, you need to compile something from source." You need actual builds of the two wheels that use the same OpenMP library. The conda ecosystem is in a better position to be able to make that happen because they do the builds, but wheels on PyPI are built by each individual project.
 
 So one option is to ask the colmap project if they could build differently in a way that is compatible with PyTorch (or vice versa), but maybe they're doing it this way for a reason. (Or maybe they're willing to release multiple wheels, one with a built-in OpenMP and one that expects to be imported in an environment where torch is already imported, or something.)
-
----
-
-_Referenced in [colmap/colmap#3477](../../colmap/colmap/issues/3477.md) on 2025-10-02 12:18_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-27T15:20:04Z
 updated_at: 2026-01-06T17:14:00Z
 url: https://github.com/astral-sh/uv/issues/9472
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:11:32Z
 ```
 
 # Allow configuration of HTTPS proxy in the `pyproject.toml`
@@ -24,10 +24,6 @@ _No description provided._
 ---
 
 _Label `configuration` added by @zanieb on 2024-11-27 15:20_
-
----
-
-_Referenced in [astral-sh/uv#9461](../../astral-sh/uv/issues/9461.md) on 2024-11-27 15:20_
 
 ---
 
@@ -76,10 +72,6 @@ it would be helpful to allow set it in uv config file too
 _Comment by @bitagoras on 2025-10-09 15:31_
 
 Both `HTTPS_PROXY` and the certificate `SSL_CERT_FILE` should be configurable by the `pyproject.toml` and `uv.toml`. In both conda and pip this can be configured permanently in a config file (in `.condarc` and `pip.ini`) by commands that are included in the managers (`conda config --set`  and `pip config set`). Environment variables, on the other hand, require some extra configuration steps in the operating system. For security reasons I might not want to set the proxy settings system-wide, which enables also other programs to access the outside internet.
-
----
-
-_Referenced in [astral-sh/uv#16918](../../astral-sh/uv/pulls/16918.md) on 2025-12-01 22:24_
 
 ---
 

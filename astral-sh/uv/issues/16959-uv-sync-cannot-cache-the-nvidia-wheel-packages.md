@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-03T09:28:21Z
 updated_at: 2025-12-20T04:59:16Z
 url: https://github.com/astral-sh/uv/issues/16959
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # uv sync cannot cache the nvidia wheel packages
@@ -120,10 +120,6 @@ cache-control = { api = "max-age=600", files = "max-age=365000000, immutable" }
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-17 18:15_
-
----
-
-_Referenced in [astral-sh/uv#17164](../../astral-sh/uv/pulls/17164.md) on 2025-12-17 18:23_
 
 ---
 

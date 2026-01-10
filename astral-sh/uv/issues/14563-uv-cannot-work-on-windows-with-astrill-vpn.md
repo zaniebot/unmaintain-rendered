@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-11T11:12:48Z
 updated_at: 2025-12-10T09:58:17Z
 url: https://github.com/astral-sh/uv/issues/14563
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # uv cannot work on Windows with Astrill VPN installed
@@ -198,10 +198,6 @@ _Comment by @monchin on 2025-07-12 02:29_
 > Does it resolve if you set `UV_STACK_SIZE= 1048576`?
 
 I set it as an env var, and it doesn't work
-
----
-
-_Referenced in [astral-sh/uv#14582](../../astral-sh/uv/pulls/14582.md) on 2025-07-13 02:49_
 
 ---
 
@@ -393,14 +389,6 @@ I simply move `ASProxy64.dll` from `C:\Windows\System32` to somewhere else, and 
 ---
 
 _Renamed from "uv exits with code `-1073741819` and no error message on Windows" to "uv cannot work on Windows with Astrill VPN installed" by @monchin on 2025-07-17 01:33_
-
----
-
-_Referenced in [astral-sh/uv#14872](../../astral-sh/uv/issues/14872.md) on 2025-07-24 15:23_
-
----
-
-_Referenced in [astral-sh/uv#15302](../../astral-sh/uv/issues/15302.md) on 2025-08-15 12:18_
 
 ---
 

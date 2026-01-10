@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-21T08:02:57Z
 updated_at: 2026-01-06T10:40:40Z
 url: https://github.com/astral-sh/uv/issues/10808
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:11:33Z
 ```
 
 # uv roadmap
@@ -93,10 +93,6 @@ I'm kind of surprised I wrote that in the versioning policy. I don't think it co
 _Comment by @zanieb on 2025-02-20 13:54_
 
 And as an update here, I have written a roadmap — it's just a lot of work to translate it to GitHub issues and that remains on my backlog. I've been prioritizing fixing bugs over sharing it more broadly.
-
----
-
-_Referenced in [astral-sh/uv#11666](../../astral-sh/uv/pulls/11666.md) on 2025-02-20 14:00_
 
 ---
 

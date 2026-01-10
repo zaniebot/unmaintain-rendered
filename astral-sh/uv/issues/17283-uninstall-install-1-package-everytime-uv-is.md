@@ -10,7 +10,7 @@ assignees: []
 created_at: 2026-01-02T08:15:16Z
 updated_at: 2026-01-04T13:41:11Z
 url: https://github.com/astral-sh/uv/issues/17283
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # Uninstall + Install 1 package everytime uv is called in a monorepo library with a different virtual environment from the root
@@ -147,10 +147,6 @@ Uninstalled 1 package in 0.40ms
 Installed 1 package in 9ms
 Python 3.12.12
 ```
-
----
-
-_Referenced in [nat-n/poethepoet#345](../../nat-n/poethepoet/issues/345.md) on 2026-01-02 17:02_
 
 ---
 

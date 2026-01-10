@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-12-08T17:31:36Z
-updated_at: 2025-12-11T15:23:34Z
+updated_at: 2025-12-12T14:10:50Z
 url: https://github.com/astral-sh/uv/issues/17035
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Legally compliant distribution ?
@@ -55,5 +55,19 @@ _Comment by @charliermarsh on 2025-12-11 15:23_
 
 Do you have examples of other tools that satisfy what you're looking for?
 
+
+---
+
+_Comment by @zvr on 2025-12-12 14:10_
+
+Well, all Debian and Ubuntu packages traditionally provide this information, by placing files (especially one named "`copyright`") under `/usr/share/doc`. 
+
+Chromium releases include an HTML file with all license texts and attributions. Whenever an Electron app is created, a "LICENSES.chromium.html" file is added, which is a copy of these.
+
+I am sure that, whatever phone you are using, there will be a menu entry (under Settings/About/...) that will show all the required legal texts. Android apps usually follow [guidance](https://developers.google.com/android/guides/opensource) from Google on this.
+
+Actually, I now see that `pip install uv` _does_ store the uv license texts (Apache and MIT) in `site-packages/uv-*.dist-info/licenses`, so it only needs to add another file there (or a collection of files).
+
+If you want, I can definitely help a little —although I am merely a user of `uv` and have not (yet) looked at its code or its release process. The interesting part is building some kind of automation, so the file is generated automagically. There is no need to reinvent everything; tools like [this](https://crates.io/crates/licenses) already exist.
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2026-01-02T19:14:26Z
 updated_at: 2026-01-06T04:28:48Z
 url: https://github.com/astral-sh/uv/issues/17307
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # uv add results in relative path for a local package
@@ -85,10 +85,6 @@ Hm yeah it does seem important to allow absolute paths here.
 ---
 
 _Label `breaking` added by @zanieb on 2026-01-04 16:12_
-
----
-
-_Referenced in [astral-sh/uv#17316](../../astral-sh/uv/pulls/17316.md) on 2026-01-04 18:46_
 
 ---
 

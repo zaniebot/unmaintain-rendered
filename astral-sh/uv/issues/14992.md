@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-31T13:14:40Z
 updated_at: 2026-01-06T16:54:19Z
 url: https://github.com/astral-sh/uv/issues/14992
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Allow relative `exclude-newer` values like "one week ago"
@@ -133,10 +133,6 @@ In terms of relative difference, you need to decide when it comes to a DST chang
 
 ---
 
-_Referenced in [pypa/pip#13520](../../pypa/pip/pulls/13520.md) on 2025-08-05 14:30_
-
----
-
 _Comment by @BurntSushi on 2025-08-05 14:31_
 
 @zanieb and I were talking about something like `2 days ago in UTC` or `2 days ago in America/New_York`. A bit more verbose, but much less ambiguous.
@@ -211,14 +207,6 @@ If someone is interested in trying to clean up the branch, here's where I left i
 
 ---
 
-_Referenced in [astral-sh/uv#16803](../../astral-sh/uv/issues/16803.md) on 2025-11-21 15:59_
-
----
-
-_Referenced in [astral-sh/uv#16851](../../astral-sh/uv/issues/16851.md) on 2025-11-25 21:04_
-
----
-
 _Comment by @janlarres on 2025-11-26 04:24_
 
 Another example of a tool that has implemented this functionality:
@@ -241,18 +229,6 @@ Using the data from https://blog.yossarian.net/2025/11/21/We-should-all-be-using
 _Comment by @zanieb on 2025-11-26 15:52_
 
 I opened a draft at #16814 
-
----
-
-_Referenced in [PlasmaPy/PlasmaPy#3158](../../PlasmaPy/PlasmaPy/issues/3158.md) on 2025-11-26 22:37_
-
----
-
-_Referenced in [j178/prek#1152](../../j178/prek/issues/1152.md) on 2025-11-29 19:48_
-
----
-
-_Referenced in [jazzband/pip-tools#2288](../../jazzband/pip-tools/issues/2288.md) on 2025-11-30 01:25_
 
 ---
 

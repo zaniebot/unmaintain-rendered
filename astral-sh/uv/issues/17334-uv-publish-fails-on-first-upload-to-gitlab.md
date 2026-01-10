@@ -6,11 +6,12 @@ state: open
 author: j-hiller
 labels:
   - bug
+  - needs-design
 assignees: []
 created_at: 2026-01-06T10:12:13Z
-updated_at: 2026-01-07T14:27:51Z
+updated_at: 2026-01-09T11:18:37Z
 url: https://github.com/astral-sh/uv/issues/17334
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:36Z
 ```
 
 # `uv publish` fails on first upload to Gitlab package repository
@@ -3256,5 +3257,15 @@ CC @konstin for thoughts 🙂
 _Comment by @konstin on 2026-01-07 14:27_
 
 That's a tough edge case, cause there could also be a real redirect that we want to follow. Ideally, we wouldn't use check-url on the first upload at all, but I'm not sure how to tell that.
+
+---
+
+_Comment by @j-hiller on 2026-01-09 08:07_
+
+Update from my side: deactivating the forwarding behavior on group level avoids this issue and the first upload works without further issues.
+
+---
+
+_Label `needs-design` added by @konstin on 2026-01-09 11:18_
 
 ---

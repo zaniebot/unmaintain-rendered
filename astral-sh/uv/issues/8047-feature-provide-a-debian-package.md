@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2024-10-09T14:16:01Z
-updated_at: 2025-09-19T17:30:10Z
+updated_at: 2026-01-08T21:58:49Z
 url: https://github.com/astral-sh/uv/issues/8047
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:11:31Z
 ```
 
 # Feature: Provide a Debian package
@@ -194,6 +194,22 @@ I'll also add in the near future instructions to ensure package signatures are o
 > 
 > https://dario.griffo.io/posts/how-to-install-uv-debian/ https://github.com/dariogriffo/uv-debian
 
+
+
+---
+
+_Comment by @esennesh on 2026-01-08 21:58_
+
+> Yup, that's me, updates are pushed the same day. Added support to more architectures 3 weeks ago. I'll also add in the near future instructions to ensure package signatures are only valid with my key pair.
+> 
+> > This looks like a good option for Debian based platforms.
+> > https://dario.griffo.io/posts/how-to-install-uv-debian/ https://github.com/dariogriffo/uv-debian
+
+I get an error when trying it about its not being secure:
+
+> Error: The repository 'https://debian.griffo.io/apt questing Release' does not have a Release file.
+> Notice: Updating from such a repository can't be done securely, and is therefore disabled by default.
+> Notice: See apt-secure(8) manpage for repository creation and user configuration details.
 
 
 ---

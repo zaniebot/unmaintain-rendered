@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-29T21:54:15Z
 updated_at: 2025-12-05T14:12:25Z
 url: https://github.com/astral-sh/uv/issues/14353
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Support semver-styled prerelease version formatting in `uv version`
@@ -63,10 +63,6 @@ I got into the same issue. I hope uv will support semver somehow
 _Comment by @zanieb on 2025-10-30 14:23_
 
 It seems okay to allow setting the version to an uncanonicalized value, e.g., with `uv version --raw` or something, but I don't think we should support setting `project.version` to values that are not supported by the standards (e.g., the `-iss` variant`). I'd suggest you start a discussion upstream (i.e., on DPO) about semver compatible project versions.
-
----
-
-_Referenced in [astral-sh/uv#16497](../../astral-sh/uv/issues/16497.md) on 2025-10-30 14:23_
 
 ---
 

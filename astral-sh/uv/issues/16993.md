@@ -8,9 +8,9 @@ labels:
   - error messages
 assignees: []
 created_at: 2025-12-05T05:10:02Z
-updated_at: 2026-01-06T17:09:35Z
+updated_at: 2026-01-09T23:04:44Z
 url: https://github.com/astral-sh/uv/issues/16993
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # `uv activate` could print an error message with the appropriate `source .venv/bin/activate` command
@@ -102,10 +102,6 @@ error No virtual environment found in the current directory or any parent direct
 
 ---
 
-_Referenced in [astral-sh/uv#17001](../../astral-sh/uv/pulls/17001.md) on 2025-12-05 16:05_
-
----
-
 _Comment by @disouzam on 2025-12-31 00:43_
 
 I'm pretty new to uv. Had looked through the documentation now (and some weeks before) and now in this issue and also in #14038. However, I couldn't answer the question: what do you people use to activate a recently created environment? The old `source {os-dependent path}/activate` (in bash, for example)? Or another command?
@@ -125,5 +121,28 @@ With `uv run`, you don't need to activate environments by hand. Otherwise, the o
 _Comment by @disouzam on 2026-01-06 17:09_
 
 Understood, @konstin! Thanks! I ended up creating an alias in bash for the old command. 
+
+---
+
+_Comment by @gregglind on 2026-01-09 21:08_
+
++1 on having `uv activate` do *something* rather than error. 
+
+That something could be:
+
+* give the source command (as described above) 
+* explain `uv run`
+* (or both!)
+
+When I `activate`, it's because I want the cli commands and entry points to be available, including any entry points for the project, `ipython`, `python` and others.  I don't want to preface everything with `uv run`.  
+
+
+---
+
+_Comment by @disouzam on 2026-01-09 23:04_
+
+Yeah, @gregglind ! Although I have learned to internalize those differences and keep moving forward, it would be good to have a uniformity across the ecosystem! I don't fear these frictions anymore while they are still tiresome but for novices / newcomers, this certainly keeps cognitive load at high values! 
+
+Do you have any knowledge on the internals of uv? As far as I know (I also checked on repo's home page), it is written in rust. I don't have any experience right now to try to make a pull request with proposed changes. But I'm ready to test / give opinions if matter.
 
 ---

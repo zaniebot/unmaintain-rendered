@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-06-11T19:12:08Z
-updated_at: 2026-01-05T23:12:16Z
+updated_at: 2026-01-09T20:53:18Z
 url: https://github.com/astral-sh/uv/issues/13974
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:11:34Z
 ```
 
 # Add support for requesting indexes with `--index <name>`
@@ -55,18 +55,6 @@ Related
 
 ---
 
-_Referenced in [astral-sh/uv#13973](../../astral-sh/uv/issues/13973.md) on 2025-06-11 19:13_
-
----
-
-_Referenced in [astral-sh/uv#14034](../../astral-sh/uv/issues/14034.md) on 2025-06-13 18:07_
-
----
-
-_Referenced in [astral-sh/uv#14562](../../astral-sh/uv/issues/14562.md) on 2025-07-11 12:40_
-
----
-
 _Comment by @andrader on 2025-09-05 18:42_
 
 I support the need for this feature!
@@ -77,7 +65,7 @@ _Comment by @EliteTK on 2026-01-05 23:12_
 
 So at least in `uv add`'s case. If only one index is provided, the requirements are pinned to that index. And then regardless of how many indexes are provided, the specified indexes are added/re-added to the pyproject.toml (such that any pre-existing entries appear at the top in the order they are passed on the command line (or from other sources)).
 
-Regarding `uv install`, currently what you pass via `--index` seems to get checked after whatever is already in your `uv.toml`.
+Regarding `uv tool install`, currently what you pass via `--index` seems to get checked after whatever is already in your `uv.toml`.
 
 It seems like maybe we should be prioritising the index passed there?
 
@@ -86,5 +74,9 @@ As for how to achieve this, I've considered a few different ideas but I think wh
 Alternatively we could add some logic to `Index::from_str` which attempts to find the right `pyproject.toml` / script toml / `uv.toml` but this seemed a bit too dirty.
 
 Happy to hear other suggestions.
+
+---
+
+_Assigned to @EliteTK by @EliteTK on 2026-01-09 20:53_
 
 ---

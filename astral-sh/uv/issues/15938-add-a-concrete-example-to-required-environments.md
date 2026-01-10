@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-18T21:08:23Z
 updated_at: 2025-12-18T15:40:42Z
 url: https://github.com/astral-sh/uv/issues/15938
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-10T03:11:35Z
 ```
 
 # Add a concrete example to `required-environments` hint
@@ -39,10 +39,6 @@ Hello, Can I pick this one up?
 
 Update: 
 It looked easy, so I created a merge request.
-
----
-
-_Referenced in [astral-sh/uv#16244](../../astral-sh/uv/pulls/16244.md) on 2025-10-10 23:34_
 
 ---
 
