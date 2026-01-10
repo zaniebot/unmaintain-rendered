@@ -16,7 +16,7 @@ GitHub issues and pull requests rendered as markdown.
 ### [astral-sh/uv](https://github.com/astral-sh/uv)
 
 - [Issues](astral-sh/uv/issues/) (16664)
-- [Pull Requests](astral-sh/uv/pulls/) (17450)
+- [Pull Requests](astral-sh/uv/pulls/) (18032)
 
 ### [clap-rs/clap](https://github.com/clap-rs/clap)
 
@@ -33,4 +33,4 @@ GitHub issues and pull requests rendered as markdown.
 - [Issues](zanieb/unmaintain-test/issues/) (4)
 
 ---
-_Last updated: 2026-01-10 15:44:50 UTC_
+_Last updated: 2026-01-10 15:50:36 UTC_

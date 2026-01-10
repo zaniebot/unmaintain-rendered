@@ -1,0 +1,42 @@
+```yaml
+number: 146
+title: "Remove `async` from some filesystem-only APIs"
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/no-async
+created_at: 2023-10-20T01:06:25Z
+updated_at: 2023-10-20T01:08:53Z
+url: https://github.com/astral-sh/uv/pull/146
+synced_at: 2026-01-10T15:50:28Z
+```
+
+# Remove `async` from some filesystem-only APIs
+
+---
+
+_Pull request opened by @charliermarsh on 2023-10-20 01:06_
+
+_No description provided._
+
+---
+
+_Renamed from "Remove async from some filesystem-only APIs" to "Remove `async` from some filesystem-only APIs" by @charliermarsh on 2023-10-20 01:06_
+
+---
+
+_Merged by @charliermarsh on 2023-10-20 01:08_
+
+---
+
+_Closed by @charliermarsh on 2023-10-20 01:08_
+
+---
+
+_Branch deleted on 2023-10-20 01:08_
+
+---
