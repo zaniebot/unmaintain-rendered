@@ -1,0 +1,337 @@
+```yaml
+number: 16878
+title: "[syntax-errors] Fix star annotation before Python 3.11"
+type: pull_request
+state: merged
+author: ntBre
+labels:
+  - bug
+  - preview
+assignees: []
+merged: true
+base: main
+head: brent/fix-star-annotations
+created_at: 2025-03-20T18:12:25Z
+updated_at: 2025-03-20T21:44:54Z
+url: https://github.com/astral-sh/ruff/pull/16878
+synced_at: 2026-01-10T19:40:36Z
+```
+
+# [syntax-errors] Fix star annotation before Python 3.11
+
+---
+
+_Pull request opened by @ntBre on 2025-03-20 18:12_
+
+Summary
+--
+
+Fixes #16874. I previously emitted a syntax error when starred annotations were _allowed_ rather than when they were actually used. This caused false positives for any starred parameter name because these are allowed to have starred annotations but not required to. The fix is to check if the annotation is actually starred after parsing it.
+
+Test Plan
+--
+
+New inline parser tests derived from the initial report and more examples from the comments, although I think the first case should cover them all.
+
+
+---
+
+_Label `bug` added by @ntBre on 2025-03-20 18:12_
+
+---
+
+_Label `preview` added by @ntBre on 2025-03-20 18:12_
+
+---
+
+_Review requested from @MichaReiser by @ntBre on 2025-03-20 18:12_
+
+---
+
+_Review requested from @dhruvmanila by @ntBre on 2025-03-20 18:12_
+
+---
+
+_@AlexWaygood approved on 2025-03-20 18:16_
+
+Do we get an ecosystem report for the syntax-error checks? That could have helped us catch this before it landed
+
+---
+
+_Comment by @ntBre on 2025-03-20 18:17_
+
+We do , but it was clean: https://github.com/astral-sh/ruff/pull/16545#issuecomment-2705189843
+
+---
+
+_Comment by @ntBre on 2025-03-20 18:17_
+
+Maybe it's not actually checking for them, I guess that's what you reallly meant :facepalm: 
+
+---
+
+_Comment by @github-actions[bot] on 2025-03-20 18:21_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+0 -2751 violations, +0 -0 fixes in 39 projects; 16 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+0 -98 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/client.py#L1260'>disnake/client.py:1260:26:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/client.py#L732'>disnake/client.py:732:16:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/client.py#L749'>disnake/client.py:749:16:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/client.py#L756'>disnake/client.py:756:43:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/client.py#L949'>disnake/client.py:949:56:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/base_core.py#L134'>disnake/ext/commands/base_core.py:134:29:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/base_core.py#L348'>disnake/ext/commands/base_core.py:348:66:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/base_core.py#L449'>disnake/ext/commands/base_core.py:449:73:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/bot_base.py#L58'>disnake/ext/commands/bot_base.py:58:34:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/cog.py#L153'>disnake/ext/commands/cog.py:153:44:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+... 88 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+0 -48 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/actions/forms.py#L719'>rasa/core/actions/forms.py:719:39:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/agent.py#L269'>rasa/core/agent.py:269:39:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/brokers/pika.py#L225'>rasa/core/brokers/pika.py:225:49:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/channels/socketio.py#L19'>rasa/core/channels/socketio.py:19:61:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/training/interactive.py#L607'>rasa/core/training/interactive.py:607:47:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/engine/graph.py#L441'>rasa/engine/graph.py:441:44:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/server.py#L154'>rasa/server.py:154:30:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/server.py#L178'>rasa/server.py:178:38:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/server.py#L213'>rasa/server.py:213:38:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/server.py#L235'>rasa/server.py:235:38:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+... 38 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+0 -14 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/src/snowflake/cli/_plugins/nativeapp/codegen/sandbox.py#L302'>src/snowflake/cli/_plugins/nativeapp/codegen/sandbox.py:302:34:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/src/snowflake/cli/_plugins/nativeapp/codegen/setup/native_app_setup_processor.py#L53'>src/snowflake/cli/_plugins/nativeapp/codegen/setup/native_app_setup_processor.py:53:30:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/src/snowflake/cli/api/commands/overrideable_parameter.py#L132'>src/snowflake/cli/api/commands/overrideable_parameter.py:132:49:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/src/snowflake/cli/api/commands/overrideable_parameter.py#L141'>src/snowflake/cli/api/commands/overrideable_parameter.py:141:49:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/src/snowflake/cli/api/commands/overrideable_parameter.py#L41'>src/snowflake/cli/api/commands/overrideable_parameter.py:41:23:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/src/snowflake/cli/api/commands/overrideable_parameter.py#L74'>src/snowflake/cli/api/commands/overrideable_parameter.py:74:50:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/src/snowflake/cli/api/project/definition_conversion.py#L76'>src/snowflake/cli/api/project/definition_conversion.py:76:74:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/src/snowflake/cli/api/project/util.py#L201'>src/snowflake/cli/api/project/util.py:201:26:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/tests_integration/testing_utils/assertions/test_file_assertions.py#L22'>tests_integration/testing_utils/assertions/test_file_assertions.py:22:17:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/Snowflake-Labs/snowcli/blob/0a69d93e76af941d6e5622ece1a241215d05b13f/tests_integration/testing_utils/snowpark_utils.py#L317'>tests_integration/testing_utils/snowpark_utils.py:317:75:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+... 4 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aiven/aiven-client">aiven/aiven-client</a> (+0 -7 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/aiven/aiven-client/blob/073fabd20579b9c35a98f5d62a32ab4d0f5e7e13/aiven/client/argx.py#L155'>aiven/client/argx.py:155:31:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/aiven/aiven-client/blob/073fabd20579b9c35a98f5d62a32ab4d0f5e7e13/aiven/client/argx.py#L54'>aiven/client/argx.py:54:31:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/aiven/aiven-client/blob/073fabd20579b9c35a98f5d62a32ab4d0f5e7e13/aiven/client/client.py#L1496'>aiven/client/client.py:1496:89:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/aiven/aiven-client/blob/073fabd20579b9c35a98f5d62a32ab4d0f5e7e13/aiven/client/client.py#L1589'>aiven/client/client.py:1589:61:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/aiven/aiven-client/blob/073fabd20579b9c35a98f5d62a32ab4d0f5e7e13/aiven/client/client.py#L249'>aiven/client/client.py:249:28:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/aiven/aiven-client/blob/073fabd20579b9c35a98f5d62a32ab4d0f5e7e13/aiven/client/session.py#L18'>aiven/client/session.py:18:31:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/aiven/aiven-client/blob/073fabd20579b9c35a98f5d62a32ab4d0f5e7e13/aiven/client/session.py#L22'>aiven/client/session.py:22:27:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -61 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/api_fastapi/auth/tokens.py#L120'>airflow/api_fastapi/auth/tokens.py:120:38:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/api_fastapi/common/parameters.py#L145'>airflow/api_fastapi/common/parameters.py:145:29:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/api_fastapi/common/parameters.py#L221'>airflow/api_fastapi/common/parameters.py:221:29:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/api_fastapi/common/parameters.py#L305'>airflow/api_fastapi/common/parameters.py:305:29:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/api_fastapi/common/parameters.py#L471'>airflow/api_fastapi/common/parameters.py:471:29:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/api_fastapi/common/parameters.py#L83'>airflow/api_fastapi/common/parameters.py:83:29:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/decorators/base.py#L357'>airflow/decorators/base.py:357:31:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/decorators/condition.py#L109'>airflow/decorators/condition.py:109:27:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/decorators/task_group.py#L86'>airflow/decorators/task_group.py:86:31:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/airflow/blob/aad7b83c6e0789ceed6f43b9168803d4d5659475/airflow/decorators/task_group.py#L96'>airflow/decorators/task_group.py:96:79:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+... 51 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -61 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/cli/test_db.py#L88'>superset/cli/test_db.py:88:30:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/chart/importers/dispatcher.py#L43'>superset/commands/chart/importers/dispatcher.py:43:57:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/dashboard/importers/dispatcher.py#L46'>superset/commands/dashboard/importers/dispatcher.py:46:57:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/database/importers/dispatcher.py#L41'>superset/commands/database/importers/dispatcher.py:41:57:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/dataset/importers/dispatcher.py#L46'>superset/commands/dataset/importers/dispatcher.py:46:57:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/dataset/importers/v0.py#L231'>superset/commands/dataset/importers/v0.py:231:16:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/importers/v1/__init__.py#L51'>superset/commands/importers/v1/__init__.py:51:57:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/importers/v1/assets.py#L73'>superset/commands/importers/v1/assets.py:73:57:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/importers/v1/examples.py#L62'>superset/commands/importers/v1/examples.py:62:57:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+- <a href='https://github.com/apache/superset/blob/5866f3ec8390025d1a2e9dc9b64d945d13ac4a78/superset/commands/query/importers/dispatcher.py#L43'>superset/commands/query/importers/dispatcher.py:43:57:</a> SyntaxError: Cannot use star annotation on Python 3.10 (syntax was added in Python 3.11)
+... 51 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/e7159a87cb939a47a5cffbbee5433f65f25ef6c5/samcli/commands/local/cli_common/invoke_context.py#L303'>samcli/commands/local/cli_common/invoke_context.py:303:31:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bloomberg/pytest-memray">bloomberg/pytest-memray</a> (+0 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bloomberg/pytest-memray/blob/de620779bb62244d3d91ff050318384a5221ca90/src/pytest_memray/plugin.py#L212'>src/pytest_memray/plugin.py:212:28:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/bloomberg/pytest-memray/blob/de620779bb62244d3d91ff050318384a5221ca90/src/pytest_memray/plugin.py#L217'>src/pytest_memray/plugin.py:217:40:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+- <a href='https://github.com/bloomberg/pytest-memray/blob/de620779bb62244d3d91ff050318384a5221ca90/src/pytest_memray/plugin.py#L54'>src/pytest_memray/plugin.py:54:16:</a> SyntaxError: Cannot use star annotation on Python 3.8 (syntax was added in Python 3.11)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -143 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/logger.py#L57'>release/logger.py:57:30:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/application.py#L88'>src/bokeh/application/application.py:88:35:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L175'>src/bokeh/application/handlers/code.py:175:27:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/enums.py#L199'>src/bokeh/core/enums.py:199:26:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L449'>src/bokeh/core/property/bases.py:449:38:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/container.py#L287'>src/bokeh/core/property/container.py:287:38:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/either.py#L79'>src/bokeh/core/property/either.py:79:78:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/enum.py#L59'>src/bokeh/core/property/enum.py:59:44:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/enum.py#L61'>src/bokeh/core/property/enum.py:61:64:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/wrappers.py#L283'>src/bokeh/core/property/wrappers.py:283:37:</a> SyntaxError: Cannot use star annotation on Python 3.9 (syntax was added in Python 3.11)
+... 133 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SyntaxError: | 2751 | 0 | 2751 | 0 | 0 |
+
+</p>
+</details>
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_Comment by @ntBre on 2025-03-20 18:28_
+
+It looks like `--output-format concise` suppresses these errors, which I think prevents them from showing up in the ecosystem check.
+
+---
+
+_Comment by @AlexWaygood on 2025-03-20 18:31_
+
+Huh, is that the correct behaviour? I'd want to know about syntax errors in my code even if I specified that option, I think 😄
+
+---
+
+_Comment by @ntBre on 2025-03-20 18:33_
+
+I don't think so, I'm working on a separate fix for that! `ParseError`s are still displayed, so I think it was just another oversight on my part.
+
+---
+
+_Comment by @ntBre on 2025-03-20 19:57_
+
+I was just in too much of a hurry before :sweat_smile: `--output-format` was not the problem, I had just forgotten `--preview`. Instead, the regex matching diagnostics was excluding syntax errors. I've opened a PR updating it: https://github.com/astral-sh/ruff/pull/16879
+
+---
+
+_Closed by @ntBre on 2025-03-20 21:26_
+
+---
+
+_Reopened by @ntBre on 2025-03-20 21:26_
+
+---
+
+_@MichaReiser approved on 2025-03-20 21:38_
+
+We may want to consider doing a patch release for this change (doesn't have to be today). Especially considering that we probably won't do a release next week
+
+---
+
+_Comment by @ntBre on 2025-03-20 21:39_
+
+That sounds like a good idea. I closed and reopened to update the ecosystem report, and it's now showing -2751 violations.
+
+---
+
+_Merged by @ntBre on 2025-03-20 21:44_
+
+---
+
+_Closed by @ntBre on 2025-03-20 21:44_
+
+---
+
+_Branch deleted on 2025-03-20 21:44_
+
+---

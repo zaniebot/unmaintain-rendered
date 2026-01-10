@@ -1,0 +1,245 @@
+```yaml
+number: 17308
+title: "[red-knot] Completely hide unreachable symbols"
+type: pull_request
+state: closed
+author: sharkdp
+labels:
+  - ty
+assignees: []
+draft: true
+base: main
+head: david/hide-unreachable-symbols-completely
+created_at: 2025-04-09T10:34:33Z
+updated_at: 2025-04-09T19:38:15Z
+url: https://github.com/astral-sh/ruff/pull/17308
+synced_at: 2026-01-10T19:40:37Z
+```
+
+# [red-knot] Completely hide unreachable symbols
+
+---
+
+_Pull request opened by @sharkdp on 2025-04-09 10:34_
+
+## Summary
+
+Use Unbound/Unknown for unreachable symbols instead of Bound/Never. This re-introduces a problem related to https://github.com/astral-sh/ty/issues/210, but might be the better tradeoff. Let's see what the ecosystem check says.
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-09 10:34_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-09 10:36_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pyinstrument (https://github.com/joerick/pyinstrument)
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:33:18: Name `threads` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:35:9: Name `counters` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:38:19: Name `stop` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:49:19: Name `threads` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:50:9: Name `thread` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:54:38: Name `self` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:56:54: Name `func` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:56:77: Name `func` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:56:105: Name `func` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:58:22: Name `self` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:59:28: Name `func` used when not defined
+- Found 292 diagnostics
++ Found 303 diagnostics
+
+packaging (https://github.com/pypa/packaging)
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/check.py:70:34: Type `<module 'pkg_resources'>` has no attribute `parse_version`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/check.py:84:34: Type `<module 'pkg_resources'>` has no attribute `parse_version`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/packaging/tasks/check.py:103:34: Type `<module 'pkg_resources'>` has no attribute `parse_version`
+- Found 348 diagnostics
++ Found 351 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:38: Name `cur_hunk` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:38: Name `cur_hunk` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:38: Name `cur_hunk` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:48: Name `other_hunk` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:48: Name `other_hunk` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:48: Name `other_hunk` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:401:16: Name `hasher` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:402:17: Name `hasher` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:402:31: Name `hunk1` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:403:17: Name `hasher` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:403:31: Name `hunk2` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:407:21: Name `hunk1` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:409:21: Name `hunk2` used when not defined
+- Found 5 diagnostics
++ Found 18 diagnostics
+
+arrow (https://github.com/arrow-py/arrow)
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1275:34: Name `granularity` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1276:33: Name `sign` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1276:49: Name `self` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1277:35: Name `self` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1279:29: Name `timeframes` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1283:29: Name `timeframes` used when not defined
+- Found 34 diagnostics
++ Found 40 diagnostics
+
+black (https://github.com/psf/black)
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1728:21: Name `idx` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1729:27: Name `it` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1729:27: Name `it` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1729:27: Name `it` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1730:20: Name `c` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1731:27: Name `idx` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1736:39: Name `self` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1737:19: Name `begin` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1737:26: Name `end` used when not defined
+- Found 258 diagnostics
++ Found 267 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:291:43: Name `type_checker_exe` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:307:12: Name `ARGS` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:309:27: Name `ARGS` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:310:32: Name `projects` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:313:45: Name `old_results` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:313:93: Name `projects` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:172:37: Name `f` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:172:48: Name `buf_size` used when not defined
+- Found 709 diagnostics
++ Found 717 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:92:53: Name `method` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:93:25: Name `have_match_for` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:94:44: Name `websocket` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:104:28: Name `websocket` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:105:53: Name `method` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:116:22: Name `_match` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:147:26: Name `_match` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:159:53: Name `method` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:160:25: Name `have_match_for` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/matcher.py:161:44: Name `websocket` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/examples/shortly/shortly.py:26:29: Name `base36` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/map.py:642:33: Name `rv` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/map.py:643:32: Name `rule` used when not defined
+- Found 770 diagnostics
++ Found 783 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:33:26: Invalid class base with type `Never` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:44:57: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-base] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:57:34: Invalid class base with type `Never` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-base] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:67:27: Invalid class base with type `Never` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:78:43: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:95:32: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:129:17: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:132:12: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:170:17: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:173:12: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:205:17: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:205:46: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:229:17: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:230:6: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:253:17: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:253:42: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:276:17: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:276:47: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:300:17: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:300:47: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:377:34: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:387:30: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:405:46: Variable of type `Never` is not allowed in a type expression
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:444:44: Variable of type `Never` is not allowed in a type expression
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/text.py:202:17: Name `self` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/text.py:205:46: Name `self` used when not defined
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/rich/rich/_windows.py:26:9: Module `rich._win32_console` has no member `ENABLE_VIRTUAL_TERMINAL_PROCESSING`
+- error[lint:invalid-type-form] /tmp/mypy_primer/projects/rich/rich/_windows.py:40:43: Variable of type `Never` is not allowed in a type expression
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:39:20: Name `datetime` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:43:12: Name `Process` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:46:21: Name `random` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:47:16: Name `random` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:48:20: Name `datetime` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:49:11: Name `datetime` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:49:38: Name `random` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:50:22: Name `random` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:51:28: Name `random` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:57:10: Name `generate_process` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:61:13: Name `Table` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:62:79: Name `box` used when not defined
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/rich/tests/test_win32_console.py:12:37: Module `rich._win32_console` has no member `COORD`
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:44:57: Name `COORD` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:54:16: Name `COORD` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:59:20: Name `COORD` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:60:30: Name `COORD` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:61:25: Name `wintypes` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:62:22: Name `wintypes` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:63:33: Name `COORD` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:68:28: Name `wintypes` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:68:58: Name `wintypes` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:87:34: Name `_GetStdHandle` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:111:20: Name `_GetConsoleMode` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:145:17: Name `ctypes` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:148:5: Name `_FillConsoleOutputCharacterW` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:190:5: Name `_FillConsoleOutputAttribute` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:217:17: Name `_SetConsoleTextAttribute` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:240:5: Name `_GetConsoleScreenBufferInfo` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:264:17: Name `_SetConsoleCursorPosition` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:288:17: Name `_GetConsoleCursorInfo` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:311:17: Name `_SetConsoleCursorInfo` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:328:17: Name `_SetConsoleTitle` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:363:31: Name `STDOUT` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:377:34: Name `WindowsCoordinates` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:383:16: Name `COORD` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:387:30: Name `WindowsCoordinates` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:393:22: Name `COORD` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:405:46: Name `Style` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:439:38: Name `ctypes` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/_win32_console.py:444:44: Name `WindowsCoordinates` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:142:19: Name `width` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:143:24: Name `code_width` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:144:25: Name `extra_lines` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:145:19: Name `theme` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:146:23: Name `word_wrap` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:147:25: Name `show_locals` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:148:31: Name `locals_max_length` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:149:31: Name `locals_max_string` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:150:32: Name `locals_hide_dunder` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:151:37: Name `locals_hide_sunder` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:152:27: Name `indent_guides` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:153:22: Name `suppress` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:154:24: Name `max_frames` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:156:9: Name `traceback_console` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:187:13: Name `excepthook` used when not defined
+- Found 886 diagnostics
++ Found 920 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:82:5: Name `output_stream` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:83:12: Name `output_stream` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:103:5: Name `output_stream` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:104:12: Name `output_stream` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:123:5: Name `output_stream` used when not defined
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:124:12: Name `output_stream` used when not defined
+- Found 1592 diagnostics
++ Found 1598 diagnostics
+
+```
+</details>
+
+
+---
+
+_Closed by @sharkdp on 2025-04-09 19:38_
+
+---

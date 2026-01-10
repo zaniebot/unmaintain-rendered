@@ -1,0 +1,251 @@
+```yaml
+number: 17169
+title: "[red-knot] Avoid unresolved-reference in unreachable code"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: david/silence-unresolved-reference-in-unreachable-code
+created_at: 2025-04-03T10:31:51Z
+updated_at: 2025-04-03T15:00:32Z
+url: https://github.com/astral-sh/ruff/pull/17169
+synced_at: 2026-01-10T19:40:37Z
+```
+
+# [red-knot] Avoid unresolved-reference in unreachable code
+
+---
+
+_Pull request opened by @sharkdp on 2025-04-03 10:31_
+
+## Summary
+
+This PR changes the inferred type for symbols in unreachable sections of code to `Never` (instead of reporting them as unbound), in order to silence false positive diagnostics. See the lengthy comment in the code for further details.
+
+## Test Plan
+
+- Updated Markdown tests.
+- Manually verified a couple of ecosystem diagnostic changes.
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-03 10:31_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-03 10:34_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pyinstrument (https://github.com/joerick/pyinstrument)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:54:38: Name `self` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:56:54: Name `func` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:56:77: Name `func` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:56:105: Name `func` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:58:22: Name `self` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/context_manager.py:59:28: Name `func` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:33:18: Name `threads` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:35:9: Name `counters` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:38:19: Name `stop` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:49:19: Name `threads` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/test/low_level/test_threaded.py:50:9: Name `thread` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/magic/magic.py:288:13: Name `loop` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/magic/magic.py:288:39: Name `loop` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/magic/magic.py:289:36: Name `old_loop` used when not defined
+- Found 287 diagnostics
++ Found 273 diagnostics
+
+arrow (https://github.com/arrow-py/arrow)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1275:34: Name `granularity` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1276:33: Name `sign` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1276:49: Name `self` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1277:35: Name `self` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1279:29: Name `timeframes` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1283:29: Name `timeframes` used when not defined
+- Found 40 diagnostics
++ Found 34 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:172:37: Name `f` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:172:48: Name `buf_size` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:291:43: Name `type_checker_exe` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:307:12: Name `ARGS` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:309:27: Name `ARGS` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:310:32: Name `projects` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:313:45: Name `old_results` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/main.py:313:93: Name `projects` used when not defined
+- Found 18 diagnostics
++ Found 10 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:38: Name `cur_hunk` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:38: Name `cur_hunk` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:38: Name `cur_hunk` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:48: Name `other_hunk` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:48: Name `other_hunk` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:400:48: Name `other_hunk` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:401:16: Name `hasher` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:402:17: Name `hasher` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:402:31: Name `hunk1` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:403:17: Name `hasher` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:403:31: Name `hunk2` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:407:21: Name `hunk1` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/git-revise/gitrevise/merge.py:409:21: Name `hunk2` used when not defined
+- Found 18 diagnostics
++ Found 5 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyp/pyp.py:608:26: Name `astunparse` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyp/pyp.py:608:45: Name `tree` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyp/pyp.py:612:26: Name `tree` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyp/pyp.py:613:16: Name `short_fallback` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pyp/pyp.py:614:28: Name `tree` used when not defined
+- Found 21 diagnostics
++ Found 16 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pybind11/tests/test_gil_scoped.py:198:12: Name `process` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pybind11/tests/test_gil_scoped.py:199:13: Name `process` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pybind11/tests/test_class_sh_property.py:134:17: Name `obj` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pybind11/tests/test_class_sh_property.py:134:22: Name `field_name` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/pybind11/tests/test_class_sh_property.py:134:34: Name `field` used when not defined
+- Found 268 diagnostics
++ Found 263 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:39:20: Name `datetime` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:43:12: Name `Process` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:46:21: Name `random` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:47:16: Name `random` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:48:20: Name `datetime` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:49:11: Name `datetime` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:49:38: Name `random` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:50:22: Name `random` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:51:28: Name `random` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:57:10: Name `generate_process` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:61:13: Name `Table` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/examples/top_lite_simulator.py:62:79: Name `box` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:142:19: Name `width` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:143:24: Name `code_width` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:144:25: Name `extra_lines` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:145:19: Name `theme` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:146:23: Name `word_wrap` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:147:25: Name `show_locals` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:148:31: Name `locals_max_length` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:149:31: Name `locals_max_string` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:150:32: Name `locals_hide_dunder` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:151:37: Name `locals_hide_sunder` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:152:27: Name `indent_guides` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:153:22: Name `suppress` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:154:24: Name `max_frames` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:156:9: Name `traceback_console` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/traceback.py:187:13: Name `excepthook` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/text.py:202:17: Name `self` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/rich/text.py:205:46: Name `self` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/tests/test_progress.py:47:16: Name `self` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/rich/tests/test_progress.py:48:17: Name `self` used when not defined
+- Found 407 diagnostics
++ Found 376 diagnostics
+
+black (https://github.com/psf/black)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:842:12: Name `num_of_inline_string_comments` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:844:53: Name `num_of_inline_string_comments` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:847:16: Name `set_of_prefixes` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:847:41: Name `set_of_prefixes` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:848:57: Name `set_of_prefixes` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1728:21: Name `idx` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1729:27: Name `it` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1729:27: Name `it` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1729:27: Name `it` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1730:20: Name `c` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1731:27: Name `idx` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1736:39: Name `self` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1737:19: Name `begin` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/trans.py:1737:26: Name `end` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1027:41: Name `encoding` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1027:59: Name `newline` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1029:12: Name `write_back` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1031:16: Name `dst` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1031:24: Name `dst` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1032:17: Name `dst` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1033:13: Name `f` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1033:21: Name `dst` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1034:14: Name `write_back` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1036:34: Name `then` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1037:35: Name `now` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1038:22: Name `src` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1038:27: Name `dst` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1038:32: Name `src_name` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1038:42: Name `dst_name` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1039:16: Name `write_back` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1040:32: Name `d` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1041:45: Name `f` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1042:13: Name `f` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1042:21: Name `d` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/black/src/black/__init__.py:1043:9: Name `f` used when not defined
+- Found 190 diagnostics
++ Found 155 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:82:5: Name `output_stream` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:83:12: Name `output_stream` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:103:5: Name `output_stream` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:104:12: Name `output_stream` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:123:5: Name `output_stream` used when not defined
+- warning[lint:unresolved-reference] /tmp/mypy_primer/projects/scrapy/scrapy/utils/_compression.py:124:12: Name `output_stream` used when not defined
+- Found 1501 diagnostics
++ Found 1495 diagnostics
+
+```
+</details>
+
+
+---
+
+_Marked ready for review by @sharkdp on 2025-04-03 13:36_
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-04-03 13:36_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-04-03 13:36_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-04-03 13:36_
+
+---
+
+_@dcreager approved on 2025-04-03 14:08_
+
+I love it when the commentary is so much longer than the fix!
+
+---
+
+_Comment by @sharkdp on 2025-04-03 14:52_
+
+~~There's actually one open TODO in the unreachable-test-suite that I *think* could be resolved by the changes here *and* a bit of special handling (the one with the `import` inside the unreachable branch). But I'll leave that for another PR and merge this.~~ (Edit: that might not be true, I think this PR resolves exactly those cases which I think it should solve :smile:)
+
+---
+
+_Merged by @sharkdp on 2025-04-03 14:52_
+
+---
+
+_Closed by @sharkdp on 2025-04-03 14:52_
+
+---
+
+_Branch deleted on 2025-04-03 14:52_
+
+---
