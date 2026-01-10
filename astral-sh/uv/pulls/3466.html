@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add support for resolving without a marker environment - astral-sh/uv #3466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add support for resolving without a marker environment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3466">#3466</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-05-08 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-08 18:10</div>
+            <div class="timeline-body"><p>This PR touches a lot of code, but the conceptual change here is
+pretty simple: make it so we can run the resolver without providing a
+<code>MarkerEnvironment</code>. This also indicates that the resolver should run in
+universal mode. That is, the effect of a missing marker environment is
+that all marker expressions that reference the marker environment are
+evaluated to <code>true</code>. That is, they are ignored. (The only markers we
+evaluate in that context are extras, which are the only markers that
+aren't dependent on the environment.)</p>
+<p>One interesting change here is that a <code>Resolver</code> no longer needs an
+<code>Interpreter</code>. Previously, it had only been using it to construct a
+<code>PythonRequirement</code>, by filling in the installed version from the
+<code>Interpreter</code> state. But we now construct a <code>PythonRequirement</code>
+explicitly since its <code>target</code> Python version should no longer be tied to
+the <code>MarkerEnvironment</code>. (Currently, the marker environment is mutated
+such that its <code>python_full_version</code> is derived from multiple sources,
+including the CLI, which I found a touch confusing.)</p>
+<p>The change in behavior can now be observed through the
+<code>--unstable-uv-lock-file</code> flag. First, without it:</p>
+<pre><code>$ cat requirements.in
+anyio&gt;=4.3.0 ; sys_platform == &quot;linux&quot;
+anyio&lt;4 ; sys_platform == &quot;darwin&quot;
+$ cargo run -qp uv -- pip compile -p3.10 requirements.in
+anyio==4.3.0
+exceptiongroup==1.2.1
+    # via anyio
+idna==3.7
+    # via anyio
+sniffio==1.3.1
+    # via anyio
+typing-extensions==4.11.0
+    # via anyio
+</code></pre>
+<p>And now with it:</p>
+<pre><code>$ cargo run -qp uv -- pip compile -p3.10 requirements.in --unstable-uv-lock-file
+  x No solution found when resolving dependencies:
+  `-&gt; Because you require anyio&gt;=4.3.0 and anyio&lt;4, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>This is expected at this point because the marker expressions are being
+explicitly ignored, <em>and</em> there is no forking done yet to account for
+the conflict.</p>
+<p>Closes #3352, Closes #3353</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @BurntSushi on 2024-05-08 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-05-08 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-05-08 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-09 05:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker.rs</code>:565 on 2024-05-09 05:14</div>
+            <div class="timeline-body"><p>Is the key thing here that we <em>do</em> need to evaluate extras? Otherwise, I could imagine just doing something like <code>env.map(...).unwrap_or(true)</code> instead of encoding this in the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-09 05:16</div>
+            <div class="timeline-body"><p>This looks right to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-09 05:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_compile.rs</code>:244 on 2024-05-09 05:18</div>
+            <div class="timeline-body"><p>Yeah this seems right. Or, at least, equivalent to our existing behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-09 05:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_compile.rs</code>:244 on 2024-05-09 05:19</div>
+            <div class="timeline-body"><p>Is there any way this method could take <code>&amp;Interpreter</code> and <code>&amp;MarkerEnvironment</code>, so we abstract away the use of <code>markers.python_full_version</code>? (I know this is no different than on <code>main</code>, don't spend much time on it if difficult.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-09 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker.rs</code>:565 on 2024-05-09 11:41</div>
+            <div class="timeline-body"><p>Yes. We specifically want to evaluate extras.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-09 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/pip_compile.rs</code>:244 on 2024-05-09 11:45</div>
+            <div class="timeline-body"><p>Yeah I agree the way I did things isn't quite optimal. Maybe the best thing here is to add an alternate constructor that takes a <code>MarkerEnvironment</code>. But I don't think we make it the only constructor because we fundamentally need a way of constructing a <code>PythonRequirement</code> without a <code>MarkerEnvironment</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-09 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker.rs</code>:565 on 2024-05-09 11:51</div>
+            <div class="timeline-body"><p>I believe the basic issue here is that our <a href="https://github.com/astral-sh/uv/blob/d3c72896f9a344296b594ad3b0f2c945430a365e/crates/pypi-types/src/metadata.rs#L224-L235">optional dependencies manifest as additions to a requirement's markers</a>. So when we do resolution, we very specifically want to evaluate the &quot;extra&quot; marker expressions because we're <em>only</em> looking for universality with respect to platform (&quot;marker environment&quot;), and <em>not</em> with respect to the set of possible optional dependencies.</p>
+<p>In my prototype, I <a href="https://github.com/astral-sh/uv/blob/7f2b401260e6231bebb867c034b27d2955210fe0/crates/pypi-types/src/metadata.rs#L246-L257">dropped optional dependencies altogether</a>. I couldn't move forward without that because it was too easy for, e.g., packages to bring in huge trees of dev dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-05-09 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-09 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-09 13:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>use reference counting for MarkerEnvironment - astral-sh/uv #3475</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>use reference counting for MarkerEnvironment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3475">#3475</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-05-09 00:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-09 00:21</div>
+            <div class="timeline-body"><p>This PR makes the <code>MarkerEnvironment</code> type in the <code>pep508_rs</code> crate
+fully encapsulated. It then changes its internal representation to use
+an <code>Arc</code> so that clones are cheap.</p>
+<p>This representation more closely matches how this type is commonly
+used: it is constructed approximately once at startup from
+interpreter state and then passed down into various routines for
+requirement filtering. There are some parts of <code>uv</code> that mutate a
+<code>MarkerEnvironment</code> (like setting the <code>python_full_version</code> based on
+the <code>-p/--python</code> CLI flag) or create a new one (like from a target
+triple), but these are generally &quot;one time&quot; things whose cost is
+immaterial to the overall runtime of <code>uv</code>.</p>
+<p>The impetus for this change was a loose desire to remove lifetimes from
+some parts of the code. Namely, because <code>MarkerEnvironment</code> clones were
+not cheap before this change, we typically used <code>&amp;MarkerEnvironment</code>
+everywhere. While not done in this PR, the idea is that in the future,
+we can just use <code>MarkerEnvironment</code> instead.</p>
+<p>I'm considering pursuing similar changes for other types. The change
+for this type was somewhat gnarly due to how widely used it was.</p>
+<p>The main downside of this change, and encapsulation in general, is that
+it typically make the definition/implementation of the type itself
+more verbose. For example, we have a new inner type, a new builder
+type, getters, setters and the pyo3 <code>get_all</code> convenience function
+no longer works, so we have to write that out ourselves too. But,
+importantly, calling code can now clone without worry, and the calling
+code generally doesn't get more much more complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-05-09 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-05-09 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-09 00:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 05:13</div>
+            <div class="timeline-body"><p>Mostly just trusting you on this one :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-05-09 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-09 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-09 14:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

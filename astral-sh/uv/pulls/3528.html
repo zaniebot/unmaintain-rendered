@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Always require hashes for wheels in lockfile - astral-sh/uv #3528</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Always require hashes for wheels in lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3528">#3528</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-05-11 22:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-11 22:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I think we do <em>always</em> want hashes for wheels (since a wheel is a zip file -- we can always hash it). But hashes are optional for <em>source</em> distributions: if we have a Git repo as the source, there's no way to compute a hash of it in the standards.</p>
+<p>In general, if the user ends up needing to build from source, then we compare the hash of the source; if they use a pre-built wheel, then we compare the hash of the wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-05-11 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Always require hashes for wheels" to "Always require hashes for wheels in lockfile" by @charliermarsh on 2024-05-11 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:1162 on 2024-05-13 12:22</div>
+            <div class="timeline-body"><p>Hmmm the purpose of this test was to check a case where a hash is given <em>but should not be present</em>. And the purpose of the test above was to check a case where a hash is missing <em>but should be present</em>. i.e., They should both be checking error cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:178 on 2024-05-13 12:29</div>
+            <div class="timeline-body"><p>So I basically agree with the end effect here, but I don't think this is actually internally consistent. The reason why I made it possible for hash checking in wheels to be optional is because this is what the data model currently supports:</p>
+<p>https://github.com/astral-sh/uv/blob/eab2b832a65f7957ce073046f39131592fb566e2/crates/uv-resolver/src/lock.rs#L739-L745</p>
+<p>The problem here, as far as I can tell, is that not all &quot;built&quot; distributions have hashes attached to them. So when they make it to the lock file data structure, there's no hash to include.</p>
+<p>What this means is that this checking will reject lock files that can be generated right now.</p>
+<p>With that said, I do agree that this change is, I think, what we want our <em>end state</em> to be. I don't think I feel strongly about whether we do the stricter checking now, but I did kind of feel like the checking should be consistent with our serialization. If not, then perhaps a comment here explaining the inconsistency would be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-13 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-14 14:22</div>
+            <div class="timeline-body"><p>I agree with what you wrote.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-14 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

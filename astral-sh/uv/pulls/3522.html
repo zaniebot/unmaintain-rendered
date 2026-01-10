@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: speed up windows jobs using ReFS - astral-sh/uv #3522</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: speed up windows jobs using ReFS</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3522">#3522</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-05-11 04:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-11 04:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Switch to using Virtual HD + ReFS to speed up windows jobs.</p>
+<p>Closes #3508</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-11 12:46</div>
+            <div class="timeline-body"><p>So promising, thanks for exploring! You can push an empty commit to test the cached test time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-11 14:15</div>
+            <div class="timeline-body"><p>Stats from first run...</p>
+<p>| Step     | Before       | After        |
+|----------|--------------|--------------|
+| Install Toolchain   | 1m ~ | 11s~ |
+| Install nextest   | 15s ~ | 8s~ |
+| Cargo Tests   | 5m 25s ~ (cached) | 5m 44s ~ (uncached) -- TODO check cached speeds     |</p>
+<p>Follow up updated run, will do a few more to try get the cached versions of some of these</p>
+<p>| Steps     | Before       | After        |
+|----------|--------------|--------------|
+| Clippy   | 30s~ (cached) | 2m ~ (uncached) |
+| Cache Restoration | 1.5m ~ | 12s ~ |
+| Installing Toolchain   | 1m ~ | 11s~ |
+| Install nextest   | 15s ~ | 8s~ |
+| Cargo Tests   | 5m 25s ~ (cached) | 3m 59s ~ (cached)     |
+| Trampoline   | 24s ~ (cached) | 25s ~ (uncached)     |
+| build binary |  2m ~ (cached) | 2m 30s ~ (uncached)     |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-11 14:52</div>
+            <div class="timeline-body"><p>More Step Totals</p>
+<p>| Steps     | Before       | After        |
+|----------|--------------|--------------|
+| Clippy step   | 30s~ (cached) | 30s ~ (cached) |
+| Cache Restoration | 1.5m ~ | 12s ~ |
+| Installing Toolchain   | 1m ~ | 11s~ |
+| Install nextest   | 15s ~ | 8s~ |
+| Cargo Tests   | 5m 25s ~ (cached) | 3m 59s ~ (cached)     |
+| trampoline build step   | 24s ~ (cached) | 24s ~ (cached)     |
+| binary build step|  2m ~ (cached) | 50s ~ (cached)     |</p>
+<p>Job Totals (looking at a few runs)</p>
+<p>| Job | Before       | After        |
+|----------|--------------|--------------|
+| Clippy | 1m-1.5m ~ | 1m-1.5m ~ |
+| Cargo Tests   | 8m | 4m-5m ~     |
+| Trampoline build   | 4m ~ | 2m ~    |
+| build binary |  4m  | 1m-2m ~  |</p>
+<p>Other notes might be worth adjusting the vhdx default size to speed up it's creation as it can take between 10s to 30s. I'll reduce to 5GB next.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-11 15:05</div>
+            <div class="timeline-body"><p>~~Reduced to 5GB clippy &amp; trampoline, left test &amp; build binary 10GB since it ran out of space otherwise.~~ Made no substantial difference, left at 10GB.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: speed up windows tests using ReFS" to "feat: speed up windows jobs using ReFS" by @samypr100 on 2024-05-11 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-11 15:21</div>
+            <div class="timeline-body"><p>In summary, migrated windows jobs got 1.5x-2.x ~ speed up except clippy which stayed at 1x. Clippy job can be a bit faster or slower depending on how fast the VHDX gets created. Maybe switching to cargo-xwin as described in #3507 along with VHDX from this PR can unlock faster speeds.</p>
+<p>Note, I did not get data for <code>uncached before</code>. Only <code>cached before</code> and <code>cached/uncached after</code>. So it's possible when comparing clippy <code>before and after uncached</code> it might be faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2024-05-11 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-11 16:34</div>
+            <div class="timeline-body"><p>I'll defer to @konstin and @zanieb on the review but based on the numbers, this seems really good! You're awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-05-11 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-05-11 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-13 13:52</div>
+            <div class="timeline-body"><p>Should we skip it on Clippy for now then? I don't know if it merits the complexity there if it's both slower/faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-05-13 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-13 13:58</div>
+            <div class="timeline-body"><p>I don't mind keeping it for consistency but defer to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-13 14:01</div>
+            <div class="timeline-body"><p>I don't know, we need to split the job out of the matrix and maybe we're going to switch to xwin later? 🤷‍♀️ I don't have strong opinions though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-13 14:01</div>
+            <div class="timeline-body"><p>Sadly the decision falls upon you...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-13 15:55</div>
+            <div class="timeline-body"><p>Note clippy might still be faster in purely uncached times, I haven't compared though. I'd say worth trying it out for a bit and we can change later easily.</p>
+<p>Agreed, changing to xwin will require a split from the matrix regardless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2024-05-13 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-05-13 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-05-13 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-13 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-14 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zooba">@zooba</a> on 2024-05-14 13:20</div>
+            <div class="timeline-body"><p>This is awesome to see!</p>
+<p>You might need some error handling in case you land on an older system, but there's a <code>-DevDrive</code> option to <code>Format-Volume</code> that <em>ought</em> to improve things further. It may not be hugely significant since this is already a somewhat stripped back CI system rather than an OS install.</p>
+<p>Putting the VHDX in <code>$env:GITHUB_WORKSPACE</code> might also help (I don't know exactly how the GHA setup looks, but it's based on Azure Pipelines which puts the OS on a slower disk than the workspace), and passing <code>-Fixed</code> to <code>New-VHD</code> may also help (but I'm less confident about that one).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-15 02:07</div>
+            <div class="timeline-body"><p>Thanks! @zooba</p>
+<blockquote>
+<p>there's a -DevDrive option to Format-Volume that ought to improve things further</p>
+</blockquote>
+<p>Great point! I did try out <code>-DevDrive</code>, but got a <code>Format-Volume: A parameter cannot be found that matches parameter name 'DevDrive'.</code> since it seems it works on windows versions <code>10.0.22621</code> or greater and runners seem to be a bit below that <code>~10.0.20348</code>.</p>
+<p>I did add that check to the <a href="https://github.com/samypr100/setup-dev-drive">new action I created</a> out of this PR that uses <code>-DevDrive</code> when it meets the minimum os version (e.g. self hosted runners) and also uses the same drive <code>${{ github.workspace }}</code> uses. Feedback welcome of course :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

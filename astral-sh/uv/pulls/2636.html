@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pick up site packages from the interpreter's `sys.path` - astral-sh/uv #2636</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pick up site packages from the interpreter's <code>sys.path</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2636">#2636</a>
+        opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a>
+        on 2024-03-23 19:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-23 19:17</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Resolves https://github.com/astral-sh/uv/issues/2500</p>
+<p>This change got way bigger and more complex than initially thought 😭 (happy to break up into multiple smaller PRs if preferred!)  - the main changes are as follows:</p>
+<ul>
+<li>Expose <code>sys.path</code> from the chosen interpreter to be able to pick up more import paths beyond purelib / platlib</li>
+<li><code>install</code> from <code>uv-dispatch</code> to take an additional argument <code>reinstall</code> so that venv creation with <code>--seed</code> can always force reinstall (this seemed the least amount of change required to not break the behavior of <code>--seed</code>). This was necessary since <code>uv</code> will think <code>pip</code> already exists with this change (in the base interpreter) and would skip installing it for the venv.</li>
+<li>(WIP) <code>uv pip install</code> with reinstall option seems to pick up site package paths multiple times</li>
+</ul>
+<pre><code>$ cargo run pip install homeassistant --reinstall --cache-dir chantest --verbose |&amp; grep site
+DEBUG Site packages: [&quot;/Users/chan.kang/repos/.venv/lib/python3.12/site-packages&quot;]
+DEBUG Site packages: [&quot;/Users/chan.kang/repos/uv/chantest/.tmpdROCqV/.venv/lib/python3.12/site-packages&quot;, &quot;/Users/chan.kang/repos/.venv/lib/python3.12/site-packages&quot;]
+</code></pre>
+<p><em>probably</em> it should be done once for the lifetime of a single command invocation? still looking into it.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<pre><code>$ docker run -v /Users/chankang/repos/uv:/uv  $(docker build -q .)
+Package    Version  Location                            Installer
+---------- -------- ----------------------------------- ---------
+dnf        4.19.0   /usr/lib/python3.12/site-packages
+libcomps   0.1.20   /usr/lib64/python3.12/site-packages
+libdnf     0.73.0   /usr/lib64/python3.12/site-packages
+pip        23.2.1   /usr/lib/python3.12/site-packages   rpm
+pyparsing  3.0.9    /usr/lib/python3.12/site-packages   rpm
+rpm        4.19.1.1 /usr/lib64/python3.12/site-packages
+setuptools 67.7.2   /usr/lib/python3.12/site-packages   rpm
+Resolved 5 packages in 700ms
+Downloaded 5 packages in 92ms
+Installed 5 packages in 21ms
+ + certifi==2024.2.2
+ + charset-normalizer==3.3.2
+ + idna==3.6
+ + requests==2.31.0
+ + urllib3==2.2.1
+Package    Version
+---------- --------
+certifi    2024.2.2
+dnf        4.19.0
+idna       3.6
+libdnf     0.73.0
+pip        23.2.1
+pyparsing  3.0.9
+requests   2.31.0
+setuptools 67.7.2
+urllib3    2.2.1
+
+</code></pre>
+<p>where</p>
+<pre><code>$ cat Dockerfile 
+FROM fedora:39
+
+RUN yum update -y
+RUN yum install pip python cmake perl rust cargo -y
+
+COPY reproduce.sh .
+ENTRYPOINT [ &quot;bash&quot;, &quot;reproduce.sh&quot; ]
+</code></pre>
+<pre><code>$ cat reproduce.sh 
+pip list -v
+
+cd uv &amp;&amp; cargo run --quiet pip install requests --system &amp;&amp; cargo run --quiet pip list --system
+</code></pre>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-23 19:33</div>
+            <div class="timeline-body"><p>fixing CI and probably will add tests (it's turning out to be kinda non-trivial hmm, still looking though), should be done sometime today or tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:523 on 2024-03-23 22:41</div>
+            <div class="timeline-body"><p>is it desirable for cwd to be in here? (if not, it should be removed, accounting for sys.flags.safe_path)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-03-23 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-03-23 22:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/uv-interpreter/src/python_environment.rs</code>:103 on 2024-03-23 22:43</div>
+            <div class="timeline-body"><p>note this will only remove consecutive dedups. also the function doc will need updating</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChannyClaus">@ChannyClaus</a> reviewed on 2024-03-23 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on <code>crates/uv-interpreter/src/python_environment.rs</code>:103 on 2024-03-23 22:49</div>
+            <div class="timeline-body"><p>will do once i've sorted through other issues, not quite sure if this will be the final form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-25 01:08</div>
+            <div class="timeline-body"><p>taking longer than expected :.( - down to a couple of failing tests (having trouble reproducing it locally atm) + system setup jobs failing for windows, will continue to look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on <code>crates/uv-interpreter/python/get_interpreter_info.py</code>:523 on 2024-03-25 01:09</div>
+            <div class="timeline-body"><p>probably will leave this value as is so that it still equals to <code>sys.path</code> (it may be confusing if it's called <code>sys_path</code> but the value returned isn't <code>sys.path</code>) - but added filtering via suffix site/dist packages where it's used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChannyClaus">@ChannyClaus</a> reviewed on 2024-03-25 01:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-27 00:44</div>
+            <div class="timeline-body"><p>@zanieb do you happen to know why <code>incompatible_python_compatible_override_available_no_wheels</code> might be failing here? it seems to have succeeded for macos after rebase, but the identical code on my fork fails <a href="https://github.com/astral-sh/uv/actions/runs/8444731873/job/23130799842?pr=2636">here</a></p>
+<p>also on CI machines i've noticed if i run it multiple times, it only fails the first time and succeeds in all subsequent runs... 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-28 03:50</div>
+            <div class="timeline-body"><p>😆 ok after rebasing this time it seems like the only failures are windows; i'll try to get these resolved this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-29 04:15</div>
+            <div class="timeline-body"><p>What kind of problems are you having with the test suite? Have you merged main lately? We've recently improved the test snapshot filtering (i.e. #2678)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-29 12:38</div>
+            <div class="timeline-body"><blockquote>
+<p>What kind of problems are you having with the test suite? Have you merged main lately? We've recently improved the test snapshot filtering (i.e. #2678)</p>
+</blockquote>
+<p>the most cryptic test started succeeding after rebasing a couple of times this week 🥲 i think i should be good once i figure out this windows issue (seemed like it can be resolved with something similar to <code>fs::canonicalize</code>)</p>
+<p>thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChannyClaus">@ChannyClaus</a> reviewed on 2024-03-31 02:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on <code>.github/workflows/ci.yml</code>:659 on 2024-03-31 02:21</div>
+            <div class="timeline-body"><p><code>pip</code> installed via <code>yum install python3-pip</code> has <code>RECORD</code> missing, which causes issues described in https://github.com/pypa/pip/issues/11631 (this issue can be reproduced pulling the docker image used and running the command here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-05-07 04:05</div>
+            <div class="timeline-body"><p>closing since this PR is too stale at this point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ChannyClaus on 2024-05-07 04:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

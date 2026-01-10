@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make KeyringProvider::fetch_* async - astral-sh/uv #3089</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make KeyringProvider::fetch_* async</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3089">#3089</a>
+        opened by <a href="https://github.com/naosense">@naosense</a>
+        on 2024-04-17 06:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/naosense">@naosense</a> on 2024-04-17 06:14</div>
+            <div class="timeline-body"><p>To resolve #3073</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/naosense">@naosense</a> reviewed on 2024-04-17 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/naosense">@naosense</a> on <code>crates/uv-auth/src/middleware.rs</code>:146 on 2024-04-17 06:20</div>
+            <div class="timeline-body"><p>hi @zanieb   I googled for a while, but still no idea how to edit this. It reports <code>await</code> can't be called from a closure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-17 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:146 on 2024-04-17 14:36</div>
+            <div class="timeline-body"><p>I believe the idiomatic way to do it is with <code>match</code> instead</p>
+<pre><code class="language-diff">diff --git a/crates/uv-auth/src/middleware.rs b/crates/uv-auth/src/middleware.rs
+index 191ca92e..451f690a 100644
+--- a/crates/uv-auth/src/middleware.rs
++++ b/crates/uv-auth/src/middleware.rs
+@@ -136,19 +136,25 @@ impl Middleware for AuthMiddleware {
+         //      falls back to the host, but we cache the result per host so if a keyring
+         //      implementation returns different credentials for different URLs in the
+         //      same realm we will use the wrong credentials.
+-        } else if let Some(credentials) = self.keyring.as_ref().and_then(|keyring| {
+-            if let Some(username) = credentials
+-                .get()
+-                .and_then(|credentials| credentials.username())
+-            {
+-                debug!(&quot;Checking keyring for credentials for {url}&quot;);
+-                // how to fix this
+-                keyring.fetch(request.url(), username)
+-            } else {
+-                trace!(&quot;Skipping keyring lookup for {url} with no username&quot;);
+-                None
++        } else if let Some(credentials) = match self.keyring {
++            Some(ref keyring) =&gt; {
++                match credentials
++                    .get()
++                    .and_then(|credentials| credentials.username())
++                {
++                    Some(username) =&gt; {
++                        debug!(&quot;Checking keyring for credentials for {url}&quot;);
++                        // how to fix this
++                        keyring.fetch(request.url(), username).await
++                    }
++                    None =&gt; {
++                        trace!(&quot;Skipping keyring lookup for {url} with no username&quot;);
++                        None
++                    }
++                }
+             }
+-        }) {
++            None =&gt; None,
++        } {
+             debug!(&quot;Found credentials in keyring for {url}&quot;);
+             request = credentials.authenticate(request);
+             new_credentials = Some(Arc::new(credentials));
+</code></pre>
+<p>Then you'll run into problems with the <code>Mutex</code> being synchronous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-18 04:09</div>
+            <div class="timeline-body"><p>Fyi we're chatting about using the tokio mutex over in https://github.com/astral-sh/uv/pull/3105 – it might not be necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/naosense">@naosense</a> on 2024-04-18 07:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Fyi we're chatting about using the tokio mutex over in #3105 – it might not be necessary.</p>
+</blockquote>
+<p>Ok, i see. Now i split the cache lock to avoid across <code>await</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @naosense on 2024-04-18 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Make KeyringProvider::fetch_* async" to "Make KeyringProvider::fetch_* async" by @naosense on 2024-04-18 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/naosense">@naosense</a> on 2024-04-20 02:30</div>
+            <div class="timeline-body"><p>Hey @zanieb, i think this pr is ready to review, let me know if there's anything else i need to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-22 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:147 on 2024-04-22 18:15</div>
+            <div class="timeline-body"><p>Resolved right?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2024-04-22 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/naosense">@naosense</a> on <code>crates/uv-auth/src/middleware.rs</code>:147 on 2024-04-23 02:49</div>
+            <div class="timeline-body"><p>sorry, forgot to remove</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/naosense">@naosense</a> reviewed on 2024-04-23 02:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 02:54</div>
+            <div class="timeline-body"><p>Ah it looks like you have some conflicts with my changes in #3130, sorry about that lmk if you want me to fix it.</p>
+<p>We also <em>might</em> want to switch to the async mutex since we do want to hold across await points now, interesting. We're also considering switching to a <code>RwLock</code>. I think all that is probably worth doing/considering separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/naosense">@naosense</a> on 2024-04-23 02:59</div>
+            <div class="timeline-body"><p>OK, thanks for you information, I think it makes sense to split these changes into multiple PR, what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-04-23 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-23 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-23 12:58</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

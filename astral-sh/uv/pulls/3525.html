@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply advisory locks when building source distributions - astral-sh/uv #3525</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Apply advisory locks when building source distributions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3525">#3525</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-05-11 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-11 17:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I don't love this, but it turns out that setuptools is not robust to parallel builds: https://github.com/pypa/setuptools/issues/3119. As a result, if you run uv from multiple processes, and they each attempt to build the same source distribution, you can hit failures.</p>
+<p>This PR applies an advisory lock to the source distribution directory. We apply it unconditionally, even if we ultimately find something in the cache and <em>don't</em> do a build, which helps ensure that we only build the distribution once (and wait for that build to complete) rather than kicking off builds from each thread.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/3512.</p>
+<h2>Test Plan</h2>
+<p>Ran:</p>
+<pre><code class="language-sh">#!/bin/bash
+make_venv(){
+    target/debug/uv venv $1
+    source $1/bin/activate
+    target/debug/uv pip install opentracing --no-deps --verbose
+}
+
+for i in {1..8}
+do
+   make_venv ./$1/$i &amp;
+done
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-05-11 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-05-11 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-05-11 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-11 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-11 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:399 on 2024-05-11 17:18</div>
+            <div class="timeline-body"><p>Realizing... I think I need this to be async? Is that right @ibraheemdev?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-11 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:399 on 2024-05-11 18:09</div>
+            <div class="timeline-body"><p>Looks like you hold it across <code>await</code> points, so yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-11 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:399 on 2024-05-11 18:36</div>
+            <div class="timeline-body"><p>It’s not a mutex though, it’s a flock. I’d need to do some research.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-11 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:399 on 2024-05-11 19:15</div>
+            <div class="timeline-body"><p>Hm.. aren't you still yielding control? So some other task could hit this lock and block without awaiting and returning control to the event loop and consequently to this task? e.g.</p>
+<ul>
+<li>Task A takes lock</li>
+<li>Task A yields to event loop</li>
+<li>Task B attempts to take lock</li>
+<li>Lock is not available so Task B is blocked but has not yielded to the event loop</li>
+<li>Task A is never returned to</li>
+<li>Deadlock</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-11 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:399 on 2024-05-11 21:23</div>
+            <div class="timeline-body"><p>Wrapped it in a tokio task.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:400 on 2024-05-13 08:35</div>
+            <div class="timeline-body"><p>Can we put this into a function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-05-13 08:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-05-13 14:28</div>
+            <div class="timeline-body"><p>LGTM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-13 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:399 on 2024-05-13 14:28</div>
+            <div class="timeline-body"><p>Yeah I agree with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-13 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-13 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-13 14:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

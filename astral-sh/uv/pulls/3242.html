@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>once-map: avoid hard-coding `Arc` - astral-sh/uv #3242</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>once-map: avoid hard-coding <code>Arc</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3242">#3242</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-04-24 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-24 14:54</div>
+            <div class="timeline-body"><p>The only thing a <code>OnceMap</code> really needs to be able to do with the value
+is to clone it. All extant uses benefited from having this done for them
+by automatically wrapping values in an <code>Arc</code>. But this isn't necessarily
+true for all things. For example, a value might have an <code>Arc</code> internally
+to making cloning cheap in other contexts, and it doesn't make sense to
+re-wrap it in an <code>Arc</code> just to use it with a <code>OnceMap</code>. Or
+alternatively, cloning might just be cheap enough on its own that an
+<code>Arc</code> isn't worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2024-04-24 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-24 14:56</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-24 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-04-24 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-04-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-04-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-04-24 17:48</div>
+            <div class="timeline-body"><p>We could also avoid the <code>Arc</code>s entirely by keeping a <code>DashMap&lt;K, Value&lt;usize&gt;&gt;</code> that indexes into a separate persistent vector once the value has been initialized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-24 18:15</div>
+            <div class="timeline-body"><p>@ibraheemdev Do you mean something like <a href="https://docs.rs/im-rc/latest/im_rc/vector/struct.Vector.html">this</a>? I don't think I see a straight-forward way to make that work. You still need to synchronize updates to the persistent vector somehow. And that in turn usually makes returning a <code>&amp;T</code> difficult. You could put a <code>Box&lt;Vector&gt;</code> into an <code>AtomicPtr</code>, but when you go to CAS it out with an updated <code>Vector</code> after a <code>done</code> call, I believe that could invalidate previous borrows (thus causing UB).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-04-24 18:52</div>
+            <div class="timeline-body"><p>@BurntSushi I was thinking of using <a href="https://docs.rs/boxcar/latest/boxcar/struct.Vec.html">boxcar</a>, which allows concurrent inserts and stable addresses. I don't know enough about how <code>OnceMap</code> is used to know if it's worth the dependency though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-24 20:24</div>
+            <div class="timeline-body"><p>Oh a concurrent vector, not a persistent vector. (A persistent vector has different properties. Like cheap clones, structural sharing and the ability to continue using older &quot;versions.&quot;) But I see, yes, I think something like that could work. It's a nice data structure. But yeah, I don't think we're feeling the downsides of <code>Arc</code> here yet. I think it's typically the case that the relative work of cloning an <code>Arc</code> is dwarfed by other things (like I/O).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

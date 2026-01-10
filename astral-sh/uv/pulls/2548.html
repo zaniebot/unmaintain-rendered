@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `--force` to overwrite existing virtualenv - astral-sh/uv #2548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow <code>--force</code> to overwrite existing virtualenv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2548">#2548</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-19 19:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 19:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/2529.</p>
+<h2>Test Plan</h2>
+<ul>
+<li><code>mkdir .venv</code></li>
+<li><code>touch .venv/foo</code></li>
+<li><code>cargo run venv</code> (ensure failure)</li>
+<li><code>cargo run venv --force</code> (ensure success)</li>
+<li><code>cargo run venv --force</code> (ensure success again)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-03-19 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-03-19 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow --force to overwrite existing virtualenv" to "Allow `--force` to overwrite existing virtualenv" by @charliermarsh on 2024-03-19 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-19 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-19 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 19:04</div>
+            <div class="timeline-body"><p>Should we resolve https://github.com/astral-sh/uv/issues/1472 too? I imagined gating that behavior with <code>--force</code> when we added it.</p>
+<p>I presume this closes https://github.com/astral-sh/uv/issues/1863 as well.</p>
+<p>Supersedes https://github.com/astral-sh/uv/pull/1824</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 19:06</div>
+            <div class="timeline-body"><p>I do make use of <code>uv venv</code> clearing the environment all the time but it seems more user friendly (and safe) to require <code>-f</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 19:06</div>
+            <div class="timeline-body"><p>Before I respond to that, I should note that <code>--force</code> is different than what you're describing. <code>--force</code> does <em>not</em> clear the folder. That was the specific request in the linked issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-19 19:10</div>
+            <div class="timeline-body"><p>Ah sorry for the ambiguous language, I mean &quot;clear the environment&quot; as-in reset the virtual environment to an initial state not &quot;clear the entire folder&quot;.</p>
+<p>e.g. <code>uv venv foo</code> fails if <code>foo</code> exists at all and <code>uv venv foo --force</code> updates <code>foo</code> to be a fresh virtual environment without removing unrelated files. I don't see a need for a way to <code>rm -rf foo</code> via a flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 20:12</div>
+            <div class="timeline-body"><p>That makes sense. I guess I'm not totally sold on changing the current overwrite behavior... I have a hunch that it's a difference in the API, and that leads to initial confusion, but that it's actually not a <em>bad</em> behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 20:12</div>
+            <div class="timeline-body"><p>Relatedly, <code>--clear</code> would be the comparable <code>virtualenv</code> flag for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-03-19 20:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Should we resolve #1472 too?</p>
+</blockquote>
+<p>Fwiw, I also think it's better to resolve #1472 first. Actually I expected to get error on continuous <code>uv venv</code>.
+Then we can consider <code>--force-overwrite</code> and <code>--force-recreate</code> flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 20:48</div>
+            <div class="timeline-body"><p>I just can't think of a time when I've ever run <code>virtualenv</code> and didn't want it to reset the environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-20 00:11</div>
+            <div class="timeline-body"><p>I think it would happen when you didn't realize that there was an existing environment... which would be bad if you weren't constructing your environment from lockfiles (which is fairly common for people other than us).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-04-12 20:42</div>
+            <div class="timeline-body"><p>Any updates on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-04-17 17:46</div>
+            <div class="timeline-body"><p>@zanieb @charliermarsh did this get lost?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 18:13</div>
+            <div class="timeline-body"><p>I think we just lost steam because it started to get entangled with the discussion around whether we should change the <code>uv venv</code> behavior for existing virtualenvs in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 19:31</div>
+            <div class="timeline-body"><p>And what the flags should be for these various behaviors</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 19:38</div>
+            <div class="timeline-body"><p>Concretely, I'd be okay with:</p>
+<p><code>--force</code>: Create an environment without checking for unknown files
+<code>--clear</code> / <code>--reset</code>: When creating, ensure site-packages is empty. Implies <code>--force</code>.</p>
+<p>I don't see any reason to remove unknown files on <code>--clear</code>. That feels like different functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 19:41</div>
+            <div class="timeline-body"><p>So would the behavior without any flags change? (Does <code>--clear</code> do an <code>rm -rf .venv</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 20:00</div>
+            <div class="timeline-body"><p>I think the existing behavior should change to fail if <code>.venv</code> exists without one of these flags and <code>--clear</code> should not imply <code>rm -rf .venv</code> — that seems like something you should do manually if you want to remove things other than packages?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 20:01</div>
+            <div class="timeline-body"><p>I don’t understand what clear does then. And clear would then differ from virtualenv despite having the same name. What does it do? Removes specific folders?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 20:07</div>
+            <div class="timeline-body"><blockquote>
+<p>And clear would then differ from virtualenv despite having the same name.</p>
+</blockquote>
+<p>Hence suggesting <code>--reset</code> instead.</p>
+<p>Isn't what I wrote concrete?</p>
+<blockquote>
+<p>When creating, ensure site-packages is empty
+I don't see any reason to remove unknown files on --clear</p>
+</blockquote>
+<p>I expect it to remove all the packages and reset the virtual environment files (i.e. that it would create) not delete every file in the directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 20:08</div>
+            <div class="timeline-body"><p>Not tied to this proposal, just putting something concrete forward so we can make progress on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 20:19</div>
+            <div class="timeline-body"><p>I think I'm just trying to understand the motivation for keeping <em>some</em> of the content in the virtualenv. When would that be needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 20:39</div>
+            <div class="timeline-body"><p>I'm not sure, for whatever weird thing is going on in https://github.com/astral-sh/uv/issues/2529?</p>
+<p>Perhaps what I'm thinking is... it feels <em>hard</em> for a user to <em>just</em> clear the packages themselves but very easy for a user to delete the whole directory if they want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-04-18 06:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the existing behavior should change to fail if <code>.venv</code> exists without one of these flags</p>
+</blockquote>
+<p>👍</p>
+<blockquote>
+<p>I think I'm just trying to understand the motivation for keeping <em>some</em> of the content in the virtualenv. When would that be needed?</p>
+</blockquote>
+<p>It's useful when an external tool adds its specified files to <code>.venv</code> directory. when use --clear/--reset it's better avoid using external tool again to create those files/folders. I don't know real world example for such case, but I think this is one of possible scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 14:01</div>
+            <div class="timeline-body"><p>@zanieb - thought I thought #2529 was like: they create a new directory, they add some files, then they want to add a virtualenv to it (rather than: they have an existing virtualenv that they want to clear).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-04-18 14:02</div>
+            <div class="timeline-body"><blockquote>
+<p>@zanieb - thought I thought #2529 was like: they create a new directory, they add some files, then they want to add a virtualenv to it (rather than: they have an existing virtualenv that they want to clear).</p>
+</blockquote>
+<p>Yes correct, this is my use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-18 14:26</div>
+            <div class="timeline-body"><p>@charliermarsh so yeah once you're in that situation how do you clear the packages from the virtual environment in the folder?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 14:31</div>
+            <div class="timeline-body"><p>I don't think they reuse the directory in that way, though. It sounds like they create a new directory, seed it, use it for a virtualenv, then move on. I imagine that they then repeat that entire process when they need a new virtualenv. So, I'm not sure it's worth designing around and supporting that workflow when we don't have a clear motivating use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-22 21:11</div>
+            <div class="timeline-body"><p>I think about it like this:</p>
+<p>I use <code>uv venv</code> to clear an environment all the time. It's nice to reset the installed packages in a single command. We should provide a flag to toggle behavior when the directory exists already. I think this behavior should not be opt-out, but instead opt-in — manually managed environments are rarely disposable for real users. I would find it surprising that it performs <code>rm -rf .venv</code> and deletes files unrelated to the virtual environment itself. I cannot trivially clear packages from a virtual environment manually, as it can vary per platform. I can, however, trivially delete the folder. I'd like <code>uv</code> to take care of the non-trivial part of this workflow. I admit there is still value to performing the trivial part, i.e. it's a single invocation instead of <code>rm -rf .venv &amp;&amp; uv venv</code>. It seems rare that you would need to clean up other state in the directory though, in which case I think the two command invocation is clearer anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-24 01:37</div>
+            <div class="timeline-body"><p>:shrug: IDK, personally I would find it surprising if <code>--clear</code> or <code>--reset</code> left some random files in the virtualenv. I think it's likely that we eventually hear from a user that's confused that <code>--clear</code> or <code>--reset</code> doesn't fully clear or reset the virtual environment. We'll may also see some bug eventually around files that we can't track in our implementation but that &quot;should&quot; be cleared (e.g., what if <code>virtualenv</code> or <code>python -m venv</code> writes a file to the top-level, and a user runs <code>--clear </code>on one of those virtualenvs?). It feels like a hard behavior to explain and implement reliably for a use-case we don't know about.</p>
+<p>If we can't agree, then should we at least move forward with <code>--force</code> as-described, that allows you to create a virtualenv ignoring any existing files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-30 13:46</div>
+            <div class="timeline-body"><p>🤷‍♀️ okay let's just go forward with both <code>--force</code> and <code>--clear</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-30 14:19</div>
+            <div class="timeline-body"><p>I like the current behavior, it encourages treating venvs as ephemeral</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-30 14:23</div>
+            <div class="timeline-body"><p>I feel quite strongly that our current behavior is nice for us but doesn't make sense for the average user. Virtual environments are going to be ephemeral and abstract in our future workflows, we don't need to enforce this idea by making it easy to delete your environment when using a plumbing command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-01 15:59</div>
+            <div class="timeline-body"><p>Okay, let's proceed with <code>--force</code> for now. We can always decide on <code>--clear</code> or <code>--reset</code> after.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-01 16:04</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/charlie/force">CodSpeed Performance Report</a></h2>
+<h3>Merging #2548 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>charlie/force</code> (8f65128) with <code>main</code> (630d3fd)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 12</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-01 16:09</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/charlie/force">CodSpeed Performance Report</a></h2>
+<h3>Merging #2548 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>charlie/force</code> (da4d103) with <code>main</code> (630d3fd)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 12</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-01 16:25</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/charlie/force">CodSpeed Performance Report</a></h2>
+<h3>Merging #2548 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>charlie/force</code> (540aab1) with <code>main</code> (630d3fd)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 12</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-01 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-01 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-01 16:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-resolver: add initial version of universal lock file format - astral-sh/uv #3314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-resolver: add initial version of universal lock file format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3314">#3314</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-04-29 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-29 16:07</div>
+            <div class="timeline-body"><p>This is meant to be a base on which to build. There are some parts
+which are implicitly incomplete and others which are explicitly
+incomplete. The latter are indicated by TODO comments.</p>
+<p>Here is a non-exhaustive list of incomplete things. In many cases, these
+are incomplete simply because the data isn't present in a
+<code>ResolutionGraph</code>. Future work will need to refactor our resolver so
+that this data is correctly passed down.</p>
+<ul>
+<li>Not all wheels are included. Only the &quot;selected&quot; wheel for the current
+distribution is included.</li>
+<li>Marker expressions are always absent.</li>
+<li>We don't emit hashes for certainly kinds of distributions (direct
+URLs, git, and path).</li>
+<li>We don't capture git information from a dependency specification.
+Right now, we just always emit &quot;default branch.&quot;</li>
+</ul>
+<p>There are perhaps also other changes we might want to make to the format
+of a more cosmetic nature. Right now, all arrays are encoded using
+whatever the <code>toml</code> crate decides to do. But we might want to exert more
+control over this. For example, by using inline tables or squashing more
+things into strings (like I did for <code>Source</code> and <code>Hash</code>). I think the
+main trade-off here is that table arrays are somewhat difficult to read
+(especially without indentation), where as squashing things down into a
+more condensed format potentially makes future compatible additions
+harder.</p>
+<p>I also went pretty light on the documentation here than what I would
+normally do. That's primarily because I think this code is going to
+go through some evolution and I didn't want to spend too much time
+documenting something that is likely to change.</p>
+<p>Finally, here's an example of the lock file format in TOML for the
+<code>anyio</code> dependency. I generated it with the following command:</p>
+<pre><code>cargo run -p uv -- pip compile -p3.10 ~/astral/tmp/reqs/anyio.in --unstable-uv-lock-file
+</code></pre>
+<p>And that writes out a <code>uv.lock</code> file:</p>
+<pre><code class="language-toml">version = 1
+
+[[distribution]]
+name = &quot;anyio&quot;
+version = &quot;4.3.0&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/14/fd/2f20c40b45e4fb4324834aea24bd4afdf1143390242c0b33774da0e2e34f/anyio-4.3.0-py3-none-any.whl&quot;
+hash = &quot;sha256:048e05d0f6caeed70d731f3db756d35dcc1f35747c8c403364a8332c630441b8&quot;
+
+[[distribution.dependencies]]
+name = &quot;exceptiongroup&quot;
+version = &quot;1.2.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;idna&quot;
+version = &quot;3.7&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;sniffio&quot;
+version = &quot;1.3.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.dependencies]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.11.0&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution]]
+name = &quot;exceptiongroup&quot;
+version = &quot;1.2.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/01/90/79fe92dd413a9cab314ef5c591b5aa9b9ba787ae4cadab75055b0ae00b33/exceptiongroup-1.2.1-py3-none-any.whl&quot;
+hash = &quot;sha256:5258b9ed329c5bbdd31a309f53cbfb0b155341807f6ff7606a1e801a891b29ad&quot;
+
+[[distribution]]
+name = &quot;idna&quot;
+version = &quot;3.7&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl&quot;
+hash = &quot;sha256:82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0&quot;
+
+[[distribution]]
+name = &quot;sniffio&quot;
+version = &quot;1.3.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl&quot;
+hash = &quot;sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2&quot;
+
+[[distribution]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.11.0&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+
+[[distribution.wheel]]
+url = &quot;https://files.pythonhosted.org/packages/01/f3/936e209267d6ef7510322191003885de524fc48d1b43269810cd589ceaf5/typing_extensions-4.11.0-py3-none-any.whl&quot;
+hash = &quot;sha256:c1f94d72897edaf4ce775bb7558d5b79d8126906a14ea5ed1635921406c0387a&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-04-29 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-04-29 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-04-29 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/file.rs</code>:197 on 2024-04-29 16:40</div>
+            <div class="timeline-body"><p>Can we derive those with <code>thiserror::Error</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:223 on 2024-04-29 16:46</div>
+            <div class="timeline-body"><p>I also ran into this problem a bunch; we're tracking some information on the urls of the dist types but it's not readily accessible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-29 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-29 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/file.rs</code>:197 on 2024-04-29 17:11</div>
+            <div class="timeline-body"><p>My hands are very good at writing things out without macros because <code>thiserror</code> is IMO not usually worth the dependency. But I suppose that's irrelevant here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-04-29 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-04-29 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-29 18:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

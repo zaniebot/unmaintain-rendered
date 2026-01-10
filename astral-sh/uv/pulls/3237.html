@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Only perform fetches of credentials for a realm once - astral-sh/uv #3237</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Only perform fetches of credentials for a realm once</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3237">#3237</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-24 14:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-24 14:06</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/3205</p>
+<p>Tested with</p>
+<p><code>RUST_LOG=uv=trace cargo run -- pip install -r scripts/requirements/trio.in --index-url https://oauth2accesstoken@us-central1-python.pkg.dev/zb-test-project-421213/pypyi/simple/ --no-cache --keyring-provider subprocess -vv --reinstall 2&gt;&amp;1 | grep keyring</code></p>
+<p>On <code>main</code> you can see a dozen keyring attempts at once. Here, the other requests wait for the first attempt and only a single keyring call is performed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2024-04-24 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-24 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/cache.rs</code>:15 on 2024-04-24 14:09</div>
+            <div class="timeline-body"><p>This duplication hints that we should refactor the <code>realm</code> cache but I don't want to make further changes here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-04-24 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-04-24 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-24 14:12</div>
+            <div class="timeline-body"><p>Going to do some sort of light benchmarking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-24 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-24 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/cache.rs</code>:15 on 2024-04-24 14:31</div>
+            <div class="timeline-body"><p><code>pub(crate)</code> seems slightly off but perhaps not worth exposing these as methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-24 14:52</div>
+            <div class="timeline-body"><p>Looks helpful for large requirements.</p>
+<p>Note for all of these I seeded a clean environment first to ensure there wasn't an extra cost for the first invocation.</p>
+<pre><code>❯ hyperfine -n branch -n main -- &quot;./branch pip install -r ../prefect/requirements.txt --index-url https://oauth2accesstoken@us-central1-python.pkg.dev/zb-test-project-421213/pypyi/simple/ --no-cache --keyring-provider subprocess --reinstall -q&quot; &quot;./main pip install -r ../prefect/requirements.txt --index-url https://oauth2accesstoken@us-central1-python.pkg.dev/zb-test-project-421213/pypyi/simple/ --no-cache --keyring-provider subprocess --reinstall -q&quot;
+Benchmark 1: branch
+  Time (mean ± σ):     10.714 s ±  3.331 s    [User: 1.595 s, System: 2.350 s]
+  Range (min … max):    7.503 s … 15.264 s    10 runs
+ 
+Benchmark 2: main
+  Time (mean ± σ):     16.423 s ±  2.307 s    [User: 26.098 s, System: 8.084 s]
+  Range (min … max):   13.985 s … 19.846 s    10 runs
+ 
+Summary
+  branch ran
+    1.53 ± 0.52 times faster than main
+    
+❯ hyperfine -n branch -n main -- &quot;./branch pip install -r scripts/requirements/trio.in --index-url https://oauth2accesstoken@us-central1-python.pkg.dev/zb-test-project-421213/pypyi/simple/ --no-cache --keyring-provider subprocess --reinstall -q&quot; &quot;./main pip install -r scripts/requirements/trio.in --index-url https://oauth2accesstoken@us-central1-python.pkg.dev/zb-test-project-421213/pypyi/simple/ --no-cache --keyring-provider subprocess --reinstall -q&quot;
+Benchmark 1: branch
+  Time (mean ± σ):     12.766 s ±  2.964 s    [User: 1.449 s, System: 1.536 s]
+  Range (min … max):    8.814 s … 16.260 s    10 runs
+ 
+Benchmark 2: main
+  Time (mean ± σ):     13.331 s ±  3.146 s    [User: 8.309 s, System: 3.164 s]
+  Range (min … max):    8.575 s … 17.044 s    10 runs
+ 
+Summary
+  branch ran
+    1.04 ± 0.35 times faster than main
+
+❯  hyperfine -n branch -n main -- &quot;./branch pip install -r scripts/requirements/compiled/jupyter.txt --index-url https://oauth2accesstoken@us-central1-python.pkg.dev/zb-test-project-421213/pypyi/simple/ --no-cache --keyring-provider subprocess --reinstall -q&quot; &quot;./main pip install -r scripts/requirements/compiled/jupyter.txt --index-url https://oauth2accesstoken@us-central1-python.pkg.dev/zb-test-project-421213/pypyi/simple/ --no-cache --keyring-provider subprocess --reinstall -q&quot;
+Benchmark 1: branch
+  Time (mean ± σ):     13.692 s ±  3.222 s    [User: 2.062 s, System: 2.956 s]
+  Range (min … max):    8.369 s … 17.495 s    10 runs
+ 
+Benchmark 2: main
+  Time (mean ± σ):     15.738 s ±  1.982 s    [User: 27.028 s, System: 8.893 s]
+  Range (min … max):   13.242 s … 19.283 s    10 runs
+ 
+Summary
+  branch ran
+    1.15 ± 0.31 times faster than main
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-04-24 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-24 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-24 14:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

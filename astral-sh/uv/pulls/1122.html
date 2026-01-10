@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More windows compatibility filters - astral-sh/uv #1122</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>More windows compatibility filters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1122">#1122</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-26 13:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-26 13:40</div>
+            <div class="timeline-body"><p>Add windows compatibility filters that filter out windows only deps and reduce the package count appropriately and use normalized path display in tests to ensure a UNC <code>\\?\</code> prefix doesn't cause a mismatch. This significantly reduces the number of failing windows tests.</p>
+<p>The <code>pip_uninstall</code>, <code>puffin_interpreter</code> and <code>requirements_txt</code> test modules now all pass on Windows.</p>
+<p>Summary: 416 tests run: 347 passed, 69 failed, 1 skipped</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-26 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/install-wheel-rs/src/lib.rs</code>:81 on 2024-01-26 13:40</div>
+            <div class="timeline-body"><p>The error displays in theory have the same problem as the log messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-26 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/lib.rs</code>:81 on 2024-01-26 13:58</div>
+            <div class="timeline-body"><p>Yes thank you! What's with the underscore?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-26 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/install-wheel-rs/src/lib.rs</code>:81 on 2024-01-26 16:22</div>
+            <div class="timeline-body"><p><code>0</code> isn't a valid ident / already has a value assigned and that seems to be the workaround. <a href="https://docs.rs/thiserror/latest/thiserror/#details">The docs</a> write about <code>.0</code> instead, i guess both work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-26 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/common/mod.rs</code>:29 on 2024-01-26 17:10</div>
+            <div class="timeline-body"><p>@zanieb - Do you want to take a look at this too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-26 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/common/mod.rs</code>:29 on 2024-01-26 18:54</div>
+            <div class="timeline-body"><p>Providing the extra package count expected on Windows is a pretty awkward API. Can we do better?</p>
+<p>Also in #1112 I experience a lot of awkwardness because we cannot do any processing between creating the command and the snapshot. Perhaps we should devote some resources to inserting ourselves between the command and its snapshot? Then we could process the snapshot and identify which windows-only dependencies are present and adjust the number accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-26 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/common/mod.rs</code>:29 on 2024-01-26 18:54</div>
+            <div class="timeline-body"><p>(This does not need to block this pull request)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/common/mod.rs</code>:29 on 2024-01-27 11:19</div>
+            <div class="timeline-body"><p>I feel like we should at least wrap this in some slightly different and more explicit API. Could we instead make this a bitflags or something that includes the expected packages to remove for the given test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-27 11:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-27 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin/tests/common/mod.rs</code>:29 on 2024-01-27 12:27</div>
+            <div class="timeline-body"><p>I'm considering doing our string processing, it seems insta doesn't support programmatic filters</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-27 18:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/common/mod.rs</code>:29 on 2024-01-27 18:49</div>
+            <div class="timeline-body"><p>I think that makes sense in the long term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-27 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin/tests/common/mod.rs</code>:29 on 2024-01-27 19:18</div>
+            <div class="timeline-body"><p>I'm torn on writing our own <code>with_settings! { assert_cmd_snapshot! }</code> macro, it would fit our testing setup much better but otoh all the support features in insta_cmd are private, so we'll have to duplicate them and lose the other features of that crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-27 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/common/mod.rs</code>:29 on 2024-01-27 19:20</div>
+            <div class="timeline-body"><p>I wouldn't really mind vendoring parts of <code>assert_cmd_snapshot</code> it's a critical part of our testing and it's pretty inflexible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-02-05 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-29 13:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

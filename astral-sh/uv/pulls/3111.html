@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `--platform` argument to enable resolving against a target platform - astral-sh/uv #3111</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a <code>--platform</code> argument to enable resolving against a target platform</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3111">#3111</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-04-18 03:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 03:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I've wanted to try this for a long time, so decided to give it a shot. The basic idea is that you can provide a target triple (e.g., <code>--platform x86_64-pc-windows-msvc</code>) and resolve against that platform, rather than the currently-running platform. It's functionally similar to <code>--python-version</code>, though a bit simpler since there's no need to engage with <code>Requires-Python</code>.</p>
+<p>Our infrastructure is well-setup for this and so, in the end, it's actually pretty straightforward: for each triple, we just need to override the markers and platform tags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-04-18 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-04-18 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-04-18 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-04-18 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-18 03:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:45 on 2024-04-18 03:04</div>
+            <div class="timeline-body"><p>I don't know that this is actually the representation we want to use, but it... kind of works well? And it lets us avoid inventing our own format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-18 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-18 03:05</div>
+            <div class="timeline-body"><p>All of these values are based on the Tier 1 and Tier 2 definitions in the Rust project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-04-18 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-18 03:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:138 on 2024-04-18 03:12</div>
+            <div class="timeline-body"><p>Per the spec, you're allowed to leave these empty to indicate &quot;unknown&quot;.</p>
+<p>It looks like this is sometimes used though: https://github.com/search?type=code&amp;q=%22platform_release%22+path%3Arequirements.txt. E.g., sometimes as: <code>sys_platform == &quot;win32&quot; and platform_release == &quot;10&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-18 03:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:125 on 2024-04-18 03:13</div>
+            <div class="timeline-body"><p>This really doesn't seem to be used: https://github.com/search?type=code&amp;q=%22platform_version%22+path%3Arequirements.txt.</p>
+<p>On my machine:</p>
+<pre><code class="language-python">&gt;&gt;&gt; import platform
+&gt;&gt;&gt; platform.version()
+'Darwin Kernel Version 23.4.0: Fri Mar 15 00:12:37 PDT 2024; root:xnu-10063.101.17~1/RELEASE_ARM64_T6031'
+</code></pre>
+<p>The one common case (guessing it's cargo culted) is using <code>'ARM' in platform_version # Mac M-chips</code> vs. <code>'ARM' not in platform_version # Mac Intel chips</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-18 04:51</div>
+            <div class="timeline-body"><p>Looks weirdly easy. I think this makes sense, will leave approval to one of the other too though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 04:53</div>
+            <div class="timeline-body"><p>I think it actually is easy. Though there are probably some decisions around whether we want to allow users to provide more specific markers (like specific manylinux versions or whatever).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/cli.rs</code>:491 on 2024-04-18 09:23</div>
+            <div class="timeline-body"><p>Can we link the list of target triples here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-18 09:25</div>
+            <div class="timeline-body"><p>This is also manylinux2014, so it should match what is often present</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/target.rs</code>:125 on 2024-04-18 09:27</div>
+            <div class="timeline-body"><p><code>platform_version</code> leaks so much detail of the current platform i wish we could remove it entirely, or agree to always set it to an empty string across tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-04-18 09:29</div>
+            <div class="timeline-body"><p>nice work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:7893 on 2024-04-18 13:45</div>
+            <div class="timeline-body"><p>It looks like the test here doesn't change based on the platform? Or maybe my eyes missed it. Can we add a more &quot;exciting&quot; test where there is a change based on the platform?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/cli.rs</code>:491 on 2024-04-18 13:48</div>
+            <div class="timeline-body"><p>I think it would also be nice to elaborate on what is meant by &quot;target triple&quot; here. Coming from Rust/C/C++/whatever, the notion of the target triple makes intuitive sense. But in Python land, I might know that the things that make up a target are more involved than a standard target triple. I think calling that difference out in the docs will help understanding. And as a concrete example, it might help to answer the question of, &quot;what if I want to specify a different Python implementation?&quot; That isn't captured by the target triple. (And I think the suggestion in that case is to actually use the different Python implementation.)</p>
+<p>Maybe a succinct way to explain things here is that the target triples are a heuristic to specify a <em>part</em> of the build parameters, but that they don't capture everything that can be in a &quot;marker environment.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-04-18 13:48</div>
+            <div class="timeline-body"><p>w00t! This is awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-18 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/cli.rs</code>:491 on 2024-04-18 13:52</div>
+            <div class="timeline-body"><p>Do you think &quot;target triple&quot; is the right abstraction to use?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-18 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:7893 on 2024-04-18 14:56</div>
+            <div class="timeline-body"><p>It does, colorama gets included / excluded!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-18 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:7893 on 2024-04-18 14:56</div>
+            <div class="timeline-body"><p>I'll add some more though. Do you have good examples from your work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/cli.rs</code>:491 on 2024-04-18 15:06</div>
+            <div class="timeline-body"><p>I'm honestly not sure. I am skeptical. With that said, it <em>does</em> seem very useful. I feel like if we present it as a &quot;shortcut&quot; to specifying the most common parts of a marker environment that you might to specify, then it would be useful. (And we can say that there isn't yet a way to specify more parts of the marker environment than what the target triple does.)</p>
+<p>I think the weird part of this is that the marker environment derived from the target triple is sort of a frankenstein monster. It's part static information fully determined by the triple and part dynamic information based on the current environment. I don't have enough experience to say how that's going to fall over, but it doesn't seem right to me. For example, target files for rustc don't have any dynamic information in them at all: https://github.com/rust-lang/rust/blob/eff958c59e8c07ba0515e164b825c9001b242294/tests/run-make/target-specs/my-x86_64-unknown-linux-gnu-platform.json</p>
+<p>So I wonder if it makes sense to remove the dynamic parts here and, for example, hard-code <code>cpython</code>. And for folks that want to use pypy (or whatever), then maybe in the future we can provide a way for end users to specify the complete marker environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-18 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-18 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:7893 on 2024-04-18 15:09</div>
+            <div class="timeline-body"><p>Oh nice! I've mostly been working with <code>anyio</code>, although I think that's mostly dependent on <code>python_version</code>. Otherwise I made up my own packse scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-19 02:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/cli.rs</code>:491 on 2024-04-19 02:53</div>
+            <div class="timeline-body"><p>I'm gonna run with it for now... Let's see where it takes us.</p>
+<blockquote>
+<p>It's part static information fully determined by the triple and part dynamic information based on the current environment.</p>
+</blockquote>
+<p>The only things that are dynamic are the Python-oriented tags: the Python version, the implementation version, etc. So it seems not-horrible to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-19 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-19 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-19 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fellhorn">@fellhorn</a> reviewed on 2024-04-23 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/fellhorn">@fellhorn</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 16:17</div>
+            <div class="timeline-body"><p>Do you think there should be a way to override these for the user?</p>
+<p>I just tried the <code>--python-platform</code> feature (works great, thx!) but failed with packages built against a newer version of <code>glibc</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-23 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 16:24</div>
+            <div class="timeline-body"><p>I think we should add variants for the other manylinux versions. (By &quot;failed&quot;, you mean, &quot;didn't download those wheels&quot;? Or, how did it fail?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/neumann-nico">@neumann-nico</a> reviewed on 2024-04-23 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/neumann-nico">@neumann-nico</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 20:17</div>
+            <div class="timeline-body"><p>e.g. <a href="https://pypi.org/project/open3d/#files">open3d</a> uses <code>glibc</code> 2.27 and it fails like this:</p>
+<pre><code class="language-bash">❯ uv pip compile requirements.in --python-platform=linux
+  x No solution found when resolving dependencies:
+  `-&gt; Because open3d==0.18.0 is unusable because no wheels are available with a matching Python implementation
+   and you require open3d==0.18.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-23 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 20:21</div>
+            <div class="timeline-body"><p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-23 20:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 20:25</div>
+            <div class="timeline-body"><p>Filed here: https://github.com/astral-sh/uv/issues/3222. I have an idea for the format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/neumann-nico">@neumann-nico</a> reviewed on 2024-04-23 20:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/neumann-nico">@neumann-nico</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 20:32</div>
+            <div class="timeline-body"><p>For completeness:
+<code>uv pip compile requirements.in --python-platform=macos</code> also fails for <code>open3d</code> because the ARM64 wheels are only available for MacOS 13.0+ (or universal for 10.15+) while <code>uv</code> specifies MacOS 11.0 for ARM64.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-23 20:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 20:35</div>
+            <div class="timeline-body"><p>In that case, should it be able to pick out the universal wheels? Wonder why it's not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/neumann-nico">@neumann-nico</a> reviewed on 2024-04-23 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/neumann-nico">@neumann-nico</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 21:07</div>
+            <div class="timeline-body"><p>Hmm good question, I think so?, because it would match the platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-23 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-23 22:20</div>
+            <div class="timeline-body"><p>I'll look into that separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fellhorn">@fellhorn</a> reviewed on 2024-04-24 08:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/fellhorn">@fellhorn</a> on <code>crates/uv/src/target.rs</code>:56 on 2024-04-24 08:18</div>
+            <div class="timeline-body"><p>Yes, with <code>failed</code> I meant <a href="https://peps.python.org/pep-0600/">PEP 600</a> <code>manylinux_x_y</code> packages not being selected during <code>uv pip compile</code> due to a glibc version mismatch. Of course this behavior is expected, though an 11 year old version does effectively create constraints.</p>
+<p>For us a few more allowed options for the <code>python-platform</code> string would probably already work, thx :+1:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

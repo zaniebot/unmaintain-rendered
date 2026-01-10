@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `dashmap::DashSet` in `uv_extract::unzip` - astral-sh/uv #3441</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>dashmap::DashSet</code> in <code>uv_extract::unzip</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3441">#3441</a>
+        opened by <a href="https://github.com/DaniPopes">@DaniPopes</a>
+        on 2024-05-07 22:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/DaniPopes">@DaniPopes</a> on 2024-05-07 22:06</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Use <code>dashmap::HashSet</code> over <code>Mutex&lt;HashSet&gt;</code>.
+Suggested in https://github.com/astral-sh/uv/pull/3435#discussion_r1592917098.</p>
+<p>This is a bit more complex that I thought: the original hashmap lock was held through the <code>create_dir_all</code> call, and if we naively swap it for dashmap this is not the case anymore which creates a race condition. See f9a5feaa5b39892364c3f8b63f9ba22aa7917a75.</p>
+<p>I don't know if this is worth it, feel free to close if not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-05-07 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-05-07 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-extract/src/stream.rs</code>:18 on 2024-05-08 11:49</div>
+            <div class="timeline-body"><p>Why this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-extract/src/sync.rs</code>:12 on 2024-05-08 11:51</div>
+            <div class="timeline-body"><p>Since we're using this as a set, I'd find it clearer to define this as a <code>FxDashSet&lt;V&gt;</code> and fix the value type to <code>()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-extract/src/sync.rs</code>:12 on 2024-05-08 11:53</div>
+            <div class="timeline-body"><p>I think I'd also add a comment here saying why we aren't using a <code>DashSet</code> directly. I assume it's because a <code>DashSet</code> has no API for holding the lock in the case of a non-existent key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-08 11:57</div>
+            <div class="timeline-body"><p>I think a <code>Mutex&lt;HashSet&gt;</code> is simpler here, so I think I want to see a reason to use a <code>DashMap</code> here in lieu of the simpler thing. And in particular, since we're holding the lock across I/O boundaries anyway, it's not clear to me that a concurrent hashmap is going to help us much if at all.</p>
+<p>@ibraheemdev Did you have any thoughts here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-08 22:17</div>
+            <div class="timeline-body"><p>Hmm I agree that if we're holding the lock during the fs operation <code>DashMap</code> probably doesn't buy us much. We could use a <code>OnceMap</code> here to avoid contention on the lock, however, I'm not sure if the contention is a bottleneck given that the download still happens in parallel. If it's not I agree this is probably not worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 14:42</div>
+            <div class="timeline-body"><p>Alright, let's close for now then. Sorry for the churn @DaniPopes, appreciate your work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-09 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-09 14:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

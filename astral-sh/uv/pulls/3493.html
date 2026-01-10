@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consolidate concurrency limits - astral-sh/uv #3493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consolidate concurrency limits</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3493">#3493</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-05-09 18:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-09 18:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR consolidates the concurrency limits used throughout <code>uv</code> and exposes two limits, <code>UV_CONCURRENT_DOWNLOADS</code> and <code>UV_CONCURRENT_BUILDS</code>, as environment variables.</p>
+<p>Currently, <code>uv</code> has a number of concurrent streams that it buffers using relatively arbitrary limits for backpressure. However, many of these limits are conflated. We run a relatively small number of tasks overall and should start most things as soon as possible. What we really want to limit are three separate operations:</p>
+<ul>
+<li>File I/O. This is managed by tokio's blocking pool and we should not really have to worry about it.</li>
+<li>Network I/O.</li>
+<li>Python build processes.</li>
+</ul>
+<p>Because the current limits span a broad range of tasks, it's possible that a limit meant for network I/O is occupied by tasks performing builds, reading from the file system, or even waiting on a <code>OnceMap</code>. We also don't limit build processes that end up being required to perform a download. While this may not pose a performance problem because our limits are relatively high, it does mean that the limits do not do what we want, making it tricky to expose them to users (https://github.com/astral-sh/uv/issues/1205, https://github.com/astral-sh/uv/issues/3311).</p>
+<p>After this change, the limits on network I/O and build processes are centralized and managed by semaphores. All other tasks are unbuffered (note that these tasks are still bounded, so backpressure should not be a problem).</p>
+<hr />
+<p>The terminology here is a little weird. From https://github.com/astral-sh/uv/issues/3311, what we want is to expose a way to limit the overall concurrency of downloads. However, for builds, we're really only limiting the number of parallel python processes we spawn. Technically those two are different, but I think sticking to one of concurrency vs. parallelism would be less confusing. Maybe these should be <code>UV_PARALLEL_*</code> instead?</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-09 18:42</div>
+            <div class="timeline-body"><p>There is one seemingly important limit left in https://github.com/astral-sh/uv/blob/main/crates/uv-resolver/src/resolver/mod.rs#L323, from https://github.com/astral-sh/uv/pull/1163. In practice this bound is quite large compared to our concurrent downloads and should not be a source of contention, it's mainly there to allow us to use a bounded channel and avoid starving the prefetcher.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 18:42</div>
+            <div class="timeline-body"><p>Regarding parallel vs concurrent: I don't think that's important as a user-facing detail. &quot;CONCURRENT&quot; is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-09 18:43</div>
+            <div class="timeline-body"><p>I agree, I was just wondering which one would be more intuitive, regardless of which is technically correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 18:53</div>
+            <div class="timeline-body"><p>👍 I think people have a broader understanding of &quot;concurrency limits&quot; than parallelism.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 19:53</div>
+            <div class="timeline-body"><p>I've gotten comfortable just using the word &quot;concurrency&quot; because of this: https://doc.rust-lang.org/book/ch16-00-concurrency.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-05-09 20:09</div>
+            <div class="timeline-body"><p>nice work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-09 20:44</div>
+            <div class="timeline-body"><p>LGTM! There's maybe one other thing we care about here: the number of concurrent <em>installs</em> (which, today, is controllable by <code>RAYON_NUM_THREADS</code>). Once we've downloaded and built all the wheels, we then have to install them into the virtual environment, and we do this with Rayon. I think it's fine <em>not</em> to add a setting for that, but we <em>could</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-05-09 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 21:56</div>
+            <div class="timeline-body"><p>I have a minor preference for our own setting over a RAYON variable if it's easy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-10 16:26</div>
+            <div class="timeline-body"><blockquote>
+<p>LGTM! There's maybe one other thing we care about here: the number of concurrent installs (which, today, is controllable by <code>RAYON_NUM_THREADS</code>). Once we've downloaded and built all the wheels, we then have to install them into the virtual environment, and we do this with Rayon. I think it's fine not to add a setting for that, but we could.</p>
+</blockquote>
+<p>We almost might want a way to limit the size of tokio's blocking threadpool for fs operations (https://github.com/astral-sh/uv/issues/3311). Ideally those options could be combined. Installs are fs bound so maybe we should just use tokio's blocking pool instead of rayon for that as well?</p>
+<p>Either way I think I'll keep this PR limited to network and build limits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-05-10 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-05-10 16:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

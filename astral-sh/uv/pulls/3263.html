@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Add basic `tool.uv.sources` support  - astral-sh/uv #3263</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add basic <code>tool.uv.sources</code> support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3263">#3263</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-04-25 11:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-04-25 11:34</div>
+            <div class="timeline-body"><h2>Introduction</h2>
+<p>PEP 621 is limited. Specifically, it lacks</p>
+<ul>
+<li>Relative path support</li>
+<li>Editable support</li>
+<li>Workspace support</li>
+<li>Index pinning or any sort of index specification</li>
+</ul>
+<p>The semantics of urls are a custom extension, PEP 440 does not specify how to use git references or subdirectories, instead pip has a custom stringly format. We need to somehow support these while still stying compatible with PEP 621.</p>
+<h2><code>tool.uv.source</code></h2>
+<p>Drawing inspiration from cargo, poetry and rye, we add <code>tool.uv.sources</code> or (for now stub only) <code>tool.uv.workspace</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;albatross&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+  &quot;tqdm &gt;=4.66.2,&lt;5&quot;,
+  &quot;torch ==2.2.2&quot;,
+  &quot;transformers[torch] &gt;=4.39.3,&lt;5&quot;,
+  &quot;importlib_metadata &gt;=7.1.0,&lt;8; python_version &lt; '3.10'&quot;,
+  &quot;mollymawk ==0.1.0&quot;
+]
+
+[tool.uv.sources]
+tqdm = { git = &quot;https://github.com/tqdm/tqdm&quot;, rev = &quot;cc372d09dcd5a5eabdc6ed4cf365bdb0be004d44&quot; }
+importlib_metadata = { url = &quot;https://github.com/python/importlib_metadata/archive/refs/tags/v7.1.0.zip&quot; }
+torch = { index = &quot;torch-cu118&quot; }
+mollymawk = { workspace = true }
+
+[tool.uv.workspace]
+include = [
+  &quot;packages/mollymawk&quot;
+]
+
+[tool.uv.indexes]
+torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
+</code></pre>
+<p>See <code>docs/specifying_dependencies.md</code> for a detailed explanation of the format. The basic gist is that <code>project.dependencies</code> is what ends up on pypi, while <code>tool.uv.sources</code> are your non-published additions. We do support the full range or PEP 508, we just hide it in the docs and prefer the exploded table for easier readability and less confusing with actual url parts.</p>
+<p>This format should eventually be able to subsume requirements.txt's current use cases. While we will continue to support the legacy <code>uv pip</code> interface, this is a piece of the uv's own top level interface. Together with <code>uv run</code> and a lockfile format, you should only need to write <code>pyproject.toml</code> and do <code>uv run</code>, which generates/uses/updates your lockfile behind the scenes, no more pip-style requirements involved. It also lays the groundwork for implementing index pinning.</p>
+<h2>Changes</h2>
+<p>This PR implements:</p>
+<ul>
+<li>Reading and lowering <code>project.dependencies</code>, <code>project.optional-dependencies</code> and <code>tool.uv.sources</code> into a new requirements format, including:<ul>
+<li>Git dependencies</li>
+<li>Url dependencies</li>
+<li>Path dependencies, including relative and editable</li>
+</ul>
+</li>
+<li><code>pip install</code> integration</li>
+<li>Error reporting for invalid <code>tool.uv.sources</code></li>
+<li>Json schema integration (works in pycharm, see below)</li>
+<li>Draft user-level docs (see <code>docs/specifying_dependencies.md</code>)</li>
+</ul>
+<p>It does not implement:</p>
+<ul>
+<li>No <code>pip compile</code> testing, deprioritizing towards our own lockfile</li>
+<li>Index pinning (stub definitions only)</li>
+<li>Development dependencies</li>
+<li>Workspace support (stub definitions only)</li>
+<li>Overrides in pyproject.toml</li>
+<li>Patching/replacing dependencies</li>
+</ul>
+<p>One technically breaking change is that we now require user provided pyproject.toml to be valid wrt to PEP 621. Included files still fall back to PEP 517. That means <code>pip install -r requirements.txt</code> requires it to be valid while <code>pip install -r requirements.txt</code> with <code>-e .</code> as content falls back to PEP 517 as before.</p>
+<h2>Implementation</h2>
+<p>The <code>pep508</code> requirement is replaced by a new <code>UvRequirement</code> (name up for bikeshedding, not particularly attached to the uv prefix). The still existing <code>pep508_rs::Requirement</code> type is a url format copied from pip's requirements.txt and doesn't appropriately capture all features we want/need to support. The bulk of the diff is changing the requirement type throughout the codebase.</p>
+<p>We still use <code>VerbatimUrl</code> in many places, where we would expect a parsed/decomposed url type, specifically:</p>
+<ul>
+<li>Reading core metadata except top level pyproject.toml files, we fail a step later instead if the url isn't supported.</li>
+<li>Allowed <code>Urls</code>.</li>
+<li><code>PackageId</code> with a custom <code>CanonicalUrl</code> comparison, instead of canonicalizing urls eagerly.</li>
+<li><code>PubGrubPackage</code>: We eventually convert the <code>VerbatimUrl</code> back to a <code>Dist</code> (<code>Dist::from_url</code>), instead of remembering the url.</li>
+<li>Source dist types: We use verbatim url even though we know and require that these are supported urls we can and have parsed.</li>
+</ul>
+<p>I tried to make improve the situation be replacing <code>VerbatimUrl</code>, but these changes would require massive invasive changes (see e.g. https://github.com/astral-sh/uv/pull/3253). A main problem is the ref <code>VersionOrUrl</code> and applying overrides, which assume the same requirement/url type everywhere. In its current form, this PR increases this tech debt.</p>
+<p>I've tried to split off PRs and commits, but the main refactoring is still a single monolith commit to make it compile and the tests pass.</p>
+<h2>Demo</h2>
+<p>Adding https://gist.githubusercontent.com/konstin/68f3e5ea5e8f1a30a0c9096ae72925c1/raw/d1ae3b85d5a0f3c4bb562c7dfd38c3dafc04ec08/pyproject.json as json schema (v7) to pycharm for <code>pyproject.toml</code>, you can try the IDE support already:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/599082c7-6be5-41c1-a3cd-516092382f8d" alt="pycharm" /></p>
+<p><a href="https://github.com/astral-sh/uv/assets/6826232/c293c272-c80b-459d-8c95-8c46a8d198a1">dove.webm</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-04-25 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-26 12:35</div>
+            <div class="timeline-body"><ul>
+<li><strong>#3277</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/uv/3277?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>#3263</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/uv/3263?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a> 👈</li>
+<li><code>main</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-04-26 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-04-28 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/error.rs</code>:28 on 2024-04-30 04:21</div>
+            <div class="timeline-body"><p>I'd probably just remove this TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/installed.rs</code>:36 on 2024-04-30 04:21</div>
+            <div class="timeline-body"><p>Why boxed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:496 on 2024-04-30 04:29</div>
+            <div class="timeline-body"><p>I think all the changes in this file could've been done as a tiny standalone PR, to reduce the size of the diff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/parsed_url.rs</code>:80 on 2024-04-30 04:30</div>
+            <div class="timeline-body"><p>Is <code>MissingUrlPrefix</code> still used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/traits.rs</code>:172 on 2024-04-30 04:31</div>
+            <div class="timeline-body"><p>This seems off to me... Why is <code>git+</code> not tracked in <code>version_or_url</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolution.rs</code>:126 on 2024-04-30 04:32</div>
+            <div class="timeline-body"><p>I think we should just name this <code>Requirement</code>, and use <code>pep508::Requirement</code> everywhere else, personally. I'd like to avoid <code>Uv</code> in the name of abstractions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolution.rs</code>:75 on 2024-04-30 04:32</div>
+            <div class="timeline-body"><p>Should this be <code>impl From&lt;&amp;ResolvedDist&gt; for Requirement</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/unnamed.rs</code>:80 on 2024-04-30 04:34</div>
+            <div class="timeline-body"><p>Seems like the changes in this file could be done in a separate commit, even merged directly to <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:314 on 2024-04-30 04:35</div>
+            <div class="timeline-body"><p>Shouldn't this be a <code>pep508::Requirement</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:480 on 2024-04-30 04:35</div>
+            <div class="timeline-body"><p>Why is this changing to support Uv requirements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/requirement.rs</code>:19 on 2024-04-30 04:36</div>
+            <div class="timeline-body"><p>I feel like this should still be returning <code>Pep508(Requirement)</code>? I wouldn't have expected changes to this crate given that it doesn't support uv-style requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dev/src/resolve_many.rs</code>:145 on 2024-04-30 04:37</div>
+            <div class="timeline-body"><p>We should resolve <code>.expect(&quot;TODO(konsti)&quot;)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:1563 on 2024-04-30 04:37</div>
+            <div class="timeline-body"><p>Could commit this to <code>main</code> if you want to reduce the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dev/src/generate_json_schema.rs</code>:24 on 2024-04-30 04:38</div>
+            <div class="timeline-body"><p>Hmm -- why isn't this change part of <code>uv_workspace</code> directly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-git/src/lib.rs</code>:17 on 2024-04-30 04:38</div>
+            <div class="timeline-body"><p>Nit: Oxford comma after &quot;fragments&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/plan.rs</code>:275 on 2024-04-30 04:39</div>
+            <div class="timeline-body"><p>These <code>Unreachable</code> seem like a sign that something is off in the data model. How could we refactor to avoid them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/satisfies.rs</code>:155 on 2024-04-30 04:40</div>
+            <div class="timeline-body"><p>Do you think this whole refactor could be its own, separate PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/satisfies.rs</code>:20 on 2024-04-30 04:41</div>
+            <div class="timeline-body"><p>Can we make this an associated method on the enum instead, for discoverability?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:130 on 2024-04-30 04:41</div>
+            <div class="timeline-body"><p>This is blocking, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/specification.rs</code>:207 on 2024-04-30 04:43</div>
+            <div class="timeline-body"><p>Need to fix the macro formatting here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/specification.rs</code>:167 on 2024-04-30 04:43</div>
+            <div class="timeline-body"><p>What does it mean to be &quot;strict about PEP 621&quot; here? Can you expand on this comment? E.g., we're still falling back to treating it as a source tree below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/error.rs</code>:101 on 2024-04-30 04:44</div>
+            <div class="timeline-body"><p>This TODO should be made more specific or addressed, IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution.rs</code>:465 on 2024-04-30 04:45</div>
+            <div class="timeline-body"><p>This is blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/locals.rs</code>:198 on 2024-04-30 04:45</div>
+            <div class="timeline-body"><p>This is blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/urls.rs</code>:47 on 2024-04-30 04:47</div>
+            <div class="timeline-body"><p>Is each branch not the same here? Do we need to split this up? <code>UvSource::Url { url, .. } =&gt; {</code> and <code>UvSource::Path { url, .. } =&gt; {</code> at least look indentical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-30 04:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:155 on 2024-04-30 04:49</div>
+            <div class="timeline-body"><p>Can you please add Rustdoc for each variant here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:124 on 2024-04-30 04:49</div>
+            <div class="timeline-body"><p>What's the work involved here? (What's the goal?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:122 on 2024-04-30 04:49</div>
+            <div class="timeline-body"><p>Should this be <code>IndexUrl</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:201 on 2024-04-30 04:50</div>
+            <div class="timeline-body"><p>Can you add Rustdoc for each variant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-30 04:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-30 04:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolution.rs</code>:126 on 2024-04-30 04:52</div>
+            <div class="timeline-body"><p>(I'd apply this same judgment to all the other <code>Uv</code>-prefixed types. What do you think?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/installed.rs</code>:36 on 2024-04-30 09:45</div>
+            <div class="timeline-body"><p>Clippy complains that the <code>InstalledDist</code> enum has a large variant size difference otherwise due to the large <code>DirectUrl</code> type, and boxing here is minimally intrusive.</p>
+<pre><code>error: large size difference between variants
+  --&gt; crates/distribution-types/src/installed.rs:18:1
+   |
+18 | / pub enum InstalledDist {
+19 | |     /// The distribution was derived from a registry, like `PyPI`.
+20 | |     Registry(InstalledRegistryDist),
+   | |     ------------------------------- the second-largest variant contains at least 56 bytes
+21 | |     /// The distribution was derived from an arbitrary URL.
+22 | |     Url(InstalledDirectUrlDist),
+   | |     --------------------------- the largest variant contains at least 272 bytes
+23 | | }
+   | |_^ the entire enum is at least 272 bytes
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#large_enum_variant
+   = note: `-D clippy::large-enum-variant` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::large_enum_variant)]`
+help: consider boxing the large fields to reduce the total size of the enum
+   |
+22 |     Url(Box&lt;InstalledDirectUrlDist&gt;),
+   |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/lib.rs</code>:496 on 2024-04-30 09:51</div>
+            <div class="timeline-body"><p>Good idea: #3320</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/parsed_url.rs</code>:80 on 2024-04-30 09:52</div>
+            <div class="timeline-body"><p>No, it's already removed: https://github.com/astral-sh/uv/pull/3263/files#diff-1a2282604ae94f9266d311e67fd6e0c365c2a76a7ef0fbd707bfc19e6dde48e5L18-L19</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:124 on 2024-04-30 10:10</div>
+            <div class="timeline-body"><p>You can do things like <code>flask==3.0.0</code> and <code>flask = { git = &quot;https://github.com/pallets/flask&quot;, tag = &quot;v2.0.0&quot; }</code>. We should error or warn when that happens, it's another consistency validation check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:122 on 2024-04-30 10:12</div>
+            <div class="timeline-body"><p>This is still mostly to-be-designed and mainly a placeholder, but i'd expect this to become the name of an index, e.g. <code>torch</code>, which is then defined elsewhere, either in this file or in a global configuration. This doesn't have any usages yet to be easy to change once we have the design</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/traits.rs</code>:172 on 2024-04-30 10:18</div>
+            <div class="timeline-body"><p>In <code>foo = { url = &quot;https://github.com/foo/foo&quot; }</code> we don't have a git prefix, while in <code>foo @ git+https://github.com/foo/foo</code>, we do. I went with the option to normalize both to no <code>git+</code> prefix, causing this oddity. (Adding the <code>git+</code> just for <code>.version_or_url()</code> doesn't work because it returns a <code>&amp;'a VerbatimUrl</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 10:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/resolution.rs</code>:75 on 2024-04-30 10:19</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 10:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/unnamed.rs</code>:80 on 2024-04-30 10:26</div>
+            <div class="timeline-body"><p>Rebase fallout from https://github.com/astral-sh/uv/pull/3186, i'll revert the changes in this file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/requirement.rs</code>:19 on 2024-04-30 11:08</div>
+            <div class="timeline-body"><p>I tried, but <code>RequirementsSpecification.requirements</code> is <code>RequirementEntry</code>, which has <code>RequirementsTxtRequirement</code>. Should i change <code>RequirementEntry</code> to something else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 11:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/lib.rs</code>:480 on 2024-04-30 11:10</div>
+            <div class="timeline-body"><p>This trickled down from <code>RequirementsTxtRequirement</code> being entangled with <code>RequirementsSpecification.requirements</code> (see the other comment), should we change this to use separate types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/resolve_many.rs</code>:145 on 2024-04-30 11:34</div>
+            <div class="timeline-body"><p>thx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/generate_json_schema.rs</code>:24 on 2024-04-30 11:36</div>
+            <div class="timeline-body"><p>I was thinking that pure configuration files shouldn't have dependency information, so keeping them separate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 11:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 11:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:130 on 2024-04-30 11:42</div>
+            <div class="timeline-body"><p>Outdated comment, the condition is already fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/urls.rs</code>:47 on 2024-04-30 11:49</div>
+            <div class="timeline-body"><p>Merged the url and path branch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 12:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:201 on 2024-04-30 12:13</div>
+            <div class="timeline-body"><p>I wrote those targeted at users since they are exported through json schema descriptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/lib.rs</code>:314 on 2024-04-30 14:14</div>
+            <div class="timeline-body"><p>The problem is the entanglement with <code>RequirementsTxtRequirement</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:1563 on 2024-04-30 14:20</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/3323</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/traits.rs</code>:172 on 2024-04-30 14:30</div>
+            <div class="timeline-body"><p>Changed this back due to a different git fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-30 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:314 on 2024-04-30 14:44</div>
+            <div class="timeline-body"><p>Can you say more? I still wouldn’t expect that this crate (which parses requirements files) needs to know about our requirement type (which doesn’t exist in requirements files). Couldn’t we convert back in the calling crate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/lib.rs</code>:314 on 2024-04-30 15:24</div>
+            <div class="timeline-body"><p>(this comment is sorted above the one with the more detail, sorry) I tried not changing constraints but ran into two problems, one is that we parse the requirements and then push them as constraints (<a href="https://github.com/astral-sh/uv/blob/b18610fe78a754ef8b394e0c0eb8cd0bc2d51068/crates/requirements-txt/src/lib.rs#L478-L482">https://github.com/astral-sh/uv/blob/b18610fe78a754ef8b394e0c0eb8cd0bc2d51068/crates/requirements-txt/src/lib.rs#L478-L482</a>). The other is that with <code>Constraints::apply</code> taking references to requirements and constraints that must be of the same type means that we either have to change the constraints to the new requirement too or we to rework (split?) a section of the requirements.txt parsing code/types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/resolution.rs</code>:126 on 2024-04-30 16:30</div>
+            <div class="timeline-body"><p>Done, was surprisingly ok to change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-04-30 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolution.rs</code>:68 on 2024-05-01 05:08</div>
+            <div class="timeline-body"><p>Nit: use <code>::from</code> please.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:66 on 2024-05-01 05:09</div>
+            <div class="timeline-body"><p>Can you write these in the style of a docstring please? E.g.:</p>
+<pre><code>/// Display the [`Requirement`], with the intention of being shown directly to a user, rather than for inclusion in a `requirements.txt` file.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/requirement.rs</code>:40 on 2024-05-01 05:11</div>
+            <div class="timeline-body"><p>Why is this not implementing display?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dev/src/generate_json_schema.rs</code>:16 on 2024-05-01 05:13</div>
+            <div class="timeline-body"><p>What does this comment mean? I think in general we should work on including fewer of these comment fragments in the PR. Comments need to stand alone and carry meaning well into the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:173 on 2024-05-01 05:15</div>
+            <div class="timeline-body"><p>How can we avoid having to do this conversion here? This seems like the wrong place for this logic. Why should the lookahead resolver need to know how to translate from a URL and subdirectory to a <code>Dist</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/specification.rs</code>:131 on 2024-05-01 05:16</div>
+            <div class="timeline-body"><p>What does this comment mean? It needs more context, if I can't understand what it's referring to now I definitely won't be able to in the future!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:518 on 2024-05-01 05:20</div>
+            <div class="timeline-body"><p>I think you should be using <code>VerbatimUrl::parse_path</code> here? Why not? Why parse the URL out-of-band like this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:45 on 2024-05-01 05:20</div>
+            <div class="timeline-body"><p>Can we just call this <code>LoweringError</code>? I want to avoid having <code>Uv</code> in so many struct and abstraction names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:214 on 2024-05-01 05:21</div>
+            <div class="timeline-body"><p>Why did this get renamed? Because the requirement type changed? <code>Pep621Metadata</code> still better expresses (to me) what this is. <code>UvMetadata</code> could be one of many different things, IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:373 on 2024-05-01 05:22</div>
+            <div class="timeline-body"><p>In the sources design, what if we need to support multiple entries for a single package? Is it possible? What if I want to use a different index URL depending on whether I'm on mac or Linux?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:193 on 2024-05-01 05:23</div>
+            <div class="timeline-body"><p>What do this mean? We need to include way more context in these comments please!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:233 on 2024-05-01 05:24</div>
+            <div class="timeline-body"><p>Hmm, I'm not a big fan of what's happening in this branch... I don't like that we're having to recreate these URLs all over the place. Also don't like how much <code>VerbatimUrl</code> conversion and URL cloning and deref and such that we're needing to do. What do you see as the better / correct solution here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution.rs</code>:458 on 2024-05-01 05:25</div>
+            <div class="timeline-body"><p>Can we call this <code>requirements</code>? Again, I'd like to avoid encoding <code>uv_</code> in various places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:52 on 2024-05-01 05:27</div>
+            <div class="timeline-body"><p>Why does this take a reference and not an owned value? Can't we use the value directly for <code>ParsedLocalFileUrl</code> at least?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1012 on 2024-05-01 05:29</div>
+            <div class="timeline-body"><p>Any idea how we could avoid having to do this conversion in this loop...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:79 on 2024-05-01 05:30</div>
+            <div class="timeline-body"><p>I think this should now be renamed to <code>requirement</code>, since <code>UvRequirement</code> was removed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-01 05:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:124 on 2024-05-01 05:31</div>
+            <div class="timeline-body"><p>I see, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-01 05:33</div>
+            <div class="timeline-body"><p>Another round of comments. I don't really expect to ask for any major changes, but I still have two <em>slightly</em> larger topics to resolve:</p>
+<ol>
+<li>I still kinda feel like <code>requirements-txt</code> should <em>not</em> rely on the uv-specific requirement types.</li>
+<li>I'm trying to understand what a better setup would look like to allow us to avoid all the URL reconstruction and deconstruction throughout the codebase.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-02 11:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/requirement.rs</code>:40 on 2024-05-02 11:38</div>
+            <div class="timeline-body"><p>Which part? There's a <code>impl Display for RequirementsTxtRequirement</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-02 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:373 on 2024-05-02 11:48</div>
+            <div class="timeline-body"><p>toml does not allow redefining keys, so we can't use the METADATA email method of repeating keys. In the future, we can allow making <code>Source</code> an array (through an untagged enum):</p>
+<pre><code class="language-toml">foo = [
+    { url = &quot;https://linux.example.org/foo-2.0.0-cp39-cp39-linux_x86_64.whl&quot;, os = &quot;linux&quot; },
+    { url = &quot;https://linux.example.org/foo-2.0.0-cp39-cp39-win_amd64.whl&quot;, os = &quot;windows&quot; }
+]
+</code></pre>
+<p>I'd leave this as future work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-02 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:233 on 2024-05-02 12:35</div>
+            <div class="timeline-body"><p>I've front-loaded this by putting a <code>VerbatimUrl</code> with the joined url on the url variants of <code>RequirementSource</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-02 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1012 on 2024-05-02 13:05</div>
+            <div class="timeline-body"><p>Only by changing the type of <code>requires_dist</code>, if we want that. Currently the type mirrors the spec in that all urls are allowed, and we fail here if it's a url we don't support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:173 on 2024-05-02 13:11</div>
+            <div class="timeline-body"><p>I've front-loaded this by putting a <code>VerbatimUrl</code> with the joined url on the url variants of <code>RequirementSource</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-02 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:518 on 2024-05-02 13:19</div>
+            <div class="timeline-body"><p>Thanks, didn't realize that method exists</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-02 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-03 10:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I still kinda feel like requirements-txt should not rely on the uv-specific requirement types.</p>
+</blockquote>
+<p>Fixed by introducing <code>UnresolvedRequirementSpecification</code> and <code>UnresolvedRequirement</code> in <code>distribution-types</code>. It's a bit odd at first because <code>requirements-txt</code> depends on <code>distribution-types</code>, but it avoid cyclical crate dependencies and does the split.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-03 10:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_install.rs</code>:187 on 2024-05-03 10:42</div>
+            <div class="timeline-body"><p>This is technically a breaking change, if we consider <code>pip compile</code>/<code>pip install</code> on a PEP 621 violating pyproject.toml a supported use case. Note that we still fall back for indirect pyproject.toml files (see test below), so e.g. a path dep on a hatch project with relative paths still works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-03 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:5227 on 2024-05-03 20:20</div>
+            <div class="timeline-body"><p>I feel like this error message got worse, can we restore it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-03 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:5227 on 2024-05-03 20:20</div>
+            <div class="timeline-body"><p>At least the part at the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:238 on 2024-05-03 20:55</div>
+            <div class="timeline-body"><p>Why lose the verbatim here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-03 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-03 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-03 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-03 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-03 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:429 on 2024-05-04 02:48</div>
+            <div class="timeline-body"><p>This is incorrect. Don't we need the actual string here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-04 02:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-04 02:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:428 on 2024-05-04 02:48</div>
+            <div class="timeline-body"><p>The docs on <code>RequirementSource::Git</code> say it's the URL <em>without</em> the <code>git+</code> prefix. Is this correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-04 02:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/satisfies.rs</code>:64 on 2024-05-04 02:49</div>
+            <div class="timeline-body"><p>This seems off. Shouldn't we instead parse the URL, and use <code>CanonicalUrl</code> to compare these? Why are we comparing as strings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-04 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:429 on 2024-05-04 02:54</div>
+            <div class="timeline-body"><p>@konstin - I guess we need to find a way to preserve the exact string from the TOML, right? Otherwise, how will we preserve environment variables?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-04 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:428 on 2024-05-04 02:54</div>
+            <div class="timeline-body"><p>Fixed here: https://github.com/astral-sh/uv/pull/3365</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-06 10:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:429 on 2024-05-06 10:56</div>
+            <div class="timeline-body"><p>imho toml shouldn't support env vars</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-06 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:428 on 2024-05-06 10:57</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-06 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/satisfies.rs</code>:64 on 2024-05-06 10:57</div>
+            <div class="timeline-body"><p>(Fixed in https://github.com/astral-sh/uv/pull/3373)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-05-06 11:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_compile.rs</code>:5227 on 2024-05-06 11:20</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/3403</p>
+<p>I'd also like to track the origin of the invalid url, but that's a larger task.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

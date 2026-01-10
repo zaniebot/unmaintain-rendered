@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip Python 2 versions when locating Python - astral-sh/uv #3476</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip Python 2 versions when locating Python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3476">#3476</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-05-09 00:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-09 00:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Unfortunately, the <code>-I</code> flag was added in Python 3.4. So if we query a Python version prior to 3.4 (e.g., Python 2.7), we can't run our script at all, and lose the ability to match against our structured error.</p>
+<p>This PR adds an additional check against the stderr output for these cases.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/3474.</p>
+<h2>Test Plan</h2>
+<p>Installed Python 2.7, and verified that it was skipped (and that we instead found my <code>python3</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-09 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-05-09 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-05-09 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-09 01:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/find_python.rs</code>:138 on 2024-05-09 01:39</div>
+            <div class="timeline-body"><p>I think this is a breaking change? We support these versions right now, we just warn when we find them. I guess we can ban explicit requests? Seems a little weird to roll into this pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-09 01:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-interpreter/src/find_python.rs</code>:168 on 2024-05-09 01:40</div>
+            <div class="timeline-body"><p>Is there something else in there that corroborates that this is Python 2? Very small concern we might see this output from some other executable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-05-09 01:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-09 02:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/find_python.rs</code>:138 on 2024-05-09 02:50</div>
+            <div class="timeline-body"><p>I think this is <em>only</em> true for Python 3.7? Python 3.6 and lower don't work at all, at least on Linux -- we raise an error in the script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-09 02:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/find_python.rs</code>:138 on 2024-05-09 02:51</div>
+            <div class="timeline-body"><p>I can move this elsewhere.... I have to do something like this if we want to retain the behavior we had before, because I removed the <code>&lt;= Some(2)</code> check, which will now never fire anyway (because we'll hit the <code>-I</code> error path, not the <code>UnsupportedVersion</code> error path).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-09 02:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/find_python.rs</code>:168 on 2024-05-09 02:52</div>
+            <div class="timeline-body"><p>To be clear, it may not be Python 2. It could be any Python version before 3.4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-09 02:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/find_python.rs</code>:168 on 2024-05-09 02:52</div>
+            <div class="timeline-body"><p>But yes, I will look, I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-09 03:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/find_python.rs</code>:168 on 2024-05-09 03:19</div>
+            <div class="timeline-body"><p>I can't run Python 3.3 and friends on my machine so hopefully this works as expected...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-09 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-09 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-09 03:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

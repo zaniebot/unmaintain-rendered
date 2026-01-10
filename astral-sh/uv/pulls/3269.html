@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annotate sources of requirements - astral-sh/uv #3269</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Annotate sources of requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3269">#3269</a>
+        opened by <a href="https://github.com/palfrey">@palfrey</a>
+        on 2024-04-25 20:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/palfrey">@palfrey</a> on 2024-04-25 20:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/uv/issues/1343. This is kinda a first draft at the moment, but does at least mostly work locally (barring some bits of the test suite that seem to not work for me in general).</p>
+<h2>Test Plan</h2>
+<p>Mostly running the existing tests and checking the revised output is sane</p>
+<h2>Outstanding issues</h2>
+<p>Most of these come down to &quot;AFAIK, the existing tools don't support these patterns, but <code>uv</code> does&quot; and so I'm not sure there's an existing good answer here! Most of the answers so far are &quot;whatever was easiest to build&quot;</p>
+<ul>
+<li>[x] ~~Is &quot;-r pyproject.toml&quot; correct? Should it show something else or get skipped entirely~~ No it wasn't. Fixed in 3044fa8b86791369a3c468ced585753428e70b1b</li>
+<li>[ ] If the requirements file is stdin, that just gets skipped. Should it be recorded?</li>
+<li>[ ] Overrides get shown as &quot;--override&lt;override.txt&gt;&quot;. Correct?</li>
+<li>[x] ~~Some of the tests (e.g. <code>dependency_excludes_non_contiguous_range_of_compatible_versions</code>) make assumptions about the order of package versions being outputted, which this PR breaks. I'm not sure if the text is fairly arbitrary and can be replaced or whether the behaviour needs fixing?~~ - fixed by removing the custom pubgrub PartialEq/Hash</li>
+<li>[ ] Are all the <code>TrackedFromStr</code> et al changes needed, or is there an easier way? I don't think so, I think it's necessary to track these sort of things fairly comprehensively to make this feature work, and this sort of invasive change feels necessary, but happy to be proved wrong there :)</li>
+<li>[x] ~~If you have a requirement coming in from two or more different requirements files only one turns up. I've got a closed-source example for this (can go into more detail if needed), mostly consisting of a complicated set of common deps creating a larger set. It's a rarer case, but worth considering.~~ 042432b200395d498b4517121a9fb25f1bbda8ca</li>
+<li>[ ] Doesn't add annotations for <code>setup.py</code> yet<ul>
+<li>This is pretty hard, as the correct location to insert the path is <code>crates/pypi-types/src/metadata.rs</code>'s <code>parse_pkg_info</code>, which as it's based off a source distribution has entirely thrown away such matters as &quot;where did this package requirement get built from&quot;. Could add &quot;<code>built package name</code>&quot; as a dep, but that's a little odd.</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/palfrey">@palfrey</a> reviewed on 2024-04-25 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/palfrey">@palfrey</a> on <code>crates/pep440-rs/src/tracked_from_str.rs</code>:4 on 2024-04-25 20:29</div>
+            <div class="timeline-body"><p>I am not entirely sure this is the right package, but AFAIK, it's the only crate that everything that needs it can depend on....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/palfrey">@palfrey</a> reviewed on 2024-04-25 20:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/palfrey">@palfrey</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:16 on 2024-04-25 20:32</div>
+            <div class="timeline-body"><p>If we use the default ones, two requirements with different sources get flagged as different packages, and then you get duplicates in the output. Replacing them with hand-tooled options isn't the best of plans, but it is one that works and I don't have a better idea so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-04-25 21:57</div>
+            <div class="timeline-body"><p>I just tested it with the requirements files of https://github.com/indico/indico/, and for <code>requirements.{in,txt}</code> it works great - no changes beyond the comments on top! :)</p>
+<p>For <code>requirements.dev.{in,txt}</code>, however, I noticed one bug: Instead of <code>-c requirements.txt</code> it uses <code>-r requirements.txt</code> in the source comments. That aside, it seems to do everything fine there as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 22:45</div>
+            <div class="timeline-body"><p>Exciting! I'm not a good review for this one, but I wonder if it could be used to address https://github.com/astral-sh/uv/issues/1854 next?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-25 23:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:64 on 2024-04-25 23:06</div>
+            <div class="timeline-body"><p>Could we instead omit this here, and re-connect the requirements to their paths when we build the <code>ResolutionGraph</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-25 23:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:64 on 2024-04-25 23:45</div>
+            <div class="timeline-body"><p>I think that could also enable correct annotation for (e.g.) <code>-c requirements.txt</code>, since then you could identify requirements that came from constraints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-04-26 15:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I just tested it with the requirements files of https://github.com/indico/indico/, and for <code>requirements.{in,txt}</code> it works great - no changes beyond the comments on top! :)</p>
+<p>For <code>requirements.dev.{in,txt}</code>, however, I noticed one bug: Instead of <code>-c requirements.txt</code> it uses <code>-r requirements.txt</code> in the source comments. That aside, it seems to do everything fine there as well.</p>
+</blockquote>
+<p>9655e9139d7ea2ea02d979fcc255d45542aa287f should fix that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/palfrey">@palfrey</a> reviewed on 2024-04-26 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/palfrey">@palfrey</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:64 on 2024-04-26 20:12</div>
+            <div class="timeline-body"><p>I started writing &quot;here's why this doesn't work&quot; and then found out in the course of writing it, that yes, it can be done! A tool I really want but can't seem to find with a bit of googling is some sort of code visualisation thing for Rust that'd let me visually see all of this v.s. the &quot;lets cram it all into my head&quot; approach I've been using, which clearly isn't the best option.</p>
+<p>Here's my notes:</p>
+<p>The only code that actually notices -r/-c requirements is <code>parse_entry</code> in the <code>requirements-txt</code> crate, which then only gets used by <code>parse</code>/<code>parse_inner</code> in <code>RequirementsTxt</code>. This results in path data in <code>RequirementEntry</code> and source values in the <code>Requirement</code>'s that are the <code>constraints</code> in the <code>RequirementsTxt</code> struct.</p>
+<p>That in turn gets called by <code>RequirementsSpecification</code> <code>from_source</code>/<code>from_sources</code>, which similarly builds <code>requirements</code>/<code>constraints</code> with path/source data.</p>
+<p><code>pip_compile</code> in the <code>uv</code> crate then calls all that, feeds it into the pubgrub bits for resolution, and then feeds the results into <code>DisplayResolutionGraph</code> for display.</p>
+<p>So, yeah. I could take the data from <code>RequirementsSpecification</code>, fish out a package -&gt; sources hashmap and skip adding it to Pubgrub entirely... let me have a look at that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/palfrey">@palfrey</a> reviewed on 2024-04-26 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/palfrey">@palfrey</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:64 on 2024-04-26 21:29</div>
+            <div class="timeline-body"><p>Fixed! Also resolved some test failures :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-04-26 21:31</div>
+            <div class="timeline-body"><p>@charliermarsh I'm seeing some test failures on Windows, and they appear to be related to path redactions in insta. There's some nice work for doing that cross-platform in <code>crates/uv/tests/common/mod.rs</code>, but I'm needing it for things like <code>crates/requirements-txt/src/lib.rs</code> and that would be a circular dependency. Any thoughts on how to approach sorting those out? I don't have an easy way to do Windows work sadly, so this might be a bit fiddly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-04-27 12:23</div>
+            <div class="timeline-body"><blockquote>
+<p>https://github.com/astral-sh/uv/commit/9655e9139d7ea2ea02d979fcc255d45542aa287f should fix that.</p>
+</blockquote>
+<p>Indeed, the output is exactly what I expect now!</p>
+<details>
+
+<pre><code class="language-diff">[adrian@claptrap:~/dev/indico/src:master *$]&gt; git diff
+diff --git a/docs/requirements.txt b/docs/requirements.txt
+index af095861bf..e16ac62be7 100644
+--- a/docs/requirements.txt
++++ b/docs/requirements.txt
+@@ -1,9 +1,5 @@
+-#
+-# This file is autogenerated by pip-compile with Python 3.12
+-# by the following command:
+-#
+-#    pip-compile --strip-extras docs/requirements.in
+-#
++# This file was autogenerated by uv via the following command:
++#    uv pip compile -o docs/requirements.txt docs/requirements.in
+ alabaster==0.7.16
+     # via sphinx
+ babel==2.14.0
+diff --git a/requirements.dev.txt b/requirements.dev.txt
+index 6146f0535c..3fdd46a5bd 100644
+--- a/requirements.dev.txt
++++ b/requirements.dev.txt
+@@ -1,9 +1,5 @@
+-#
+-# This file is autogenerated by pip-compile with Python 3.12
+-# by the following command:
+-#
+-#    pip-compile --strip-extras requirements.dev.in
+-#
++# This file was autogenerated by uv via the following command:
++#    uv pip compile -o requirements.dev.txt requirements.dev.in
+ aiosmtpd==1.4.5
+     # via pytest-localserver
+ alabaster==0.7.16
+@@ -125,6 +121,8 @@ parso==0.8.4
+     #   pyquotes
+ pep8-naming==0.13.3
+     # via -r requirements.dev.in
++pip==24.0
++    # via pip-tools
+ pip-tools==7.4.1
+     # via -r requirements.dev.in
+ plantweb==1.2.1
+@@ -190,6 +188,10 @@ ruff==0.4.1
+     # via -r requirements.dev.in
+ schemainspect==3.1.1663587362
+     # via migra
++setuptools==69.5.1
++    # via
++    #   flake8-quotes
++    #   pip-tools
+ six==1.16.0
+     # via
+     #   -c requirements.txt
+@@ -267,7 +269,3 @@ werkzeug==3.0.2
+     #   pytest-localserver
+ wheel==0.43.0
+     # via pip-tools
+-
+-# The following packages are considered to be unsafe in a requirements file:
+-# pip
+-# setuptools
+diff --git a/requirements.txt b/requirements.txt
+index 32521e6a04..a8ec374820 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,9 +1,5 @@
+-#
+-# This file is autogenerated by pip-compile with Python 3.12
+-# by the following command:
+-#
+-#    pip-compile --strip-extras
+-#
++# This file was autogenerated by uv via the following command:
++#    uv pip compile -o requirements.txt requirements.in
+ alembic==1.13.1
+     # via
+     #   -r requirements.in
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jardarbo">@jardarbo</a> on 2024-04-29 17:39</div>
+            <div class="timeline-body"><p>@palfrey Very nice of you to look at this!</p>
+<p>Testing your version with the following <code>pyproject.toml</code>:</p>
+<pre><code class="language-bash">$ cat pyproject.toml
+[project]
+name = &quot;uv_test&quot;
+dynamic = [&quot;version&quot;]
+dependencies = [&quot;click&quot;]
+</code></pre>
+<p>Running <code>uv pip compile</code> with your version yields the following:</p>
+<pre><code class="language-bash">$ uv pip compile pyproject.toml
+Resolved 1 package in 4ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile pyproject.toml
+click==8.1.7
+    # via -r pyproject.toml
+</code></pre>
+<p>Running <code>pip-compile</code> (https://github.com/jazzband/pip-tools) yields:</p>
+<pre><code class="language-bash">$ pip-compile pyproject.toml
+#
+# This file is autogenerated by pip-compile with Python 3.12
+# by the following command:
+#
+#    pip-compile pyproject.toml
+#
+click==8.1.7
+    # via uv_test (pyproject.toml)
+</code></pre>
+<p>The difference is <code># via -r pyproject.toml</code> vs. <code># via uv_test (pyproject.toml)</code>.</p>
+<p>I don't know if you think we should match the output of <code>pip-compile</code>, but it makes it easier to mix the usage of <code>uv pip compile</code> and <code>pip-compile</code>.</p>
+<p>Running this on Ubuntu on Windows 11 WSL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-04-29 17:48</div>
+            <div class="timeline-body"><p>+1 on matching the <code>pip-compile</code> output, it makes transitioning from pip-tools to uv much more straightforward (as you immediately see that nothing changed), and <code>-r pyproject.toml</code> seems weird anyway (unless <code>pip install -r pyproject.toml</code> is valid which I'd find surprising)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-04-29 22:23</div>
+            <div class="timeline-body"><blockquote>
+<p>The difference is <code># via -r pyproject.toml</code> vs. <code># via uv_test (pyproject.toml)</code>.</p>
+<p>I don't know if you think we should match the output of <code>pip-compile</code>, but it makes it easier to mix the usage of <code>uv pip compile</code> and <code>pip-compile</code>.</p>
+</blockquote>
+<p>I didn't investigate this path much, but had seen <code>-r pyproject.toml</code> and wasn't sure offhand how this was meant to be handled. Now I know, 3044fa8b86791369a3c468ced585753428e70b1b fixes this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jardarbo">@jardarbo</a> on 2024-04-30 04:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Now I know, https://github.com/astral-sh/uv/commit/3044fa8b86791369a3c468ced585753428e70b1b fixes this.</p>
+</blockquote>
+<p>Wow, this was quick @palfrey, thanks! This does indeed make output same as <code>pip-compile</code>.</p>
+<details>
+
+<pre><code class="language-bash">$ uv pip compile pyproject.toml
+Resolved 1 package in 4ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile pyproject.toml
+click==8.1.7
+    # via uv-test (pyproject.toml)
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-05-05 22:00</div>
+            <div class="timeline-body"><p>@charliermarsh I've just updated to latest main. I'd regard this as done, except for the Windows test failures, which I'm not sure how to fix (<a href="https://github.com/astral-sh/uv/pull/3269#issuecomment-2080143202">see previous comment on this</a>). However, that was <em>painful</em> to update, so a review of this very soon would be appreciated!</p>
+<p>If anyone else has bright ideas about how to fix the Windows issue, I'm all ears.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-05 22:37</div>
+            <div class="timeline-body"><p>Thank you @palfrey and sorry for the painful rebase. I'd been holding off on reviewing this until the <code>sources</code> PR merged, since I knew it would lead to changes here, but I should've said so earlier. I will own reviewing now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-05-05 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-05 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-05-05 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-05-05 22:46</div>
+            <div class="timeline-body"><blockquote>
+<p>If anyone else has bright ideas about how to fix the Windows issue, I'm all ears.</p>
+</blockquote>
+<p><code>safe_filter_path</code> fixes the regex issues (mostly by copy/paste from <code>crates/uv/tests/common/mod.rs</code>) but there's still some issues, both with a lack of replacement in some cases, and a difference in output on Windows v.s. Linux that I can't easily resolve without a local Windows dev box.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @palfrey on 2024-05-05 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-05-08 14:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I will own reviewing now.</p>
+</blockquote>
+<p>How's that going? I'm seeing a new fun set of conflicts, but didn't want to resolve those until the next bit of reviewing was done ideally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-08 14:56</div>
+            <div class="timeline-body"><p>Don't worry about resolving any conflicts for now. Worst case I will help resolve them since it's on me to review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-08 14:56</div>
+            <div class="timeline-body"><p>I will add this to my list for today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/lenient_requirement.rs</code>:176 on 2024-05-08 20:13</div>
+            <div class="timeline-body"><p>Do you mind if I remove all these impls for <code>LenientVersionSpecifiers</code>, <code>LenientRequirement</code>, etc.? My read is that the path is always set to <code>None</code> as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/lenient_requirement.rs</code>:176 on 2024-05-08 20:13</div>
+            <div class="timeline-body"><p>(I did it but as a standalone commit, can revert if we decide against.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/tracked_from_str.rs</code>:4 on 2024-05-08 20:21</div>
+            <div class="timeline-body"><p>I want to experiment with a slightly different approach here. Instead of a trait, could we just always use <code>None</code> for the source, and then add a method to set the source <em>after</em> parsing? Since the parsing itself doesn't depend on the source at all, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/tracked_from_str.rs</code>:4 on 2024-05-08 20:21</div>
+            <div class="timeline-body"><p>(I can give it a try.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/annotation.rs</code>:7 on 2024-05-08 20:56</div>
+            <div class="timeline-body"><p>I renamed this because we have some other &quot;source&quot; concepts and I wanted to disambiguate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/annotation.rs</code>:13 on 2024-05-08 20:56</div>
+            <div class="timeline-body"><p>I made these all <code>PathBuf</code>, so that we convert at the very end (when we display) rather than eagerly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/annotation.rs</code>:11 on 2024-05-08 20:57</div>
+            <div class="timeline-body"><p>This is now optional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-08 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution.rs</code>:548 on 2024-05-08 21:10</div>
+            <div class="timeline-body"><p>I changed this to use <code>BTreeSet</code> inside so that we don't need to call <code>.sorted</code> on the string representations. Instead, the values will already be sorted based on the sort order of <code>SourceAnnotation</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-08 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-08 21:12</div>
+            <div class="timeline-body"><p>@palfrey - I made a few changes and left comments for each one to explain the motivation. This LGTM but I'll hold off on merging to give you time to chime in, agree / disagree, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/palfrey">@palfrey</a> reviewed on 2024-05-08 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/palfrey">@palfrey</a> on <code>crates/pypi-types/src/lenient_requirement.rs</code>:176 on 2024-05-08 21:28</div>
+            <div class="timeline-body"><p>I added all of those in earlier on when I was just trying to make sure the source data didn't get lost at any point so added it everywhere. I think you're right, and if the tests pass with them removed, all good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/palfrey">@palfrey</a> reviewed on 2024-05-08 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/palfrey">@palfrey</a> on <code>crates/distribution-types/src/annotation.rs</code>:13 on 2024-05-08 21:31</div>
+            <div class="timeline-body"><p>Ok. I'm fine with that, but I'm not sure how needed that is, as AFAIK at this point their only use is as something we'll print, so they could be eagerly converted. This works though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-05-08 21:40</div>
+            <div class="timeline-body"><blockquote>
+<p>@palfrey - I made a few changes and left comments for each one to explain the motivation. This LGTM but I'll hold off on merging to give you time to chime in, agree / disagree, etc.</p>
+</blockquote>
+<p>Happy with the changes so far. I'm seeing one snapshot fix on ubuntu/macos, but then the windows snapshots appear to be missing <code>[TEMP_DIR]</code> bits vs. what the other platforms results were? Also some fun like the extra <code>tqdm</code> req on only windows in <code>tool_uv_sources</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-08 21:46</div>
+            <div class="timeline-body"><p>Interesting, I can take a look at those... I switched to <code>.user_display()</code> for <code>Path</code> which attempts to relativize it, if it's in the current directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-08 21:49</div>
+            <div class="timeline-body"><p>I have a Windows machine so I can debug on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-05-08 21:57</div>
+            <div class="timeline-body"><p>BTW, it doesn't seem to add sources for editables e.g. the <code>poetry_editable = { path = &quot;../poetry_editable&quot;, editable = true }</code>  in <code>tool_uv_sources</code> just comes out as <code>-e ../poetry_editable</code> with no source. ~~This might well be like the <code>setup.py</code> scenario I listed in the issues in the description, and may well be effectively unsolvable (or at least worth pushing further down the line post this PRs merge)~~</p>
+<p>Nope :) Got a local fix, pushing shortly...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/palfrey">@palfrey</a> reviewed on 2024-05-08 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/palfrey">@palfrey</a> on <code>crates/pep440-rs/src/tracked_from_str.rs</code>:4 on 2024-05-08 22:40</div>
+            <div class="timeline-body"><p>Sure. If you can make it work, all good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-05-08 22:43</div>
+            <div class="timeline-body"><p>eb3ea9856ddfceb2f41c4f775a5e5d9bef6a1b5c fixes editables. I needed to change the <code>sources</code> key to <code>String</code> to cope with both package names and editables urls, which I'm a little uncertain about.</p>
+<p>Just going to fix that clippy issue, then get some sleep 💤. Thanks for the review and work here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-05-09 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-09 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-09 07:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/palfrey">@palfrey</a> on 2024-05-09 11:32</div>
+            <div class="timeline-body"><p>🥳</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-09 13:35</div>
+            <div class="timeline-body"><p>Thanks for the contribution!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:12 UTC
+    </footer>
+</body>
+</html>

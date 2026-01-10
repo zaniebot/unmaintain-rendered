@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add `sys_path` to `Interpreter` struct - astral-sh/uv #3500</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add <code>sys_path</code> to <code>Interpreter</code> struct</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3500">#3500</a>
+        opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a>
+        on 2024-05-10 03:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-05-10 03:15</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>likely necessary to resolve https://github.com/astral-sh/uv/issues/2500</p>
+<p>made this a separate PR in an attempt to make the changes as small as possible; let me know if it's preferred to keep them as a single PR.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<ul>
+<li>edited the test in <code>interpreter.rs</code></li>
+<li>tested manually via <code>println!</code></li>
+</ul>
+<pre><code>$ cargo run --quiet pip show test
+[&quot;/Users/chankang/Library/Caches/uv/.tmpKzNEPN&quot;, &quot;/Users/chankang/.pyenv/versions/3.12.2/lib/python312.zip&quot;, &quot;/Users/chankang/.pyenv/versions/3.12.2/lib/python3.12&quot;, &quot;/Users/chankang/.pyenv/versions/3.12.2/lib/python3.12/lib-dynload&quot;, &quot;/Users/chankang/repos/uv/.venv/lib/python3.12/site-packages&quot;]
+warning: Package(s) not found for: test
+chankang@chans-Air ~/repos/uv -  (syspath)
+$ git diff
+diff --git a/crates/uv-interpreter/src/environment.rs b/crates/uv-interpreter/src/environment.rs
+index 33b785ce..8ebf0864 100644
+--- a/crates/uv-interpreter/src/environment.rs
++++ b/crates/uv-interpreter/src/environment.rs
+@@ -106,6 +106,7 @@ impl PythonEnvironment {
+     /// Some distributions also create symbolic links from `purelib` to `platlib`; in such cases, we
+     /// still deduplicate the entries, returning a single path.
+     pub fn site_packages(&amp;self) -&gt; impl Iterator&lt;Item = &amp;Path&gt; {
++        println!(&quot;{:?}&quot;, self.interpreter.sys_path());
+         if let Some(target) = self.interpreter.target() {
+             Either::Left(std::iter::once(target.root()))
+         } else {
+chankang@chans-Air ~/repos/uv -  (syspath)
+$ python -c &quot;import sys; print(sys.path)&quot;
+['', '/Users/chankang/.pyenv/versions/3.12.2/lib/python312.zip', '/Users/chankang/.pyenv/versions/3.12.2/lib/python3.12', '/Users/chankang/.pyenv/versions/3.12.2/lib/python3.12/lib-dynload', '/Users/chankang/.pyenv/versions/3.12.2/lib/python3.12/site-packages']
+chankang@chans-Air ~/repos/uv -  (syspath)
+</code></pre>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ChannyClaus on 2024-05-10 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ChannyClaus on 2024-05-10 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-05-10 06:41</div>
+            <div class="timeline-body"><p>Thanks, small PR size is great</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-05-10 06:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-05-10 06:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2024-05-10 07:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>

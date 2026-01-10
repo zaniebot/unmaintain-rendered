@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-resolver: make hashes optional - astral-sh/uv #3505</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-resolver: make hashes optional</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3505">#3505</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-05-10 13:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-10 13:31</div>
+            <div class="timeline-body"><p>This only makes hashes optional for wheels/sdists that come from
+registires or direct URLs. For wheels/sdists that come from other
+sources, a hash should not be present.</p>
+<p>For path dependencies, a hash should not be present because the state of
+the path dependency is not intended to be tracked in the lock file. This
+is consistent with how other tools deal with path dependencies, and if
+it were otherwise, the hash would I believe need to be updated for every
+change to the path dependency.</p>
+<p>For git dependencies (source dists only), a hash should not be present
+because the lock will contain the specific commit revision hash. This is
+functionally equivalent to a hash, and so a hash is redundant.</p>
+<p>As part of this change, we validate the presence or absence of a hash
+based on the dependency source. We also add our first regression tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-05-10 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-10 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:1162 on 2024-05-10 13:35</div>
+            <div class="timeline-body"><p>I wrote this lock file just to provoke an error where a hash was found but wasn't expected.</p>
+<p>But I'm not sure this is right. And has led me to wonder what a path dependency with a wheel should actually look like in the lock file. Notice, for example, the repetition in the <code>source</code> field above with the <code>url</code> in the <code>wheel</code> entry. The data model currently allows, for example, a path dependency to have multiple wheels.</p>
+<p>(This issue isn't really related to this PR, but the lock file here is odd and I wanted to call it out.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @BurntSushi on 2024-05-10 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-05-10 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:524 on 2024-05-10 13:37</div>
+            <div class="timeline-body"><p>There are multiple kinds of path dependencies: a path to an archive (<code>.tar.gz</code> or <code>.whl</code>), and a path to a source tree (i.e., a directory). For the former, we can require hashes, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-10 13:58</div>
+            <div class="timeline-body"><p>Seems reasonable, we can figure out source archive vs. directory stuff in separate PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 13:58</div>
+            <div class="timeline-body"><p>But may want to adjust some of the comments around that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-10 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:524 on 2024-05-10 14:05</div>
+            <div class="timeline-body"><p>For reference, I've created https://github.com/astral-sh/uv/issues/3506 to track this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-10 14:05</div>
+            <div class="timeline-body"><blockquote>
+<p>But may want to adjust some of the comments around that.</p>
+</blockquote>
+<p>Aye, I've added a TODO comment in <code>requires_hash</code> noting that it isn't fully correct in the case of path dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-05-10 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-10 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-10 14:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:38:13 UTC
+    </footer>
+</body>
+</html>
