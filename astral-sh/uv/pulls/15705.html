@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better defaults for native build backend cache keys - astral-sh/uv #15705</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better defaults for native build backend cache keys</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15705">#15705</a>
+        opened by <a href="https://github.com/rimathia">@rimathia</a>
+        on 2025-09-06 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/rimathia">@rimathia</a> on 2025-09-06 10:20</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This change extends the default initialized projects with scikit and maturin build backends to ensure that the rust or C++ build gets invoked when a source file changes.</p>
+<h2>Test Plan</h2>
+<p><code>cargo run init cppextension-test --build-backend=scikit</code> followed by manual testing of the behaviour of the resulting project under <code>uv run --with jupyter jupyter lab</code> and changes to the source file of the extension.
+Analogous for <code>cargo run init maturin-test --build-backend=maturin </code>.</p>
+<h2>Relevant Issues</h2>
+<p>The question of why the python extension is not rebuilt on source changes has been discussed in https://github.com/astral-sh/uv/issues/15701#issuecomment-3258714942.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rimathia">@rimathia</a> on 2025-09-06 10:24</div>
+            <div class="timeline-body"><p>It is of course a judgement call whether the rebuild on rust or C++ source file changes is more likely to meet developer expectations than the rebuild on <code>--reinstall</code>. Just decline the PR if you disagree with my premise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 13:24</div>
+            <div class="timeline-body"><p>cc @charliermarsh / @konstin</p>
+<p>I don't have strong feelings here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-08 13:26</div>
+            <div class="timeline-body"><p>I think this is a good idea, but we should change the cache keys to something that captures all Rust/C/C++ source files, such as:</p>
+<pre><code class="language-toml">cache-keys = [{ file = &quot;pyproject.toml&quot; }, { file = &quot;src/**/*.rs&quot; }, { file = &quot;Cargo.toml&quot; }, { file = &quot;Cargo.lock&quot; }]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rimathia">@rimathia</a> on 2025-09-08 19:02</div>
+            <div class="timeline-body"><p>Thanks for the suggestion, I was deterred by the documentation mentioning that glob patterns can be costly to check, but in a source directory it definitely makes sense. Unfortunately, C++ doesn't have a strong filename convention, so I just went with {cpp,h}, hoping that people will become aware of that line in the pyproject.toml before wondering why a change to their .hpp file doesn't trigger recompilation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-09 07:08</div>
+            <div class="timeline-body"><p>We can do <code>{h,c,hpp,cpp}</code>. The costly part of the glob is traversing many files, the regex part of it is really fast. For each directory we look, we need to make a syscall, and for each syscall, there needs to be a random IO read. These are still fast for most source tree, but it's easy to misconfigure the glob and e.g. traverse an entire venv or data or cache directory with tenthousands of small files, where it becomes slow, hence the warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-09-09 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ravencentric">@Ravencentric</a> on 2025-09-09 09:39</div>
+            <div class="timeline-body"><p>Should <code>pyproject.toml</code> and <code>requirements.txt</code> be a part of the <code>cache-key</code> by default in this case? I don't think adding/removing/updating a python dependency or changing the configuration of a completely unrelated tool should rebuild the expensive native code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-09 12:31</div>
+            <div class="timeline-body"><p>Speaking from a maturin perspective, <code>pyproject.toml</code> should be included, settings can be defined in this file, but <code>requirements.txt</code> isn't used.</p>
+<p>CC @henryiii Do you have thoughts about which files should cause a scikit-build-core project to be rebuilt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/init.rs</code>:1005 on 2025-09-09 12:31</div>
+            <div class="timeline-body"><p>Don't we need the double <code>{{</code> and <code>}} </code> here also?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-09-09 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-09-09 14:11</div>
+            <div class="timeline-body"><p><code>pyproject.toml</code> (at least some tables, like <code>project</code>, <code>build-system</code>, and <code>tool.scikit-build</code>) makes sense for scikit-build-core as well. <code>**/CMakeLists.txt</code>, <code>**.cmake</code> would make sense too. We don't have dedicated support for presets yet, but <code>CMakePreset.json</code> and <code>CMakeUserPreset.json</code> also can affect the builds (and we'll have better support at some point). I've also seen the <code>.C</code> convention for C++ (pretty rare, but was somewhat common in the early nineties, so still pops up occasionally, especially with ROOT in HEP). I've also seen <code>.inc</code> for includes that aren't headers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-09-09 14:14</div>
+            <div class="timeline-body"><p>Oh, also the fortran extensions (<code>.f</code>, <code>.f90</code>, <code>.F90</code>, <code>.F</code>), and cuda (<code>.cu</code>, <code>.cuh</code>). I think those are the most common languages, though CMake also supports others, like Swift.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-09 17:51</div>
+            <div class="timeline-body"><p>Thanks @henryiii!</p>
+<p>For the PR, further file extensions are cheap to support, we can cover as many of them as we want. I would avoid <code>**/CMakeLists.txt</code> and <code>**.cmake</code> as the require traversing everything, we need to limit those more if we want to include them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-09-09 20:34</div>
+            <div class="timeline-body"><p>How is that different from source file extensions? At least <code>.cmake</code> literally is an extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-09-09 20:37</div>
+            <div class="timeline-body"><p>Oh, I think I see. Hadn’t looked at the code. <code>src/**/{*.h,*.c,*.hpp,*.cpp,*.cmake,CMakeLists.txt}</code> might work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-10 02:04</div>
+            <div class="timeline-body"><p>I'm sort of wary to go far beyond the files types that we're generating in the initial template.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-09-10 03:00</div>
+            <div class="timeline-body"><p>I think a nice minimal set then might be <code>..., &quot;{ file = &quot;src/**/*.{h,c,hpp,cpp}&quot; }, { file = &quot;CMakeLists.txt&quot; }]&quot;</code>, then? Since it's part of the template, that seems fine to have it minimal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rimathia">@rimathia</a> reviewed on 2025-09-10 05:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rimathia">@rimathia</a> on <code>crates/uv/src/commands/project/init.rs</code>:1005 on 2025-09-10 05:34</div>
+            <div class="timeline-body"><p>It turns out that at present, the Scikit project string does not use format! like the Maturin project string does. As a result, <code>{wheel_tag}</code> is still present in the resulting pyproject.toml. I'll have to investigate why this even works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/henryiii">@henryiii</a> reviewed on 2025-09-10 14:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/henryiii">@henryiii</a> on <code>crates/uv/src/commands/project/init.rs</code>:1005 on 2025-09-10 14:18</div>
+            <div class="timeline-body"><p>That's correct, scikit-build-core has to inject the wheel tag there when it builds, since you don't know the wheel tag before you start building a wheel. You want <code>{wheel_tag}</code> in the pyproject.toml.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rimathia">@rimathia</a> on 2025-09-10 16:37</div>
+            <div class="timeline-body"><p>Thanks for giving me specifics, I hope I've understood the emerging consensus.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add source files of python extension to tool.uv cache-keys when initializing projects with build backend maturin or scikit" to "Better defaults for native build backend cache keys" by @konstin on 2025-09-12 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-12 09:13</div>
+            <div class="timeline-body"><p>Let's start with these cache keys and see how it goes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-09-12 09:14</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-09-12 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-12 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 13:10</div>
+            <div class="timeline-body"><p>I think this is missing a docs update in https://docs.astral.sh/uv/concepts/projects/init/#projects-with-extension-modules where we say you'll need to use <code>--reinstall</code> when <code>main.cpp</code> changes</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:46 UTC
+    </footer>
+</body>
+</html>

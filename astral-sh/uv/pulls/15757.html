@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: implement --force flag for lock - astral-sh/uv #15757</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: implement --force flag for lock</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15757">#15757</a>
+        opened by <a href="https://github.com/11happy">@11happy</a>
+        on 2025-09-09 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/11happy">@11happy</a> on 2025-09-09 15:44</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This PR fixes #15220</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I have tested the updated force flag working.</p>
+<h2>CC</h2>
+<p>@zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-11 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/lock.rs</code>:763 on 2025-09-11 14:27</div>
+            <div class="timeline-body"><p>I think we still probably want to use the existing versions instead of ignoring the existing lockfile entirely? This might be kind of hard to teach though 🤔</p>
+<p>I think this doesn't accomplish the goal from the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-13 11:51</div>
+            <div class="timeline-body"><p>Hii @zanieb
+I see your point about my current implementation not addressing the core issue. To solve the issue , I am thinking to approach it like this -
+For the <code>--force</code> flag approach:
+I can set the ValidatedLock to Preferable/Versions to use existing versions but force a rewrite when <code>--force</code> flag is used.</p>
+<p>OR</p>
+<p>When validation succeeds and we reach this section:</p>
+<pre><code>Some(ValidatedLock::Satisfies(lock)) =&gt; {
+    // Print the success message after completing resolution.
+    logger.on_complete(lock.len(), start, printer)?;
+    Ok(LockResult::Unchanged(lock))
+}
+</code></pre>
+<p>Should I add format checking here? If there's a format mismatch (missing revision = 3, missing upload-time fields, etc.),</p>
+<p>How should I apprach format detection ?
+I saw the implementation of <code>Lock</code> &amp; it has this revision field,
+does checking revision field would work ?
+Also is there a suggested way to detect missing upload-time fields or other format indicators?</p>
+<p>I'd appreciate any pointers to help me move forward. Also, could you point me to resources about uv lockfile format internals?</p>
+<p>Thanks for your patience as I work through this : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-22 13:18</div>
+            <div class="timeline-body"><p>I think you're on the right track with changing validation. I think we want to change</p>
+<p>https://github.com/astral-sh/uv/blob/b1fbb524d29476484ab5ba2ddf19c24157b3d277/crates/uv/src/commands/project/lock.rs#L942</p>
+<p>to just immediately return <code>Ok(Self::Preferable(lock))</code> if <code>force</code> is set. I think that should be sufficient to force us to do a new resolution and write to the lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-22 16:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you're on the right track with changing validation. I think we want to change</p>
+<p>https://github.com/astral-sh/uv/blob/b1fbb524d29476484ab5ba2ddf19c24157b3d277/crates/uv/src/commands/project/lock.rs#L942</p>
+<p>to just immediately return <code>Ok(Self::Preferable(lock))</code> if <code>force</code> is set. I think that should be sufficient to force us to do a new resolution and write to the lockfile?</p>
+</blockquote>
+<p>Thank you, I will do it likewise : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @11happy on 2025-09-23 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-23 17:43</div>
+            <div class="timeline-body"><p>I think you'll need to merge / rebase with the overlapping work in #15994</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-29 17:32</div>
+            <div class="timeline-body"><p>have rebased it, done @zanieb : )</p>
+<p>wait let me fix CI errors &amp; get back !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-30 16:52</div>
+            <div class="timeline-body"><p>Hii @zanieb, I’ve fixed all the CI errors. Could you take a look when you get a chance?<br />
+Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-12 10:19</div>
+            <div class="timeline-body"><p>gentle ping !</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:47 UTC
+    </footer>
+</body>
+</html>

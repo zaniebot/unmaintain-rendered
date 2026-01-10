@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract IO errors from h2 for streaming retries of Connection Reset - astral-sh/uv #15675</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extract IO errors from h2 for streaming retries of Connection Reset</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15675">#15675</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-09-04 11:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-09-04 11:26</div>
+            <div class="timeline-body"><p>Our streaming retries were missing connection reset errors as h2 was shadowing IO errors (https://github.com/hyperium/h2/issues/862).</p>
+<p><strong>Test plan</strong></p>
+<p>In one terminal:</p>
+<pre><code>cargo python uninstall 3.12 &amp;&amp; cargo run python install 3.12 -vv
+</code></pre>
+<p>In another:</p>
+<pre><code>sudo tcpkill -i wlp2s0 port 443
+</code></pre>
+<p>Output:</p>
+<pre><code>error: Failed to install cpython-3.12.11-linux-x86_64-gnu
+  Caused by: Request failed after 3 retries
+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250902/cpython-3.12.11%2B20250902-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: error sending request for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250902/cpython-3.12.11%2B20250902-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+  Caused by: client error (SendRequest)
+  Caused by: connection error
+  Caused by: connection reset
+</code></pre>
+<p>I don't know how to test that from inside Rust.</p>
+<p>Fix #14171 (again, hopefully)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-09-04 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-09-04 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @konstin on 2025-09-04 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-09-04 12:22</div>
+            <div class="timeline-body"><p>😭</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-09-04 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-04 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-04 12:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:46 UTC
+    </footer>
+</body>
+</html>

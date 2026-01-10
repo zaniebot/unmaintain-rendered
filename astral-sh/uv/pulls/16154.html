@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix compile error on missing uv-python metadata - astral-sh/uv #16154</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix compile error on missing uv-python metadata</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16154">#16154</a>
+        opened by <a href="https://github.com/dead10ck">@dead10ck</a>
+        on 2025-10-07 15:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dead10ck">@dead10ck</a> on 2025-10-07 15:57</div>
+            <div class="timeline-body"><p>The <code>uv-python</code> crate reads the checked-in download metadata to write out a minified version to be statically included into the binary.</p>
+<p>Sometimes, the resulting <code>download-metadata-minified.json</code> can go missing, such as when <code>uv</code> is installed via <code>cargo</code> as a git source, and there is an update; <code>cargo</code> will do a hard reset on the git repo it stores in the cache, causing it to be deleted. In these instances, the <code>uv-python</code> crate does not currently re-run its build script, because as it happens, there was no change to the <code>download-metadata.json</code> since it was last compiled. This causes a build error like:</p>
+<pre><code>            Updating git repository `https://github.com/astral-sh/uv`
+          Installing uv v0.8.24 (https://github.com/astral-sh/uv?tag=0.8.24#252f8873)
+            Updating crates.io index
+           Compiling uv-version v0.8.24 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-version)
+           Compiling uv-git v0.0.1 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-git)
+           Compiling uv-build-backend v0.1.0 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-build-backend)
+           Compiling uv-configuration v0.0.1 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-configuration)
+           Compiling uv-client v0.0.1 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-client)
+           Compiling uv-extract v0.0.1 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-extract)
+           Compiling uv-workspace v0.0.1 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-workspace)
+           Compiling uv-python v0.0.1 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-python)
+           Compiling uv-requirements-txt v0.0.1 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-requirements-txt)
+           Compiling uv-bin-install v0.0.1 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-bin-install)
+           Compiling uv-publish v0.1.0 (/home/skhawtho/.cargo/git/checkouts/uv-c9e40703e19509a8/252f887/crates/uv-publish)
+        error: couldn't read `crates/uv-python/src/download-metadata-minified.json`: No such file or directory (os error 2)
+           --&gt; crates/uv-python/src/downloads.rs:795:45
+            |
+        795 | const BUILTIN_PYTHON_DOWNLOADS_JSON: &amp;str = include_str!(&quot;download-metadata-minified.json&quot;);
+            |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        error: could not compile `uv-python` (lib) due to 1 previous error
+        error: failed to compile `uv v0.8.24 (https://github.com/astral-sh/uv?tag=0.8.24#252f8873)`, intermediate artifacts can be found at `/home/skhawtho/.cache/cargo`.
+        To reuse those artifacts with a future compilation, set the environment variable `CARGO_TARGET_DIR` to that path.
+</code></pre>
+<p>This fixes the issue by also adding a <code>rerun-if-changed</code> on the resulting minified JSON file.</p>
+<p>Separately, this revision also changes the output directory of the minified file to the build script's output directory via the <code>OUT_DIR</code> environment variable, so as not to pollute the source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-10-07 16:04</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-07 16:04</div>
+            <div class="timeline-body"><p>Looks like</p>
+<pre><code>error: couldn't read `crates/uv-python/src/download-metadata-minified.json`: No such file or directory (os error 2)
+   --&gt; crates/uv-python/src/downloads.rs:795:45
+    |
+795 | const BUILTIN_PYTHON_DOWNLOADS_JSON: &amp;str = include_str!(&quot;download-metadata-minified.json&quot;);
+</code></pre>
+<p>needs update</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dead10ck">@dead10ck</a> on 2025-10-07 16:30</div>
+            <div class="timeline-body"><p>Whoops, go figure, I forgot to update that path too, but it still compiled for me locally because it was still cached haha</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-10-07 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-10-07 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-07 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-09 16:20</div>
+            <div class="timeline-body"><p>@dead10ck I think this might be causing <code>uv-python</code> to re-compile on every <code>cargo</code> invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dead10ck">@dead10ck</a> on 2025-10-09 18:29</div>
+            <div class="timeline-body"><p>Shoot, you're right; it looks like <code>rerun-if-changed</code> is only based on mod times, so it's always different every run. I'll see if I can fix it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dead10ck">@dead10ck</a> on 2025-10-09 19:02</div>
+            <div class="timeline-body"><p>I submitted another PR: https://github.com/astral-sh/uv/pull/16214</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:54 UTC
+    </footer>
+</body>
+</html>

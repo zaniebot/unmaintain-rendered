@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add docs for `uv pip compile` and renovate - astral-sh/uv #11204</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add docs for `uv pip compile` and renovate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11204">#11204</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-02-03 22:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 22:50</div>
+            <div class="timeline-body"><p>Support landed upstream</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-02-03 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 22:56</div>
+            <div class="timeline-body"><p>cc @mkniewallner (as an authority on these docs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on <code>docs/guides/integration/dependency-bots.md</code>:86 on 2025-02-03 23:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">{
+  $schema: &quot;https://docs.renovatebot.com/renovate-schema.json&quot;,
+  &quot;pip-compile&quot;: {
+    fileMatch: [&quot;(^|/)requirements\\.txt$&quot;],
+  },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-02-03 23:51</div>
+            <div class="timeline-body"><p>Tried the feature in Renovate (from <code>main</code> branch, as their GitHub app uses a version that predates the feature), but there are several things missing/not working.</p>
+<p>First, it doesn't seem to support dependencies defined in <code>pyproject.toml</code> at all, as I've tried:</p>
+<ul>
+<li>https://github.com/mkniewallner/mkv-playground/commit/7c840df610e5ab50cbfaf560f856a428b9601442</li>
+<li>https://github.com/mkniewallner/mkv-playground/commit/205445f013c82ae242a5680ff2edf7ed99f28f73</li>
+<li>https://github.com/mkniewallner/mkv-playground/commit/aa0cbb9c2aa8c52201813ac06281e00c105d7a7c</li>
+</ul>
+<p>and I ended up with different errors on the 3 attempts when running:</p>
+<pre><code class="language-shell">RENOVATE_TOKEN=&lt;GITHUB_TOKEN&gt; LOG_LEVEL=DEBUG npx renovate@latest mkniewallner/mkv-playground
+</code></pre>
+<p>With <code>uv pip compile pyproject.toml -o requirements.txt</code> I got:</p>
+<pre><code class="language-console"> WARN: pip-compile error (repository=mkniewallner/mkv-playground)
+       &quot;fileMatch&quot;: &quot;requirements.txt&quot;,
+       &quot;errorMessage&quot;: &quot;Option -o not supported (yet)&quot;
+</code></pre>
+<p>With <code>uv pip compile pyproject.toml --output-file requirements.txt</code> I got:</p>
+<pre><code class="language-console"> WARN: pip-compile error (repository=mkniewallner/mkv-playground)
+       &quot;fileMatch&quot;: &quot;requirements.txt&quot;,
+       &quot;errorMessage&quot;: &quot;Option --output-file must have equal sign '=' separating it's argument&quot;
+</code></pre>
+<p>With <code>uv pip compile pyproject.toml --output-file=requirements.txt</code> it seems that the header was at least fully handled, but then it showed that <code>pyproject.toml</code> does not look to be supported, and Renovate ended up &quot;guessing&quot; that the project uses Poetry and crashed as there is no <code>[tool]</code> section:</p>
+<pre><code class="language-console">DEBUG: pip-compile: extracted command from header (repository=mkniewallner/mkv-playground)
+       &quot;fileName&quot;: &quot;requirements.txt&quot;,
+       &quot;argv&quot;: [&quot;uv&quot;, &quot;pip&quot;, &quot;compile&quot;, &quot;pyproject.toml&quot;, &quot;--output-file=requirements.txt&quot;],
+       &quot;commandType&quot;: &quot;uv&quot;
+DEBUG: Poetry: error parsing pyproject.toml (repository=mkniewallner/mkv-playground, packageFile=pyproject.toml)
+       &quot;err&quot;: {
+         &quot;message&quot;: &quot;Schema error&quot;,
+         &quot;stack&quot;: &quot;ZodError: Schema error\n    at Object.get error [as error] (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/zod/lib/types.js:55:31)\n    at fromZodResult (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/util/result.ts:60:67)\n    at Function.parse (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/util/result.ts:566:12)\n    at Object.extractPackageFile (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/modules/manager/poetry/extract.ts:19:36)\n    at extractPackageFile (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/modules/manager/index.ts:75:9)\n    at getManagerPackageFiles (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/workers/repository/extract/manager-files.ts:58:43)\n    at /home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/workers/repository/extract/index.ts:57:28\n    at async Promise.all (index 4)\n    at extractAllDependencies (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/workers/repository/extract/index.ts:54:26)\n    at extract (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/workers/repository/process/extract-update.ts:160:28)\n    at extractDependencies (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/workers/repository/process/index.ts:158:26)\n    at Object.renovateRepository (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/workers/repository/index.ts:71:9)\n    at attributes.repository (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/workers/global/index.ts:206:11)\n    at start (/home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/workers/global/index.ts:191:7)\n    at /home/mathieu/.npm/_npx/59c0475bfd22776c/node_modules/renovate/lib/renovate.ts:19:22&quot;,
+         &quot;issues&quot;: {&quot;tool&quot;: &quot;Required&quot;}
+       }
+ WARN: pip-compile: support for manager is not yet implemented (repository=mkniewallner/mkv-playground, packageFile=pyproject.toml)
+       &quot;manager&quot;: &quot;pep621&quot;
+ WARN: pip-compile: failed to find dependencies in source file (repository=mkniewallner/mkv-playground, packageFile=pyproject.toml)
+</code></pre>
+<p>What did work though is defining dependencies in <code>requirements.in</code> (https://github.com/mkniewallner/mkv-playground/commit/9f8323abc2b81fe60ffa45cd8b1bc3a8ad8ce52a): https://github.com/mkniewallner/mkv-playground/pull/23/files. But I'm pretty confident it suffers from the same limitations as above, meaning:</p>
+<ul>
+<li>if <code>uv pip compile requirements.in -o requirements.txt</code> or <code>uv pip compile requirements.in --output-file requirements.txt</code> was used, Renovate won't be able to create updates</li>
+<li>if <code>uv pip compile requirements.in --output-file=requirements.txt</code> was used, it will though</li>
+</ul>
+<p>So in the current state, I would not recommend announcing support for it. I can raise the issues I've found in Renovate repository and/or work on some of the issues/features.</p>
+<p>If support for <code>-o &lt;file&gt;</code> and <code>--output-file &lt;file&gt;</code> ends up being added, we could at least announce that <code>requirements.in</code> is handled, but not <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mkniewallner">@mkniewallner</a> reviewed on 2025-02-03 23:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 00:03</div>
+            <div class="timeline-body"><p>Thank you so much! Appreciate it.</p>
+<p>I guess I should have tried it.. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2025-02-04 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adrianeboyd">@adrianeboyd</a> on 2025-02-10 10:29</div>
+            <div class="timeline-body"><p>Now that the github app has updated to a newer version of renovate, I tried the version of replacing <code>pip-compile</code> with <code>uv pip compile</code> in the headers (with <code>--output-file=</code>), and end up with this error:</p>
+<pre><code>ExecError: Command failed: uv pip compile requirements.in --output-file=requirements.txt
+/bin/sh: 1: uv: not found
+
+    at ChildProcess.&lt;anonymous&gt; (/usr/local/renovate/lib/util/exec/common.ts:119:11)
+    at ChildProcess.emit (node:events:536:35)
+    at ChildProcess.emit (node:domain:489:12)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+</code></pre>
+<p>I can see it installing python and pip-tools in the logs, so possibly there's somewhere else in the config settings to add <code>uv</code> as a tool, but I don't know where. I also tried adding <code>[tool.uv]</code> section to <code>pyproject.toml</code> but run into the same poetry error as mentioned earlier in this thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-02-11 12:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Now that the github app has updated to a newer version of renovate, I tried the version of replacing <code>pip-compile</code> with <code>uv pip compile</code> in the headers (with <code>--output-file=</code>), and end up with this error:</p>
+<pre><code>ExecError: Command failed: uv pip compile requirements.in --output-file=requirements.txt
+/bin/sh: 1: uv: not found
+
+    at ChildProcess.&lt;anonymous&gt; (/usr/local/renovate/lib/util/exec/common.ts:119:11)
+    at ChildProcess.emit (node:events:536:35)
+    at ChildProcess.emit (node:domain:489:12)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+</code></pre>
+<p>I can see it installing python and pip-tools in the logs, so possibly there's somewhere else in the config settings to add <code>uv</code> as a tool, but I don't know where. I also tried adding <code>[tool.uv]</code> section to <code>pyproject.toml</code> but run into the same poetry error as mentioned earlier in this thread.</p>
+</blockquote>
+<p>Renovate installs the tools it needs based on the package managers it detects. In Renovate, <code>uv pip compile</code> support was added on top of the existing <code>pip-compile</code> manager, but there is one missing piece it seems, as the required tools are constructed <a href="https://github.com/renovatebot/renovate/blob/3caa1bbe8ddcd757dc3056256a95b936befcb439/lib/modules/manager/pip-compile/artifacts.ts#L140-L145">here</a> and <a href="https://github.com/renovatebot/renovate/blob/d0916b18b32746470c2682893ca53354110ebc1a/lib/modules/manager/pip-compile/common.ts#L46-L77">here</a>, which for now always assume that <code>pip-tools</code> is used, and doesn't handle uv.</p>
+<p>As this is an issue in Renovate itself, feel free to open a <a href="https://github.com/renovatebot/renovate/discussions">discussion</a> on Renovate repository to report the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-02-11 12:45</div>
+            <div class="timeline-body"><blockquote>
+<p>As this is an issue in Renovate itself, feel free to open a <a href="https://github.com/renovatebot/renovate/discussions">discussion</a> on Renovate repository to report the issue.</p>
+</blockquote>
+<p>Actually, there is already a PR in review for handling this: https://github.com/renovatebot/renovate/pull/34029.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-21 19:40</div>
+            <div class="timeline-body"><p>I wonder if this is safe to continue with now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adrianeboyd">@adrianeboyd</a> on 2025-04-22 06:28</div>
+            <div class="timeline-body"><p>We've been using it since the beginning of March now and as long as you're aware of some quirks, you can get it to work as intended within its limitations.</p>
+<p>As already mentioned above as a potential blocker, there is still relatively limited support for parsing the options from the requirements header line, so for example the only supported variants are <code>--output-file=</code> and <code>--constraints=</code>, and no other alternatives, see:</p>
+<p>https://github.com/renovatebot/renovate/blob/5fe91f64ec2fe5dd908caca6702206392e660773/lib/modules/manager/pip-compile/common.ts#L117-L159</p>
+<p>https://github.com/renovatebot/renovate/blob/5fe91f64ec2fe5dd908caca6702206392e660773/lib/modules/manager/pip-compile/common.ts#L308-L314</p>
+<p>None of this is documented very well and it can take some trial and error to get it set up, but dependabot with <code>pip-compile</code> hadn't been working for a larger project on our end anymore due to github runner timeouts and renovate with <code>uv pip compile</code> is a definite improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 13:41</div>
+            <div class="timeline-body"><p>If someone could help me finish these docs I'd appreciate it. I don't have time to focus on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-09-12 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 13:47</div>
+            <div class="timeline-body"><p>(It seems worth covering those caveats in a note admonition or something)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:41 UTC
+    </footer>
+</body>
+</html>

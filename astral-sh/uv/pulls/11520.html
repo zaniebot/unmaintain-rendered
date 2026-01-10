@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow selection of debug build interpreters - astral-sh/uv #11520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow selection of debug build interpreters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11520">#11520</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-02-14 20:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-14 20:24</div>
+            <div class="timeline-body"><p>Extends the <code>PythonVariant</code> logic to support interpreters with the debug flag enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-02-14 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-14 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:1688 on 2025-02-14 20:26</div>
+            <div class="timeline-body"><p>I need to confirm it's <code>td</code> and not <code>dt</code> still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:677 on 2025-02-14 20:27</div>
+            <div class="timeline-body"><p>I think something is wrong with <code>generate-download-metadata.py</code> because this download should exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-14 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-14 20:30</div>
+            <div class="timeline-body"><p>A couple notes on things to do</p>
+<ul>
+<li><code>uv python list</code> should probably not show downloads for these by default</li>
+<li>Parsing needs to be implemented in download request keys e.g. <code>uv python install cpython-3.10.2+debug-macos-aarch64-none</code></li>
+<li>Ensure <code>uv python find</code> works for existing interpreters with debug enabled</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-14 20:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:1218 on 2025-02-14 20:32</div>
+            <div class="timeline-body"><p>Copied the <code>freethreaded</code> test to start</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidhewitt">@davidhewitt</a> on <code>crates/uv/tests/it/python_install.rs</code>:677 on 2025-03-07 11:33</div>
+            <div class="timeline-body"><p>I just did some debugging here, it looks like the regex in <code>_filename_re</code> is picking up <code>-debug</code> as being a 4th piece of the triple, e.g. <code>aarch64-apple-darwin-debug</code></p>
+<p>So then the build options / variant processing is not working correctly.</p>
+<p>This happens to not be a problem for the free-threaded builds because they are all <code>freethreaded+pgo</code> or <code>freethreaded+pgo+lto</code>, and <code>+</code> is not allowed as a character in the triple portion of the regex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidhewitt">@davidhewitt</a> reviewed on 2025-03-07 11:36</div>
+            <div class="timeline-body"><p>Thank you very much for working on this! I would really appreciate this for making testing of debug builds in PyO3 easier; we currently manually pull <code>python-build-standalone</code> releases and set some hacks to configure them. But <code>uv</code> is such a convenient tool, being able to just do <code>UV_PYTHON=3.13d uv tool run nox -s test</code> would be fantastic ❤️</p>
+<p>I just tried this branch and have found the possible bug which blocked you; I'm not sure how you'd like to fix the bug (either in the regex or in <code>python-build-standalone</code> url formats, I guess).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidhewitt">@davidhewitt</a> on 2025-03-07 11:40</div>
+            <div class="timeline-body"><p>cc @arielb1 - if we get this functionality in <code>uv</code> working then installing and running with a debug build should hopefully be much easier (for testing the PyO3 issues with the debug build in https://github.com/PyO3/pyo3/pull/4874)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mg3146">@mg3146</a> on 2025-06-10 13:07</div>
+            <div class="timeline-body"><p>hi - is there an update on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/yan12125">@yan12125</a> reviewed on 2025-08-04 06:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/yan12125">@yan12125</a> on <code>crates/uv/tests/it/python_install.rs</code>:677 on 2025-08-04 06:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I just did some debugging here, it looks like the regex in <code>_filename_re</code> is picking up <code>-debug</code> as being a 4th piece of the triple, e.g. <code>aarch64-apple-darwin-debug</code></p>
+</blockquote>
+<p>Negative lookahead may be a solution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-11 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:677 on 2025-09-11 16:52</div>
+            <div class="timeline-body"><p>Thanks! Fixed this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-09-11 19:45</div>
+            <div class="timeline-body"><p>Small bug in this code:</p>
+<pre><code>$ ~/.local/bin/uvx python@3.13+freethreaded
+cpython-3.13.7+freethreaded-linux-aarch64-gnu (download) ------------------------------ 20.69 MiB/87.17 MiB                                                  ^C
+$ /tmp/uvx python@3.13+freethreaded
+error: Invalid version request: 3.13+freethreade
+</code></pre>
+<p>It's stripping the <code>d</code> suffix before parsing the plus syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/fetch-download-metadata.py</code>:1 on 2025-09-11 19:46</div>
+            <div class="timeline-body"><p>This file also needs to change to learn about <code>freethreaded+debug</code> interpreters, but we can land that as a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/build.rs</code>:15 on 2025-09-11 19:47</div>
+            <div class="timeline-body"><p>How much does this increase the <code>uv</code> file size?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/discovery.rs</code>:1688 on 2025-09-11 19:47</div>
+            <div class="timeline-body"><p>It is indeed <code>td</code>. (See configure.ac)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/discovery.rs</code>:172 on 2025-09-11 19:49</div>
+            <div class="timeline-body"><p>I think this might be nicer as a pair of bools, but I can try to clean that up in a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/installation.rs</code>:637 on 2025-09-11 19:49</div>
+            <div class="timeline-body"><p>Any reason this spells out the variants and the similar code above uses <code>_</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> approved on 2025-09-11 19:50</div>
+            <div class="timeline-body"><p>Seems fine to ship.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/build.rs</code>:15 on 2025-09-11 19:53</div>
+            <div class="timeline-body"><p>Apparently at most 0.1 MB, seems fine!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-09-11 19:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/fetch-download-metadata.py</code>:1 on 2025-09-11 19:53</div>
+            <div class="timeline-body"><p>(done locally)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-11 19:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-11 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/build.rs</code>:15 on 2025-09-11 19:54</div>
+            <div class="timeline-body"><p>Need to measure with release builds, probably a significant amount.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-11 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:172 on 2025-09-11 19:54</div>
+            <div class="timeline-body"><p>I don't know if I want that, though I understand why it may be preferable. I'd rather wait until there are more relevant variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-11 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/build.rs</code>:15 on 2025-09-11 19:55</div>
+            <div class="timeline-body"><p>Oh thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-11 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/installation.rs</code>:637 on 2025-09-11 19:56</div>
+            <div class="timeline-body"><p>I usually strongly prefer exhaustive matches so they need to revisited on change, but I guess I was on the fence here and did it two ways! I'll change them to be consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-09-12 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-09-12 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-12 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-12 13:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:41 UTC
+    </footer>
+</body>
+</html>

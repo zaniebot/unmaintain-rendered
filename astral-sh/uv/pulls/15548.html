@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use a global `BaseClientBuilder` - astral-sh/uv #15548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use a global `BaseClientBuilder`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15548">#15548</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-08-27 12:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-08-27 12:04</div>
+            <div class="timeline-body"><p>Alternative to #15105</p>
+<p>Instead of building a <code>BaseClientBuilder</code> from <code>NetworkSettings</code> each time we need a client, we instead build a single <code>BaseClientBuilder</code> and pass it around. The <code>RegistryClientBuilder</code> then uses <code>BaseClientBuilder</code> exclusively for configuration. This removes a chunk of copy-and-paste code, and also moves the fallible <code>retries_from_env</code> into a single place</p>
+<p>Borrow vs. clone is mostly ad-hoc, we can change it in either direction if it matters.</p>
+<p>Closes #15105</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-08-27 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-08-27 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-08-27 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-08-27 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/registry_client.rs</code>:59 on 2025-08-27 12:05</div>
+            <div class="timeline-body"><p>An alternative in one direction would be starting with a default base client builder (easier for the tests, easier to get wrong in production code), an alternative in the other direction would be making <code>IndexLocations</code> a parameter here to clarify them as mandatory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-08-27 12:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/add.rs</code>:394 on 2025-08-27 12:08</div>
+            <div class="timeline-body"><p>This is a logic change as it was previously (accidentally?) using a temporary cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-08-27 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/registry_client.rs</code>:250 on 2025-08-27 12:09</div>
+            <div class="timeline-body"><p>We avoid this fallible construction by passing the cache in explicitly. This avoids creating temp dirs we drop immediately after.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/list.rs</code>:90 on 2025-08-29 18:19</div>
+            <div class="timeline-body"><p>I worry about the friction this adds to adding a keyring provider, i.e., that it makes it easier to forget. I'm not sure what we can do though, it's not substantively worse than the status quo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-29 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-08-29 18:30</div>
+            <div class="timeline-body"><p>Alrighty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-08-29 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-29 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-29 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-09-03 08:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/list.rs</code>:90 on 2025-09-03 08:35</div>
+            <div class="timeline-body"><p>That's a motivation for this change! I want to move towards something that's more consolidated instead of having to remember to add each field to the builder each time. I looked at the keyring quickly, but it seemed to complex to pull out for now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:44 UTC
+    </footer>
+</body>
+</html>

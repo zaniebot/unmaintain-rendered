@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `uv format` in unmanaged projects - astral-sh/uv #15553</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `uv format` in unmanaged projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15553">#15553</a>
+        opened by <a href="https://github.com/jorgehermo9">@jorgehermo9</a>
+        on 2025-08-27 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on 2025-08-27 16:29</div>
+            <div class="timeline-body"><p>Closes #15550</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/src/commands/project/format.rs</code>:49 on 2025-08-27 16:30</div>
+            <div class="timeline-body"><p>I decided to fallback to <code>project_dir</code> only on those three variants. Inspired from https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/venv.rs#L97</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/src/commands/project/format.rs</code>:52 on 2025-08-27 16:33</div>
+            <div class="timeline-body"><p>I'm not sure on the behaviour in this case. Should we propagate the error to the caller (previous behaviour), or in this case, should we <code>warn_user!</code>  about the error and fallback to <code>project_dir</code> (as the previous branch does)?</p>
+<p>I prefer to not do &quot;magic fallbacks&quot; when there is an error such as this (for example, malformed pyproject.toml) and to just propagate them to the user instead of continue with the command. Let me know your thoughts please.</p>
+<p>In https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/venv.rs#L97 such fallback is done, logging a warning in these cases and continue working using defaults</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/src/commands/project/format.rs</code>:46 on 2025-08-27 16:35</div>
+            <div class="timeline-body"><p>had to <code>.to_owned()</code>... If I instead do <code>match &amp;project</code>, then the <code>Err(err) =&gt; return Err(err.into()),</code> would fail as there is no <code>From &lt;&amp;WorkspaceError&gt; for anyhow::Error</code> (there exist such implementation for owned <code>WorkspaceError</code> ,but not for borrowed). Therefore we need the owned version (<code>match project</code>) and just return <code>proj.root()</code> would also have lifetime issues due to the move semantics of <code>match project</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/tests/it/format.rs</code>:241 on 2025-08-27 16:36</div>
+            <div class="timeline-body"><p>Added a failing test, as I see there was no one previously. Not sure if I should cover more cases or just this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/tests/it/format.rs</code>:262 on 2025-08-27 16:37</div>
+            <div class="timeline-body"><p>It is weird that this error is reported twice... But I see this same happens in other failing tests, is this intended?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-27 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/format.rs</code>:262 on 2025-08-27 17:37</div>
+            <div class="timeline-body"><p>Is the second parse error from ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/tests/it/format.rs</code>:262 on 2025-08-27 17:41</div>
+            <div class="timeline-body"><p>nope, from the err propagation at <code>format</code> function in format.rs. The first one is the one I'm not sure where is logged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/format.rs</code>:262 on 2025-08-27 17:45</div>
+            <div class="timeline-body"><p>I would presume the first one is when we load global settings? It seems problematic, but out of scope for fixing here if there are other snapshots with the same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-27 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-27 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/format.rs</code>:52 on 2025-08-27 17:47</div>
+            <div class="timeline-body"><p>It seems okay to fail here, unless we find a use-case it's blocking. It's much harder to go the other direction :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/format.rs</code>:44 on 2025-08-27 17:47</div>
+            <div class="timeline-body"><p>nit: I might call this <code>target_dir</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-27 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-27 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/format.rs</code>:44 on 2025-08-27 17:49</div>
+            <div class="timeline-body"><p>If we don't re-use the <code>project</code> binding I might just do <code>match VirtualProject::discover(...)</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-08-27 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/tests/it/format.rs</code>:262 on 2025-08-27 17:52</div>
+            <div class="timeline-body"><p>okay! I'll debug that later and if I found which is the origi, I'll create an issue for it! (ping me if you create it first)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/src/commands/project/format.rs</code>:44 on 2025-08-27 17:57</div>
+            <div class="timeline-body"><p>good catch! I'll update in a few hours (I'm currently away from home)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorgehermo9">@jorgehermo9</a> reviewed on 2025-08-27 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on <code>crates/uv/src/commands/project/format.rs</code>:44 on 2025-08-27 17:57</div>
+            <div class="timeline-body"><p>I like it, more semantic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on 2025-08-28 21:44</div>
+            <div class="timeline-body"><p>sorry @zanieb I couldn't address the comments yet. I will work on it as soon as I can. I hope tomorrow/next day</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorgehermo9">@jorgehermo9</a> on 2025-09-05 17:26</div>
+            <div class="timeline-body"><p>Hi @zanieb Everything addressed!</p>
+<p>CC @younver</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-05 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/format.rs</code>:49 on 2025-09-05 17:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // If there is a problem finding a project, we just use the provided directory,
+            // e.g., for unmanaged projects
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-09-05 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-09-05 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-05 18:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:44 UTC
+    </footer>
+</body>
+</html>

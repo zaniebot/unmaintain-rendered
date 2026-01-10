@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>define `UV_USE_ACTIVE_ENVIRONMENT` as an alternative to `--active` - astral-sh/uv #13714</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>define `UV_USE_ACTIVE_ENVIRONMENT` as an alternative to `--active`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13714">#13714</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-05-29 00:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-29 00:31</div>
+            <div class="timeline-body"><p>We considered <code>UV_PROJECT_ENVIRONMENT=active</code>, but that env var doesn't affect script environments, and we probably want this to work the same way for both.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/11273.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @oconnor663 on 2025-05-29 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 12:11</div>
+            <div class="timeline-body"><p>I worry this name misses that it's scoped to projects. We <em>do</em> use the active environment elsewhere.</p>
+<blockquote>
+<p>We considered UV_PROJECT_ENVIRONMENT=active, but that env var doesn't affect script environments, and we probably want this to work the same way for both.</p>
+</blockquote>
+<p>This is.. fair. Hm..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-29 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 12:31</div>
+            <div class="timeline-body"><p>Let's see if others have opinions, e.g., @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-29 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/environment.md</code>:435 on 2025-05-29 12:32</div>
+            <div class="timeline-body"><p>Should we explain a bit more of the nuance here? Like... that this is the default behavior outside of projects and scripts with inline metadata?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-29 15:26</div>
+            <div class="timeline-body"><blockquote>
+<p>We <em>do</em> use the active environment elsewhere.</p>
+</blockquote>
+<p>Ah, I was missing that. Now I see https://docs.astral.sh/uv/pip/environments/#using-arbitrary-python-environments re: <code>uv install</code> and <code>uv pip install</code>. Are there other commands that use the active environment without <code>--active</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 15:32</div>
+            <div class="timeline-body"><p>(<code>uv install</code> doesn't exist)</p>
+<p><code>uv run</code> outside of a project
+<code>uv run foo.py</code> if it's not a script with inline metadata and you're outside of a project
+<code>uv pip *</code> all of the commands here
+<code>uv python find</code> outside of a project</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-29 20:54</div>
+            <div class="timeline-body"><p>Here's some improved wording. How does this sound?</p>
+<blockquote>
+<p>Equivalent to the <code>--active</code> command line argument for commands that support it. For
+example, when running inside a project or when running a script with inline metadata,
+<code>uv run</code> manages its own virtual environment and ignores the caller's active environment
+(i.e. the <code>VIRTUAL_ENV</code> environment variable). Similarly, <code>uv sync</code> and <code>uv add</code> expect to
+run in a project, and they use the managed virtual environment by default. The active
+option causes these commands to use the caller's active virtual environment instead, if
+there is one.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-30 07:56</div>
+            <div class="timeline-body"><p>To add an option to the bikeshed: <code>UV_SYNC_ACTIVE_ENVIRONMENT</code>, to clarify the scoping to project commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-02 16:24</div>
+            <div class="timeline-body"><p>I like <code>UV_SYNC_ACTIVE_ENVIRONMENT</code>, as long as you think it's sufficiently obvious that in addition to <em>sync'ing</em> the environment we actually <em>execute</em> stuff inside it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 16:46</div>
+            <div class="timeline-body"><p>I don't think it's obvious that wouldn't be scoped to the <code>uv sync</code> command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 16:47</div>
+            <div class="timeline-body"><p>(but maybe it makes sense as a step in the direction of <code>UV_SYNC</code> being configuration of the general &quot;sync&quot; step, we just don't have any <code>UV_SYNC</code> variables yet)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-06-03 03:11</div>
+            <div class="timeline-body"><p>Some more bikeshedding</p>
+<ul>
+<li><code>UV_ACTIVE_VENV</code> --&gt; more specific to an activated venv</li>
+<li><code>UV_ACTIVE_ENV</code> --&gt; alt</li>
+<li><code>UV_DEFAULT_ENV</code> --&gt; probably would want an explicit <code>active</code> here</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-04 15:33</div>
+            <div class="timeline-body"><p>A few concerns here</p>
+<ul>
+<li>An environment variable here would apply equally to projects and scripts with inline metadata, is that what people would want? Or would you still expect a script to be run in a separate environment? Does that imply we want separate variables? Do we just want to tackle the <code>UV_PROJECT_ENVIRONMENT</code> case?</li>
+<li>How would this behave if <code>VIRTUAL_ENV</code> is not set? Would it error?</li>
+<li>Do we really want to make this easier to turn on in a persistent way? It's off the happy path and adds complexity?</li>
+</ul>
+<p>Another option</p>
+<ul>
+<li><code>UV_PROJECT_ENVIRONMENT=VIRTUAL_ENV</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-05 16:47</div>
+            <div class="timeline-body"><p>I have some more follow-up questions about the intended behavior on the issue: https://github.com/astral-sh/uv/issues/11273#issuecomment-2945223978</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 12:19</div>
+            <div class="timeline-body"><p>Let's defer this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-12 12:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:41 UTC
+    </footer>
+</body>
+</html>

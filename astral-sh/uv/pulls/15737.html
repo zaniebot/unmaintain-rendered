@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use the `windows` crate facade consistently - astral-sh/uv #15737</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use the `windows` crate facade consistently</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15737">#15737</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-09-08 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-09-08 16:05</div>
+            <div class="timeline-body"><p>The initial motivation for this change was that we were using both the <code>windows</code>, the <code>window_sys</code> and the <code>windows_core</code> crate in various places. These crates have slightly unconventional versioning scheme where there is a large workspace with the same version in general, but only some crates get breaking releases when a new breaking release happens, the others stay on the previous breaking version. The <code>windows</code> crate is a shim for all three of them, with a single version. This simplifies handling the versions.</p>
+<p>Using <code>windows</code> over <code>windows_sys</code> has the advantage of a higher level error interface, we now get a <code>Result</code> for all windows API calls instead of C-style int-returns and get-last-error calls. This makes the uv-keyring crate more resilient.</p>
+<p>We keep using the <code>windows_registry</code> crate, which provides a higher level interface to windows registry access.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @geofft by @konstin on 2025-09-08 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-09-08 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-09-08 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2025-09-08 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-09-08 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-keyring/src/windows.rs</code>:499 on 2025-09-08 16:06</div>
+            <div class="timeline-body"><p>I didn't see any backwards conversion from <code>windows::core::Error</code> to <code>WIN32_ERROR</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-09-08 16:26</div>
+            <div class="timeline-body"><p>crates/uv/src/windows_exception.rs LGTM, rest seems believable but I only skimmed. (The one thing we had recently about calling <code>GetLastError</code> on the same thread as the error is, I assume, fine, if the wrapper calls it for us.)</p>
+<p>Is there any impact on binary size?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-keyring/src/windows.rs</code>:497 on 2025-09-08 17:38</div>
+            <div class="timeline-body"><p>We can also use the built-in <code>windows::core::Error</code> display here. It has better coverage, I didn't do so far because I avoided behavior changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-09-08 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-09-08 17:39</div>
+            <div class="timeline-body"><p>I wonder if we should document this somewhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-09-09 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-09 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-09 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-09 15:17</div>
+            <div class="timeline-body"><p>The binary size difference is unnoticeable: 20695782 bytes -&gt; 20695408 bytes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:47 UTC
+    </footer>
+</body>
+</html>

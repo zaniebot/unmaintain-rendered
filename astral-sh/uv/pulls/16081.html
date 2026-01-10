@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surface pinned-version hint when `uv tool upgrade` can’t move the tool - astral-sh/uv #16081</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Surface pinned-version hint when `uv tool upgrade` can’t move the tool</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16081">#16081</a>
+        opened by <a href="https://github.com/terror">@terror</a>
+        on 2025-10-01 01:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/terror">@terror</a> on 2025-10-01 01:26</div>
+            <div class="timeline-body"><p>Resolves https://github.com/astral-sh/uv/issues/15665</p>
+<p><code>uv tool upgrade</code> already respects version pins, but when a tool was installed with an exact version the command quietly becomes a no-op even though users expect it to upgrade the executable. This change tweaks the upgrade flow to detect that situation by inspecting the stored receipt and, whenever the tool stays pinned, emit a concise hint explaining why the version didn’t move and how to reinstall without the pin.</p>
+<p>The message still appears if the run only refreshed supporting packages, so users aren’t misled by dependency churn that leaves the tool itself untouched.</p>
+<p>I also added an integration test for the scenario end to end by installing <code>babel==2.6.0</code>, attempting an upgrade, and asserting that the hint is shown alongside the dependency updates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @terror on 2025-10-01 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-10-01 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:215 on 2025-10-01 20:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;hint: `{}` is pinned to `{}` (installed with an exact version pin); reinstall with `{}` to upgrade to a new version&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:211 on 2025-10-01 20:13</div>
+            <div class="timeline-body"><p>I think you can remove some of the whitespace here, it's a bit much :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:439 on 2025-10-01 20:15</div>
+            <div class="timeline-body"><p>I find this change in signature a little awkward. I think I'd expect the version to be attached to the <code>UpgradeOutcome</code> variant rather than as a part of the signature of this function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:439 on 2025-10-01 20:23</div>
+            <div class="timeline-body"><p>(especially if it's only possible for a subset of the variants)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:439 on 2025-10-01 20:23</div>
+            <div class="timeline-body"><p>Yeah agreed, I'll change this up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-01 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-01 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:439 on 2025-10-01 20:48</div>
+            <div class="timeline-body"><p>After implementing it still looked a bit questionable, so I've lifted out a general <code>UpgradeReason</code> (we could probably name this to something better) I put onto an <code>UpgradeReport</code>. This makes it so we can easily extend <code>UpgradeReason</code> for other things. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-07 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:487 on 2025-10-07 13:30</div>
+            <div class="timeline-body"><p>It'd be weird, but wouldn't this miss a pin mixed with other constraints, e.g., <code>&gt;=0.1, ==0.2</code>? Would it make more sense to search for a <code>Operator::Equal</code> in the set of specifiers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-07 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:232 on 2025-10-07 13:32</div>
+            <div class="timeline-body"><p>I think we'd normally just shadow the existing variable instead of appending <code>_str</code> to the name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:208 on 2025-10-07 13:33</div>
+            <div class="timeline-body"><p>I think we need to print a newline here if there are any collected constraints so there's a newline between the content and the first <code>hint: </code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-07 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-07 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:256 on 2025-10-07 13:35</div>
+            <div class="timeline-body"><p>There's still something awkward about this abstraction, but 🤷‍♀️ I'm not having any great ideas so we can leave it until we have another use-case that helps us refactor.</p>
+<p>@konstin might have an idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-07 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:256 on 2025-10-07 13:36</div>
+            <div class="timeline-body"><p>Previous conversation at https://github.com/astral-sh/uv/pull/16081#discussion_r2395865728</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-10-07 13:36</div>
+            <div class="timeline-body"><p>Overall, this looks good — I just have some nits left. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:487 on 2025-10-07 15:04</div>
+            <div class="timeline-body"><p>Ah yeah interesting, I was able to break it by specifying <code>babel&gt;=2.0,==2.6.0</code>, although not sure you see this much in the wild 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-07 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-07 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:256 on 2025-10-07 16:17</div>
+            <div class="timeline-body"><p>I don't have a better idea either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-10-07 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-07 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:53 UTC
+    </footer>
+</body>
+</html>

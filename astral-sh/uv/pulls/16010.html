@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect hashes from dist-info/core-metadata in simple package index - astral-sh/uv #16010</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect hashes from dist-info/core-metadata in simple package index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16010">#16010</a>
+        opened by <a href="https://github.com/adisbladis">@adisbladis</a>
+        on 2025-09-24 06:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/adisbladis">@adisbladis</a> on 2025-09-24 06:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When a package defines a hash as a file URL fragment the hash is honoured:</p>
+<pre><code class="language-html">&lt;a href=&quot;/whl/cpu/torch-2.8.0%2Bcpu-cp313-cp313-manylinux_2_28_x86_64.whl#sha256=ac59d7d8f73f4f515c949c9583ead0cce1f230a649f6c63fea0e949f93f02ae6&quot;&gt;torch-2.8.0+cpu-cp313-cp313-manylinux_2_28_x86_64.whl&lt;/a&gt;&lt;br/&gt;
+</code></pre>
+<p>and is recorded in <code>uv.lock</code>:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;torch&quot;
+version = &quot;2.8.0+cpu&quot;
+source = { registry = &quot;local&quot; }
+dependencies = [
+    { name = &quot;filelock&quot; },
+    { name = &quot;fsspec&quot; },
+    { name = &quot;jinja2&quot; },
+    { name = &quot;networkx&quot; },
+    { name = &quot;setuptools&quot; },
+    { name = &quot;sympy&quot; },
+    { name = &quot;typing-extensions&quot; },
+]
+wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp313-cp313-manylinux_2_28_x86_64.whl&quot;, hash = &quot;sha256:ac59d7d8f73f4f515c949c9583ead0cce1f230a649f6c63fea0e949f93f02ae6&quot; },
+]
+</code></pre>
+<p>But when defined as dist-info metadata or core metadata their hashes are ignored:</p>
+<pre><code class="language-html">&lt;a href=&quot;/whl/cpu/torch-2.8.0%2Bcpu-cp313-cp313-manylinux_2_28_x86_64.whl&quot; data-dist-info-metadata=&quot;sha256=ac59d7d8f73f4f515c949c9583ead0cce1f230a649f6c63fea0e949f93f02ae6&quot; data-core-metadata=&quot;sha256=ac59d7d8f73f4f515c949c9583ead0cce1f230a649f6c63fea0e949f93f02ae6&quot;&gt;torch-2.8.0+cpu-cp313-cp313-manylinux_2_28_x86_64.whl&lt;/a&gt;&lt;br/&gt;
+</code></pre>
+<p>and uv.lock is rendered without wheel hashes:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;torch&quot;
+version = &quot;2.8.0+cpu&quot;
+source = { registry = &quot;local&quot; }
+dependencies = [
+    { name = &quot;filelock&quot; },
+    { name = &quot;fsspec&quot; },
+    { name = &quot;jinja2&quot; },
+    { name = &quot;networkx&quot; },
+    { name = &quot;setuptools&quot; },
+    { name = &quot;sympy&quot; },
+    { name = &quot;typing-extensions&quot; },
+]
+wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.8.0%2Bcpu-cp313-cp313-manylinux_2_28_x86_64.whl&quot; },
+]
+</code></pre>
+<p>despite hash metadata being available.</p>
+<p>This makes uv respect hashes from <code>data-dist-info</code> &amp; <code>data-core-metadata</code> HTML attributes.</p>
+<h2>Test Plan</h2>
+<p>Automated test included.</p>
+<p>Closes #16009</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @adisbladis on 2025-09-24 08:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:52 UTC
+    </footer>
+</body>
+</html>

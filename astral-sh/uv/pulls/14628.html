@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initial design doc for centralized venvs - astral-sh/uv #14628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initial design doc for centralized venvs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14628">#14628</a>
+        opened by <a href="https://github.com/rsyring">@rsyring</a>
+        on 2025-07-15 14:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/rsyring">@rsyring</a> on 2025-07-15 14:55</div>
+            <div class="timeline-body"><p>refs: https://github.com/astral-sh/uv/issues/1495#issuecomment-3073898354</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-07-15 16:23</div>
+            <div class="timeline-body"><p>+1 on my side.
+I would change the default directory for the venv cache to be <code>UV_CACHE_DIR/venvs-v0/</code> because <code>ÙV_CACHE_DIR</code> already falls back to <code>XDG_CACHE_DIR</code>?</p>
+<p>Setting the venv cache in the same filesystem of  the UV cache is what you want to do anyway to get decent performance.</p>
+<p>I will also mention that the calculation of the path within the cache is a good idea in my opinion, and that's what I've been using for the past year or so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2025-07-15 17:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I would change the default directory for the venv cache to be UV_CACHE_DIR/venvs-v0/ because ÙV_CACHE_DIR already falls back to XDG_CACHE_DIR?</p>
+</blockquote>
+<p>Will do.  The XDG_CACHE_DIR in the spec was really a placeholder b/c I'm not sure what the uv internals look like.  I'm sure there is some kind of &quot;global&quot; or context object that takes all env vars and settings into account and provides a <code>cache_dir</code> variable that everything else then uses.  I really intend to reference that.  I'll update the spec to clarify.</p>
+<blockquote>
+<p>I will also mention that the calculation of the path within the cache is a good idea in my opinion, and that's what I've been using for the past year or so.</p>
+</blockquote>
+<p>I understand this to mean that you affirm the &quot;Human‑readable slug + short hash&quot; approach.  Please correct my understanding if needed.</p>
+<p>Thanks for the feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DanCardin">@DanCardin</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-15 17:26</div>
+            <div class="timeline-body"><p>fwiw, my vote for a location would be to mirror the directory structure relative to home e.g.</p>
+<p><code>~/foo/bar/baz/</code> -&gt; <code>$XDG_CACHE_HOME/uv/venvs/foo/bar/baz/$venvName</code> where $venvName defaults to <code>.venv-$pythonVersion</code>.</p>
+<ol>
+<li>i think mirroring the path makes a lot of other things easier, like cleanup</li>
+<li>having the final component be based on python version makes cross-version actions much faster by not clobbering the same venv for everything <code>uv run -p 3.10 pytest; uv run -p 3.11 pytest</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DanCardin">@DanCardin</a> reviewed on 2025-07-15 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PhilipVinc">@PhilipVinc</a> reviewed on 2025-07-15 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-15 20:23</div>
+            <div class="timeline-body"><p>How would you handle environments in a different file system than home/cache?</p>
+<p>(This is quite common in HPC where we have 3 file systems, one for HOME where we store few things, one WORK where we store projects but can’t store environments, and SCRATCH where we store environments…)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DanCardin">@DanCardin</a> reviewed on 2025-07-15 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DanCardin">@DanCardin</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-15 21:10</div>
+            <div class="timeline-body"><p>(i'm amending my above XDG_CACHE_DIR in light of the prior comment about UV_CACHE_DIR).</p>
+<p>i'm not sure whether i fully grasp what this system looks like/expects, but i dont think different filesystems are inherently a problem.</p>
+<p>You'd set e.g. <code>UV_CACHE_DIR=/scratch</code> i assume. Then i would expect the calculated path to be based off the least common ancestor of $HOME and the current project path. So in &quot;normal&quot; cases, <code>/home/foo</code> and <code>/home/foo/projects/bar</code> -&gt; <code>/scratch/venvs/projects/bar</code>. And in less normal cases (which maybe seems like what you're suggesting) <code>/home/foo</code> and <code>/work/projects/bar</code> you instead get <code>/scratch/venvs/$root/work/projects/bar</code> (or whatever alternative to $root to disambiguate relative vs absolute paths) because there is no common root. Or ignore relativity to $HOME at all.</p>
+<p>whether or not I'm correctly addressing your concerns, i think it would have the same issues (or lackthereof) for the other suggested option of basing it on a hashed version of the full path.</p>
+<p>Much of the details of my long middle paragraph is not critically important, and there's much to bikeshed there. The point is mostly to avoid losing the path information into a hash by way of actually using the known-unique original paths. And to make it intuitive to locally navigate to a venv without <strong>needing</strong> to run a <code>uv</code> command to calculate it for you (<strong>that</strong> is how <code>poetry</code> works and i find it quite annoying)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thehesiod">@thehesiod</a> reviewed on 2025-07-15 22:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thehesiod">@thehesiod</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-15 22:38</div>
+            <div class="timeline-body"><p>or what about having something in pyproject.toml that specifies this behavior?  another option is in the venv folder having a special uv file that has a symlink back to the base folder it corresponds to, this should solve most problems as you can ensure the folder name is unique via the hashing, and have the required back references either in a symlink, or some custom meta file in the venv folder.</p>
+<p>I'm not sure always relative to home folder is a good idea, in our environment we often put the related pyproject.toml in a folder like /usr/fbn/foo/bar.  Another option is relative to the git root.  There are so many variants that make sense for different workflows it seems like this should be configurable and opt-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-15 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-15 22:42</div>
+            <div class="timeline-body"><p>I don't think we want to try to replicate the entire path into this centralized location, it sounds feasible to run into path length limits (which have a been a frequent problem on Windows) and it doesn't match our typical patterns for storing paths.</p>
+<p>It does seem annoying to need to use uv to discover an environment path, but wouldn't something like using the project name as a prefix obviate that problem for most use-cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thehesiod">@thehesiod</a> reviewed on 2025-07-15 23:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thehesiod">@thehesiod</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-15 23:00</div>
+            <div class="timeline-body"><p>@zanieb for reference I use git worktree to have multiple versions of our git repo, comparatively pipenv's default behavior is pretty annoying to me as I don't know which worktree it belongs to.  In my ideal world there would be a setting in pyproject.toml saying something like:</p>
+<pre><code class="language-toml">[tool.uv]
+venv_root_style = &quot;relative_to&quot;
+venv_relative_root_path = &quot;/Users/user/dev&quot;
+</code></pre>
+<p>or something to that effect.  I mean or that could be like an opt-in suffix such that the root folder name is always the hash as discussed and that relative is appended to it just for reference, for when you're trying to select the correct venv like in the pycharm interpreter selector.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DanCardin">@DanCardin</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-16 14:25</div>
+            <div class="timeline-body"><p>perhaps getting too complicated, but the config <em>could</em> allow a <code>venv_path_format =</code> option that's essentially a format string allowing path/hash/python-version/whatever context to make it configurable. Then you can choose whatever default, and I can set <code>{project}-{hash}-{python_version}</code> or <code>{relative_path}/{project]/{python_version}</code> (or however it'd work)</p>
+<p>not sure if the complexity is worth the squeeze, but it seems like it sidesteps displeasing anyone's particular workflow, while letting you choose whatever default behavior you think is most foolproof/generally applicable.</p>
+<p>And as I mentioned above, regardless of specific path impl, including the python version in the path (or at least ensuring the same project operating with different python versions doesn't clobber the venvs) is main real concerning factor for at least myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DanCardin">@DanCardin</a> reviewed on 2025-07-16 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-16 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-16 14:27</div>
+            <div class="timeline-body"><p>It's plausible we could allow customized paths, but that sounds out of scope for the first pass on the feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2025-07-16 14:37</div>
+            <div class="timeline-body"><p>I figured I'd give this another few days for comments and then address them all and update the proposal.</p>
+<p>Where there are different preferences expressed, my intention is to make a reasonable decision with the MVP goal in mind, aware that it may potentially not satisfy everyone, giving preference to input given by current uv contributors.</p>
+<p>If there is a &quot;designated&quot; decision maker for something like this in the uv org, they are welcome to step into the decision making role at any point and I'll take a step back.</p>
+<p>Thanks everyone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eabase">@eabase</a> on 2025-07-16 17:34</div>
+            <div class="timeline-body"><p>This looks over-engineered and not like a MVP.
+Why do you need to specify different python versions within the same project (or venv)?</p>
+<p>See my comments <a href="https://github.com/astral-sh/uv/issues/1495#issuecomment-3079518311">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-28 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-28 20:59</div>
+            <div class="timeline-body"><p>I started thinking about how we'd enable this feature... and we could actually allow it via customized paths without doing any additional design. Curious for your thoughts https://github.com/astral-sh/uv/pull/14937</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DanCardin">@DanCardin</a> reviewed on 2025-07-28 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DanCardin">@DanCardin</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-28 21:28</div>
+            <div class="timeline-body"><p>honestly seems pretty elegant because it has no effect on anyone currently manually setting that value to a static value and handling any dynamism in their own tooling.</p>
+<p>plus you can still (again at some point) if you want, ship a dedicated setting that's either just this, or a <code>managed_venvs = true</code> or whatever with whatever semantic; but that's still just a manipulation of the default <code>UV_PROJECT_ENVIRONMENT</code>, if unspecified.</p>
+<p>i was initially imagining the complexity of this would be getting python-style templating, but i suppose the more basic string replacement will serve here probably just as well since the values are still all owned by you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-07-28 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>design/1495-centralized-venvs.md</code>:12 on 2025-07-28 21:34</div>
+            <div class="timeline-body"><p>Yeah I imagine we could pick up a templating library, but... hopefully that's just not needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2025-07-30 15:33</div>
+            <div class="timeline-body"><p>I've updated the proposal based on the feedback/discussion here.  Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2025-08-11 14:22</div>
+            <div class="timeline-body"><p>Any thoughts on my updated proposal?</p>
+<p>Is there a formal approval process?  If not, at what point it it safe to start the implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eabase">@eabase</a> on 2025-08-29 21:09</div>
+            <div class="timeline-body"><p>@rsyring
+Hi Randy,</p>
+<p>Regarding:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/14628</li>
+</ul>
+<p>Sorry, but I'm not happy with your proposal, as it lacks clarity and I fail to see how it would help the current implementation. I'm also worried about the <code>cache</code> idea. For me anything that is in a <em>cache</em> can be discarded at any time without serious consequences, as it can be easily rebuilt. However, this is not the case for the venv &quot;repo&quot; directories we are talking about and discussing in #1495. Very often we have certain dependencies for HW related projects (like Nvidia, Nordic Semi, etc) that requires different package versions, and where nobody should be able to do a generic <em>&quot;clear cache&quot;</em> to wipe out all your venv's. I'm sure (or at least I hope) that I have the wrong understanding of this.</p>
+<p>Also, the  <code>&quot;Human‑readable slug + short hash&quot;</code> is just not a productivity improvement. I don't want to have to look up and carefully type in any kind of hash in order to <em>activate, copy, move</em> or <em>duplicate</em> any venv. I'm certainly missing to see the use case for this?</p>
+<p><strong>So can you please update us on what exactly is the new proposal and what functionality it provides that simplifies life to the user, via UX?</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2025-08-29 21:20</div>
+            <div class="timeline-body"><p>@eabase I can appreciate that you don't prefer this proposal.  However, I did process your previous comments on this issue and I believe they are all addressed in the &quot;Out of Scope / Rejections&quot; section.</p>
+<p>I don't plan on doing any additional work on this proposal until someone from Astral gives some definitive feedback.  While I think this PR/idea had some momentum originally, the momentum/interest has seemed to die.  And I don't want to put more time into it unless there is the possibility of an implementation somewhere in the near-term.   If we get that feedback, and it aligns with your concerns/preferences, I'm happy to take another stab at revising the proposal.</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eabase">@eabase</a> on 2025-08-30 12:12</div>
+            <div class="timeline-body"><p>@rsyring</p>
+<blockquote>
+<p>they are all addressed in the &quot;Out of Scope / Rejections&quot; section</p>
+</blockquote>
+<p>That's exactly my point of my last comment. I don't understand what you mean with <code>&quot;Out of Scope / Rejections&quot;</code>. Are you rejecting your own proposal, or the comments/proposals from everyone else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2025-08-30 13:00</div>
+            <div class="timeline-body"><p>@eabase</p>
+<blockquote>
+<p>I don't understand what you mean with &quot;Out of Scope / Rejections&quot;. Are you rejecting your own proposal, or the comments/proposals from everyone else?</p>
+</blockquote>
+<p>In the design doc, the final section of the document is &quot;Out of Scope / Rejections.&quot;  That section lists items that I considered but decided were out of scope or am rejecting for this proposal.  For example, I don't think we should be concerned with the accidental deletion of virtualenvs in the cache and I give my reasoning in that section.</p>
+<p>Hope that helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/xmatthias">@xmatthias</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 14:15</div>
+            <div class="timeline-body"><p>I think you'll want to look at how pnpm approaches this (maybe not for this proposal, but in general)</p>
+<p>They symlink the whole <code>node_modules</code> directory - and this also works on windows.
+No clue HOW they do it exactly - but i think it'd allow for a global cache of installed modules - greatly reducing duplicate files on the system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xmatthias">@xmatthias</a> reviewed on 2025-08-30 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eabase">@eabase</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 14:32</div>
+            <div class="timeline-body"><p>2 bad ideas baked into 1.</p>
+<ol>
+<li><p>Using any symlinks in windows in general, is very rarely needed and if you use junctions, you can easily break your whole system. Very few people knows how to use those right, and any noob trying to delete one, can brick their OS.</p>
+</li>
+<li><p>Having the venv &quot;point back to the project directory&quot;, defeats more solutions than it solves. Why would you need this? How, then, would you use multiple project directories sharing a venv?</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eabase">@eabase</a> reviewed on 2025-08-30 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rsyring">@rsyring</a> reviewed on 2025-08-30 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rsyring">@rsyring</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 14:33</div>
+            <div class="timeline-body"><p>It would appear uv already addresses this:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/11504</li>
+<li>https://docs.astral.sh/uv/reference/settings/#link-mode</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eabase">@eabase</a> reviewed on 2025-08-30 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eabase">@eabase</a> on <code>design/1495-centralized-venvs.md</code>:62 on 2025-08-30 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>accidental deletion of a venv is inconsequential since it will be recreated by any uv command that needs it.</p>
+</blockquote>
+<p><strong>This is simply not true!</strong></p>
+<p>If you got a bunch of LLM or Nvidia crap in your venv, you're talking about ~ several GB of venv. Maybe even something you built/tweaked on your own for dev or private purposes. So, no the &quot;uv command&quot; is not gonna rebuild any of that, and at worst you may suffer substantial code/data loss.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rsyring">@rsyring</a> reviewed on 2025-08-30 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rsyring">@rsyring</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 14:38</div>
+            <div class="timeline-body"><p>@eabase please understand, those are rejected ideas in that section.</p>
+<blockquote>
+<p>How, then, would you use multiple project directories sharing a venv?</p>
+</blockquote>
+<p>We wouldn't.  This proposal explicitly identifies sharing venvs as out of scope.  I understand you have a use case for this, and care a lot about it, we don't consider that use case valid for this proposal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rsyring">@rsyring</a> reviewed on 2025-08-30 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rsyring">@rsyring</a> on <code>design/1495-centralized-venvs.md</code>:62 on 2025-08-30 14:38</div>
+            <div class="timeline-body"><p>This proposal explicitly identifies sharing venvs as out of scope.  I understand you have a use case for this, and care a lot about it, but I don't consider that use case valid for <strong>this</strong> proposal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eabase">@eabase</a> reviewed on 2025-08-30 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eabase">@eabase</a> on <code>design/1495-centralized-venvs.md</code>:62 on 2025-08-30 14:43</div>
+            <div class="timeline-body"><p>What exactly is your <strong>use case</strong> then?
+Because <em>this</em> very proposal concerns &quot;centralized venvs&quot;, so I don't understand how you can say <em>&quot;This proposal explicitly identifies sharing venvs as out of scope.&quot;</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rsyring">@rsyring</a> reviewed on 2025-08-30 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rsyring">@rsyring</a> on <code>design/1495-centralized-venvs.md</code>:62 on 2025-08-30 14:48</div>
+            <div class="timeline-body"><p>Shared venvs are not the same as centralized venvs.  They are separate and distinct use cases.</p>
+<p>Currently, uv always stores a <a href="https://docs.astral.sh/uv/guides/projects/">project's</a> virtual env in the project's root folder as <code>.venv</code>.</p>
+<p>I don't like having those <code>.venv</code>s scattered all over my projects and want them in a central location.  For me, it's just file/directory hygiene.  But for others working on other platforms, it might be because their project folders are on network shares and they need the venvs on local disks for performance reasons.</p>
+<p>You can see more about my workflow and goals here: https://github.com/jdx/mise/discussions/4301</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xmatthias">@xmatthias</a> reviewed on 2025-08-30 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/xmatthias">@xmatthias</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 14:50</div>
+            <div class="timeline-body"><blockquote>
+<p>It would appear uv already addresses this:</p>
+</blockquote>
+<p>So uv even has approaches for symlinks (also on windows) in place - making this a quite odd &quot;rejection&quot; - which i think should <strong>at least</strong> have more reasoning behind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xmatthias">@xmatthias</a> reviewed on 2025-08-30 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/xmatthias">@xmatthias</a> on <code>design/1495-centralized-venvs.md</code>:62 on 2025-08-30 14:53</div>
+            <div class="timeline-body"><p>Well i do think that</p>
+<ul>
+<li>Marking these conversations as resolved while conversation is still ongoing is an absolutely inpolite approach. @rsyring You should unresolve them until the discussion is <strong>actually</strong> resolved for <em>both parties</em>. Otherwise it's a &quot;thanks for the feedback, but i'd rather ignore it&quot; - which i don't think is what you're trying to imply.</li>
+<li>for the topic at hand (@eabase ):<ul>
+<li>with the <a href="https://docs.astral.sh/uv/reference/settings/#link-mode">symlinking</a> <code>uv</code> does - your &quot;actual&quot; files live in some random cache file (i don't think a central location would necessarily change this). so deletion of the venv won't delete several GB of data - it'll just remove the symlink of it. You'll hence not lose the downloaded data - just the venv - which i guess a new &quot;uv venv&quot; and &quot;uv pip install <whatever>&quot; can now pretty easily bring back.</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rsyring">@rsyring</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 14:56</div>
+            <div class="timeline-body"><p>I've not looked into how uv handles the shared cache in Windows.  If the symlink equivalent works there, then having a symlink back to the project directory is feasible.</p>
+<p>I'd still argue a text file with the path as it's content is simpler and has less edge cases and therefore is the more appropriate solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rsyring">@rsyring</a> reviewed on 2025-08-30 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xmatthias">@xmatthias</a> reviewed on 2025-08-30 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/xmatthias">@xmatthias</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 14:59</div>
+            <div class="timeline-body"><p>I'm not even arguing the decision to not symlink back to the project. This may facilitate <em>shared</em> environments (maybe in the future).</p>
+<p>I just think it should be argued better - not with &quot;because windows&quot; - where the problem has actually been solved <em>within the same project</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rsyring">@rsyring</a> reviewed on 2025-08-30 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rsyring">@rsyring</a> on <code>design/1495-centralized-venvs.md</code>:62 on 2025-08-30 15:03</div>
+            <div class="timeline-body"><p>@xmatthias  Wasn't my intention to be rude.  But it is my intention to mark the conversations as resolved in the sense that, I've considered these topics and, so far, the conversations haven't been fruitful in revealing new scenarios that would change the proposal.  I've already considered and addressed these topics.  I would like to move on.  Not as a means of being rude but as a means of making the best use of our collective time.  :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rsyring">@rsyring</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 15:04</div>
+            <div class="timeline-body"><p>Fair enough.  If we get some indication from the project maintainers that they are likely to move on this proposal, I'll consider updating the doc at that point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rsyring">@rsyring</a> reviewed on 2025-08-30 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/xmatthias">@xmatthias</a> on <code>design/1495-centralized-venvs.md</code>:62 on 2025-08-30 15:08</div>
+            <div class="timeline-body"><p>to be quite honest - i'm against this proposal.
+It's designed for your specific need, with all comments that don't fit your exact idea as &quot;marked as out of scope&quot;.
+While i think it's good that other things have been considered and marked as out of scope - i think <em>what</em> is out of scope should be up for discussion.</p>
+<p>I'll take a step back from this discussion - as it's clear that you're not open for this (the topic of marking points as resolved immediately makes this VERY clear).
+that's unfortunately then an &quot;enhancement&quot; that won't really enhance UV - not in a way that would suit more than a handful of people.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xmatthias">@xmatthias</a> reviewed on 2025-08-30 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xmatthias">@xmatthias</a> reviewed on 2025-08-30 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/xmatthias">@xmatthias</a> on <code>design/1495-centralized-venvs.md</code>:46 on 2025-08-30 15:12</div>
+            <div class="timeline-body"><p><code>uv cache clean</code> already exists and has functionality (<a href="https://docs.astral.sh/uv/reference/cli/#uv-cache-clean">remove all cache</a>).</p>
+<p>I think there should be a dedicated command for this - which cleans all environments - but leaves the actual cache in place (under the assumption that centralized venvs are combined with local venvs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xmatthias">@xmatthias</a> reviewed on 2025-08-30 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/xmatthias">@xmatthias</a> on <code>design/1495-centralized-venvs.md</code>:56 on 2025-08-30 15:13</div>
+            <div class="timeline-body"><p>Well i think that's backwards, personally.</p>
+<p>once you get project maintainer approval / focus - they should see the final picture and be in a position to approve not a &quot;i've waited for you to tell me to finish the proposal&quot;. That'll mean they'll have to get to the same point twice which - in a repo with 1.9k open issues - could take ages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rsyring">@rsyring</a> reviewed on 2025-08-31 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rsyring">@rsyring</a> on <code>design/1495-centralized-venvs.md</code>:46 on 2025-08-31 17:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there should be a dedicated command for this</p>
+</blockquote>
+<p>I agree that would be preferable.</p>
+<p>However, in this iteration, I specifically didn't address this because I wanted to avoid specifications that would lead to additional debate or work and, perhaps, delay the initial implementation.</p>
+<p>IMO, there are two functions that uv could provide:</p>
+<ul>
+<li>clean: completely delete all centralized venvs</li>
+<li>prune: delete any centralized venv where the venv's project directory (which is tracked in <code>$venv_dir/uv-project-path.txt</code>) no longer exists</li>
+</ul>
+<p>Where in the CLI those functions live is what I thought could lead to delay.  Options I've considered:</p>
+<ul>
+<li><code>uv venv --cache-clean</code></li>
+<li><code>uv venv --cache-prune</code></li>
+<li><code>uv cache clean --venvs/--no-venvs</code></li>
+<li><code>uv cache prune --venvs/--no-venvs</code></li>
+<li><code>uv cache venvs clean</code></li>
+<li><code>uv cache venvs prune</code></li>
+</ul>
+<p>With my preference being the last two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xmatthias">@xmatthias</a> reviewed on 2025-09-01 05:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/xmatthias">@xmatthias</a> on <code>design/1495-centralized-venvs.md</code>:46 on 2025-09-01 05:06</div>
+            <div class="timeline-body"><p>I'm not sure i agree on your &quot;delay implementation&quot; stance - the current proposal to overload an existing command (without optionality, from the proposal) can have the adverse effect and (at least in my opinion / view) can/could lead to more discussions.</p>
+<p>I think these options could be listed as &quot;alternatives&quot; at least - giving astral folks the option to pick the one they prefer&quot;?
+Currently it's &quot;we'll use <code>uv cache clean</code>.&quot; - if that doesn't fit their plans / UX view - there's no considered alternatives listed (outside of the above comment).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:42 UTC
+    </footer>
+</body>
+</html>

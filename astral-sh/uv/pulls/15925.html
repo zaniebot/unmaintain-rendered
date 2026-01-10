@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add S3 request signing - astral-sh/uv #15925</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add S3 request signing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15925">#15925</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-09-18 03:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-18 03:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables users to mark a URL as an S3 endpoint, at which point uv will sign requests to that URL by detecting credentials from the standard AWS environment variables, configuration files, etc.</p>
+<p>Signing is handled by the <a href="https://docs.rs/reqsign/latest/reqsign/">reqsign</a> crate, which we can also use in the future to sign requests for other providers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-09-18 03:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-09-18 03:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:667 on 2025-09-18 03:01</div>
+            <div class="timeline-body"><p>I'd like to add Jiff support upstream if we can, possibly before merging this \cc @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-09-18 03:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:358 on 2025-09-18 03:02</div>
+            <div class="timeline-body"><p>A lot of churn in this PR comes from this piece. We need a new case, which is: a signer that can sign a request (as opposed to <code>Credentials</code>, which can be stored in a file, converted into a header, etc.). I initially implemented this as a new variant on the <code>Credentials</code> enum, but it made too many invalid states possible (e.g., <code>to_header_value</code> had to return an <code>Option</code>; the TOML deserialization had to fail). Instead, I added a new type one level higher on the hierarchy which has an <code>authenticate</code> method. I think this is much cleaner but does lead to more churn.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/sync.rs</code>:906 on 2025-09-18 03:03</div>
+            <div class="timeline-body"><p>I don't <em>think</em> the order is very important here? But I no longer <code>Arc::new</code> this <em>before</em> calling <code>uv_auth::store_credentials</code>, so this just saves us a clone in most cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-09-18 03:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-18 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/credentials.rs</code>:358 on 2025-09-18 12:25</div>
+            <div class="timeline-body"><p>I like this, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-18 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/providers.rs</code>:81 on 2025-09-18 12:33</div>
+            <div class="timeline-body"><p>Do we just need to add <code>.without_subdomain</code> to <code>Realm</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/providers.rs</code>:87 on 2025-09-18 12:33</div>
+            <div class="timeline-body"><p>Should be in <code>EnvVars</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-18 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 12:35</div>
+            <div class="timeline-body"><p>Pretty easy!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-09-18 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>Cargo.lock</code>:667 on 2025-09-18 13:20</div>
+            <div class="timeline-body"><p>From a very quick glance, it's probably non-trivial for them to support both. Depending.</p>
+<p>Anywho, I opened an issue: https://github.com/apache/opendal-reqsign/issues/631</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-09-19 02:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/providers.rs</code>:81 on 2025-09-19 02:05</div>
+            <div class="timeline-body"><p>Yeah... Something like that? So if the user provides <code>bar.com</code>, then we probably want to match <em>either</em> <code>foo.bar.com</code> or <code>bar.com</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-09-19 02:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/providers.rs</code>:81 on 2025-09-19 02:09</div>
+            <div class="timeline-body"><p>It turns out that it's non-trivial to strip a subdomain, because you need the list eTLDs in order to figure out where the subdomain starts. For example, the URL could end in <code>.co.uk</code>, so it's not just &quot;keep the last two segments&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-09-19 02:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/providers.rs</code>:81 on 2025-09-19 02:37</div>
+            <div class="timeline-body"><p>I added a <code>RealmRef::is_subdomain_of</code> method which does this. (Asking if it's a subdomain of something else is easier than stripping the subdomain, I think.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-20 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/providers.rs</code>:81 on 2025-09-20 15:34</div>
+            <div class="timeline-body"><p>Oh interesting. That seems reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-09-22 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-09-22 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-09-22 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2025-09-22 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-22 19:04</div>
+            <div class="timeline-body"><p>I think this is ready for a real review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-22 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/credentials.rs</code>:448 on 2025-09-22 22:28</div>
+            <div class="timeline-body"><p>Should we note why this unwrap is safe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-09-22 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-09-22 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-09-22 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-22 23:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:50 UTC
+    </footer>
+</body>
+</html>

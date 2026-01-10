@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error on lockfiles with inconsistent source distribution versions - astral-sh/uv #12237</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error on lockfiles with inconsistent source distribution versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12237">#12237</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-03-17 11:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-03-17 11:39</div>
+            <div class="timeline-body"><p>Reject all cases where a source distribution builds into a wheel of a different version than was locked in the lockfile.</p>
+<p>As an example:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;sniffio&quot;
+version = &quot;2.3.4&quot;
+source = { url = &quot;https://files.pythonhosted.org/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz&quot; }
+sdist = { hash = &quot;sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc&quot; }
+</code></pre>
+<p>This now fails with:</p>
+<pre><code>  × Failed to download and build `sniffio @
+  │ https://files.pythonhosted.org/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz`
+  ╰─▶ Package metadata version `1.3.1` does not match given version `2.3.4`
+  help: `sniffio` was included because `foo` (v0.1.0) depends on `sniffio`
+</code></pre>
+<p>The potential clash could be with git dependencies that use a version-from-git integration. I.e., with the change, we're enforcing coherence where we've been previously lenient. It is on the other hand the only good option for catching errors such as https://github.com/astral-sh/uv/issues/12164 for source distributions.</p>
+<p>Needs tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-03-17 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-03-17 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @jtfmumm by @konstin on 2025-03-17 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-installer/src/plan.rs</code>:267 on 2025-03-17 13:02</div>
+            <div class="timeline-body"><p>These will be false if we don't know the sdist version, right? Should we instead maintain the old behavior in that case?</p>
+<p>Something like:</p>
+<pre><code>if wheel.filename.name == sdist.name
+  &amp;&amp; dist.version().map_or(true, |version| version == &amp;wheel.filename.version)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-17 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Konsti/reject incoherent source dist" to "Error on lockfiles with inconsistent source distribution versions" by @zanieb on 2025-03-17 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-10-09 13:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:41 UTC
+    </footer>
+</body>
+</html>

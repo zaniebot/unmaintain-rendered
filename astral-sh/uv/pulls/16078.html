@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deduplicate marker-specific dependencies in `uv pip tree` output - astral-sh/uv #16078</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deduplicate marker-specific dependencies in `uv pip tree` output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16078">#16078</a>
+        opened by <a href="https://github.com/terror">@terror</a>
+        on 2025-09-30 18:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/terror">@terror</a> on 2025-09-30 18:59</div>
+            <div class="timeline-body"><p>Resolves https://github.com/astral-sh/uv/issues/16067</p>
+<p>When we build the dependency graph we add an edge per <code>Requires-Dist</code>. If a package publishes multiple marker-guarded requirements (like pylint’s <code>dill&gt;=…</code> for different Python versions), more than one marker can evaluate to true at runtime, which gives us several edges pointing to the same installed package node.</p>
+<p>To avoid printing the package multiple times, we gather all edges targeting that node, pass them through a <code>Cursor</code>, and aggregate their requirement details before we print the dependency line. That aggregation does two things:</p>
+<ol>
+<li>If any edge carries a URL, we return that URL immediately.</li>
+<li>Otherwise we merge all version specifiers into one canonical PEP 440 string.</li>
+</ol>
+<p>I've added an integration test, namely <code>cargo test -p uv --test it --features pypi -- no_duplicate_dependencies_with_markers</code> exercises the new snapshot that installs pylint (with the real dill duplication scenario present in the original issue) and asserts the tree output, both with and without <code>--show-version-specifiers</code>, now shows a single dill entry with the merged constraint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @terror on 2025-09-30 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 19:48</div>
+            <div class="timeline-body"><p>Thanks for the pull request! Let me double check what we actually do at resolution-time, I'm not sure if we actually merge the specifiers as done here and I want to make sure we're doing the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-30 19:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_tree.rs</code>:1168 on 2025-09-30 19:49</div>
+            <div class="timeline-body"><p>Can you use <code>new_with_versions</code> and add <code>3.11</code> too? Then you can add a case that uses <code>-p 3.11</code> to verify the version specifiers are correct there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-30 19:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_tree.rs</code>:1168 on 2025-09-30 19:50</div>
+            <div class="timeline-body"><p>Separately, why did you use an exclude-newer in the future? That'll cause the snapshot to be unstable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-30 19:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_tree.rs</code>:1171 on 2025-09-30 19:51</div>
+            <div class="timeline-body"><p>We might want to add a local package, e.g., to <code>scripts/packages</code> which has repeated <code>Requires-Dist</code> values. It's <em>okay</em> to use pylint, but it'll make the test slower. We can track this in a separate issue if you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/tests/it/pip_tree.rs</code>:1168 on 2025-09-30 19:59</div>
+            <div class="timeline-body"><p>I had wanted to test the specific versions in the original issue, which were published after the default <code>EXCLUDE_NEWER</code> value of <code>2024-03-25T00:00:00Z</code>. I think we should go with the <a href="https://github.com/astral-sh/uv/pull/16078#discussion_r2392670905">approach</a> you mention below for this test however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-09-30 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/tree.rs</code>:564 on 2025-09-30 20:11</div>
+            <div class="timeline-body"><p>I'm a little wary of this. We almost certainly already have logic for combining version specifiers, though I'm not sure we can use it here, e.g.</p>
+<p>https://github.com/astral-sh/uv/blob/3f83390e342dcb6fccc449335c15d1255885ad20/crates/uv-pep440/src/version_ranges.rs#L13-L22</p>
+<p>It does look pretty clean though and is nicer than emitting redundant ranges, e.g., <code>&gt;=3.6, &gt;=3.7</code>.</p>
+<p>@konstin might have some thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-30 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-09-30 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/tests/it/pip_tree.rs</code>:1171 on 2025-09-30 21:03</div>
+            <div class="timeline-body"><p>I've added a local package <code>marker-dup</code> (alongside another target package) specifically for the test, making it faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-09-30 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-09-30 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/pip/tree.rs</code>:564 on 2025-09-30 21:22</div>
+            <div class="timeline-body"><p>From what I understand, this is a lossy conversion, e.g. once we intersect the specifiers into intervals for PubGrub we lose the exact shape of the original constraints, and there isn’t a reliable way to turn an arbitrary range back into a finite set of PEP 440 specifiers.</p>
+<p>We could instead move the specifier-level deduplication that tightens bounds into the PEP 440 crate, exposing it for other potential use-cases and decluttering the <code>pip tree</code> implementation. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-30 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/tree.rs</code>:564 on 2025-09-30 22:28</div>
+            <div class="timeline-body"><p>Yeah it makes sense that the PubGrub range would lose the original constraints.</p>
+<p>I think I'll want to hear from @konsti, but either having it here until we have another use-case or moving it to the PEP 440 crate seems reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/packages/dup-target/src/dup_target.egg-info/dependency_links.txt</code>:1 on 2025-10-01 09:12</div>
+            <div class="timeline-body"><p><code>egg.info</code> files should not be checked into the Git repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/tree.rs</code>:564 on 2025-10-01 09:24</div>
+            <div class="timeline-body"><p>Ideally we'd be using <code>Ranges&lt;Version&gt;</code>, which gives us a canonical representation. The problem is that iirc we don't have a function yet for that conversion that handles prereleases correctly. There's another catch to this that while <code>&gt;=2.0.0</code> is technically larger than <code>&gt;=2.0.0a1</code>, the latter allows prereleases while the former doesn't.</p>
+<p>I wouldn't put too much effort into making simplifications on <code>VersionSpecifiers</code> work, <code>Ranges</code> is a much better representation to work with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_tree.rs</code>:1171 on 2025-10-01 09:30</div>
+            <div class="timeline-body"><p>I'd create this package in the test itself, most other tests do that too, searching for <code>.touch()</code> and <code>context.init()</code> should show them. This for example works:</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = [
+  &quot;sniffio&gt;=1.0.0; python_version &gt;= '3.11'&quot;,
+  &quot;sniffio&gt;=1.0.1; python_version &gt;= '3.12'&quot;,
+  &quot;sniffio&gt;=1.0.2; python_version &gt;= '3.13'&quot;,
+]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.22,&lt;10000&quot;]
+build-backend = &quot;uv_build&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/tree.rs</code>:506 on 2025-10-01 09:43</div>
+            <div class="timeline-body"><p><code>fold</code> usually harder to read than the imperative versions, I'd use a <code>for</code> loop here and early <code>return</code> if it encounters a <code>Url</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-01 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_tree.rs</code>:1171 on 2025-10-01 13:40</div>
+            <div class="timeline-body"><p>Ah fair point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/tree.rs</code>:564 on 2025-10-01 13:41</div>
+            <div class="timeline-body"><p>I think the amount of effort here for simplifying version specifiers seems pretty reasonable for user display if the only alternative is <code>Ranges&lt;Version&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>scripts/packages/dup-target/src/dup_target.egg-info/dependency_links.txt</code>:1 on 2025-10-01 15:00</div>
+            <div class="timeline-body"><p>I've removed this in favour of creating the package inline within the test!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-01 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-01 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/tests/it/pip_tree.rs</code>:1171 on 2025-10-01 15:23</div>
+            <div class="timeline-body"><p>I've refactored the test to create the package inline, which seems to be much simpler than persisting multiple packages to disk!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/pip/tree.rs</code>:564 on 2025-10-01 15:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Ideally we'd be using <code>Ranges&lt;Version&gt;</code>, which gives us a canonical representation. The problem is that iirc we don't have a function yet for that conversion that handles prereleases correctly. There's another catch to this that while <code>&gt;=2.0.0</code> is technically larger than <code>&gt;=2.0.0a1</code>, the latter allows prereleases while the former doesn't.</p>
+<p>I wouldn't put too much effort into making simplifications on <code>VersionSpecifiers</code> work, <code>Ranges</code> is a much better representation to work with.</p>
+</blockquote>
+<p>Can we track this in a separate issue? It seems like a bigger lift, and I wouldn't mind looking into it as a follow up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-01 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-10-01 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-10-01 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-01 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-01 16:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow templating the `UV_PROJECT_ENVIRONMENT` path - astral-sh/uv #14937</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow templating the `UV_PROJECT_ENVIRONMENT` path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14937">#14937</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-07-28 12:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-28 12:56</div>
+            <div class="timeline-body"><p>I'm looking at supporting centralized environments, and this feels like a nice incremental step towards that. Basically we can re-use <code>UV_PROJECT_ENVIRONMENT</code> to empower centralized storage without adding any more settings. Later, we'd add a toggle that enables centralized storage in the cache using our &quot;canonical&quot; recommended naming scheme. At that point, we'd probably explore things like empowering editor discovery via <code>.venv</code> pointers and such.</p>
+<p>The &quot;canonical&quot; usage would be something like:</p>
+<pre><code>UV_PROJECT_ENVIRONMENT=$HOME/.local/share/uv/envs/{project_name}-{python_implementation}{python_version_minor}-{project_path_hash}
+</code></pre>
+<p>Unfortunately, templating the Python version (which is a common request) is a little annoying because we determine the path to the environment <em>before</em> discovering a Python interpreter, but I got it working.</p>
+<p>The only thing that's missing here is documentation, which I can add if there's consensus this is a good path forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2025-07-28 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-28 16:19</div>
+            <div class="timeline-body"><p>e.g.,</p>
+<pre><code>❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ uv sync
+warning: Templating the `UV_PROJECT_ENVIRONMENT` setting is in preview and may change without warning; use `--preview-features template-project-environment` to disable this warning
+Using CPython 3.13.2
+Creating virtual environment at: /Users/zb/.local/share/uv/envs/example-cpython3.13-cff78d0b34cfcb51
+Resolved 1 package in 30ms
+Audited in 0.02ms
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-07-29 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2025-07-29 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-07-29 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-07-29 20:34</div>
+            <div class="timeline-body"><p>Is there a binary I can test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 20:41</div>
+            <div class="timeline-body"><p>There are debug binaries attached to the bottom of the CI summary at https://github.com/astral-sh/uv/actions/runs/16572262146?pr=14937</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-30 01:14</div>
+            <div class="timeline-body"><p>I think this is pretty neat. I'm supportive of it, if you want to add docs etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-07-30 08:15</div>
+            <div class="timeline-body"><p>Tested on 3 different HPC setups, and works great, thanks!</p>
+<p>The only thing that I feel is missing (but probably it's just because I am not aware of how to do it) is a simple command to programmatically resolve the path to the current environment, something like <code>uv venv --path</code> or something...</p>
+<p><code>uv run python -c 'print(sys.exec_prefix)'</code> works, but would be handy to have something more 'straightforward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-30 08:43</div>
+            <div class="timeline-body"><p>Environment variables are already complex and have interactions with e.g. the user's shell and their workspace/deploy path layout, could we skip over the templating the whole path and go directly to centralized env management the way e.g. poetry does it? This avoids exposing this complexity to users. Specifically, the complexity of templating the whole path (not just the leaf directory).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 11:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Environment variables are already complex and have interactions with e.g. the user's shell and their workspace/deploy path layout, could we skip over the templating the whole path and go directly to centralized env management the way e.g. poetry does it? This avoids exposing this complexity to users. Specifically, the complexity of templating the whole path (not just the leaf directory).</p>
+</blockquote>
+<p>The goal is to only expose this feature to motivated power users to start, so I don't mind some complexity here while we figure out how to make centralized environments a first-class feature. Do you have an example of what you're concerned about? Would it be resolved by adding a cache bucket and a <code>{env_cache}</code> template variable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-30 12:03</div>
+            <div class="timeline-body"><p>We're introducing a new templating syntax that is only used in this one env var, we're adding a new concept just for this one place. If we want to experiment with centralized storage, why not start with a setting for a centralized root and e.g. a path hash and expand from that?</p>
+<p>If users want to use this for global configuration, we should primarily expose this in <code>uv.toml</code> over an env var.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-30 12:26</div>
+            <div class="timeline-body"><p>I guess one question is: if we do ship a centralized environment setting, would we continue to support this? If so, why? If not, maybe we just rip it on a setting. (I suspect it’s easy to implement, even easier than this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>We're introducing a new templating syntax that is only used in this one env var, we're adding a new concept just for this one place</p>
+</blockquote>
+<p>I think this is a fair concern, though I'm not sure it's a big deal to support templating here. I'm not sure where else templating would be needed in uv so far, so it makes sense it doesn't exist as a concept today.</p>
+<blockquote>
+<p>if we do ship a centralized environment setting, would we continue to support this? If so, why?</p>
+</blockquote>
+<p>Yeah, I think so. The discussion at https://github.com/astral-sh/uv/pull/14628 made it clear people want control over the path. I initially considered that out of scope for a first pass at the feature, but we probably would want it eventually.</p>
+<blockquote>
+<p>If users want to use this for global configuration, we should primarily expose this in uv.toml over an env var.</p>
+</blockquote>
+<p>I'm explicitly trying <em>not</em> to add new settings here. I'm not even sure what the top-level setting would look like, I guess some hybrid boolean path option? I think being able to control the root path is critical. We could certainly start with a boolean though.</p>
+<blockquote>
+<p>If not, maybe we just rip it on a setting. (I suspect it’s easy to implement, even easier than this.)</p>
+</blockquote>
+<p>A setting implies first-class support, which is what I'm trying to avoid getting into here. e.g., how does an editor discover the environment? how do I inspect or clean up environments? etc.</p>
+<p>The motivation for using a low-level environment variable is to avoid answering those questions while delivering <em>some</em> functionality now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-30 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm explicitly trying not to add new settings here. I'm not even sure what the top-level setting would look like, I guess some hybrid boolean path option? I think being able to control the root path is critical. We could certainly start with a boolean though.</p>
+</blockquote>
+<p>(I guess the minimal thing would be an env var and <code>uv.toml</code> setting that controls the root path, and then if enabled, use some deterministic path within the root?)</p>
+<blockquote>
+<p>Yeah, I think so. The discussion at https://github.com/astral-sh/uv/pull/14628 made it clear people want control over the path. I initially considered that out of scope for a first pass at the feature, but we probably would want it eventually.</p>
+</blockquote>
+<p>(I don't find the templating part to be <em>that</em> compelling based on that conversation, but I'm not strictly against it.)</p>
+<blockquote>
+<p>A setting implies first-class support, which is what I'm trying to avoid getting into here. e.g., how does an editor discover the environment? how do I inspect or clean up environments? etc.</p>
+</blockquote>
+<p>I totally understand the motivation. Is there some risk, though, that by shipping this without solving these problems, we actually make it harder for us to solve them in the future? For example, if the paths are ~arbitrary (user-specified), how could an editor ever discover them? (How does that discovery work in Poetry, etc.?) By shipping this, we impose some constraints on ourselves that we either need to roll back or workaround later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 14:29</div>
+            <div class="timeline-body"><blockquote>
+<p>(I guess the minimal thing would be an env var and uv.toml setting that controls the root path, and then if enabled, use some deterministic path within the root?)</p>
+</blockquote>
+<p>Yeah, but I think we'd also want the root path to have a sensible default? Otherwise, it's kind of annoying since we don't do templating you'll have to hard-code an absolute path that's brittle?</p>
+<blockquote>
+<p>Is there some risk, though, that by shipping this without solving these problems, we actually make it harder for us to solve them in the future? For example, if the paths are ~arbitrary (user-specified), how could an editor ever discover them? (How does that discovery work in Poetry, etc.?) By shipping this, we impose some constraints on ourselves that we either need to roll back or workaround later.</p>
+</blockquote>
+<p>I'm not sure I mind if users that opt in to arbitrarily complicated paths also need to configure their editor to find them.</p>
+<p>I think discovery works in Poetry via editor specific integrations. e.g.,</p>
+<ul>
+<li>https://github.com/microsoft/vscode-python/wiki/Support-poetry-virtual-environments</li>
+<li>https://github.com/microsoft/vscode-python/blob/main/src/client/pythonEnvironments/base/locators/lowLevel/poetryLocator.ts</li>
+<li>https://github.com/microsoft/vscode-python/blob/main/src/client/pythonEnvironments/common/environmentManagers/poetry.ts#L202</li>
+</ul>
+<p>which comes down to parsing <code>poetry env list --full-path</code> output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 15:08</div>
+            <div class="timeline-body"><p>I guess I'll defer this and prototype an alternative approach later, my goal here was to pitch a quick idea that I thought might unblock people, but it's not clear we have consensus this is worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2025-07-30 15:47</div>
+            <div class="timeline-body"><blockquote>
+<p>The only thing that I feel is missing (but probably it's just because I am not aware of how to do
+it) is a simple command to programmatically resolve the path to the current environment, something
+like uv venv --path or something...</p>
+</blockquote>
+<p>FWIW, I suggested <code>uv venv --dir</code> in #14628 b/c it seemed &quot;dir&quot; was the abbr. used in current CLI
+options.</p>
+<blockquote>
+<p>If users want to use this for global configuration, we should primarily expose this in uv.toml
+over an env var.</p>
+</blockquote>
+<p>I've never felt like environment variables are any more or less complex than settings.  Just a
+matter of which method makes more sense for setting them.</p>
+<p>As a power user who is already hacking together an environment based solution with Mise, either
+option works for me.  The only reason I do it in mise w/ an environment variable is because
+I need mise to help calculate the project path name.  Obviously, with this PR, all that goes away.
+:)</p>
+<blockquote>
+<p>The motivation for using a low-level environment variable is to avoid answering those questions
+while delivering some functionality now.</p>
+</blockquote>
+<p>Yes, please!  :)</p>
+<blockquote>
+<p>I guess I'll defer this and prototype an alternative approach later, my goal here was to pitch a
+quick idea that I thought might unblock people, but it's not clear we have consensus this is worth
+it.</p>
+</blockquote>
+<p>I can't speak to the implementation, but I like the proposal and would love to have it sooner
+rather than later.  Anything to avoid the janky stuff I do right now with mise to get this working:
+https://github.com/jdx/mise/discussions/4301#discussioncomment-13758809</p>
+<p>You've marked it as a preview.  Does that give you any more confidence in shipping something like
+this?  A more agile approach where you can make decisions based on real-world use instead of
+having to make educated guesses about all of it?</p>
+<p>FWIW, mise has an &quot;experimental&quot; flag and puts some functionality behind that so that features that
+need usage to get right can still get shipped.  IMO, you wouldn't have to &quot;guard&quot; this features as
+it's obviously opt-in by whether or not use use template variables.  I'm just pointing out that
+mise is also a really popular project and a lot of times real-world usage and feedback is needed to
+get things right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2025-07-30 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanCardin">@DanCardin</a> on 2025-07-30 19:34</div>
+            <div class="timeline-body"><p>i cant find the issue but there were discussions about templating auth secrets for private indexes at some point. Whether or not you want to do that idk, but that's at least another theoretical usecase.</p>
+<p>What I like about this is that it's completely orthogonal to a more dedicated feature/setting, and I could imagine a future setting being implemented essentially in terms of this feature.</p>
+<p>e.g. you might eventually have some</p>
+<pre><code class="language-toml"># settings.toml
+managed_venv = true
+managed_venv_root = &quot;{venv_cache}&quot; # default setting, say
+</code></pre>
+<p>that is essentially like setting a fallback <code>UV_PROJECT_ENVIRONMENT='{managed_venv_root}/{project_name}-{project_hash}'</code> or whatever default you want.</p>
+<p>And makes straightforward sense that in the presence of a user defined <code>UV_PROJECT_ENVIRONMENT</code>, you get what the user asked for, not what the setting says.</p>
+<p>Not that this all couldnt be done similarly with a static setting without templating at all, but it <strong>seems</strong> like a lot more thought has to go into ensuring you're making everyone happy with a setting with fixed semantics. versus this, where everyone can, for sure, make the setting do what they want.</p>
+<hr />
+<p>As far as making this consumable, i feel like <code>uv venv --print</code> is probably clearer than --dir/--path. but tools probably also want the ability to list all venvs, so perhaps a subcommand like <code>info</code> gives more room to put other options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2025-08-11 14:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess I'll defer this and prototype an alternative approach later, my goal here was to pitch a quick idea that I thought might unblock people, but it's not clear we have consensus this is worth it.</p>
+</blockquote>
+<p>Is this dead then?  Should it be closed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-11 19:16</div>
+            <div class="timeline-body"><p>While this doesn't solve editor/tool environment discovery, my understanding is that discovery is already broken by setting <code>UV_PROJECT_ENVIRONMENT</code>. This solution seems to me to be a very unobtrusive way to implement centralized environment functionality through an interface that has already been stabilized.</p>
+<p>Centralized envs are a highly desired feature by anyone using a cluster of machines where project source is stored on a network drive, which is all of HPC right now, and I think using an environment variable is totally fine for this use case. In the future, if there's a central configuration variable for a centralized environment path, it seems fine to me to override that with whatever is set in <code>UV_PROJECT_ENVIRONMENT</code>.</p>
+<p>Are there any other potential downsides to this templating approach? To me, this appears to be pretty elegant and solves the issue without breaking anything that's not already broken by <code>UV_PROJECT_ENVIRONMENT</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-08-26 13:02</div>
+            <div class="timeline-body"><p>I would like to reiterate that this PR by @zanieb was solving thery well all the issues raised in #1495 and it would be a shame not to see it or an alternative implemented in uv...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-09-15 22:55</div>
+            <div class="timeline-body"><p>Any updates on this direction? I still think this is a great non-disruptive way of solving this somewhat urgent issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Fix `uv sync --no-sources` not switching from editable to registry installations - astral-sh/uv #15234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1> Fix `uv sync --no-sources` not switching from editable to registry installations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15234">#15234</a>
+        opened by <a href="https://github.com/yumeminami">@yumeminami</a>
+        on 2025-08-12 09:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-12 09:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes issue #15190 where <code>uv sync --no-sources</code> fails to switch from editable to registry package installations. The problem occurred because the installer's satisfaction check didn't consider the <code>--no-sources</code> flag when determining if an existing editable installation was compatible with a registry requirement.</p>
+<h2>Solution</h2>
+<p>Modified <code>RequirementSatisfaction::check()</code> to reject non-registry installations when <code>SourceStrategy::Disabled</code> and the requirement is from registry. Added <code>SourceStrategy</code> parameter threading through the entire call chain from commands to the satisfaction check to ensure consistent behavior between <code>uv sync --no-sources</code> and <code>uv pip install --no-sources</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-12 13:00</div>
+            <div class="timeline-body"><p>Hey thanks for taking a swing at this!</p>
+<p>Naively, I think I'd expect this to be implemented in <code>SitePackages</code> instead? e.g.,</p>
+<p>https://github.com/astral-sh/uv/blob/c19a294a48351ca84f18149fd6bcbf17d9e20bd9/crates/uv-installer/src/site_packages.rs#L291-L298</p>
+<p>https://github.com/astral-sh/uv/blob/c19a294a48351ca84f18149fd6bcbf17d9e20bd9/crates/uv-installer/src/site_packages.rs#L386-L393</p>
+<p>Did you look at that? Does that not work for some reason?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-13 02:47</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>After reviewing the <code>uv sync </code>call chain, I found that it does not use <code>SitePackages::satisfies_spec()</code> or
+<code>satisfies_requirements()</code>. Instead, it follows this path:</p>
+<p><code>uv sync</code> →  <code>operations::install()</code> → <code>Planner::build()</code> → <code>RequirementSatisfaction::check()</code></p>
+<p>The bug is in <code>RequirementSatisfaction::check()</code> at https://github.com/astral-sh/uv/blob/c19a294a48351ca84f18149fd6bcbf17d9e20bd9/crates/uv-installer/src/satisfies.rs#L33-L38</p>
+<p>Why Not Pass SourceStrategy?</p>
+<p>Initially, I considered passing <code>SourceStrategy</code> to <code>RequirementSatisfaction::check()</code>, but this would require:</p>
+<ol>
+<li>Extensive API changes: Modifying function signatures across multiple layers</li>
+<li>High impact: Affecting many unrelated code paths</li>
+<li>Complex propagation: Threading the parameter through the entire call chain</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-13 03:18</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>same problem use <code>uv pip install --no-sources</code></p>
+<pre><code class="language-bash">(test_uv_pip_no_sources) ➜  test_uv_pip_no_sources git:(fix/sync-no-sources-editable-switch) ✗ cat pyproject.toml             
+[project]
+name = &quot;test_no_sources&quot;
+version = &quot;0.0.1&quot;
+
+dependencies = [&quot;git_mcp_server&quot;]
+
+[tool.uv.sources]
+git_mcp_server = { path = &quot;./git_mcp&quot;, editable = true }
+
+
+(test_uv_pip_no_sources) ➜  test_uv_pip_no_sources git:(fix/sync-no-sources-editable-switch) ✗ head git_mcp/pyproject.toml
+[project]
+name = &quot;git_mcp_server&quot;
+version = &quot;0.1.9&quot;
+description = &quot;Git MCP Server - Unified command-line tool for managing Git repositories across GitHub and GitLab&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;python-gitlab&gt;=4.4.0&quot;,
+    &quot;PyGithub&gt;=2.1.0&quot;,
+    &quot;click&gt;=8.1.0&quot;,
+    
+   
+(test_uv_pip_no_sources) ➜  test_uv_pip_no_sources git:(fix/sync-no-sources-editable-switch) ✗ uv pip install --no-sources git_mcp_server
+Resolved 64 packages in 48ms
+Installed 1 package in 7ms
+ + git-mcp-server==0.1.8
+(test_uv_pip_no_sources) ➜  test_uv_pip_no_sources git:(fix/sync-no-sources-editable-switch) ✗ uv pip install -e .                       
+Resolved 65 packages in 24ms
+      Built test-no-sources @ file:///Users/wingmunfung/workspace/uv/test_uv_pip_no_sources
+Prepared 1 package in 520ms
+Uninstalled 2 packages in 4ms
+Installed 2 packages in 3ms
+ - git-mcp-server==0.1.8
+ + git-mcp-server==0.1.9 (from file:///Users/wingmunfung/workspace/uv/test_uv_pip_no_sources/git_mcp)
+ ~ test-no-sources==0.0.1 (from file:///Users/wingmunfung/workspace/uv/test_uv_pip_no_sources)
+ 
+ 
+(test_uv_pip_no_sources) ➜  test_uv_pip_no_sources git:(fix/sync-no-sources-editable-switch) ✗ uv pip install --no-sources git_mcp_server
+Audited 1 package in 15ms
+
+
+(test_uv_pip_no_sources) ➜  test_uv_pip_no_sources git:(fix/sync-no-sources-editable-switch) ✗ uv pip show git_mcp_server                
+Name: git-mcp-server
+Version: 0.1.9
+Location: /Users/wingmunfung/workspace/uv/test_uv_pip_no_sources/.venv/lib/python3.13/site-packages
+Editable project location: /Users/wingmunfung/workspace/uv/test_uv_pip_no_sources/git_mcp
+Requires: click, gitpython, httpx, keyring, mcp, pre-commit, pydantic, pygithub, python-gitlab, pyyaml, rich, tool
+Required-by: test-no-sources
+(test_uv_pip_no_sources) ➜  
+</code></pre>
+<p>I think the <code>git-mcp-server</code> version should be  <code>0.1.8</code> while I run <code>v pip install --no-sources git_mcp_server</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-13 03:52</div>
+            <div class="timeline-body"><p>Yes sorry, <code>RequirementSatisfaction::check</code> and the <code>Planner::build</code> methods are relevant too.</p>
+<p>I'm not sure if we need to propagate the source strategy? That should be reflected in the resolution?</p>
+<p>I think we should be able to tell if an installed distribution matches the resolution. Naively, I'd image we want something like this?</p>
+<pre><code class="language-diff">diff --git a/crates/uv-installer/src/satisfies.rs b/crates/uv-installer/src/satisfies.rs
+index b7e824202..48709e2cc 100644
+--- a/crates/uv-installer/src/satisfies.rs
++++ b/crates/uv-installer/src/satisfies.rs
+@@ -31,7 +31,9 @@ impl RequirementSatisfaction {
+         match source {
+             // If the requirement comes from a registry, check by name.
+             RequirementSource::Registry { specifier, .. } =&gt; {
+-                if specifier.contains(distribution.version()) {
++                if matches!(distribution, InstalledDist::Registry { .. })
++                    &amp;&amp; specifier.contains(distribution.version())
++                {
+                     return Self::Satisfied;
+                 }
+                 Self::Mismatch
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-13 12:14</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>Thank you for your feedback.</p>
+<p>After applying your modification, I was able to install the package again using <code>uv sync --no-sources</code> instead of getting no output.</p>
+<p>However, running <code>uv pip install --no-sources</code> will throws an exception.</p>
+<p>Upon closer inspection, I found that the call chains for <code>sync</code> and <code>pip install</code> differ. In particular, pip install uses a <code>CandidateSelector</code>, whose <code>CandidateSelector::get_installed()</code> strategy is inconsistent with the matching logic in <code>RequirementSatisfaction::check()</code>.</p>
+<p>This mismatch causes the resolver to treat the package as <code>ResolvedDist::Installed</code>(does not check it is a Url or a Registry), while <code>RequirementSatisfaction::check()</code> flags it as <strong>mismatched</strong>—leading to a panic.</p>
+<pre><code>(test_uv_sync) ➜ test_uv_sync uv-dev pip install --no-sources anyio -v
+DEBUG uv 0.8.9+2 (250c3a746 2025-08-13)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.13.2-macos-aarch64-none` at `/Users/wingmunfung/test_uv_sync/.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.13.2 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG Registry check: distribution=Url(InstalledDirectUrlDist { name: PackageName(&quot;anyio&quot;), version: &quot;4.3.0&quot;, direct_url: LocalDirectory { url: &quot;file:///Users/wingmunfung/test_uv_sync/local_dep&quot;, dir_info: DirInfo { editable: Some(true) }, subdirectory: None }, url: DisplaySafeUrl { scheme: &quot;file&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: None, port: None, path: &quot;/Users/wingmunfung/test_uv_sync/local_dep&quot;, query: None, fragment: None }, editable: true, path: &quot;/Users/wingmunfung/test_uv_sync/.venv/lib/python3.13/site-packages/anyio-4.3.0.dist-info&quot;, cache_info: Some(CacheInfo { timestamp: Some(Timestamp(SystemTime { tv_sec: 1755059554, tv_nsec: 377749146 })), commit: None, tags: None, env: {}, directories: {&quot;src&quot;: None} }) }), specifier=VersionSpecifiers([]), version=&quot;4.3.0&quot;
+DEBUG At least one requirement is not satisfied: anyio
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.13.2
+DEBUG Solving with target Python version: &gt;=3.13.2
+DEBUG Adding direct dependency: anyio*
+DEBUG Found stale response for: https://pypi.org/simple/anyio/
+DEBUG Sending revalidation request for: https://pypi.org/simple/anyio/
+DEBUG Found not-modified response for: https://pypi.org/simple/anyio/
+DEBUG Found installed version of anyio==4.3.0 (from file:///Users/wingmunfung/test_uv_sync/local_dep) that satisfies *
+DEBUG Searching for a compatible version of anyio (*)
+DEBUG Found installed version of anyio==4.3.0 (from file:///Users/wingmunfung/test_uv_sync/local_dep) that satisfies *
+DEBUG Selecting: anyio==4.3.0 [installed] (installed)
+DEBUG Tried 1 versions: anyio 1
+DEBUG marker environment resolution took 0.248s
+Resolved 1 package in 251ms
+DEBUG Registry check: distribution=Url(InstalledDirectUrlDist { name: PackageName(&quot;anyio&quot;), version: &quot;4.3.0&quot;, direct_url: LocalDirectory { url: &quot;file:///Users/wingmunfung/test_uv_sync/local_dep&quot;, dir_info: DirInfo { editable: Some(true) }, subdirectory: None }, url: DisplaySafeUrl { scheme: &quot;file&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: None, port: None, path: &quot;/Users/wingmunfung/test_uv_sync/local_dep&quot;, query: None, fragment: None }, editable: true, path: &quot;/Users/wingmunfung/test_uv_sync/.venv/lib/python3.13/site-packages/anyio-4.3.0.dist-info&quot;, cache_info: Some(CacheInfo { timestamp: Some(Timestamp(SystemTime { tv_sec: 1755059554, tv_nsec: 377749146 })), commit: None, tags: None, env: {}, directories: {&quot;src&quot;: None} }) }), specifier=VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;4.3.0&quot; }]), version=&quot;4.3.0&quot;
+DEBUG Requirement installed, but mismatched: 
+Installed: Url(InstalledDirectUrlDist { name: PackageName(&quot;anyio&quot;), version: &quot;4.3.0&quot;, direct_url: LocalDirectory { url: &quot;file:///Users/wingmunfung/test_uv_sync/local_dep&quot;, dir_info: DirInfo { editable: Some(true) }, subdirectory: None }, url: DisplaySafeUrl { scheme: &quot;file&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: None, port: None, path: &quot;/Users/wingmunfung/test_uv_sync/local_dep&quot;, query: None, fragment: None }, editable: true, path: &quot;/Users/wingmunfung/test_uv_sync/.venv/lib/python3.13/site-packages/anyio-4.3.0.dist-info&quot;, cache_info: Some(CacheInfo { timestamp: Some(Timestamp(SystemTime { tv_sec: 1755059554, tv_nsec: 377749146 })), commit: None, tags: None, env: {}, directories: {&quot;src&quot;: None} }) }) 
+Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;4.3.0&quot; }]), index: None, conflict: None }
+
+thread 'main2' panicked at crates/uv-installer/src/plan.rs:150:17:
+internal error: entered unreachable code: Installed distribution could not be Found in site-packages: anyio==4.3.0 (from file:///Users/wingmunfung/test_uv_sync/local_dep)
+Note: Run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+DEBUG Released lock at `/Users/wingmunfung/test_uv_sync/.venv/.lock`
+
+Thread 'main' panicked at /Users/wingmunfung/workspace/uv/crates/uv/src/lib.rs:2300:10:
+Tokio executor failed, was there a panic?: Any { .. }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-13 14:44</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/blob/78c8c711fa6d86b95f3e4b749da4573c01d2aae0/crates/uv-installer/src/plan.rs#L94-L102</p>
+<p>Doesn’t the log above violate the assumption in the comment https://github.com/astral-sh/uv/pull/15234#issuecomment-3183609624?</p>
+<pre><code>DEBUG Found installed version of anyio==4.3.0 (from file:///Users/wingmunfung/test_uv_sync/local_dep) that satisfies *
+DEBUG Selecting: anyio==4.3.0 [installed] (installed)
+DEBUG Requirement installed, but mismatched: 
+Installed: Url(InstalledDirectUrlDist { name: PackageName(&quot;anyio&quot;), version: &quot;4.3.0&quot;, direct_url: LocalDirectory { url: &quot;file:///Users/wingmunfung/test_uv_sync/local_dep&quot;, dir_info: DirInfo { editable: Some(true) }, subdirectory: None }, url: DisplaySafeUrl { scheme: &quot;file&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: None, port: None, path: &quot;/Users/wingmunfung/test_uv_sync/local_dep&quot;, query: None, fragment: None }, editable: true, path: &quot;/Users/wingmunfung/test_uv_sync/.venv/lib/python3.13/site-packages/anyio-4.3.0.dist-info&quot;, cache_info: Some(CacheInfo { timestamp: Some(Timestamp(SystemTime { tv_sec: 1755059554, tv_nsec: 377749146 })), commit: None, tags: None, env: {}, directories: {&quot;src&quot;: None} }) }) 
+Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;4.3.0&quot; }]), index: None, conflict: None }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-14 07:48</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>Could you help me look into this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-14 12:30</div>
+            <div class="timeline-body"><p>Hey, I'll look when I get a chance — I've been a bit busy and don't know the answer off the top of my head so I'll need to dig into the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-16 22:29</div>
+            <div class="timeline-body"><p>I think that comment is probably wrong. I think <code>CandidateSelector::select</code> <em>can</em> return <code>InstalledDirectUrlDist</code> if you have an already-installed URL that matches a user requirement (e.g., you have <code>anyio @ 4.3.0</code> installed from Git, and you run <code>uv pip install anyio</code>).</p>
+<p>I think the error you're seeing is because you changed the logic in the install plan, but you need to make a corresponding change in the resolver, such that when resolving, we <em>don't</em> choose the already-installed URL distribution if the user didn't request a URL. In other words: you need to reflect the change in both the install plan <em>and</em> the resolver, and modifying <code>satisfies</code> only affects the install plan.</p>
+<p>It's not totally clear to me whether we want that behavior, though. It's clear for the <code>uv sync</code> case, but like, if we make this change as described, then <code>uv pip install git+https://github.com/agronholm/anyio</code> followed by <code>uv pip install anyio</code> would uninstall the Git-based <code>anyio</code> and then reinstall it from PyPI. That would be a breaking change, so we probably make sure we want to do that before finishing the PR.</p>
+<p>(Alternatively, if we could somehow make this change <em>only</em> for the <code>uv sync</code> case, that'd be easier to ship.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-17 17:24</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>My current change is limited to handling <code>uv sync --no-sources</code> only:</p>
+<ol>
+<li>Check whether the <code>SourceStrategy</code> is false.</li>
+<li>Collect the registry packages from the resolution.</li>
+<li>Check for already <code>InstalledDist::Url(_)</code>/<code>InstalledDist::LegacyEditable(_)</code> packages.</li>
+<li>Mark them for reinstallation.</li>
+</ol>
+<p>Do you think this scoped fix is small enough for now?</p>
+<p>I also experimented with modifying the resolver. Specifically, I tried passing <code>SourceStrategy</code> into the <code>CandidateSelector</code>, and alternatively, filtering out <code>InstalledDist::Url</code> and <code>InstalledDist::LegacyEditable</code> in <code>CandidateSelector::get_installed()</code> so they’re no longer considered as installed. This does solve the issue for <code>pip install --no-sources</code>, but it comes with some drawbacks:</p>
+<ul>
+<li><code>CandidateSelector</code> is used in many modules, so the change could have unintended consequences.</li>
+<li>It requires passing parameters deeply, which means modifying many call sites.</li>
+<li>It affects a large number of unit tests.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-21 23:08</div>
+            <div class="timeline-body"><p>@yumeminami -- Sorry, will get back to you soon, this is on my list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2025-08-22 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-22 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-08-22 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 11:45</div>
+            <div class="timeline-body"><p>@yumeminami -- What do you think of https://github.com/astral-sh/uv/pull/15450? It's a slightly different approach whereby the <code>check</code> logic uses different rules depending on whether we're using <code>uv pip</code> or <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-23 04:15</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>Thanks your feedback!</p>
+<p>I took a look of #15450 and I think it did the thing like as discussed in https://github.com/astral-sh/uv/pull/15234#issuecomment-3182003235 by passing the <code>SyncModel</code>(<code>Sourcestrategy</code> in the comment) argument through multiple functions until it reaches <code>RequirementSatisfaction::check</code>.</p>
+<p>I have some suggestions:</p>
+<ol>
+<li><code>SyncModel</code> implies it's about <code>uv sync</code>? I'm not sure, but it actually controls the &quot;packet matching strategy&quot; and I feel like <code>Stateful</code> and <code>Stateless</code> might be a bit ambiguous. And I sugget use this <code>InstallationStrategy</code>, what do you think?</li>
+</ol>
+<pre><code class="language-rust">/// Defines the strategy for determining whether an installed package satisfies a requirement.
+  ///
+  /// This enum controls how the package installer validates existing installations against
+  /// new requirements, particularly when there are differences in source types (registry vs local).
+  #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+  pub enum InstallationStrategy {
+      /// Permissive strategy: Accept existing installations even if source type differs.
+      ///
+      /// This strategy mirrors traditional pip behavior, where already-installed packages
+      /// are reused if they satisfy the version requirements, regardless of how they were
+      /// originally installed. For example:
+      /// - If `./path/to/package` is installed and later `package` is requested from registry,
+      ///   the existing installation will be reused if the version matches.
+      /// - This enables incremental package management where users can mix installation sources.
+      ///
+      /// Used by: `uv pip install`, `uv pip sync`
+      Permissive,
+
+      /// Strict strategy: Require exact source type matching between installed and requested packages.
+      ///
+      /// This strategy enforces that the installation source must match the requirement source.
+      /// It prevents reusing packages that were installed from different sources, ensuring
+      /// declarative and reproducible environments. For example:
+      /// - If an editable package is installed but a registry version is requested,
+      ///   the editable installation will be replaced with the registry version.
+      /// - This is essential for `--no-sources` scenarios where local installations
+      ///   should be replaced with registry equivalents.
+      ///
+      /// Used by: `uv sync`, `uv run`, `uv tool run`
+      Strict,
+  }
+</code></pre>
+<ol start="2">
+<li>Does this PR fix the issue in https://github.com/astral-sh/uv/pull/15234#issuecomment-3182044630 about <code>pip install --no-soures</code>? If the checks detect a <code>Statefule</code> condition and a <code>distribution mismatch</code> <code>InstalledDist::Registry { .. }</code>, should we prompt the user?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-23 04:25</div>
+            <div class="timeline-body"><p>I’ve attempted to add <code>SyncModel</code> as a property of the <code>SitePackages</code> struct so that we could update the construction of <code>SitePackages</code> instances instead of modifying multiple function signatures and calls.</p>
+<p>And I found Rust does not support default parameters in functions—by default, <code>Stateful</code> is used, and <code>Stateless</code> must be explicitly passed when needed. This makes the solution more involved than the approach in <a href="https://github.com/astral-sh/uv/pull/15450">PR #15450</a>.</p>
+<p>😢 😢</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-24 12:20</div>
+            <div class="timeline-body"><p>Yeah I think your names are better (mine were sort of lazy, to validate the idea).</p>
+<p>I think this should <em>only</em> apply to <code>uv sync</code> personally, and even <code>uv pip install --no-sources</code> should have the same behavior whereby we &quot;accept&quot; the implicit registry requirement.</p>
+<p>We might (?) need to thread this through to the candidate selector / resolver as well, is the only other downside... That's why some tests are failing, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-25 02:03</div>
+            <div class="timeline-body"><p>Yeah, I agree.</p>
+<p>If we want the <code>uv pip install --no-sources</code> has the same behave as <code>uv sycn --no-sources</code>, the candidate selector strategy need to align the <code>RequirementSatisfaction::check</code> func.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-25 02:05</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>Later, I will base #15450 then modify the candidate selector strategy and new a pr again.(maybe Tuesday or Wednesday）</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-27 06:13</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>Now th PR should fix <code>uv sync --no-sources</code> and <code>uv pip install --no-sources</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-27 06:22</div>
+            <div class="timeline-body"><p>how to rerun the CI and why the <code>install python</code> job will fail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-14 02:05</div>
+            <div class="timeline-body"><p>@yumeminami -- Sorry, I was trying to convey that I think this should <em>only</em> affect <code>uv sync</code> (and <code>uv pip install</code> should be unchanged). Do you agree?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-09-16 01:51</div>
+            <div class="timeline-body"><p>Agree.</p>
+<p>On Sun, 14 Sept 2025 at 10:06, Charlie Marsh <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>charliermarsh</em> left a comment (astral-sh/uv#15234)
+<a href="https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527">https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527</a></p>
+<p>@yumeminami <a href="https://github.com/yumeminami">https://github.com/yumeminami</a> -- Sorry, I was trying to
+convey that I think this should <em>only</em> affect uv sync (and uv pip install
+should be unchanged). Do you agree?</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527">https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AQDB34QOSDH6KYLOJZ6Q7EL3STER3AVCNFSM6AAAAACDV3WXSKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEOBZGA4DONJSG4">https://github.com/notifications/unsubscribe-auth/AQDB34QOSDH6KYLOJZ6Q7EL3STER3AVCNFSM6AAAAACDV3WXSKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEOBZGA4DONJSG4</a>
+.
+You are receiving this because you were mentioned.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-16 01:52</div>
+            <div class="timeline-body"><p>Okay thanks. I will revisit this and look to get it merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-17 01:45</div>
+            <div class="timeline-body"><p>Okay, this should be good to go. It only changes the behavior for <code>uv sync</code> (and <code>uv run</code>, which calls <code>uv sync</code> behind the hood), where we have full control over the sources and resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-09-17 01:59</div>
+            <div class="timeline-body"><p>@charliermarsh thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-09-17 11:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-09-17 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-17 11:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:43 UTC
+    </footer>
+</body>
+</html>

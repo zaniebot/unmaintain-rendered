@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for Python interpreters on ARMv5TE platforms - astral-sh/uv #10234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for Python interpreters on ARMv5TE platforms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10234">#10234</a>
+        opened by <a href="https://github.com/lscorcia">@lscorcia</a>
+        on 2024-12-30 07:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/lscorcia">@lscorcia</a> on 2024-12-30 07:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Allows uv to recognize the ARMv5TE platform. This platform is currently supported on Debian distributions. It is an older 32 bit platform mostly used in embedded devices, currently in rust tier 2.5 so it requires cross compilation.</p>
+<p>Fixes #10157 .</p>
+<h2>Test Plan</h2>
+<p>Tested directly on device by applying a slightly different patch to tag 0.5.4 which is used by the current Home Assistant version (2024.12.5). After the patch Home Assistant is able to recognize the Python venv and setup its dependencies.</p>
+<p>Patched uv was built with</p>
+<pre><code>$ CARGO_TARGET_ARMV5TE_UNKNOWN_LINUX_GNUEABI_LINKER=&quot;/usr/bin/arm-linux-gnueabi-gcc&quot; maturin build --release --target armv5te-unknown-linux-gnueabi --manylinux off
+</code></pre>
+<p>The target wheel was then moved on the device and installed via pip install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @lscorcia on 2024-12-30 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @lscorcia on 2024-12-30 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:292 on 2024-12-30 15:33</div>
+            <div class="timeline-body"><p>We need to remove this part -- Warehouse doesn't allow this tag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-30 15:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-30 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:300 on 2024-12-30 15:34</div>
+            <div class="timeline-body"><p>We should remove this. This would only be relevant if we were building uv for this platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-30 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/python/packaging/_manylinux.py</code>:61 on 2024-12-30 15:44</div>
+            <div class="timeline-body"><p>I'm not certain that this should be changed. I don't know if armv5te has a compatible ABI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-30 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/python/packaging/_manylinux.py</code>:61 on 2024-12-30 15:46</div>
+            <div class="timeline-body"><p>I think this probably <em>shouldn't</em> be changed, since this code is vendored and it's not present in pip etc.</p>
+<p>Can you revert this part and re-test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-12-30 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lscorcia">@lscorcia</a> reviewed on 2024-12-30 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lscorcia">@lscorcia</a> on <code>crates/uv-python/python/packaging/_manylinux.py</code>:61 on 2024-12-30 16:29</div>
+            <div class="timeline-body"><p>You are right, I did not check. armv5te does not support manylinux. Reverted and tested on device, uv works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-30 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-30 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-30 16:50</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Initial support for ARMv5TE platform via cross compilation" to "Add support for Python interpreters on ARMv5TE platforms" by @zanieb on 2024-12-30 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-26 13:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:40 UTC
+    </footer>
+</body>
+</html>

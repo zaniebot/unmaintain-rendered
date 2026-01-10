@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: refresh activation scripts from upstream virtualenv - astral-sh/uv #15272</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: refresh activation scripts from upstream virtualenv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15272">#15272</a>
+        opened by <a href="https://github.com/2bndy5">@2bndy5</a>
+        on 2025-08-14 08:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/2bndy5">@2bndy5</a> on 2025-08-14 08:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This refreshes the venv activation scripts from upstream <code>virtualenv</code> project.
+This was largely triggered by a problem in the activate.nu script (for nushell):</p>
+<ul>
+<li>#14888</li>
+<li>#14914</li>
+<li>#14917</li>
+</ul>
+<p>I was careful to respect the git history going back to astral-sh/uv#3376 (the last time this was done).
+Actually I looked at the complete history from back when this <code>uv-virtualenv</code> crate was named after a Pokémon (⁉️), but I found nothing (about activation scripts) from back then that hasn't been overwritten since.</p>
+<h3>Some post-processing was involved</h3>
+<ul>
+<li>Retained license info at top of scripts</li>
+<li>Retained template vars (eg <code>{{ BIN_PATH }}</code>) to assure current support toward relocatable venv</li>
+<li>Retained deviation from upstream in astral-sh/uv#5640. This seems to be the only deviation that isn't in sync with upstream.</li>
+</ul>
+<h3>Notable changes from upstream</h3>
+<ul>
+<li>(omitted due to undesirable complexity) pypa/virtualenv#2928 and its follow-up pypa/virtualenv#2940</li>
+<li>pypa/virtualenv#2910 (what prompted astral-sh/uv#14917 from astral-sh/uv#14888)</li>
+</ul>
+<h2>Test Plan</h2>
+<p>There was a request in #14917 to add unit tests to detect breakage or errors.
+I have added a CI job that runs the nushell activation script.
+But I think it is better to have the CI test all/most supported shells.
+See also #15294</p>
+<p>I have tested this locally using</p>
+<ul>
+<li>[x] nushell (v0.106.1)</li>
+<li>[x] cmd.exe (Microsoft Windows [Version 10.0.26100.4946])</li>
+<li>[x] bash in WSL (GNU bash, version 5.1.16(1)-release (x86_64-pc-linux-gnu))</li>
+<li>[x] pwsh (PSVersion 5.1.26100.4768)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-14 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/ci.yml</code>:1014 on 2025-08-14 12:07</div>
+            <div class="timeline-body"><p>We try to avoid third-party actions, is there a simple way to install this manually? This isn't a critical area of CI, so it's probably okay if not, but worth checking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/2bndy5">@2bndy5</a> reviewed on 2025-08-14 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/2bndy5">@2bndy5</a> on <code>.github/workflows/ci.yml</code>:1014 on 2025-08-14 12:15</div>
+            <div class="timeline-body"><p>The best alternative would be to download the release straight from nushell's GitHub release assets, which is exactly what this action does (I've inspected the source myself). At that point it would be like implementing <code>cargo-binstall</code>.</p>
+<p>Since this is only testing on <code>x86_64-unknown-linux-gnu</code> target, I could instead do a simple <code>curl</code> with the nushell version interpolated with the URL.</p>
+<p>I was also wondering if you'd rather test against latest nushell instead of pinning to v0.106.1?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-14 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/ci.yml</code>:1014 on 2025-08-14 12:24</div>
+            <div class="timeline-body"><p>Yeah I would just curl unless there are complications there.</p>
+<p>I guess in an ideal world we'd test against a pinned version and it'd be bumped by Renovate? It seems like a bit of a pain though. I'm okay with trying latest — that's the easiest way to get updates about breakage even if it can be a little disruptive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-14 12:36</div>
+            <div class="timeline-body"><p>Since you mentioned it in the issue, we <em>could</em> do another testing strategy within our test suite, e.g., we'd add a new <code>test-nushell</code> feature then assume nushell is available and add a snapshot test for the activation script that's gated by the feature. Then, we'd install nushell in the Linux cargo test run. I don't really have a strong preference for now, but that does make the test more robust. Given you have this CI setup working, it's probably best to just open an issue to track afterwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-08-14 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-08-14 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2bndy5">@2bndy5</a> on 2025-08-14 21:50</div>
+            <div class="timeline-body"><p>I would actually leverage <code>cargo-nextest</code>'s DSL and profiles to filter tests instead of conditionally compiling certain tests.</p>
+<p><strong>No one</strong> should be running <code>cargo test</code> on this project. It didn't take me long to stumble across calls to ~<code>env::remove_var()</code>~ or <code>env::set_var()</code> - both of which are unsound in async contexts (eg. parallel running tests) and require <code>unsafe</code> blocks in rust 2024 edition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-14 21:57</div>
+            <div class="timeline-body"><p>Are you referring to <code>uv</code>? Which calls are you referring to? I don't see any calls to <code>env::remove_var</code>, and we only have a single call to <code>env::set_var</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2bndy5">@2bndy5</a> on 2025-08-14 22:54</div>
+            <div class="timeline-body"><p>My bad, I mis-read some function calls in <code>uv-virtualenv::virtualenv</code>. Since you mentioned it, I did a search on the code base: No calls to <code>env::remove_var()</code>, but there are currently 3 calls to <code>env::set_var()</code> (1 in <code>uv::self::main()</code> and 2 in <code>uv_trampoline::bounce::make_child_cmdline()</code>), all of which are wrapped in <code>unsafe</code> blocks. Regardless, use of <code>cargo-nextest</code> ensures safety obligations are met about these invocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/2bndy5">@2bndy5</a> reviewed on 2025-08-14 23:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/2bndy5">@2bndy5</a> on <code>.github/workflows/ci.yml</code>:1014 on 2025-08-14 23:56</div>
+            <div class="timeline-body"><p>I ended up using gh-cli (present on every github-hosted runner) to get the latest nushell tag and download the x86_64-unknown-linux-gnu release asset. FYI, I added the <code>github.token</code> to the step's env to avoid hitting the GitHub REST API rate limit.</p>
+<p>Personally, I'm not a fan of bash and all the quirks of <code>curl</code>. This is why I use nushell as my daily driver (though not as a login shell).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-15 00:58</div>
+            <div class="timeline-body"><p>The trampoline is a distinct binary — it's never run in the same process as a test. Similarly, most of uv's tests are integration tests that spawn a subprocess and, for the ones that don't, we're just setting a variable to the path of the uv binary, which is always safe when running concurrent instances of the same uv binary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2bndy5">@2bndy5</a> on 2025-08-15 01:18</div>
+            <div class="timeline-body"><p>@zanieb What are the requirements of the requested test(s)? I added a nushell activation test. Do you want more tests for all other supported shell(s)? I'm of the impression that nushell needed a test to detect breakages because nushell is still in v0.x. I have only ever used bash and pwsh (with much reluctance).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-15 01:27</div>
+            <div class="timeline-body"><p>It'd be ideal to have test coverage for them all, but I don't think it's necessary to do here! Especially if you're reluctant :) We can open an issue to track it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @2bndy5 on 2025-08-15 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2bndy5">@2bndy5</a> on 2025-08-15 01:47</div>
+            <div class="timeline-body"><p>I opened #15294 to summarize the effort towards properly testing venv activation scripts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/2bndy5">@2bndy5</a> on 2025-08-15 02:49</div>
+            <div class="timeline-body"><p>oops! Looks like further tweaks are needed for activate.ps1 as pwsh errors with:</p>
+<pre><code class="language-pwsh">__TCL_LIBRARY__ : The term '__TCL_LIBRARY__' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the 
+name, or if a path was included, verify that the path is correct and try again.
+At C:\dev\uv\.venv\Scripts\activate.ps1:86 char:5
++ if (__TCL_LIBRARY__ -ne &quot;&quot;) {
++     ~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (__TCL_LIBRARY__:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+__TK_LIBRARY__ : The term '__TK_LIBRARY__' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, 
+or if a path was included, verify that the path is correct and try again.
+At C:\dev\uv\.venv\Scripts\activate.ps1:93 char:5
++ if (__TK_LIBRARY__ -ne &quot;&quot;) {
++     ~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (__TK_LIBRARY__:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/2bndy5">@2bndy5</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-15 08:07</div>
+            <div class="timeline-body"><p>This relates to https://github.com/pypa/virtualenv/pull/2928. See <a href="https://github.com/pypa/virtualenv/blob/dad9369e97f5aef7e33777b18dcdb51b1fdac7bd/src/virtualenv/discovery/py_info.py#L140-L190">upstream's approach</a> which uses TCL interpreter inside the python runtime to get adequate paths/values for these variables.</p>
+<p>Since loading the TCL interpreter is not an option here, there's an unaddressed complexity here:</p>
+<ul>
+<li>the TCL lib location varies based on distribution (unix vs windows vs standalone built by astral-sh)</li>
+<li><code>uv_pypi_types::scheme::Scheme</code> has no field to identify the location of the TCL library (if existent)</li>
+</ul>
+<p>Instead, I just hard-coded these values to be blank strings. This preserves previous behavior and still keeps the activation scripts in sync with upstream.</p>
+<p>I have to admit, I was not previously aware of the dynamic nature of these activation scripts when I took on this task.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/2bndy5">@2bndy5</a> reviewed on 2025-08-15 08:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-15 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-15 14:21</div>
+            <div class="timeline-body"><p>Terrifying... will look into that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-15 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-15 15:48</div>
+            <div class="timeline-body"><p>I think we might just want to back these changes out and consider them separately. TCL / TK are notoriously complicated and cause a lot of problems so I don't want to unset any user-provided variables.</p>
+<p>cc @geofft for when you're back</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-08-15 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-15 16:38</div>
+            <div class="timeline-body"><p>Not looking super closely but I suspect I agree, we should not be setting <code>TCL_LIBRARY</code> or <code>TK_LIBRARY</code>. If this is being copied from upstream virtualenv than I am a little skeptical that that logic is right and would like to look at the PR.</p>
+<p>For a system Python, the locations hard-coded in libtcl and libtk should work. For python-build-standalone, there is logic to make setting them unnecessary. So in both cases setting them would at most introduce some risk of making things go wrong.</p>
+<p>Also an incredibly drive-by comment that I can expand on more next week, sorry - I'm not even sure we should be trying to sync with virtualenv as opposed to stdlib venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/2bndy5">@2bndy5</a> reviewed on 2025-08-15 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/2bndy5">@2bndy5</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-15 20:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not even sure we should be trying to sync with virtualenv as opposed to stdlib venv.</p>
+</blockquote>
+<p>I'm under the impression that stdlib venv is an minimal fork of virtualenv. I appreciate syncing with virtualenv because it supports nushell, where stdlib venv does not.</p>
+<p>If we decide to roll back the TCL/TK related changes from upstream, then it would certainly cause further deviation from upstream. Such deviations should be marked with comments (or a section in the crate's README), so the next contributor wouldn't have to dig through the git histories of both uv-virtualenv and virtualenv. It would be nicer to have .patch files that apply to upstream scripts, but that isn't very feasible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-15 20:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-15 20:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm under the impression that stdlib venv is an minimal fork of virtualenv. I appreciate syncing with virtualenv because it supports nushell, where stdlib venv does not.</p>
+</blockquote>
+<p>Yeah I think this is fine for now. @geofft let's consider anything there separately from this contribution.</p>
+<blockquote>
+<p>If we decide to roll back the TCL/TK related changes from upstream, then it would certainly cause further deviation from upstream.</p>
+</blockquote>
+<p>I think we need to roll them back. I don't mind leaving a comment about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/2bndy5">@2bndy5</a> reviewed on 2025-08-15 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/2bndy5">@2bndy5</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-15 21:58</div>
+            <div class="timeline-body"><p>I'll roll back the TCL/TK stuff. Upon further thought, I think a README section might be better than uv-specific comments in each script:</p>
+<ul>
+<li>comment syntax is different for each script (some of which I'm unfamiliar with)</li>
+<li>uv-specific comments in scripts can be easily overwritten with uninformed copy-n-paste; and easily overlooked if the git diff of index vs worktree is not reviewed before committing.</li>
+<li>A README can point to specific parts of the source (in uv-virtualenv and upstream virtualenv) where deviation shall be maintained; referring to the placeholder identities (ie <code>{{ BIN_PATH }}</code> vs <code>__BIN_PATH__</code>) used in the (template) activation scripts.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/2bndy5">@2bndy5</a> reviewed on 2025-08-16 01:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/2bndy5">@2bndy5</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-16 01:03</div>
+            <div class="timeline-body"><p>I rolled back TCL/TK changes and documented major deviations in README.</p>
+<p>FWIW, I have spent way more time on this patch than I initially thought I would. Even if the README section is not kept up to date, it still would help prevent future contributors having to research the entire git histories of both projects (wrt activation scripts).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-16 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:474 on 2025-08-16 12:29</div>
+            <div class="timeline-body"><p>I appreciate that you're taking the time to improve the situation for the future! It often ends up being that way with tasks here, since we're widely used and generally adverse to breakage :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-09-05 21:12</div>
+            <div class="timeline-body"><p>Thank you so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-09-05 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-05 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-05 21:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:43 UTC
+    </footer>
+</body>
+</html>

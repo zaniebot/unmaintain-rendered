@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error on dependency groups with incompatible requires-python in `pip compile` - astral-sh/uv #16089</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error on dependency groups with incompatible requires-python in `pip compile`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16089">#16089</a>
+        opened by <a href="https://github.com/terror">@terror</a>
+        on 2025-10-01 17:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/terror">@terror</a> on 2025-10-01 17:36</div>
+            <div class="timeline-body"><p>Resolves https://github.com/astral-sh/uv/issues/15889</p>
+<p>This PR updates the <code>dependency-group</code> metadata to carry each group’s <code>Requires-Python</code>, and <code>uv pip compile</code> now aborts when a requested group can’t run on the active interpreter. This mirrors the project-level behavior, preventing the confusing “empty lockfile” outcome users were seeing.</p>
+<p>I've also added a new integration test that covers the regression scenario that prompted the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/terror">@terror</a> on 2025-10-01 17:50</div>
+            <div class="timeline-body"><p>Test failure seems to be unrelated? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @terror on 2025-10-01 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:16099 on 2025-10-01 20:08</div>
+            <div class="timeline-body"><p>We might want to include a call to action here, e.g., suggesting they use <code>--python 3.14</code>? I'm not sure how easy it will be to generalize that though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:244 on 2025-10-01 20:08</div>
+            <div class="timeline-body"><p>Did you derive this error message from a similar existing one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-10-01 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:244 on 2025-10-01 20:17</div>
+            <div class="timeline-body"><p>I took some inspiration from the 'The requested interpreter resolved to Python {}, which is incompatible with the <code>pylock.toml</code>'s Python requirement: <code>{}</code>' message from <a href="https://github.com/astral-sh/uv/blob/d51a1e74567422f9ea32b40a31634a84d04f0c00/crates/uv/src/commands/pip/sync.rs#L411"><code>sync.rs</code></a>, but this is ultimately a different context so I re-framed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-01 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-01 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:244 on 2025-10-01 20:21</div>
+            <div class="timeline-body"><p>My concern here is that we're deriving a range from the current interpreter version, e.g., <code>&gt;=3.13</code> from <code>3.13</code>, which I don't think will be obvious to users encountering this error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-01 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:16099 on 2025-10-01 21:14</div>
+            <div class="timeline-body"><p>Hmm, for groups that provide a lower bound (e.g. in this case), we could use the minimum required python version, i.e we could add <code>Re-run with `--python 3.14` to target a compatible Python version</code>. For other cases we could add something more generic. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-10-01 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:244 on 2025-10-01 21:20</div>
+            <div class="timeline-body"><p>Ah interesting, yeah I see why there's concern there. I've pushed up some changes to make things a bit more clear:</p>
+<pre><code>error: Dependency group `ml1` in `pyproject.toml` requires Python `&gt;=3.14`, but uv is resolving for Python `&gt;=3.13.[X]` (current interpreter: `3.13.[X]`). Re-run with `--python 3.14` to target a compatible Python version.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:16132 on 2025-10-02 08:57</div>
+            <div class="timeline-body"><p>We should make the Python version available through the test context</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-10-02 08:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-10-07 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:244 on 2025-10-07 18:55</div>
+            <div class="timeline-body"><p>Sorry for the delay, the blocker here was me looking into this a bit more. Basically, I think we can do better with the error message here given the information on <code>PythonRequirement</code></p>
+<p>https://github.com/astral-sh/uv/blob/50218409191c55587e832e649699ef5d07a611e8/crates/uv-resolver/src/python_requirement.rs#L9-L19</p>
+<p>Specifically, the <code>PythonRequirementSource</code> is helpful</p>
+<p>https://github.com/astral-sh/uv/blob/50218409191c55587e832e649699ef5d07a611e8/crates/uv-resolver/src/python_requirement.rs#L179-L186</p>
+<p>So we can avoid showing a range at all in the typical case, e.g., instead of &quot;uv is resolving for Python <code>&gt;=3.13.[X]</code> ...&quot; we can say &quot;uv is resolving for Python 3.13&quot;. I think only in the <code>RequiresPython</code> case do we need to show a range? and then we can just indicate that it comes from <code>requires-python</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:53 UTC
+    </footer>
+</body>
+</html>

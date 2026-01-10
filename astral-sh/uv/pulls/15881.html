@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix misleading debug message in uv sync - astral-sh/uv #15881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix misleading debug message in uv sync</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15881">#15881</a>
+        opened by <a href="https://github.com/harshithvh">@harshithvh</a>
+        on 2025-09-15 19:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harshithvh">@harshithvh</a> on 2025-09-15 19:59</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<ul>
+<li>Added <code>RemovableReason</code> enum to track removal context</li>
+<li>Updated <code>OnExisting::Remove</code> to include source information</li>
+<li>Modified debug message to show appropriate context</li>
+<li>Updated all call sites to specify correct removal source</li>
+</ul>
+<p>fixes: #14734</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-15 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:127 on 2025-09-15 20:18</div>
+            <div class="timeline-body"><p>It seems a little weird that there's a <code>None</code> variant here. Isn't this due to like, it being a temporary environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harshithvh">@harshithvh</a> reviewed on 2025-09-15 20:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harshithvh">@harshithvh</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:127 on 2025-09-15 20:25</div>
+            <div class="timeline-body"><p>hm, would it make more sense to have explicit variants? like:
+<code>TemporaryEnvironment</code> for build/cache/script temp dirs
+<code>ToolEnvironment</code> for tool-specific environments
+keep <code>SyncDefault</code> for sync ops
+keep <code>ClearFlag</code> for the --clear flag</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-15 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:127 on 2025-09-15 20:34</div>
+            <div class="timeline-body"><p>Maybe? I think I'd probably tie it to the category, rather than the specific instance</p>
+<ul>
+<li><code>TemporaryEnvironment</code></li>
+<li><code>ManagedEnvironment</code></li>
+<li><code>Requested</code></li>
+</ul>
+<p>or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:662 on 2025-09-15 20:35</div>
+            <div class="timeline-body"><p>I might call this enum something like, <code>RemovableReason</code> instead? since it's scoped to the <code>Remove</code> variant not all <code>OnExisting</code> variants?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-15 20:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harshithvh">@harshithvh</a> reviewed on 2025-09-15 20:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harshithvh">@harshithvh</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:662 on 2025-09-15 20:38</div>
+            <div class="timeline-body"><p>yeh, this makes sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harshithvh">@harshithvh</a> reviewed on 2025-09-15 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harshithvh">@harshithvh</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:127 on 2025-09-15 20:40</div>
+            <div class="timeline-body"><p>sounds good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-16 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:652 on 2025-09-16 12:50</div>
+            <div class="timeline-body"><p>I was imagining this being superseded by <code>Requested</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-16 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:670 on 2025-09-16 12:50</div>
+            <div class="timeline-body"><p>Can we remove the <code>Option</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harshithvh">@harshithvh</a> reviewed on 2025-09-16 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harshithvh">@harshithvh</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:652 on 2025-09-16 13:56</div>
+            <div class="timeline-body"><p>We could retain this, the debug message &quot;due to --clear&quot; is much more informative than &quot;as requested&quot;
+wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-16 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:652 on 2025-09-16 14:08</div>
+            <div class="timeline-body"><p>I think we could still say &quot;due to --clear&quot; unless there's another way it can be requested? (this does ignore <code>UV_VENV_CLEAR</code>, but... not sure what to do about that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harshithvh">@harshithvh</a> reviewed on 2025-09-16 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harshithvh">@harshithvh</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:652 on 2025-09-16 14:25</div>
+            <div class="timeline-body"><p>Hm, I see two ways to trigger &quot;clear&quot; behavior</p>
+<ol>
+<li>CLI flag: --clear</li>
+<li>UV_VENV_CLEAR</li>
+</ol>
+<p>I have few options here</p>
+<ol>
+<li>Keep the current <code>ClearFlag</code> variant, accept that &quot;due to --clear&quot; might be slightly misleading for <code>UV_VENV_CLEAR</code>, minor trade-off</li>
+<li>Merge into <code>Requested</code></li>
+<li>more granular: add variant <code>ClearEnvVar</code> triggered by <code>UV_VENV_CLEAR</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-16 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:652 on 2025-09-16 14:36</div>
+            <div class="timeline-body"><p>I would probably use <code>UserRequest</code> as a single variant and just use <code>--clear</code> as the only language. We don't have support for distinguishing between cases where an environment variable is used yet. We might add that in the future, but it's a more holistic change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harshithvh">@harshithvh</a> reviewed on 2025-09-16 14:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harshithvh">@harshithvh</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:652 on 2025-09-16 14:51</div>
+            <div class="timeline-body"><p>sure, <code>UserRequest</code> should look good now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshithvh">@harshithvh</a> on 2025-09-16 15:37</div>
+            <div class="timeline-body"><p>@zanieb all looks good to me
+Mind giving a final review</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-09-16 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:652 on 2025-09-16 17:11</div>
+            <div class="timeline-body"><p>We should remove this now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harshithvh">@harshithvh</a> reviewed on 2025-09-16 18:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harshithvh">@harshithvh</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:652 on 2025-09-16 18:05</div>
+            <div class="timeline-body"><p>done, thanks for pointing this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-09-16 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @zanieb on 2025-09-16 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-09-16 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-16 18:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:50 UTC
+    </footer>
+</body>
+</html>

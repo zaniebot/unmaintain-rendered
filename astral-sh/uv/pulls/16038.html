@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retry all h2 errors - astral-sh/uv #16038</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Retry all h2 errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16038">#16038</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-09-26 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 12:36</div>
+            <div class="timeline-body"><p>The h2 errors, a specific type nested in reqwest errors, all look like they shouldn't happen in regular operations and should be retried. This covers all <code>io::Error</code>s going through h2 (i.e., only HTTP 2 connections).</p>
+<p>Fixes https://github.com/astral-sh/uv/issues/15916</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-09-26 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @konstin on 2025-09-26 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci-flake</span> added by @konstin on 2025-09-26 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-29 14:10</div>
+            <div class="timeline-body"><p>I still am not sure this is appropriate, I think we should enumerate the cases we need to retry on. What are you using as an authoritative list of possible h2 errors?</p>
+<p>e.g., I looked at https://docs.rs/h2/latest/h2/struct.Reason.html and we should not retry on <a href="https://docs.rs/h2/latest/h2/struct.Reason.html#associatedconstant.HTTP_1_1_REQUIRED"><code>HTTP_1_1_REQUIRED</code></a> or <a href="https://docs.rs/h2/latest/h2/struct.Reason.html#associatedconstant.INADEQUATE_SECURITY"><code>INADEQUATE_SECURITY</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-29 19:06</div>
+            <div class="timeline-body"><p>I had looked through https://github.com/hyperium/h2/blob/756345ecd8e0c3f890c862c72cc3e3f61a621dce/src/error.rs#L25-L43, but we're lacking good documentation for how these error occur in practice.</p>
+<p>reqwest supports HTTP 1.1, but doesn't use h2 for it, so <code>HTTP_1_1_REQUIRED</code> should never occur. <code>INADEQUATE_SECURITY</code> isn't one of the common security errors such as a wrongly named cert, it occurs if HTTP 2 was implemented wrongly. I consider it very unlikely that some uses an invalid HTTP 2 for their registry and also that this shows up with uv, it's more likely that there was some network error which made it look like an invalid HTTP 2 implementation (like #15916).</p>
+<p>It also seems that we are unintentionally retrying bad SSL certs without this PR:</p>
+<pre><code>$ UV_HTTP_RETRIES=1 uv pip install tqdm --index-url https://expired.badssl.com/
+× Failed to fetch: `https://expired.badssl.com/tqdm/`
+  ├─▶ Request failed after 1 retries
+  ├─▶ error sending request for url (https://expired.badssl.com/tqdm/)
+  ├─▶ client error (Connect)
+  ╰─▶ invalid peer certificate: certificate expired: verification time 1759172489 (UNIX), but certificate is not valid after 1428883199 (330289290 seconds ago)
+  help: Consider enabling use of system TLS certificates with the `--native-tls` command-line flag
+</code></pre>
+<pre><code>$  UV_HTTP_RETRIES=1 uv pip install tqdm --index-url https://untrusted-root.badssl.com/
+× Failed to fetch: `https://untrusted-root.badssl.com/tqdm/`
+  ├─▶ Request failed after 1 retries
+  ├─▶ error sending request for url (https://untrusted-root.badssl.com/tqdm/)
+  ├─▶ client error (Connect)
+  ╰─▶ invalid peer certificate: UnknownIssuer
+  help: Consider enabling use of system TLS certificates with the `--native-tls` command-line flag
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-10-09 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-10-09 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-10-09 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-09 13:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:52 UTC
+    </footer>
+</body>
+</html>

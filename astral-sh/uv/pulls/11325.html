@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add experimental direct src layout - astral-sh/uv #11325</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add experimental direct src layout</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11325">#11325</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-07 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-07 18:14</div>
+            <div class="timeline-body"><p>Currently, there are two main options for a project layout, as described in https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/.</p>
+<p><code>&lt;package_name&gt;/__init__.py</code>: The project is importable even when not installed. The community seems to be migrating to the <code>src</code> layout https://hynek.me/articles/testing-packaging/.</p>
+<p><code>src/&lt;package_name&gt;/__init__.py</code>: We add an extra layer of directory only to repeat the package name. This makes the library layout feel higher overhead than needed, making adoption especially in small projects harder, where the alternative is just having some Python files in a directory without any packaging.</p>
+<p>As an alternative, we introduce <code>src/__init__.py</code>, a layout familiar from other programming languages. It is low overhead (no extra indirection, docs are &quot;put your python files in <code>src</code>, <code>uv sync</code> and <code>import &lt;package_name&gt;</code>&quot;) and it enforces isolation through (editable) installation (you can't <code>import &lt;package_name&gt;</code> directly).</p>
+<p>Python does not support this natively it always want the module name in the directory or filename. We hack around this by using a custom meta finder that we insert at the top import priority. This code runs at every python startup. Imports are lazy where possible to reduce overhead. Since we're hacking the Python import system to achieve this, it's experimental. I like <code>src/__init__.py</code> a lot, but everything that runs code through <code>.pth</code> in implicit, pre-main life is to be regarded with some suspicion.</p>
+<p>This PR only adds editable support (the harder part), proper <code>build_{sdist,wheel}</code> will be added in an upstack PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2025-02-07 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-07 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/wheel.rs</code>:283 on 2025-02-07 18:15</div>
+            <div class="timeline-body"><p>This feature should be stabilized separately from the general build backend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-07 22:37</div>
+            <div class="timeline-body"><p>In this proposed layout, what determines the name of your top-level importable package name? It is determined by the name of the outer directory containing the <code>src/</code> directory? Or by the <code>name</code> key in the project metadata? Historically neither of those things have had any required correspondence with the top-level module name, which means there are a lot of existing packages that simply could not adopt this layout. And the fact that I have to even ask this question (and I don't think there's any answer that's obviously more intuitive than the other possible answers) is a warning sign.</p>
+<p>Regardless of the answer, I find this pretty confusing. Why should the top-level package have an intervening <code>src/</code> directory between the package name and the contents, when no other Python package has this, and Python's own import system doesn't understand or support this?</p>
+<p>Also, this layout doesn't really address the core problem with the &quot;flat&quot; layout that the &quot;src&quot; layout was originally meant to address, that if you run <code>python</code> in your project root, your code is importable when not installed. With this proposal, now it's just importable under the &quot;wrong&quot; top-level module name <code>src</code> instead of under the actual package name, which I am quite sure people will discover and abuse / be confused by.</p>
+<p>What concrete advantage does this have over the existing flat layout?</p>
+<p>Static analysis tools will be unable to understand libraries using this layout, unless we convince them to add special-cased support for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-02-08 14:55</div>
+            <div class="timeline-body"><p>Another good post on why src/package_name layout is good: https://blog.ionelmc.ro/2014/05/25/python-packaging/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-02-13 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:856 on 2025-02-13 13:03</div>
+            <div class="timeline-body"><p>It somehow confuses me as a user.</p>
+<ul>
+<li><code>module_root</code> auto appends <code>&lt;package_name&gt;</code> to the given name.</li>
+<li><code>direct_src</code> prevents previous step, then on editable installs, uses <code>_package_name.pth</code> and <code>_package_name_direct_src_support.py</code> for custom import loader.</li>
+</ul>
+<p>Another approach could be always using direct path for <code>module_root</code> (i.e. <code>src</code> points to <code>src/__init__.py</code>) and always use custom import loader for editable installs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2025-07-24 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZachHandley">@ZachHandley</a> on 2025-10-06 20:26</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/16120</p>
+<p>I actually just made a post about this -- I'd love this, personally</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 06:38:41 UTC
+    </footer>
+</body>
+</html>
