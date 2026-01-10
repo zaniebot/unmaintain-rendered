@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve handling of command arguments in `uv run` and `uv tool run` - astral-sh/uv #4404</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve handling of command arguments in <code>uv run</code> and <code>uv tool run</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4404">#4404</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-18 20:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-18 20:55</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/4390</p>
+<p>We no longer require <code>--</code> to disambiguate child command options that overlap with uv options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-18 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-06-18 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-06-18 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-18 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/cli.rs</code>:1465 on 2024-06-18 21:02</div>
+            <div class="timeline-body"><p>Lifted from Rye.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-18 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/cli.rs</code>:1484 on 2024-06-18 21:02</div>
+            <div class="timeline-body"><p>Makes life easier in the implementations, we special case the first argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_run.rs</code>:8 on 2024-06-18 21:02</div>
+            <div class="timeline-body"><p>Our first tool run tests!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-18 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-18 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:47 on 2024-06-18 21:03</div>
+            <div class="timeline-body"><p>We output <code>uv-run ...</code> for <code>uv run --version</code>. Kind of annoying tbh but it's Clap's behavior I think so just going to filter it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:29 on 2024-06-18 21:04</div>
+            <div class="timeline-body"><p>We split this into <code>target</code> and <code>args</code> late so we can avoid borrowing, cloning, or otherwise painfully popping the first item from the vector.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-18 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/cli.rs</code>:1479 on 2024-06-19 13:46</div>
+            <div class="timeline-body"><p>It is odd to need to use <code>.deref()</code> explicitly. Does just <code>self.as_slice()</code> work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-19 13:50</div>
+            <div class="timeline-body"><p>Can you say at a high level how this works? Does this introduce any ambiguities?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-19 14:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you say at a high level how this works? Does this introduce any ambiguities?</p>
+</blockquote>
+<p>Honestly I'm not sure about the details, just that this is the standard flag for this purpose. My understanding is as follows though:</p>
+<ul>
+<li>Once we start parsing the external command we'll treat all the flags we see as options for that command</li>
+<li>If we add a <code>uv run</code> subcommand e.g. <code>uv run list</code> then <code>list</code> will be treated as a uv subcommand and we won't parse anything as an external flag</li>
+<li>Now, the only reason to use <code>--</code> is to disambiguate between an <em>external</em> subcommand and a <em>uv subcommand</em> but we don't have any right now</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/cli.rs</code>:1479 on 2024-06-19 14:43</div>
+            <div class="timeline-body"><p>Probably just me being dumb, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-19 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-06-19 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/cli.rs</code>:1484 on 2024-06-19 14:50</div>
+            <div class="timeline-body"><p>That's implemented in std as <code>split_first</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-19 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-19 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-19 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/tool/run.rs</code>:43 on 2024-06-19 15:00</div>
+            <div class="timeline-body"><p>This can be <code>bail!</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/tool/run.rs</code>:51 on 2024-06-19 15:04</div>
+            <div class="timeline-body"><p>This can be <code>.context(&quot;...&quot;)</code>, anyhow conveniently implements it on option too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/common/mod.rs</code>:450 on 2024-06-19 15:06</div>
+            <div class="timeline-body"><p>We probably need to abstract those away soon, we're having them in a lot of subcommand test instantiators now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-06-19 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-19 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:450 on 2024-06-19 15:28</div>
+            <div class="timeline-body"><p>Agreed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-19 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/cli.rs</code>:1484 on 2024-06-19 15:28</div>
+            <div class="timeline-body"><p>Ah thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:46 UTC
+    </footer>
+</body>
+</html>

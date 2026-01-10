@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unify dependency iteration in `ResolverState::get_dependencies` - astral-sh/uv #4515</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unify dependency iteration in <code>ResolverState::get_dependencies</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4515">#4515</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-06-25 13:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-06-25 13:59</div>
+            <div class="timeline-body"><p>Upstack PR: #4430</p>
+<p>Split out from #4430 according to https://github.com/astral-sh/uv/pull/4430#discussion_r1650192338.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-25 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:965 on 2024-06-25 14:00</div>
+            <div class="timeline-body"><p>@charliermarsh Do you know what this was about? It's only in this branch (in the non-root package branch we short-circuit on error) and the errors we're handling here look like they should be raised.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:965 on 2024-06-25 19:45</div>
+            <div class="timeline-body"><p>Why should they be raised? You don't think we should backtrack in these cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-25 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-25 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:965 on 2024-06-25 19:54</div>
+            <div class="timeline-body"><p>As far as i can tell, the current implementation means that if there is a direct dependency (a root package dependency) where <code>PubGrubSpecifier::try_from</code> fails or which uses a banned URL, we mark those dependencies as unavailable, so the root package becomes unavailable(?). For regular dependencies, we already raise those errors directly using <code>from_requirements(...)?</code>.</p>
+<p>This code looks like an artifact to me, but going through the git history unfortunately didn't clear this up either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-25 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:965 on 2024-06-25 20:22</div>
+            <div class="timeline-body"><p>It looks like there are <em>some</em> errors that we'd want to recover from though, like <code>InvalidVersion</code> or perhaps <code>PubGrubSpecifierError</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-25 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:965 on 2024-06-25 20:37</div>
+            <div class="timeline-body"><p>I don't think they are recoverable, as far as i can tell they lead to the root package being rejected in the next step, so you get the same error except it's wrapped in a message about the root package being unavailable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-25 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:965 on 2024-06-25 20:37</div>
+            <div class="timeline-body"><p>We also do this only for the root package, which looks wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-25 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:965 on 2024-06-25 20:40</div>
+            <div class="timeline-body"><p>Where are they rejected? Note that this does not return an error; it returns <code>Ok(Dependencies::Unavailable)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-06-25 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-06-25 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-25 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-25 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:965 on 2024-06-25 21:05</div>
+            <div class="timeline-body"><p>This code is unreachable (both error cases are raised earlier), so i'm removing it</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

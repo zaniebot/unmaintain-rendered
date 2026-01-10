@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>change global allocator to jemalloc (and mimalloc on Windows) - astral-sh/uv #399</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>change global allocator to jemalloc (and mimalloc on Windows)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/399">#399</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-11-10 19:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 19:34</div>
+            <div class="timeline-body"><p>This copies the allocator configuration used in the Ruff project. In
+particular, this gives us an instant 10% win when resolving the top 1K
+PyPI packages:</p>
+<pre><code>$ hyperfine \
+    &quot;./target/profiling/puffin-dev-main resolve-many --cache-dir cache-docker-no-build --no-build pypi_top_8k_flat.txt --limit 1000 2&gt; /dev/null&quot; \
+    &quot;./target/profiling/puffin-dev resolve-many --cache-dir cache-docker-no-build --no-build pypi_top_8k_flat.txt --limit 1000 2&gt; /dev/null&quot;
+Benchmark 1: ./target/profiling/puffin-dev-main resolve-many --cache-dir cache-docker-no-build --no-build pypi_top_8k_flat.txt --limit 1000 2&gt; /dev/null
+  Time (mean ± σ):     974.2 ms ±  26.4 ms    [User: 17503.3 ms, System: 2205.3 ms]
+  Range (min … max):   943.5 ms … 1015.9 ms    10 runs
+
+Benchmark 2: ./target/profiling/puffin-dev resolve-many --cache-dir cache-docker-no-build --no-build pypi_top_8k_flat.txt --limit 1000 2&gt; /dev/null
+  Time (mean ± σ):     883.1 ms ±  23.3 ms    [User: 14626.1 ms, System: 2542.2 ms]
+  Range (min … max):   849.5 ms … 916.9 ms    10 runs
+
+Summary
+  './target/profiling/puffin-dev resolve-many --cache-dir cache-docker-no-build --no-build pypi_top_8k_flat.txt --limit 1000 2&gt; /dev/null' ran
+    1.10 ± 0.04 times faster than './target/profiling/puffin-dev-main resolve-many --cache-dir cache-docker-no-build --no-build pypi_top_8k_flat.txt --limit 1000 2&gt; /dev/null'</code></pre>
+<p>I was moved to do this because I noticed <code>malloc</code>/<code>free</code> taking up a
+fairly sizeable percentage of time during light profiling.</p>
+<p>As is becoming a pattern, it will be easier to review this commit-by-commit.</p>
+<p>Ref #396 (wouldn't call this issue fixed)</p>
+<hr />
+<p>I did also try adding a <code>smallvec</code> optimization to the <code>Version::release</code> field, but it didn't bare any fruit. I still think there is more to explore since the results I observed don't quite line up with what I expect. (So probably either my mental model is off or my measurement process is flawed.) You can see that attempt with a little more explanation here: https://github.com/astral-sh/puffin/commit/f9528b4ecd1b0c260df7e8ad57b9ddc4da09d273</p>
+<p>In the course of adding the <code>smallvec</code> optimization, I also shrunk the <code>Version</code> fields from a <code>usize</code> to a <code>u32</code>. They should at least be a fixed size integer since version numbers aren't used to index memory, and I shrunk it to <code>u32</code> since it seems reasonable to assume that all version numbers will be smaller than <code>2^32</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2023-11-10 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2023-11-10 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/lib.rs</code>:1229 on 2023-11-10 19:36</div>
+            <div class="timeline-body"><p>Dumb question, what is the \x20 here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-10 19:36</div>
+            <div class="timeline-body"><p>Sweet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 19:36</div>
+            <div class="timeline-body"><p>Note that this PR also seems to result in version parsing taking up a larger percentage of time. So the potential win from doing #373 has gone up (relatively speaking).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:216 on 2023-11-10 19:37</div>
+            <div class="timeline-body"><p>Perhaps worth a footnote in the PR summary that we <em>did</em> keep this change (since the summary only mentions <code>smallvec</code> right now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/lib.rs</code>:1229 on 2023-11-10 19:37</div>
+            <div class="timeline-body"><p>I mentioned that in the commit message. It's an ASCII space character. My editor removes all trailing whitespace from every line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-11-10 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-11-10 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/lib.rs</code>:1229 on 2023-11-10 19:38</div>
+            <div class="timeline-body"><p>Using an explicit escape means that my editor won't remove it.</p>
+<p>Not a great situation I admit, but removing trailing whitespace automatically is really really useful. Hopefully these are rare enough to not be too much of an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-11-10 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:216 on 2023-11-10 19:39</div>
+            <div class="timeline-body"><p>Yeah I mentioned that in the commit messages too, but I suppose those will get dropped upon squashing... I'll update the PR summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2023-11-10 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-10 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-10 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-10 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/lib.rs</code>:1229 on 2023-11-10 19:55</div>
+            <div class="timeline-body"><p>I think the best is to remove the trailing space from the input here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-10 19:58</div>
+            <div class="timeline-body"><p>For smallvec, does <code>SmallVec&lt;[u32; 3]&gt;</code> give better results? Most versions are exactly three long and the resulting datatype should fit in 16 byte</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:216 on 2023-11-10 19:59</div>
+            <div class="timeline-body"><p>I swear I did read the commit message :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 19:59</div>
+            <div class="timeline-body"><blockquote>
+<p>For smallvec, does <code>SmallVec&lt;[u32; 3]&gt;</code> give better results? Most versions are exactly three long and the resulting datatype should fit in 16 byte</p>
+</blockquote>
+<p>I tried that and <code>SmallVec&lt;[u32; 4]&gt;</code>. Couldn't observe a difference. I ended up at <code>8</code> as a sanity check to ensure heap allocation really wasn't happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-11-10 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/lib.rs</code>:1229 on 2023-11-10 20:00</div>
+            <div class="timeline-body"><p>Wow. Derp. I did not see that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:216 on 2023-11-10 20:01</div>
+            <div class="timeline-body"><p>:P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-11-10 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adminy">@adminy</a> on 2024-06-29 16:24</div>
+            <div class="timeline-body"><pre><code>&lt;jemalloc&gt;: Unsupported system page size
+&lt;jemalloc&gt;: Unsupported system page size
+memory allocation of 5 bytes failed
+[1]    21521 abort (core dumped)  uv venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-29 16:31</div>
+            <div class="timeline-body"><p>@adminy please open a new issue with reproduction details if you want us to investigate.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>implement `--no-dedupe` for `uv pip tree` - astral-sh/uv #4449</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>implement <code>--no-dedupe</code> for <code>uv pip tree</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4449">#4449</a>
+        opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a>
+        on 2024-06-22 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-06-22 19:26</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Resolves https://github.com/astral-sh/uv/issues/4439 partially.</p>
+<p>Implements for <code>uv pip tree</code>:</p>
+<ul>
+<li><code>--no-dedupe</code> flag, similar to <code>cargo tree --no-dedupe</code> .</li>
+<li>denote dependency cycles with <code>(#)</code> and add a footnote if there's a cycle (using <code>(*)</code> would require keeping track of the cycle state, so opted to do this instead).</li>
+</ul>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>The existing tests pass + added a couple of tests to validate <code>--no-dedupe</code> behavior.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-22 19:30</div>
+            <div class="timeline-body"><p>I'm confused, why do we need a separate character for cycles?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-06-22 20:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm confused, why do we need a separate character for cycles?</p>
+</blockquote>
+<p>~if there's a cycle and <code>--no-dedupe</code> flag isn't given, wouldn't it potentially use <code>(*)</code> for two different things?~ never mind, just realized this is the current behavior. my intention was to disambiguate these two to make it clearer but maybe it isn't a big deal.</p>
+<p>the behavior can be minorly confusing for cyclic dependencies though, probably (note the different error messages for the same set of installed distributions depending on the presence of <code>--no-dedupe</code>):</p>
+<pre><code>chankang@chans-Air ~/repos/uv -  (pip-tree-no-dedupe)
+$ cargo run -q pip tree --no-dedupe
+uv-cyclic-dependencies-c v0.1.0
+└── uv-cyclic-dependencies-a v0.1.0
+    └── uv-cyclic-dependencies-b v0.1.0
+        └── uv-cyclic-dependencies-a v0.1.0 (*)
+(*) Dependency cycle
+chankang@chans-Air ~/repos/uv -  (pip-tree-no-dedupe)
+$ cargo run -q pip tree
+uv-cyclic-dependencies-c v0.1.0
+└── uv-cyclic-dependencies-a v0.1.0
+    └── uv-cyclic-dependencies-b v0.1.0
+        └── uv-cyclic-dependencies-a v0.1.0 (*)
+(*) Package tree already displayed
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-23 01:00</div>
+            <div class="timeline-body"><p>That seems fine, I'd just say &quot;Package tree is a cycle and cannot be shown&quot; instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-06-24 16:54</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-24 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-24 16:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:46 UTC
+    </footer>
+</body>
+</html>

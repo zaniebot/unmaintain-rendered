@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: add tool version to list command - astral-sh/uv #4674</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: add tool version to list command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4674">#4674</a>
+        opened by <a href="https://github.com/caiquejjx">@caiquejjx</a>
+        on 2024-07-01 00:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/caiquejjx">@caiquejjx</a> on 2024-07-01 00:12</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<p>Closes #4653</p>
+<h2>Summary</h2>
+<p>Adds the tool version to the list command right beside the tool name</p>
+<pre><code>$ uv tool list
+black v24.2.0
+</code></pre>
+<p>Following the proposed format discussed in #4653</p>
+<h2>Test Plan</h2>
+<p><code>cargo test tool_list</code></p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-01 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 20:42</div>
+            <div class="timeline-body"><p>Thanks for the pull request!</p>
+<p>I'm not sure we should store the version in the receipt like this — can we instead read it from the site packages of the tool's virtual environment? I'm not entirely sure what the trade-offs would be here, but it'd be nice to avoid storing things in the receipt that are available elsewhere.</p>
+<p>Let me know if you have any questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on 2024-07-01 21:27</div>
+            <div class="timeline-body"><p>sure thing @zanieb makes sense, I was taking a look and if I understood correctly to do the way you mentioned I would need to instance an <code>Interpreter</code> to get an <code>PythonEnvironment</code> and from that get the <code>SitePackages</code>, is that right?
+Similar to what is done in the install <a href="https://github.com/astral-sh/uv/blob/61014d48b08b9f727255efe5d3db5612b8e613b3/crates/uv/src/commands/tool/install.rs#L123">step</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on 2024-07-01 22:07</div>
+            <div class="timeline-body"><p>@zanieb I have added a draft implementation of what I was able to come up with (quite verbose xD), can you take a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 22:09</div>
+            <div class="timeline-body"><p>You can use <code>PythonEnvironment::from_root</code> as we do at https://github.com/astral-sh/uv/blob/324e9fe5cf67d98495427ceb9a390c854e2f9f18/crates/uv-tool/src/lib.rs#L179 then yeah you can grab the package information from site-packages as we do during <code>install</code> https://github.com/astral-sh/uv/blob/305868cdcc65aa7bc50378eb2cf65200a5a7a359/crates/uv/src/commands/tool/install.rs#L158-L162</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 22:10</div>
+            <div class="timeline-body"><p>Ah yeah that looks pretty reasonable but yeah kind of verbose let me see...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 22:25</div>
+            <div class="timeline-body"><p>Yeah I took a swing at this and ended up with a pretty verbose implementation too</p>
+<pre><code class="language-diff">diff --git a/Cargo.lock b/Cargo.lock
+index d846cc93..4df5f5d4 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -5048,6 +5048,7 @@ dependencies = [
+  &quot;tracing&quot;,
+  &quot;uv-cache&quot;,
+  &quot;uv-fs&quot;,
++ &quot;uv-installer&quot;,
+  &quot;uv-state&quot;,
+  &quot;uv-toolchain&quot;,
+  &quot;uv-virtualenv&quot;,
+diff --git a/crates/uv-tool/Cargo.toml b/crates/uv-tool/Cargo.toml
+index 33426cab..3747e1e2 100644
+--- a/crates/uv-tool/Cargo.toml
++++ b/crates/uv-tool/Cargo.toml
+@@ -19,6 +19,7 @@ pep508_rs = { workspace = true }
+ pypi-types = { workspace = true }
+ uv-cache = { workspace = true }
+ uv-fs = { workspace = true }
++uv-installer = { workspace = true }
+ uv-state = { workspace = true }
+ uv-toolchain = { workspace = true }
+ uv-virtualenv = { workspace = true }
+diff --git a/crates/uv-tool/src/lib.rs b/crates/uv-tool/src/lib.rs
+index ecab0edf..da3db376 100644
+--- a/crates/uv-tool/src/lib.rs
++++ b/crates/uv-tool/src/lib.rs
+@@ -1,6 +1,7 @@
+ use core::fmt;
+ use std::io::{self, Write};
+ use std::path::{Path, PathBuf};
++use std::str::FromStr;
+ 
+ use fs_err as fs;
+ use fs_err::File;
+@@ -9,11 +10,12 @@ use tracing::debug;
+ 
+ use install_wheel_rs::read_record_file;
+ use pep440_rs::Version;
+-use pep508_rs::PackageName;
++use pep508_rs::{InvalidNameError, PackageName};
+ pub use receipt::ToolReceipt;
+ pub use tool::{Tool, ToolEntrypoint};
+ use uv_cache::Cache;
+ use uv_fs::{LockedFile, Simplified};
++use uv_installer::SitePackages;
+ use uv_state::{StateBucket, StateStore};
+ use uv_toolchain::{Interpreter, PythonEnvironment};
+ use uv_warnings::warn_user_once;
+@@ -31,6 +33,10 @@ pub enum Error {
+     ReceiptRead(PathBuf, #[source] Box&lt;toml::de::Error&gt;),
+     #[error(transparent)]
+     VirtualEnvError(#[from] uv_virtualenv::Error),
++    #[error(&quot;Failed to read tool environment packages at `{0}`: {1}&quot;)]
++    EnvironmentRead(PathBuf, String),
++    #[error(&quot;Failed find tool package `{0}` at `{1}`&quot;)]
++    MissingToolPackage(PackageName, PathBuf),
+     #[error(&quot;Failed to read package entry points {0}&quot;)]
+     EntrypointRead(#[from] install_wheel_rs::Error),
+     #[error(&quot;Failed to find dist-info directory `{0}` in environment at {1}&quot;)]
+@@ -38,6 +44,8 @@ pub enum Error {
+     #[error(&quot;Failed to find a directory for executables&quot;)]
+     NoExecutableDirectory,
+     #[error(transparent)]
++    ToolName(#[from] InvalidNameError),
++    #[error(transparent)]
+     EnvironmentError(#[from] uv_toolchain::Error),
+     #[error(&quot;Failed to find a receipt for tool `{0}` at {1}&quot;)]
+     MissingToolReceipt(String, PathBuf),
+@@ -203,6 +211,19 @@ impl InstalledTools {
+         ))
+     }
+ 
++    pub fn version(&amp;self, name: &amp;str, cache: &amp;Cache) -&gt; Result&lt;Version, Error&gt; {
++        let environment_path = self.root.join(name);
++        let package_name = PackageName::from_str(name)?;
++        let environment = PythonEnvironment::from_root(&amp;environment_path, cache)?;
++        let site_packages = SitePackages::from_environment(&amp;environment)
++            .map_err(|err| Error::EnvironmentRead(environment_path.clone(), err.to_string()))?;
++        let packages = site_packages.get_packages(&amp;package_name);
++        let package = packages
++            .first()
++            .ok_or_else(|| Error::MissingToolPackage(package_name, environment_path))?;
++        Ok(package.version().clone())
++    }
++
+     /// Initialize the tools directory.
+     ///
+     /// Ensures the directory is created.
+</code></pre>
+<p>I just moved it into the <code>InstalledTools</code> type and added some error variants. I'm not sure we can do much better here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-01 22:31</div>
+            <div class="timeline-body"><p>As an aside, it probably makes sense for <code>uv tool list</code> to emit warnings when the environment for one of the tools is broken rather than a hard failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on 2024-07-01 22:47</div>
+            <div class="timeline-body"><p>yeah I think there's not much to do to improve it besides what u already did, I think I'll start from where you stopped and handle the warnings/avoid hard failures, wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-02 01:29</div>
+            <div class="timeline-body"><p>That sounds good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-02 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:114 on 2024-07-02 21:43</div>
+            <div class="timeline-body"><p>Minor note that there's no real preference between the two of these in our test suite. <code>unwrap()</code> is nice because you get a line number on failures. <code>?</code> is nice because it's succinct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on 2024-07-02 22:07</div>
+            <div class="timeline-body"><p>@zanieb can you help me understand why my test fails for windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-02 22:25</div>
+            <div class="timeline-body"><p>@caiquejjx I think on Windows it's a <code>Scripts</code> directory not <code>bin</code>. You can use <code>virtualenv_python_executable</code> to find the path to the executable you want to remove in a cross-platform fashion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-03 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_list.rs</code>:130 on 2024-07-03 16:08</div>
+            <div class="timeline-body"><p>Well now we fixed deletion but we're still going to snapshot the wrong path :) Is there a different way to break the environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/caiquejjx">@caiquejjx</a> reviewed on 2024-07-03 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on <code>crates/uv/tests/tool_list.rs</code>:130 on 2024-07-03 16:49</div>
+            <div class="timeline-body"><p>I'm actually trying to add a filter for the path but it's being kinda tricky</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/caiquejjx">@caiquejjx</a> reviewed on 2024-07-03 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on <code>crates/uv/tests/tool_list.rs</code>:130 on 2024-07-03 17:17</div>
+            <div class="timeline-body"><p>it worked</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-07-03 17:54</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 18:17</div>
+            <div class="timeline-body"><p>I broke it! I'll explore my filter change separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-07-03 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-03 18:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

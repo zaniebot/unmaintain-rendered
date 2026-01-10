@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically detect workspace packages in `uv add` - astral-sh/uv #4557</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically detect workspace packages in <code>uv add</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4557">#4557</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-06-26 17:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 17:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If the package <em>isn't</em> marked as <code>workspace = true</code>, locking will fail given:</p>
+<pre><code class="language-rust">let workspace_package_declared =
+    // We require that when you use a package that's part of the workspace, ...
+    !workspace.packages().contains_key(&amp;requirement.name)
+    // ... it must be declared as a workspace dependency (`workspace = true`), ...
+    || matches!(
+        source,
+        Some(Source::Workspace {
+            // By using toml, we technically support `workspace = false`.
+            workspace: true,
+            ..
+        })
+    )
+    // ... except for recursive self-inclusion (extras that activate other extras), e.g.
+    // `framework[machine_learning]` depends on `framework[cuda]`.
+    || &amp;requirement.name == project_name;
+if !workspace_package_declared {
+    return Err(LoweringError::UndeclaredWorkspacePackage);
+}
+</code></pre>
+<p>Closes https://github.com/astral-sh/uv/issues/4552.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-06-26 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-06-26 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 17:33</div>
+            <div class="timeline-body"><p>I am wondering why we require that workspace packages are marked as workspace if we <em>enforce</em> it here. Should we just do this automatically?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-06-26 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-26 17:44</div>
+            <div class="timeline-body"><p>Should we error if you try to add a requirement with the same name from a different source? e.g. if you have a workspace member <code>foo</code> and run <code>uv add git+https://github.com/bar/foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 17:47</div>
+            <div class="timeline-body"><p>That seems reasonable, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 17:51</div>
+            <div class="timeline-body"><p>Ahh, I think we already do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 17:56</div>
+            <div class="timeline-body"><p>I added a test and improved the error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-06-26 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-06-26 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-06-26 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-26 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-26 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-27 07:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I am wondering why we require that workspace packages are marked as workspace if we enforce it here. Should we just do this automatically?</p>
+</blockquote>
+<p>It ensures that you can see in a single pyproject.toml what source each requirements has (registry, url or workspace) and prevents accidentally using registry packages. I've copied this from cargo.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `.egg-info` filename parsing spec compliant - astral-sh/uv #4533</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>.egg-info</code> filename parsing spec compliant</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4533">#4533</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-06-25 23:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 23:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It turns out that <code>.egg-info</code> files and directories can <em>both</em> have up to four segments in the filename: https://setuptools.pypa.io/en/latest/deprecated/python_eggs.html#filename-embedded-metadata. This PR upgrades the parsing and now uses the same parsing for files and directories.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/4532.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-06-25 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-06-25 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 23:15</div>
+            <div class="timeline-body"><p>\cc @samypr100</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/tests/pip_freeze.rs</code>:296 on 2024-06-25 23:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">}
+
+/// Show a set of `.egg-info` files in a virtual environment.
+#[test]
+fn freeze_with_egg_info_file() -&gt; Result&lt;()&gt; {
+    let context = TestContext::new(&quot;3.11&quot;);
+
+    let site_packages = ChildPath::new(context.site_packages());
+
+    // Manually create a `.egg-info` file with python version.
+    site_packages
+        .child(&quot;pycurl-7.45.1-py3.11.egg-info&quot;)
+        .write_str(indoc! {&quot;
+            Metadata-Version: 1.1
+            Name: pycurl
+            Version: 7.45.1
+        &quot;})?;
+
+    // Manually create another `.egg-info` file with no python version.
+    site_packages
+        .child(&quot;vtk-9.2.6.egg-info&quot;)
+        .write_str(indoc! {&quot;
+            Metadata-Version: 1.1
+            Name: vtk
+            Version: 9.2.6
+        &quot;})?;
+
+    // Run `pip freeze`.
+    uv_snapshot!(context.filters(), command(&amp;context), @r###&quot;
+    success: true
+    exit_code: 0
+    ----- stdout -----
+    pycurl==7.45.1
+    vtk==9.2.6
+
+    ----- stderr -----
+    &quot;###);
+
+    Ok(())
+}
+</code></pre>
+<p>Maybe it's worth adding another test for .egg-info files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-06-25 23:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-25 23:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_freeze.rs</code>:296 on 2024-06-25 23:39</div>
+            <div class="timeline-body"><p>Good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-06-25 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-25 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-25 23:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

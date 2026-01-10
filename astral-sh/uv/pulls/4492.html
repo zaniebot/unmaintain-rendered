@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv tool install` - astral-sh/uv #4492</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uv tool install</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4492">#4492</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-24 21:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-24 21:09</div>
+            <div class="timeline-body"><p>This is the minimal &quot;working&quot; implementation. In summary, we:</p>
+<ul>
+<li>Resolve the requested requirements</li>
+<li>Create an environment at <code>$UV_STATE_DIR/tools/$name</code></li>
+<li>Inspect the <code>dist-info</code> for the main requirement to determine its entry points scripts</li>
+<li>Link the entry points from a user-executable directory (<code>$XDG_BIN_HOME</code>) to the environment bin</li>
+<li>Create an entry at <code>$UV_STATE_DIR/tools/tools.toml</code> tracking the user's request</li>
+</ul>
+<p>The idea with <code>tools.toml</code> is that it allows us to perform upgrades and syncs, retaining the original user request (similar to declarations in a <code>pyproject.toml</code>). I imagine using a similar schema in the <code>pyproject.toml</code> in the future if/when we add project-levle tools. I'm also considering exposing <code>tools.toml</code> in the standard uv configuration directory instead of the state directory, but it seems nice to tuck it away for now while we iterate on it. Installing a tool won't perform a sync of other tool environments, we'll probably have an explicit <code>uv tool sync</code> command for that?</p>
+<p>I've split out todos into follow-up pull requests:</p>
+<ul>
+<li>#4509 (failing on Windows)</li>
+<li>#4501</li>
+<li>#4504</li>
+</ul>
+<p>Closes #4485</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-25 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-25 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-06-25 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-06-25 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-tool/src/lib.rs</code>:264 on 2024-06-25 01:24</div>
+            <div class="timeline-body"><p>This guy could probably move into <code>install-wheel-rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-25 01:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:1896 on 2024-06-25 13:04</div>
+            <div class="timeline-body"><p>Does this uses the venv or the base interpreter for the venv? For tool installation, we should try to pick a long-living python interpreter, i had cases where pipx tools broke because i uninstalled the interpreter i installed them with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-tool/src/lib.rs</code>:123 on 2024-06-25 13:06</div>
+            <div class="timeline-body"><p>Hm?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-tool/src/lib.rs</code>:155 on 2024-06-25 13:06</div>
+            <div class="timeline-body"><p>Good call!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/tool/install.rs</code>:33 on 2024-06-25 13:14</div>
+            <div class="timeline-body"><p>What's with this argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-06-25 13:22</div>
+            <div class="timeline-body"><p>A single <code>tools.toml</code> for all tools sounds like a way that could break all installed tool by corrupting a single file, what e.g. about <code>$UV_STATE_DIR/tools/$name/tool.toml</code> for each tool?</p>
+<p>Should we add versioning to the toml file(s) to allow breaking changes in the format?</p>
+<p>We should add locking to prevent concurrent modification of both tools and toml files; we already have an abstraction for this with <code>LockedFile::acquire(tool_dir.join(&quot;.lock&quot;), tool_dir.user_display())</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-25 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-tool/src/lib.rs</code>:123 on 2024-06-25 13:28</div>
+            <div class="timeline-body"><p>Yeah this copy pasta is no good. Removed in a later commit but 'll drop here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-25 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/install.rs</code>:33 on 2024-06-25 13:29</div>
+            <div class="timeline-body"><p>Copied over from <code>tool/run.rs</code> — I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-25 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1896 on 2024-06-25 13:29</div>
+            <div class="timeline-body"><p>We ignore virtual environments during discovery. I'll update this documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-25 13:31</div>
+            <div class="timeline-body"><blockquote>
+<p>A single tools.toml for all tools sounds like a way that could break all installed tool by corrupting a single file, what e.g. about $UV_STATE_DIR/tools/$name/tool.toml for each tool?</p>
+</blockquote>
+<p>Seems reasonable, though I wanted a central file for bulk operations.  I guess we can read every directory instead pretty easily. It won't break the tools though it'd just stop you from installing more.</p>
+<blockquote>
+<p>Should we add versioning to the toml file(s) to allow breaking changes in the format?</p>
+</blockquote>
+<p>Perhaps eventually, but it doesn't seem critical right now. Do you think we need to immediately?</p>
+<blockquote>
+<p>We should add locking to prevent concurrent modification of both tools and toml files; we already have an abstraction for this with LockedFile::acquire(tool_dir.join(&quot;.lock&quot;), tool_dir.user_display()).</p>
+</blockquote>
+<p>Sounds good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-25 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-tool/src/lib.rs</code>:140 on 2024-06-25 13:37</div>
+            <div class="timeline-body"><p>You're not a cache directory...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-tool/src/lib.rs</code>:295 on 2024-06-25 13:37</div>
+            <div class="timeline-body"><p>Will drop</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-25 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-25 13:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps eventually, but it doesn't seem critical right now. Do you think we need to immediately?</p>
+</blockquote>
+<p>I'd put a <code>version = 1</code> on top, if we never use it it's ~free and if we bump the version later all old versions error immediately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-25 14:07</div>
+            <div class="timeline-body"><p>I'm hesitating on multiple <code>tool</code> files. I eventually want people to be able to define their tools in a centralized file rather than in invocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-25 14:14</div>
+            <div class="timeline-body"><p>I'm going to skip adding a version in this pull request, but I'm happy to do it next. I just want to think more carefully about how it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-06-25 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-26 01:19</div>
+            <div class="timeline-body"><p>Looks good! My only concern here is around <code>tools.toml</code>, because it feels under-explored right now and (as far as I can tell) is unused at the moment. Will we always keep it in sync? What are the motivating use-cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-26 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-26 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-26 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 15:25</div>
+            <div class="timeline-body"><p>Rock on</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:46 UTC
+    </footer>
+</body>
+</html>

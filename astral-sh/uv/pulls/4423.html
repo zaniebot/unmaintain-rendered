@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `PythonEnvironment::find` API - astral-sh/uv #4423</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>PythonEnvironment::find</code> API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4423">#4423</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-20 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-20 13:57</div>
+            <div class="timeline-body"><p>Restores the <code>PythonEnvironment::find</code> API which was removed a while back in favor of <code>Toolchain::find</code>. As mentioned in #4416, I'm attempting to separate the case where you want an active environment from the case where you want an installed toolchain in order to create environments.</p>
+<p>I wanted to drop <code>EnvironmentPreference</code> from <code>Toolchain::find</code> and just have us consistently consider (or not consider) virtual environments when discovering toolchains for creating environments. Unfortunately this caused a few things to break so I reverted that change and will explore it separately. Because I was exploring that change, there are some minor changes to the <code>Toolchain</code> API here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-06-20 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-20 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/mod.rs</code>:186 on 2024-06-20 14:02</div>
+            <div class="timeline-body"><p>Need to consider if this change is correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-20 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/uninstall.rs</code>:57 on 2024-06-20 14:03</div>
+            <div class="timeline-body"><p>This is the gist of the change. We want an environment, not an installed toolchain. We don't need to specify toolchain preferences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-20 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/lib.rs</code>:844 on 2024-06-20 14:12</div>
+            <div class="timeline-body"><p>I dropped down to the lower level APIs in all of these tests for now since I'm futzing with the <code>Toolchain</code> API</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-20 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/lib.rs</code>:844 on 2024-06-20 14:12</div>
+            <div class="timeline-body"><p>These tests are going to move to the <code>uv toolchain find</code> API eventually</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-06-20 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-06-20 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-06-20 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-toolchain/src/environment.rs</code>:32 on 2024-06-20 16:43</div>
+            <div class="timeline-body"><p>Maybe something to add to the docs here is what it means to call <code>find</code> here without a toolchain request. What is its behavior?</p>
+<p>It looks like it does <code>unwrap_or_default()</code>, but I think I'd wonder whether it would be clearer to just ask for a <code>&amp;ToolchainRequest</code> directly here and let callers explicitly provide the default if that's what they want? Not totally sure about this...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-06-20 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-20 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/environment.rs</code>:32 on 2024-06-20 17:09</div>
+            <div class="timeline-body"><p>Good point. I'll ask for the toolchain request directly, I just tweaked the <code>Toolchain::find</code> API to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-20 17:27</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/zb/toolchain-environment">CodSpeed Performance Report</a></h2>
+<h3>Merging #4423 will <strong>degrade performances by 12.11%</strong></h3>
+<p><sub>Comparing <code>zb/toolchain-environment</code> (caf31b0) with <code>main</code> (13e532c)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 12</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/zb/toolchain-environment">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>zb/toolchain-environment</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>resolve_warm_airflow</code> | 1.3 s | 1.5 s | -12.11% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-20 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-20 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-20 17:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:46 UTC
+    </footer>
+</body>
+</html>

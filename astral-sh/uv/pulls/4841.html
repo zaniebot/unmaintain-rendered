@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deduplicate when install or uninstall python - astral-sh/uv #4841</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deduplicate when install or uninstall python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4841">#4841</a>
+        opened by <a href="https://github.com/j178">@j178</a>
+        on 2024-07-05 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/j178">@j178</a> on 2024-07-05 22:16</div>
+            <div class="timeline-body"><p>When specifying the same argument multiple times, the same version will be downloaded multiple times:</p>
+<pre><code class="language-sh">
+$ cargo run -- python install --preview --force 3.12.3 cpython-3.12 3.12.3 3.12
+Looking for installation Python 3.12.3 (any-3.12.3-any-any-any)
+Looking for installation cpython-3.12-any-any-any (cpython-3.12-any-any-any)
+Looking for installation Python 3.12.3 (any-3.12.3-any-any-any)
+Looking for installation Python 3.12 (any-3.12-any-any-any)
+Found 4/4 versions requiring installation
+Downloading cpython-3.12.3-windows-x86_64-none
+Downloading cpython-3.12.3-windows-x86_64-none
+Downloading cpython-3.12.3-windows-x86_64-none
+Downloading cpython-3.12.3-windows-x86_64-none
+</code></pre>
+<p>This PR deduplicates the <code>ManagedPythonDownload</code> before <code>install</code> or <code>uninstall</code>:</p>
+<pre><code class="language-sh">$ cargo run -q -- python install --preview --force 3.12.3 cpython-3.12 3.12.3 3.12
+Looking for installation Python 3.12 (any-3.12-any-any-any)
+Looking for installation Python 3.12.3 (any-3.12.3-any-any-any)
+Looking for installation cpython-3.12-any-any-any (cpython-3.12-any-any-any)
+Downloading cpython-3.12.3-windows-x86_64-none
+Installed Python 3.12.3 to C:\Users\nigel\AppData\Roaming\uv\data\python\cpython-3.12.3-windows-x86_64-none
+Installed 1 version in 6s
+
+$ cargo run -q -- python uninstall --preview  3.12.3 cpython-3.12 3.12.3 3.12
+Looking for Python installations matching Python 3.12 (any-3.12-any-any-any)
+Found installation `cpython-3.12.3-windows-x86_64-none` that matches Python 3.12
+Looking for Python installations matching Python 3.12.3 (any-3.12.3-any-any-any)
+Looking for Python installations matching cpython-3.12-any-any-any (cpython-3.12-any-any-any)
+Uninstalled `cpython-3.12.3-windows-x86_64-none`
+Removed 1 Python installation
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @j178 on 2024-07-05 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-05 22:38</div>
+            <div class="timeline-body"><p>IIRC dedup only deduplicates adjacent elements. Should we collect into a BTreeSet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-05 23:08</div>
+            <div class="timeline-body"><p>We probably need to de-duplicate the keys we're going to download too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @j178 on 2024-07-05 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Dedup arguments when install or uninstall python" to "Dedupulicates when install or uninstall python" by @j178 on 2024-07-06 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Dedupulicates when install or uninstall python" to "Deduplicates when install or uninstall python" by @j178 on 2024-07-06 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @j178 on 2024-07-06 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Deduplicates when install or uninstall python" to "Deduplicate when install or uninstall python" by @j178 on 2024-07-06 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-06 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-06 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-07-06 03:04</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-07-06 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-06 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-06 03:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/uninstall.rs</code>:87 on 2024-07-06 03:11</div>
+            <div class="timeline-body"><p>Can we collect into a BTreeSet beforehand or no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-06 03:11</div>
+            <div class="timeline-body"><p>Thanks, your contributions are great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-06 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/uninstall.rs</code>:87 on 2024-07-06 03:14</div>
+            <div class="timeline-body"><p>Hm <code>matching_installations</code> is  <code>BTreeSet</code> already for deterministic ordering.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>crates/uv/src/commands/python/uninstall.rs</code>:87 on 2024-07-06 05:25</div>
+            <div class="timeline-body"><p>Ah, I did not realize that, I've raised #4842 to revert this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j178">@j178</a> reviewed on 2024-07-06 05:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-06 05:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

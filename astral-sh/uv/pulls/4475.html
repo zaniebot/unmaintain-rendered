@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bump version to 0.2.15 - astral-sh/uv #4475</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bump version to 0.2.15</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4475">#4475</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-24 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-24 14:46</div>
+            <div class="timeline-body"><p>Releasing 0.2.15 with a few additions over 0.2.14. Motivated by the incorrect tagging of 0.2.14 (#4474).</p>
+<p>Generated the changelog with a small patch to Rooster allowing me to force the previous commit to be correct.</p>
+<pre><code class="language-diff">diff --git a/src/rooster/_cli.py b/src/rooster/_cli.py
+index 2a4f61b..4ec1299 100644
+--- a/src/rooster/_cli.py
++++ b/src/rooster/_cli.py
+@@ -38,6 +38,7 @@ def release(
+     without_sections: list[str] = typer.Option(
+         [], help=&quot;Sections to exclude from the changelog&quot;
+     ),
++    previous_commit: str = None,
+ ):
+     &quot;&quot;&quot;
+     Create a new release.
+@@ -58,7 +59,11 @@ def release(
+         typer.echo(&quot;It looks like there are no version tags for this project.&quot;)
+ 
+     # Get the commits since the last release
+-    changes = list(get_commits_between(config, repo, last_version))
++    changes = list(
++        get_commits_between(
++            config, repo, last_version, force_first_commit=previous_commit
++        )
++    )
+     since = &quot;since last release&quot; if last_version else &quot;in the project&quot;
+     typer.echo(f&quot;Found {len(changes)} commits {since}.&quot;)
+ 
+diff --git a/src/rooster/_git.py b/src/rooster/_git.py
+index 597bb88..66bc54e 100644
+--- a/src/rooster/_git.py
++++ b/src/rooster/_git.py
+@@ -29,12 +29,13 @@ def get_commits_between(
+     target: Path,
+     first_version: Version | None = None,
+     second_version: Version | None = None,
++    force_first_commit: str | None = None,
+ ) -&gt; Generator[git.Commit, None, None]:
+     &quot;&quot;&quot;
+     Yield all commits between two tags
+     &quot;&quot;&quot;
+     repo = git.repository.Repository(target.absolute())
+-    first_commit = (
++    first_commit = force_first_commit or (
+         repo.lookup_reference(
+             TAG_PREFIX + config.version_tag_prefix + str(first_version)
+         )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @zanieb on 2024-06-24 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-24 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-24 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-24 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-24 15:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:46 UTC
+    </footer>
+</body>
+</html>

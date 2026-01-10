@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: re-enable std in uv-trampoline - astral-sh/uv #4722</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: re-enable std in uv-trampoline</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4722">#4722</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-07-02 04:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-02 04:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Partially closes #1917</p>
+<p>This PR picks up on some of the great work from #1864 and opted to keep <code>panic_immediate_abort</code> (for size reasons). I split the PR in different isolated commits in case we want to separate/cherry-pick them out.</p>
+<ol>
+<li>The first commit ports mostly all std changes from that PR into this PR. Binary sizes stayed the same ~16kb.</li>
+<li>The second commit migrates our existing usage of windows-sys to windows for a safer ffi calls with Results!. It also changes all large unsafe blocks to be isolated to the actual unsafe calls, and switches some areas to use std such as getenv port ( which seemed buggy! ) from launcher.c. In addition, this also adds more error checking in order to match some missing assertions from distlib's launcher.c. Note, due to the additional .text data, the binary sizes increased to ~20.5kb, but we can cut back on some of the added error msgs as needed.</li>
+<li>The third commit switches to using xwin for building on all 3 supported trampoline targets for sanity, and adds a CI bloat check for core::fmt and panic as a precaution. Sadly, this will invalidate the xwin cache on the first run.</li>
+</ol>
+<h2>Test Plan</h2>
+<p>Most changes were tested on a couple of local GUI apps and console apps, also tested some of the error states manually by using SetLastError at different points in the code and/or passing in invalid handles.</p>
+<p>I'm not sure how far we can get with migrating some of the other calls without increasing binary size substantially. An initial attempt at using std::path didn't seem so bad size wise when I tried it (~1k). On other cases, such as std::process::exit added ~10k to the total binary size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-07-02 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-07-02 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-03 04:09</div>
+            <div class="timeline-body"><p>Below are some extra logging I added that is not part of distlib's launcher.c which we could arguably remove, although all these errors (if they occur) can diminish the stability of the console/gui script.</p>
+<details><summary>Patch File Diff (in case we want to remove the added logging)</summary>
+<p>
+
+<pre><code class="language-patch">@@ -400,9 +400,7 @@
+         print_last_error_and_exit(&quot;Failed to spawn the python child process.&quot;);
+     });
+     let child_process_info = unsafe { child_process_info.assume_init() };
+-    unsafe { CloseHandle(child_process_info.hThread) }.unwrap_or_else(|_| {
+-        print_last_error_and_exit(&quot;Failed to close handle to python child process main thread.&quot;);
+-    });
++    let _ = unsafe { CloseHandle(child_process_info.hThread) };
+     // Return handle to child process.
+     child_process_info.hProcess
+ }
+@@ -415,12 +413,8 @@
+     // See distlib/PC/launcher.c::cleanup_standard_io()
+     for std_handle in [STD_INPUT_HANDLE, STD_OUTPUT_HANDLE, STD_ERROR_HANDLE] {
+         if let Ok(handle) = unsafe { GetStdHandle(std_handle) } {
+-            unsafe { CloseHandle(handle) }.unwrap_or_else(|_| {
+-                eprintln!(&quot;Failed to close standard device handle {}.&quot;, handle.0);
+-            });
+-            unsafe { SetStdHandle(std_handle, INVALID_HANDLE_VALUE) }.unwrap_or_else(|_| {
+-                eprintln!(&quot;Failed to modify standard device handle {}.&quot;, std_handle.0);
+-            });
++            let _ = unsafe { CloseHandle(handle) };
++            let _ = unsafe { SetStdHandle(std_handle, INVALID_HANDLE_VALUE) };
+         }
+     }
+ 
+@@ -434,9 +428,7 @@
+     for i in 0..handle_count {
+         let handle_ptr = unsafe { handle_start.offset(i).read_unaligned() } as *const HANDLE;
+         // Close all fds inherited from the parent, except for the standard I/O fds.
+-        unsafe { CloseHandle(*handle_ptr) }.unwrap_or_else(|_| {
+-            eprintln!(&quot;Failed to close child file descriptors at {}.&quot;, i);
+-        });
++        let _ = unsafe { CloseHandle(*handle_ptr) };
+     }
+ }
+ 
+@@ -463,16 +455,10 @@
+     let mut msg = MaybeUninit::&lt;MSG&gt;::uninit();
+     unsafe {
+         // End the launcher's &quot;app starting&quot; cursor state.
+-        PostMessageA(None, 0, None, None).unwrap_or_else(|_| {
+-            eprintln!(&quot;Failed to post a message to specified window.&quot;);
+-        });
+-        if GetMessageA(msg.as_mut_ptr(), None, 0, 0) != TRUE {
+-            eprintln!(&quot;Failed to retrieve posted window message.&quot;);
+-        }
++        let _ = PostMessageA(None, 0, None, None);
++        let _ = GetMessageA(msg.as_mut_ptr(), None, 0, 0);
+         // Proxy the child's input idle event.
+-        if WaitForInputIdle(child_handle, INFINITE) != 0 {
+-            eprintln!(&quot;Failed to wait for input from window.&quot;);
+-        }
++        let _ = WaitForInputIdle(child_handle, INFINITE);
+         // Signal the process input idle event by creating a window and pumping
+         // sent messages. The window class isn't important, so just use the
+         // system &quot;STATIC&quot; class.
+@@ -491,10 +477,8 @@
+             None,
+         );
+         // Process all sent messages and signal input idle.
+-        _ = PeekMessageA(msg.as_mut_ptr(), hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE(0));
+-        DestroyWindow(hwnd).unwrap_or_else(|_| {
+-            print_last_error_and_exit(&quot;Failed to destroy temporary window.&quot;);
+-        });
++        let _ = PeekMessageA(msg.as_mut_ptr(), hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE(0));
++        let _ = DestroyWindow(hwnd);
+     }
+ }
+ 
+@@ -517,9 +501,7 @@
+ 
+     // (best effort) Switch to some innocuous directory, so we don't hold the original cwd open.
+     // See distlib/PC/launcher.c::switch_working_directory
+-    if std::env::set_current_dir(std::env::temp_dir()).is_err() {
+-        eprintln!(&quot;Failed to set cwd to temp dir.&quot;);
+-    }
++    let _ = std::env::set_current_dir(std::env::temp_dir());
+ 
+     // We want to ignore control-C/control-Break/logout/etc.; the same event will
+     // be delivered to the child, so we let them decide whether to exit or not.
+@@ -535,7 +517,7 @@
+         clear_app_starting_state(child_handle);
+     }
+ 
+-    _ = unsafe { WaitForSingleObject(child_handle, INFINITE) };
++    let _ = unsafe { WaitForSingleObject(child_handle, INFINITE) };
+     let mut exit_code = 0u32;
+     if unsafe { GetExitCodeProcess(child_handle, &amp;mut exit_code) }.is_err() {
+         print_last_error_and_exit(&quot;Failed to get exit code of child process.&quot;);
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-07-03 04:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:508 on 2024-07-03 04:13</div>
+            <div class="timeline-body"><p>Note, the <code>c:\\</code> approach was removed as it's not part of <a href="https://github.com/pypa/distlib/blob/master/PC/launcher.c#L736">launcher.c</a>, plus the sysroot drive could vary on a system.</p>
+<p>getenv(c&quot;TEMP&quot;) was changed to use std instead as it had bugs when parsing the value of TEMP on my system probably due to W vs A calls but didn't dig too much, as a result <code>getenv</code> was deleted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-trampoline/Cargo.toml</code>:19 on 2024-07-03 07:36</div>
+            <div class="timeline-body"><p>Nit: Can you remove the block alignment of the comments? Either move the to the previous line or one space after the item they are commenting on</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-03 07:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-03 07:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Leaving in draft for now to see if we want to invest more time on this.</p>
+</blockquote>
+<p>This looks good to merge to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-03 07:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I didn't commit the binaries, do we manually commit those on the PR?</p>
+</blockquote>
+<p>A member of the team will make a follow-up where the build the binaries and commit them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-03 12:18</div>
+            <div class="timeline-body"><blockquote>
+<p>A member of the team will make a follow-up where the build the binaries and commit them</p>
+</blockquote>
+<p>Sounds good, I ended up commiting them to ensure tests pass, but from a security angle it makes sense someone from Astral builds them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-07-03 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/Cargo.toml</code>:19 on 2024-07-03 12:22</div>
+            <div class="timeline-body"><p>Changed in 528593f4ea1b811b8c19a5dc6aaeb3701785b6d5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2024-07-03 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-06 20:30</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-07-06 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-06 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-07 16:52</div>
+            <div class="timeline-body"><p>Awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-07 19:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

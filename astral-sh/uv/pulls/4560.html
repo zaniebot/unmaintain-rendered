@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move from a shared `tools.toml` to separated tool receipts - astral-sh/uv #4560</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move from a shared <code>tools.toml</code> to separated tool receipts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4560">#4560</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-26 18:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 18:05</div>
+            <div class="timeline-body"><p>Refactors the installed tool metadata per commentary in #4492</p>
+<p>We now store a <code>uv-receipt.toml</code> per tool install instead of a single <code>tools.toml</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-26 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 18:07</div>
+            <div class="timeline-body"><p>I'll build more work on top of this demonstrating the purpose of the tool metadata entries, since there are some open questions about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 18:57</div>
+            <div class="timeline-body"><p>Is it a goal or an explicit non-goal to support installing multiple <em>versions</em> of a given package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 19:16</div>
+            <div class="timeline-body"><p>Good question. I think if you want to do that then you need to provide a &quot;suffix&quot; to distinguish the entry points and we'd use that suffix in the tool name path. I'm kind of on the fence about that functionality to start.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 19:17</div>
+            <div class="timeline-body"><p>In the initial design documents, I seem to recall something like <code>uv tool run black+22.0.0</code>. Or maybe that was for Python?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 19:20</div>
+            <div class="timeline-body"><p>I think in cargo-dist they call this a &quot;receipt&quot;, it's like a manifest that records what we installed. I might find terminology like that a little more intuitive than <code>tool.toml</code> which &quot;feels&quot; user-edited.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 19:27</div>
+            <div class="timeline-body"><blockquote>
+<p>In the initial design documents...</p>
+</blockquote>
+<p>We talked about that but people weren't really into it. If you're using <code>uv tool run</code> there's no reason to install something though. It was the idea of an automatic suffix with <code>+&lt;version&gt;</code>.</p>
+<blockquote>
+<p>I think in cargo-dist they call this a &quot;receipt&quot;...</p>
+</blockquote>
+<p>Down to call it that. As I mentioned before, I want to have a user-edited tool declaration eventually but am moving to this for now as it's clearer that it's <em>not</em> supposed to be user edited.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 19:30</div>
+            <div class="timeline-body"><p>For reference, <code>pipx</code> uses <code>pipx_metadata.json</code>:</p>
+<pre><code class="language-json">{
+    &quot;injected_packages&quot;: {},
+    &quot;main_package&quot;: {
+        &quot;app_paths&quot;: [
+            {
+                &quot;__Path__&quot;: &quot;/Users/zb/.local/pipx/venvs/black/bin/black&quot;,
+                &quot;__type__&quot;: &quot;Path&quot;
+            },
+            {
+                &quot;__Path__&quot;: &quot;/Users/zb/.local/pipx/venvs/black/bin/blackd&quot;,
+                &quot;__type__&quot;: &quot;Path&quot;
+            }
+        ],
+        &quot;app_paths_of_dependencies&quot;: {},
+        &quot;apps&quot;: [
+            &quot;black&quot;,
+            &quot;blackd&quot;
+        ],
+        &quot;apps_of_dependencies&quot;: [],
+        &quot;include_apps&quot;: true,
+        &quot;include_dependencies&quot;: false,
+        &quot;man_pages&quot;: [],
+        &quot;man_pages_of_dependencies&quot;: [],
+        &quot;man_paths&quot;: [],
+        &quot;man_paths_of_dependencies&quot;: {},
+        &quot;package&quot;: &quot;black&quot;,
+        &quot;package_or_url&quot;: &quot;black&quot;,
+        &quot;package_version&quot;: &quot;24.4.2&quot;,
+        &quot;pip_args&quot;: [],
+        &quot;suffix&quot;: &quot;&quot;
+    },
+    &quot;pipx_metadata_version&quot;: &quot;0.4&quot;,
+    &quot;python_version&quot;: &quot;Python 3.12.3&quot;,
+    &quot;source_interpreter&quot;: {
+        &quot;__Path__&quot;: &quot;/opt/homebrew/opt/python@3.12/libexec/bin/python&quot;,
+        &quot;__type__&quot;: &quot;Path&quot;
+    },
+    &quot;venv_args&quot;: []
+}% 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Move from a shared `tools.toml` to separate `tool.toml` entries" to "Move from a shared `tools.toml` to separated tool receipts" by @zanieb on 2024-06-26 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-06-26 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-06-26 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-26 20:27</div>
+            <div class="timeline-body"><p>I guess it makes sense to write JSON directly? I don't have strong feelings about the format but am leaning towards just leaving it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-06-26 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-26 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-06-26 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-26 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-26 20:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid joining globs in workspace discovery - astral-sh/uv #3977</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid joining globs in workspace discovery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3977">#3977</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-06-03 01:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-03 01:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The current approach feels not-quite-right to me. We already have a valid glob, and then we join it onto the path and have to re-parse the pattern. This PR instead uses <code>WalkDir</code> to manually recurse over the entries and find matches. We can also avoid testing against files, since we know we're only looking for directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-06-03 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-06-03 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-06-03 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-06-03 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-03 01:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/workspace.rs</code>:849 on 2024-06-03 01:44</div>
+            <div class="timeline-body"><p>I have a vague feeling that this isn't correct for some recursive patterns? Like if you had <code>members = [&quot;crates/**&quot;]</code>, then we'd only return the top-level directory? But that might be nonsensical for workspaces anyway?</p>
+<p>I'm not sure.</p>
+<p>But if I don't do this, then we discover files like <code>crates/uv/src</code> in addition to <code>crates/uv</code>, given <code>members = [&quot;crates/*&quot;]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-03 10:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/workspace.rs</code>:838 on 2024-06-03 10:15</div>
+            <div class="timeline-body"><p>What if there's let say a docker <code>root:root</code> dir in my project directory (not included in <code>members</code>), would we error here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/workspace.rs</code>:838 on 2024-06-03 18:40</div>
+            <div class="timeline-body"><p>Yeah. For recursive directory traversal, you probably just want to log errors from <code>Result&lt;DirEntry, walkdir::Error&gt;</code> and otherwise move on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/workspace.rs</code>:813 on 2024-06-03 18:41</div>
+            <div class="timeline-body"><p>It looks like this iterator <em>only</em> returns directory paths? If so, I think that'd be good to document here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/workspace.rs</code>:845 on 2024-06-03 18:44</div>
+            <div class="timeline-body"><p>I think you <em>only</em> want the second condition here. That is, you always want to match the paths with globs <em>relative</em> to the project root. And every path returned by <code>walkdir</code> is, I believe, guaranteed to always have the <a href="https://docs.rs/walkdir/latest/walkdir/struct.DirEntry.html#method.path">root path prefix</a>.</p>
+<p>Stated differently, I think the first <code>self.glob.matches_path(entry.path())</code> should be removed here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/workspace.rs</code>:849 on 2024-06-03 18:47</div>
+            <div class="timeline-body"><p>Hmmm. Should there be more detection logic than just &quot;matches glob&quot;? So yeah, this iterator would return <code>crates/uv/src</code>, but if <code>crates/uv/src</code> doesn't have a <code>Cargo.toml</code> in it, then it can't be a package directory right? I'm not sure if that filtering logic should be here or not, but it seems like it's definitely wrong to skip recursion here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-03 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/workspace.rs</code>:849 on 2024-06-04 00:09</div>
+            <div class="timeline-body"><p>We do check that elsewhere, but I think we require that any discovered directories include a <code>Cargo.toml</code>, rather than <em>using</em> <code>Cargo.toml</code> to determine if it's a package. Cargo has the same behavior. E.g., changing uv to use <code>members = [&quot;crates/*&quot;, &quot;python/*&quot;]</code> gives:</p>
+<pre><code>❯ cargo check
+error: failed to load manifest for workspace member `/Users/crmarsh/workspace/uv/python/uv`
+referenced by workspace at `/Users/crmarsh/workspace/uv/Cargo.toml`
+
+Caused by:
+  failed to read `/Users/crmarsh/workspace/uv/python/uv/Cargo.toml`
+
+Caused by:
+  No such file or directory (os error 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-04 00:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-04 00:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/workspace.rs</code>:849 on 2024-06-04 00:10</div>
+            <div class="timeline-body"><p>If I could check whether the glob was recursive, this would be easy. <code>glob</code> does that, but it doesn't expose <code>is_recursive</code> on <code>glob</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-04 00:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/workspace.rs</code>:849 on 2024-06-04 00:27</div>
+            <div class="timeline-body"><p>I guess the other option (implemented here) is <code>require_literal_separator</code> which means <code>members = [&quot;crates/*&quot;]</code> only matches at the top-level anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-04 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/workspace.rs</code>:849 on 2024-06-04 10:45</div>
+            <div class="timeline-body"><p>Yeah setting <code>require_literal_separator</code> is probably a good idea anyway, especially when recursive globs are supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/workspace.rs</code>:806 on 2024-06-04 10:47</div>
+            <div class="timeline-body"><p>You might be able to just use <code>PathBuf</code> here? It looks like <code>next</code> below can never return an error. (This is what I would expect I think.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-06-04 10:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/workspace.rs</code>:849 on 2024-06-04 19:45</div>
+            <div class="timeline-body"><p>IDK I'm really torn on what the right behavior is here. I feel like I'm unnecessarily recursing in the common case. Glob has:</p>
+<pre><code class="language-rust">if idx == self.dir_patterns.len() - 1 {
+    // it is not possible for a pattern to match a directory
+    // *AND* its children so we don't need to check the
+    // children
+
+    if !self.require_dir || is_dir(&amp;path) {
+        return Some(Ok(path));
+    }
+}
+</code></pre>
+<p>But that only applies if they don't have <code>self.dir_patterns[idx].is_recursive</code>? Maybe this whole change is dumb.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-04 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-06 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-06 19:32</div>
+            <div class="timeline-body"><p>Can revisit later.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De-duplicate Linux builds with priority of MUSL targets - astral-sh/uv #4129</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>De-duplicate Linux builds with priority of MUSL targets</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4129">#4129</a>
+        opened by <a href="https://github.com/T-256">@T-256</a>
+        on 2024-06-07 12:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/T-256">@T-256</a> on 2024-06-07 12:26</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Ref https://github.com/astral-sh/uv/issues/4122#issuecomment-2154280414 musllinux targets are superset of gnu targets.</p>
+<p>Should we document it that why we use musl builds?</p>
+<h2>Test Plan</h2>
+<p>https://github.com/T-256/uv/actions/runs/9416773652/job/25940621883</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-07 16:03</div>
+            <div class="timeline-body"><p>I think it would be nice to document!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/henryiii">@henryiii</a> reviewed on 2024-06-08 05:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/henryiii">@henryiii</a> on <code>README.md</code>:509 on 2024-06-08 05:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The ABI used for Linux platform is MUSL with statically linked C-Runtime, except for _PPC64_ and _s390x_ archs which are only available with dynamically linked GNU ABI.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-06-08 05:31</div>
+            <div class="timeline-body"><p>I think the wheels also need to be dual tagged. You can tell maturin to do this. <code>--compatibility 2_17</code> IIRC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-06-08 11:36</div>
+            <div class="timeline-body"><p>Thanks @henryiii for your review.</p>
+<blockquote>
+<p>I think the wheels also need to be dual tagged. You can tell maturin to do this. <code>--compatibility 2_17</code> IIRC.</p>
+</blockquote>
+<p>Can you open a new PR for that? I think it's out of scope of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-08 16:12</div>
+            <div class="timeline-body"><p>I’m undecided on whether I want to do this. But we should either (1) do this and omit all the non-musl release targets (this would now be considered a breaking change), (2) do this but copy the musl to the non-musl targets (sort of strange IMO), or (3) re-add the GNU dynamically linked build (but keep the dual-tagged wheel).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-08 16:19</div>
+            <div class="timeline-body"><p>Are there examples of other similar tools that only ship against musl?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-06-08 16:57</div>
+            <div class="timeline-body"><p>ripgrep does that but only for x86_64 https://github.com/BurntSushi/ripgrep/releases/tag/14.1.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-08 17:31</div>
+            <div class="timeline-body"><p>For ripgrep, I don't really have a consistent philosophy here. I'm pretty reactive and add things that people request (or submit), and will generally remove artifacts if they become too burdensome to maintain. With that said, if I were to clean things up, I'd probably bias toward using musl for everything where I could, and not offer anything that is dynamically linked to glibc. I don't think I've ever offered a glibc release artifact for Linux x86-64, and I don't think I've ever heard anyone complain about it. Using musl is just more convenient and doesn't really confer any downsides for ripgrep specifically. (Its allocator tends to be slower than glibc, but I mitigate that by using a different allocator. I think we do the same for <code>uv</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-08 20:08</div>
+            <div class="timeline-body"><p>Ok, I think for now, my preference is:</p>
+<ul>
+<li>Keep these builds.</li>
+<li>Re-add the dynamically-linked GNU variant to the release pipeline.</li>
+<li>...but dual-tag our wheels, and upload the dual-tagged wheels.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-06-08 20:37</div>
+            <div class="timeline-body"><p>Also see https://www.tweag.io/blog/2023-08-10-rust-static-link-with-mimalloc/</p>
+<blockquote>
+<p>(Its allocator tends to be slower than glibc, but I mitigate that by using a different allocator. I think we do the same for <code>uv</code>.)</p>
+</blockquote>
+<p>Correct, according to blog post with mimalloc it'd be even faster than linux-gnu target. We currently use jemalloc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-08 20:49</div>
+            <div class="timeline-body"><p>Yeah I'm ultimately a bit torn but it doesn't really cost us much to continue shipping the dynamically-linked versions, so I have a slight preference towards doing so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-06-12 01:01</div>
+            <div class="timeline-body"><p>According to https://github.com/astral-sh/uv/pull/4254, this is now breaking change,
+@charliermarsh feel free to close it since you agreed continuation with both static and dynamic libc releases in the pipeline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-19 14:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:46 UTC
+    </footer>
+</body>
+</html>

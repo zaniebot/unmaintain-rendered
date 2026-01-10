@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache tool environments in `uv tool run` - astral-sh/uv #4784</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cache tool environments in <code>uv tool run</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4784">#4784</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-03 17:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 17:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The basic strategy:</p>
+<ul>
+<li>When the user does <code>uv tool run</code>, we resolve the <code>from</code> and <code>with</code> requirements (always).</li>
+<li>After resolving, we generate a hash of the requirements. For now, I'm just converting to a lockfile and hashing <em>that</em>, but that's an implementation detail.</li>
+<li>Once we have a hash, we <em>also</em> hash the interpreter.</li>
+<li>We then store environments in <code>${CACHE_DIR}/${INTERPRETER_HASH}/${RESOLUTION_HASH}</code>.</li>
+</ul>
+<p>Some consequences:</p>
+<ul>
+<li>We cache based on the interpreter, so if you request a different Python, we'll create a new environment (even if they're compatible). This has the nice side-effect of ensuring that we don't use environments for interpreters that were later deleted.</li>
+<li>We cache the <code>from</code> and <code>with</code> together. In practice, we may want to cache them separately, then layer them? But this is also an implementation detail that we could change later.</li>
+<li>Because we use the lockfile as the cache key, we will invalidate the cache when the format changes. That seems ok, but we could improve it in the future by generating a stable hash from a lockfile that's independent of the schema.</li>
+</ul>
+<p>Closes https://github.com/astral-sh/uv/issues/4752.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-07-03 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-07-03 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-07-03 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-03 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 21:20</div>
+            <div class="timeline-body"><p>Not sure what to do about the Windows failure. Hide the counts? Because we don't end up installing <code>colorama</code>, so it doesn't get deducted from the total.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 22:45</div>
+            <div class="timeline-body"><p>@charliermarsh we have a <code>TestContext::with_filtered_counts</code> utility for this exact purpose</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 22:46</div>
+            <div class="timeline-body"><p>Yeah I did see that, but wasn't sure if it was ok that it obscures the numbers entirely. It makes sense though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cache/src/lib.rs</code>:639 on 2024-07-03 22:46</div>
+            <div class="timeline-body"><p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-03 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-03 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/ephemeral.rs</code>:39 on 2024-07-03 22:50</div>
+            <div class="timeline-body"><p>Once we have #4729 we should probably pass around a <code>BaseClientBuilder</code> instead of these individual options</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 22:51</div>
+            <div class="timeline-body"><p>I feel like in most cases the numbers are redundant information 🤷‍♂️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-03 22:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/ephemeral.rs</code>:125 on 2024-07-03 22:53</div>
+            <div class="timeline-body"><p>So the receipt in this case is just an empty file? Kind of fun.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-03 22:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/ephemeral.rs</code>:125 on 2024-07-03 22:53</div>
+            <div class="timeline-body"><p>Haha. We do the same thing (with the same name) in the Git checkouts so I just borrowed that pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-07-03 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/ephemeral.rs</code>:125 on 2024-07-03 22:57</div>
+            <div class="timeline-body"><p>Nice that seems like it might be a helpful pattern for more scoped locks in #4720</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-03 22:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-03 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-03 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-03 23:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

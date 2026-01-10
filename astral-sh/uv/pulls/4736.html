@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect tool upgrades in `uv tool install` - astral-sh/uv #4736</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect tool upgrades in <code>uv tool install</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4736">#4736</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-07-02 19:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 19:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>For now the semantics are such that if the requested requirements from the command line don't match the receipt (or if any <code>--reinstall</code> or <code>--upgrade</code> is requested), we proceed with an install, passing the <code>--reinstall</code> and <code>--upgrade</code> to the underlying Python environment.</p>
+<p>This may lead to some unintuitive behaviors, but it's simplest for now. For example:</p>
+<ul>
+<li><code>uv tool install black&lt;24</code> followed by <code>uv tool install black --upgrade</code> will install the latest version of <code>black</code>, removing the <code>&lt;24</code> constraint.</li>
+<li><code>uv tool install black --with black-plugin</code> followed by <code>uv tool install black</code> will remove <code>black-plugin</code>.</li>
+</ul>
+<p>Closes https://github.com/astral-sh/uv/issues/4659.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Respect tool upgrades in uv tool install" to "Respect tool upgrades in `uv tool install`" by @charliermarsh on 2024-07-02 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-07-02 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-02 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/tool_install.rs</code>:1241 on 2024-07-02 19:17</div>
+            <div class="timeline-body"><p>This is a behavior change but I personally think it's ok to copy over the entrypoints even on a no-op. I could probably figure out a way to avoid this as an optimization though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-02 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/install.rs</code>:183 on 2024-07-02 19:17</div>
+            <div class="timeline-body"><p>It seems ok to me to only remove this when <code>--force</code> is provided?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-02 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/install.rs</code>:183 on 2024-07-02 19:22</div>
+            <div class="timeline-body"><p>In other words: can't we defer to our underlying virtualenv update machinery to manage this by reinstalling packages as required?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 19:28</div>
+            <div class="timeline-body"><p>Don't understand the dreaded Windows failures yet but I'll look at them once approved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-02 19:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_install.rs</code>:1241 on 2024-07-02 19:34</div>
+            <div class="timeline-body"><p>I agree it's &quot;okay&quot; but it feels a little weird to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-02 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/tool_install.rs</code>:1241 on 2024-07-02 19:35</div>
+            <div class="timeline-body"><p>I think it's safer and simpler to copy them over every time, avoids any weird issues around trying to detect if the package changed in the environment or the entrypoints getting out-of-sync with the environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/install.rs</code>:183 on 2024-07-02 19:35</div>
+            <div class="timeline-body"><p>That seems okay, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-02 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-02 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/install.rs</code>:177 on 2024-07-02 19:37</div>
+            <div class="timeline-body"><p>I don't think <code>force</code> needs to imply deletion of the environment though? This seems a little weird. I think we should only remove the existing environment if the requested Python interpreter is different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-02 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/install.rs</code>:177 on 2024-07-02 19:45</div>
+            <div class="timeline-body"><p>We can do that… I feel like force is sorta useful too personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-02 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/install.rs</code>:177 on 2024-07-02 19:45</div>
+            <div class="timeline-body"><p>Force would be like: completely ignore whatever already exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-02 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/install.rs</code>:177 on 2024-07-02 19:54</div>
+            <div class="timeline-body"><p>Hm. It feels weird to mix the purpose for me. I agree removing the environment <em>sounds</em> useful but in what case would someone actually need to do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-07-02 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-02 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/install.rs</code>:177 on 2024-07-02 20:05</div>
+            <div class="timeline-body"><p>(it seems safe to discuss and address this separately from this pull request)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-02 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/install.rs</code>:177 on 2024-07-02 20:22</div>
+            <div class="timeline-body"><p>I guess if the environment was broken and the receipt was out-of-sync, even <code>uninstall</code> wouldn't remove it...? Maybe I'll change <code>uninstall</code> to handle that edge case, then remove this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-02 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-02 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/install.rs</code>:177 on 2024-07-02 20:34</div>
+            <div class="timeline-body"><p>If the environment is broken then <code>--force</code> totally could / should remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-02 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/install.rs</code>:177 on 2024-07-02 20:37</div>
+            <div class="timeline-body"><p>Maybe: if there's no receipt, and the environment exists, we remove it? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-02 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-02 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-07-02 20:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>

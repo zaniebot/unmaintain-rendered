@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use inline table for dependencies in lockfile - astral-sh/uv #4581</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use inline table for dependencies in lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4581">#4581</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-06-27 09:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-06-27 09:57</div>
+            <div class="timeline-body"><p>Use indented inline tables for <code>distribution.dependencies</code>, <code>distribution.optional-dependencies</code> and <code>distribution.dev-dependencies</code>.</p>
+<p>The new style is more concise (see examples below) and it makes the association between a distribution and its dependencies clearer (previously, they were both individual <code>[[...]]</code> blocks separated by newlines). The style is optimized for small, meaningful diffs by placing each dependency on a single line with a final trailing comma. Whenever a dependency is added, removed or changed, there should be a one line diff in <code>distribution.dependencies</code>. The final trailing comma ensures that adding a dependency doesn't change the line ahead.</p>
+<p>Part of #3611</p>
+<h2>Examples</h2>
+<h3>Simple workspace package</h3>
+<p>Before:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;bird-feeder&quot;
+version = &quot;1.0.0&quot;
+source = &quot;editable+packages/bird-feeder&quot;
+
+[[distribution.dependencies]]
+name = &quot;anyio&quot;
+
+[[distribution.dependencies]]
+name = &quot;seeds&quot;
+</code></pre>
+<p>After:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;bird-feeder&quot;
+version = &quot;1.0.0&quot;
+source = &quot;editable+packages/bird-feeder&quot;
+dependencies = [
+    { name = &quot;anyio&quot; },
+    { name = &quot;seeds&quot; },
+]
+</code></pre>
+<h3>Flask</h3>
+<p>Before:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;flask&quot;
+version = &quot;3.0.2&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+sdist = { url = &quot;https://files.pythonhosted.org/packages/3f/e0/a89e8120faea1edbfca1a9b171cff7f2bf62ec860bbafcb2c2387c0317be/flask-3.0.2.tar.gz&quot;, hash = &quot;sha256:822c03f4b799204250a7ee84b1eddc40665395333973dfb9deebfe425fefcb7d&quot;, size = 675248 }
+wheels = [{ url = &quot;https://files.pythonhosted.org/packages/93/a6/aa98bfe0eb9b8b15d36cdfd03c8ca86a03968a87f27ce224fb4f766acb23/flask-3.0.2-py3-none-any.whl&quot;, hash = &quot;sha256:3232e0e9c850d781933cf0207523d1ece087eb8d87b23777ae38456e2fbe7c6e&quot;, size = 101300 }]
+
+[[distribution.dependencies]]
+name = &quot;blinker&quot;
+
+[[distribution.dependencies]]
+name = &quot;click&quot;
+
+[[distribution.dependencies]]
+name = &quot;itsdangerous&quot;
+
+[[distribution.dependencies]]
+name = &quot;jinja2&quot;
+
+[[distribution.dependencies]]
+name = &quot;werkzeug&quot;
+
+[distribution.optional-dependencies]
+
+[[distribution.optional-dependencies.dotenv]]
+name = &quot;python-dotenv&quot;
+</code></pre>
+<p>After:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;flask&quot;
+version = &quot;3.0.2&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+sdist = { url = &quot;https://files.pythonhosted.org/packages/3f/e0/a89e8120faea1edbfca1a9b171cff7f2bf62ec860bbafcb2c2387c0317be/flask-3.0.2.tar.gz&quot;, hash = &quot;sha256:822c03f4b799204250a7ee84b1eddc40665395333973dfb9deebfe425fefcb7d&quot;, size = 675248 }
+dependencies = [
+    { name = &quot;blinker&quot; },
+    { name = &quot;click&quot; },
+    { name = &quot;itsdangerous&quot; },
+    { name = &quot;jinja2&quot; },
+    { name = &quot;werkzeug&quot; },
+]
+wheels = [{ url = &quot;https://files.pythonhosted.org/packages/93/a6/aa98bfe0eb9b8b15d36cdfd03c8ca86a03968a87f27ce224fb4f766acb23/flask-3.0.2-py3-none-any.whl&quot;, hash = &quot;sha256:3232e0e9c850d781933cf0207523d1ece087eb8d87b23777ae38456e2fbe7c6e&quot;, size = 101300 }]
+
+[distribution.optional-dependencies]
+dotenv = [
+    { name = &quot;python-dotenv&quot; },
+]
+</code></pre>
+<h3>Forking</h3>
+<p>Before:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+source = &quot;editable+.&quot;
+
+[[distribution.dependencies]]
+name = &quot;package-a&quot;
+version = &quot;4.3.0&quot;
+source = &quot;registry+https://astral-sh.github.io/packse/0.3.29/simple-html/&quot;
+marker = &quot;sys_platform == 'darwin'&quot;
+
+[[distribution.dependencies]]
+name = &quot;package-a&quot;
+version = &quot;4.4.0&quot;
+source = &quot;registry+https://astral-sh.github.io/packse/0.3.29/simple-html/&quot;
+marker = &quot;sys_platform == 'linux'&quot;
+
+[[distribution.dependencies]]
+name = &quot;package-b&quot;
+marker = &quot;sys_platform == 'linux'&quot;
+
+[[distribution.dependencies]]
+name = &quot;package-c&quot;
+marker = &quot;sys_platform == 'darwin'&quot;
+</code></pre>
+<p>After:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+source = &quot;editable+.&quot;
+dependencies = [
+    { name = &quot;package-a&quot;, version = &quot;4.3.0&quot;, source = &quot;registry+https://astral-sh.github.io/packse/0.3.29/simple-html/&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+    { name = &quot;package-a&quot;, version = &quot;4.4.0&quot;, source = &quot;registry+https://astral-sh.github.io/packse/0.3.29/simple-html/&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+    { name = &quot;package-b&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+    { name = &quot;package-c&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-06-27 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-06-27 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-27 09:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/edit.rs</code>:79 on 2024-06-27 09:58</div>
+            <div class="timeline-body"><p>I'm wondering if we should just use a string for them, instead of an object with a single string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-27 10:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:2152 on 2024-06-27 10:15</div>
+            <div class="timeline-body"><p>Part of the decision to make here is if we want to ident single item lists and whether to indent by tabs or by spaces, cc @ibraheemdev re https://github.com/astral-sh/uv/commit/85183c1c36265f9d6942f9fb8a683c0e943243d6#diff-221a46775c0f0caff0d7be0a7669cc329bdf2c245c4b1f2400a19cc5a4f92f55R188-R194.</p>
+<p>I believe we should use 4 spaces since it is what the ruff formatter through black and PEP does.</p>
+<p>I'd favor indenting the item in a list item list for diff-ability. The wheels list doesn't usually change, but i'd indent it the same way for consistency (#4582).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @konstin on 2024-06-27 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:2152 on 2024-06-27 10:28</div>
+            <div class="timeline-body"><p>In comparison to our style, prettier uses two spaces and collapses short lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-27 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:2152 on 2024-06-27 11:58</div>
+            <div class="timeline-body"><p>In terms of indenting single item lists, I think that actually makes a lot of sense. In particular, I feel like a key practical advantage here is if there is a change that adds something to a single item list, then the diff is more &quot;straight-forward.&quot; This probably won't happen much (if at all) for wheels, but I expect it will with dependencies. And I agree that if we do it for dependencies, we might as well do it for wheels for consistency.</p>
+<p>As for tabs versus spaces. I've thought a little about this, and I think I weakly prefer tabs. Most of the gripes I have with tabs are related to their use when editing code. But in terms of reading it, as long as they're used correctly (which we can ensure here since we control serialization of the lock file), I do feel like they confer one important advantage: it lets folks configure the visual indentation via their tab width. <a href="https://stackoverflow.com/questions/8833953/how-to-change-tab-size-on-github">You can even do this via GitHub too.</a></p>
+<p>I'm fine with 4 spaces, but I do think we should consider tabs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/edit.rs</code>:79 on 2024-06-27 12:01</div>
+            <div class="timeline-body"><p>This is a good question. Cargo uses strings for dependencies, and I originally wanted to as well, but we have more information that would be straining the limits of &quot;good sense&quot; to cram into a string here. But, in the common case of a dependency just being a single package name? Hmmm.</p>
+<p>I think I like this idea. My weak concern is when you have a mixture of inline tables and package name strings. I feel like that might look a little odd and inhibit quick scanning. If you agree that that is odd, then another possibility is to use name strings only when every dependency is a single package name. I think I'd be cool with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-06-27 12:02</div>
+            <div class="timeline-body"><p>So much better!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-06-27 18:03</div>
+            <div class="timeline-body"><p>This is really nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-27 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/lock.rs</code>:2152 on 2024-06-27 18:03</div>
+            <div class="timeline-body"><p>Don't really have a strong preference here, either is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-27 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/edit.rs</code>:79 on 2024-06-27 18:06</div>
+            <div class="timeline-body"><p>This would be nice, but then introducing the first non-name dependency would result in a massive diff, and removing it again. My main thinking is that there will be few forking cases, so they look like the exception they are between the non-forking cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-06-27 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-06-27 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-27 18:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:48:47 UTC
+    </footer>
+</body>
+</html>
